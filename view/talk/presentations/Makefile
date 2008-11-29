@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/lecture/kernels/future/Makefile
+# file          /home/mycure/kaneton/view/talk/presentations/Makefile
 #
-# created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [sat nov 29 20:32:22 2008]
+# created       julien quintard   [sun jun 10 00:03:39 2007]
+# updated       julien quintard   [sat nov 29 20:33:10 2008]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,18 +27,12 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		boot				\
-					generalities			\
-					portability			\
-					memory				\
-					interrupts			\
-					concurrency			\
-					scheduling			\
-					ipc				\
-					bus				\
-					security			\
-					file-systems			\
-					windows-nt			
+SUBDIRS			:=		kaneton				\
+					k0				\
+					k1				\
+					k2				\
+					k3				\
+					k4				
 
 #
 # ---------- rules ------------------------------------------------------------

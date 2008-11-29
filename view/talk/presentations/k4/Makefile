@@ -27,9 +27,9 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		kaneton
+PAPER			:=		k4
 
-SOURCES			:=		kaneton.tex		
+SOURCES			:=		k4.tex		
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/curriculum/Makefile
+# file          /home/mycure/kaneton/view/talk/Makefile
 #
 # created       julien quintard   [sun jun 10 00:03:39 2007]
-# updated       julien quintard   [sat oct 20 14:30:40 2007]
+# updated       julien quintard   [sat nov 29 20:32:41 2008]
 #
 
 #
@@ -27,8 +27,7 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		educational			\
-					recruitment			
+SUBDIRS			:=		presentations			
 
 #
 # ---------- rules ------------------------------------------------------------
