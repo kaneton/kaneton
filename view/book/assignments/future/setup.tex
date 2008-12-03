@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/future/setup.tex
 %
 % created       julien quintard   [fri may 23 21:47:38 2008]
-% updated       julien quintard   [sat nov 29 16:28:55 2008]
+% updated       julien quintard   [wed dec  3 14:58:04 2008]
 %
 
 %
@@ -61,9 +61,9 @@ As a user, say, \name{foo}, the following directory should be created:
   \location{environment/profile/user/foo/}
 \end{center}
 
-This directory must, at least, a file named \location{foo.conf} specifying
-the user's personal configuration variables. The following gives an example of
-what this file should at least contain:
+This directory must contain, at least, a file named \location{foo.conf}
+specifying the user's personal configuration variables. The following gives an
+example of what this file should contain:
 
 \begin{verbatim}
   _MAKE_                          =       make
@@ -136,11 +136,11 @@ with an \name{IA-32 microprocessor}. In such cases, the following values
 could be used:
 
 \begin{verbatim}
-  export KANETON_USER="foo"
-  export KANETON_HOST="linux/ia32"
-  export KANETON_PLATFORM="ibm-pc"
-  export KANETON_ARCHITECTURE="ia32/educational"
-  export KANETON_PYTHON="/usr/bin/python"
+  $> export KANETON_USER="foo"
+  $> export KANETON_HOST="linux/ia32"
+  $> export KANETON_PLATFORM="ibm-pc"
+  $> export KANETON_ARCHITECTURE="ia32/educational"
+  $> export KANETON_PYTHON="/usr/bin/python"
 \end{verbatim}
 
 %
@@ -253,4 +253,4 @@ The command below illustrates such a test with the \name{QEMU} emulator:
 
 \section{Testing}
 
-XXX[get a certificate or account and they launch with make test or something]
+XXX[get a certificate or account and then launch with make test or something]
