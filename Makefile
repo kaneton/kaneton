@@ -223,4 +223,11 @@ cheat- cheat:
 cheat-%:
 	$(call env_launch,$(_CHEAT_SCRIPT_),$*,)
 
+#
+# ---------- check ------------------------------------------------------------
+#
+
+check-tarball-%:
+	$(call env_launch,$(_CHECK_TARBALL_SCRIPT_),$*,)
+
 endif
