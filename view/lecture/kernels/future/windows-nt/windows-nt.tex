@@ -517,27 +517,432 @@
 \begin{frame}
   \frametitle{Windows Driver Model}
 
-  \textbf{TODO}
+ This section introduces building blocks used to implement NT device drivers. \\
+ It covers the following topics:
+ \begin{itemize}
+ \item
+   driver model
+ \item
+   execution
+ \item
+   io
+ \item
+   synchronization
+ \item
+   memory 
+ \item
+   development tools
+ \end{itemize}
 
 \end{frame}
 
 % 2
 
-\begin{frame}
-  \frametitle{Driver Anatomy}
+\begin{frame}[containsverbatim]
+ \frametitle{driver model - 1}
 
-  \textbf{TODO}
+ Drivers have to implement a documented interface
+
+ \begin{itemize}
+  \item exported entry point
+
+  \begin{verbatim}
+   NTSTATUS DriverEntry(PDRIVER_OBJECT, PUNICODE_STRING) { ... }
+  \end{verbatim}
+
+  \item unload routine
+   \begin{verbatim}
+    DriverObject->DriverUnload = DriverUnload;
+   \end{verbatim}
+
+  \item A driver serves IO requests by filling a table of function pointers
+   \begin{verbatim}
+    DriverObject->MajorFunction[IRP_MJ_READ] = myDeviceRead;
+   \end{verbatim}
+
+  \item fast IO routines
+  \begin{itemize}
+   \item bypass the dispatch table for improved performances
+   \item used only by file systems
+  \end{itemize}
+
+ \end{itemize}
 
 \end{frame}
 
 % 3
 
 \begin{frame}
-  \frametitle{Case: NDIS}
+ \frametitle{driver model - 2}
 
-  \textbf{TODO}
+ Drivers instanciate one object per device
+
+ \begin{itemize}
+  \item IoCreateDevice()
+  \item device object visible in the object namespace
+  \item can be opened from userland to retrieve a handle
+ \end{itemize}
+
+ Once instantiated, device object is inserted into a stack
+
+ \begin{itemize}
+  \item stack example
+   \begin{itemize}
+    \item socket (afd.sys)
+    \item TDI (tdi.sys)
+    \item TCPIP (tcpip.sys)
+    \item NDIS (ndis.sys)
+    \item ethernet controller (rtle8023.sys)
+   \end{itemize}
+
+ \end{itemize}
 
 \end{frame}
+
+% 4
+
+\begin{frame}
+ \frametitle{execution primitives - 1}
+
+ Thread objects
+
+ \begin{itemize}
+  \item KeXxxThread routines
+  \item no actual difference between user and system threads
+  \item system thread address space is the kernel one
+ \end{itemize}
+
+\end{frame}
+
+% 5
+
+\begin{frame}
+ \frametitle{execution primitives - 2}
+
+ Asynchronous Procedure Calls (APCs)
+
+ \begin{itemize}
+  \item KeXxxApc routines
+  \item used by the kernel to implement the asynchronous io model as seen by the userland
+  \item per thread APC queue, routine executed in the thread context
+  \item userland thread must be alertable
+  \item scheduled as the thread returns from kernel
+ \end{itemize}
+
+\end{frame}
+
+% 6
+
+\begin{frame}
+ \frametitle{execution primitives - 3}
+
+ Deferred Procedure Calls (DPCs)
+
+ \begin{itemize}
+  \item KeXxxDpc routines
+  \item one DPC queue for the entire system
+  \item executed when the irql drops below DISPATCH\_LEVEL
+ \end{itemize}
+
+\end{frame}
+
+% 7
+
+\begin{frame}
+ \frametitle{IO programming - 1}
+
+ Every cpu has an Interrupt Request Level (IRQL)
+
+ \begin{itemize}
+  \item KeXxxIrql routines
+  \item hardware level a cpu is operating at
+  \item do not confuse with thread priorities
+  \item implemented in software on most architecture
+  \item levels lower than the current one are masked off
+ \end{itemize}
+
+\end{frame}
+
+% 8
+
+\begin{frame}
+ \frametitle{IO programming - 2}
+
+ Common IRQLs (from lower to higher)
+
+ \begin{itemize}
+  \item PASSIVE\_LEVEL: user threads, most kernel mode operations
+  \item APC\_LEVEL: APCs, page fault
+  \item DISPATCH\_LEVEL: thread scheduler, DPCs
+  \item DEVICE\_INTERRUPT\_LEVEL(DIRQL): device interrupts
+ \end{itemize}
+
+\end{frame}
+
+% 9
+
+\begin{frame}
+ \frametitle{IO programming - 3}
+
+ Requesting a device object
+
+ \begin{itemize}
+  \item IoCallDriver(DeviceObject, Irp);
+ \end{itemize}
+
+\end{frame}
+
+% 10
+
+\begin{frame}
+ \frametitle{IO programming - 4}
+
+ Userland communication
+
+ \begin{itemize}
+  \item NtDeviceIoControl
+  \item different buffering modes based on the control code
+  \item user address validation
+  \begin{itemize}
+   \item common source for kernel vulnerabilities
+   \item ProbeForRead(), ProbeForWrite()
+   \item \_try / \_except {} blocks
+  \end{itemize}
+ \end{itemize}
+
+\end{frame}
+
+% 11
+
+\begin{frame}
+ \frametitle{IO programming - 5}
+
+ Handling interrupts
+
+ \begin{itemize}
+  \item KeXxxInterrupt routines
+
+  \item connect to interrupt vector, possibly shared
+   \begin{itemize}
+   \item IoConnectInterrupt(IsrRoutine)
+  \end{itemize}
+
+  \item bottom / top halves model
+  \begin{itemize}
+   \item isr performs the small work (read or write registers...)
+   \item isr then schedule a dpc with IoRequestDpc() and returns
+   \item dpc completes the interrupt processing
+  \end{itemize}
+
+ \end{itemize}
+
+\end{frame}
+
+% 12
+
+\begin{frame}
+ \frametitle{conccurency and synchronization - 1}
+
+ Spinlock
+
+ \begin{itemize}
+  \item KeXxxSpinLock routines
+  \item on up systems, irql raised to DISPATCH\_LEVEL
+  \item on mp systems, same as above plus loop until acquired
+ \end{itemize}
+
+\end{frame}
+
+% 13
+
+\begin{frame}
+ \frametitle{conccurency and synchronization - 2}
+
+ Mutexes
+
+ \begin{itemize}
+  \item implemented at scheduler level
+  \item costly, but blocking calls allowed while held
+  \item use fast mutexes for better performance
+  \begin{itemize}
+   \item ExAcquireFastMutex(), ExReleaseFastMutex()
+   \item atomic test, fast for first owner
+   \item event queue otherwise
+  \end{itemize}
+ \end{itemize}
+
+\end{frame}
+
+% 14
+
+\begin{frame}
+ \frametitle{conccurency and synchronization - 3}
+
+ Shared resources
+
+ \begin{itemize}
+  \item ExAcquireResourceSharedLite(), ExAcquireResourceExclusiveLite()
+  \item single writer, multiple readers
+  \item recurrent pattern in most data structure
+ \end{itemize}
+
+\end{frame}
+
+% 15
+
+\begin{frame}
+ \frametitle{conccurency and synchronization - 4}
+
+ InterlockedXXX routines
+
+ \begin{itemize}
+  \item InterlockedCompareExchange (compare and swap)
+  \item implemented in hardware whenever possible
+  \item allow for efficient, non blocking data structure implementation
+  \item ExInterlockedPushEntryList()
+ \end{itemize}
+
+\end{frame}
+
+% 16
+
+\begin{frame}
+ \frametitle{conccurency and synchronization - 5}
+
+ Choosing the right synchronization primitive is very important
+
+ \begin{itemize}
+  \item highly impact on the overall system performance
+  \item even more important mp systems
+ \end{itemize}
+
+\end{frame}
+
+% 17
+
+\begin{frame}
+ \frametitle{memory - 1}
+
+ Kernel virtual memory allocator
+
+ \begin{itemize}
+  \item ExAllocatePool functions family
+
+  \item PagedPool
+  \begin{itemize}
+   \item may page fault on access
+   \item thus may need a disk io to be served
+   \item thus may block
+   \item thus must not be accessed at DISPATCH\_LEVEL
+   \item for instance, when a spinlock is held
+  \end{itemize}
+
+  \item NonPagedPool
+  \begin{itemize}
+   \item can be accessed at any IRQL
+  \end{itemize}
+
+ \end{itemize}
+
+\end{frame}
+
+% 18
+
+\begin{frame}
+ \frametitle{memory - 2}
+
+ Physical memory
+
+ \begin{itemize}
+  \item MmAllocatePagesForMdl
+  \item return a descriptor for further virtual access
+ \end{itemize}
+
+\end{frame}
+
+% 19
+
+\begin{frame}
+ \frametitle{development tools - 1}
+
+ Windows Driver Kit (WDM)
+
+ \begin{itemize}
+  \item collection of .h and .lib for driver development
+  \item driver samples
+ \end{itemize}
+
+\end{frame}
+
+% 20
+
+\begin{frame}
+ \frametitle{development tools - 2}
+
+ Windows Research Kit (WRK)
+
+ \begin{itemize}
+  \item kernel and tools source code
+  \item design books (from the 90s)
+ \end{itemize}
+
+\end{frame}
+
+% 21
+
+\begin{frame}
+ \frametitle{development tools - 3}
+
+ Debugging
+
+ \begin{itemize}
+
+  \item Windows debugging tools
+  \begin{itemize}
+   \item windbg 
+   \item dbgview
+  \end{itemize}
+
+  \item Windows symbol packages
+
+  \item Driver verifier
+   \begin{itemize}
+    \item allows for runtime checks of common errors
+    \item creates exceptionnal conditions
+    \item fault injection
+   \end{itemize}
+  \item
+
+ \end{itemize}
+
+\end{frame}
+
+% 22
+
+\begin{frame}
+ \frametitle{development tools - 4}
+
+ Other tools
+
+ \begin{itemize}
+  \item DriverLoader (osronline)
+  \item DeviceTree (osronline)
+ \end{itemize}
+\end{frame}
+
+% 23
+
+\begin{frame}
+ \frametitle{references}
+
+ \begin{itemize}
+  \item http://www.microsoft.com/whdc
+  \item http://osronline.com/
+  \item http://msdn.microsoft.com/en-us/library/aa972908.aspx
+ \end{itemize}
+
+\end{frame}
+
 
 %
 % Bibliography
