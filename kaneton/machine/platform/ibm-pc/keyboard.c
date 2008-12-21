@@ -30,7 +30,6 @@ IBMPC_KEYBOARD_MAPPING(scancodes);
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k2] */
 /*
  * keyboard irq handler.
  */
@@ -71,4 +70,3 @@ t_error			ibmpc_keyboard_init(void)
 {
   return (event_reserve(33, EVENT_FUNCTION, EVENT_HANDLER(ibmpc_kbd_handler), 0));
 }
-/* [/cut] */

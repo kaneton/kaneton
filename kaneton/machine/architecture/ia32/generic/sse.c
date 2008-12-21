@@ -9,7 +9,6 @@
  * updated       matthieu bucchianeri   [wed jul 26 14:39:58 2006]
  */
 
-/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -42,4 +41,3 @@ void			ia32_enable_sse(void)
 	       :
 	       : "%eax");
 }
-/* [/cut] */

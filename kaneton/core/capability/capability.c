@@ -11,7 +11,6 @@
  * updated       matthieu bucchianeri   [wed jan  9 10:41:06 2008]
  */
 
-/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -652,4 +651,3 @@ t_error			capability_clean(void)
 // XXX changer car actuellement on a pas de fonctions de hash correct
 
 // XXX fonction random pour les id ou pas? cela est-il vraiment necessaire?
-/* [/cut] */

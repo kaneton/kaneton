@@ -61,7 +61,6 @@ d_scheduler			scheduler_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k3] */
 /*
  * the idle thread assembly.
  */
@@ -81,14 +80,12 @@ static void		glue_scheduler_switch_handler(void)
 {
   ASSERT(scheduler_switch() == ERROR_NONE);
 }
-/* [/cut] */
 
 /*
  * this function sets the scheduler quantum value.
  *
  * just update the timer delay.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_scheduler_quantum(t_quantum	quantum)
@@ -106,7 +103,6 @@ t_error			glue_scheduler_quantum(t_quantum	quantum)
  *
  * initialize a new timer and fpu exception.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_scheduler_initialize(void)
@@ -156,7 +152,6 @@ t_error			glue_scheduler_initialize(void)
  *
  * we simply release our timer.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_scheduler_clean(void)
@@ -172,7 +167,6 @@ t_error			glue_scheduler_clean(void)
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
-/* [cut k3] */
 /*
  * interrupt handler called when an extended context switching is needed.
  */
@@ -194,12 +188,10 @@ void			glue_scheduler_switch_extended(i_event	id)
 
   ent->machdep.mmx_context = ent->current;
 }
-/* [/cut] */
 
 /*
  * classical context switching.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_scheduler_switch(i_thread		elected)

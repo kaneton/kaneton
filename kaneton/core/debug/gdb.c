@@ -9,7 +9,6 @@
  * updated       matthieu bucchianeri   [sun may  6 18:38:48 2007]
  */
 
-/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -912,4 +911,3 @@ t_error		gdb_clean(void)
   return (ERROR_NONE);
 }
 #endif
-/* [/cut] */

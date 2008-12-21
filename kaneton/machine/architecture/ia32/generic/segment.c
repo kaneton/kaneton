@@ -40,7 +40,6 @@ extern i_as		kasid;
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k1] */
 /*
  * this function reads directly from a segment to a buffer.
  *
@@ -265,4 +264,3 @@ t_error			ia32_segment_copy(i_region		dst,
 
   return (ERROR_NONE);
 }
-/* [/cut] */

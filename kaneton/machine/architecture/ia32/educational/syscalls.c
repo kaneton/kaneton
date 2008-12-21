@@ -51,7 +51,6 @@ extern m_message*	message;
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k4] */
 
 /*
  * handler for message_register syscall. prerequisites: message_register never
@@ -391,4 +390,3 @@ t_error			ia32_syscalls_clean(void)
   return (ERROR_NONE);
 }
 
-/* [/cut] */

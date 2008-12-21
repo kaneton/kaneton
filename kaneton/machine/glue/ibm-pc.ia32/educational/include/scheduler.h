@@ -42,17 +42,13 @@
 #define		machine_data_m_scheduler()				\
   struct								\
   {									\
-    /* [cut k3] */							\
     i_timer			timer;					\
-    /* [/cut] */							\
   }				machdep;
 
 #define		machine_data_o_scheduler()				\
   struct								\
   {									\
-    /* [cut k3] */							\
     i_thread			mmx_context;				\
-    /* [/cut] */							\
   }				machdep;
 
 /*

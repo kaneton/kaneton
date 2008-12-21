@@ -5,24 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/export/export.py
+# file          /Users/francois/kaneton/tool/export/export.py
 #
-# created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [sun sep 14 15:56:50 2008]
-#
-
-#
-# ---------- information ------------------------------------------------------
-#
-# this tool creates tarball of the kaneton project.
-#
-# the argument 'dist' makes a backup of the current development tree
-# including the cut lines but still without the subversion control directories.
-#
-# the argument 'backup' makes a simple backup of the whole project.
-#
-# the _EXPORT_FILTER_ variable contains the list of directories not to include
-# in exported distributions.
+# created       francois goudal   [sat oct 25 20:57:38 2008]
+# updated       francois goudal   [wed nov 12 05:26:29 2008]
 #
 
 #
@@ -30,311 +16,106 @@
 #
 
 import sys
-import re
-import os
-
+import yaml
 import env
-import CodeCutter
 
 #
 # ---------- globals ----------------------------------------------------------
 #
 
-g_types = [ "dist", "backup" ]
-g_stages = [ "0", "1", "2", "3", "4" ]
-
-g_type = None
-g_from = None
-g_to = None
-
-g_file = None
-g_directory = None
-
-g_distribution = None
+g_verbose = 1
+g_modules = {}
+g_modules_parameters = {}
+g_action_data = []
+g_export_dir = ""
 
 #
 # ---------- functions --------------------------------------------------------
 #
 
 #
-# usage()
+# modules_load()
 #
-# this function displays the usage.
+# dynamically loads action modules from the "modules" directory.
 #
-def			usage():
-  stage = None
-  type = None
+def modules_load():
+  global g_modules
 
-  env.display(env.HEADER_NONE, "usage: export.py [type]|k[stage,stage]",
-              env.OPTION_NONE)
-
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-  env.display(env.HEADER_NONE, "types:", env.OPTION_NONE)
-
-  for type in g_types:
-    env.display(env.HEADER_NONE, "  " + type, env.OPTION_NONE)
-
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-  env.display(env.HEADER_NONE, "stages:", env.OPTION_NONE)
-
-  for stage in g_stages:
-    env.display(env.HEADER_NONE, "  " + stage, env.OPTION_NONE)
-
-
-#
-# warning()
-#
-# this function asks the user if everything is right.
-#
-def			warning():
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
-
-  if g_type:
-    env.display(env.HEADER_OK,
-                "  type:                   " + g_type,
-                env.OPTION_NONE)
+  env.display(env.HEADER_OK, 'loading action modules', env.OPTION_NONE)
+  if (env.path(sys.argv[0], env.OPTION_DIRECTORY) == ""):
+    moduledir = './modules'
   else:
-    env.display(env.HEADER_OK,
-                "  stages:                 [" + g_from + ", " + g_to + "]",
-                env.OPTION_NONE)
-
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter", env.OPTION_NONE)
-
-  env.input(env.OPTION_NONE)
-
-
-
-#
-# lookup()
-#
-# this function tries to match the given stage name in the stages.
-#
-def			lookup():
-  global g_type
-  type = None
-
-  if g_type:
-    for type in g_types:
-      if re.search(g_type, type) != None:
-        g_type = type
-        return
-
-    env.display(env.HEADER_ERROR, "unknown type '" + g_type + "'",
-                env.OPTION_NONE)
-    env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-    usage()
-    sys.exit(42)
-  else:
-    if not (g_from in g_stages) or not (g_to in g_stages):
-      env.display(env.HEADER_ERROR, "unknown stage: '" + g_from + "' or '" +
-                  g_to + "'", env.OPTION_NONE)
-      env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-      usage()
-      sys.exit(42)
-
-
+    moduledir = env.path(sys.argv[0], env.OPTION_DIRECTORY) + '/modules'
+  sys.path.append(moduledir)
+  for i in env.list(moduledir, env.OPTION_FILE):
+    if i.endswith('.py'):
+      mod = __import__(i[:-3])
+      try:
+        init_str = mod.module_init()
+      except AttributeError:
+        sys.stderr.write('error: The module file ' + i +
+                         ' is missing the module_init function\n')
+        sys.exit(1)
+      g_modules[init_str[0]] = mod
+      g_modules_parameters[init_str[0]] = init_str
+      env.display(env.HEADER_OK, "  loaded module " + init_str[0], env.OPTION_NONE)
 
 #
-# dist()
+# action_data_load()
 #
-# this function creates a distribution tarball and places it in the
-# export/ directory.
+# loads the action data from the YAML file
 #
-def			dist():
-  global g_distribution
-  name = None
+def action_data_load(filename):
+  env.display(env.HEADER_OK, 'loading action data description file ' + filename, env.OPTION_NONE)
+  stream = file(env._EXPORT_DIR_ + '/' + filename + '.yml', 'r')
+  return yaml.load(stream)
 
-  # build a name depending on the argument.
-  if g_type:
-    name = g_type
-  else:
-    name = "k" + g_from + "," + g_to
 
-  g_distribution = env._EXPORT_ + "-" +					\
-                   env.stamp(env.OPTION_NONE) + "-" + name
 
-  # move to the directory parent to the kaneton repository copy.
-  env.cd(g_directory, env.OPTION_NONE)
+def parse_data_file(filename):
+  global g_action_data
+  global g_modules
+  global g_export_dir
+  global g_modules_parameters
 
-  # a message.
-  env.display(env.HEADER_OK,
-              "packing the processed distribution...",
-              env.OPTION_NONE)
+  g_action_data = action_data_load(filename)
+  for i in g_action_data:
+    if i['operation'] == 'import':
+      env.display(env.HEADER_OK, 'action import ' + i['filename'], env.OPTION_NONE)
+      parse_data_file(i['filename'])
+    else:   
+      arg = {}
+      for j in range(1, len(g_modules_parameters[i['operation']])):
+        arg[g_modules_parameters[i['operation']][j]] = i[g_modules_parameters[
+            i['operation']][j]];
+      if g_modules[i['operation']].module_action(g_export_dir, arg) != 0:
+        sys.exit(1)
 
-  # create an archive.
-  env.pack(env._EXPORT_,
-           env._EXPORT_DIR_ + "/" + g_distribution, env.OPTION_NONE)
-
-  # a message.
-  env.display(env.HEADER_OK,
-              "removing temporary files and directories...",
-              env.OPTION_NONE)
-
-  # remove the temporary stuff.
-  env.remove(g_file, env.OPTION_NONE)
-  env.remove(g_directory, env.OPTION_NONE)
-
-#
-# stages()
-#
-# this function removes the pieces of code tagged as a stage comprised
-# between g_from and g_to, included.
-#
-def			stages(strip_only_tags):
-  content = None
-  stage = None
-  files = None
-  file = None
-
-  # look for any source file which could possibly contain unwanted pieces
-  # of code.
-  files = env.search(g_directory, "^.*\.(c|S|h|asm)$", env.OPTION_FILE)
-
-  # a message.
-  env.display(env.HEADER_OK,
-              "hiding stages...",
-              env.OPTION_NONE)
-
-  # for each file, cut the file
-  for file in files:
-    print "Processing <" + file + "> ..."
-    f = open(file, "r")
-    cutter = CodeCutter.CodeCutter(f, strip_only_tags)
-    f.close()
-
-    f = open(file, "w")
-    f.write(cutter.result)
-    f.close()
-
-#
-# clean()
-#
-# this function removes unwanted stuff i.e the env._EXPORT_FILTER_
-# stuff as well as the subversion directories.
-#
-def			clean():
-  entries = None
-  entry = None
-
-  # a message.
-  env.display(env.HEADER_OK,
-              "cleaning the distribution from unwanted/private stuff...",
-              env.OPTION_NONE)
-
-  # remove the subversion directories
-  entries = env.search(g_directory, "^\.svn$",
-                       env.OPTION_DIRECTORY | env.OPTION_RECURSIVE)
-
-  for entry in entries:
-    env.remove(entry, env.OPTION_NONE)
-
-  # remove the env._EXPORT_FILTER_ stuff
-  entities = re.findall("([^\t ]+)", env._EXPORT_FILTER_)
-
-  for entity in entities:
-    env.remove(entity, env.OPTION_NONE)
-
-#
-# build()
-#
-# this function creates a copy of the repository in a temporary directory.
-#
-def			build():
-  # go to the root directory.
-  env.cd(env._SOURCE_DIR_, env.OPTION_NONE)
-
-  # a message.
-  env.display(env.HEADER_OK,
-              "building a copy of the working tree...",
-              env.OPTION_NONE)
-
-  # creates a tarball of the kaneton root directory.
-  env.pack(env.info(env.OPTION_CURRENT_DIRECTORY), g_file, env.OPTION_NONE)
-
-  # make a directory named env._EXPORT_
-  env.mkdir(g_directory + "/" + env._EXPORT_, env.OPTION_NONE)
-
-  # extract the just created tarball in order to clean it from
-  # unwanted files.
-  env.unpack(g_file, g_directory + "/" + env._EXPORT_, env.OPTION_NONE)
-
-  # go to this directory in order to avoid bad manipulations
-  env.cd(g_directory + "/" + env._EXPORT_, env.OPTION_NONE)
-
-  env.display(env.HEADER_OK,
-              "masking...",
-              env.OPTION_NONE)
-  os.system("./rm.sh") # XXX!!!!!
-
-  # depending on the type of export, performs more or less steps.
-  if g_type:
-    if g_type == "backup":
-      pass
-    elif g_type == "dist":
-      clean()
-      stages(True) # strip only tags
-  else:
-    clean()
-    stages(False) # strip tags & cutted content
 
 #
 # main()
 #
-# this function performs the main stuff.
+# main function: goes through the actions and calls the modules accordingly
 #
-def			main():
-  global g_directory
-  global g_file
-  global g_type
-  global g_from
-  global g_to
-  arg = None
+def main():
+  global g_modules
+  global g_action_data
+  global g_export_dir
 
-  # check the number of arguments.
-  if len(sys.argv) != 2:
-    usage()
-    sys.exit(42)
+  modules_load()
 
-  # set the stage.
-  arg = sys.argv[1]
+  g_export_dir = env.temporary(env.OPTION_DIRECTORY) + '/kaneton'
+  env.mkdir(g_export_dir, env.OPTION_NONE)
+  env.display(env.HEADER_OK, 'copying the source tree to ' + g_export_dir, env.OPTION_NONE)
+  env.launch(env._CP_, "-r " + env._SOURCE_DIR_ + "/* " +
+             g_export_dir, env.OPTION_QUIET)
 
-  if arg[0] == "k":
-    g_from = arg[1:].split(",")[0]
-    g_to = arg[1:].split(",")[1]
-  else:
-    g_type = arg
+  env.display(env.HEADER_OK, 'running export actions', env.OPTION_NONE)
 
-  # a message.
-  env.display(env.HEADER_OK, "preparing the exportation", env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-  # try to lookup the given stage in the known stages.
-  lookup()
-
-  # warn the user about what is about to happen.
-  warning()
-
-  # create a temporary file and a temporary directory.
-  g_file = env.temporary(env.OPTION_FILE)
-  g_directory = env.temporary(env.OPTION_DIRECTORY)
-
-  # build the tarball.
-  build()
-
-  # create a tarball distribution.
-  dist()
-
-  # a final message.
-  env.display(env.HEADER_OK, "distribution '" + g_distribution +
-              "' built successfully", env.OPTION_NONE)
-
+  parse_data_file(sys.argv[1])
+  
 #
 # ---------- entry point ------------------------------------------------------
 #
 
-if __name__ == "__main__":
-  main()
+main()

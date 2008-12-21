@@ -84,7 +84,6 @@ typedef union
 
 typedef struct
 {
-  /* [cut k2] */
   i_timer			timerid;
 
   t_uint32			delay;
@@ -95,7 +94,6 @@ typedef struct
 
   u_timer_handler		handler;
   t_vaddr			data;
-  /* [/cut] */
 
   machine_data(o_timer);
 }				o_timer;
@@ -117,13 +115,11 @@ typedef struct
 
 typedef struct
 {
-  /* [cut k2] */
   o_id				id;
 
   t_uint32			timeref;
 
   i_set				timers;
-  /* [/cut] */
 
   machine_data(m_timer);
 }				m_timer;

@@ -51,7 +51,6 @@
 #define         machine_data_o_thread()					\
   struct								\
   {									\
-    /* [cut k3] */							\
     t_vaddr		interrupt_stack;				\
 									\
     union								\
@@ -59,7 +58,6 @@
       t_x87_state	x87;						\
       t_sse_state	sse;						\
     }			u;						\
-    /* [/cut] */							\
   }			machdep;
 
 /*

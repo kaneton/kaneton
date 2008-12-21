@@ -26,7 +26,6 @@
 
 #include <architecture/architecture.h>
 
-/* [cut] */
 /*
  * send a INIT IPI.
  */
@@ -81,4 +80,3 @@ void			ia32_ipi_acknowledge(void)
 {
   ia32_apic_write(IA32_APIC_REG_EOI, 0);
 }
-/* [/cut] */

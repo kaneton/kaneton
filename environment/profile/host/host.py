@@ -193,10 +193,24 @@ def			input(options):
 #
 # copy()
 #
-# this function copies a file.
+# this function copies a file or a directory.
 #
 def			copy(source, destination, options):
-  shutil.copyfile(source, destination)
+  if os.path.isdir(source):
+    shutil.copytree(source, destination, True)
+  else:
+    shutil.copyfile(source, destination)
+
+
+
+#
+# move()
+#
+# this function moves a file or a directory.
+#
+def			move(source, destination, options):
+  copy(source, destination, options)
+  remove(source, options)
 
 
 

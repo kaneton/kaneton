@@ -11,7 +11,6 @@
  * updated       matthieu bucchianeri   [wed jan  9 10:53:57 2008]
  */
 
-/* [cut k3] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -57,7 +56,6 @@
  * scheduler   and  the  current   GNU/Linux  implementation   can  be
  * downloaded at http://josh.trancesoftware.com/linux.
  */
-/* [/cut] */
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -105,7 +103,6 @@ extern m_cpu*		cpu;
  * 2) dump the scheduler active queues.
  * 2) dump the scheduler expired queues.
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_dump(void)
@@ -199,7 +196,6 @@ t_error			scheduler_dump(void)
  * 2) update all thread timeslices to take account of new granularity.
  * 3) call the architecture dependent code.
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_quantum(t_quantum			quantum)
@@ -285,7 +281,6 @@ t_error			scheduler_quantum(t_quantum			quantum)
  *    if possible.
  * 2) call  the dependent code (calling switch with the good cpu).
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_yield(i_cpu			cpuid)
@@ -320,7 +315,6 @@ t_error			scheduler_yield(i_cpu			cpuid)
  * this  function returns  the  identifier of  the currently  executed
  * thread.
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_current(i_thread*			thread)
@@ -358,7 +352,6 @@ t_error			scheduler_current(i_thread*			thread)
  * 7) update the scheduler internal informations.
  *
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_switch(void)
@@ -571,7 +564,6 @@ t_error			scheduler_switch(void)
  * 3) preempt current thread if added thread has an higher priority.
  * 4) call the machine dependent code.
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_add(i_thread			thread)
@@ -656,7 +648,6 @@ t_error			scheduler_add(i_thread			thread)
  * 3) compute the thread priority.
  * 4) look in both active and expired lists to remove the thread.
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_remove(i_thread			thread)
@@ -762,7 +753,6 @@ t_error			scheduler_remove(i_thread			thread)
  * 1) XXX optimize this !!!
  * 2) call the machine dependent code.
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_update(i_thread			thread)
@@ -797,7 +787,6 @@ t_error			scheduler_update(i_thread			thread)
  * 3) create the kernel thread.
  * 4) call the machine-dependent code.
  *
- * [fxcut k3 code: return (ERROR_NONE);]
  */
 
 t_error			scheduler_initialize(void)
@@ -928,7 +917,6 @@ t_error			scheduler_initialize(void)
  * 2) release the lists and the queues.
  * 3) free the scheduler manager structure's memory.
  *
- * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_clean(void)

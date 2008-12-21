@@ -72,7 +72,6 @@ extern i_task		ktask;
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k4] */
 
 /*
  * this function retrieves a message box of a task by its type.
@@ -98,7 +97,6 @@ static t_error		message_box(i_task			task,
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
-/* [/cut] */
 
 /*
  * this function registers a new message type with its maximum length.
@@ -114,7 +112,6 @@ static t_error		message_box(i_task			task,
  * 4) add it to the task messages set.
  * 5) call the machine dependent code.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			message_register(i_task			task,
@@ -187,7 +184,6 @@ t_error			message_register(i_task			task,
 /*
  * this function returns the maximum size of a message in a message box.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			message_size(i_task			task,
@@ -217,7 +213,6 @@ t_error			message_size(i_task			task,
  * 4) release the sets.
  * 5) call machdep.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			message_flush(i_task			task)
@@ -314,7 +309,6 @@ t_error			message_flush(i_task			task)
  * 7) push the message into the message box.
  * 8) call the machine dependent code.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_send(i_task			task,
@@ -498,7 +492,6 @@ t_error			message_send(i_task			task,
  *  b) later if no rendezvous has been established.
  * 5) call machine dependent code.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_transmit(i_task			task,
@@ -621,7 +614,6 @@ t_error			message_transmit(i_task			task,
  * on non-multiprocessor systems, this function is totally equivalent to
  * message_send.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_throw(i_task			task,
@@ -668,7 +660,6 @@ t_error			message_throw(i_task			task,
  *  b) incoming message, get it.
  * 3) call machdep code.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_receive(i_task			task,
@@ -755,7 +746,6 @@ t_error			message_receive(i_task			task,
  * on non-multiprocessor systems, this function is stricly equivalent to
  * message_receive.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_grab(i_task			task,
@@ -805,7 +795,6 @@ t_error			message_grab(i_task			task,
  *  c) asynchronous, inter-address space case.
  * 4) call the machine dependent code.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_poll(i_task			task,
@@ -911,7 +900,6 @@ t_error			message_poll(i_task			task,
  * this function checks if a message copy (though message_throw or
  * message_grab) is finished yet.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_state(i_task			task,
@@ -928,7 +916,6 @@ t_error			message_state(i_task			task,
  * this function checks if a message copy (though message_throw or
  * message_grab) is finished yet and waits for the operation to be completed.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_wait(i_task			task,
@@ -946,7 +933,6 @@ t_error			message_wait(i_task			task,
 /*
  * this function resumes a blocked thread on a syscall with given return value.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_return(i_thread			thread,
@@ -966,7 +952,6 @@ t_error			message_return(i_thread			thread,
 /*
  * this function resumes a blocked thread on a syscall with given info.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			message_return_info(i_thread		thread,
@@ -986,7 +971,6 @@ t_error			message_return_info(i_thread		thread,
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
-/* [/cut] */
 
 /*
  * this function initializes the message manager.
@@ -997,7 +981,6 @@ t_error			message_return_info(i_thread		thread,
  * 2) create message types for the kernel task.
  * 3) call the machine dependent code.
  *
- * [fxcut k4 code: return(ERROR_NONE);]
  */
 
 t_error			message_initialize(void)
@@ -1051,7 +1034,6 @@ t_error			message_initialize(void)
  * 3) free kernel message types.
  * 2) free the manager structure.
  *
- * [fxcut k4 code: return(ERROR_NONE);]
  */
 
 t_error			message_clean(void)

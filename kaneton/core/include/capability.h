@@ -14,7 +14,6 @@
 #ifndef CORE_CAPABILITY_H
 #define CORE_CAPABILITY_H		1
 
-/* [cut] */
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -170,6 +169,5 @@ t_error			capability_clean(void);
 /*
  * eop
  */
-/* [/cut] */
 
 #endif

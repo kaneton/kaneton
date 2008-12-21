@@ -25,7 +25,6 @@
 
 #include <architecture/architecture.h>
 
-/* [cut k1] */
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -41,13 +40,11 @@ extern t_init*		init;
  */
 
 extern t_ia32_directory	ia32_pd;
-/* [/cut] */
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k1] */
 /*
  * enable paging  by setting  the higher order  bit of  CR0. activates
  * global pages with bit 7 of CR4.
@@ -105,4 +102,3 @@ t_error			ia32_paging_clean(void)
 {
   return ERROR_NONE;
 }
-/* [cut] */

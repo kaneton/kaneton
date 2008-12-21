@@ -9,7 +9,6 @@
  * updated       matthieu bucchianeri   [tue jul 25 23:10:20 2006]
  */
 
-/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -102,4 +101,3 @@ void			ia32_ioapic_enable(void)
 {
   /* XXX */
 }
-/* [/cut] */

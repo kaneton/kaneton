@@ -20,3 +20,7 @@
 -
   operation: bremove
   id: kaneton/core/id/id.c::test
+-
+  operation: fmove
+  src: kaneton/libc
+  dst: /libc

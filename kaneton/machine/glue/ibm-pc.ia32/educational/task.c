@@ -65,7 +65,6 @@ d_task			task_dispatch =
 /*
  * this function clones the dependent part of a task.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_task_clone(i_task			old,
@@ -82,7 +81,6 @@ t_error			glue_task_clone(i_task			old,
 /*
  * this function initialize the dependent structures.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_task_reserve(t_class			class,
@@ -114,10 +112,8 @@ t_error			glue_task_initialize(void)
 {
   TASK_ENTER(task);
 
-  /* [cut] */
   if (ia32_extended_context_init() != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
-  /* [/cut] */
 
   if (ia32_kernel_as_finalize() != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);

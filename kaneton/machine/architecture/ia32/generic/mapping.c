@@ -40,7 +40,6 @@ extern i_as		kasid;
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k1] */
 /*
  * this function directly maps a chunk of memory.
  *
@@ -551,4 +550,3 @@ t_error			ia32_unmap_region(i_as		asid,
 
   return (ERROR_NONE);
 }
-/* [/cut] */

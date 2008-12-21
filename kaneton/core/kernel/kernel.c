@@ -92,14 +92,12 @@ void			kernel_initialize(void)
 
   memset(kernel, 0x0, sizeof(m_kernel));
 
-  /* [cut] */
   // XXX srand(time(0)) // init from the number of ticks for example
 
   kernel->machine = 0; /*rand() %*/ //2^64; // XXX bien sur ca c'est foireux car
 				   // rand ne genere pas sur 64-bit
 
   // XXX kernel->node = ...
-  /* [/cut] */
 
   /*
    * 2)
@@ -212,7 +210,6 @@ void			kernel_initialize(void)
   if (message_initialize() != ERROR_NONE)
     core_error("cannot initialize the message manager\n");
 
-  /* [cut] */
   /*
    * 14)
    */
@@ -221,7 +218,6 @@ void			kernel_initialize(void)
 
   if (capability_initialize() != ERROR_NONE)
     core_error("cannot initialize the capability manager\n");
-  /* [/cut] */
 
   /*
    * 15)
@@ -250,9 +246,7 @@ void			kernel_clean(void)
 {
   scheduler_clean();
 
-  /* [cut] */
   capability_clean();
-  /* [/cut] */
 
   message_clean();
 

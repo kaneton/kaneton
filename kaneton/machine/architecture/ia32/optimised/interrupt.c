@@ -26,7 +26,6 @@
 
 #include <architecture/architecture.h>
 
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- externs ---------------------------------------------------------

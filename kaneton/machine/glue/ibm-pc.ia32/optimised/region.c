@@ -47,7 +47,6 @@ extern i_as		kasid;
 
 d_region		region_dispatch =
   {
-/*                                                                  [cut] k1 */
     NULL,
     NULL,
     NULL,
@@ -58,7 +57,6 @@ d_region		region_dispatch =
     NULL,
     glue_region_initialize,
     glue_region_clean
-/*                                                                 [cut] /k1 */
   };
 
 /*

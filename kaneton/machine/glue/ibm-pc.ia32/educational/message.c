@@ -45,7 +45,6 @@ extern m_message*	message;
 
 d_message		       	message_dispatch =
   {
-    /* [cut k4] */
     NULL,
     NULL,
     NULL,
@@ -60,14 +59,12 @@ d_message		       	message_dispatch =
     glue_message_return_info,
     glue_message_initialize,
     glue_message_clean
-    /* [/cut] */
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k4] */
 /*
  * set return code for a blocked syscall.
  */
@@ -127,4 +124,3 @@ t_error		glue_message_clean(void)
 
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
-/* [/cut] */

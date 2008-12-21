@@ -169,7 +169,6 @@ t_error			as_dump(void)
   AS_LEAVE(as, ERROR_NONE);
 }
 
-/* [cut] */
 /*
  * this function gives an address space from a task to another.
  *
@@ -232,7 +231,6 @@ t_error			as_give(i_task			tskid,
 
   AS_LEAVE(as, ERROR_NONE);
 }
-/* [/cut] */
 
 /*
  * this function translate a physical address to its virtual address.

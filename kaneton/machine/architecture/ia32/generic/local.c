@@ -11,7 +11,6 @@
  * updated       laurent lec   [sat mar 29 11:53:32 2008]
  */
 
-/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -92,4 +91,3 @@ t_uint32	ia32_cpu_local_get(t_ia32_cpu_local	var)
 {
   return (var);
 }
-/* [/cut] */

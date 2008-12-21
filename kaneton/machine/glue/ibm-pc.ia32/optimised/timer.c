@@ -45,7 +45,6 @@ extern m_timer*		timer;
 
 d_timer				timer_dispatch =
   {
-/*								   [cut] k2 */
     NULL,
     NULL,
     NULL,
@@ -55,14 +54,12 @@ d_timer				timer_dispatch =
     NULL,
     glue_timer_initialize,
     NULL,
-/*								   [cut] /k2 */
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-/*								   [cut] k2 */
 
 /*
  * init the timer on the ibm-pc.ia32 machine.
@@ -82,4 +79,3 @@ t_error			glue_timer_initialize(void)
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
-/*								   [cut] /k2 */

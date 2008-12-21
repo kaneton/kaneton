@@ -202,18 +202,6 @@ export-%:
 	$(call env_launch,$(_EXPORT_SCRIPT_),$*,)
 
 #
-# ---------- export new -------------------------------------------------------
-#
-
-exportnew- exportnew:
-	$(call env_launch,"tool/export/export.py",,)
-
-exportnew-%:
-	$(call env_launch,"tool/export/export.py",$*,)
-
-
-
-#
 # ---------- cheat ------------------------------------------------------------
 #
 

@@ -18,7 +18,6 @@
 #ifndef ARCHITECTURE_INTERRUPT_H
 #define ARCHITECTURE_INTERRUPT_H       1
 
-/* [cut k2] */
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -224,7 +223,6 @@ extern t_uint16	ia32_interrupt_ds;
 
 extern t_uint32	ia32_interrupt_pdbr;
 
-/* [/cut] */
 
 /*
  * ---------- prototypes ------------------------------------------------------

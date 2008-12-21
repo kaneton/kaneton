@@ -18,7 +18,6 @@
 #ifndef PLATFORM_TIMER_H
 #define PLATFORM_TIMER_H	1
 
-/* [cut k2] */
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -39,7 +38,6 @@
 
 #define IBMPC_CLOCK_TICK_RATE	1193180
 
-/* [/cut] */
 
 /*
  * ---------- prototypes ------------------------------------------------------

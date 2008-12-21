@@ -14,7 +14,6 @@
 #ifndef	PLATFORM_SERIAL_H
 #define	PLATFORM_SERIAL_H		1
 
-/* [cut] */
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -82,6 +81,5 @@ t_error			serial_init(t_uint32			com_port,
 /*
  * eop
  */
-/* [/cut] */
 
 #endif

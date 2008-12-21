@@ -45,7 +45,6 @@ m_io*			io = NULL;
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut] */
 /*
  * this function grant I/O to a given port for a task.
  */
@@ -193,7 +192,6 @@ t_error			io_write_64(i_task			task,
 
   IO_LEAVE(io, machine_call(io, io_write_64, task, id, data));
 }
-/* [/cut] */
 
 /*
  * this function initializes the io manager.

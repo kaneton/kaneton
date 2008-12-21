@@ -30,7 +30,6 @@
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k2] */
 
 /*
  * initialize the pit 8254.
@@ -73,4 +72,3 @@ t_error			ibmpc_timer_init(void)
   return (ERROR_NONE);
 }
 
-/* [/cut] */

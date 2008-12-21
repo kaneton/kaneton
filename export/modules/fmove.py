@@ -41,6 +41,5 @@ def module_init():
 #
 def module_action(export_dir, arg):
     env.display(env.HEADER_OK, 'action fmove ' + arg['src'] + ' to ' + arg['dst'], env.OPTION_NONE)
-    env.copy(export_dir + '/' + arg['src'], export_dir + '/' + arg['dst'], env.OPTION_NONE)
-    env.remove(export_dir + '/' + arg['src'], env.OPTION_NONE)
+    env.move(export_dir + '/' + arg['src'], export_dir + '/' + arg['dst'], env.OPTION_NONE)
     return 0

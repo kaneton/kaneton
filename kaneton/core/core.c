@@ -79,7 +79,6 @@ void			kaneton(t_init*				bootloader)
    * 1)
    */
 
-  /* [cut] */
 #ifdef O2
   io_cons_init();
 
@@ -89,7 +88,6 @@ void			kaneton(t_init*				bootloader)
   mipsr10k_event_init();
   while(1);
 #endif
-  /* [/cut] */
 
   init = bootloader;
 
@@ -150,7 +148,6 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "kaneton started\n");
 
-  /* [cut] */
 #ifdef IA32_DEPENDENT
   ibmpc_keyboard_init();
 #endif
@@ -185,9 +182,7 @@ void			kaneton(t_init*				bootloader)
 
   kthread = 0;
 #endif
-  /* [/cut] */
 
-  /* [cut] */
 #if TESTSUITE_DEBUG_ENABLE
   extern i_thread kthread;
 
@@ -250,7 +245,6 @@ void			kaneton(t_init*				bootloader)
 #ifdef IA32_DEPENDENT
   CLI();
 #endif
-  /* [/cut] */
 
   cons_msg('#', "kaneton is stopping...\n");
 
@@ -275,7 +269,6 @@ void			kaneton(t_init*				bootloader)
 #endif
 }
 
-/* [cut] */
 /*
  * this function launches the very first service by creating a new
  * task.
@@ -367,4 +360,3 @@ t_error			kaneton_launch(void)
   return (ERROR_NONE);
 }
 
-/* [/cut] */

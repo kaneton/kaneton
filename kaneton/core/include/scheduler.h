@@ -43,7 +43,6 @@
 
 #define SCHEDULER_QUANTUM_INIT		TIMER_MS_PER_TICK
 
-/* [cut k3] */
 /*
  * the number of priority levels for the scheduler.
  */
@@ -168,21 +167,17 @@ typedef struct
   machine_data(o_scheduler);
 }				o_scheduler;
 
-/* [/cut] */
-
 /*
  * scheduler manager
  */
 
 typedef struct
 {
-  /* [cut k3] */
   t_quantum			quantum;
 
   i_thread			idle;
 
   i_set				cpus;
-  /* [/cut] */
 
   machine_data(m_scheduler);
 }				m_scheduler;

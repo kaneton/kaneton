@@ -50,10 +50,6 @@ d_event				event_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-/*
- * [fxcut k2 code: return (ERROR_NONE);]
- */
-
 t_error			glue_event_reserve(i_event		id,
 					   t_type		type,
 					   u_event_handler	handler,
@@ -71,10 +67,6 @@ t_error			glue_event_reserve(i_event		id,
   EVENT_LEAVE(event, ERROR_NONE);
 }
 
-/*
- * [fxcut k2 code: return (ERROR_NONE);]
- */
-
 t_error			glue_event_release(i_event		id)
 {
   EVENT_ENTER(event);
@@ -86,7 +78,6 @@ t_error			glue_event_release(i_event		id)
   EVENT_LEAVE(event, ERROR_NONE);
 }
 
-/* [cut k2] */
 static void		pf_handler(t_id				id,
 				   t_vaddr			data,
 				   t_uint32			error_code)
@@ -112,11 +103,6 @@ static void		pf_handler(t_id				id,
   while (1)
     ;
 }
-/* [/cut] */
-
-/*
- * [fxcut k2 code: return (ERROR_NONE);]
- */
 
 t_error			glue_event_initialize(void)
 {
@@ -134,10 +120,6 @@ t_error			glue_event_initialize(void)
 
   EVENT_LEAVE(event, ERROR_NONE);
 }
-
-/*
- * [fxcut k2 code: return (ERROR_NONE);]
- */
 
 t_error			glue_event_clean(void)
 {

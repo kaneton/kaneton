@@ -34,7 +34,6 @@ extern i_task		ktask;
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut] */
 /*
  * this function launchs the as_give() function.
  */
@@ -1762,12 +1761,10 @@ t_error			interface_notify(t_uint8*		buffer,
 
   return (ERROR_NONE);
 }
-/* [/cut] */
 
 /*
  * this function initialises the interface manager.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			interface_initialize(void)
