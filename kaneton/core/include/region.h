@@ -62,6 +62,7 @@
 
 typedef struct
 {
+  /*							     [block::o_region] */
   i_region			regid;
 
   i_segment			segid;
@@ -72,6 +73,7 @@ typedef struct
   t_opts			opts;
 
   machine_data(o_region);
+  /*							  [endblock::o_region] */
 }				o_region;
 
 /*

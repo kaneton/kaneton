@@ -49,17 +49,21 @@ m_region*		region;
 
 /*
  * this function shows a region.
+ *							 [block::show::comment]
  *
  * steps:
  *
  * 1) get the region object.
  * 2) display the entry.
  * 3) call machine dependent code.
+ *						      [endblock::show::comment]
  */
 
 t_error			region_show(i_as			asid,
 				    i_region			regid)
 {
+  /*							       [block::show] */
+
   o_region*		o;
 
   REGION_ENTER(region);
@@ -92,21 +96,27 @@ t_error			region_show(i_as			asid,
   if (machine_call(region, region_show, asid, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*							    [endblock::show] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*
  * this function dumps the regions.
+ *							 [block::dump::comment]
  *
  * steps:
  *
  * 1) gets the size of the region set.
  * 2) prints the header message.
  * 3) for each entry in the region set, calls the region_show function.
+ *						      [endblock::dump::comment]
  */
 
 t_error			region_dump(i_as		asid)
 {
+  /*							       [block::dump] */
+
   t_state		state;
   o_as*			o;
   o_region*		data;
@@ -149,11 +159,14 @@ t_error			region_dump(i_as		asid)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
 
+  /*							    [endblock::dump] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*
  * this function injects a region into an address space.
+ *						       [block::inject::comment]
  *
  * steps:
  *
@@ -161,12 +174,15 @@ t_error			region_dump(i_as		asid)
  * 2) fill the region id field.
  * 3) add the region to the set.
  * 4) call machdep code.
+ *						    [endblock::inject::comment]
  */
 
 t_error			region_inject(i_as		asid,
 				      o_region*		o,
 				      i_region*		regid)
 {
+  /*							     [block::inject] */
+
   o_as*			as;
 
   REGION_ENTER(region);
@@ -205,6 +221,8 @@ t_error			region_inject(i_as		asid,
   if (machine_call(region, region_inject, asid, o, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*							  [endblock::inject] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
@@ -212,6 +230,7 @@ t_error			region_inject(i_as		asid,
 
 /*
  * this function splits a region in two regions.
+ *							[block::split::comment]
  *
  * steps:
  *
@@ -221,6 +240,7 @@ t_error			region_inject(i_as		asid,
  * 4) build the new region.
  * 5) adjust the old region size.
  * 6) call the dependent code.
+ *						     [endblock::split::comment]
  */
 
 t_error			region_split(i_as			asid,
@@ -229,6 +249,7 @@ t_error			region_split(i_as			asid,
 				     i_region*			left,
 				     i_region*			right)
 {
+  /*							      [block::split] */
   i_region		useless;
   o_region*		reg;
   o_segment*		seg;
@@ -302,11 +323,14 @@ t_error			region_split(i_as			asid,
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*							   [endblock::split] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*
  * this function resizes a region.
+ *						       [block::resize::comment]
  *
  * steps:
  *
@@ -315,6 +339,7 @@ t_error			region_split(i_as			asid,
  * 3) the destination region is the same as the original one.
  * 4) call the machine dependent code.
  * 5) set the new size.
+ *						    [endblock::resize::comment]
  */
 
 t_error			region_resize(i_as			as,
@@ -322,6 +347,8 @@ t_error			region_resize(i_as			as,
 				      t_vsize			size,
 				      i_region*			new)
 {
+  /*							     [block::resize] */
+
   o_region*		reg = NULL;
   o_region*		next_reg;
   o_segment*		seg;
@@ -403,11 +430,14 @@ t_error			region_resize(i_as			as,
 
   reg->size = size;
 
+  /*							  [endblock::resize] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*
  * this function merges two adjacent regions.
+ *						     [block::coalesce::comment]
  *
  * steps:
  *
@@ -417,6 +447,7 @@ t_error			region_resize(i_as			as,
  * 4) update the region size.
  * 5) remove the right region from the address space.
  * 6) call the machine dependent code.
+ *						  [endblock::coalesce::comment]
  */
 
 t_error			region_coalesce(i_as		asid,
@@ -424,6 +455,8 @@ t_error			region_coalesce(i_as		asid,
 					i_region	right,
 					i_region*	regid)
 {
+  /*							   [block::coalesce] */
+
   o_as*			as;
   o_region*		oleft;
   o_region*		oright;
@@ -484,12 +517,15 @@ t_error			region_coalesce(i_as		asid,
 
   *regid = left;
 
+  /*							[endblock::coalesce] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
 
 /*
  * this function reserves a region given the desired segment.
+ *						      [block::reserve::comment]
  *
  * steps:
  *
@@ -497,6 +533,7 @@ t_error			region_coalesce(i_as		asid,
  * 2) find some place.
  * 3) builds the region.
  * 4) calls the machine dependent code.
+ *						   [endblock::reserve::comment]
  */
 
 t_error			region_reserve(i_as			asid,
@@ -507,6 +544,8 @@ t_error			region_reserve(i_as			asid,
 				       t_vsize			size,
 				       i_region*		regid)
 {
+  /*							    [block::reserve] */
+
   o_segment*		segment;
   o_as*			as;
   o_region*		o;
@@ -584,11 +623,14 @@ t_error			region_reserve(i_as			asid,
 		   opts, address, size, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*							 [endblock::reserve] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*
  * this function releases a region.
+ *						      [block::release::comment]
  *
  * steps:
  *
@@ -597,11 +639,14 @@ t_error			region_reserve(i_as			asid,
  * 3) gets the as object from its identifier.
  * 4) removes the region from the address space.
  * 5) removes the region from the region set.
+ *						   [endblock::release::comment]
  */
 
 t_error			region_release(i_as			asid,
 				       i_region			regid)
 {
+  /*							    [block::release] */
+
   o_as*			as;
 
   REGION_ENTER(region);
@@ -627,22 +672,28 @@ t_error			region_release(i_as			asid,
   if (set_remove(as->regions, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*							 [endblock::release] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*
  * this function removes every region that belongs to the address space
  * specified.
+ *							[block::flush::comment]
  *
  * steps:
  *
  * 1) gets the address space object.
  * 2) releases each region in the set.
  * 3) calls the machine dependent code.
+ *						     [endblock::flush::comment]
  */
 
 t_error			region_flush(i_as			asid)
 {
+  /*							      [block::flush] */
+
   o_as*			as;
   t_iterator		it;
   i_region*		obj;
@@ -684,6 +735,8 @@ t_error			region_flush(i_as			asid)
   if (machine_call(region, region_flush, asid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*							   [endblock::flush] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
@@ -695,6 +748,8 @@ t_error			region_get(i_as				asid,
 				   i_region			regid,
 				   o_region**			o)
 {
+  /*								[block::get] */
+
   o_as*			as;
 
   REGION_ENTER(region);
@@ -707,12 +762,15 @@ t_error			region_get(i_as				asid,
   if (set_get(as->regions, regid, (void**)o) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*							     [endblock::get] */
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*
  * this function initializes the region manager from the init
  * variable containing regions to keep safe.
+ *						   [block::initialize::comment]
  *
  * steps:
  *
@@ -720,11 +778,14 @@ t_error			region_get(i_as				asid,
  * 2) initializes the region manager structure fields from the init
  *    structure.
  * 3) calls the machine-dependent code.
+ *						[endblock::initialize::comment]
  */
 
 t_error			region_initialize(t_vaddr		start,
 					  t_vsize		size)
 {
+  /*							 [block::initialize] */
+
   /*
    * 1)
    */
@@ -756,21 +817,27 @@ t_error			region_initialize(t_vaddr		start,
       ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  /*						      [endblock::initialize] */
+
   return (ERROR_NONE);
 }
 
 /*
  * this function just reinitializes the region manager.
+ *							[block::clean::comment]
  *
  * steps:
  *
  * 1) calls the machine-dependent code.
  * 2) releases the region set.
  *
+ *						     [endblock::clean::comment]
  */
 
 t_error			region_clean(void)
 {
+  /*							      [block::clean] */
+
   /*
    * 1)
    */
@@ -783,6 +850,9 @@ t_error			region_clean(void)
    */
 
   free(region);
+
+
+  /*							   [endblock::clean] */
 
   return (ERROR_NONE);
 }

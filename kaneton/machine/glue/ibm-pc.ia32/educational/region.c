@@ -47,6 +47,7 @@ extern i_as		kasid;
 
 d_region		region_dispatch =
   {
+    /*							   [block::dispatch] */
     NULL,
     NULL,
     NULL,
@@ -57,11 +58,15 @@ d_region		region_dispatch =
     NULL,
     glue_region_initialize,
     glue_region_clean
+    /*							[endblock::dispatch] */
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+
+/*							  [block::functions] */
 
 /*
  * this function resizes a region.
@@ -79,7 +84,6 @@ t_error			glue_region_resize(i_as			as,
 /*
  * reserves a region.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_region_reserve(i_as		asid,
@@ -101,7 +105,6 @@ t_error			glue_region_reserve(i_as		asid,
 /*
  * this function  releases a region.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_region_release(i_as		asid,
@@ -123,7 +126,6 @@ t_error			glue_region_release(i_as		asid,
 /*
  * this function just initializes the machine-dependent region manager.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_region_initialize(t_vaddr		start,
@@ -140,7 +142,6 @@ t_error			glue_region_initialize(t_vaddr		start,
 /*
  * this function cleans the machine-dependent region manager.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_region_clean(void)
@@ -152,3 +153,5 @@ t_error			glue_region_clean(void)
 
   REGION_LEAVE(region, ERROR_NONE);
 }
+
+/*						       [endblock::functions] */

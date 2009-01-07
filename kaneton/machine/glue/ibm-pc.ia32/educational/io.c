@@ -70,7 +70,6 @@ d_io		io_dispatch =
 /*
  * this function allow I/O to a port.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_io_grant(i_port			id,
@@ -88,7 +87,6 @@ t_error			glue_io_grant(i_port			id,
 /*
  * this function deny I/O to a port.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_io_deny(i_port			id,
@@ -107,7 +105,6 @@ t_error			glue_io_deny(i_port			id,
 /*
  * this function initialize the I/O manager.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_io_initialize(void)

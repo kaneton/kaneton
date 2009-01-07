@@ -156,8 +156,6 @@ t_error			id_initialize(void)
   return (ERROR_NONE);
 }
 
-/* [block::test] */
-
 /*
  * this function cleans the id manager.
  */
@@ -168,5 +166,3 @@ t_error			id_clean(void)
 
   return (ERROR_NONE);
 }
-
-/* [endblock::test] */

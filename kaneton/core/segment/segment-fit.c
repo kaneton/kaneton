@@ -61,8 +61,6 @@ extern m_segment*	segment;
  * 4) gets the last segment.
  * 5) tries to find space after the last segment.
  *
- * [fxcut code: return (ERROR_UNKNOWN);]
- *
  */
 
 t_error			segment_space(i_as		asid,

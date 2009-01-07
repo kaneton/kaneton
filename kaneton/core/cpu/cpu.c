@@ -144,7 +144,6 @@ t_error			cpu_multiprocessor(void)
 /*
  * this function is used to select a cpu when creating a task.
  *
- * [fxcut k1 code: *cpuid = 0; return (ERROR_NONE);]
  */
 
 t_error			cpu_select(i_cpu*			cpuid)
@@ -172,7 +171,6 @@ t_error			cpu_select(i_cpu*			cpuid)
 /*
  * this function count the execution time of useful code.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			cpu_stats(i_cpu				cpuid,
@@ -197,7 +195,6 @@ t_error			cpu_stats(i_cpu				cpuid,
 /*
  * this function is called for load balancing.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			cpu_balance(void)
@@ -219,7 +216,6 @@ t_error			cpu_balance(void)
  * 3) call the dependent code.
  * 4) restart the task if necessary.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			cpu_migrate(i_task			tskid,

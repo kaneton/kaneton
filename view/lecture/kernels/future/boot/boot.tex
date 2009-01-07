@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kane...iew/lecture/kernels/future/boot/boot.tex
+% file          /Users/francois/k...iew/lecture/kernels/future/boot/boot.tex
 %
 % created       julien quintard   [fri oct 24 17:31:58 2008]
-% updated       julien quintard   [tue oct 28 16:25:35 2008]
+% updated          [mon dec 29 15:59:34 2008]
 %
 
 %
@@ -58,18 +58,153 @@
 \end{frame}
 
 %
+% ---------- text -------------------------------------------------------------
+%
+
+%
 % introduction
 %
 
-\section{Introduction}
-
+\section{Generalities}
+\subsection{CPU startup}
 % 1)
 
 \begin{frame}
-  \frametitle{Overview}
+  \frametitle{CPU startup}
 
-  XXX\cite{TANENBAUM:DOS'95}
+  The CPU contains several registers that defines its behaviour.
+
+  \-
+
+  \begin{itemize}
+  \item Program Counter
+  \item Status registers
+  \item \ldots
+  \end{itemize}
+
+  \-
+
+  These registers must have a known value on reset.
+
+  \-
+
+  The caches must be initialized, there musn't be any random valid entries there.
+
+  \-
+
+  These initializations are purely hardware, a reset pin on the CPU is used to trigger this mechanism.
+
 \end{frame}
+
+\subsection{Firmware}
+
+\begin{frame}
+  \frametitle{Firmware}
+
+  The CPU initializes its PC to a constant address on a reset (Reset vector). There must be some binary code here so that the CPU can execute some consistant instructions.
+
+  \-
+
+  This code is platform specific and is not likely to change. It is therefore in general stored in ROM chips, or in Flash EEPROM chips.
+
+\end{frame}       
+
+\begin{frame}
+  \frametitle{Firmware role}
+
+  In general, the firmware has several purposes :
+  
+  \-
+
+  \begin{itemize}
+  \item Initializing some peripherials
+  \item Installing some services to ease the task of the user programs
+  \item Finding a user program to run
+  \item Loading the user program on the boot device and running it
+  \end{itemize}
+
+\end{frame}
+
+\subsubsection{Peripherials Init}
+
+\begin{frame}
+  \frametitle{Peripherial initialization}
+
+  The peripherials have their own configuration registers. They must also be configured on reset. The firmware will then configure the devices it needs :
+
+  \-
+
+  \begin{itemize}
+  \item Video card
+  \item Keyboard controller
+  \item Hard disk controller
+  \item {<old school>Floppy disk controller</old school>}
+  \item USB Host controller
+  \item Network interface
+  \item \ldots
+  \end{itemize}
+
+  \-
+
+  Since the peripherials might be different from one platform to another, and since the same peripherials can be used in several different ways with a CPU, the firmware contains basic drivers. These are specific to these peripherials and to the way they are used in a specific machine. A firmware will in general belong to one specific platform and won't probably work on another without modifications.
+
+\end{frame}
+
+\subsubsection{Services installation}
+
+\begin{frame}
+  \frametitle{Services installation}
+
+  To ease the task of the user program, the drivers contained in the firmware will be made available to the user program, so that the user program can have a standard way to access the base peripherials of every platform.
+
+  \-
+
+  The firmware will setup the RAM and the CPU so that a user program can call generic subprograms that will handle basic hardware operations.
+
+  \-
+
+  This interface has to be specified for a given architecture, so that a program written for this architecture can run on all compatible platforms.
+
+  \end{frame}
+
+\subsection{Bootloader}
+
+\section{x86 specificities}
+\subsection{CPU startup}
+
+\begin{frame}
+  \frametitle{x86 CPU startup}
+
+  The x86 CPU reset configures the CPU in Real-mode (16 bits, no segmentation, no paging, no privileges). This has been made to keep the compatibility within all the Intel x86 processors family.
+
+  \- 
+
+  The Reset vector value is 0xFFFFFFF0. This physical address is initialized by the motherboard so that it contains a jump to the firmware entry point.
+
+\end{frame}
+
+\subsection{Firmware}
+
+\begin{frame}
+  \frametitle{x86 CPU startup}
+
+  The firmware, on x86 platforms, is called BIOS (Basic Input/Output System). It is stored on a non volatile memory, and mapped by the hardware into the physical address space.
+
+  \-
+
+  The BIOS is a very primitive firmware, since they tried to keep the compatibility with old machines, so it didn't evolve much for years.
+
+  \-
+
+  The BIOS will first call the Video card's own BIOS. On x86, video cards have their own firmware that consists in x86 executable code.
+
+  \-
+
+  After this, the BIOS will initialize several peripherials and setup interrupt handlers to provide services (called BIOS Calls), so the user program can use these peripherials without any specific driver, by putting parameters in some registers and triggering a software interrupt.
+
+\end{frame}
+
+\subsection{Bootloader}
 
 %
 % bibliography

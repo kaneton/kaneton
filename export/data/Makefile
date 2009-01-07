@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [mon sep 15 13:02:33 2008]
+# updated       julien quintard   [fri nov 28 16:25:30 2008]
 #
 
 #
@@ -24,8 +24,7 @@
 .SILENT:
 
 .PHONY:		main initialize clean kaneton clear prototypes		\
-		headers build install info				\
-		play play- record record-
+		headers build install info
 
 #
 # ---------- variables --------------------------------------------------------
@@ -55,10 +54,7 @@ else
   headers								\
   build install								\
   info									\
-  play play-								\
-  record record-							\
-  clean									\
-  play-% record-%:	initialize
+  clean:	initialize
 	$(_MAKE_) -f Makefile $@
 
 endif
@@ -89,9 +85,8 @@ clean:
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		environment configure		\
-					view export test cheat		\
-					library $(PATHS)
+SUBDIRS			:=		environment \
+					$(PATHS)
 
 #
 # ---------- kaneton ----------------------------------------------------------
@@ -138,26 +133,6 @@ build:
 
 install:		main
 	$(call env_launch,$(_MBL_SCRIPT_),install,)
-
-#
-# ---------- play -------------------------------------------------------------
-#
-
-play- play:
-	$(call env_launch,$(_PLAY_SCRIPT_),$*,)
-
-play-%:
-	$(call env_launch,$(_PLAY_SCRIPT_),$*,)
-
-#
-# ---------- record -----------------------------------------------------------
-#
-
-record- record:
-	$(call env_launch,$(_RECORD_SCRIPT_),$*,)
-
-record-%:
-	$(call env_launch,$(_RECORD_SCRIPT_),$*,)
 
 #
 # ---------- information ------------------------------------------------------

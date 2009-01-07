@@ -75,7 +75,6 @@ d_thread			thread_dispatch =
 /*
  * clone the ia32 architecture dependent part of a thread.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_thread_clone(i_task		taskid,
@@ -98,7 +97,6 @@ t_error			glue_thread_clone(i_task		taskid,
 /*
  * reserve a thread on the ia32 architecture
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_thread_reserve(i_task		taskid,
@@ -116,7 +114,6 @@ t_error			glue_thread_reserve(i_task		taskid,
  * this function updates the context with the new stack and
  * instruction pointers.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_thread_load(i_thread		threadid,
@@ -134,7 +131,6 @@ t_error			glue_thread_load(i_thread		threadid,
  * this function reads from the context both the stack and instruction
  * pointers.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_thread_store(i_thread		threadid,
@@ -151,7 +147,6 @@ t_error			glue_thread_store(i_thread		threadid,
 /*
  * this function pushes function arguments onto the stack.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_thread_args(i_thread		threadid,
@@ -169,7 +164,6 @@ t_error			glue_thread_args(i_thread		threadid,
 /*
  * initialize the machdep related structures for the thread manager.
  *
- * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_thread_initialize(void)

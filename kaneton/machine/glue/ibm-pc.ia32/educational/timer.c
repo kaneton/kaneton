@@ -63,7 +63,6 @@ d_timer				timer_dispatch =
 /*
  * init the timer on the ibm-pc.ia32 machine.
  *
- * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_timer_initialize(void)

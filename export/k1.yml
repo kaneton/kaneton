@@ -1,0 +1,122 @@
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::show::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::show
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::dump::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::dump
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::inject::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::inject
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::split::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::split
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::resize::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::resize
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::coalesce::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::coalesce
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::reserve::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::reserve
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::release::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::release
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::flush::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::flush
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::get
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::initialize::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::initialize
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::clean::comment
+
+-
+  operation: bremove
+  id: kaneton/core/region/region.c::clean
+
+-
+  operation: bremove
+  id: kaneton/core/region/region-fit.c::first_fit
+
+-
+  operation: bremove
+  id: kaneton/core/region/region-fit.c::space
+
+-
+  operation: breplace
+  id: kaneton/machine/glue/ibm-pc.ia32/educational/region.c::dispatch
+  data: |
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL
+
+-
+  operation: bremove
+  id: kaneton/machine/glue/ibm-pc.ia32/educational/region.c::functions
+
+-
+  operation: bremove
+  id: kaneton/core/include/region.h::o_region

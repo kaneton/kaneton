@@ -1,0 +1,157 @@
+-
+  operation: freplace
+  src: export/data/Makefile
+  dst: Makefile
+
+-
+  operation: freplace
+  src: export/data/kaneton_Makefile
+  dst: kaneton/Makefile
+
+-
+  operation: fremove
+  path: TODO
+
+-
+  operation: fremove
+  path: cheat
+
+-
+  operation: fremove
+  path: check
+
+-
+  operation: fremove
+  path: configure
+
+-
+  operation: fremove
+  path: drivers
+
+-
+  operation: fremove
+  path: export
+
+-
+  operation: fremove
+  path: history
+
+-
+  operation: fremove
+  path: library
+
+-
+  operation: fremove
+  path: programs
+
+-
+  operation: fremove
+  path: services
+
+-
+  operation: fremove
+  path: test
+
+-
+  operation: fremove
+  path: transcript
+
+-
+  operation: fremove
+  path: view
+
+-
+  operation: fremove
+  path: boot/bootloader/null.null
+
+-
+  operation: fremove
+  path: boot/bootloader/octane.mips64
+
+-
+  operation: fremove
+  path: boot/bootloader/qemu-mips.mips64
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/architecture/mips64
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/architecture/null
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/platform/null
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/platform/octane
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/platform/qemu-mips
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/mips64
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/null
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ultrasparc
+
+-
+  operation: fremove
+  path: kaneton/machine/glue/null.null
+
+-
+  operation: fremove
+  path: kaneton/machine/glue/octane.mips64
+
+-
+  operation: fremove
+  path: kaneton/machine/glue/qemu-mips.mips64
+
+-
+  operation: fremove
+  path: kaneton/machine/platform/null
+
+-
+  operation: fremove
+  path: kaneton/machine/platform/octane
+
+-
+  operation: fremove
+  path: kaneton/machine/platform/qemu-mips
+
+-
+  operation: fremove
+  path: kaneton/machine/platform/sun4u
+
+-
+  operation: fremove
+  path: tool/ctc
+
+-
+  operation: fremove
+  path: tool/forest
+
+-
+  operation: fremove
+  path: tool/interface
+
+-
+  operation: fremove
+  path: tool/mbl/octaneload
+
+-
+  operation: fremove
+  path: tool/mbl/qemu-mips
+
+-
+  operation: fremove
+  path: tool/view
