@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/kaneton/kaneton/core/Makefile
+# file          /home/mycure/kaneton/kaneton/core/Makefile
 #
 # created       julien quintard   [tue jun 26 15:39:11 2007]
-# updated       enguerrand raymond   [mon nov 24 17:25:43 2008]
+# updated       julien quintard   [wed jan  7 22:30:50 2009]
 #
 
 #
@@ -36,7 +36,7 @@ include			../../environment/env.mk
 SUBDIRS			:=		as				\
 					capability			\
 					cpu				\
-					#debug				\
+					debug				\
 					event				\
 					id				\
 					interface			\
@@ -57,7 +57,7 @@ SUBDIRS			:=		as				\
 KANETON_LO		:=		$(_AS_LO_)			\
 					$(_CAPABILITY_LO_)		\
 					$(_CPU_LO_)			\
-					#$(_DEBUG_LO_)			\
+					$(_DEBUG_LO_)			\
 					$(_EVENT_LO_)			\
 					$(_ID_LO_)			\
 					$(_INTERFACE_LO_)		\
