@@ -817,9 +817,10 @@ t_error			region_initialize(t_vaddr		start,
       ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  return (ERROR_NONE);
+
   /*						      [endblock::initialize] */
 
-  return (ERROR_NONE);
 }
 
 /*

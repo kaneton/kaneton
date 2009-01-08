@@ -79,8 +79,10 @@
   id: kaneton/core/region/region.c::initialize::comment
 
 -
-  operation: bremove
+  operation: breplace
   id: kaneton/core/region/region.c::initialize
+  data: |
+     return(ERROR_UNKNOWN); 
 
 -
   operation: bremove
@@ -116,7 +118,3 @@
 -
   operation: bremove
   id: kaneton/machine/glue/ibm-pc.ia32/educational/region.c::functions
-
--
-  operation: bremove
-  id: kaneton/core/include/region.h::o_region
