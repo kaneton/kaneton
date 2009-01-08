@@ -104,11 +104,11 @@ def main():
 
   modules_load()
 
-  g_export_dir = env.temporary(env.OPTION_DIRECTORY) + '/kaneton'
-  env.mkdir(g_export_dir, env.OPTION_NONE)
+  g_export_dir = env.temporary(env.OPTION_DIRECTORY) + "/kaneton"
+
   env.display(env.HEADER_OK, 'copying the source tree to ' + g_export_dir, env.OPTION_NONE)
-  env.launch(env._CP_, "-r " + env._SOURCE_DIR_ + "/* " +
-             g_export_dir, env.OPTION_QUIET)
+
+  env.copy(env._SOURCE_DIR_, g_export_dir, env.OPTION_NONE)
 
   env.display(env.HEADER_OK, 'running export actions', env.OPTION_NONE)
 
