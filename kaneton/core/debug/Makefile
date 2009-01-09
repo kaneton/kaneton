@@ -35,7 +35,9 @@ include			../../../environment/env.mk
 
 DEBUG_C			:=		debug.c				\
 					view.c				\
-					gdb.c
+					gdb.c                           \
+                                        callbacks.c                     \
+                                        shell.c
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 

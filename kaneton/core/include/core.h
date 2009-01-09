@@ -52,6 +52,9 @@
       ;									\
   }
 
+#define array_size(_array_)                                             \
+  (sizeof (_array_) / sizeof (_array_[0]))
+
 /*
  * ---------- includes --------------------------------------------------------
  */
