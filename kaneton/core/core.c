@@ -58,6 +58,24 @@ i_segment		mod;
  * ---------- functions -------------------------------------------------------
  */
 
+static char read_from_serial()
+{
+	uint8_t	c;
+
+	ibmpc_serial_read(SERIAL_PRIMARY, &c, 1);
+	return c;
+}
+
+static void wait_command()
+{
+#ifdef TESTSUITE_REGISTER_TESTS
+	void check_register_tests();
+	check_register_tests();
+	cons_msg('+', "wait for command ...\n");
+#endif
+	debug_shell(read_from_serial);
+}
+
 /*
  * this function simply initializes and cleans the kernel manager.
  *
@@ -110,7 +128,8 @@ void			kaneton(t_init*				bootloader)
   serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1);
   printf_init(serial_put, 0);
 
-  printf("[DEBUG_SERIAL] activated!\n");
+  printf("[DEBUG_SERIAL] activated\r\n");
+
 #endif
 // XXX
 
@@ -150,6 +169,10 @@ void			kaneton(t_init*				bootloader)
 
 #ifdef IA32_DEPENDENT
   ibmpc_keyboard_init();
+#endif
+
+#ifdef DEBUG_SHELL
+  wait_command();
 #endif
 
 #ifdef TESTSUITE_MANUAL_ENABLE

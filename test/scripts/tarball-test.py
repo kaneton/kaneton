@@ -5,9 +5,6 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/check/tarball.py
-#
-#
 
 #
 # ---------- information ------------------------------------------------------
@@ -47,7 +44,7 @@ def			usage():
   stage = None
   type = None
 
-  env.display(env.HEADER_NONE, "usage: tarball.py [filename]",
+  env.display(env.HEADER_NONE, "usage: tarball-tests.py [filename]",
               env.OPTION_NONE)
 
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
@@ -111,21 +108,23 @@ def                     dist():
             break
     fd.close()
 
+    env.mkdir(g_directory + "/check", env.OPTION_NONE)
+
     for e in re.findall('path: ([\w/]+)', content):
-        env.copy(e, g_directory + "/checks/" + e, env.OPTION_RECURSIVE)
+        env.copy(env._CHECK_DIR_ + '/' + e,
+                 g_directory + "/check/" + e, env.OPTION_RECURSIVE)
 
     clean()
 
-    tarball_name = env._EXPORT_ + "-" +                 \
-                   env.stamp(env.OPTION_NONE) + "-check.tar.bz2"
+    tarball_name = "tests.tar.bz2"
     env.cd(g_directory, env.OPTION_NONE)
     
     env.display(env.HEADER_OK,
                 "packing the check files...",
                 env.OPTION_NONE)
 
-    env.pack("checks",
-             env._EXPORT_DIR_ + "/" + tarball_name,
+    env.pack(".",
+             env._TEST_DIR_ + "/" + tarball_name,
              env.OPTION_NONE)
              
     env.display(env.HEADER_OK,

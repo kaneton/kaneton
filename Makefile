@@ -149,6 +149,9 @@ install:		main
 test:
 	$(call env_launch,$(_TEST_DIR_)/Makefile,,)
 
+custom-test:
+	$(call env_launch,$(_TEST_DIR_)/Makefile,custom,)
+
 #
 # ---------- view -------------------------------------------------------------
 #
@@ -214,8 +217,5 @@ cheat-%:
 #
 # ---------- check ------------------------------------------------------------
 #
-
-check-tarball-%:
-	$(call env_launch,$(_CHECK_TARBALL_SCRIPT_),$*,)
 
 endif

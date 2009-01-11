@@ -89,6 +89,8 @@ typedef struct
  *
  *      ../../core/debug/debug.c
  *      ../../core/debug/gdb.c
+ *      ../../core/debug/shell.c
+ *      ../../core/debug/callbacks.c
  */
 
 /*
@@ -132,6 +134,34 @@ int			gdb_status(t_uint8*		buffer);
 t_error		gdb_init(void);
 
 t_error		gdb_clean(void);
+
+
+/*
+ * ../../core/debug/shell.c
+ */
+
+void debug_shell(char   (*i_read)(void));
+
+void debug_shell_echo(const char *arg);
+
+void debug_shell_call(const char *arg);
+
+void debug_shell_config_set(const char *arg, int val);
+
+int debug_shell_config_isset(const char *arg);
+
+void debug_shell_set(const char *arg);
+
+void debug_shell_unset(const char *arg);
+
+
+/*
+ * ../../core/debug/callbacks.c
+ */
+
+void    debug_callbacks_register(const char *name, void (*fn)(void));
+
+void    debug_callbacks_call(const char *name);
 
 
 /*
