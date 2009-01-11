@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kane...ecture/c-preprocessor/c-preprocessor.tex
+% file          /home/texane/proj/present/kaneton/view/lecture/kernels/future/windows-nt/windows-nt.tex
 %
-% created       julien quintard   [wed may 16 18:45:05 2007]
-% updated       julien quintard   [fri may 23 19:20:34 2008]
+% created       fabien le mentec
+% updated       fabien le mentec
 %
 
 %
@@ -505,6 +505,88 @@
 %
 
 \section{IO Manager}
+
+% 1
+
+\begin{frame}
+ \frametitle{Role}
+ \begin{itemize}
+  \item
+    management of communication between drivers
+ \end{itemize}
+\end{frame}
+
+% 2
+
+\begin{frame}
+ \frametitle{Model}
+ \begin{itemize}
+  \item
+    based on IO request packets (IRPs)
+  \item
+    layered model
+  \item
+    fully asynchronous
+ \end{itemize}
+\end{frame}
+
+% 3
+
+\begin{frame}
+ \frametitle{Packet based communication}
+ \begin{itemize}
+  \item
+    once sent to a device driver, an IRP walks the stack down
+  \item
+    at the end of the stack, completion routines are called in order
+  \item
+    not as in a microkernel
+    \begin{itemize}
+      \item
+        every driver is in the same address space (kernel)
+      \item
+        not designed for isolation, but modularity
+    \end{itemize}
+  \item
+    GUI layer does not fit this model
+ \end{itemize}
+\end{frame}
+
+% 4
+
+\begin{frame}
+ \frametitle{Layered model}
+ \begin{itemize}
+   \item
+     device drivers are linked together, forming driver stacks
+   \item
+     a stack models the way IO processing occurs
+   \item
+     nodes can be dynamically added or removed
+     \begin{itemize}
+       \item
+         allow for dynamic stackable filesystems, VPNs, ciphering solutions
+     \end{itemize}
+ \end{itemize}
+\end{frame}
+
+% 5
+
+\begin{frame}
+ \frametitle{Asynchronous model}
+ \begin{itemize}
+   \item
+     the IRP can be pend at any stage of the processing
+   \item
+     asynchronous IOs trivially implemented in the userland
+     \begin{itemize}
+       \item
+         in fact, blocking IOs are implemented on top of AIOs since the very beginning
+     \end{itemize}
+ \end{itemize}
+\end{frame}
+
+
 
 %
 % Programming For Windows NT
