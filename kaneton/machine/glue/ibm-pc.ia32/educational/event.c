@@ -90,7 +90,6 @@ static void		pf_handler(t_id				id,
 
   ASSERT(ia32_get_context(th, &ctx) == ERROR_NONE);
 
-
   SCR2(addr);
 
   printf("error: page fault !\n"
@@ -99,6 +98,8 @@ static void		pf_handler(t_id				id,
          (error_code & 2) ? "write" : "read",
          addr,
          (error_code & 1) ? "a lower DPL" : "the page to be present");
+
+  ia32_print_context(th);
 
   while (1)
     ;

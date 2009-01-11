@@ -785,6 +785,23 @@ t_error			ia32_get_context(i_thread		thread,
   return (ERROR_NONE);
 }
 
+t_error                 ia32_print_context(i_thread             thread)
+{
+    t_ia32_context      ctxt;
+
+    ia32_get_context(thread, &ctxt);
+
+    printf("Context:\n"
+           "eax: 0x%08x   ebx: 0x%08x   ecx: 0x%08x\n"
+           "edx: 0x%08x   esi: 0x%08x   edi: 0x%08x\n"
+           "ebp: 0x%08x   esp: 0x%08x   eip: 0x%08x\n",
+           ctxt.eax, ctxt.ebx, ctxt.ecx,
+           ctxt.edx, ctxt.esi, ctxt.edi,
+           ctxt.ebp, ctxt.orig_esp, ctxt.eip);
+
+    return (ERROR_NONE);
+}
+
 /*
  * this function updates the context of a thread given a set of register
  * values.
