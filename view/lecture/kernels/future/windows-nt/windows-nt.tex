@@ -205,13 +205,13 @@
 
   \begin{itemize}
     \item
-      file (FILE\_OBJECT), device (DEVICE\_OBJECT), driver (DRIVER\_OBJECT) ...
+      file (\code{FILE\_OBJECT}), device (\code{DEVICE\_OBJECT}), driver (\code{DRIVER\_OBJECT}) ...
     \item
-      process (KPROCESS), thread (KTHREAD)
+      process (\code{KPROCESS}), thread (\code{KTHREAD})
     \item
-      synchronization: mutex (KMUTEX), event (KEVENT), callbacks ...
+      synchronization: mutex (\code{KMUTEX}), event (\code{KEVENT}), callbacks ...
     \item
-      even types are objects (OBJECT\_TYPE)
+      even types are objects (\code{OBJECT\_TYPE})
   \end{itemize}
 
 \end{frame}
@@ -227,9 +227,9 @@
 
   \begin{itemize}
     \item
-      a pointer to the object OBJECT\_TYPE
+      a pointer to the object \code{OBJECT\_TYPE}
     \item
-      methods: Dump, Open, Close, Delete, Parse, Security ...
+      methods: \code{Dump}, \code{Open}, \code{Close}, \code{Delete}, \code{Parse}, \code{Security} ...
     \item
       security descriptor pointer
     \item
@@ -287,20 +287,20 @@
 
       \begin{itemize}
         \item
-          FILE\_OBJECT*, DEVICE\_OBJECT*, DRIVER\_OBJECT*...
+          \code{FILE\_OBJECT*}, \code{DEVICE\_OBJECT*}, \code{DRIVER\_OBJECT*}...
         \item
-          ObjectHeader = CONTAINER\_OF(Address, OBJECT\_HEADER, ObjectBody)
+          \code{ObjectHeader = CONTAINER\_OF(Address, OBJECT\_HEADER, ObjectBody)}
         \item
           no lookup, access is done in o(1)
       \end{itemize}
 
     \item
-      userland (Windows Native API) references objects by HANDLE
+      userland (Windows Native API) references objects by \code{HANDLE}
       \begin{itemize}
         \item
-          NtCreateFile, NtCreateProcess, NtClose ...
+          \code{NtCreateFile}, \code{NtCreateProcess}, \code{NtClose} ...
         \item
-          syscall has to find the object given its HANDLE
+          syscall has to find the object given its \code{HANDLE}
       \end{itemize}
   \end{itemize}
 
@@ -313,7 +313,7 @@
   \frametitle{Scalability}
 
   As seen, object referencing is done in O(1) by the kernel. But the
-  userland manipulates HANDLEs, and this handle has to be resolved in
+  userland manipulates \code{HANDLEs}, and this handle has to be resolved in
   the corresponding object at every request (system call).
 
   \begin{itemize}
@@ -335,12 +335,12 @@
 
   \begin{itemize}
     \item
-      the basic function is ObRerefenceObject
+      the basic function is \code{ObRerefenceObject}
     \item
       according to argument passed, perform access control or not
    \item
      generally, objects comming from the kernel are trusted and access control
-     is only done on HANDLEs provided by the userland.
+     is only done on \code{HANDLEs} provided by the userland.
   \end{itemize}
 \end{frame}
 
@@ -354,16 +354,16 @@
       userland process
       \begin{itemize}
         \item
-          CreateFile(``C://foo'');
+          \code{CreateFile(``C://foo'');}
         \item
-          real system call NtCreateFile(``//./C:/foo'');
+          real system call \code{NtCreateFile(``//./C:/foo'');}
       \end{itemize}
 
     \item
       kernel syscall implementation
       \begin{itemize}
         \item
-          ObReferenceObjectByName(``C://foo'')
+          \code{ObReferenceObjectByName(``C://foo'')}
       \end{itemize}
 
     \item
@@ -376,9 +376,9 @@
         \item
           translates ``//./C:/foo'' to ``/GLOBAL??/C:/foo''
         \item
-          gets a DEVICE\_OBJECT on ``/Device/HarddiskVolume0''
+          gets a \code{DEVICE\_OBJECT} on ``/Device/HarddiskVolume0''
         \item
-          sends an IRP\_MJ\_CREATE irp to io manager for the device object,  with ``/foo'' as argument
+          sends an \code{IRP\_MJ\_CREATE} irp to io manager for the device object,  with ``/foo'' as argument
       \end{itemize}
 
     \item
@@ -387,7 +387,7 @@
         \item
           finds the top most driver associated to this device object, (ie. ntfs)
         \item
-          calls the driver dispatch routine for IRP\_MJ\_CREATE
+          calls the driver dispatch routine for \code{IRP\_MJ\_CREATE}
       \end{itemize}
 
   \end{itemize}
