@@ -1,3 +1,11 @@
+as
+event
+map
+message
+region
+sched
+segment
+set
 task
 thread
-sched
+time
