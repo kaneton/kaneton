@@ -56,7 +56,7 @@
  * ../serial.c
  */
 
-void			ibmpc_serial_read(t_uint32		com_port,
+void        		ibmpc_serial_read(t_uint32		com_port,
 					  t_uint8*		data,
 					  t_uint32 		size);
 
