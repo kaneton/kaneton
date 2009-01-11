@@ -8,6 +8,7 @@ REF_PATH = "ref"
 TRC_PATH = "traces"
 TAR_PATH = "tarballs"
 TMP_PATH = "tmp"
+BIOS_PATH = "bios"
 
 import env
 import os, array, sys, time, glob, subprocess, popen2
@@ -29,8 +30,11 @@ bin = TMP_PATH + "/bootsector"
 #
 def	init() :
 
+	devnull = open("/dev/null", 'w+')
+
 	# Init dirs...
-	p = subprocess.Popen(["rm", "-rf", TMP_PATH, TRC_PATH])
+	p = subprocess.Popen(["rm", "-rf", TMP_PATH, TRC_PATH],
+			     stdout=devnull, stderr=devnull)
 	p.wait()
 	os.mkdir(TMP_PATH)
 	os.mkdir(TRC_PATH)
@@ -38,9 +42,11 @@ def	init() :
 	os.mkdir(SRC_PATH)
 
 	# Compile elf
-	p = subprocess.Popen(["make", "-C", "tests/elf_binary", "all"])
+	p = subprocess.Popen(["make", "-C", "tests/elf_binary", "all"],
+			     stdout=devnull, stderr=devnull)
 	p.wait()
 
+	devnull.close()
 	return
 
 
@@ -88,14 +94,18 @@ def	config() :
 #
 def	clean() :
 
-#	env.display(env.HEADER_OK, "cleaning temporary files", env.OPTION_NONE)
+	devnull = open("/dev/null", 'w+')
+
+	env.display(env.HEADER_OK, "cleaning temporary files", env.OPTION_NONE)
 #	p = subprocess.Popen(["rm", "-rf", TMP_PATH])
 #	p.wait()
 
 	# Elf
-	p = subprocess.Popen(["make", "-C", "tests/elf_binary", "clean"])
+	p = subprocess.Popen(["make", "-C", "tests/elf_binary", "clean"],
+			     stdout=devnull, stderr=devnull)
 	p.wait()
 
+	devnull.close()
 
 	return
 
@@ -109,6 +119,7 @@ def	clean() :
 #
 def	check_tarball(out_path, src_path) :
 
+	devnull = open("/dev/null", 'w+')
 	# getting list of exercices in the test folder
  	exercices = glob.glob(TST_PATH + "/ex[0-9]*")
 	exercices.sort()
@@ -128,10 +139,15 @@ def	check_tarball(out_path, src_path) :
 			tst_file = tests[j]
 			out_file = out_path + "/" + ex_name + "/" + tst_name
 
+			env.display(env.HEADER_OK,
+				    "      " + ex_name + " - " + tst_name,
+				    env.OPTION_NONE)
+
 			# compile test file
 			args = "gcc -I " + TST_PATH + " -I " + src_path + \
 			    " -c " + tst_file + " -o " + obj
-			p = subprocess.Popen(args.split(' '))
+			p = subprocess.Popen(args.split(' '),
+					     stdout=devnull, stderr=devnull)
 			p.wait()
 			if p.returncode != 0 :
 				env.display(env.HEADER_ERROR,
@@ -142,7 +158,8 @@ def	check_tarball(out_path, src_path) :
 			# produce a flat binary with previous output object
 			args = "ld " + obj + " -o " + bin + \
 			    " --Ttext 0x7c00 --oformat binary"
-			p = subprocess.Popen(args.split(' '))
+			p = subprocess.Popen(args.split(' '),
+					     stdout=devnull, stderr=devnull)
 			p.wait()
 			if p.returncode != 0 :
 				env.display(env.HEADER_ERROR,
@@ -152,27 +169,40 @@ def	check_tarball(out_path, src_path) :
 
 
 			if ex_name == "ex6" :
-				p = subprocess.Popen(["mv", bin, "bootsector_tmp"])
+				p = subprocess.Popen(["mv",
+						      bin,
+						      "bootsector_tmp"],
+						     stdout=devnull,
+						     stderr=devnull)
 				p.wait()
 
-				p = subprocess.Popen(["bash", "-c", "cat bootsector_tmp tests/elf_binary/LOADME.elf /dev/zero | dd bs=512 count=2880 of=tmp/bootsector"])
+				p = subprocess.Popen(["bash",
+						      "-c",
+						      "cat bootsector_tmp tests/elf_binary/LOADME.elf /dev/zero | dd bs=512 count=2880 of=tmp/bootsector"],
+						     stdout=devnull,
+						     stderr=devnull)
 				p.wait()
 
-				p = subprocess.Popen(["rm", "-f", "bootsector_tmp"])
+				p = subprocess.Popen(["rm",
+						      "-f",
+						      "bootsector_tmp"],
+						     stdout=devnull,
+						     stderr=devnull)
 				p.wait()
 
 
 			# run qemu with the flat binary and
 			# redirect serial port to output file
 #			args = "qemu -fda " + bin + " -no-kqemu -nographic -serial /dev/stdout"
-			args = "qemu -fda " + bin + " -no-kqemu -serial file:"+out_file
-#			output = open(out_file, 'w+')
-#			p = subprocess.Popen(args.split(' '), stdout=output)
-			p = subprocess.Popen(args.split(' '))
+			args = "qemu -fda " + bin + " -no-kqemu -L " + BIOS_PATH + " -nographic -serial file:"+out_file
+			p = subprocess.Popen(args.split(' '),
+					     stdout=devnull, stderr=devnull)
+#			p = subprocess.Popen(args.split(' '))
 
 			time.sleep(1)
 			os.kill(p.pid, 9)
-#			output.close()
+
+	devnull.close()
 
 	return
 
@@ -200,6 +230,7 @@ def	reference() :
 #
 def	students() :
 
+	devnull = open("/dev/null", 'w+')
 	env.display(env.HEADER_OK, "students:", env.OPTION_NONE)
 
 	# getting list of tarballs in the student folder
@@ -209,7 +240,8 @@ def	students() :
 	for i in range(0, len(tarballs)) :
 		# the tarball is untared in the tarball directory
 		args = "tar -xjf " + tarballs[i] + " -C " + SRC_PATH
-		p = subprocess.Popen(args.split(' '))
+		p = subprocess.Popen(args.split(' '),
+				     stdout=devnull, stderr=devnull)
 		p.wait()
 		if p.returncode != 0 :
 			env.display(env.HEADER_ERROR,
@@ -223,8 +255,14 @@ def	students() :
 		env.display(env.HEADER_OK, "  " + login + "...",
 			    env.OPTION_NONE)
 
+		env.display(env.HEADER_OK, "    Running tests...",
+			    env.OPTION_NONE)
+
 		os.mkdir(OUT_PATH + "/" + src)
 		check_tarball(OUT_PATH + "/" + src, SRC_PATH + "/" + src)
+
+		env.display(env.HEADER_OK, "    Comparing outputs...",
+			    env.OPTION_NONE)
 
 		# get trace name
 		traceno = 1
@@ -256,15 +294,28 @@ def	students() :
 				stu = stu_ref + "/" + ex_name + "/" + out[j]
 				args = "diff -u " + ref + " " + stu
 				p = subprocess.Popen(args.split(' '),
-						     stdout=None, stderr=None)
+						     stdout=devnull,
+						     stderr=devnull)
 				p.wait()
 				trace.write("$trace['"+ex_name+"']['"+out[j]
 					    +"'] = "+str(p.returncode)+";\n")
+				if (p.returncode == 0):
+					env.display(env.HEADER_OK,
+						    "      " + ex_name + " - " +
+						    out[j] + " PASS",
+						    env.OPTION_NONE)
+				else:
+					env.display(env.HEADER_ERROR,
+						    "      " + ex_name + " - " +
+						    out[j] + " FAIL",
+						    env.OPTION_NONE)
 		trace.write("?>\n")
 		trace.close()
+		env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
 	env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
+	devnull.close()
 	return
 
 
