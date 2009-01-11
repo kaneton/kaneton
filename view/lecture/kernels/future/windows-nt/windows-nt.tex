@@ -74,7 +74,7 @@
     \item
       The very core concepts did not change since then
     \item
-      The team led by David Cutler, previously working at DEC on VAX/VMS
+      The team led by \name{David Cutler}, previously working at DEC on VAX/VMS
   \end{itemize}
 
 \end{frame}
@@ -98,7 +98,7 @@
     \item
       multithreaded
     \item
-      ``hybrid'' is a marketing term (from Torvald: \textit{http://en.wikipedia.org/wiki/Hybrid\_kernel})
+      hybrid is a marketing term (\name{Linus Torvald}: http://en.wikipedia.org/wiki/Hybrid\_kernel)
   \end{itemize}
 
 \end{frame}
@@ -148,7 +148,7 @@
    \item
      NT has been designed around the object model
    \item
-     everything is object, manipulated by HANDLE in userland
+     everything is object, manipulated by \code{HANDLE} in userland
    \item
      the scheduler acts as a central place for object synchronization
    \item
@@ -169,13 +169,13 @@
 \begin{frame}
   \frametitle{Introduction}
 
- The goal of every operating system is to manage \textbf{resources}, may
+ The goal of every operating system is to manage \term{resources}, may
  they be physical or virtual.
 
   \-
 
  The NT kernel approach is to represent resources as objects managed by a
- subsystem, the \textbf{Object Manager}.
+ subsystem, the \term{Object Manager}.
 
 \end{frame}
 
@@ -221,8 +221,8 @@
 \begin{frame}
   \frametitle{Objects Representation}
 
-  In memory object instances are splitted into a \textbf{header}, common to every
-  object type, and a type specific \textbf{body}. Since the header is common,
+  In memory object instances are splitted into a \term{header}, common to every
+  object type, and a type specific \term{body}. Since the header is common,
   NT can manipulate every resource using the same interface. This header contains:
 
   \begin{itemize}
@@ -242,7 +242,7 @@
 \begin{frame}
   \frametitle{Naming}
 
-  Every system needs to bind a \textbf{resource} to a \textbf{name}. The NT object
+  Every system needs to bind a \term{resource} to a \term{name}. The NT object
   manager uses a tree naming scheme. Conceptually, the manager is thus very similar
   to a filesystem as far as naming is concerned.
 
@@ -250,23 +250,23 @@
     \item
       everything is stored  under a root directory
     \item
-      (unfollowed) convention: one directory per object type (``/Driver/'', ``/Callback/'', ``/Device/'' ...)
+      (unfollowed) convention: one directory per object type (\location{/Driver/}, \location{/Callback/}, \location{/Device/} ...)
     \item
       subdirectory structure is type specific
 
       \begin{itemize}
         \item
-          ``/Device/HarddiskVolume0/Dr0''
+          \location{/Device/HarddiskVolume0/Dr0}
         \item
-          ``/Driver/Ntfs''
+          \location{/Driver/Ntfs}
         \item
-          ``/Callback/PowerState''
+          \location{/Callback/PowerState}
       \end{itemize}
 
     \item
-      special directories: ``/GLOBAL??/'' seen in userland as ``//./'')
+      special directories: \location{/GLOBAL??/} seen in userland as \location{//./})
     \item
-      symbolic links allowed: ``//./C:'' points to ``/Device/HarddiskVolume0''
+      symbolic links allowed: \location{//./C:} points to \location{/Device/HarddiskVolume0}
   \end{itemize}
 
 \end{frame}
@@ -277,9 +277,9 @@
 \begin{frame}
   \frametitle{Referencing}
 
-  Object lifetime relies upon a \textbf{reference count} stored in the object header.
-  Obtaining an object reference can be done by \textbf{address}, \textbf{name} or by
-  \textbf{handle}.
+  Object lifetime relies upon a \term{reference count} stored in the object header.
+  Obtaining an object reference can be done by \term{address}, \term{name} or by
+  \term{handle}.
 
   \begin{itemize}
     \item
@@ -329,7 +329,7 @@
 \begin{frame}
   \frametitle{Access Control}
 
-  Every object has a \textbf{security descriptor}. Security descriptors are covered in
+  Every object has a \term{security descriptor}. Security descriptors are covered in
   another section, but the object manager is the place where security controls actually
   occur.
 
@@ -370,15 +370,13 @@
       object manager
       \begin{itemize}
         \item
-          translates ``//./C:/foo'' to ``/GLOBAL??/C:/foo''
+          translates \location{//./C:/foo} to \location{/GLOBAL??/C:/foo}
         \item
-          resolves the symlink to ``/Device/HarddiskVolume0/foo''
+          resolves the symlink to \location{/Device/HarddiskVolume0/foo}
         \item
-          translates ``//./C:/foo'' to ``/GLOBAL??/C:/foo''
+          gets a \code{DEVICE\_OBJECT} on \location{/Device/HarddiskVolume0}
         \item
-          gets a \code{DEVICE\_OBJECT} on ``/Device/HarddiskVolume0''
-        \item
-          sends an \code{IRP\_MJ\_CREATE} irp to io manager for the device object,  with ``/foo'' as argument
+          sends an \code{IRP\_MJ\_CREATE} irp to io manager for the device object,  with \location{/foo} as argument
       \end{itemize}
 
     \item
@@ -407,7 +405,7 @@
   \frametitle{Security Building Blocks}
 
   NT security model relies 3 building blocks to address the
-  \textbf{identification} and \textbf{permission} issues.
+  \term{identification} and \term{permission} issues.
 
   \begin{itemize}
 
@@ -455,13 +453,13 @@
 
   \begin{itemize}
     \item
-      \code{HANDLE CreateEvent(\textbf{LPSECURITY\_ATTRIBUTES}, ...);}
+      \code{HANDLE CreateEvent(LPSECURITY\_ATTRIBUTES, ...);}
     \item
-      \code{HANDLE CreateMutex(\textbf{LPSECURITY\_ATTRIBUTES}, ...);}
+      \code{HANDLE CreateMutex(LPSECURITY\_ATTRIBUTES, ...);}
     \item
-      \code{HANDLE CreateFile(... , \textbf{LPSECURITY\_ATTRIBUTES}, ...);}
+      \code{HANDLE CreateFile(... , LPSECURITY\_ATTRIBUTES, ...);}
     \item
-      \code{HANDLE CreateThread(\textbf{LPSECURITY\_ATTRIBUTES}, ...);}
+      \code{HANDLE CreateThread(LPSECURITY\_ATTRIBUTES, ...);}
   \end{itemize}
 
 \end{frame}
@@ -487,7 +485,7 @@
 \begin{frame}
   \frametitle{Insecurity of Windows NT}
 
-  While NT core pieces were designed to besecure, \textbf{conceptual} and \textbf{implementation}
+  While NT core pieces were designed to besecure, \term{conceptual} and \term{implementation}
   holes remain, making the whole kernel unsecure. Most of the kernel exploitable bugs come from:
 
   \begin{itemize}
@@ -660,7 +658,7 @@
  Drivers instanciate one object per device
 
  \begin{itemize}
-  \item IoCreateDevice()
+  \item \code{IoCreateDevice()}
   \item device object visible in the object namespace
   \item can be opened from userland to retrieve a handle
  \end{itemize}
@@ -689,7 +687,7 @@
  Thread objects
 
  \begin{itemize}
-  \item KeXxxThread routines
+  \item \code{KeXxxThread} routines
   \item no actual difference between user and system threads
   \item system thread address space is the kernel one
  \end{itemize}
@@ -704,7 +702,7 @@
  Asynchronous Procedure Calls (APCs)
 
  \begin{itemize}
-  \item KeXxxApc routines
+  \item \code{KeXxxApc} routines
   \item used by the kernel to implement the asynchronous io model as seen by the userland
   \item per thread APC queue, routine executed in the thread context
   \item userland thread must be alertable
@@ -721,9 +719,9 @@
  Deferred Procedure Calls (DPCs)
 
  \begin{itemize}
-  \item KeXxxDpc routines
+  \item \code{KeXxxDpc} routines
   \item one DPC queue for the entire system
-  \item executed when the irql drops below DISPATCH\_LEVEL
+  \item executed when the irql drops below \code{DISPATCH\_LEVEL}
  \end{itemize}
 
 \end{frame}
@@ -736,7 +734,7 @@
  Every cpu has an Interrupt Request Level (IRQL)
 
  \begin{itemize}
-  \item KeXxxIrql routines
+  \item \code{KeXxxIrql} routines
   \item hardware level a cpu is operating at
   \item do not confuse with thread priorities
   \item implemented in software on most architecture
@@ -753,10 +751,10 @@
  Common IRQLs (from lower to higher)
 
  \begin{itemize}
-  \item PASSIVE\_LEVEL: user threads, most kernel mode operations
-  \item APC\_LEVEL: APCs, page fault
-  \item DISPATCH\_LEVEL: thread scheduler, DPCs
-  \item DEVICE\_INTERRUPT\_LEVEL(DIRQL): device interrupts
+  \item \code{PASSIVE\_LEVEL}: user threads, most kernel mode operations
+  \item \code{APC\_LEVEL}: APCs, page fault
+  \item \code{DISPATCH\_LEVEL}: thread scheduler, DPCs
+  \item \code{DEVICE\_INTERRUPT\_LEVEL}(DIRQL): device interrupts
  \end{itemize}
 
 \end{frame}
@@ -769,7 +767,7 @@
  Requesting a device object
 
  \begin{itemize}
-  \item IoCallDriver(DeviceObject, Irp);
+  \item \code{IoCallDriver(DeviceObject, Irp);}
  \end{itemize}
 
 \end{frame}
@@ -782,13 +780,13 @@
  Userland communication
 
  \begin{itemize}
-  \item NtDeviceIoControl
+  \item \code{NtDeviceIoControl}
   \item different buffering modes based on the control code
   \item user address validation
   \begin{itemize}
    \item common source for kernel vulnerabilities
-   \item ProbeForRead(), ProbeForWrite()
-   \item \_try / \_except {} blocks
+   \item \code{ProbeForRead()}, \code{ProbeForWrite()}
+   \item \code{\_try / \_except} blocks
   \end{itemize}
  \end{itemize}
 
@@ -802,17 +800,17 @@
  Handling interrupts
 
  \begin{itemize}
-  \item KeXxxInterrupt routines
+  \item \code{KeXxxInterrupt} routines
 
   \item connect to interrupt vector, possibly shared
    \begin{itemize}
-   \item IoConnectInterrupt(IsrRoutine)
+   \item \code{IoConnectInterrupt(IsrRoutine)}
   \end{itemize}
 
   \item bottom / top halves model
   \begin{itemize}
    \item isr performs the small work (read or write registers...)
-   \item isr then schedule a dpc with IoRequestDpc() and returns
+   \item isr then schedule a DPC with \code{IoRequestDpc()} and returns
    \item dpc completes the interrupt processing
   \end{itemize}
 
@@ -828,8 +826,8 @@
  Spinlock
 
  \begin{itemize}
-  \item KeXxxSpinLock routines
-  \item on up systems, irql raised to DISPATCH\_LEVEL
+  \item \code{KeXxxSpinLock} routines
+  \item on up systems, irql raised to \code{DISPATCH\_LEVEL}
   \item on mp systems, same as above plus loop until acquired
  \end{itemize}
 
@@ -847,7 +845,7 @@
   \item costly, but blocking calls allowed while held
   \item use fast mutexes for better performance
   \begin{itemize}
-   \item ExAcquireFastMutex(), ExReleaseFastMutex()
+   \item \code{ExAcquireFastMutex()}, \code{ExReleaseFastMutex()}
    \item atomic test, fast for first owner
    \item event queue otherwise
   \end{itemize}
@@ -863,7 +861,7 @@
  Shared resources
 
  \begin{itemize}
-  \item ExAcquireResourceSharedLite(), ExAcquireResourceExclusiveLite()
+  \item \code{ExAcquireResourceSharedLite()}, \code{ExAcquireResourceExclusiveLite()}
   \item single writer, multiple readers
   \item recurrent pattern in most data structure
  \end{itemize}
@@ -875,13 +873,13 @@
 \begin{frame}
  \frametitle{conccurency and synchronization - 4}
 
- InterlockedXXX routines
+ \code{InterlockedXXX} routines
 
  \begin{itemize}
-  \item InterlockedCompareExchange (compare and swap)
+  \item \code{InterlockedCompareExchange} (compare and swap)
   \item implemented in hardware whenever possible
   \item allow for efficient, non blocking data structure implementation
-  \item ExInterlockedPushEntryList()
+  \item \code{ExInterlockedPushEntryList()}
  \end{itemize}
 
 \end{frame}
@@ -908,14 +906,14 @@
  Kernel virtual memory allocator
 
  \begin{itemize}
-  \item ExAllocatePool functions family
+  \item \code{ExAllocatePool} functions family
 
   \item PagedPool
   \begin{itemize}
    \item may page fault on access
    \item thus may need a disk io to be served
    \item thus may block
-   \item thus must not be accessed at DISPATCH\_LEVEL
+   \item thus must not be accessed at \code{DISPATCH\_LEVEL}
    \item for instance, when a spinlock is held
   \end{itemize}
 
@@ -936,7 +934,7 @@
  Physical memory
 
  \begin{itemize}
-  \item MmAllocatePagesForMdl
+  \item \code{MmAllocatePagesForMdl}
   \item return a descriptor for further virtual access
  \end{itemize}
 
