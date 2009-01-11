@@ -354,16 +354,16 @@
       userland process
       \begin{itemize}
         \item
-          \code{CreateFile(``C://foo'');}
+          \code{CreateFile(C://foo);}
         \item
-          real system call \code{NtCreateFile(``//./C:/foo'');}
+          real system call \code{NtCreateFile(//./C:/foo);}
       \end{itemize}
 
     \item
       kernel syscall implementation
       \begin{itemize}
         \item
-          \code{ObReferenceObjectByName(``C://foo'')}
+          \code{ObReferenceObjectByName(C://foo)}
       \end{itemize}
 
     \item
@@ -455,13 +455,13 @@
 
   \begin{itemize}
     \item
-      HANDLE CreateEvent(\textbf{LPSECURITY\_ATTRIBUTES}, ...);
+      \code{HANDLE CreateEvent(\textbf{LPSECURITY\_ATTRIBUTES}, ...);}
     \item
-      HANDLE CreateMutex(\textbf{LPSECURITY\_ATTRIBUTES}, ...);
+      \code{HANDLE CreateMutex(\textbf{LPSECURITY\_ATTRIBUTES}, ...);}
     \item
-      HANDLE CreateFile(... , \textbf{LPSECURITY\_ATTRIBUTES}, ...);
+      \code{HANDLE CreateFile(... , \textbf{LPSECURITY\_ATTRIBUTES}, ...);}
     \item
-      HANDLE CreateThread(\textbf{LPSECURITY\_ATTRIBUTES}, ...);
+      \code{HANDLE CreateThread(\textbf{LPSECURITY\_ATTRIBUTES}, ...);}
   \end{itemize}
 
 \end{frame}
