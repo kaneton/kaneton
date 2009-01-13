@@ -1,0 +1,301 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...els/future/file-systems/file-systems.tex
+%
+% created       julien quintard   [tue jan 13 05:55:34 2009]
+% updated       julien quintard   [tue jan 13 06:19:27 2009]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{File Systems}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+%
+% introduction
+%
+
+\section{Introduction}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+\end{frame}
+
+o Introduction
+ o What do people need?
+ o What does the hardware provide?
+ o What should the software do to abstract the hardware into something meaningful.
+   - storing and organising data abstracted into files.
+
+%
+% support
+%
+
+\section{Support}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+o Storage
+ - the storage does not matter much but can obviously impact on the file system design.
+   - RAM
+   - Flash
+   - Disk
+   - Network
+   - etc.
+
+%
+% terminology
+%
+
+\section{Terminology}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+o Terminology
+  - Names
+  - Metadata/Superblock
+  - Ino
+  - Inodes
+  - Blocks
+  - Clusters
+  - Groups
+  - Links
+  - etc.
+
+%
+% principles
+%
+
+\section{Principles}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+o Overview
+  - General organisation
+  - VFS abstraction
+
+%
+% file systems
+%
+
+\section{File Systems}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+% centralised
+
+\subsection{Centralised}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+ o CP/M: in 1973
+ o FAT
+  - fat allocation table
+  - blocks chain
+  - limitations: names, file size, file system size
+ o ext2 (FFS/UFS)
+  - groups
+  - inode tables
+  - block tables
+  - fsck
+  - limitations: names, directory size, file system size, consistency(fsck)
+ o ext3
+  - journaling
+ o NTFS
+  - advanced data structures (compared to fat)
+  - reliability(journaling)
+  - ACLs
+  - sparse files
+  - compression
+  - hard/symbolic links
+  - encryption
+ o reiserfs
+  - by (murderer) Hans Reiser
+  - journaling
+  - very efficient for small files (directly included in the directory inode's block)
+  - good performance
+  - b+tree
+ o JFS
+  - from IBM
+  - 64-bit
+  - journaling
+  - b+tree
+  - dynamic inode allocation
+  - compression
+ o XFS
+  - quite similar to JFS
+ o ZFS
+  - from Sun
+  - 128-bit
+  - storage pools
+  - copy-on-write transactional model
+  - etc.
+
+% networked
+
+\subsection{Networked}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+ o NFS
+ o Plan9
+
+%
+% access control
+%
+
+\section{Access Control}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+o Access Control
+ - reference to the Security lecture
+ o Unix permissions
+ o ACL
+ o Advanced modeles?
+
+%
+% advanced features
+%
+
+\section{Advanced Features}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+o Advanced Features
+ o Union mounts
+ o Versioning
+   - Elephant(research)
+ o LVM - Logical Volume Manager
+
+%
+% conclusion
+%
+
+\section{Conclusion}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  XXX
+\end{frame}
+
+o Conclusion
+ o Rethinking the file abstraction -> naming service + object oriented
+   - Spring Name Service
+
+%
+% bibliography
+%
+
+\begin{frame}
+  \frametitle{Bibliography}
+
+  \bibliographystyle{amsplain}
+  \bibliography{\path/bibliography/bibliography}
+\end{frame}
+
+\end{document}
