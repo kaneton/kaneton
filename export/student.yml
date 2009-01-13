@@ -1,4 +1,8 @@
 -
+  operation: import
+  filename: educational
+
+-
   operation: freplace
   src: export/data/Makefile
   dst: Makefile

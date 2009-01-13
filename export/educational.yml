@@ -1,0 +1,270 @@
+-
+  operation: fremove
+  path: boot/bootloader/ibm-pc.ia32/optimised
+
+-
+  operation: fremove
+  path: environment/profile/host/darwin/ia32.ia32/optimised
+
+-
+  operation: fremove
+  path: environment/profile/host/linux/ia32.ia32/optimised
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/architecture/ia32/optimised
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ia32/optimised
+
+-
+  operation: fremove
+  path: kaneton/machine/glue/ibm-pc.ia32/optimised
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/bootloader.c
+  dst: boot/bootloader/ibm-pc.ia32/bootloader.c
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/cons.c
+  dst: boot/bootloader/ibm-pc.ia32/cons.c
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/early.c
+  dst: boot/bootloader/ibm-pc.ia32/early.c
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/entry.S
+  dst: boot/bootloader/ibm-pc.ia32/entry.S
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/init.h
+  dst: boot/bootloader/ibm-pc.ia32/init.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/layout
+  dst: boot/bootloader/ibm-pc.ia32/layout
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/libc.h
+  dst: boot/bootloader/ibm-pc.ia32/libc.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/libia32.h
+  dst: boot/bootloader/ibm-pc.ia32/libia32.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/multiboot.h
+  dst: boot/bootloader/ibm-pc.ia32/multiboot.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/paging.c
+  dst: boot/bootloader/ibm-pc.ia32/paging.c
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/types.h
+  dst: boot/bootloader/ibm-pc.ia32/types.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/bootloader.h
+  dst: boot/bootloader/ibm-pc.ia32/bootloader.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/cons.h
+  dst: boot/bootloader/ibm-pc.ia32/cons.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/elf.h
+  dst: boot/bootloader/ibm-pc.ia32/elf.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/init.c
+  dst: boot/bootloader/ibm-pc.ia32/init.c
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/isa.h
+  dst: boot/bootloader/ibm-pc.ia32/isa.h
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/libc.c
+  dst: boot/bootloader/ibm-pc.ia32/libc.c
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/libia32.c
+  dst: boot/bootloader/ibm-pc.ia32/libia32.c
+
+-
+  operation: fmove
+  src: export/data/boot_bootloader_ibm-pc.ia32_Makefile
+  dst: boot/bootloader/ibm-pc.ia32/Makefile
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/multiboot.S
+  dst: boot/bootloader/ibm-pc.ia32/multiboot.S
+
+-
+  operation: fmove
+  src: boot/bootloader/ibm-pc.ia32/educational/pmode.c
+  dst: boot/bootloader/ibm-pc.ia32/pmode.c
+
+-
+  operation: fremove
+  path: boot/bootloader/ibm-pc.ia32/educational
+
+-
+  operation: fremove
+  path: environment/profile/host/darwin/ia32.ia32/educational
+
+-
+  operation: fremove
+  path: environment/profile/host/linux/ia32.ia32/educational
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/architecture/ia32/educational
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/educational/context.c
+  dst: kaneton/machine/architecture/ia32/context.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/educational/include
+  dst: kaneton/machine/architecture/ia32/include
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/educational/interrupt.c
+  dst: kaneton/machine/architecture/ia32/interrupt.c
+
+-
+  operation: fmove
+  src: export/data/kaneton_machine_architecture_ia32_Makefile
+  dst: kaneton/machine/architecture/ia32/Makefile
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/educational/syscalls.c
+  dst: kaneton/machine/architecture/ia32/syscalls.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/educational/virtual.c
+  dst: kaneton/machine/architecture/ia32/virtual.c
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ia32/educational
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/as.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/as.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/cpu.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/cpu.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/event.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/event.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/include
+  dst: kaneton/machine/glue/ibm-pc.ia32/include
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/io.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/io.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/layout
+  dst: kaneton/machine/glue/ibm-pc.ia32/layout
+
+-
+  operation: fmove
+  src: export/data/kaneton_machine_glue_ibm-pc.ia32_Makefile
+  dst: kaneton/machine/glue/ibm-pc.ia32/Makefile
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/message.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/message.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/region.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/region.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/scheduler.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/scheduler.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/segment.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/segment.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/task.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/task.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/thread.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/thread.c
+
+-
+  operation: fmove
+  src: kaneton/machine/glue/ibm-pc.ia32/educational/timer.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/timer.c
+
+-
+  operation: fremove
+  path: kaneton/machine/glue/ibm-pc.ia32/educational
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ia32/include/generic
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ia32/include/types.h
+
+-
+  operation: symlink
+  name: kaneton/machine/architecture/ia32/include/generic
+  target: ../generic/include
+
+-
+  operation: symlink
+  name: kaneton/machine/architecture/ia32/include/types.h
+  target: ../generic/include/types.h
