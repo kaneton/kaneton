@@ -260,11 +260,160 @@
   path: kaneton/machine/architecture/ia32/include/types.h
 
 -
-  operation: symlink
-  name: kaneton/machine/architecture/ia32/include/generic
-  target: ../generic/include
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/apic.c
+  dst: kaneton/machine/architecture/ia32/apic.c
 
 -
-  operation: symlink
-  name: kaneton/machine/architecture/ia32/include/types.h
-  target: ../generic/include/types.h
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/cpuid.c
+  dst: kaneton/machine/architecture/ia32/cpuid.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/gdt.c
+  dst: kaneton/machine/architecture/ia32/gdt.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/idt.c
+  dst: kaneton/machine/architecture/ia32/idt.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/ipi.c
+  dst: kaneton/machine/architecture/ia32/ipi.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/ldt.c
+  dst: kaneton/machine/architecture/ia32/ldt.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/local.c
+  dst: kaneton/machine/architecture/ia32/local.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/mapping.c
+  dst: kaneton/machine/architecture/ia32/mapping.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/paging.c
+  dst: kaneton/machine/architecture/ia32/paging.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/pd.c
+  dst: kaneton/machine/architecture/ia32/pd.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/pmode.c
+  dst: kaneton/machine/architecture/ia32/pmode.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/pt.c
+  dst: kaneton/machine/architecture/ia32/pt.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/segment.c
+  dst: kaneton/machine/architecture/ia32/segment.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/sse.c
+  dst: kaneton/machine/architecture/ia32/sse.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/tlb.c
+  dst: kaneton/machine/architecture/ia32/tlb.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/tss.c
+  dst: kaneton/machine/architecture/ia32/tss.c
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/apic.h
+  dst: kaneton/machine/architecture/ia32/include/apic.h
+
+-
+  operation: fmove
+  src: export/data/kaneton_machine_architecture_ia32_include_architecture.h
+  dst: kaneton/machine/architecture/ia32/include/architecture.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/asm.h
+  dst: kaneton/machine/architecture/ia32/include/asm.h
+
+-
+  operation: fmove
+  src: export/data/kaneton_machine_architecture_ia32_include_gdt.h
+  dst: kaneton/machine/architecture/ia32/include/gdt.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/idt.h
+  dst: kaneton/machine/architecture/ia32/include/idt.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/ipi.h
+  dst: kaneton/machine/architecture/ia32/include/ipi.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/local.h
+  dst: kaneton/machine/architecture/ia32/include/local.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/mapping.h
+  dst: kaneton/machine/architecture/ia32/include/mapping.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/misc.h
+  dst: kaneton/machine/architecture/ia32/include/misc.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/paging.h
+  dst: kaneton/machine/architecture/ia32/include/paging.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/pmode.h
+  dst: kaneton/machine/architecture/ia32/include/pmode.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/segment.h
+  dst: kaneton/machine/architecture/ia32/include/segment.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/spinlock.h
+  dst: kaneton/machine/architecture/ia32/include/spinlock.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/tss.h
+  dst: kaneton/machine/architecture/ia32/include/tss.h
+
+-
+  operation: fmove
+  src: kaneton/machine/architecture/ia32/generic/include/types.h
+  dst: kaneton/machine/architecture/ia32/include/types.h
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ia32/generic
