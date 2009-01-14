@@ -98,6 +98,50 @@
 
 -
   operation: fremove
+  path: environment/profile/user/elie.bleton
+
+-
+  operation: fremove
+  path: environment/profile/user/enguerrand.raymond
+
+-
+  operation: fremove
+  path: environment/profile/user/francois.goudal
+
+-
+  operation: fremove
+  path: environment/profile/user/jean.guyader
+
+-
+  operation: fremove
+  path: environment/profile/user/julian.pidancet
+
+-
+  operation: fremove
+  path: environment/profile/user/julien.quintard
+
+-
+  operation: fremove
+  path: environment/profile/user/laurent.lec
+
+-
+  operation: fremove
+  path: environment/profile/user/laurent.lec.mips64
+
+-
+  operation: fremove
+  path: environment/profile/user/matthieu.bucchianeri
+
+-
+  operation: fremove
+  path: environment/profile/user/nicolas.grandemange
+
+-
+  operation: fremove
+  path: environment/profile/user/renaud.voltz
+
+-
+  operation: fremove
   path: kaneton/machine/architecture/mips64
 
 -
