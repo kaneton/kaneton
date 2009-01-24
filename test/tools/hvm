@@ -3,7 +3,7 @@
 name=`md5sum kaneton.img | cut -d' ' -f1`
 
 [ ! -r xen.cfg ] && cat > xen.cfg <<EOF
-kernel = "/usr/lib64/xen/boot/hvmloader"
+kernel = "/usr/lib/xen/boot/hvmloader"
 builder='hvm'
 memory = 128
 name = "$name"
@@ -21,8 +21,9 @@ get_pts()
 tmp_out=`mktemp`
 enable_log=0
 
-xm create xen.cfg > /dev/null
+xm create xen.cfg
 pts=`get_pts`
+sleep 1
 
 timeout 10 cat "$pts" 2>/dev/null | while read l
 do

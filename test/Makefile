@@ -62,8 +62,8 @@ $(_USER_)-test.tar.bz2: tests.tar.bz2 kaneton.tar.bz2
 	
 
 custom: $(_USER_)-test.tar.bz2
-	md5sum $(_USER_)-test.tar.bz2
-	scp -P $(_TEST_PORT_) $(_USER_)-test.tar.bz2 $(_TEST_HOST_):custom-tarballs
+	md5 $(_USER_)-test.tar.bz2
+	scp -i id_rsa_kaneton-test $(_USER_)-test.tar.bz2 $(_TEST_HOST_):custom-tarballs
 	rm $(_USER_)-test.tar.bz2
 
 test:
