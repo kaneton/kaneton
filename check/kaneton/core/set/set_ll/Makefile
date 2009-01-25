@@ -39,9 +39,9 @@ SET_LL_LO		:=		set_ll.lo
 
 main:			build run
 
-build:			$(SET_LL_LO)
+build:			libs $(SET_LL_LO)
 
-$(SET_LL_LO):	libs
+$(SET_LL_LO):	$(MODULES)
 	$(call env_remove,$(SET_LL_LO),)
 
 	$(call env_archive,$(SET_LL_LO),$(MODULES),)

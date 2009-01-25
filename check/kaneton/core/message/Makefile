@@ -39,9 +39,9 @@ MESSAGE_LO		:=		message.lo
 
 main:			build run
 
-build:			$(MESSAGE_LO)
+build:			libs $(MESSAGE_LO)
 
-$(MESSAGE_LO):		libs
+$(MESSAGE_LO):		$(MODULES)
 	$(call env_remove,$(MESSAGE_LO),)
 
 	$(call env_archive,$(MESSAGE_LO),$(MODULES),)

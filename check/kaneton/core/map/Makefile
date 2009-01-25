@@ -39,9 +39,9 @@ MAP_LO			:=		map.lo
 
 main:			build run
 
-build:			$(MAP_LO)
+build:			libs $(MAP_LO)
 
-$(MAP_LO):		libs
+$(MAP_LO):		$(MODULES)
 	$(call env_remove,$(MAP_LO),)
 
 	$(call env_archive,$(MAP_LO),$(MODULES),)

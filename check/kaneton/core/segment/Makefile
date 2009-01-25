@@ -39,9 +39,9 @@ SEGMENT_LO		:=		segment.lo
 
 main:			build run
 
-build:			$(SEGMENT_LO)
+build:			libs $(SEGMENT_LO)
 
-$(SEGMENT_LO):		libs
+$(SEGMENT_LO):		$(MODULES)
 	$(call env_remove,$(SEGMENT_LO),)
 
 	$(call env_archive,$(SEGMENT_LO),$(MODULES),)

@@ -39,9 +39,9 @@ REGION_LO		:=		region.lo
 
 main:			build run
 
-build:			$(REGION_LO)
+build:			libs $(REGION_LO)
 
-$(REGION_LO):		libs
+$(REGION_LO):		$(MODULES)
 	$(call env_remove,$(REGION_LO),)
 
 	$(call env_archive,$(REGION_LO),$(MODULES),)

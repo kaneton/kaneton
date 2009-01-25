@@ -39,9 +39,9 @@ SCHED_LO		:=		sched.lo
 
 main:			build run
 
-build:			$(SCHED_LO)
+build:			libs $(SCHED_LO)
 
-$(SCHED_LO):		libs
+$(SCHED_LO):		$(MODULES)
 	$(call env_remove,$(SCHED_LO),)
 
 	$(call env_archive,$(SCHED_LO),$(MODULES),)

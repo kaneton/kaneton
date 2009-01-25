@@ -39,9 +39,9 @@ SET_PIPE_LO		:=		set_stack.lo
 
 main:			build run
 
-build:			$(SET_PIPE_LO)
+build:			libs $(SET_PIPE_LO)
 
-$(SET_PIPE_LO):	libs
+$(SET_PIPE_LO):	$(MODULES)
 	$(call env_remove,$(SET_PIPE_LO),)
 
 	$(call env_archive,$(SET_PIPE_LO),$(MODULES),)

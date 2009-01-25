@@ -39,9 +39,9 @@ EVENT_LO		:=		event.lo
 
 main:			build run
 
-build:			$(EVENT_LO)
+build:			libs $(EVENT_LO)
 
-$(EVENT_LO):		libs
+$(EVENT_LO):		$(MODULES)
 	$(call env_remove,$(EVENT_LO),)
 
 	$(call env_archive,$(EVENT_LO),$(MODULES),)

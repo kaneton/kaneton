@@ -50,20 +50,6 @@ def			usage():
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
 #
-# warning()
-#
-# this function asks the user if everything is right.
-#
-def			warning():
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
-
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter", env.OPTION_NONE)
-
-  env.input(env.OPTION_NONE)
-
-#
 # clean()
 #
 # this function removes unwanted stuff i.e the env._EXPORT_FILTER_
@@ -151,9 +137,6 @@ def			main():
   # a message.
   env.display(env.HEADER_OK, "tarball for %s" % sys.argv[1], env.OPTION_NONE)
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-  # warn the user about what is about to happen.
-  warning()
 
   dist()
 

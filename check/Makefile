@@ -39,13 +39,9 @@ TEST_LO			:=		$(if $(_TESTSUITE_),$(_TEST_LO_),null)
 
 main:			build run
 
-build:			$(TEST_LO)
+build:			libs $(TEST_LO)
 
-# XXX hyper crade mais honnetement jmen branle vu la non conformite de check
-null:
-	touch $(_TEST_LO_)
-
-$(_TEST_LO_):		libs
+$(_TEST_LO_):	        $(MODULES)
 	$(call env_remove,$(_TEST_LO_),)
 
 	$(call env_archive,$(_TEST_LO_),$(MODULES),)

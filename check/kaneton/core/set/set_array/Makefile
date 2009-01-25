@@ -39,9 +39,9 @@ SET_ARRAY_LO		:=		set_array.lo
 
 main:			build run
 
-build:			$(SET_ARRAY_LO)
+build:			libs $(SET_ARRAY_LO)
 
-$(SET_ARRAY_LO):	libs
+$(SET_ARRAY_LO):	$(MODULES)
 	$(call env_remove,$(SET_ARRAY_LO),)
 
 	$(call env_archive,$(SET_ARRAY_LO),$(MODULES),)

@@ -39,9 +39,9 @@ THREAD_LO		:=		thread.lo
 
 main:			build run
 
-build:			$(THREAD_LO)
+build:			libs $(THREAD_LO)
 
-$(THREAD_LO):		libs
+$(THREAD_LO):		$(MODULES)
 	$(call env_remove,$(THREAD_LO),)
 
 	$(call env_archive,$(THREAD_LO),$(MODULES),)

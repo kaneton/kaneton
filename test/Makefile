@@ -30,7 +30,7 @@ include			../environment/env.mk
 # Temporary, don't know where to put this
 # machine dependant .env.conf
 _COMPILE_PY_	:=	compile.py
-_TEST_LO_	:=	test.lo
+#_TEST_LO_	:=	test.lo
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -45,13 +45,13 @@ prototypes:
 
 headers:
 
-tests.tar.bz2:
+test-tarball:
 	$(call env_launch,$(_TEST_TARBALL_SCRIPT_),$(_TESTSUITE_),)
 
 kaneton.tar.bz2: $(_IMAGE_)
 	$(call env_launch,$(_KANETON_TARBALL_SCRIPT_),,)
 
-$(_USER_)-test.tar.bz2: tests.tar.bz2 kaneton.tar.bz2
+$(_USER_)-test.tar.bz2: test-tarball kaneton.tar.bz2
 	-cp $(_TESTSUITE_) $$(basename $(_TESTSUITE_)) 2>/dev/null
 	tar cjf main.tar.bz2 tests.tar.bz2 kaneton.tar.bz2
 	tar cjf $(_USER_)-test.tar.bz2		\
@@ -65,7 +65,6 @@ custom: $(_USER_)-test.tar.bz2
 	md5 $(_USER_)-test.tar.bz2
 	chmod 600 id_rsa_kaneton-test
 	scp -i id_rsa_kaneton-test $(_USER_)-test.tar.bz2 $(_TEST_HOST_):custom-tarballs
-	rm $(_USER_)-test.tar.bz2
 
 test:
 	tools/moulette.rb test.yml  res.yml

@@ -39,9 +39,9 @@ SET_LO			:=		set.lo
 
 main:			build run
 
-build:			$(SET_LO)
+build:			libs $(SET_LO)
 
-$(SET_LO):		libs
+$(SET_LO):		$(MODULES)
 	$(call env_remove,$(SET_LO),)
 
 	$(call env_archive,$(SET_LO),$(MODULES),)

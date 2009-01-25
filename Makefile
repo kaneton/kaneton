@@ -42,6 +42,10 @@ ifeq ($(_SIGNATURE_),kaneton)
 
 PATHS			=		$(dir $(_INPUTS_))
 
+ifneq ($(_TESTSUITE_),)
+PATHS                   := $(_CHECK_DIR_) $(PATHS)
+endif
+
   main:
 	for path in $(PATHS) ; do					\
 	  $(call env_launch,$${path}/Makefile,,)			; \
@@ -139,7 +143,9 @@ headers:
 build:
 	$(call env_launch,$(_MBL_SCRIPT_),build,)
 
-install:		main
+install: main $(_IMAGE_)
+
+$(_IMAGE_):     $(_KANETON_)
 	$(call env_launch,$(_MBL_SCRIPT_),install,)
 
 #
@@ -149,7 +155,7 @@ install:		main
 test:
 	$(call env_launch,$(_TEST_DIR_)/Makefile,,)
 
-custom-test:
+custom-test: install
 	$(call env_launch,$(_TEST_DIR_)/Makefile,custom,)
 
 #

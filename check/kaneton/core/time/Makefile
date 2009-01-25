@@ -39,9 +39,9 @@ TIME_LO			:=		time.lo
 
 main:			build run
 
-build:			$(TIME_LO)
+build:			libs $(TIME_LO)
 
-$(TIME_LO):		libs
+$(TIME_LO):             $(MODULES)
 	$(call env_remove,$(TIME_LO),)
 
 	$(call env_archive,$(TIME_LO),$(MODULES),)

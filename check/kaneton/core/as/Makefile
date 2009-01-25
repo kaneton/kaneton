@@ -39,9 +39,9 @@ AS_LO			:=		as.lo
 
 main:			build run
 
-build:			$(AS_LO)
+build:			libs $(AS_LO)
 
-$(AS_LO):		libs
+$(AS_LO):		$(MODULES)
 	$(call env_remove,$(AS_LO),)
 
 	$(call env_archive,$(AS_LO),$(MODULES),)

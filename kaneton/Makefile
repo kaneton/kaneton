@@ -45,12 +45,16 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_KANETON_)
 
-$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)
+ifneq ($(_TESTSUITE_),)
+INPUTS = $(_TEST_LO_)
+endif
+
+$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_) $(INPUTS)
 	$(call env_remove,$(_KANETON_),)
 
 	$(call env_executable,$(_KANETON_),				\
 			      $(_CORE_LO_) $(_MACHINE_LO_) $(_LIBC_LO_)	\
-			      $(_TEST_LO_),				\
+			      $(INPUTS),				\
 			      $(_KANETON_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 

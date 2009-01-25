@@ -46,9 +46,9 @@ ifeq ($(behaviour),default)
 
 main:			build run
 
-build:			$(CHECK_LO)
+build:			libs $(CHECK_LO)
 
-$(CHECK_LO):		libs
+$(CHECK_LO):		$(MODULES)
 	$(call env_remove,$(CHECK_LO),)
 
 	$(call env_archive,$(CHECK_LO),$(MODULES),)

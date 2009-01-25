@@ -46,9 +46,9 @@ ifeq ($(behaviour),default)
 
 main:			build run
 
-build:			$(KANETON_LO)
+build:			libs $(KANETON_LO)
 
-$(KANETON_LO):		libs
+$(KANETON_LO):		$(MODULES)
 	$(call env_remove,$(KANETON_LO),)
 
 	$(call env_archive,$(KANETON_LO),$(MODULES),)

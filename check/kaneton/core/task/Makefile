@@ -39,9 +39,9 @@ TASK_LO			:=		task.lo
 
 main:			build run
 
-build:			$(TASK_LO)
+build:			libs $(TASK_LO)
 
-$(TASK_LO):		libs
+$(TASK_LO):		$(MODULES)
 	$(call env_remove,$(TASK_LO),)
 
 	$(call env_archive,$(TASK_LO),$(MODULES),)
