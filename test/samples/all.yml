@@ -1,7 +1,8 @@
 ---
-name: Kaneton K1 TestSuite
+name: Kaneton Full TestSuite
 testsuite:
   - name: pre
+    coef: 0
     testsuite:
       - name: untar_main
         filename: ../../main.tar.bz2

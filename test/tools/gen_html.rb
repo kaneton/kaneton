@@ -69,19 +69,27 @@ class Html
 
   def print_result()
     res = get_result(@e)
+    return "" if (@e["coef"] && @e["coef"] == 0)
     if (res == 1)
       return "PASS"
     else
-      return "FAIL (#{res * 100})"
+      return "FAIL (#{(res * 100).round()})"
     end
   end
 
   def get_result(node)
     res = 0
+    i = 0;
+    coef = 1;
+
     if (node["testsuite"]) 
       node["testsuite"].each do |n|
+        coef = 1
+        coef = n["coef"] if (n["coef"])
         res += get_result(n)
+        i = i + coef 
       end
+      res = (res / (i * 1.0));
     else
       case node["result"]
         when /PASS/
@@ -94,7 +102,7 @@ class Html
           return 0
       end
     end
-    coef = 0
+    coef = 1
     coef = node["coef"] if (node["coef"])
     return (res * coef)
   end
@@ -104,6 +112,9 @@ class Html
   end
 
   def get_header_style()
+    if (@e["coef"] && @e["coef"] == 0)
+      return "test-header-none"
+    end
     case print_result()
       when /PASS/
         return "test-header-pass"
