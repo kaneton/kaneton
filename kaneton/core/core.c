@@ -61,8 +61,9 @@ i_segment		mod;
 static char read_from_serial()
 {
 	uint8_t	c;
-
+#ifdef IA32_DEPENDENT
 	ibmpc_serial_read(SERIAL_PRIMARY, &c, 1);
+#endif
 	return c;
 }
 

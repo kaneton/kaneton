@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...ine/glue/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 19:32:08 2008]
-# updated          [wed nov 26 01:22:30 2008]
+# updated       enguerrand raymond   [sun jan 25 15:19:14 2009]
 #
 
 #
@@ -37,7 +37,7 @@ GLUE_C			:=		as.c
 
 GLUE_O			:=		$(GLUE_C:.c=.o)
 
-GLUE_INCLUDE		:=
+GLUE_INCLUDE		:=		$(_GLUE_INCLUDE_DIR_)/region.h
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...ine/glue/qemu-mips.mips64/include/glue.h
+ * file          /home/enguerrand/...ue/qemu-mips.mips64/R4000/include/glue.h
  *
  * created       enguerrand raymond   [sun oct 12 18:47:31 2008]
- * updated       enguerrand raymond   [sun oct 12 19:18:37 2008]
+ * updated       enguerrand raymond   [sun jan 25 14:44:12 2009]
  */
 
 #ifndef GLUE_GLUE_H
@@ -39,5 +39,6 @@
 #include <platform/platform.h>
 
 #include <glue/init.h>
+#include <glue/region.h>
 
 #endif
