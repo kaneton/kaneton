@@ -63,6 +63,7 @@ $(_USER_)-test.tar.bz2: tests.tar.bz2 kaneton.tar.bz2
 
 custom: $(_USER_)-test.tar.bz2
 	md5 $(_USER_)-test.tar.bz2
+	chmod 600 id_rsa_kaneton-test
 	scp -i id_rsa_kaneton-test $(_USER_)-test.tar.bz2 $(_TEST_HOST_):custom-tarballs
 	rm $(_USER_)-test.tar.bz2
 
