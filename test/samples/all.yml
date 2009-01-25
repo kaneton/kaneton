@@ -212,16 +212,16 @@ testsuite:
            path: kaneton/core/as/read_write_01
            exec: tools/hvm
            symbol: check_as_read_write_01
-     - name: event
-       testsuite:
-        - name: as_map_01
-          path: kaneton/core/event/as_map_01
-          exec: tools/hvm
-          symbol: check_event_as_map_01
-        - name: context_01
-          path: kaneton/core/event/context_01
-          exec: tools/hvm
-          symbol: check_event_context_01
+      - name: event
+        testsuite:
+         - name: as_map_01
+           path: kaneton/core/event/as_map_01
+           exec: tools/hvm
+           symbol: check_event_as_map_01
+         - name: context_01
+           path: kaneton/core/event/context_01
+           exec: tools/hvm
+           symbol: check_event_context_01
          - name: context_02
            path: kaneton/core/event/context_02
            exec: tools/hvm
