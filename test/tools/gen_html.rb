@@ -110,7 +110,7 @@ class Html
       when /FAIL/
         return "test-header-fail"
       else
-        return "test-header-fail"
+        return "test-header-none"
     end
   end
 

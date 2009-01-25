@@ -21,7 +21,9 @@ get_pts()
 tmp_out=`mktemp`
 enable_log=0
 
-xm create xen.cfg
+xm list | grep "$name" > /dev/null && xm destroy "$name" > /dev/null
+
+xm create xen.cfg > /dev/null
 pts=`get_pts`
 sleep 1
 
