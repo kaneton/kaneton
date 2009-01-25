@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/...profile/host/linux/ia32.mips64/mips64.mk
+# file          /home/enguerrand/...e/host/linux/ia32.mips64/R4000/mips64.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated          [wed nov 26 15:43:23 2008]
+# updated       enguerrand raymond   [sun jan 25 17:45:06 2009]
 #
 
 #
@@ -61,18 +61,16 @@ ifeq ($(component),kaneton)
 main:			dependencies $(_KANETON_)
 
 $(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)
-	$(call env_remove, $(_KANETON_),)
+	$(call env_remove,$(_KANETON_),)
 
-	$(call env_executable,	$(_KANETON_),			\
-				$(_BOOTLOADER_LO_),		\
-				$(_KANETON_LAYOUT_),		\
-				$(ENV_OPTION_NO_STANDARD))
-#$(_CORE_LO_)
-#$(_MACHINE_LO_) $(_LIBC_LO_) $(_TEST_LO_)
+	$(call env_executable,$(_KANETON_),					\
+			      $(_CORE_LO_) $(_MACHINE_LO_) $(_LIBC_LO_),	\
+			      $(_KANETON_LAYOUT_),				\
+			      $(ENV_OPTION_NO_STANDARD))
 
 clear:
-	for d in $(SUBDIRS) ; do				\
-	  $(call env_launch,$${d}/Makefile,clear,);		\
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
 	$(call env_remove,$(_KANETON_),)
@@ -80,23 +78,20 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	for d in $(SUBDIRS) ; do				\
-	  $(call env_launch,$${d}/Makefile,prototypes,);	\
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
 	done
 
 headers:
-	for d in $(SUBDIRS) ; do				\
-	  $(call env_launch,$${d}/Makefile,headers,);		\
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,headers,)			; \
 	done
 
 dependencies:
-	$(call env_launch,$(_BOOTLOADER_DIR_)/Makefile,,)
-	for d in $(SUBDIRS) ; do				\
-	  $(call env_launch,$${d}/Makefile,,);			\
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
 
-
-behaviour             :=              specific
+behaviour		:=	specific
 
 endif
-

@@ -8,7 +8,7 @@
 # file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       enguerrand raymond   [mon nov 24 23:15:04 2008]
+# updated       enguerrand raymond   [sun jan 25 19:05:37 2009]
 #
 
 #
@@ -24,6 +24,7 @@
 
 import env
 
+import os
 import sys
 import re
 import subprocess
@@ -122,8 +123,11 @@ def			build():
   # warn the user before performing any action.
   warning()
 
+  #Create the mips_bios.bin file
+  os.system("touch " + env._SOURCE_DIR_ + "/mips_bios.bin")
+
   # display some stuff.
-  env.display(env.HEADER_ERROR, "nothing to build for this architecture",
+  env.display(env.HEADER_OK, "mips_bios.bin file created",
               env.OPTION_NONE)
 
 

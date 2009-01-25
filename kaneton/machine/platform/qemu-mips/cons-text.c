@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...n/machine/platform/qemu-mips/cons-text.c
  *
  * created       enguerrand raymond   [sun jan 25 14:27:13 2009]
- * updated       enguerrand raymond   [sun jan 25 14:29:25 2009]
+ * updated       enguerrand raymond   [sun jan 25 18:19:44 2009]
  */
 
 /*
@@ -46,4 +46,10 @@ void			cons_msg(char				indicator,
 				 char*				fmt,
 				 ...)
 {
+
+}
+
+t_error			cons_init(void)
+{
+
 }

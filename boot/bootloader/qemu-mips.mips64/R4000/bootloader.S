@@ -1,5 +1,5 @@
 
-	.extern kaneton
+	.extern start
 	
 start:
 	j loop
@@ -37,4 +37,4 @@ loop:
 	move $28, $0
 	move $29, $0
 	move $30, $0
-	j kaneton
+	j start

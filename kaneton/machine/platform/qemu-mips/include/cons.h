@@ -28,6 +28,8 @@ void			cons_msg(char				indicator,
 				 char*				fmt,
 				 ...);
 
+t_error			cons_init(void);
+
 
 /*
  * eop

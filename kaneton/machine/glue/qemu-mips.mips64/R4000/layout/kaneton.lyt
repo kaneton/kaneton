@@ -1,11 +1,11 @@
 OUTPUT_FORMAT("elf64-littlemips")
-ENTRY(start)
+ENTRY(kaneton)
 
 SECTIONS
 {
-	. = 0xffffffffbfc00000;
+	. = 0x8000000000000000;
 	.text : { *(.text) }
 	.data : { *(.data) *(.rdata) *(.rodata) }
-	_gp = ALIGN(16);
+	_gp = ALIGN(8);
 	.bss : { *(.bss) }
 }
