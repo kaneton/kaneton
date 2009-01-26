@@ -1,0 +1,414 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /Users/francois/k...rnels/future/portability/portability.tex
+%
+% created       julien quintard   [fri oct 24 17:31:58 2008]
+% updated          [sun jan 25 17:06:07 2009]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Portability}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+%
+% introduction
+%
+
+\section{Introduction}
+
+\begin{frame}
+  \frametitle{Introduction}
+
+  Nowadays, a lot of CPU types exist (IA-32, IA-32\_64, IA-64, ARM, ARM, MIPS, PowerPC, SH, m68k, Blackfin, ...) and a lot of machines uses these CPUs, in different ways.
+
+  \-
+
+  The modern operating systems are trying to cope with that, and they tend to support all these platforms, so that a user can use the same system on all the different machines he uses.
+
+  \-
+
+  Portability requires some design in the kernel, to avoid rewriting everything from scratch and maintaining a separate branch for each supported architecture.
+
+  \-
+
+  This course describes what are the differences between machines, and how to design a kernel so it can be ported on several platforms.
+
+\end{frame}
+
+\section{Architecture}
+\subsection{Machine architecture vs CPU architecture}
+
+\begin{frame}
+  \frametitle{Machine architecture vs CPU architecture}
+
+  From a kernel point of view, there are two kind of architectures on a machine :
+
+  \begin{itemize}
+  \item The CPU Architecture
+  \item The Machine/Platform Architecture
+  \end{itemize}
+
+  \-
+
+  The following slides will explain what makes a CPU architecture specific, what makes a Machine architecture specific, and how a kernel can be designed so it can be as easily as possible ported on several machines.  
+
+\end{frame}
+
+\subsection{Microprocessor architecture}
+
+\begin{frame}
+  \frametitle{Microprocessor architecture}
+
+  The architecture of a microprocessor defines :
+
+  \begin{itemize}
+  \item Its intructions set
+  \item Its registers
+  \item Its operational modes/behaviour
+  \end{itemize}
+
+  \-
+
+  It's the interface between the software and the CPU itself, so it's basically what will be documented by the manufacturer in the datasheet of the CPU.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Microprocessor architecture}
+  
+  Several microprocessors models can share the same architecture.
+
+  \-
+
+  IA32 (commonly called x86) processors are manufactured by Intel, AMD, Via, \ldots
+
+  \-
+
+  ARM designs CPU architectures, manufacturers can use these specifications to make their own CPU.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Microprocessor architecture extensions}
+
+  Some manufacturers are expanding one CPU architecture to provide more features, but keeping the main CPU architecture as a base.
+
+  \-
+
+  A code that was made to run on the base architecture will work on all the derivatives architectures, but not the opposite.
+
+  \-
+
+  This approach has been used quite a lot, for example, with IA-32 architecture, and the additional instruction sets (MMX, SSE, SSE2, SSE3 from Intel, 3dNow from AMD)
+
+  \-
+
+  A portable kernel would use these features if they are available, but must provide a software alternative in the other case. That way, the kernel can benefit from the performance gain provided by these instructions set, but doesn't depend on their presence to work.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{CPU Architecture classes}
+
+  Some categories have been made to distinguish families of CPU architectures :
+
+  \begin{itemize}
+  \item RISC Architecture: Reduced Instruction Set Computer - This family of CPU architectures focus on providing a really basic and simple set of instructions, and they try to optimize each instruction as much as possible, so that even something quite complex, that will require several instructions, could be faster than on a CPU where one single instruction would have been used. Such an architecture contains generally a lot of registers, so that programs can work as much as possible on data stored in registers instead of doing several memory accesses.
+
+  \item CISC Architecture: Complex Instruction Set Computer - This family of CPU architectures focus more on providing a consequent set of instructions, so that some usual operations, that could be done using several elementary operations, are available through a single instruction. For that reason, the instruction set of a CISC CPU contains quite a lot of operations. This kind of CPU actually quite often contains a RISC CPU and a Microcode that describes how to do each instruction.
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Microprocessor internal and external architecture}
+
+  All this was about external architecture.
+
+  \-
+
+  There is another kind of Microprocessor architecture : the internal architecture.
+
+  \-
+
+  This is how the CPU is actually achieving the implementation of the interface required by the external architecture.
+
+  \-
+
+  This is the CPU manufacturers core business, it's what makes the difference between two CPUs that have the same external architecture, like Intel vs AMD, or Via on IA-32 processors, since it's what makes the difference in terms of performance, power consumption, \ldots
+
+\end{frame}
+
+\subsection{Machine architecture}
+
+\begin{frame}
+  \frametitle{Machine architecture}
+  
+  A microprocessor can't work alone. It has interfaces to communicate with other components : memory buses, peripherial buses, interrupts lines, \ldots
+
+  \-
+
+  This provides a way to connect the memory required by the microprocessor, and some peripherials that can be useful in a machine, such as time-sources/clocks, user interfaces, data storage, network interfaces, \ldots
+
+  \-
+
+  The firmware provided in a machine is also something specific to the machine architecture since it provides services to interface with the hardware to the operating system.
+
+  \-
+
+  All these things are external components that are connected to the CPU in a specific way. A machine architecture describes the set of components that are used, and how they are connected together.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Machine architecture}
+
+  The IBM-PC architecture is the most known architecture that uses an IA-32 CPU, but there are actually some other. SGI, for instance, made a machine based on an IA-32 CPU, but that was different from the IBM-PC architecture (SGI 320) since it didn't have a BIOS, but a firmware based on their own ARCS firmware they used on their other MIPS machines.
+
+  \-
+
+  More recently, Apple released their own architecture based on IA-32, where they also don't use the BIOS, but instead provide a firmware called EFI.
+
+  \-
+
+  Some other CPU architectures are used in several different machine architectures. For example, the MIPS R5000 CPU was used in the SGI Indy architecture, and in the Sony Playstation 2 architecture. These two machines use the same CPU architecture but they are totally different. An OS written for the SGI Indy won't work on the Sony Playstation 2.
+
+  \-
+
+  Almost every single Windows mobile based smartphone is a different Machine architecture, although they all share the ARM CPU architecture.
+
+\end{frame}
+
+\section{Kernel splitting}
+\subsection{Independant part}
+
+\begin{frame}
+  \frametitle{Independant part}
+
+  The independant part of a kernel consists in all the code that will work on every machine.
+
+  \-
+
+  It basically consists of all the code handling the kernel's concepts. For example, a task is a high level concept that we can find in almost all kernels. A portable kernel will be able to manage tasks on all the architectures it supports. Some of the task management done by the kernel consists in the manipulation of structures describing the task in a generic way. All this code does not rely on machines specific features, the same code will run and work on all machines. This is an independant code.
+
+  \-
+
+  Of course, creating a task will certainly require some specific actions as well. The goal of a portable kernel will be to isolate as much as possible those parts of the code, and to put as much things as possible in the independant part, to avoid redundancy in the dependant part.
+
+  \-
+
+  No ASM code can be found in the independant part since ASM is by definition dependant of the CPU architecture.
+
+\end{frame}
+
+\subsection{Dependant part}
+
+\begin{frame}
+  \frametitle{Dependant part}
+
+  The dependant part of a kernel contains all the code that is aimed to support a specific feature of a CPU, a machine, or a specific hardware.
+
+  \-
+
+  Writing entries in the MMU cache is something specific to the CPU. It's generally done using some assembly instructions that are different from one CPU architecture to another. That's why it's a code that depends on the CPU architecture.
+
+  \-
+
+  Setting up the platform to trigger an interrupt on a regular basis is something specific to the Machine architecture. In general, a machine contains a dedicated hardware, connected to a CPU interrupt line. That's why configuring it is done by some code that depends on the Machine architecture.
+
+  \-
+
+  These examples are not always true : if a CPU embeds its own clock source that can trigger an interrupt internally, then the code to configure it is not Machine architecture dependant, but it is CPU architecture dependant.
+
+\end{frame}
+
+\subsection{Board support package (BSP)}
+
+\begin{frame}
+  \frametitle{Dependant part}
+
+  Some kernels, especially the kernels for embedded operating systems, introduced the Board Support Package (BSP) concept.
+  
+  \-
+
+  For example, Windows CE, Microsoft's kernel for embedded systems, is working on 3 CPU architectures : IA-32, ARM9, SuperH, but it runs on a lot of devices with a lot of various hardware devices. Each device has its own machine architecture, and its own set of peripherials. For that reason, each platform requires some specific code to make the kernel to work on it.
+
+\end{frame}
+
+
+\section{Kaneton portability}
+
+\begin{frame}
+  \frametitle{Kaneton Portability}
+
+  The Kaneton microkernel is designed to be portable. For that reason, the code is splitted in several sections :
+
+  \begin{itemize}
+  \item Core
+  \item Machine
+  \begin{itemize}
+  \item Architecture
+  \item Platform
+  \item Glue
+  \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Core}
+
+\begin{frame}
+  \frametitle{Kaneton Core}
+
+  In the Kaneton design, the machine independant code is called Core.
+
+  \-
+
+  This section of code contains all the kernel code which is not specific to a machine. It contains the high level functions and code that are used for all the kernel internal operations, such as :
+  \begin{itemize}
+  \item Allocate physical memory
+  \item Allocate and map virtual memory
+  \item Create a new task
+  \item Send a message between two tasks
+  \item \ldots
+  \end{itemize}
+
+  Most of these operations don't require to do any CPU specific operations, but some of them do. For example, mapping virtual memory to physical memory requires to configure the MMU through the caches, this is something different for each CPU. For that reason, every function in the Core module of Kaneton will make a call to a potential machine dependant code.
+
+  \-
+  
+  This is achieved through a macro called machine\_call.
+
+\end{frame}
+
+\subsection{Machine}
+\subsubsection{Architecture}
+
+\begin{frame}
+  \frametitle{Kaneton Architecture}
+  
+  This section of the Kaneton code contains all the code specific to the CPU architecture.
+
+  \-
+
+  This is mainly the code that will require to use specific assembly calls (inline assembly) or the code that works on data structures imposed by the CPU.
+
+\end{frame}
+
+\subsubsection{Platform}
+
+\begin{frame}
+  \frametitle{Kaneton Platform}
+  
+  This section of the Kaneton code contains all the code specific to the machine architecture.
+
+  \-
+
+  This is the code that will handle some peripherials attached to the CPU in a specific architecture, and that are used by the kernel itself.
+
+\end{frame}
+
+\subsubsection{Glue}
+
+\begin{frame}
+  \frametitle{Kaneton Glue}
+
+  In the Kaneton design, the independant code (Core) calls the dependant code.
+
+  \-
+
+  To make it possible, the dependant code must have a generic interface, so that the Core code doesn't contain specifically any call to a function specific to an architecture.
+
+  \-
+
+  In Kaneton, the independant code and the dependant code functions share exactly the same prototypes, so that the Core code can call the Machine code in a generic way.
+
+  \-
+
+  For that reason, a wrapper was required, to implement the correct interface, that would then call the Architecture and the Machine code accordingly. This is the role of Glue.
+
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  In order to make a portable kernel, one must well distinguish what code can be reused for every machine, and what code is specific to the machine he is working on.
+
+  \-
+
+  This problem has now been addressed in most of the modern operating systems kernels (Linux, BSD, Windows CE, \ldots) with more or less style, but it's generally much better when a kernel has been designed to be portable from the beginning.
+
+  \-
+
+  This portability is very important nowadays, since the hardware is evolving fast. Making a new kernel without thinking about portability is a bad strategy since it makes it dependant on the durability of the architecture it is being made for.
+
+  
+\end{frame}
+
+
+%
+% bibliography
+%
+
+\begin{frame}[allowframebreaks]
+  \frametitle{Bibliography}
+
+  \bibliographystyle{amsplain}
+  \bibliography{\path/bibliography/bibliography}
+\end{frame}
+
+\end{document}

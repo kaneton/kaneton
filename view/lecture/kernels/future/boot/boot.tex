@@ -8,7 +8,7 @@
 % file          /Users/francois/k...iew/lecture/kernels/future/boot/boot.tex
 %
 % created       julien quintard   [fri oct 24 17:31:58 2008]
-% updated          [mon dec 29 15:59:34 2008]
+% updated          [mon jan 26 21:16:13 2009]
 %
 
 %
@@ -64,6 +64,23 @@
 %
 % introduction
 %
+
+\section{Introduction}
+
+\begin{frame}
+  \frametitle{Introduction}
+
+  A machine will not start an operating system automagically. There are a few steps before a kernel starts.
+
+  \-
+
+  This process is called the bootstrap. It is very specific to the machine, each architecture has its own bootstrap method.
+
+  \-
+
+  Through the bootstrap, the machine will provide some basic features that will be used to load the kernel, or by the kernel itself to drive the machine.
+
+\end{frame}
 
 \section{Generalities}
 \subsection{CPU startup}
@@ -165,9 +182,210 @@
 
   This interface has to be specified for a given architecture, so that a program written for this architecture can run on all compatible platforms.
 
-  \end{frame}
+\end{frame}
+
+\subsubsection{Examples}
+\begin{frame}
+  \frametitle{Openboot}
+
+  OpenBoot (or OpenFirmware) is the firmware embedded in all Sun's
+  SPARC based stations.
+
+  \-
+
+  OpenBoot offers many services necessary to the
+  bootup phase. For example:
+
+  \begin{itemize}
+  \item
+    Device-tree exploration (\emph{sibling}, \emph{child},
+    \emph{getprop}\ldots)
+  \item
+    Device I/O (\emph{open}, \emph{read}, \emph{write}\ldots)
+  \item
+    MMU operations (\emph{map\_phys}, \emph{unmap\_phys}, \emph{itlb\_load},
+    \emph{dtlb\_load}\ldots)
+  \item
+    Environment (boot path, boot device, boot arguments\ldots)
+  \item
+    Time (\emph{milliseconds})
+  \end{itemize}
+
+  \-
+
+  All these functionnalities make OpenBoot a tiny OS. In addition,
+  OpenBoot is able to run bytecode scripts (in Forth language), to
+  load ELF files from disk or network (TFTP) and to debug programs
+  (disassembly, registers dump, calls trace\ldots).
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{OpenBoot service call}
+
+  Calling OpenBoot is as simple as jumping to the so-called
+  \emph{firmware entry-point} (given in register \%g7 at boot time)
+  with a structure in first argument (register \%o0). This structure is
+  as follow:
+
+  \begin{itemize}
+  \item
+    A pointer to a string indicating the name of the function to call.
+  \item
+    The number of arguments \emph{N}
+  \item
+    The number of return values \emph{M}
+  \item
+    \emph{N} 64-bit arguments
+  \item
+    \emph{M} 64-bit slots for results
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{ARCS}
+
+  ARCS is the firmware used in all SGI MIPS-based stations. ARCS has
+  also been used on a few Pentium-based stations, in replacement of
+  the traditional BIOS.
+
+  \-
+
+  ARCS offers:
+
+  \begin{itemize}
+  \item
+    Device-tree functions (\emph{GetPeer}, \emph{GetChild},
+    \emph{GetComponent}\ldots)
+  \item
+    Device I/O (\emph{open}, \emph{read}, \emph{write}\ldots)
+  \item
+    Filesystem supports, FAT and ISO9660 (\emph{mount}, \emph{open},
+    \emph{read}\ldots)
+  \item
+    Environment variables
+  \item
+    Time (\emph{GetTime})
+  \end{itemize}
+
+  \-
+
+  ARCS is also able to load ELF files, from disk or network.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{ARCS System Parameter Block}
+
+  The System Parameter Block (SPB) is a structure filled by ARCS before giving the 
+  hand to the boot program. The block contains notably the Firmware Vector, which is 
+  an array of function pointers. Calling ARCS is as simple as calling the wanted function 
+  from this vector. 
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{(U)EFI}
+
+  EFI (Extensible Firmware Interface) is a firmware specification made by Intel, and used in Itanium (IA-64) platforms. Apple also uses EFI in their new generation of Intel IA-32 machines.
+
+  \-
+
+  EFI has been designed to replace the BIOS that was far too limited, especially for High-end server platforms.
+
+  \-
+
+  An EFI firmware is mainly written in C while the BIOSes were written in ASM, and it uses 32-bit code where a BIOS used 16-bit code.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{(U)EFI}
+
+  EFI is still not included in standard PCs since it would break the backwards compatibility, which is a huge advantage of this architecture, compared to all others.
+
+  \-
+
+  EFI is extensible, it is composed of modules that can be loaded, and user can easily add or remove modules. The EFI standard describes a protocol to share services between the modules.
+  
+  \-
+
+  An EFI firmware provides some advanced runtime services to the operating system, such as time, environment, device drivers for video, disk, network, filesystems, \ldots that can be called through a simple C function call from the operating system.
+
+  \-
+
+  EFI also provides a boot manager, that allow to select the boot device and directly start an operating system (the bootloader in that case is an EFI module), and a shell that allows to perform some basic actions.
+
+\end{frame}
 
 \subsection{Bootloader}
+
+\begin{frame}
+  \frametitle{Goal of the bootloader}
+
+  A kernel, in order to start, generally requires a specific setup of the machine.
+
+  \-
+
+  It cannot rely on the firmware for that.
+
+  \-
+
+  A specific small program called bootloader will prepare the CPU for the kernel, find and load the kernel, and finally transfer the execution to the kernel.
+
+  \-
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Loading the kernel}
+
+  The first task of the bootloader is to locate the kernel image. There are several possibilities: the kernel might be stored as raw data on some special blocks of a disk, it can also be stored as a file, on a filesystem, it could even be available on the network, through a TFTP server. For that reason, bootloaders may need to have some filesystem drivers, or network interface drivers with a small IP stack.
+
+  \-
+
+  Once the kernel has been located, it must be loaded in memory. The kernel image can take several forms. It can be an ELF binary, it can be a Windows PE file, it can be a block of raw data to load at a specific address, it can be one of the previous compressed with gzip, \ldots The bootloader must know the file format of the kernel it loads.
+
+  \-
+  
+  When the kernel is loaded, the bootloader must jump on its entry point. So the entry point must be specified, either as something constant, or through an address provided in the kernel image.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Providing system information to the kernel}
+
+  To boot correctly, a kernel may need to get some information from the system or from the user:
+
+  \begin{itemize}
+  \item RAM size, boot device
+  \item boot options (graphic mode, root partition \ldots)
+  \item modules information
+  \end{itemize}
+
+  \-
+
+  The bootloader can pass information through to ways:
+
+  \begin{itemize}
+  \item the microprocessor registers
+  \item an info structure written in memory. Most often, the structure base address is stored in a register. In some specific cases, this structure can also be found with a magic number.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bootloader specificities}
+
+  In general, each kernel has its own dedicated bootloader, for each architecture it supports. For example : Lilo for Linux on x86, Silo for Linux on Sparc, \ldots.
+
+  \-
+
+  Some attempts have been made to make a standard. Grub for instance proposes the Multi-Boot Loader format. So Grub can boot every kernel that complies with the Multi-Boot Loader standard, like Linux, and FreeBSD for example.
+
+\end{frame}
 
 \section{x86 specificities}
 \subsection{CPU startup}
@@ -186,7 +404,7 @@
 \subsection{Firmware}
 
 \begin{frame}
-  \frametitle{x86 CPU startup}
+  \frametitle{The BIOS}
 
   The firmware, on x86 platforms, is called BIOS (Basic Input/Output System). It is stored on a non volatile memory, and mapped by the hardware into the physical address space.
 
@@ -204,7 +422,133 @@
 
 \end{frame}
 
+\begin{frame}
+  \frametitle{The BIOS calls}
+
+  The BIOS offers services to the bootloader/operating system. It setups some routines through a software interrupt interface.
+
+  \-
+
+  Several interrupt handlers are installed by the BIOS, each one concerns a type of operation, such as video, disk, floppy, \ldots.
+
+  \-
+
+  The actual operation is specified through the AX register, and optional parameters are passed through the other general purpose registers.
+
+  \-
+
+  Since the BIOS is 16-bit code, these BIOS services can only be called when the CPU is running in Real-mode. Since all modern operating systems are now running in protected mode, they can't use these BIOS calls. The VM86 mode allows to run 16-bit tasks in protected mode and is sometimes used to call BIOS calls from the protected mode, but in general, the kernels have their own device drivers and communicate directly with all the peripherials. So the BIOS calls are not really helpful to the kernels, and they are in general only used in the early boot stage, by the bootloader, before it switches to protected mode.
+
+\end{frame}
+
 \subsection{Bootloader}
+
+\begin{frame}
+  \frametitle{Boot sector}
+
+  The BIOS, on the ia32 architecture, provides a way to boot from several devices, such as floppy disks or hard disks.
+
+  \-
+
+  1st sector of the devices (1 sector = 512 bytes)
+
+  \-
+
+  The bootloader will install itself in this sector.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multi-stage bootloader}
+
+  512 bytes is very small.
+
+  \-
+
+  Boot sector code = stage1.
+
+  \-
+
+  stage2+ are stored somewhere else
+
+  \-
+
+  stage1 role is to load stage2 (stage2 can be much bigger)
+
+  \-
+
+  Grub : 3 stages
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Multiboot standard}
+
+  The Multiboot standard specifies an interface between a boot loader and a operating system.
+
+  \-
+
+  It aims at unifying kernel boot procedures in order to easily allow multiple OSes to coexist on the same machine.
+
+  \-
+
+  Multiboot specifications impose :
+
+  \begin{itemize}
+  \item an OS image format (to know how to load it and how to jump on it)
+  \item Machine state
+  \item Boot information format (structure of data passed to the kernel)
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiboot header}
+  kernel image must :
+
+  \begin{itemize}
+  \item be an ordinary 32-bit executable file in the standard format for that particular operating system
+  \item contain an additional header called Multiboot header. The Multiboot header must be contained completely within the first 8192 bytes of the OS image, and must be longword (32-bit) aligned.
+  \end{itemize}
+
+  \begin{tabular}{|l|l|l|l|l|}
+  \hline
+  Offset & Type & Field & Description & NameNote\\\hline\hline
+  0 & u32 & magic & multiboot magic & required\\\hline
+  4 & u32 & flags & flags & required\\\hline
+  8 & u32 & checksum & checksum & required\\\hline
+  12 & u32 & header\_addr & multiboot header addr & if flags[16] is set\\\hline
+  16 & u32 & load\_addr & .text physical addr & if flags[16] is set\\\hline
+  20 & u32 & load\_end\_addr & .data end & if flags[16] is set\\\hline
+  24 & u32 & bss\_end\_addr & .bss physical end & if flags[16] is set\\\hline
+  28 & u32 & entry\_addr & entry point physical addr & if flags[16] is set\\\hline
+  32 & u32 & mode\_type  & graphic mode & if flags[2] is set\\\hline
+  36 & u32 & width & number of columns & if flags[2] is set\\\hline
+  40 & u32 & height & number of lines & if flags[2] is set\\\hline
+  44 & u32 & depth & depth & if flags[2] is set\\\hline
+  \end{tabular}
+
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+  \frametitle{Conclusion}
+
+  There is no standard bootstrap, each architecture has its own standard, that provides a way of setting up the machine, and providing services to the kernel.
+
+  \-
+
+  A bootloader is always required to fill the hole between the machine firmware and the operating system kernel.
+
+  \-
+
+  A bootloader is a quite small piece of code, but it is mandatory. A kernel cannot start without a working bootloader.
+
+  \-
+
+  To avoid the need of writing a new bootloader each time people is making a new kernel, some standards have been setup, but they are still not used by all the main operating systems.
+
+\end{frame}
 
 %
 % bibliography
