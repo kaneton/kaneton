@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...w/talk/presentations/kaneton/kaneton.tex
 %
 % created       julien quintard   [mon may 14 21:02:29 2007]
-% updated       julien quintard   [mon jan 26 20:55:01 2009]
+% updated       julien quintard   [thu jan 29 18:14:34 2009]
 %
 
 %
@@ -169,7 +169,7 @@
 
   \-
 
-  In conclusion, keep in mind that the project exist because of people
+  In conclusion, keep in mind that the project exist only because of people
   willing to pass their knowledge to students.
 \end{frame}
 
@@ -191,6 +191,12 @@
   Indeed, in \name{kaneton}, students are asked to implement a feature, say,
   providing memory management. Thus, students are free, in a certain way,
   to implement such a feature the way they want.
+
+  \-
+
+  Since the testing usually consists in verifying that the kernel is able
+  to provide the functionality, students should be, most of the time, able
+  to implement whatever algorithms \etc{} we wish.
 \end{frame}
 
 % 6)
@@ -211,7 +217,9 @@
     \item
       \name{Fabien Le-Mentec};
     \item
-      \name{Frank Curo}; and
+      \name{Frank Curo};
+    \item
+      \name{Anthony Guduszeit}; and
     \item
       \name{Julien Quintard}.
   \end{itemize}
@@ -236,27 +244,78 @@
   period have been reduced so that students can focus on \name{kaneton}.
 \end{frame}
 
-XXX dire que l'on fournit une tarball avec build system, systeme de test
-  etc.
-XXX outils: ainsi que le responsable de l'outil
+% 8)
+
+\begin{frame}
+  \frametitle{opaak}
+
+  The kaneton project is part of the opaak trilogy which consists
+  of \term{kastor}, \term{kaneton} and \term{kayou}.
+
+  \-
+
+  While kayou is a distributed operating system built upon the kaneton
+  microkernel; kastor is a standalone project that you may have heard of
+  or even undertook.
+
+  \-
+
+  Note however that also some concepts studied through kastor will be
+  discussed in kaneton, the kaneton educational project is far more
+  complicated as it goes deeper in hardware and software problematics.
+\end{frame}
 
 %
-% kaneton
+% design
 %
 
-\section{kaneton}
+\section{Design}
 
-XXX decrire le kernel: design, oriente objet, microkernel, pour distributed,
-  portability in mind, portability system, C and asm, organised into managers
-  and objects
+% 1)
 
-%
-% courses
-%
+\begin{frame}
+  \frametitle{Overview}
 
-\section{Courses}
+  The kaneton kernel is very different from the kernels you might be
+  familiar with, especially the well-known \name{Windows}, \name{Linux},
+  \name{BSD} and so forth.
+\end{frame}
 
-XXX decrire les cours avec les profs et les notions abordees
+% 2)
+
+\begin{frame}
+  \frametitle{Microkernel}
+
+  First, kaneton is a microkernel, making it modular from the design
+  perspective as well as providing properties such as security.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Distributed Computing}
+
+  kaneton has been designed from the ground up for providing the operarting
+  system advanced distributed computing features.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Portability}
+
+  kaneton has been designed with portability in mind, especially through
+  a specific portability system that perfectly fits the kernel design.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Organisation}
+
+  Besides being a microkernel, kaneton is well organised in the inside,
+  splitting functionalites into objects and managers.
+\end{frame}
 
 %
 % stages
@@ -264,12 +323,199 @@ XXX decrire les cours avec les profs et les notions abordees
 
 \section{Stages}
 
-XXX tres different de kastor puisque ici on a memoire virtuelle, multitasking
-  etc.
-XXX lister les differentes etapes
-XXX comment on evalue
-XXX comment ils peuvent tester
-XXX pour chaque tranche: duree, prof en charge
+% 1)
+
+\begin{frame}
+  \frametitle{k0}
+
+  The first project, named \term{k0}, consists for students to learn
+  about low-level programming.
+
+  \-
+
+  This project comes with a lecture regarding the boot system as well
+  as practical sessions.
+
+  \-
+
+  \name{Francois Goudal} will be in charge of this stage which will last for
+  a week.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{k1}
+
+  \term{k1} consists for students to provide the kaneton microkernel a
+  memory management unit so that applications as well as the kernel itself
+  can reserve, share \etc{} memory.
+
+  \-
+
+  During this stage, a lecture on general kernel principles, a lecture on
+  portability as well as lectures on memory management will be taught.
+
+  \-
+
+  \name{Francois Goudal} will be in charge of this stage which will last
+  for three weeks.
+
+  \-
+
+  Note that, starting with \name{k1}, the student snapshot will be used.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{k2}
+
+  In \term{k2}, students will have to provide kaneton with execution contexts
+  such that the kernel can execute multiple threads at the \textit{same} time.
+
+  \-
+
+  Lectures, during this stage, will discuss topics such as interrupts,
+  concurrency, multi-processing, scheduling \etc{}
+
+  \-
+
+  \name{Benoit Marcot} will be in charge of this stage which will last for
+  three weeks.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{k3}
+
+  In \term{k3}, students will have to implement a device drivers, being
+  a disk driver, network driver \etc{} XXX
+
+  \-
+
+  Lectures discussing virtualization, devices, communication \etc{} will
+  be taught during this stage.
+
+  \-
+
+  \name{Jean Guyader} will be in charge of this stage which will last for
+  two weeks.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{k4}
+
+  For \term{k4}, students will have to design and develop a file system
+  on top of a disk driver.
+
+  \-
+
+  During this stage, teachers will teach students about security, file systems
+  but also the \name{Windows NT} kernel.
+
+  \-
+
+  \name{Julien Quintard} will be in charge of this stage which will last for
+  three weeks.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Evaluation}
+
+  For every stage, students will have the possibility to test their
+  implementation by running, a limited number of times, the test suite used
+  for evaluating their work.
+
+  \-
+
+  Besides, at the end of each stage, after submission, the kaneton test system
+  will run the test suite and issue a mark according to the test results.
+
+  \-
+
+  Additionally, an exam will take place at the end of the semester to make
+  sure that notions tackled in the course are understood by every student.
+\end{frame}
+
+%
+% tools
+%
+
+\section{Tools}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The kaneton educational project relies on tools, sometimes developed
+  internally, enabling students to make the best of such tools within the
+  project time frame.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Web Site}
+
+  The web site contains the documentation including design papers,
+  the assignments \etc{} but also hosts the wiki which should be
+  the starting point for every students seeking information.
+
+  \-
+
+  \name{Julien Quintard} should be contacted for requests regarding the
+  web sites.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Snapshot}
+
+  The student snapshot has been automatically generated from the current
+  kaneton implementation.
+
+  \-
+
+  \name{Francois Goudal} is in charge of this process, hence should be
+  contacted if you believe there is a mistake.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Cheat}
+
+  Every student's kaneton implementation will be tested to make sure that
+  students did not cheat by relying on implementations by previous or
+  current students.
+
+  \-
+
+  \name{Julien Quintard} is in charge of this tool.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Test}
+
+  Students' implementation will be tested in a real environment by applying
+  a complete test suite; hence, validating the implementation's behaviour.
+
+  \-
+
+  \name{Jean Guyader} is responsible of this tool and should be contacted
+  if necessary.
+\end{frame}
+
 %
 % information
 %
