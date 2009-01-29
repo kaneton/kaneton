@@ -35,7 +35,6 @@ SOURCES			:=		introduction.tex		\
 					support.tex			\
 					k0.tex				\
 					snapshot.tex			\
-					setup.tex			\
 					k1.tex				\
 					k2.tex				\
 					k3.tex				\
