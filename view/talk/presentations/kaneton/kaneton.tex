@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...w/talk/presentations/kaneton/kaneton.tex
 %
 % created       julien quintard   [mon may 14 21:02:29 2007]
-% updated       julien quintard   [thu jan 29 18:14:34 2009]
+% updated       julien quintard   [fri jan 30 02:07:14 2009]
 %
 
 %
@@ -90,18 +90,18 @@
 
   \begin{itemize}
     \item[2004]
-      \name{Julien Quintard} and \name{Jean-Pascal Billaud} [EPITA'06] decide
+      \name{Julien Quintard} and \name{Jean-Pascal Billaud} decide
       to introduce an optional low-level programming course to first-year
       enginnering students, now known as \name{kastor};
     \item[2004]
       The course having been well received, \name{SRS - Syst\`emes, R\'eseaux,
-      S\'ecurit\'e} students ask them to give such an introduction course the
+      S\'ecurit\'e} students ask them to give such an introductory course the
       same year.
     \item[2005]
-      The authorization is given to them to teach an kernel development course
-      to \name{SRS} students, from January to October. They therefore decided
+      The authorization is given to them to teach a kernel development course
+      to \name{SRS} students, from January to October. They therefore decide
       to provide students with the design of a microkernel and let the students
-      develop it from scratch, their way. \name{kaneton} was born.
+      develop it from scratch, their way. \name{kaneton} is born.
     \item[2006]
       After \name{Jean-Pascal Billaud} fled to \name{VMWare}, \name{Julien
       Quintard} started developing a reference implementation and gave
@@ -142,38 +142,18 @@
 
       \-
 
-      At the end of this year, after problems with students and the \name{LSE},
-      \name{kaneton} maintainers decided not to work with the \name{LSE}
-      anymore.
+      At the end of this year, after problems with some students as well as
+      conflicts with the \name{LSE}, \name{kaneton} maintainers decided not
+      to work with the laboratory anymore.
     \item[2009]
       \name{EPITA} alumni were contacted and joined the educational project
       including \name{Francois Goudal}, \name{Benoit Marcot},
-      \name{Jean Guyader} and \name{Frank Curo} but also
-      \name{Fabien Le-Mentec}, an \name{EPITECH} alumnus.
+      \name{Jean Guyader} and \name{Frank Curo}, \name{Anthony Guduszeit} but
+      also \name{Fabien Le-Mentec}, an \name{EPITECH} alumnus.
   \end{itemize}
 \end{frame}
 
 % 4)
-
-\begin{frame}
-  \frametitle{Changes}
-
-  Over the years, the project has greatly evolved, from a no-implementation
-  project, to a reference-based project but also through the assignments.
-
-  \-
-
-  However, being a project developed by volunteers willing to dedicate some
-  time so that other students can learn, many things are missing and/or
-  can be improved including the lectures but also the project implementation.
-
-  \-
-
-  In conclusion, keep in mind that the project exist only because of people
-  willing to pass their knowledge to students.
-\end{frame}
-
-% 5)
 
 \begin{frame}
   \frametitle{Model}
@@ -199,7 +179,7 @@
   to implement whatever algorithms \etc{} we wish.
 \end{frame}
 
-% 6)
+% 5)
 
 \begin{frame}
   \frametitle{People}
@@ -225,18 +205,18 @@
   \end{itemize}
 \end{frame}
 
-% 7)
+% 6)
 
 \begin{frame}
   \frametitle{Project}
 
-  \name{kaneton} is an important assignments in the \name{SRS}/\name{GISTR}
+  \name{kaneton} is an important assignment of the \name{SRS}/\name{GISTR}
   curriculum and, as such, must be taken seriously.
 
   \-
 
   Especially, in the last years, \name{EPITA} decided to reduce the duration
-  of the project to $3$ months.
+  of the project to \term{three} months.
 
   \-
 
@@ -244,7 +224,7 @@
   period have been reduced so that students can focus on \name{kaneton}.
 \end{frame}
 
-% 8)
+% 7)
 
 \begin{frame}
   \frametitle{opaak}
@@ -262,7 +242,7 @@
 
   Note however that also some concepts studied through kastor will be
   discussed in kaneton, the kaneton educational project is far more
-  complicated as it goes deeper in hardware and software problematics.
+  complicated as it goes deeper into hardware and software problematics.
 \end{frame}
 
 %
@@ -334,7 +314,7 @@
   \-
 
   This project comes with a lecture regarding the boot system as well
-  as practical sessions.
+  as a practical session.
 
   \-
 
@@ -363,7 +343,8 @@
 
   \-
 
-  Note that, starting with \name{k1}, the student snapshot will be used.
+  Note that, starting with \name{k1}, the student snapshot will be used which
+  provide students a development environment, making kernel development easier.
 \end{frame}
 
 % 3)
@@ -391,7 +372,7 @@
   \frametitle{k3}
 
   In \term{k3}, students will have to implement a device drivers, being
-  a disk driver, network driver \etc{} XXX
+  a disk driver or a network driver.
 
   \-
 
@@ -410,12 +391,13 @@
   \frametitle{k4}
 
   For \term{k4}, students will have to design and develop a file system
-  on top of a disk driver.
+  if they chose to implement a disk driver or a network stack if they chose
+  to implement a network driver.
 
   \-
 
-  During this stage, teachers will teach students about security, file systems
-  but also the \name{Windows NT} kernel.
+  During this stage, lectures will focus on security, file systems but also
+  the \name{Windows NT} kernel.
 
   \-
 
@@ -440,7 +422,8 @@
   \-
 
   Additionally, an exam will take place at the end of the semester to make
-  sure that notions tackled in the course are understood by every student.
+  sure that the notions tackled throughout the course are well understood
+  by every student.
 \end{frame}
 
 %
@@ -455,8 +438,7 @@
   \frametitle{Overview}
 
   The kaneton educational project relies on tools, sometimes developed
-  internally, enabling students to make the best of such tools within the
-  project time frame.
+  internally.
 \end{frame}
 
 % 2)
@@ -466,12 +448,12 @@
 
   The web site contains the documentation including design papers,
   the assignments \etc{} but also hosts the wiki which should be
-  the starting point for every students seeking information.
+  the starting point for every student seeking information.
 
   \-
 
   \name{Julien Quintard} should be contacted for requests regarding the
-  web sites.
+  web site and wiki.
 \end{frame}
 
 % 3)
@@ -522,12 +504,118 @@
 
 \section{Information}
 
-XXX site kaneton.org + mailing-list + wiki
-XXX groups de deux sauf pour k0. chaque tranche notee separement mais stage N
-  relies on N - 1 so don't get distanced and fix your bugs.
-XXX plateforme/architecture utilisee: ibm-pc ia32
-XXX tester sur machine reelle pas emulateur comme qemu ou bochs
-XXX besoin d'un rack linux opur k0 et d'un systeme unix pour le projet
+% 1)
+
+\begin{frame}
+  \frametitle{Support}
+
+  As a student, there are three ways of getting support when undertaking
+  the kaneton educational project:
+
+  \-
+
+  \begin{enumerate}
+    \item
+      \term{Website}
+
+      \-
+
+      You will find on \location{http://kaneton.opaak.org} documents regarding
+      the project from the design to the implementation;
+    \item
+      \term{Wiki}
+
+      \-
+
+      The wiki \location{http://wiki.opaak.org} is the best way to get
+      technical information as well as to help other students by adding
+      and/or improving pages' contents;
+    \item
+      \term{Mailing-List}
+
+      \-
+
+      The kaneton educational students mailing-list
+      \location{students@kaneton.opaak.org} will be used by teachers as
+      an official means for communicating with students.
+
+      \-
+
+      Therefore, every student should subscribe to this mailing-list by sending
+      an email to \location{students+subscribe@kaneton.opaak.org}.
+  \end{enumerate}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Groups}
+
+  Except for \name{k0} which is an individual project, the other projects
+  from \name{k1} to \name{k4} are done in groups of \term{two} students.
+
+  \-
+
+  Every group is expected to send an email to
+  \name{Julien Quintard}\footnote{\location{julien.quintard@cl.cam.ac.uk}}
+  before the $11$th of February with the group composition.
+
+  \-
+
+  Note that we will use students' \name{EPITA} email addresses. As such,
+  make sure that you check this email box.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Reliance}
+
+  As for \name{Tiger}, every stage depends on the previous one.
+
+  \-
+
+  As such, test suites from the previous stages will also be used for both
+  testing and marking.
+
+  \-
+
+  Students should therefore make sure to use their test permissions for making
+  sure to fix the bugs of previous stages so that such bugs do not impact
+  on the current stage results, hence mark.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Machine}
+
+  This year, the machine used by the kaneton educational project will consists
+  of the \term{IBM-PC} platform coupled with the \term{IA-32} microprocessor
+  architecture \ie{} the most common hardware system on the market.
+
+  \-
+
+  Although it is always best to test your implementation on a real machine,
+  it takes time to reboot a real computer. You should therefore use an
+  emulator such a \name{QEmu} or \name{Bochs} as they will enable you to
+  test your kernel very quickly but they will also let you develop on
+  a non-\name{IBM-PC}/\name{IA-32} machine such as a \name{Mac} for example.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Requirements}
+
+  As a reminder, students must have a rack containing a \name{POSIX} compliant
+  operating system.
+
+  \-
+
+  This rack should be installed and ready so that you use it for the
+  \name{k0} practical session.
+\end{frame}
 
 %
 % conclusion
@@ -535,7 +623,72 @@ XXX besoin d'un rack linux opur k0 et d'un systeme unix pour le projet
 
 \section{Conclusion}
 
-have fun
-apreo: discuter avec les profs!
+% 1)
+
+\begin{frame}
+  \frametitle{Concepts}
+
+  Throughout the project, you will learn so many things from terminology,
+  to how a computer boots, how the kernel controls the hardware and how it
+  provides abstractions as basic as execution contexts.
+
+  \-
+
+  At the end of the project, you will definitely know that nothing is magic
+  but purely logic and often actually very simple.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Implementation}
+
+  Although, starting the project by learning how to make a computer execute
+  your code, you will end up, after three months, with a running kernel
+  and operating system capable of executing programs, the whole on real
+  hardware like the machine you have at home.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Changes}
+
+  Over the years, the project has greatly evolved, from a no-implementation
+  project, to a reference-based project.
+
+  \-
+
+  However, being a project developed by volunteers willing to dedicate some
+  time so that other students can learn, many things are missing and/or
+  can be improved including the lectures but also the project implementation.
+
+  \-
+
+  In conclusion, keep in mind that the project exist only because of people
+  willing to pass their knowledge and please respect their effort.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Fun}
+
+  But most of all, kaneton should be about learning through fun!
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Ap\'eritif}
+
+  Do not forget to come along to the evening ap\'eritif so that you can
+  talk to the teachers, know more precisely what they are doing and
+  exchange.
+
+  \-
+
+  Who knows, perhaps you will end up in the same company as one of them...
+\end{frame}
 
 \end{document}
