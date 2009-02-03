@@ -1,0 +1,1523 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /Users/francois/k...lecture/kernels/future/memory/memory.tex
+%
+% created       julien quintard   [fri oct 24 17:31:58 2008]
+% updated          [tue feb  3 00:51:27 2009]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Memory}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% ---------- figures ----------------------------------------------------------
+%
+
+% Why virtual mem
+\pgfdeclareimage[interpolate=true,height=180pt]
+                {vmem-overlap}
+                {figures/vmem-overlap}
+
+\pgfdeclareimage[interpolate=true,height=180pt]
+                {vmem-contiguous}
+                {figures/vmem-contiguous}
+
+\pgfdeclareimage[interpolate=true,height=180pt]
+                {vmem-sharing}
+                {figures/vmem-sharing}
+
+% TLB
+\pgfdeclareimage[interpolate=true,width=187pt,height=100pt]
+                {detailed-tlb}
+                {figures/detailed-tlb}
+
+\pgfdeclareimage[interpolate=true,width=196pt,height=180pt]
+                {tlb-coherency-step1}
+                {figures/tlb-coherency-step1}
+
+\pgfdeclareimage[interpolate=true,width=196pt,height=180pt]
+                {tlb-coherency-step2}
+                {figures/tlb-coherency-step2}
+
+\pgfdeclareimage[interpolate=true,width=210pt,height=180pt]
+                {smp-coherency-step1}
+                {figures/smp-coherency-step1}
+
+\pgfdeclareimage[interpolate=true,width=210pt,height=180pt]
+                {smp-coherency-step2}
+                {figures/smp-coherency-step2}
+
+\pgfdeclareimage[interpolate=true,width=210pt,height=180pt]
+                {smp-coherency-step3}
+                {figures/smp-coherency-step3}
+
+% Allocators
+\pgfdeclareimage[interpolate=true,width=228pt,height=100pt]
+                {free-list}
+                {figures/free-list}
+
+\pgfdeclareimage[interpolate=true,width=227pt,height=170pt]
+                {buddy}
+                {figures/buddy}
+
+\pgfdeclareimage[interpolate=true,width=280pt,height=160pt]
+                {slabs}
+                {figures/slabs}
+
+\pgfdeclareimage[interpolate=true,width=243pt,height=160pt]
+                {slab-allocator}
+                {figures/slab-allocator}
+
+% Copy on write
+\pgfdeclareimage[interpolate=true,width=120pt,height=160pt]
+                {cow-step1}
+                {figures/cow-step1}
+\pgfdeclareimage[interpolate=true,width=120pt,height=160pt]
+                {cow-step2}
+                {figures/cow-step2}
+\pgfdeclareimage[interpolate=true,width=120pt,height=160pt]
+                {cow-step3}
+                {figures/cow-step3}
+\pgfdeclareimage[interpolate=true,width=120pt,height=160pt]
+                {cow-step4}
+                {figures/cow-step4}
+
+% Stack expansion
+\pgfdeclareimage[interpolate=true,width=70pt,height=160pt]
+                {stack-exp-step1}
+                {figures/stack-exp-step1}
+\pgfdeclareimage[interpolate=true,width=70pt,height=160pt]
+                {stack-exp-step2}
+                {figures/stack-exp-step2}
+\pgfdeclareimage[interpolate=true,width=70pt,height=160pt]
+                {stack-exp-step3}
+                {figures/stack-exp-step3}
+
+% Alloc-on-demand
+\pgfdeclareimage[interpolate=true,width=60pt,height=160pt]
+                {alloc-demand-step1}
+                {figures/alloc-demand-step1}
+\pgfdeclareimage[interpolate=true,width=60pt,height=160pt]
+                {alloc-demand-step2}
+                {figures/alloc-demand-step2}
+\pgfdeclareimage[interpolate=true,width=60pt,height=160pt]
+                {alloc-demand-step3}
+                {figures/alloc-demand-step3}
+
+% X86 segmentation
+\pgfdeclareimage[interpolate=true,width=204pt,height=120pt]
+                {ia32-seg}
+                {figures/ia32-seg}
+
+\pgfdeclareimage[interpolate=true,width=198pt,height=180pt]
+                {ia32-multiseg}
+                {figures/ia32-multiseg}
+
+% X86 paging
+\pgfdeclareimage[interpolate=true,width=221pt,height=180pt]
+                {ia32-mmu}
+                {figures/ia32-mmu}
+
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+\section{Introduction}
+
+\begin{frame}
+  \frametitle{Introduction}
+
+  Memory management is an essential task of a modern operating system kernel.
+
+  \-
+
+  It is a key in the security of a system, since it allows to isolate processes one from each other.
+
+  \-
+
+  It is also a very sensitive subject since the implementation of the memory management in a kernel has a huge impact on the performance of the kernel.
+
+  \-
+
+  This course aims to describe the memory management techniques and concepts.
+
+\end{frame}
+
+\section{Generalities}
+\subsection{Address space concepts}
+%%%   - Virtual address / Physical Address
+
+\begin{frame}
+  \frametitle{Virtual address/Physical Address}
+  
+  Programs are manipulating addresses. When a program runs, it access some data, that is located somewhere in the memory. The code can also jump to another piece of code that's located in the memory.
+
+  \-
+
+  The memory is represented by addresses.
+
+  \-
+
+  In modern systems, the addresses in the physical memory are not directly handeled by the programs anymore. They instead manipulate virtual addresses, that correspond to physical addresses through a mapping mechanism.
+
+  \-
+
+  These addresses manipulated by the programs are called virtual addresses, while the addresses in the actual physical memory are called physical addresses.
+
+\end{frame}
+
+%%%   - AS
+
+\begin{frame}
+  \frametitle{Address Space}
+
+  Since a program manipulates virtual addresses, each program has its own set of virtual addresses.
+
+  \-
+
+  An address space represents all the virtual memory space for a specific process.
+
+  \-
+
+  An address space is represented by the mapping between virtual and physical addresses, and it belongs to a process, so each process has its own address space.
+
+\end{frame}
+
+%%%   - Why do we need virtual memory ?
+\begin{frame}
+  \frametitle{Multitasking}
+
+  A compiler must choose addresses for all the symbols it uses when compiling (more precisely, linking) a program.
+
+  \-
+
+  On a multitask system, each task would have to use different addresses, so the compiler should be aware of the memory used by the other tasks in a system.
+
+  \-
+
+  This wouldn't be acceptable, and not flexible enough. Virtual memory solves this problem, since the programs are then only using virtual addresses. Several programs can then share the same addresses without problem, since the mapping on physical addresses is the responsability of the kernel, so the kernel ensure that there is no conflict on the physical memory.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multitasking}
+
+  \begin{center}
+   \pgfuseimage{vmem-overlap}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Protecton}
+
+  For security reasons, a program shouldn't be able to read or write a memory area that does not belong to it. This is particularly important on multitask systems, since, then, one process could crash another one, or steal data it shouldn't be able to get.
+
+  \-
+
+  By using virtual memory, this problem is solved. The physical memory is not accessible directly. The kernel maps some memory blocks for it, but it doesn't make any mapping that allow to read or write memory blocks of another process.
+
+  \-
+
+  That way, if the kernel is handling it correctly, a process won't be able to access another process's memory.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Protection}
+
+  \begin{center}
+   \pgfuseimage{vmem-overlap}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Contiguous allocation}
+
+  A program may want to allocate a big amount of memory. Because of fragmentation, there might not be a big enough space of contiguous free memory, in the physical memory.
+
+  \-
+
+  Thanks to virtual memory, this is not a problem anymore, since the kernel can easily allocate non contiguous pages, in the physical memory, and map them in a contiguous way in the process address space.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Contiguous allocation}
+
+  \begin{center}
+   \pgfuseimage{vmem-contiguous}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Memory sharing}
+
+  In some cases, it might be useful that two different processes can access to the same memory zone.
+
+  \-
+
+  This is still possible with virtual memory. The kernel can with no problem map the same physical memory region in several processes address spaces.
+
+  \-
+
+  This is useful for shared libraries, where the code sections can be loaded once in memory, and shared by several processes using the same library. It can also be used as an Inter-Process Communication method.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Memory sharing}
+
+  \begin{center}
+   \pgfuseimage{vmem-sharing}
+  \end{center}
+
+\end{frame}
+
+\subsection{Address translation}
+%%%   - Mechanisms
+
+\begin{frame}
+  \frametitle{Address translation methods}
+
+  There are several address translation mechanisms.
+
+  \-
+
+  We will study the following :
+  \begin{itemize}
+  \item Bank Switching
+  \item Segmentation
+  \item Paging
+  \end{itemize}
+
+\end{frame}
+
+%%%     - Bank
+\begin{frame}
+  \frametitle{Bank switching}
+
+  Bank paging consists in splitting the physical memory in several blocks of the same size.
+
+  \-
+
+  All the addresses are designating a location in a memory block (called bank).
+
+  \-
+
+  A register is used to select the active bank. All the memory accesses are made in the active bank, the only way to get some data in another bank is to first change the bank.
+
+  \-
+
+  This is a quite basic virtual memory system. It's used in simple microprocessors that have an address bus which is wider than the addresses the CPU can handle. Typically, to use a 16-bit address bus on a 8-bit CPU.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bank switching limitations}
+
+  Address spaces very limited in size: address space size is the size of a bank (which are generally small).
+
+  \-
+
+  Programming is more complicated since it requires to change the value of the active page register. The compilers are therefore more complicated to write.
+
+  \-
+
+  It cannot provide all the features one would like, such as contiguous mapping or memory sharing.
+
+\end{frame}
+
+%%%     - Segmentation
+\begin{frame}
+  \frametitle{Segmentation}
+
+  Segmentation consists in defining or more physycal memory regions, called segments.
+  
+  \-
+  
+  These segments are defined by two values :
+  \begin{itemize}
+  \item A base address : The address in the physical memory where the segment begins
+  \item A size
+  \end{itemize}
+
+  \-
+
+  A virtual address, when using segmentation corresponds then to an offset in the segment.
+
+  \-
+
+  The current active segment/segments are selected through registers, like with bank switching.
+
+  \-
+
+  Segmentation can be seen as an advanced bank switching mechanism, since its behaviour is quite similar, but it provides some more features.
+
+\end{frame}
+
+%%%     - Paging
+
+\begin{frame}
+  \frametitle{Paging}
+
+  Paging consists in dividing the physical memory in small constant-size chunks, called pages.
+
+  \-
+
+  Each page can be mapped in one or more virtual address space(s). The kernel has to maintain a structure that describes the mapping, and the MMU which is present in the CPU will take care of resolving the virtual addresses into physical addresses with the help of the kernel and its mapping structures.
+
+  \-
+
+  Mapping addresses individually wasn't possible, since it would have required a too big mapping structure. This is why mapping is done on a page basis.
+
+\end{frame}
+
+%%%   - MMU
+%%%     - TLB
+
+\begin{frame}
+  \frametitle{Translation Lookaside Buffers}
+
+  To make the address translation, the kernel must know about the mapping : virtual address A corresponds to physical address B.
+
+  \-
+
+  To make the translation fast, this mapping has to be stored in a fast access memory. The cache memory in the CPU is well suited for that. It's the one that is used to store these mapping.
+
+  \-
+
+  The cache memory is small. It can't contain all the translations at a time. So the cache will contain a fixed size array of translation entries, called TLBs. When a translation can't be done with what's in the cache, the kernel help will be claimed by the CPU.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Translation Lookaside Buffers}
+
+  There are one or more TLB into a single MMU: for example, we
+  found two TLB on UltraSPARC architectures: one for instruction
+  fetches and the other for data accesses. On IA-32 and MIPS
+  architecture, there is only one mixed TLB.
+
+  \-
+
+  The size of these TLBs are generally very small :
+  \begin{center}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    Microprocessor & TLB & Entries \\
+    \hline
+    Pentium (non-MMX) & Instruction & 32 entries \\
+    \hline
+    Pentium (non-MMX) & Data & 64 entries \\
+    \hline
+    Pentium 4 & Instruction & 128 entries \\
+    \hline
+    Pentium 4 & Data & 64 entries \\
+    \hline
+    UltraSPARC IIi & Instruction & 64 entries \\
+    \hline
+    UltraSPARC IIi & Data & 64 entries \\
+    \hline
+    MIPS R8000 & Mixed & 384 entries \\
+    \hline
+    MIPS R10000 & Instruction & 8 entries \\
+    \hline
+    MIPS R10000 & Data & 64 entries \\
+    \hline
+  \end{tabular}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{TLB Organization}
+
+    \begin{itemize}
+      \item A TLB is a cache where each entry is made of two parts :
+
+      \begin{center}
+        \pgfuseimage{detailed-tlb}
+      \end{center}
+
+      \item A cache-hit occurs when:
+      \begin{enumerate}
+      \item
+        V = 1
+      \item
+        ID = current ASID \textbf{or} G = 1
+      \item
+        VA $\leq$ requested address $<$ VA + SZ
+      \end{enumerate}
+    \end{itemize}
+\end{frame}
+
+
+%%%     - Cache management (cache hit, cache miss, TLB entries management)
+
+\begin{frame}
+  \frametitle{Page hit}
+
+  A cache hit occurs when the MMU needs to translate an address, and it can find a TLB that matches the virtual address.
+
+  \-
+
+  In that case, the Physical address is computed by the MMU, and the memory access is done immediately.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Page miss}
+
+  A cache miss occurs when the MMU needs to translate an address, but can't find a TLB that matches the virtual address.
+
+  \-
+
+  In that case, the MMU will trigger an exception.
+
+  \-
+
+  This exception will wake up the kernel, and it will have to handle it.
+
+  \-
+
+  The kernel will look into its memory mapping structures and look for a translation.
+
+  \-
+
+  Several cases are possible :
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Page miss - mapping found by the kernel}
+
+  If the kernel can find a mapping, it will simply update the cache, to put an entry for this specific mapping.
+
+  \-
+
+  It will then resume the program. The memory access will be tried again by the CPU. Since the mapping is now in the TLB, there will be a page hit, and the translation will be done by the MMU and the memory will be accessed.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Page miss - mapping not found by the kernel}
+
+  If the kernel can't find a mapping, then the program is trying to access to an invalid address in its address space.
+
+  \-
+
+  The kernel will likely decide to kill the faulty program and trigger an error. This is the famous ``Segmentation fault'' on UNIX systems.
+
+\end{frame}
+
+%%%     - Cache entries replacement
+
+\begin{frame}
+  \frametitle{Cache entries replacement}
+
+  When a page miss occurs, the kernel has to look for an existing mapping, and it might need to add a new entry in the cache.
+
+  \-
+
+  The cache is a small area, it can get full quite fast. When the cache is full, the kernel has to determine an entry that can be removed and replaced by the one that's needed.
+
+  \-
+
+  Some TLB implements a LRU (\emph{Least Recently Used}) algorithm and
+  put in a register the number of the entry most unlikely to be used.
+
+  \-
+
+  Otherwise, the kernel can implement its own aging algorithms using
+  the TLB entries facilities (accessed bit, user free
+  bits\ldots). Another easier solution is to replace a random entry,
+  this is fast but not really efficient.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Advanced MMU page miss handling}
+
+  Some advanced MMUs are not necessarily triggering an exception on a page miss.
+
+  \-
+
+  The CPU might define an interface with the kernel so that the MMU can have a look by itself to the mapping, in the main memory, and update the cache by itself.
+
+  \-
+
+  An exception is then raised only if a mapping can't be found in the TLB, and through this automatic system. This makes the translation faster, but it enforces some interface that the kernel must provide.
+
+\end{frame}
+
+%%%     - TLB coherency
+
+\begin{frame}
+  \frametitle{TLB coherency}
+
+  The TLB is a cache. It mirrors a small piece of the mapping structures, handeled by the kernel, and stored in the main memory.
+
+  \-
+
+  When the kernel modifies its internal structures, some of the entries in the TLB might reflect something that is no longer valid.
+
+  \-
+
+  The kernel must take care of that, otherwise wrong memory access will happen.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{TLB incoherency example}
+
+  \begin{center}
+    \pgfuseimage{tlb-coherency-step1}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{TLB incoherency example}
+
+  \begin{center}
+    \pgfuseimage{tlb-coherency-step2}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{TLB invalidation or flushing}
+
+  To avoid the previous problem, TLB entries can be invalidated to
+  force their content to be reloaded from kernel's virtual mapping
+  structures.
+
+  \-
+
+  TLB flushing involves invalidating all the TLB entries.
+
+  \-
+
+  But invalidating the TLB should be avoided if they are not necessary, because next accesses to the
+  memory will be much more longer (page miss, TLB replacement algorithm\ldots).
+
+\end{frame}
+
+%%%   - TLB coherency and SMP
+
+\begin{frame}
+  \frametitle{TLB coherency on multiprocessor platforms}
+
+  On multiprocessor platforms, each processor has its own cache, so it has its own TLB.
+
+  \-
+
+  When the kernel changes a mapping in its internal structures, it will also invalidate the entries in the TLB of the CPU that executes the kernel code.
+
+  \-
+
+  But the other CPU may still have a bad entry in its TLB, which might lead to incorrect memory access.
+
+  \-
+
+  To solve that problem, when a kernel modifies the mapping structures, it must also send a message to all the other CPUs so that they can clean their TLBs if necessary.
+
+  \-
+
+  This is usually done through Inter-Processor Interrupts (IPIs)
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coherency on multiprocessor platform}
+
+  \begin{center}
+    \pgfuseimage{smp-coherency-step1}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coherency on multiprocessor platform}
+
+  \begin{center}
+    \pgfuseimage{smp-coherency-step2}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coherency on multiprocessor platform}
+
+  \begin{center}
+    \pgfuseimage{smp-coherency-step3}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Cycles in virtual memory management}
+
+  There are a few common cycles when dealing with virtual memory.
+
+  \begin{itemize}
+  \item
+    When a TLB-miss handler is called, it may generate another
+    TLB-miss when accessing the kernel's structures
+  \item
+    When filling page-directory \& page-tables to map a region of
+    memory, the page directory and/or page-tables needs to be mapped
+  \end{itemize}
+
+  \-
+
+  Sometimes, the CPU provides facilities to avoid this cycle: a region
+  in virtual memory called a bypass region exists and permits to
+  bypass the MMU (this means that putting the memory management
+  structures in this area will never generate TLB-miss).
+
+  \-
+
+  On MIPS processors, for example, there is a special segment called kseg0 that maps directly the physical memory from address 0x00000000 to 0x1FFFFFFF (about 500MB). Using this segment doesn't require any MMU translation. If the translation structures of the kernel are in this area, they can be modified easily without using an MMU translation.
+
+  \-
+
+  UltraSPARC processors provide a set of instructions that allow to enable/disable the MMU translation mechanism. Once disabled, all addresses are directly considered as physical addresses. 
+
+  \-
+
+  Others CPU do not. So we have to show imagination.
+
+\end{frame}
+
+
+\subsection{Allocators}
+
+\begin{frame}
+  \frametitle{Allocators}
+
+  Being able to map virtual memory to physical memory is not enough. The kernel must also be able to know about the memory regions that are used, and provide a way to find a free region of memory.
+
+  \-
+
+  When using virtual memory, there are two different things : the virtual address space, which has a fixed size, and which is quite big, and the physical memory, which is of a variable size, depending on the hardware, and which is generally smaller than the virtual address spaces.
+
+  \-
+
+  When a program wants to get some new memory, the kernel must run two allocation systems : one must find and reserve some free space in the virtual address space, and the other must find and reserve some free space in the physical memory. Then the kernel can make the mapping between the two.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Allocators}
+
+  The kernel has to provide a way to manage these memories (either virtual or physical). This is the job of a memory allocator. It maintains some structures to keep track of the used memory regions, so it can provide a way to allocate new regions.
+
+  \-
+
+  On a system that use paging, the memory is mapped by page, so the allocators will allocate pages. This is a large-grain allocator. Since users generally want to allocate smaller entities, a fine-grain will be used.
+
+  \-
+
+  A fine-grain allocator uses a large-grain back-end allocator in order to provide a front-end fine-grain allocation interface.
+
+  \-
+
+  In UNIX systems, the fine-grain allocator (malloc, free, realloc, calloc) uses the large-grain allocator (mmap) provided by the kernel.
+
+\end{frame}
+
+%%%   - Constraints (speed, fragmentation, ...)
+
+\begin{frame}
+  \frametitle{Allocators}
+
+  An allocator is an important part of a kernel, since memory allocation is used quite a lot, so it is a critical element of the kernel.
+
+  \-
+
+  Problems encountered in memory allocation:
+
+  \begin{itemize}
+  \item
+    \textbf{Speed}, as memory allocation and freeing are largely used
+    in programs
+  \item
+    \textbf{Fragmentation}, an efficient allocator should not waste
+    space
+  \item
+    \textbf{Concurrent operations} (or scalability), because
+    multiprocessor systems are designed for high-performances
+  \item
+    \textbf{Cache placement}, a good allocator must take care of cache
+    line size and cache placement, even on multiprocessor (non-shared
+    caches)
+  \end{itemize}
+
+\end{frame}
+
+%%%   - Algorithms (*-fit, buddy systems, slab)
+\begin{frame}
+  \frametitle{Allocating physical pages rather than memory chunks}
+
+  In the next few slides, we will present three allocation techniques.
+
+  \-
+
+  The algorithms described are suitable for fine-grain allocators, but
+  can also be used for page allocation.
+
+  \-
+
+  In the case of page allocation, the sizes are then represented in
+  page numbers instead of bytes, and the initial space provided for
+  allocation is the entire or partial RAM.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Free-list based allocation}
+
+  Allocators based on free-list algorithms are often very simple. The
+  principle of free-list is to store pointers to free chunks of memory
+  in a list (called the free-list -- as you guess).
+
+  \begin{center}
+    \pgfuseimage{free-list}
+  \end{center}
+
+  \-
+
+  The allocator is differenciated by the algorithm used to sort the
+  free-list.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Free-list based allocation -- algorithms}
+
+  There are three main algorithms:
+
+  \begin{itemize}
+  \item
+    First-fit: the free-list is sorted by memory placement (addresses).\\
+    This is a bit like random, since there is no logic. Quite efficient.
+  \item
+    Best-fit: the free-list is sorted by chunk size ascendant.\\
+    This algorithm ensures that minimum fragmentation will occur, but
+    sorting and searching the list takes much time.
+  \item
+    Worst-fit: the free-list is sorted by chunk size descendant.\\
+    This algorithm is very fast for allocating (constant time), but
+    splitting region is often necessary (leading to fragmentation).
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Buddy systems}
+
+  The buddy system was described by Donald Knuth, and was widely used
+  in operating systems (since the appearance of slab allocator).
+
+  \-
+
+  The principle of a buddy system is to allocate larger chunks and
+  then to divide them (discretely) to fit correctly with the asked size.
+
+  \-
+
+  Then, there are multiple free-list (per size), and the buddy system
+  just look for a bigger chunk than the one asked and populate the
+  other free-lists with the divided blocks.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Buddy systems -- example}
+
+  \begin{center}
+    \pgfuseimage{buddy}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Buddy systems -- Fibonacci rather than power-of-two}
+
+  Previous example was about power-of-two (or binary) buddy systems,
+  meaning that we could only split blocks in two.
+
+  \-
+
+  Fibonacci buddy systems permit to use the Fibonacci numbers for
+  chunk sizes. For example: 2, 4, 6, 10, 16, 26, 42, 68\ldots
+
+  \-
+
+  The Fibonacci buddy system thus offers a larger selection of sizes
+  than the binary buddy system.
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Slab allocation}
+
+  SunOS 5.4 introduced a new memory allocator called the slab
+  allocator. This allocator improved performances in time from 5 to 15
+  \% and in space (fragmentation) for about 30 \%.
+
+  \-
+
+  The slab allocator was next implemented in Linux, FreeBSD, and a lot
+  of other operating systems.
+
+  \-
+
+  The principles behind this algorithm is simple:
+
+  \begin{itemize}
+  \item
+    The user allocates memory for objects, so it is likely that many
+    objects have the same size
+  \item
+    When an object is freed, reclaiming memory directly is premature,
+    behaving as a cache is a better behavior
+  \item
+    Managing the allocator's internal structures must not be more
+    expensive than allocating the memory itself
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Slab allocation -- slabs}
+
+  A slab is a contiguous space carved in multiple chunks of same size.
+
+  \begin{center}
+    \pgfuseimage{slabs}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Slab allocation -- large objects}
+
+  Large objects are not handled in slabs. They are directly allocated
+  using \emph{mmap} or equivalent.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Slab allocation -- construction and destruction}
+
+  When using object caches (like in a slab allocator), it is possible
+  to provide constructor and destructors for objects.
+
+  \-
+
+  Thus, the cost of initializing and destroying by hand objects is
+  reduced since the slab allocator knows when it is necessary to
+  construct/destruct an object.
+
+  \-
+
+  This principle is not used for user allocation since the allocator
+  does not know the nature of the objects, but it is heavily used in
+  the allocator itself. For example, slab and buffer descriptors lean
+  on an object cache using constructor and destructors so it is never
+  necessary to initialize or uninitialize objects (leading to better
+  overall performances of the allocator).
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Slab allocation -- example}
+
+  \begin{center}
+    \pgfuseimage{slab-allocator}
+  \end{center}
+
+\end{frame}
+
+
+\subsection{Advanced usage}
+%%%   - Swapping
+
+\begin{frame}
+  \frametitle{Swapping}
+
+  Nowadays, physical memory is much more expensive than storage. For that reason, computers have in general much more storage space than physical memory space.
+
+  \-
+
+  When a machine runs out of physical memory, one might want to use some free space of the storage devices to solve the problem.
+
+  \-
+
+  This can be done quite easily with the paging mechanism.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Swapping}
+
+  \begin{itemize}
+  \item The operating system decides to swap-out a page. It will copy the page contents to the swap space, on the hard disk and remove this page from the TLB. It will also update its internal structures to keep a track of the new location of the page.
+  \item Since the page has been put in swap, the physical memory it used to use is available for some other usage.
+  \item A program now wants to access this page. It will try to access it and get a cache miss. This will trigger an exception that will be handled by the kernel. The kernel can then realize that this page is valid, but in the swap. It will then find a free page in the physical memory, copy the data back, and resume the access, which will then succeed.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Swapping - Page replacement algorithm}
+
+  A page replacement algorithm must choose the good pages to swap out
+  in order to minimize the total number of page misses.
+
+  \-
+
+  \begin{itemize}
+  \item
+    Random: quick but not optimal
+  \item
+    FIFO: each allocated page is placed in a FIFO, the most likely
+    page to be swapped out is the one at the exit of the FIFO (the
+    older), quick, but not optimal
+  \item
+    Second Chance: like FIFO, but uses the accessed bit to give a
+    second chance to the older page
+  \item
+    NRU (Not Recently Used): at a given interval divide pages in 4
+    classes: not accessed \& not modified, not accessed \& modified,
+    accessed and not modified, accessed and modified. NRU picks a
+    random page from the lowest class
+  \item
+    LRU (Least Recently Used): like NRU, but not only on one
+    interval. Practically difficult and expensive to implement
+  \item
+    NFU (Not Frequently Used): like LRU, but penalties when a page is
+    not accessed in a cycle
+  \item
+    Aging: a NFU-like algorithm, using bit masks and shifts
+  \end{itemize}
+
+\end{frame}
+
+%%%   - Copy-on-write
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  Copy-on-write is a method to make a copy of pages without actually copying their content. The actual copy is deferred and done as soon as either the original or the copy gets modified.
+
+  \-
+
+  Copy-on-write method (or COW) is often used when cloning an address
+  space (eg: fork).
+
+  \-
+
+  This mechanism uses read-only markers on TLB entries and reference
+  counters on page frames.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  \begin{center}
+    \pgfuseimage{cow-step1}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  \begin{center}
+    \pgfuseimage{cow-step2}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  \begin{center}
+    \pgfuseimage{cow-step3}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  \begin{center}
+    \pgfuseimage{cow-step4}
+  \end{center}
+
+\end{frame}
+
+%%%   - Stack expansion
+
+\begin{frame}
+  \frametitle{Stack expansion}
+
+  Each process running on a computer uses a stack. Some processes don't require a big stack, some others do.
+
+  \-
+
+  Allocating a big stack for each process in order to be sure it will be enough costs a lot of memory, that will potentially never be used.
+
+  \-
+
+  Stack expansion is a method used to allocate stack pages only if they are needed (if the stack grows enough to require a new page allocated). This technique is made possible by the usage of the virtual memory.  
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Stack expansion}
+
+  \begin{center}
+    \pgfuseimage{stack-exp-step1}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Stack expansion}
+
+  \begin{center}
+    \pgfuseimage{stack-exp-step2}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Stack expansion}
+
+  \begin{center}
+    \pgfuseimage{stack-exp-step3}
+  \end{center}
+
+\end{frame}
+
+%%%   - Allocation on demand
+
+\begin{frame}
+  \frametitle{Allocation-on-demand}
+
+  Allocation-on-demand consists in reserving a region of virtual
+  memory without allocating the page frames.
+
+  \-
+
+  When a page-miss occurs, a page frame is then allocated and the
+  virtual space corresponding to the miss is updated.
+
+  \-
+
+  This technique allows to delay the allocation of page-frame, and
+  sometime to avoid allocating pages for unused chunks of memory.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Allocation-on-demand}
+
+  \begin{center}
+    \pgfuseimage{alloc-demand-step1}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Allocation-on-demand}
+
+  \begin{center}
+    \pgfuseimage{alloc-demand-step2}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Allocation-on-demand}
+
+  \begin{center}
+    \pgfuseimage{alloc-demand-step3}
+  \end{center}
+
+\end{frame}
+
+%%%   - Debugging
+
+\begin{frame}
+  \frametitle{Debugging}
+
+  Virtual memory can also be used for debugging purposes.
+
+  \-
+
+  The electric-fence library uses LD\_PRELOAD to override the user allocation functions (malloc, free, realloc, calloc) and implements malloc in a very inefficient way : for each malloc, it will reserve 2 pages. It will then return the address that will make the allocated chunk at the end of the first page. The other page will be setup with no read/write permissions.
+
+  \-
+
+  This is useful to detect problems with arrays boundaries : an access just after the end of the allocated chunk will occur within the second page, which will trigger a page fault.
+
+\end{frame}
+
+\section{x86 specifics}
+\subsection{Segmentation}
+%%%   - GDT, LDT
+
+\begin{frame}
+  \frametitle{x86 - Real mode - Segmentation}
+
+  The real mode of the x86 CPU provides a basic segmentation.
+
+  \-
+
+  The physical memory (1MB maximum) is divided in 16 segments of 64KB each.
+
+  \-
+
+  Some segment selector registers are used to select which segment is active. There are separate segment selectors for code (CS), stack (SS) and data (DS, ES, FS, GS).
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{x86 - Real mode - Segmentation}
+
+  The segment selectors are 16-bit registers. This allows to address much more than 16 segments.
+
+  \-
+
+  The translation formula is : Physical address = Segment * 16 + Offset
+
+  \-
+
+  This system makes the same physical address reachable in several ways : 0040:0020 corresponds to physical address 0x420. 0042:0000 does too.
+
+  \-
+
+  This system allows to theoratically address more than 1MB. On 286 CPUs, the address bus was only 20 bit, so if a translation would make more than 1MB, the CPU would have looped back from address 0.
+
+  \-
+
+  This system didn't provide any protection though.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{x86 - Real mode - Segmentation}
+
+  When 386 CPUs appeared, they had a wider address bus, since they supported the protected mode. But they still started in Real-mode for backwards compatibility. Unfortunately, Intel didn't think about this behaviour, so in 386 real mode, you can actually access physical memory below 1MB.
+
+  \-
+
+  This was a big problem since some programs were written relying on this ``feature''. IBM solved this with the A20-gate hack. They used an usused pin of the keyboard controller to enable or disable the 20th address bus line, so that any attempt to access below 1MB would loop if it's disabled.
+
+  \-
+
+  The BIOS provided an option that allowed to configure wether the A20 had to be enabled or disabled after the BIOS, so it could be configured in case of problematic programs. The programs can also change the behaviour dynamically by playing with the keyboard controller configuration.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{x86 - Protected mode - Segmentation}
+
+  On x86, in protected mode, segmentation is mandatory. 
+
+  \-
+
+  Segments can be dynamically defined by the kernel. Up to 16000 segments can be defined simultaneously.
+
+  \-
+
+  A table called the GDT has to be built and maintained by the kernel. It contains records for each segment, describing :
+  \begin{itemize}
+  \item Its base address
+  \item Its size
+  \item Its privilege level
+  \end{itemize}
+
+  The structure of this table is specified by Intel since the CPU is directly reading it. The CPU contains a register where the kernel will have to put the physical address of the GDT : GDTR.
+
+  \-
+
+  The segments selector registers are the same than in real-mode, but they are interpreted in a different way : they now contain the index of the segment, in the GDT.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{x86 segmentation example, protected mode}
+
+  \begin{center}
+   \pgfuseimage{ia32-seg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{x86 segmentation example, protected mode}
+
+  \begin{center}
+   \pgfuseimage{ia32-multiseg}
+  \end{center}
+
+\end{frame}
+
+
+\subsection{Paging}
+%%%   - Flat model
+
+\begin{frame}
+  \frametitle{x86 - Protected mode address translation}
+
+  On x86, in protected mode, both segmentation and paging can be used at the same time.
+
+  \-
+
+  Segmentation must be used, and paging can be enabled or disabled through the PG flag in the CR0 register.
+
+  \-
+
+  When paging is enabled, both segmentation and paging are used to translate addresses :
+
+  \begin{itemize}
+  \item A virtual address is first translated through segmentation. The result is called a Linear address.
+  \item This Linear address is then translated through paging. The result is the physical address.
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{x86 - Protected mode flat model}
+
+  Many kernels do not use segmentation and prefer paging. But
+  disabling segmentation is not possible.
+
+  \-
+
+  Instead, the kernel setup a flat model (or protected flat model),
+  meaning that it creates one segment (per privilege level) overlaying
+  all the physical memory.
+
+  \-
+
+  In the case of IA-32, two segments are required because permissions
+  can be set either on RW or RX, so we must produce a combination RWX.
+
+\end{frame}
+
+%%%   - PD, PT, PDBR (cr3)
+
+\begin{frame}
+  \frametitle{Cache replacement}
+
+  On x86, when the MMU gets a page-miss, in the TLB, the CPU handles automatically the replacement of a cache entry.
+
+  \-
+  
+  In order to do that, the kernel must organise its internal mapping structures in a way that can be understood by the CPU.
+
+  \-
+
+  Intel is imposing its own structure to kernel developers : Page-directories and Page-tables. The kernel must provide a pointer to this structure to the CPU through a register : CR3 (PDBR) so the CPU can automatically resolve addresses when there is a cache miss.
+
+  \-
+
+  A page fault exception is raised when there is a cache miss and the CPU is not able to find any mapping in the Page-directory and Page-table structure pointed by CR3.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{PD - PT}
+
+  A Linear address is composed of 3 parts :
+
+  \begin{itemize}
+  \item A Page-directory Index (10 bit)
+  \item A Page-table Index (10 bit)
+  \item An offset (12 bit)
+  \end{itemize}
+
+  A Page Directory is a memory page (4096 bytes) that contains 1024 PD Entries (4 bytes each).
+
+  \-
+
+  A PD Entry contains the address of a Page Table, some privilege flags (Read/Write, global, user/supervisor) and a Present flag that tells if the entry is valid or not.
+
+  \-
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{PD - PT}
+
+  A Page Table is a memory page (4096 bytes) that contains 1024 PT Entries (4 bytes each).
+
+  \-
+
+  A PT Entry contains the base address of a Page in the physical memory, some privilege flags (Read/Write, global, user/supervisor) and a Present flag that tells if the entry is valid or not.
+
+  \-
+
+  Address translation is done by finding the address of the page table, in the page directory, using CR3 and the PD Index contained in the Linear address, then finding the physical address of the page, in the page table, using the PT Index contained in the Linear address. The page physical address is then added with the offset contained in the Linear address.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{PD - PT}
+
+  This mechanism allows to map 4GB. If the whole memory is mapped, it requires one page directory and 1024 page tables, so 1025 pages of 4094 bytes each, so it uses about 4MB to handle mapping for one full address space.
+
+  \-
+
+  Managing several address spaces is easy, since it just consists in having one Page directory and several Page tables per address space. Switching from one address space to another just consists in changing the value in CR3.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{x86 paging}
+
+  \begin{center}
+    \pgfuseimage{ia32-mmu}
+  \end{center}
+
+\end{frame}
+
+%%%   - Mirrorring 
+
+\begin{frame}
+  \frametitle{Mirroring}
+
+  Mirroring is a trick to avoid the need of mapping the page-directory
+  and the page-table when accessing them.
+
+  \-
+
+  The principle of mirroring is to create a page-directory entry
+  pointing to the page-directory itself. By doing this:
+
+  \begin{itemize}
+  \item
+    Looking at MAKE\_ADDR(mirror, index\_pt, offset) refers to a
+    page-table
+  \item
+    Looking at MAKE\_ADDR(mirror, mirror, offset) refers to the
+    page-directory itself
+  \end{itemize}
+
+  \-
+
+  This technique (though unofficial) is often used to solve our problem. It works thanks to the fact that PD-Entries and PT-entries have a quite similar format.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{TLB management}
+
+  The x86 CPU provides some instructions to :
+
+  \begin{itemize}
+  \item Invalidate a specific entry in the TLB, providing the virtual address.
+  \item Flush the whole TLB
+  \end{itemize}
+
+  \-
+
+  Furthermore, the address space switching (by loading a new value in CR3) automatically flushes the TLB.
+
+  \-
+
+  Linux, in order to avoid address space switching, which would lead to TLB flushing, when a program does a system call, maps the kernel code in each process address space, with restricted privileges, from the 3GB address to the end of the physical address space.
+
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  Memory management is a complex part of an operating system.
+
+  \-
+
+  Each CPU has its own MMU that has its own specificities. One must know well the system he is writing a memory manager for.
+
+  \-
+
+  Memory management algorithms are very important for the performance of a system. Programs are generally playing a lot with memory, claiming for free memory and releasing memory all the time. The performance of the allocators is a sensitive point.
+
+\end{frame}
+
+%
+% bibliography
+%
+
+\begin{frame}[allowframebreaks]
+  \frametitle{Bibliography}
+
+  \bibliographystyle{amsplain}
+  \bibliography{\path/bibliography/bibliography}
+\end{frame}
+
+\end{document}
