@@ -1,0 +1,237 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/talk/presentations/k4/k4.tex
+%
+% created       julien quintard   [sat nov 29 20:40:35 2008]
+% updated       julien quintard   [mon feb  2 14:41:36 2009]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{k0}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+%
+% introduction
+%
+
+\section{Introduction}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  \name{k0} is the first stage of the kaneton project.
+
+  \-
+
+  Unlike the other future stages, it is not mandatory for the next stages, since GRUB will be used to boot the kaneton snapshot.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Objective}
+
+  The goal of this project is for students to practise low level programming and assembly.
+
+  \-
+
+  This is also the only stage where the real-mode of the Intel CPU will be used, so it gives a full approach on this CPU.
+
+\end{frame}
+
+%
+% assignments
+%
+
+\section{Assignments}
+
+% 1)
+
+\begin{frame}
+  \frametitle{String display}
+
+  The first exercise will consist in writing assembly code to display characters and strings on the screen.
+
+  \-
+
+  It will make you use the BIOS calls.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Registers dump}
+
+  The goal of this exercise is to make you reuse your previous code, and make some more complex things, like converting an integer to a string.
+
+  \-
+
+  The goal is to make you practise the Intel assembly language.
+
+  \-
+
+  You will also have to write a very basic allocation function
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Keyboard inputs}
+
+  The goal of this exercise is to practise with BIOS calls, and to write keyboard routines
+
+  \-
+
+  You will have to write two routines, one to get one char, and one to get a line.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Floppy drive}
+
+  This exercise is again using BIOS calls to drive another peripherial : the floppy disk drive. The goal of this exercise is to be reused for the next exercises.
+
+  \-
+
+  You will have to write some code to read the second sector of the floppy (the first one has already been read and loaded in memory by the BIOS).
+
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Operating mode switching}
+
+  This exercise consists in writing a routine that switches the CPU from real mode to protected mode.
+
+  \-
+
+  You will then have to write protected-mode (32-bit) code that prints a string on the screen. Note that BIOS calls can't be used from protected mode.
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{ELF Loader}
+
+  In this final exercise, we will provide you a basic ELF binary. You will have to put it in the sector 2 of the floppy disk. Your code will have to load this elf binary in the memory, and jump on its entry point, to execute it.
+
+  \-
+
+  This final exercise reuses some of the code you have been writing in previous exercises.
+
+\end{frame}
+
+%
+% evaluation
+%
+
+\section{Evaluation}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Test suite}
+
+  This stage is checked by a test suite.
+
+  \-
+
+  You must provide the symbols that are specified in the assignments, and respect the interface.
+
+  Be careful not to include any of your own test code, since it will conflict with our own tests.
+
+\end{frame}
+
+%
+% conclusion
+%
+
+\section{Conclusion}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Schedule}
+
+  Practical session tomorrow, from 19:00 to 00:00.
+
+  \-
+
+  You will have to finish the exercises before Sunday, 15 at 23:42.
+
+  \-
+
+  Your tarball will have to be uploaded on the Kaneton Epita intranet in due time.
+\end{frame}
+
+%
+% bibliography
+%
+
+\begin{frame}
+  \frametitle{Bibliography}
+
+  \bibliographystyle{amsplain}
+  \bibliography{\path/bibliography/bibliography}
+\end{frame}
+
+\end{document}
