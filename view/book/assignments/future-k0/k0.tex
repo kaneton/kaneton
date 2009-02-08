@@ -302,9 +302,9 @@ You will write a complete bootloader which loads and executes an ELF file
 - located right after the bootsector - and then relocate it in memory
 before jumping on it.
 
-An ELF binary is provided to be loaded with your bootsector. To build
-a disk image with your bootsector on the first sector, and the kernel on the
-next ones, you can use the following command:
+An ELF binary is provided to be loaded with your bootsector (see \emph{Files}
+on the Wiki). To build a disk image with your bootsector on the first sector,
+and the kernel on the next ones, you can use the following command:
 
 \begin{verbatim}
 42sh$ cat bootsector kernel.elf /dev/zero | dd bs=512 count=2880 of=disk.img
