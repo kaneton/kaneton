@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/lecture/inline-assembly/Makefile
+# file          /home/mycure/kaneton/view/lecture/linking/Makefile
 #
 # created       julien quintard   [wed may 16 18:48:18 2007]
-# updated       julien quintard   [thu feb 12 23:25:56 2009]
+# updated       julien quintard   [thu feb 12 23:27:04 2009]
 #
 
 #
@@ -27,9 +27,9 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		inline-assembly
+PAPER			:=		linking
 
-SOURCES			:=		inline-assembly.tex		
+SOURCES			:=		linking.tex		
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\

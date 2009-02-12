@@ -34,6 +34,7 @@ SUBDIRS			:=		architecture			\
 					c-preprocessor			\
 					inline-assembly			\
 					kernels				\
+					linking				\
 					prerequisites			
 
 #

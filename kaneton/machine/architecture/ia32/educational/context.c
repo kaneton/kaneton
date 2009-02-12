@@ -785,6 +785,9 @@ t_error			ia32_get_context(i_thread		thread,
   return (ERROR_NONE);
 }
 
+/*
+ * XXX
+ */
 t_error                 ia32_print_context(i_thread             thread)
 {
     t_ia32_context      ctxt;
