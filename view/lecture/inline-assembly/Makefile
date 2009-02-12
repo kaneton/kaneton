@@ -27,9 +27,9 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		inline-assembly
+PAPER			:=		object-file
 
-SOURCES			:=		inline-assembly.tex		
+SOURCES			:=		object-file.tex		
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
