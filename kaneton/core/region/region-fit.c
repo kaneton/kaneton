@@ -47,8 +47,6 @@ extern m_region*       region;
  * ---------- functions -------------------------------------------------------
  */
 
-/*							  [block::first_fit] */
-
 /*
  * this function tries to find free space in the region set via the
  * first fit algorithm.
@@ -160,8 +158,6 @@ static t_error		region_first_fit(o_as*			as,
   REGION_LEAVE(region, ERROR_UNKNOWN);
 }
 
-/*						       [endblock::first_fit] */
-
 /*
  * this function calls the good algorithm.
  */
@@ -170,7 +166,6 @@ t_error			region_space(i_as		asid,
 				     t_vsize		size,
 				     t_vaddr*		address)
 {
-  /*							      [block::space] */
   o_as*			as;
 
   REGION_ENTER(region);
@@ -191,7 +186,6 @@ t_error			region_space(i_as		asid,
       default:
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
-  /*							   [endblock::space] */
 }
 
 #endif

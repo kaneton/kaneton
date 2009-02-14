@@ -42,6 +42,7 @@ extern i_as		kasid;
 
 /*
  * this function directly maps a chunk of memory.
+ *						    [block::map_chunk::comment]
  *
  * steps:
  *
@@ -51,12 +52,15 @@ extern i_as		kasid;
  *    to the virtual address.
  * 3) inject the manually mapped region into the kernel address space.
  * 4) invalidate tlb entry.
+ *						 [endblock::map_chunk::comment]
  */
 
 t_error			ia32_map_chunk(t_vaddr		v,
 				       t_paddr		p,
 				       void*		alloc)
 {
+  /*							  [block::map_chunk] */
+
   i_region		useless;
   t_ia32_table		pt;
   t_ia32_page		pg;
@@ -136,12 +140,15 @@ t_error			ia32_map_chunk(t_vaddr		v,
 
   ia32_tlb_invalidate(v);
 
+  /*						       [endblock::map_chunk] */
+
   return (ERROR_NONE);
 }
 
 /*
  * this function unmaps a page previously mapped with the map_chunk
  * function.
+ *						  [block::unmap_chunk::comment]
  *
  * steps:
  *
@@ -149,10 +156,13 @@ t_error			ia32_map_chunk(t_vaddr		v,
  * 2) remove, via the mirroring entry, the page-table entry.
  * 3) manually remove the kernel region associated.
  * 4) invalidate translation caches.
+ *					       [endblock::unmap_chunk::comment]
  */
 
 t_error			ia32_unmap_chunk(t_vaddr	v)
 {
+  /*							[block::unmap_chunk] */
+
   t_ia32_table		pt;
   o_as*			as;
 
@@ -190,6 +200,8 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
 
   ia32_tlb_invalidate(v);
 
+  /*						     [endblock::unmap_chunk] */
+
   return (ERROR_NONE);
 }
 
@@ -199,6 +211,8 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
 
 t_error			ia32_map_pd(t_ia32_directory*	pd)
 {
+  /*							     [block::map_pd] */
+
   t_vaddr		chunk;
   void*			tmp;
 
@@ -212,6 +226,8 @@ t_error			ia32_map_pd(t_ia32_directory*	pd)
 
   *pd = (t_ia32_directory)(t_uint32)chunk;
 
+  /*							  [endblock::map_pd] */
+
   return (ERROR_NONE);
 }
 
@@ -221,6 +237,8 @@ t_error			ia32_map_pd(t_ia32_directory*	pd)
 
 t_error			ia32_map_pt(t_ia32_table*	pt)
 {
+  /*							     [block::map_pt] */
+
   t_vaddr		chunk;
   void*			tmp;
 
@@ -234,11 +252,14 @@ t_error			ia32_map_pt(t_ia32_table*	pt)
 
   pt->vaddr = chunk;
 
+  /*							  [endblock::map_pt] */
+
   return (ERROR_NONE);
 }
 
 /*
  * map a region.
+ *						   [block::map_region::comment]
  *
  * steps:
  *
@@ -254,6 +275,7 @@ t_error			ia32_map_pt(t_ia32_table*	pt)
  *  e) invalidate translation lookaside buffers.
  *  f) unmap the temporarily mapped table.
  * 6) unmap the page-directory.
+ *						[endblock::map_region::comment]
  */
 
 t_error			ia32_map_region(i_as		asid,
@@ -263,6 +285,8 @@ t_error			ia32_map_region(i_as		asid,
 					t_vaddr		address,
 					t_vsize		size)
 {
+  /*							 [block::map_region] */
+
   o_as*			o;
   o_segment*		oseg;
   t_vaddr		vaddr;
@@ -420,12 +444,15 @@ t_error			ia32_map_region(i_as		asid,
     if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
       return (ERROR_UNKNOWN);
 
+  /*						      [endblock::map_region] */
+
   return (ERROR_NONE);
 }
 
 /*
  * this function  releases a region.  we unmap the region  and release
  * page tables.
+ *						 [block::unmap_region::comment]
  *
  * steps:
  *
@@ -438,12 +465,15 @@ t_error			ia32_map_region(i_as		asid,
  *  d) unmap the page-table.
  *  e) if the resulting page-table is empty, release it.
  * 4) unmap the as page-directory.
+ *					      [endblock::unmap_region::comment]
  */
 
 t_error			ia32_unmap_region(i_as		asid,
 					  t_vaddr	address,
 					  t_vsize	size)
 {
+  /*						       [block::unmap_region] */
+
   o_as*			o;
   t_ia32_directory	pd;
   t_ia32_table		pt;
@@ -547,6 +577,8 @@ t_error			ia32_unmap_region(i_as		asid,
   if (asid != kasid)
     if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
       return (ERROR_UNKNOWN);
+
+  /*						    [endblock::unmap_region] */
 
   return (ERROR_NONE);
 }

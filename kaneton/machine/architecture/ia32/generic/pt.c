@@ -35,6 +35,8 @@
 
 t_error			ia32_pt_dump(t_ia32_pte*		tab)
 {
+  /*							    [block::pt_dump] */
+
   t_uint32		i;
 
   for (i = 0; i < IA32_PT_MAX_ENTRIES; i++)
@@ -50,21 +52,27 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab)
 	}
     }
 
+  /*							 [endblock::pt_dump] */
+
   return ERROR_NONE;
 }
 
 /*
  * builds a new page table.
+ *						     [block::pt_build::comment]
  *
  * steps:
  *
  * 1) checks address encoding.
  * 2) initializes the structure.
+ *						  [endblock::pt_build::comment]
  */
 
 t_error			ia32_pt_build(t_paddr			base,
 				      t_ia32_table*		table)
 {
+  /*							   [block::pt_build] */
+
   ASSERT(table != NULL);
 
   /*
@@ -81,23 +89,29 @@ t_error			ia32_pt_build(t_paddr			base,
   table->paddr = base;
   table->vaddr = 0;
 
+  /*							[endblock::pt_build] */
+
   return ERROR_NONE;
 }
 
 /*
  * adds a page to a table.
+ *						  [block::pt_add_page::comment]
  *
  * steps:
  *
  * 1) checks the address of the page.
  * 2) gets the table pointer.
  * 3) setups the entry.
+ *					       [endblock::pt_add_page::comment]
  */
 
 t_error			ia32_pt_add_page(t_ia32_table*		tab,
 					 t_uint16		entry,
 					 t_ia32_page		page)
 {
+  /*							[block::pt_add_page] */
+
   t_ia32_pte*		t;
   t_uint32		opts = 0;
 
@@ -141,23 +155,29 @@ t_error			ia32_pt_add_page(t_ia32_table*		tab,
 
   t[entry] = IA32_MK_BASE(page.addr) | opts;
 
+  /*						     [endblock::pt_add_page] */
+
   return ERROR_NONE;
 }
 
 /*
  * gets an entry in a table.
+ *						  [block::pt_get_page::comment]
  *
  * steps:
  *
  * 1) gets the table.
  * 2) checks whether an entry is valid or not.
  * 3) fills the page structure.
+ *					       [endblock::pt_get_page::comment]
  */
 
 t_error			ia32_pt_get_page(t_ia32_table*		tab,
 					 t_uint16		entry,
 					 t_ia32_page*		page)
 {
+  /*							[block::pt_get_page] */
+
   t_ia32_pte*		t;
 
   ASSERT(page != NULL);
@@ -193,22 +213,28 @@ t_error			ia32_pt_get_page(t_ia32_table*		tab,
     IA32_PG_NOTCACHED : IA32_PG_CACHED;
   page->addr = IA32_MK_BASE(t[entry]);
 
+  /*						     [endblock::pt_get_page] */
+
   return ERROR_NONE;
 }
 
 /*
  * deletes a page entry.
+ *					       [block::pt_delete_page::comment]
  *
  * steps:
  *
  * 1) gets the table.
  * 2) checks whether an entry is valid or not.
  * 3) resets the entry.
+ *					    [endblock::pt_delete_page::comment]
  */
 
 t_error			ia32_pt_delete_page(t_ia32_table*	tab,
 					    t_uint16		entry)
 {
+  /*						     [block::pt_delete_page] */
+
   t_ia32_pte*		t;
 
   /*
@@ -230,6 +256,8 @@ t_error			ia32_pt_delete_page(t_ia32_table*	tab,
    */
 
   t[entry] = 0;
+
+  /*						  [endblock::pt_delete_page] */
 
   return ERROR_NONE;
 }

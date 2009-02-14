@@ -29,6 +29,8 @@
  * ---------- functions -------------------------------------------------------
  */
 
+/*						     [block::tlb_invalidate] */
+
 /*
  * flushes a single pte cache given a page address.
  */
@@ -44,17 +46,23 @@ t_error			ia32_tlb_invalidate(t_vaddr			page)
   return ERROR_NONE;
 }
 
+/*						  [endblock::tlb_invalidate] */
+
 /*
  * flushes the whole pd and pt caches.
  */
 
 t_error			ia32_tlb_flush(void)
 {
+  /*							  [block::tlb_flush] */
+
   asm volatile("movl %%cr3, %%eax\n\t"
 	       "movl %%eax, %%cr3"
 	       :
 	       :
 	       : "%eax", "memory");
+
+  /*						       [endblock::tlb_flush] */
 
   return ERROR_NONE;
 }

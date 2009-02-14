@@ -37,6 +37,8 @@
 #define SCHEDULER_STATE_ZOMBIE		2
 #define SCHEDULER_STATE_BLOCK		3
 
+/*						   [block::macro::constants] */
+
 /*
  * initial value for the scheduler quantum in milliseconds.
  */
@@ -57,9 +59,13 @@
 #define SCHEDULER_TIMESLICE_MAX		200
 #define SCHEDULER_TIMESLICE_GRANULARITY	scheduler->quantum
 
+/*						[endblock::macro::constants] */
+
 /*
  * ---------- macro functions -------------------------------------------------
  */
+
+/*						   [block::macro::functions] */
 
 /*
  * this macro function computes the  global priority of a thread.  the
@@ -133,9 +139,13 @@
     SCHEDULER_SCALE_TIMESLICE(t);					\
   })
 
+/*						[endblock::macro::functions] */
+
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*							[block::t_scheduled] */
 
 /*
  * a schedule queue element.
@@ -147,15 +157,24 @@ typedef struct
   t_timeslice			timeslice;
 }				t_scheduled;
 
+/*						     [endblock::t_scheduled] */
+
 /*
  * cpu scheduling environment for one processor.
  */
 
 typedef struct
 {
+  /*						     [block::o_scheduler::1] */
+
   i_cpu				cpuid;
 
+  /*						  [endblock::o_scheduler::1] */
+
   i_thread			current;
+
+  /*						     [block::o_scheduler::2] */
+
   t_timeslice			timeslice;
   t_prior			prio;
   t_opts			yield;
@@ -163,6 +182,8 @@ typedef struct
 
   i_set				active;
   i_set				expired;
+
+  /*						  [endblock::o_scheduler::2] */
 
   machine_data(o_scheduler);
 }				o_scheduler;

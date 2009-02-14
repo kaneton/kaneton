@@ -45,6 +45,9 @@ t_ia32_directory	ia32_pd;
 
 t_error			ia32_pd_dump(t_ia32_directory*		dir)
 {
+
+  /*							    [block::pd_dump] */
+
   t_uint32		i;
   t_ia32_pde*		d;
 
@@ -61,22 +64,27 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
 	  ia32_pt_dump((t_ia32_pte*)(IA32_MK_BASE(d[i])));
 	}
     }
+  /*							 [endblock::pd_dump] */
 
   return ERROR_NONE;
 }
 
 /*
  * builds a new page directory.
+ *						     [block::pd_build::comment]
  *
  * steps:
  *
  * 1) checks address alignement.
  * 2) fills the record.
+ *						  [endblock::pd_build::comment]
  */
 
 t_error			ia32_pd_build(t_paddr			base,
 				      t_ia32_directory*		directory)
 {
+  /*							   [block::pd_build] */
+
   ASSERT(directory != NULL);
 
   /*
@@ -92,6 +100,8 @@ t_error			ia32_pd_build(t_paddr			base,
 
   *directory = (t_ia32_directory)base;
 
+  /*							[endblock::pd_build] */
+
   return ERROR_NONE;
 }
 
@@ -103,6 +113,7 @@ t_error			ia32_pd_build(t_paddr			base,
 t_error			ia32_pd_base(t_ia32_directory*		dir,
 				     t_paddr*			base)
 {
+  /*							    [block::pd_base] */
   t_ia32_pde*		d;
 
   ASSERT(base != NULL);
@@ -122,23 +133,28 @@ t_error			ia32_pd_base(t_ia32_directory*		dir,
 
   *base = IA32_MK_BASE(d);
 
+  /*							 [endblock::pd_base] */
+
   return ERROR_NONE;
 }
 
 /*
  * activates a directory.
+ *						  [block::pd_activate::comment]
  *
  * steps:
  *
  * 1) computes the pdbr value.
  * 2) loads the pdbr.
  * 3) sets the global variable.
+ *					       [endblock::pd_activate::comment]
  */
 
 t_error			ia32_pd_activate(t_ia32_directory	dir,
 					 t_uint32		cached,
 					 t_uint32		writeback)
 {
+  /*							[block::pd_activate] */
   t_uint32		pdbr;
   t_uint32		mask = 0xfffff000;
 
@@ -168,6 +184,8 @@ t_error			ia32_pd_activate(t_ia32_directory	dir,
 
   ia32_pd = dir;
 
+  /*						     [endblock::pd_activate] */
+
   return ERROR_NONE;
 }
 
@@ -180,6 +198,7 @@ t_error			ia32_pd_get_cr3(t_uint32*		cr3,
 					t_uint32		cached,
 					t_uint32		writeback)
 {
+  /*							 [block::pd_get_cr3] */
   t_uint32		mask = 0xfffff000;
 
   ASSERT(cr3 != NULL);
@@ -193,17 +212,21 @@ t_error			ia32_pd_get_cr3(t_uint32*		cr3,
 
   *cr3 = ((t_uint32)dir & mask);
 
+  /*						      [endblock::pd_get_cr3] */
+
   return (ERROR_NONE);
 }
 
 /*
  * adds a table to a directory.
+ *						 [block::pd_add_table::comment]
  *
  * steps:
  *
  * 1) gets the directory address.
  * 2) setups the entry.
  * 3) adds the entry.
+ *					      [endblock::pd_add_table::comment]
  */
 
 
@@ -211,6 +234,8 @@ t_error			ia32_pd_add_table(t_ia32_directory*	dir,
 					  t_uint16		entry,
 					  t_ia32_table		table)
 {
+  /*						       [block::pd_add_table] */
+
   t_ia32_pde*		d;
   t_uint32		opts = 0;
 
@@ -249,23 +274,29 @@ t_error			ia32_pd_add_table(t_ia32_directory*	dir,
 
   d[entry] = IA32_MK_BASE(table.paddr) | opts;
 
+  /*						    [endblock::pd_add_table] */
+
   return ERROR_NONE;
 }
 
 /*
  * gets a table entry from a directory.
+ *						 [block::pd_get_table::comment]
  *
  * steps:
  *
  * 1) gets the directory address.
  * 2) checks entry validity.
  * 3) fills the page record.
+ *					      [endblock::pd_get_table::comment]
  */
 
 t_error			ia32_pd_get_table(t_ia32_directory*	dir,
 					  t_uint16		entry,
 					  t_ia32_table*		table)
 {
+  /*						       [block::pd_get_table] */
+
   t_ia32_directory	d;
 
   ASSERT(table != NULL);
@@ -301,22 +332,28 @@ t_error			ia32_pd_get_table(t_ia32_directory*	dir,
     IA32_PT_NOTCACHED : IA32_PT_CACHED;
   table->paddr = IA32_MK_BASE(d[entry]);
 
+  /*						    [endblock::pd_get_table] */
+
   return ERROR_NONE;
 }
 
 /*
  * deletes an entry.
+ *					      [block::pd_delete_table::comment]
  *
  * steps:
  *
  * 1) gets the directory pointer.
  * 2) checks if the entry is a valid one.
  * 3) resets the entry.
+ *					   [endblock::pd_delete_table::comment]
  */
 
 t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
 					     t_uint16		entry)
 {
+  /*						    [block::pd_delete_table] */
+
   t_ia32_directory	d;
 
   /*
@@ -340,6 +377,8 @@ t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
    */
 
   d[entry] = 0;
+
+  /*						 [endblock::pd_delete_table] */
 
   return ERROR_NONE;
 }

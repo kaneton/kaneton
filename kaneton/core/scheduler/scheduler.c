@@ -96,6 +96,7 @@ extern m_cpu*		cpu;
 
 /*
  * dump the scheduler state.
+ *							 [block::dump::comment]
  *
  * steps:
  *
@@ -103,10 +104,13 @@ extern m_cpu*		cpu;
  * 2) dump the scheduler active queues.
  * 2) dump the scheduler expired queues.
  *
+ *						      [endblock::dump::comment]
  */
 
 t_error			scheduler_dump(void)
 {
+  /*							 [block::dump::vars] */
+
   t_iterator		i;
   t_iterator		iq;
   t_iterator		ic;
@@ -118,7 +122,11 @@ t_error			scheduler_dump(void)
   t_prior		prio;
   o_scheduler*		ent;
 
+  /*						      [endblock::dump::vars] */
+
   SCHEDULER_ENTER(scheduler);
+
+  /*							       [block::dump] */
 
   set_foreach(SET_OPT_FORWARD, scheduler->cpus, &ic, stc)
     {
@@ -183,12 +191,14 @@ t_error			scheduler_dump(void)
       printf("\n");
 
     }
+  /*							    [endblock::dump] */
 
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
  * this function sets the scheduler quantum value.
+ *						      [block::quantum::comment]
  *
  * steps:
  *
@@ -196,10 +206,13 @@ t_error			scheduler_dump(void)
  * 2) update all thread timeslices to take account of new granularity.
  * 3) call the architecture dependent code.
  *
+ *						   [endblock::quantum::comment]
  */
 
 t_error			scheduler_quantum(t_quantum			quantum)
 {
+  /*						      [block::quantum::vars] */
+
   t_iterator		i;
   t_iterator		ic;
   t_state		st;
@@ -210,7 +223,11 @@ t_error			scheduler_quantum(t_quantum			quantum)
   t_scheduled*		entity;
   o_scheduler*		ent;
 
+  /*						   [endblock::quantum::vars] */
+
   SCHEDULER_ENTER(scheduler);
+
+  /*							    [block::quantum] */
 
   ASSERT(quantum != 0);
 
@@ -267,12 +284,15 @@ t_error			scheduler_quantum(t_quantum			quantum)
   if (machine_call(scheduler, scheduler_quantum, quantum) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
+  /*							 [endblock::quantum] */
+
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
  * this function permits the current task to relinquish the processor
  * voluntary.
+ *							[block::yield::comment]
  *
  * steps:
  *
@@ -281,13 +301,20 @@ t_error			scheduler_quantum(t_quantum			quantum)
  *    if possible.
  * 2) call  the dependent code (calling switch with the good cpu).
  *
+ *						     [endblock::yield::comment]
  */
 
 t_error			scheduler_yield(i_cpu			cpuid)
 {
+  /*							[block::yield::vars] */
+
   o_scheduler*		ent;
 
+  /*						     [endblock::yield::vars] */
+
   SCHEDULER_ENTER(scheduler);
+
+  /*							      [block::yield] */
 
   /*
    * 1)
@@ -308,6 +335,8 @@ t_error			scheduler_yield(i_cpu			cpuid)
   if (machine_call(scheduler, scheduler_yield, cpuid) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
+  /*							   [endblock::yield] */
+
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
@@ -319,10 +348,16 @@ t_error			scheduler_yield(i_cpu			cpuid)
 
 t_error			scheduler_current(i_thread*			thread)
 {
+  /*						      [block::current::vars] */
+
   i_cpu			cpuid;
   o_scheduler*		ent;
 
+  /*						   [endblock::current::vars] */
+
   SCHEDULER_ENTER(scheduler);
+
+  /*							    [block::current] */
 
   ASSERT(thread != NULL);
 
@@ -334,11 +369,14 @@ t_error			scheduler_current(i_thread*			thread)
 
   *thread = ent->current;
 
+  /*							 [endblock::current] */
+
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
  * this function switches execution to the specified thread.
+ *						       [block::switch::comment]
  *
  * steps:
  *
@@ -352,10 +390,13 @@ t_error			scheduler_current(i_thread*			thread)
  * 7) update the scheduler internal informations.
  *
  *
+ *						    [endblock::switch::comment]
  */
 
 t_error			scheduler_switch(void)
 {
+  /*						       [block::switch::vars] */
+
   t_iterator		i;
   t_state		st;
   t_scheduled		entity;
@@ -372,7 +413,11 @@ t_error			scheduler_switch(void)
   i_cpu			cpuid;
   o_scheduler*		ent;
 
+  /*						    [endblock::switch::vars] */
+
   SCHEDULER_ENTER(scheduler);
+
+  /*							     [block::switch] */
 
   if (cpu_current(&cpuid) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
@@ -551,11 +596,14 @@ t_error			scheduler_switch(void)
   if (VIEW_SIGNAL("thread", elected, VIEW_SIGNAL_PREEMPT) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
+  /*							  [endblock::switch] */
+
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
  * this function adds a thread to the scheduler.
+ *							  [block::add::comment]
  *
  * steps:
  *
@@ -564,10 +612,13 @@ t_error			scheduler_switch(void)
  * 3) preempt current thread if added thread has an higher priority.
  * 4) call the machine dependent code.
  *
+ *						       [endblock::add::comment]
  */
 
 t_error			scheduler_add(i_thread			thread)
 {
+  /*							  [block::add::vars] */
+
   t_iterator		i;
   t_state		st;
   i_set*		queue;
@@ -578,7 +629,11 @@ t_error			scheduler_add(i_thread			thread)
   o_task*		otask;
   o_scheduler*		ent;
 
+  /*						       [endblock::add::vars] */
+
   SCHEDULER_ENTER(scheduler);
+
+  /*								[block::add] */
 
   /*
    * 1)
@@ -634,11 +689,14 @@ t_error			scheduler_add(i_thread			thread)
   if (machine_call(scheduler, scheduler_add, thread) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
+  /*							     [endblock::add] */
+
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
  * this function removes a thread from the scheduler.
+ *						       [block::remove::comment]
  *
  * steps:
  *
@@ -648,10 +706,13 @@ t_error			scheduler_add(i_thread			thread)
  * 3) compute the thread priority.
  * 4) look in both active and expired lists to remove the thread.
  *
+ *						    [endblock::remove::comment]
  */
 
 t_error			scheduler_remove(i_thread			thread)
 {
+  /*						       [block::remove::vars] */
+
   t_iterator		i;
   t_state		st;
   i_set*		queue;
@@ -662,7 +723,11 @@ t_error			scheduler_remove(i_thread			thread)
   o_task*		otask;
   o_scheduler*		ent;
 
+  /*						    [endblock::remove::vars] */
+
   SCHEDULER_ENTER(scheduler);
+
+  /*							     [block::remove] */
 
   /*
    * 1)
@@ -742,22 +807,28 @@ t_error			scheduler_remove(i_thread			thread)
 	}
     }
 
+  /*							  [endblock::remove] */
+
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
  * this function updates a thread into the scheduler.
+ *						       [block::update::comment]
  *
  * steps:
  *
  * 1) XXX optimize this !!!
  * 2) call the machine dependent code.
  *
+ *						    [endblock::update::comment]
  */
 
 t_error			scheduler_update(i_thread			thread)
 {
   SCHEDULER_ENTER(scheduler);
+
+  /*							     [block::update] */
 
   /*
    * 1)
@@ -774,11 +845,14 @@ t_error			scheduler_update(i_thread			thread)
   if (machine_call(scheduler, scheduler_update, thread) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
+  /*							  [endblock::update] */
+
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
  * this function initializes the scheduler manager.
+ *						   [block::initialize::comment]
  *
  * steps:
  *
@@ -787,10 +861,13 @@ t_error			scheduler_update(i_thread			thread)
  * 3) create the kernel thread.
  * 4) call the machine-dependent code.
  *
+ *						[endblock::initialize::comment]
  */
 
 t_error			scheduler_initialize(void)
 {
+  /*							 [block::initialize] */
+
   int			i;
   t_iterator		it;
   t_state		st;
@@ -905,11 +982,14 @@ t_error			scheduler_initialize(void)
   if (machine_call(scheduler, scheduler_initialize) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  /*						      [endblock::initialize] */
+
   return (ERROR_NONE);
 }
 
 /*
  * this function just reinitializes the scheduler manager.
+ *							[block::clean::comment]
  *
  * steps:
  *
@@ -917,10 +997,13 @@ t_error			scheduler_initialize(void)
  * 2) release the lists and the queues.
  * 3) free the scheduler manager structure's memory.
  *
+ *						     [endblock::clean::comment]
  */
 
 t_error			scheduler_clean(void)
 {
+  /*							      [block::clean] */
+
   t_iterator		it;
   t_state		st;
   t_iterator		it2;
@@ -974,6 +1057,8 @@ t_error			scheduler_clean(void)
    */
 
   free(scheduler);
+
+  /*							   [endblock::clean] */
 
   return (ERROR_NONE);
 }

@@ -1,0 +1,130 @@
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::dump::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::dump::vars
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::dump
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::quantum::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::quantum::vars
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::quantum
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::yield::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::yield::vars
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::yield
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::current::vars
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::current
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::switch::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::switch::vars
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::switch
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::add::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::add::vars
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::add
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::remove::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::remove::vars
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::remove
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::update::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::update
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::initialize::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::initialize
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::clean::comment
+
+-
+  operation: bremove
+  id: kaneton/core/scheduler/scheduler.c::clean
+
+-
+  operation: bremove
+  id: kaneton/core/include/scheduler.h::macro::constants
+
+-
+  operation: bremove
+  id: kaneton/core/include/scheduler.h::macro::functions
+
+-
+  operation: bremove
+  id: kaneton/core/include/scheduler.h::t_scheduled
+
+-
+  operation: bremove
+  id: kaneton/core/include/scheduler.h::o_scheduler::1
+
+-
+  operation: bremove
+  id: kaneton/core/include/scheduler.h::o_scheduler::2
+
+-
+  operation: breplace
+  id: kaneton/machine/architecture/ia32/educational/include/context.h::macros::context
+  data: |
+     #define	IA32_SAVE_CONTEXT()
+     #define IA32_RESTORE_CONTEXT()

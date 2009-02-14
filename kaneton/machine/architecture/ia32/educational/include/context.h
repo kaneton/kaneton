@@ -23,6 +23,8 @@
  * ---------- macro functions -------------------------------------------------
  */
 
+/*						    [block::macros::context] */
+
 // XXX better remove cpu local variables in this version!
 
 #define	IA32_SAVE_CONTEXT()						\
@@ -65,6 +67,8 @@
 	 "	movw %ax, %fs				\n"		\
 	 "	movw %ax, %gs				\n"		\
 	 "	popa					\n"
+
+/*						 [endblock::macros::context] */
 
 /*
  * ---------- macros ----------------------------------------------------------

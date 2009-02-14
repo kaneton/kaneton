@@ -29,6 +29,10 @@
  * ---------- globals ---------------------------------------------------------
  */
 
+
+/*							    [block::globals] */
+
+
 /*
  * the init variable.
  */
@@ -41,9 +45,13 @@ extern t_init*		init;
 
 extern t_ia32_directory	ia32_pd;
 
+/*							 [endblock::globals] */
+
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*							  [block::functions] */
 
 /*
  * enable paging  by setting  the higher order  bit of  CR0. activates
@@ -102,3 +110,5 @@ t_error			ia32_paging_clean(void)
 {
   return ERROR_NONE;
 }
+
+/*						       [endblock::functions] */

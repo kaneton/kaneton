@@ -226,11 +226,10 @@ t_error			region_inject(i_as		asid,
   REGION_LEAVE(region, ERROR_NONE);
 }
 
-
+/*							      [block::split] */
 
 /*
  * this function splits a region in two regions.
- *							[block::split::comment]
  *
  * steps:
  *
@@ -240,7 +239,6 @@ t_error			region_inject(i_as		asid,
  * 4) build the new region.
  * 5) adjust the old region size.
  * 6) call the dependent code.
- *						     [endblock::split::comment]
  */
 
 t_error			region_split(i_as			asid,
@@ -249,7 +247,6 @@ t_error			region_split(i_as			asid,
 				     i_region*			left,
 				     i_region*			right)
 {
-  /*							      [block::split] */
   i_region		useless;
   o_region*		reg;
   o_segment*		seg;
@@ -323,10 +320,10 @@ t_error			region_split(i_as			asid,
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  /*							   [endblock::split] */
-
   REGION_LEAVE(region, ERROR_NONE);
 }
+
+/*							   [endblock::split] */
 
 /*
  * this function resizes a region.
@@ -435,9 +432,10 @@ t_error			region_resize(i_as			as,
   REGION_LEAVE(region, ERROR_NONE);
 }
 
+/*							   [block::coalesce] */
+
 /*
  * this function merges two adjacent regions.
- *						     [block::coalesce::comment]
  *
  * steps:
  *
@@ -447,7 +445,6 @@ t_error			region_resize(i_as			as,
  * 4) update the region size.
  * 5) remove the right region from the address space.
  * 6) call the machine dependent code.
- *						  [endblock::coalesce::comment]
  */
 
 t_error			region_coalesce(i_as		asid,
@@ -455,8 +452,6 @@ t_error			region_coalesce(i_as		asid,
 					i_region	right,
 					i_region*	regid)
 {
-  /*							   [block::coalesce] */
-
   o_as*			as;
   o_region*		oleft;
   o_region*		oright;
@@ -517,11 +512,10 @@ t_error			region_coalesce(i_as		asid,
 
   *regid = left;
 
-  /*							[endblock::coalesce] */
-
   REGION_LEAVE(region, ERROR_NONE);
 }
 
+/*							[endblock::coalesce] */
 
 /*
  * this function reserves a region given the desired segment.
