@@ -8,11 +8,6 @@
   dst: Makefile
 
 -
-  operation: freplace
-  src: export/data/kaneton_Makefile
-  dst: kaneton/Makefile
-
--
   operation: fremove
   path: TODO
 
