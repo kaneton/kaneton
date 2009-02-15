@@ -1,0 +1,226 @@
+---
+name: Kaneton-K1
+testsuite:
+  - name: pre-testing
+    coef: 0
+    testsuite:
+      - name: compile
+        exec: tools/compile
+      - name: create_iso
+        img: kaneton.img
+        iso: kaneton.iso
+        exec: tools/mkiso
+  - name: kaneton
+    testsuite:
+      - name: segment
+        testsuite:
+         - name: catch_01
+           path: kaneton/core/segment/catch_01
+           symbol: check_segment_catch_01
+           exec: tools/hvm
+         - name: clone_01
+           path: kaneton/core/segment/clone_01
+           symbol: check_segment_clone_01
+           exec: tools/hvm
+         - name: coalesce_01
+           path: kaneton/core/segment/coalesce_01
+           symbol: check_segment_coalesce_01
+           exec: tools/hvm
+         - name: copy_01
+           path: kaneton/core/segment/copy_01
+           symbol: check_segment_copy_01
+           exec: tools/hvm
+         - name: flush_01
+           path: kaneton/core/segment/flush_01
+           symbol: check_segment_flush_01
+           exec: tools/hvm
+         - name: give_01
+           path: kaneton/core/segment/give_01
+           symbol: check_segment_give_01
+           exec: tools/hvm
+         - name: inject_01
+           path: kaneton/core/segment/inject_01
+           symbol: check_segment_inject_01
+           exec: tools/hvm
+         - name: multiple_reserve_01
+           path: kaneton/core/segment/multiple_reserve_01
+           symbol: check_segment_multiple_reserve_01
+           exec: tools/hvm
+         - name: multiple_reserve_02
+           path: kaneton/core/segment/multiple_reserve_02
+           symbol: check_segment_multiple_reserve_02
+           exec: tools/hvm
+         - name: multiple_reserve_03
+           path: kaneton/core/segment/multiple_reserve_03
+           symbol: check_segment_multiple_reserve_03
+           exec: tools/hvm
+         - name: multiple_reserve_release_01
+           path: kaneton/core/segment/multiple_reserve_release_01
+           symbol: check_segment_multiple_reserve_release_01
+           exec: tools/hvm
+         - name: perms_01
+           path: kaneton/core/segment/perms_01
+           symbol: check_segment_perms_01
+           exec: tools/hvm
+         - name: perms_02
+           path: kaneton/core/segment/perms_02
+           symbol: check_segment_perms_02
+           exec: tools/hvm
+         - name: perms_03
+           path: kaneton/core/segment/perms_03
+           symbol: check_segment_perms_03
+           exec: tools/hvm
+         - name: perms_04
+           path: kaneton/core/segment/perms_04
+           symbol: check_segment_perms_04
+           exec: tools/hvm
+         - name: perms_05
+           path: kaneton/core/segment/perms_05
+           symbol: check_segment_perms_05
+           exec: tools/hvm
+         - name: read_write_01
+           path: kaneton/core/segment/read_write_01
+           symbol: check_segment_read_write_01
+           exec: tools/hvm
+         - name: read_write_02
+           path: kaneton/core/segment/read_write_02
+           symbol: check_segment_read_write_02
+           exec: tools/hvm
+         - name: resize_01
+           path: kaneton/core/segment/resize_01
+           symbol: check_segment_resize_01
+           exec: tools/hvm
+         - name: resize_02
+           path: kaneton/core/segment/resize_02
+           symbol: check_segment_resize_02
+           exec: tools/hvm
+         - name: simple_reserve_01
+           path: kaneton/core/segment/simple_reserve_01
+           symbol: check_segment_simple_reserve_01
+           exec: tools/hvm
+         - name: simple_reserve_02
+           path: kaneton/core/segment/simple_reserve_02
+           symbol: check_segment_simple_reserve_02
+           exec: tools/hvm
+         - name: simple_reserve_03
+           path: kaneton/core/segment/simple_reserve_03
+           symbol: check_segment_simple_reserve_03
+           exec: tools/hvm
+         - name: simple_reserve_release_01
+           path: kaneton/core/segment/simple_reserve_release_01
+           symbol: check_segment_simple_reserve_release_01
+           exec: tools/hvm
+         - name: split_01
+           path: kaneton/core/segment/split_01
+           symbol: check_segment_split_01
+           exec: tools/hvm
+      - name: region
+        testsuite:
+         - name: reserve_opt_none_01
+           path: kaneton/core/region/reserve_opt_none_01
+           exec: tools/hvm
+           symbol: check_region_reserve_opt_none_01
+         - name: reserve_opt_force_01
+           path: kaneton/core/region/reserve_opt_force_01
+           exec: tools/hvm
+           symbol: check_region_reserve_opt_force_01
+         - name: simple_get_01
+           path: kaneton/core/region/simple_get_01
+           exec: tools/hvm
+           symbol: check_region_simple_get_01
+         - name: inject_01
+           path: kaneton/core/region/inject_01
+           exec: tools/hvm
+           symbol: check_region_inject_01
+         - name: simple_write_01
+           path: kaneton/core/region/simple_write_01
+           symbol: check_region_simple_write_01
+           exec: tools/hvm
+         - name: multiple_reserve_01
+           path: kaneton/core/region/multiple_reserve_01
+           exec: tools/hvm
+           symbol: check_region_multiple_reserve_01
+         - name: multiple_reserve_release_01
+           path: kaneton/core/region/multiple_reserve_release_01
+           exec: tools/hvm
+           symbol: check_region_multiple_reserve_release_01
+         - name: simple_resize_01
+           path: kaneton/core/region/simple_resize_01
+           exec: tools/hvm
+           symbol: check_region_simple_resize_01
+         - name: multiple_resize_01
+           path: kaneton/core/region/multiple_resize_01
+           exec: tools/hvm
+           symbol: check_region_multiple_resize_01
+         - name: resize_error_01
+           path: kaneton/core/region/resize_error_01
+           exec: tools/hvm
+           symbol: check_region_resize_error_01
+         - name: split_coalesce_01
+           path: kaneton/core/region/split_coalesce_01
+           exec: tools/hvm
+           symbol: check_region_split_coalesce_01
+      - name: as
+        testsuite:
+         - name: as_switching_01
+           path: kaneton/core/as/as_switching_01
+           exec: tools/hvm
+           symbol: check_as_as_switching_01
+         - name: as_with_map_01
+           path: kaneton/core/as/as_with_map_01
+           exec: tools/hvm
+           symbol: check_as_as_with_map_01
+         - name: as_with_regions_01
+           path: kaneton/core/as/as_with_regions_01
+           exec: tools/hvm
+           symbol: check_as_as_with_regions_01
+         - name: as_with_segments_01
+           path: kaneton/core/as/as_with_segments_01
+           exec: tools/hvm
+           symbol: check_as_as_with_segments_01
+         - name: clone_01
+           path: kaneton/core/as/clone_01
+           exec: tools/hvm
+           symbol: check_as_clone_01
+         - name: clone_02
+           path: kaneton/core/as/clone_02
+           exec: tools/hvm
+           symbol: check_as_clone_02
+         - name: copy_01
+           path: kaneton/core/as/copy_01
+           exec: tools/hvm
+           symbol: check_as_copy_01
+         - name: copy_02
+           path: kaneton/core/as/copy_02
+           exec: tools/hvm
+           symbol: check_as_copy_02
+         - name: give_01
+           path: kaneton/core/as/give_01
+           exec: tools/hvm
+           symbol: check_as_give_01
+         - name: paddr_vaddr_01
+           path: kaneton/core/as/paddr_vaddr_01
+           exec: tools/hvm
+           symbol: check_as_paddr_vaddr_01
+         - name: read_write_01
+           path: kaneton/core/as/read_write_01
+           exec: tools/hvm
+           symbol: check_as_read_write_01
+      - name: map
+        testsuite:
+         - name: multiple_reserve_01
+           path: kaneton/core/map/multiple_reserve_01
+           exec: tools/hvm
+           symbol: check_map_multiple_reserve_01
+         - name: multiple_reserve_release_01
+           path: kaneton/core/map/multiple_reserve_release_01
+           exec: tools/hvm
+           symbol: check_map_multiple_reserve_release_01
+         - name: simple_reserve_01
+           path: kaneton/core/map/simple_reserve_01
+           exec: tools/hvm
+           symbol: check_map_simple_reserve_01
+         - name: simple_reserve_release_01
+           path: kaneton/core/map/simple_reserve_release_01
+           exec: tools/hvm
+           symbol: check_map_simple_reserve_release_01
