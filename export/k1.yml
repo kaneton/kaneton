@@ -214,22 +214,6 @@
 
 -
   operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::map_chunk::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::map_chunk
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::unmap_chunk::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::unmap_chunk
-
--
-  operation: bremove
   id: kaneton/machine/architecture/ia32/generic/mapping.c::map_pd
 
 -

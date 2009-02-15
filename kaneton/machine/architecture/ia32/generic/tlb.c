@@ -29,24 +29,23 @@
  * ---------- functions -------------------------------------------------------
  */
 
-/*						     [block::tlb_invalidate] */
-
 /*
  * flushes a single pte cache given a page address.
  */
 
 t_error			ia32_tlb_invalidate(t_vaddr			page)
 {
+  /*						     [block::tlb_invalidate] */
 
   asm volatile("invlpg (%0)"
 	       :
 	       : "r" (page)
 	       : "memory");
 
+  /*						  [endblock::tlb_invalidate] */
+
   return ERROR_NONE;
 }
-
-/*						  [endblock::tlb_invalidate] */
 
 /*
  * flushes the whole pd and pt caches.

@@ -42,7 +42,6 @@ extern i_as		kasid;
 
 /*
  * this function directly maps a chunk of memory.
- *						    [block::map_chunk::comment]
  *
  * steps:
  *
@@ -52,15 +51,12 @@ extern i_as		kasid;
  *    to the virtual address.
  * 3) inject the manually mapped region into the kernel address space.
  * 4) invalidate tlb entry.
- *						 [endblock::map_chunk::comment]
  */
 
 t_error			ia32_map_chunk(t_vaddr		v,
 				       t_paddr		p,
 				       void*		alloc)
 {
-  /*							  [block::map_chunk] */
-
   i_region		useless;
   t_ia32_table		pt;
   t_ia32_page		pg;
@@ -140,15 +136,12 @@ t_error			ia32_map_chunk(t_vaddr		v,
 
   ia32_tlb_invalidate(v);
 
-  /*						       [endblock::map_chunk] */
-
   return (ERROR_NONE);
 }
 
 /*
  * this function unmaps a page previously mapped with the map_chunk
  * function.
- *						  [block::unmap_chunk::comment]
  *
  * steps:
  *
@@ -156,12 +149,10 @@ t_error			ia32_map_chunk(t_vaddr		v,
  * 2) remove, via the mirroring entry, the page-table entry.
  * 3) manually remove the kernel region associated.
  * 4) invalidate translation caches.
- *					       [endblock::unmap_chunk::comment]
  */
 
 t_error			ia32_unmap_chunk(t_vaddr	v)
 {
-  /*							[block::unmap_chunk] */
 
   t_ia32_table		pt;
   o_as*			as;
@@ -199,8 +190,6 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
    */
 
   ia32_tlb_invalidate(v);
-
-  /*						     [endblock::unmap_chunk] */
 
   return (ERROR_NONE);
 }

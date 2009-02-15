@@ -34,7 +34,7 @@
 
 This project aims at learning advanced memory management in operating systems. Students will learn how to deal with MMU and Cache entries (TLB) through the concepts of Physical Memory, Virtual Memory and Address Space.
 
-The students will also have to implement a memory allocator, with the algorithm of their choice. The performance of the allocator will be tested.
+The students will also have to implement a memory allocator, with the algorithm of their choice.
 
 %
 % requirements
@@ -50,7 +50,7 @@ The students must know the concepts of Physycal and Virtual memory and the mappi
 
 \section{Snapshot}
 
-There are 3 main managers in the kaneton design that are used to handle memory :
+There are 4 main managers in the kaneton design that are used to handle memory :
 
 \begin{itemize}
 \item \textbf{segment :} In the kaneton terminology, a segment is a block of physical memory. The segment manager handles the allocation of blocks in the physical memory, provides methods to read and write these blocks, and to set permissions on these blocks. Please note that this is not related to the Intel segment concept.
@@ -75,7 +75,7 @@ The segment manager, the map manager and the as manager are already provided in 
 
 A region designs a block of virtual memory, so it is a quite generic concept. Some of the work to be done is therefore architecture dependant, but since it also consists in dealing with the MMU mappings, some part of it is architecture dependant.
 
-Kaneton is a portable kernel, so each module has been designed to have an independant code and several dependant code, one for each architecture. The sudents will have to think about which code should go in the independant or in the dependant part. Please note that some functions may only have independant code.
+Kaneton is a portable kernel, so each module has been designed to have an independant code (core) and several dependant code(machine), one for each architecture. The sudents will have to think about which code should go in the core or in the machine part. Please note that some functions may only have independant code.
 
 \subsection*{Files}
 
@@ -123,8 +123,7 @@ Kaneton is a portable kernel, so each module has been designed to have an indepe
   \begin{itemize}
     \item REGION\_OPT\_NONE: no options
     \item REGION\_OPT\_FORCE: force the region to be reserved at virtual
-      address \argument{address}. Otherwise, it uses \code{region\_space} to
-      determine the address.
+      address \argument{address}. Otherwise, it uses the algorithm of your choice to find a free address.
     \item REGION\_OPT\_USER: The region will be addressable both in the user
       and kernel mode.
     \item REGION\_OPT\_PRIVILEGED: The region will only be addressable in the
@@ -162,7 +161,7 @@ Kaneton is a portable kernel, so each module has been designed to have an indepe
 				    \type{i\_region*} \argument{new}}
 {
   This function resizes the region \argument{old} of the address space
-  \argument{asid}. The new size is specified in \argument{size} and the resized
+  \argument{as}. The new size is specified in \argument{size} and the resized
   region is returned through the parameter \argument{new}.
 }
 
@@ -253,26 +252,15 @@ Kaneton is a portable kernel, so each module has been designed to have an indepe
   page table \argument{tab}.
 }
 
+\function{t\_error}{ia32\_tlb\_invalidate}{\type{t\_vaddr} \argument{page}}
+{
+  This functions invalidates the TLB entry for the virual address
+  \argument{page}.
+}
+
 \function{t\_error}{ia32\_tlb\_flush}{\type{void}}
 {
   This functions flushes the TLB of the CPU.
-}
-
-\function{t\_error}{ia32\_map\_chunk}{\type{t\_vaddr} \argument{v},
-				      \type{t\_paddr} \argument{p},
-				      \type{void*} \argument{alloc}}
-{
-  This function takes a preallocated region object in \argument{alloc}.
-  It will fill this object and create a mapping for the virtual address
-  \argument{v} to the physical address \argument{p} in the kernel address
-  space, and inject this region in the set of regions of the kernel as.
-}
-
-\function{t\_error}{ia32\_unmap\_chunk}{\type{t\_vaddr} \argument{v}}
-{
-  This function unmaps a page that has previously been mapped with the
-  map\_chunk function. The parameter \argument{v} specifies the virtual
-  address of the page to unmap.
 }
 
 \function{t\_error}{ia32\_map\_pd}{\type{t\_ia32\_directory*} \argument{pd}}
@@ -361,14 +349,15 @@ Since this is not tested, the output format is up to you.
 }
 
 \subsection*{Important}
-Please note that you have the independant and the dependant part to do.
-All the functions might not require an dependant part though. The dependant
-part file doesn't contain any prototypes. It's your responsability to add a
-dependant function, in glue if you think it needs one.
+Please note that you have the core and the machine part to do.
+All the functions might not require a machine part though. The machine
+part file (glue) doesn't contain any prototypes.
+It's your responsability to add a machine function, in glue if you think
+it needs one.
 
 \-
 
-In the independant part, we also removed some full functions (including the prototypes). You are free to make new functions, to make your code cleaner, as long as you at least implement the required interface below.
+In the machine part, we also removed some full functions (including the prototypes). You are free to make new functions, to make your code cleaner, as long as you at least implement the required interface below.
 
 \-
 
