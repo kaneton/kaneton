@@ -31,6 +31,8 @@ timeout 10 cat "$pts" 2>/dev/null | while read l
 do
 	l=`echo "$l" | sed -re 's///g'`
 
+	[ ! -z "$TEST_FULL_OUTPUT" ] && echo "$l"
+
 	case "$l" in
 		*"wait for command ...")
 			pts=`get_pts`
@@ -51,5 +53,7 @@ done
 
 
 xm list | grep "$name" > /dev/null && xm destroy "$name"
+	
+[ ! -z "$TEST_FULL_OUTPUT" ] && echo "--"
 
 diff -u "check/$TEST_PATH/$TEST_NAME.res" "$tmp_out"

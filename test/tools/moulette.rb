@@ -15,7 +15,6 @@ class Check
   def initialize(tarball)
     @filename = tarball.filename()
     @tarball = tarball
-	@dir = Dir.pwd + '/' + @tarball.dir
   end
   
   def pre(e, result)
@@ -27,7 +26,6 @@ class Check
 
   def cmd_env(e)
 	  str=""
-	  str += "TEST_DIR='#{@dir}' "
 	  for k in e.keys do
 	    str += "TEST_#{k.upcase}='#{e[k]}' "
 	  end
@@ -45,16 +43,13 @@ class Check
 
     e["result"] = "IN PROGRESS ..."
     
-    File.open('res.yaml', 'w') { |f| f.write(@tarball.testsuite.to_yaml) }
+    File.open('res.yml', 'w') { |f| f.write(@tarball.testsuite.to_yaml) }
 
-#cmd="timeout #{e["timeout"]} #{cmd}" if (e["timeout"])
-
-	cmd  = "cd #{@dir}/root && " # execute the command in the root directory
-	cmd += cmd_env(e) + " "
-	cmd += "#{@dir}/../#{e["exec"]} " # command
-	cmd += " > #{@dir}/#{result}/out 2> #{@dir}/#{result}/err; " # rediction for err and out
-	cmd += "/bin/echo -n $? > #{@dir}/#{result}/ret; " # put the error code into a file
-	cmd += "cat #{@dir}/#{result}/ret" # print the error code on stdout to get the restul into ret
+	cmd  = cmd_env(e) + " "
+	cmd += "test/#{e["exec"]} " # command
+	cmd += " > #{result}/out 2> #{result}/err; " # rediction for err and out
+	cmd += "/bin/echo -n $? > #{result}/ret; " # put the error code into a file
+	cmd += "cat #{result}/ret" # print the error code on stdout to get the restul into ret
     ret=`#{cmd}`
 
     e["result_path"] = result 
@@ -75,19 +70,15 @@ end
 
 class Tarball
 
-  attr_reader :filename, :testsuite, :dir
+  attr_reader :filename, :testsuite
 
   def initialize(file, testsuite)
-    @dir = file.sub(/.tar.bz2/, "")
     @filename = file
     @testsuite = testsuite
-
-    mymkdir("#{@dir}")
-    mymkdir("#{@dir}/result")
-    mymkdir("#{@dir}/root")
   end
 
   def run(obj)
+	mymkdir("result")
     depth(obj, @testsuite, "result")
   end
 
@@ -95,7 +86,7 @@ class Tarball
       if (tree["testsuite"])
         obj.pre(tree, result) 
         tree["testsuite"].each do |e|
-            mymkdir("#{@dir}/#{result}/#{e["name"]}")
+            mymkdir("#{result}/#{e["name"]}")
             depth(obj, e, "#{result}/#{e["name"]}")
         end
         obj.post(tree, result)
@@ -111,4 +102,4 @@ testsuite = root.transform
 t = Tarball.new(ARGV[1], testsuite)
 t.run(Check.new(t))
 
-File.open(ARGV[2], 'w') { |f| f.write(testsuite.to_yaml) }
+File.open("res.yml", 'w') { |f| f.write(testsuite.to_yaml) }

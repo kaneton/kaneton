@@ -67,16 +67,18 @@ def			clean():
   # remove the subversion directories
   entries = env.search(g_directory, "^\.svn$",
                        env.OPTION_DIRECTORY | env.OPTION_RECURSIVE)
-
   for entry in entries:
     env.remove(entry, env.OPTION_NONE)
 
   # remove the env._EXPORT_FILTER_ stuff
   entities = re.findall("([^\t ]+)", env._EXPORT_FILTER_)
-
   for entity in entities:
     env.remove(entity, env.OPTION_NONE)
 
+  # remove object file
+  entries = env.search(g_directory, "(\.o|\.lo)$", env.OPTION_FILE |  env.OPTION_RECURSIVE)
+  for entry in entries:
+    env.remove(entry, env.OPTION_NONE)
 
 def                     dist():
     global yaml_filename
@@ -94,11 +96,26 @@ def                     dist():
             break
     fd.close()
 
-    env.mkdir(g_directory + "/check", env.OPTION_NONE)
+    env.copy(env._CHECK_DIR_ + '/kaneton',
+             g_directory + "/test/kaneton", env.OPTION_RECURSIVE)
+    
+    env.copy(env._CHECK_DIR_ + '/Makefile',
+             g_directory + "/test/Makefile", env.OPTION_NONE)
 
-    for e in re.findall('path: ([\w/]+)', content):
-        env.copy(env._CHECK_DIR_ + '/' + e,
-                 g_directory + "/check/" + e, env.OPTION_RECURSIVE)
+    env.copy(env._CHECK_DIR_ + '/list',
+             g_directory + "/test/list", env.OPTION_NONE)
+    
+    env.copy(env._CHECK_DIR_ + '/check',
+             g_directory + "/test/check", env.OPTION_RECURSIVE)
+
+    env.mkdir(g_directory + "/test", env.OPTION_NONE)
+    env.copy(env._TEST_DIR_ + '/tools',
+             g_directory + "/test/tools", env.OPTION_RECURSIVE)
+    env.copy(env._TESTSUITE_,
+             g_directory + "/test/test.yml" , env.OPTION_NONE)
+
+    env.copy(env._SOURCE_DIR_ + '/environment/profile/user/test',
+             g_directory + "/environment/profile/user", env.OPTION_RECURSIVE)
 
     clean()
 
@@ -114,7 +131,7 @@ def                     dist():
              env.OPTION_NONE)
              
     env.display(env.HEADER_OK,
-                "removing tomporary directory...",
+                "removing tamporary directory...",
                 env.OPTION_NONE)
 
     env.remove(g_directory, env.OPTION_NONE)
