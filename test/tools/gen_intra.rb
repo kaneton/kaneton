@@ -3,6 +3,12 @@
 require 'yaml'
 require 'erb'
 
+class String
+  def escape_single_quotes
+    self.gsub(/'/, "\\\\'")
+  end
+end
+
 $template_tree = %{
       <%  if (@e["testsuite"]) 
             @e["testsuite"].each do |n| %>
@@ -41,7 +47,7 @@ class Html
 
      str = ""
      while s = fd.gets()
-       str += s
+       str += s.escape_single_quotes()
      end
      return str
   end
