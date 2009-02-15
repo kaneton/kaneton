@@ -126,10 +126,6 @@
 
 -
   operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_build::comment
-
--
-  operation: bremove
   id: kaneton/machine/architecture/ia32/generic/pd.c::pd_build
 
 -

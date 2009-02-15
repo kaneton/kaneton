@@ -69,22 +69,20 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
   return ERROR_NONE;
 }
 
+/*							   [block::pd_build] */
+
 /*
  * builds a new page directory.
- *						     [block::pd_build::comment]
  *
  * steps:
  *
  * 1) checks address alignement.
  * 2) fills the record.
- *						  [endblock::pd_build::comment]
  */
 
 t_error			ia32_pd_build(t_paddr			base,
 				      t_ia32_directory*		directory)
 {
-  /*							   [block::pd_build] */
-
   ASSERT(directory != NULL);
 
   /*
@@ -100,10 +98,12 @@ t_error			ia32_pd_build(t_paddr			base,
 
   *directory = (t_ia32_directory)base;
 
-  /*							[endblock::pd_build] */
-
   return ERROR_NONE;
 }
+
+/*							[endblock::pd_build] */
+
+/*							    [block::pd_base] */
 
 /*
  * gets the base of a pd.
@@ -113,7 +113,6 @@ t_error			ia32_pd_build(t_paddr			base,
 t_error			ia32_pd_base(t_ia32_directory*		dir,
 				     t_paddr*			base)
 {
-  /*							    [block::pd_base] */
   t_ia32_pde*		d;
 
   ASSERT(base != NULL);
@@ -133,10 +132,10 @@ t_error			ia32_pd_base(t_ia32_directory*		dir,
 
   *base = IA32_MK_BASE(d);
 
-  /*							 [endblock::pd_base] */
-
   return ERROR_NONE;
 }
+
+/*							 [endblock::pd_base] */
 
 /*
  * activates a directory.
