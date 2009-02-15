@@ -7,7 +7,7 @@ kernel = "/usr/lib/xen/boot/hvmloader"
 builder='hvm'
 memory = 128
 name = "$name"
-disk=['file:$TEST_DIR/root/kaneton.iso,hdc:cdrom,r']
+disk=['file:`pwd`/kaneton.iso,hdc:cdrom,r']
 boot="d"
 vnc=1
 serial='pty'
@@ -56,4 +56,4 @@ xm list | grep "$name" > /dev/null && xm destroy "$name"
 	
 [ ! -z "$TEST_FULL_OUTPUT" ] && echo "--"
 
-diff -u "check/$TEST_PATH/$TEST_NAME.res" "$tmp_out"
+diff -u "test/$TEST_PATH/$TEST_NAME.res" "$tmp_out"

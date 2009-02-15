@@ -10,10 +10,10 @@ done
 
 ssh compile "mkdir -m 700 ~$user/.ssh && 		\
              cp ~/.ssh/authorized_keys ~$user/.ssh &&	\
-	     chown -R $user ~$user &&			\
-	     chmod 700 ~$user"
+			 chown -R $user ~$user &&			\
+			 chmod 700 ~$user"
 
-scp -r . $user@compile:kaneton
+rsync -avzr . $user@compile:kaneton
 
 ssh $user@compile "export KANETON_PYTHON=/usr/bin/python	\
 	            export KANETON_HOST=linux/ia32		\
@@ -23,6 +23,7 @@ ssh $user@compile "export KANETON_PYTHON=/usr/bin/python	\
 		    env &&					\
 		    yes | make -C kaneton initialize &&		\
 		    make -C kaneton clear &&			\
+		    yes | make -C kaneton initialize &&		\
 		    yes | make -C kaneton build &&		\
 		    yes | make -C kaneton install" 2>&1
 

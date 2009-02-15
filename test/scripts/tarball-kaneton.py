@@ -82,7 +82,8 @@ def                     dist():
 
     g_directory = env.temporary(env.OPTION_DIRECTORY)
 
-    env.copy(env._IMAGE_, g_directory + '/kaneton.img',
+    env.mkdir(g_directory + "/kaneton", env.OPTION_NONE)
+    env.copy(env._IMAGE_, g_directory + '/kaneton/kaneton.img',
              env.OPTION_NONE)
 
     clean()
