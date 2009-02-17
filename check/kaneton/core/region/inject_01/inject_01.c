@@ -27,6 +27,11 @@ void		check_region_inject_01(void)
   o->size = 2 * PAGESZ;
   o->opts = REGION_OPT_FORCE;
 
+  ASSERT(ia32_map_region(as, seg,
+			 PAGESZ, REGION_OPT_FORCE,
+			 0x40000000, 2 * PAGESZ) == ERROR_NONE,
+	 "error mapping the region");
+
   ASSERT(region_inject(as, o, &reg) == ERROR_NONE, "error injecting region\n");
 
   ASSERT(region_get(as, reg, &o) == ERROR_NONE,
