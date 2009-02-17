@@ -35,8 +35,7 @@ include			../environment/env.mk
 
 SUBDIRS			:=		core				\
 					machine				\
-					libc				\
-					$(_TEST_DIR_)			
+					libc
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -47,6 +46,7 @@ main:			dependencies $(_KANETON_)
 
 ifneq ($(_TESTSUITE_),)
 INPUTS = $(_TEST_LO_)
+SUBDIRS += $(_TEST_DIR_)			
 endif
 
 $(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_) $(INPUTS)
