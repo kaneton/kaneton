@@ -53,6 +53,10 @@
 
 -
   operation: fremove
+  path: trace
+
+-
+  operation: fremove
   path: transcript
 
 -
