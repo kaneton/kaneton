@@ -341,13 +341,17 @@ void			free(void*				ptr)
 
   if (ptr < alloc.lowest)
     {
+#ifdef MALLOC_DEBUG
       printf("warning: junk pointer, to low to make sense.\n");
+#endif
       return;
     }
 
   if (ptr > alloc.highest)
     {
+#ifdef MALLOC_DEBUG
       printf("warning: junk pointer, to high to make sense.\n");
+#endif
       return;
     }
 
