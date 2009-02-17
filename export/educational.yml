@@ -4,6 +4,10 @@
 
 -
   operation: fremove
+  path: boot/bootloader/ibm-pc.ia32/test
+
+-
+  operation: fremove
   path: environment/profile/host/darwin/ia32.ia32/optimised
 
 -

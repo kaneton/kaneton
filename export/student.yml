@@ -13,6 +13,10 @@
 
 -
   operation: fremove
+  path: README
+
+-
+  operation: fremove
   path: cheat
 
 -
@@ -141,6 +145,10 @@
 
 -
   operation: fremove
+  path: environment/profile/user/test
+
+-
+  operation: fremove
   path: kaneton/machine/architecture/mips64
 
 -
@@ -198,6 +206,10 @@
 -
   operation: fremove
   path: tool/mbl/qemu-mips
+
+-
+  operation: fremove
+  path: tool/script
 
 -
   operation: fremove
