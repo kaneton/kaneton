@@ -155,16 +155,6 @@ Kaneton is a portable kernel, so each module has been designed to have an indepe
   \argument{asid}. 
 }
 
-\function{t\_error}{region\_resize}{\type{i\_as} \argument{as},
-				    \type{i\_region} \argument{old},
-				    \type{t\_vsize} \argument{size},
-				    \type{i\_region*} \argument{new}}
-{
-  This function resizes the region \argument{old} of the address space
-  \argument{as}. The new size is specified in \argument{size} and the resized
-  region is returned through the parameter \argument{new}.
-}
-
 \function{t\_error}{region\_flush}{\type{i\_as} \argument{asid}}
 {
   This function releases all the regions of the address space \argument{asid}.

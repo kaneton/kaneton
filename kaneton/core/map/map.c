@@ -168,6 +168,8 @@ t_error			map_release(i_as		asid,
   MAP_LEAVE(map, ERROR_NONE);
 }
 
+/*							     [block::resize] */
+
 /*
  * this function remap some memory.
  *
@@ -273,6 +275,8 @@ t_error			map_resize(i_as			asid,
 
   MAP_LEAVE(map, ERROR_NONE);
 }
+
+/*							  [endblock::resize] */
 
 /*
  * initialize the map manager.

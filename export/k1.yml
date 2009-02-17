@@ -28,10 +28,6 @@
 
 -
   operation: bremove
-  id: kaneton/core/region/region.c::resize::comment
-
--
-  operation: bremove
   id: kaneton/core/region/region.c::resize
 
 -
@@ -235,3 +231,17 @@
 -
   operation: bremove
   id: kaneton/machine/architecture/ia32/generic/mapping.c::unmap_region
+
+-
+  operation: bremove
+  id: kaneton/core/map/map.c::resize
+
+-
+  operation: bremove
+  id: kaneton/core/interface/interface.c::map_resize
+
+-
+  operation: breplace
+  id: kaneton/core/interface/interface.c::dispatch::map_resize
+  data: |
+    NULL,

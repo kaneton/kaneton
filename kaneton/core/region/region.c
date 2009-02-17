@@ -325,9 +325,10 @@ t_error			region_split(i_as			asid,
 
 /*							   [endblock::split] */
 
+/*							     [block::resize] */
+
 /*
  * this function resizes a region.
- *						       [block::resize::comment]
  *
  * steps:
  *
@@ -336,7 +337,6 @@ t_error			region_split(i_as			asid,
  * 3) the destination region is the same as the original one.
  * 4) call the machine dependent code.
  * 5) set the new size.
- *						    [endblock::resize::comment]
  */
 
 t_error			region_resize(i_as			as,
@@ -344,7 +344,6 @@ t_error			region_resize(i_as			as,
 				      t_vsize			size,
 				      i_region*			new)
 {
-  /*							     [block::resize] */
 
   o_region*		reg = NULL;
   o_region*		next_reg;
@@ -427,10 +426,10 @@ t_error			region_resize(i_as			as,
 
   reg->size = size;
 
-  /*							  [endblock::resize] */
-
   REGION_LEAVE(region, ERROR_NONE);
 }
+
+/*							  [endblock::resize] */
 
 /*							   [block::coalesce] */
 

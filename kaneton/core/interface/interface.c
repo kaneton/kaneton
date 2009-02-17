@@ -491,6 +491,8 @@ t_error		interface_map_release(o_syscall*	message)
   return (ERROR_NONE);
 }
 
+/*							 [block::map_resize] */
+
 /*
  * this function launchs the map_resize() function.
  */
@@ -510,6 +512,8 @@ t_error		interface_map_resize(o_syscall*	message)
 
   return (ERROR_NONE);
 }
+
+/*						      [endblock::map_resize] */
 
 /*
  * this function launchs the region_reserve() function.
@@ -1651,7 +1655,9 @@ t_interface_dispatch dispatch[] =
   interface_io_write_64,
   interface_map_reserve,
   interface_map_release,
+/*					       [block::dispatch::map_resize] */
   interface_map_resize,
+/*					    [endblock::dispatch::map_resize] */
   interface_region_reserve,
   interface_region_release,
   interface_scheduler_quantum,
