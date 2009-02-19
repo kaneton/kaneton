@@ -22,10 +22,6 @@ testsuite:
            path: kaneton/core/segment/clone_01
            symbol: check_segment_clone_01
            exec: tools/hvm
-         - name: coalesce_01
-           path: kaneton/core/segment/coalesce_01
-           symbol: check_segment_coalesce_01
-           exec: tools/hvm
          - name: copy_01
            path: kaneton/core/segment/copy_01
            symbol: check_segment_copy_01
@@ -110,10 +106,6 @@ testsuite:
            path: kaneton/core/segment/simple_reserve_release_01
            symbol: check_segment_simple_reserve_release_01
            exec: tools/hvm
-         - name: split_01
-           path: kaneton/core/segment/split_01
-           symbol: check_segment_split_01
-           exec: tools/hvm
       - name: region
         testsuite:
          - name: reserve_opt_none_01
@@ -144,22 +136,6 @@ testsuite:
            path: kaneton/core/region/multiple_reserve_release_01
            exec: tools/hvm
            symbol: check_region_multiple_reserve_release_01
-         - name: simple_resize_01
-           path: kaneton/core/region/simple_resize_01
-           exec: tools/hvm
-           symbol: check_region_simple_resize_01
-         - name: multiple_resize_01
-           path: kaneton/core/region/multiple_resize_01
-           exec: tools/hvm
-           symbol: check_region_multiple_resize_01
-         - name: resize_error_01
-           path: kaneton/core/region/resize_error_01
-           exec: tools/hvm
-           symbol: check_region_resize_error_01
-         - name: split_coalesce_01
-           path: kaneton/core/region/split_coalesce_01
-           exec: tools/hvm
-           symbol: check_region_split_coalesce_01
       - name: as
         testsuite:
          - name: as_switching_01
@@ -208,10 +184,6 @@ testsuite:
            symbol: check_as_read_write_01
       - name: map
         testsuite:
-         - name: multiple_reserve_01
-           path: kaneton/core/map/multiple_reserve_01
-           exec: tools/hvm
-           symbol: check_map_multiple_reserve_01
          - name: multiple_reserve_release_01
            path: kaneton/core/map/multiple_reserve_release_01
            exec: tools/hvm
