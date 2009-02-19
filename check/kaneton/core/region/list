@@ -6,7 +6,3 @@ inject_01
 simple_write_01
 multiple_reserve_01
 multiple_reserve_release_01
-simple_resize_01
-multiple_resize_01
-resize_error_01
-split_coalesce_01
