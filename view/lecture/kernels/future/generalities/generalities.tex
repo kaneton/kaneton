@@ -1,0 +1,671 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane.../kernels/prerequisites/prerequisites.tex
+%
+% created       julien quintard   [wed may 16 19:28:59 2007]
+% updated       julien quintard   [wed may 16 19:29:16 2007]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Kernel Generalities}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% figures
+%
+
+% bsd
+
+\pgfdeclareimage[interpolate=true,width=157pt,height=120pt]
+                {bsd}
+		{figures/bsd}
+
+% kaneton
+
+\pgfdeclareimage[interpolate=true,width=145pt,height=120pt]
+                {kaneton}
+		{figures/kaneton}
+
+% lseos
+
+\pgfdeclareimage[interpolate=true,width=174pt,height=120pt]
+                {lseos}
+		{figures/lseos}
+
+% hexo
+
+\pgfdeclareimage[interpolate=true,width=176pt,height=120pt]
+                {hexo}
+		{figures/hexo}
+
+% nt
+
+\pgfdeclareimage[interpolate=true,width=194pt,height=120pt]
+                {nt}
+		{figures/nt}
+
+% k
+
+\pgfdeclareimage[interpolate=true,width=151pt,height=120pt]
+                {k}
+		{figures/k}
+
+\pgfdeclareimage{l4ipc}
+                {figures/l4ipc}
+
+\pgfdeclareimage{xenarchi}
+                {figures/xenarchi}
+
+\tableofcontents
+
+%
+% roles of a kernel
+%
+
+\section{Quick History}
+
+\begin{frame}
+\frametitle{Quick history}
+
+        \begin{itemize}
+                \item 60s - IBM - First main frame
+                \item 70s - Unix - Server operating system 
+                \item 80s - Microsoft  - Personnal compuer (PC)
+                \item 90s - Linux / Minix / GNU - Open source
+                \item 2000 - VmWare / Goggle - Virtualisation / Distribution 
+        \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Evolution ...}
+The way to use computer has changed through the year.
+
+  \-
+
+The kernel and operating systems as to adapt over the years.
+
+  \-
+
+Kernel went from massively multi-user to mono-user and then end up begin
+a mix of that with virtualisation and distrubution.
+\end{frame}
+
+\section{Introduction}
+
+% -)
+
+\begin{frame}
+  \frametitle{Goals}
+
+  The kernel is the central part of an operating system. The kernel is
+  the entity offering abstraction of the hardware to the applications,
+  including:
+
+  \begin{itemize}
+  \item
+    Memory management
+  \item
+    Process management
+  \item
+    I/Os and events (both leading to drivers)
+  \item
+    Inter-Process Communication
+  \end{itemize}
+
+  In addition, the kernel must ensure the security of the resources.
+
+  \-
+
+  The final goal of a kernel is to run user programs, to enable them
+  to interact with hardware and between each others, what constitues
+  an operating system.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{A good kernel is\ldots}
+
+  \begin{itemize}
+  \item
+    Fast. Performances are critical.
+  \item
+    Reliable. When a kernel crashes, the whole machine does.
+  \item
+    Maintainable. Other developers must be able to write their own
+    drivers or services.
+  \item
+    Fault tolerant. Either in terms of hardware faults and software
+    faults.
+  \item
+    Secure.
+  \item
+    Portable. To work on different hardware with less possible porting
+    effort.
+  \item
+    Distributed ? Some says a kernel has to handle distribution and looks
+    like a single instance even if it's running on thousand of machines.
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Kernel-space \& User-land}
+
+  Kernel-space is the execution environment of the kernel. All
+  operations are permitted. Hardware can be accessed and
+  controlled. Microprocessor internal stuctures and control registers
+  too. The kernel can access all the tasks address spaces.
+
+  \-
+
+  User-land is the environment of classical programs, with many
+  restrictions. Hardware access is forbidden. Configuration facilities
+  are denied. A program can only access its own address space.
+
+  \-
+
+  The more code you have in kernel-space, the more risks of crashes you
+  have.
+
+\end{frame}
+
+%
+% kernel choisses 
+%
+
+\section{Kernel choisses}
+
+\section{Mono/Multi user}
+\begin{frame}
+  \frametitle{Mono/Multi user}
+  \begin{itemize}
+        \item Usally this problem comes allong with the multi-tasking.
+        If we decide to go for the multi-tasking we might want to as
+        multi-user support to provide security.
+        \item Some systems don't need multi-user/multi-tasking. They are
+        ofen use for embedded/Real-Time application.
+        \item Multi-user support involve to thing about a system to
+        protect data from one user against another. It could be
+        ACL/capabalities/\ldots
+  \end{itemize}
+\end{frame}
+
+
+\subsection{MM: Segmentation/Pagination}
+\begin{frame}
+  \frametitle{MM: Segmentation/Pagination}
+  \begin{itemize}
+        \item Segmentation/Pagination are generally used to improved
+        security and flexibility.
+        \item The walking throw the page tables takes a bit of time and
+        it's not deterministic. Therefor it can't be used of hard
+        real-time.
+        \item To support the pagination you have to have a MMU on your
+        platform.
+  \end{itemize}
+\end{frame}
+
+\subsection{Scheduling Offline/Online}
+\begin{frame}
+  \frametitle{Scheduling: Offline/Online}
+        \begin{itemize}
+        \item Online:
+        \begin{itemize}
+                \item The online scheduling is the usal way to schedule
+                nowadays. The scheduler is dynamic and alloce the
+                timeslices on demand.
+                \item It's much more flexible than the scheduling
+                offline.
+                \item The scheduler itself consumes some CPU time.
+        \end{itemize}
+        \item Offline:
+        \begin{itemize}
+                \item The order in which the tasks will be executed is
+                pre-computed.
+                \item You need a limited number of taks.
+                \item It's not dymaic.
+                \item Fill perfectly in a lockdown system (real-time
+                again?)
+        \end{itemize}
+        \end{itemize}
+\end{frame}
+
+%
+% monolithic kernels
+%
+
+\section{Kernel design}
+\subsection{Monolithic kernels}
+
+%
+% monolithic kernels
+%
+
+\begin{frame}
+  \frametitle{Monolithic kernels}
+
+  Monolithic kernels includes everything into the kernel, even
+  drivers, filesystems, networking\ldots
+
+  \-
+
+  \emph{This approach well known as ``The Big Mess''. The structure is
+  that there is no structure.} -- Tanenbaum
+
+  \-
+
+  Pros:
+
+  \begin{itemize}
+  \item
+    High performances: only function calls
+  \end{itemize}
+
+  \-
+
+  Cons:
+
+  \begin{itemize}
+  \item
+    Dangerous: one bug in a non-critical service may lead the system
+    to crash
+  \item
+    Not easy to understand and maintain
+  \end{itemize}
+
+\end{frame}
+
+%
+% bsd
+%
+
+\begin{frame}
+  \frametitle{Example: BSD}
+
+  4.4BSD kernel include all functionnalities in kernel-land: from
+    process management to network layer, through filesystems.
+
+  \begin{center}
+    \pgfuseimage{bsd}
+  \end{center}
+
+  The kernel is about 200.000 lines long.
+
+\end{frame}
+
+%
+% microkernels
+%
+
+\subsection{Micro-kernels}
+
+%
+% microkernels
+%
+
+\begin{frame}
+  \frametitle{Micro-kernels}
+
+  In micro-kernels, only the critical functionnalities are running in
+  kernels-space. The other services are running as user programs
+  (having extended privileges).
+
+  \-
+
+  Pros:
+
+  \begin{itemize}
+  \item
+    Small amount of code in kernel-space: less bugs and risks of
+    crashes
+  \item
+    Clearest design, easy to understand
+  \item
+    Services can be started and stopped: reduce system load, run
+    concurrent services\ldots
+  \end{itemize}
+
+  \-
+
+  Cons:
+
+  \begin{itemize}
+  \item
+    Lots of IPC: slower performances
+  \end{itemize}
+
+\end{frame}
+
+%
+% kaneton
+%
+
+\begin{frame}
+  \frametitle{Example: kaneton}
+
+  kaneton provide a dozen of critical managers: memory, process,
+  I/O\ldots{} Only these functionnalities are running in kernel-land.
+
+  \begin{center}
+    \pgfuseimage{kaneton}
+  \end{center}
+
+  Advanced functionnalities (filesystems, network\ldots) are provided
+  by services in userland. IPC are omnipresent.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example: L4}
+  \begin{itemize}
+        \item The kernel only contains 3 things:
+        \begin{itemize}
+                \item Threads
+                \item Memory mapping: map, unmap and grant
+                \item IPC
+        \end{itemize}
+        \item Concept of recursive address space, $\sigma{}_0$ 
+        \item IPC communication: Chiefs and clan.
+  \end{itemize}
+\end{frame}
+\begin{frame}
+  \frametitle{L4 IPCs: Chiefs and clans}
+  \begin{center}
+  \pgfuseimage{l4ipc}
+  Chiefs and Clans in L4. 
+  \end{center}
+\end{frame}
+
+\begin{frame}
+        \frametitle{Xen the open source hypervisor}
+        \begin{itemize}
+                \item Xen boots and then start linux/solaris/netbsd dom0.
+                \item Dom0 is a module of the kernel xen.
+                \item Each domain (virtual machine) is a module.
+                \item In the futur dom0 could be split in different
+                volume (stub-domain).
+                \item There is communication mechanisme between the
+                different layer (xenstore, ring buffers).
+        \end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{The xen architecture}
+\begin{center}
+\pgfuseimage{xenarchi}
+
+
+The xen architecture
+
+\end{center}
+\end{frame}
+
+%
+% nanokernels
+%
+
+\subsection{Nano-kernels}
+
+%
+% nanokernels
+%
+
+\begin{frame}
+  \frametitle{Nano-kernels}
+
+  The only difference with micro-kernels is that more and more
+  services are pushed out of kernel-space. The kernel code is then
+  reduced.
+
+\end{frame}
+
+%
+% lse/os
+%
+
+\begin{frame}
+  \frametitle{Example: LSE/OS}
+
+  LSE/OS has a nano-kernel conception to keep the code as tiny as
+  possible, preventing bugs into the kernel leading to global crashed
+  of the system. Only the core is running in kernel-land.
+
+  \begin{center}
+    \pgfuseimage{lseos}
+  \end{center}
+
+  LSE/OS pushes out of the kernel the timer and interrupt controller
+  modules and offers minimal services for task and memory management.
+
+\end{frame}
+
+%
+% exokernels
+%
+
+\subsection{Exo-kernels}
+
+%
+% exokernels
+%
+
+\begin{frame}
+  \frametitle{Exo-kernels}
+
+  Exo-kernels is a very young class of kernel, still under research
+  effort. Principles:
+
+  \begin{itemize}
+  \item
+    A few abstraction as possible
+  \item
+    Abstractions are libraries
+  \item
+    Build other abstractions on existing one
+  \item
+    Programs use directly these abstractions for performances
+  \end{itemize}
+
+  \-
+
+  No commercial operating systems are based on exo-kernel.
+
+  \-
+
+  Pros:
+
+  \begin{itemize}
+  \item
+    Fully customizable, by adding and removing unnecessary libraries
+  \item
+    Good performances: function calls like in monolithic kernels
+  \item
+    Clear design: modules are libraries
+  \end{itemize}
+
+\end{frame}
+
+%
+% hexo
+%
+
+\begin{frame}
+  \frametitle{Example: HEXO}
+
+  HEXO is a massively parallel heterogeneous multiprocessor
+  exo-kernel.
+
+  \begin{center}
+    \pgfuseimage{hexo}
+  \end{center}
+
+  HEXO is build over two abstractions : CPU-specific and
+  Platform-specific. Higher level abstractions can be wrote easily
+  over HEXO's primitives.
+
+\end{frame}
+
+%
+% hybrid kernels
+%
+
+\subsection{Hybrid kernels}
+
+%
+% hybrid kernels
+%
+
+\begin{frame}
+  \frametitle{Hybrid kernels}
+
+  The hybrid kernels relies on all the previously studied kernel
+  models.
+
+  \begin{itemize}
+  \item
+    Structure similar to micro-kernels, with services
+  \item
+    Most of the code is running in kernel-land to improve performance,
+    like in monolithic kernels
+  \end{itemize}
+
+  This class of kernels is considered as ``marketing argument'' by
+  many people, because there is no great innovation.
+
+  \-
+
+  Pros:
+
+  \begin{itemize}
+  \item
+    All in kernel-space: less IPCs, better performances
+  \item
+    Micro-kernel design: clear and easy to maintain
+  \end{itemize}
+
+  \-
+
+  Cons:
+
+  \begin{itemize}
+  \item
+    Risks of crashes like with monolithic designs
+  \end{itemize}
+
+\end{frame}
+
+%
+% windows nt
+%
+
+\begin{frame}
+  \frametitle{Example: Windows NT}
+
+  \begin{center}
+    \pgfuseimage{nt}
+  \end{center}
+
+  The NT kernel is a mix of exo-kernels (HAL), micro-kernels
+  (services) and monolithic kernels (everything in kernel-land). On
+  Windows NT, it is fun to notice that even the GUI services are part
+  of the kernel.
+
+\end{frame}
+
+%
+% specific kernels
+%
+
+\subsection{Specific kernels}
+
+%
+% specific kernels
+%
+
+\begin{frame}
+  \frametitle{Specific kernels}
+
+  Specific kernels are dedicated to specific domains and applications.
+
+  \begin{itemize}
+  \item
+    Some of the classical functionnalities are not provided
+  \item
+    Important drivers are directly included into the kernel
+  \item
+    No portability
+  \item
+    Reduced set of system calls
+  \item
+    Non-standard API (specific API)
+  \end{itemize}
+
+  \-
+
+  For example, the operating system of a washing machine does not need
+  virtual memory, scheduler or filesystems.
+
+\end{frame}
+
+%
+% k
+%
+
+\begin{frame}
+  \frametitle{Example: K}
+
+  K is a specific kernel providing a reduced set of functionnality. K
+  is intended to run small games.
+
+  \begin{center}
+    \pgfuseimage{k}
+  \end{center}
+
+  K does not provide some classical functionnalities such as virtual
+  memory or process management, but is provides some main functions
+  for its specific domain like video or sound drivers.
+
+\end{frame}
+
+\end{document}
