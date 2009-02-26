@@ -1,16 +1,17 @@
 ---
 name: Kaneton-K1
 testsuite:
-  - name: pre-testing
+  - name: kaneton
     coef: 0
     testsuite:
       - name: compile
         exec: tools/compile
+        fatal: true
       - name: create_iso
         img: kaneton.img
         iso: kaneton.iso
         exec: tools/mkiso
-  - name: kaneton
+  - name: k1
     testsuite:
       - name: segment
         testsuite:
@@ -49,10 +50,6 @@ testsuite:
          - name: multiple_reserve_03
            path: kaneton/core/segment/multiple_reserve_03
            symbol: check_segment_multiple_reserve_03
-           exec: tools/hvm
-         - name: multiple_reserve_release_01
-           path: kaneton/core/segment/multiple_reserve_release_01
-           symbol: check_segment_multiple_reserve_release_01
            exec: tools/hvm
          - name: perms_01
            path: kaneton/core/segment/perms_01
@@ -184,10 +181,6 @@ testsuite:
            symbol: check_as_read_write_01
       - name: map
         testsuite:
-         - name: multiple_reserve_release_01
-           path: kaneton/core/map/multiple_reserve_release_01
-           exec: tools/hvm
-           symbol: check_map_multiple_reserve_release_01
          - name: simple_reserve_01
            path: kaneton/core/map/simple_reserve_01
            exec: tools/hvm
