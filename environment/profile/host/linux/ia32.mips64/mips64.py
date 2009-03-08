@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
+# file          /home/enguerrand/...e/host/linux/ia32.mips64/R4000/mips64.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [sun dec  2 17:49:45 2007]
+# updated       enguerrand raymond   [sun jan 25 22:46:27 2009]
 #
 
 #
