@@ -1,10 +1,6 @@
+.global bootloader_entry
 
-	.extern start
-	
-start:
-	j loop
-
-loop:
+bootloader_entry:
 	.set noat
 	move $1, $0
 	.set at
@@ -35,6 +31,6 @@ loop:
 	move $26, $0
 	move $27, $0
 	move $28, $0
-	move $29, $0
+	ld $sp, 0xffffffffa0000000
 	move $30, $0
-	j start
+	j bootloader

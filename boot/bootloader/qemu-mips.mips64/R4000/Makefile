@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...otloader/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated       enguerrand raymond   [sun jan 25 16:39:02 2009]
+# updated          [sun feb  8 17:13:43 2009]
 #
 
 #
@@ -35,28 +35,28 @@ include			../../../../environment/env.mk
 
 BOOTLOADER		:=		bootloader
 
-BOOTLOADER_C		:=		
+BOOTLOADER_C		:=		bootloader.c
 
-BOOTLOADER_S		:=		bootloader.S
+BOOTLOADER_S		:=		entry.S
 
-BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
-					$(BOOTLOADER_S:.S=.o)
+BOOTLOADER_O		:=		$(BOOTLOADER_S:.S=.o)		\
+					$(BOOTLOADER_C:.c=.o)
 
-BOOTLOADER_INCLUDE	:=
+BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(_BOOTLOADER_LO_)
+main:			$(BOOTLOADER)
 
-$(_BOOTLOADER_LO_):	$(BOOTLOADER_O)
-	$(call env_remove,$(_BOOTLOADER_LO_),)
+$(BOOTLOADER):	$(BOOTLOADER_O)
+	#$(call env_remove,$(_BOOTLOADER_LO_),)
 
-	$(call env_archive,$(_BOOTLOADER_LO_),$(BOOTLOADER_O),)
+	#$(call env_archive,$(_BOOTLOADER_LO_),$(BOOTLOADER_O),)
 
-	$(call env_executable,$(_BOOTLOADER_),				\
+	$(call env_executable,$(BOOTLOADER),				\
 			      $(BOOTLOADER_O),				\
 			      $(_BOOTLOADER_DIR_)/layout/bootloader.lyt,\
 			      $(ENV_OPTION_NO_STANDARD))

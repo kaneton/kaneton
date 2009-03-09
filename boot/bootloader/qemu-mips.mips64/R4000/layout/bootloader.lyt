@@ -1,5 +1,5 @@
 OUTPUT_FORMAT("elf64-littlemips")
-ENTRY(start)
+ENTRY(bootloader_entry)
 
 SECTIONS
 {
@@ -8,4 +8,5 @@ SECTIONS
 	.data : { *(.data) *(.rdata) *(.rodata) }
 	_gp = ALIGN(8);
 	.bss : { *(.bss) }
+	__bootloader_end = .;
 }

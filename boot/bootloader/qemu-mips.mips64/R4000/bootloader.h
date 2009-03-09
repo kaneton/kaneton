@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.h
+ * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.h
  *
  * created       enguerrand raymond   [sun oct 12 18:58:49 2008]
- * updated       enguerrand raymond   [sun oct 12 19:13:12 2008]
+ * updated          [sun feb  8 15:39:58 2009]
  */
 
 #ifndef BOOTLOADER_H
@@ -21,5 +21,22 @@
   struct								\
   {									\
   }
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      bootloader.c
+ */
+
+/*
+ * bootloader.c
+ */
+
+void	bootloader(void);
+
+
+/*
+ * eop
+ */
 
 #endif
