@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kane...ure/kernels/future/security/security.tex
+% file          /home/mycure/kane...kernels/future/interrupts/interrupts.tex
 %
 % created       julien quintard   [fri oct 24 17:31:58 2008]
-% updated       julien quintard   [sat jan 17 17:15:18 2009]
+% updated       julien quintard   [wed mar 18 21:57:50 2009]
 %
 
 %
@@ -485,7 +485,7 @@ When a imprecise interrupt occurs, the excepting instruction is unrelated to the
 \begin{frame}
   \frametitle{Exemple :: The machine-check}
 
-The machine-check exception (\#MC) occurs when an unrecoverable hardware problem happens. This exception is reported on Windows with the famous blue screen and on Linux with a \r{kernel panic} message.
+The machine-check exception (\#MC) occurs when an unrecoverable hardware problem happens. This exception is reported on Windows with the famous blue screen and on Linux with a kernel panic message.
 
 \-
 
@@ -659,7 +659,7 @@ Sun Microsystems, with his operating system Solaris, offer a stack protection me
 
 \-
 
-Each stack page is rounded by two blank page (virtual pages without physical memory allocated). These pages are called \r{red zones} because when the process push data farther than the stack limit, it no more write out data of another process.
+Each stack page is rounded by two blank page (virtual pages without physical memory allocated). These pages are called red zones because when the process push data farther than the stack limit, it no more write out data of another process.
 
 \-
 
@@ -687,7 +687,7 @@ The Memory Management Unit offers a mechanism to the programmer to replace pages
 
 \-
 
-This exceptions is know as \#PF for IA-32, DTLB-miss and ITLB-miss for Power-PC\etc{}.
+This exceptions is know as \#PF for IA-32, DTLB-miss and ITLB-miss for Power-PC \etc{}.
 
 \-
 
