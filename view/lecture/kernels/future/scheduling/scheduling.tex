@@ -1,0 +1,473 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...ure/kernels/future/security/security.tex
+%
+% created       julien quintard   [fri oct 24 17:31:58 2008]
+% updated       julien quintard   [sat jan 17 17:15:18 2009]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Execution Part II : Multitasking}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% figures
+%
+
+
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+%
+% introduction
+%
+
+\section{Introduction}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  This course targets \textbf{multitasking, multiprocessing or multithreading} in an operating system.
+
+  \-
+
+Former operating systems like MS-DOS used to run only one program at a time, then next generation of operating systems introduced \textbf{cooperative multitasking}. Finally, although software concepts were known for a long time, and the hardware allowed it, the true multitasking arrived with \textbf{preemptive} operating systems.    
+ 
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Assumptions}
+
+ Previous lectures should be read and understood : memory and execution part I (interrupts) are the cornerstone of any kernel. These lectures will be intensively refered to.
+
+\-
+
+The bibliography contains many good papers and books, read it!
+
+\end{frame}
+
+
+
+%
+% overview
+%
+
+\section{Overview}
+
+\section{Threads and processes}
+
+
+%
+% kernel implementation
+%
+
+\section{Kernel implementation}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Kernel managers}
+
+In order to do a kernel implementation of multi-processing (also known as multi-tasking in old documents about kernel), and one step further, of multi-threading, the kernel will be strongly overhauled. Many services and modifications have to be undertaken.
+
+\-
+
+Some of these modifications and additions to the core code are :
+
+\begin{itemize}
+\item
+The dispatcher : the dispatcher is in charge of management of queues of runnable threads, and of thread preemption.
+
+\item
+The scheduler : the scheduler is in charge of telling what is the next thread who should get the processor. Strong theory about tasks scheduling, and hard to chose tradeoffs are part of the scheduler implementation.
+
+\end{itemize}
+
+\end{frame}
+
+
+% 2)
+
+\begin{frame}
+\frametitle{The context-switch}
+
+The context-switch is the process of giving the processor to another thread than the one currently running on. Although it is not obvious at a first glance, few things define a task, it is called a \textbf{context}. On most of processors, the hardware requirement to define a task would be :
+
+\begin{itemize}
+\item
+a program counter
+\item
+a stack pointer
+\item
+general purpose registers
+\end{itemize}
+
+\-
+
+And for advanced processors :
+
+\-
+
+\begin{itemize}
+\item
+a page-directory base address
+\item
+an interrupt stack pointer
+\item
+\etc{}
+\end{itemize}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+\frametitle{The context-switch}
+
+Therefore, to give the processor to another task than the one currently running on, it is only required to restore the thread context : the program counter where the thread which is the last instruction that the thread executed before getting preempted, a stack pointer because each thread needs its own stack (try to figure out why), and a set of general purpose registers containing data for processing, arguments being passed to a function before a call, \etc{}
+
+\-
+
+Context switches on most architextures are a relatively expensive operation and as such they are avoided as much as possible. Quite a bit of actual work can be done during the time it takes to perform a context-switch.
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+\frametitle{Source of calls to the context-switch routine}
+
+The context-switch routine initiates the context-switching of a thread off a processor, figures out which thread should run next, and context-switches the selected thread ont a processor for execution. It is called from many places within the operating-system.
+
+\-
+
+Some of situations or function calls that will induce a call to the context-switch routine on Solaris 2.6 are :
+
+\begin{itemize}
+\item
+At the end of an interrupt thread
+\item
+After the creation of a kernel thread
+\item
+After a sleep or a wakeup of a thread
+\item
+When a thread migrate from one processor to another one
+\item
+When a processor state is changed to \textit{pause}
+\item
+During a mutex lock acquisition
+\item
+During a semaphore \textit{p} operation
+\end{itemize}
+
+\-
+
+Many other operations could result in a call to the context-switch routine, for instance when the kernel offers message-passing facility, or during blocking I/O request.
+
+\end{frame}
+
+%4)
+
+\begin{frame}
+\frametitle{Priority-inversion}
+
+Priority-inversion is evil.
+
+solution
+
+Solutions address situations where a thread is holding a critical ressources, such as a mutex lock, and a few extra ticks of execution time will allow the thread to complete its task and free the lock. Otherwise, if the thread is taken off the processor before releasing the ressource, other threads that need the same ressource will begin to block as long as the owner thread get rescheduled on a processor.
+
+1 prio inheritance
+The most common solution in microkernel architecture is the priority inheritance. When a thread get preempted whereas holding a critical ressource, if a higher priority thread needs that ressource, the owner thread will be assigned with the waiting thread priority as long as owning the critical ressource.
+
+2 Operating-systems such as Solaris offer a way to give a kernel thread some extra timeslices by stretching a thread's time quantum for a short time : this is known as \textit{preemption control}. What this does is effectively give the kthread a few extra clock ticks of execution time on a processor, beyond its time quantum, before it is switched off. This feature addresses 
+
+
+3 policies
+A simple solution is to establish policies : a thread should never ever wait for a ressource that a lower priority thread could acquire. In other word, differents priority threads and a ressource don't mix.
+
+\end{frame}
+
+
+
+
+
+\section{Processes \& threads in various kernels}
+
+\subsection{Processes \& threads in Linux 2.6.x}
+
+% 1)
+
+\begin{frame}
+\frametitle{Priority-inversion}
+
+Linux, like many other operating systems, regards threads as simply processes that might share certain ressources. Instead of being something different than a thread or a group of threads, a process in Linux is simply a group threads that share something called a \textit{thread group ID (TGID)} and whatever ressource are necessary. 
+
+\-
+
+Some clarification must be done about Linux's treatment of processes ans threads with the terms themselves. The term \textit{task} is used in Linux to mean a thread, therefore it does not match the POSIX sense, which considers a task as a process. In the Linux task structure \code{task\_struct} (one of which exists for each thread), the TGID that is a process's POSIX PID is stored as \code{[task\_struct]->tgid}. Linux assigns a unique \textbf{PID} to each thread in \code{[task\_struct]->pid}, but the POSIX PID that most people think of is the task's TGID.
+
+This approach makes spawning threads on Linux much faster than other operating systems like BSB or Windows.
+
+\end{frame}
+
+\subsection{Processes \& threads in Solaris 2.6 and after}
+
+% 1)
+
+\begin{frame}
+\frametitle{The gap between multiprocessing and multiprocessor}
+
+Where as most of operating systems saw threading as a way to emulate a multiple processors behavior on a single computer, Sun Microsystems directly saw threads as a process to enable parallel execution on a multiprocessor system. Over a decade, Solaris thread's implementation changed. 
+
+\begin{itemize}
+\item
+System size growth (in terms of processors and memory).
+\item
+Multithreaded technique evolved and matured.
+\item
+API became standardized.
+\item
+Threads became ubiquitous in modern operating systems.
+\item
+Threaded application becam the norm, not the exception.
+\end{itemize}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+\frametitle{The Solaris's two-tiered model}
+
+The very fist versions of Solaris was shipped with a MxN thread model. In this model:
+
+\begin{itemize}
+\item
+Threads exist in two domains: kernel and user domain.
+\item
+User threads are not visible to the kernel, instead the kernel see \textbf{LightWeight Processes} (or \textit{LWPs}) which contains one or more user threads.
+\item
+Kernel threads (in Solaris, \textit{LWPs}) are the only schedulable entity the kernel knows.
+\end{itemize}
+
+\-
+
+This model is often regarded as a \textbf{two-tiered model}.
+
+\-
+
+(schema)
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+\frametitle{Two-tiered advantages}
+
+The first advantage of a two-tiered architecture is that application thread synchronization can be done either via the kernel (using system calls), or at the user level (leveraging atomic test-and-set facilities in the multiprocessor hardware)[note: see \textbf{lwarx/strx} instruction on PowerPC]. A system call may take many hundreds or even thousands of instructions, but a simple compare-and-swap operation takes just one (although this may involve a considerable number of clock cycles to complete).
+
+\-
+
+The other advantage of a two-tiered implementation is that the cost of context switching in a user-level scheduler is considerably less expensive than with the kernel's scheduler. In the early days, it was expected that user-level scheduling would be orders of magnitude faster than kernel scheduling.
+
+\-
+
+The first advantage has proven to be significant, but the second advantage has not. Building a user-level scheduler that works well in tandem with the kernel's scheduler is a significant challenge. However, the kernel's ability to efficiently schedule many threads has improved.
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+\frametitle{Recent innovations}
+
+Solaris 2.5 was a watersched in Solaris thread's implementation. Solaris 2.5.1 provided support for \textit{UltraSPARC} multiprocessor, and therefore saw big changes.
+
+\end{frame}
+
+% 5)
+
+\begin{frame}
+\frametitle{Preemption control}
+
+Solaris 2.6 software (August, 1997) addressed a number of issues relating to the visibility of userlevel threads to the kernel. One issue was that the kernel had no knowledge of user-level thread synchronization. An application thread can acquire a mutex using a simple, atomic test-and-set instruction, without troubling the kernel. In well-designed, scalable threaded applications, mutexes are held only for very short durations. It is not a good idea to preempt a thread that  is holding mutex, since other threads may end up having to wait for the mutex holder to run again.
+
+\-
+
+Solaris 2.6 software introduced the concept of the 'don't preempt me' flag. When acquiring a lock (or any other critical operation), the user thread set the flag in a shared structure of the corresponding LWP. When rescheduling, the kernel see the flag and decide to postpone the thread preemption for a short period of time.
+
+\-
+
+Obviously some mechanisms are set to avoid any abuses of this preivilege by the application.
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+\frametitle{Scheduler Activation}
+
+Prior to Solaris 2.6 software, the kernel used a special signal, SIGWAITING, to inform the threads library that all LWPs were blocked in the kernel. This gave the library the opportunity to create another LWP so it could to continue to run other, nonblocking threads. In Solaris 2.6 software, this mechanism was augmented by the preferential use of a \textbf{door upcall}. Essentially, this involves the kernel being able to call into the user-level thread scheduler to adjust the number of LWPs in the process pool of LWPs. This door mechanism is more efficient than a signal, but if necessary, Solaris 2.6 software falls back to using the SIGWAITING mechanism.
+
+\end{frame}
+
+% 7)
+
+\begin{frame}
+\frametitle{Breaking the 32-Bit Barrier}
+
+Of course, the most significant innovation in Solaris 7 software was the introduction of 64-bit address spaces. Until then, 32-bit addressing limited each process to just four gigabytes (GB) of virtual memory. For threaded applications the issue was more acute, since thread stacks had to share the four-gigabyte process address space with program text and data.
+
+\-
+
+By default, each thread stack has an adjacent \textit{red zone}, an unmapped region of at least one page that will trap stack overflows. Although red zones do not consume physical memory, they do reduce the amount of address space available for other purposes. Each kernel thread also has a stack and a red zone. The kernel thread stack size is configurable. In 32-bit kernels on UltraSPARC systems, it defaults to eight kilobytes (KB).  All kernel thread stacks are allocated in the \textit{kernel pageable segment} known as \textit{segkp}, but this is fixed at 512 MB for all 32-bit kernels and the 64-bit kernel of Solaris 7 software.
+
+\-
+
+So, with 16-KB stacks (each with an eight-KB red zone) there is a limit of approximately 21,000 stacks (a maximum of 21,000 LWPs system-wide), consuming about 340 MB of physical memory. From Solaris 8 software onwards, the 64-bit kernel allows segkp to be sized from 512 MB to 24 GB, with the default being two gigabtye (sufficient for more than 87,000 kernel thread stacks/LWPs).
+
+\end{frame}
+
+
+\subsection{Processes \& threads in QNX}
+
+% 1)
+
+\begin{frame}
+\frametitle{Thread data structure}
+
+QNX supports POSIX threads model. Like many kernels, a thread is defined by a private structure (each thread own one) which contains:
+
+\-
+
+\begin{itemize}
+\item
+\textit{tid} : identifying a thread by a unique \textit{thread ID}
+\item
+name : each thread can have a name
+\item
+register set : the thread \textbf{context}
+\item
+stack : stored within the address space of its process
+\item
+signal mask : each thread has its own signal mask
+\item
+cancellation handlers : callback function that are executed when the thread terminates
+\end{itemize}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+\frametitle{Thred Local Storage}
+
+Beside these features, QNX adds a more singular feature to its thread implementation. Remember that each process is MMU-protected from each other, and each process may contain one or more threads that share the process's address space. The main difference between QNX threads and much of other operating systems threads implementation is that threads still have some \textbf{private} data are called \textit{thread local storage} or \textit{TLS}. The TLS is used to store \textbf{per-thread} information, and provides a mechanism for associating a process global integer key with a unique per-thread data-value.
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+\frametitle{Thread life cycle}
+
+QNX offers significantly more thread's state than any other common kernels. QNX's thread may be in one of the following states : (schema).
+
+\end{frame}
+
+
+
+
+
+
+%
+% conclusion
+%
+
+\section{Conclusion}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  In this course, basic concepts of multitasking and associated scheduling algorithms has been shown.
+
+ 
+
+\end{frame}
+
+
+
+%
+% bibliography
+%
+
+\section{Bibliography}
+
+\begin{thebibliography}{3}
+  \bibitem{Hp-UX}
+HP-UX Linker and Libraries User's Guide, HP 9000 Computers, HP
+
+  \bibitem{Sun}
+Linkers and Libraries Guide, Sun Microsystems
+
+\end{thebibliography}
+
+
+\end{document}
