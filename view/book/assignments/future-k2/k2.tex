@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/book/assignments/future/k1.tex
+% file          /home/mycure/kaneton/view/book/assignments/future-k2/k2.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [fri nov 28 05:35:29 2008]
+% updated       julien quintard   [wed mar 18 11:19:03 2009]
 %
 
 %
@@ -18,7 +18,7 @@
 \chapter{k2}
 \label{chapter:k2}
 
-\name{k2} consists in the development of multitasking in the Kaneton kernel.
+\name{k2} consists in the development of multitasking in the kaneton kernel.
 
 \newpage
 
@@ -55,9 +55,9 @@ There are 6 managers in the kaneton design that are used to handle multitasking 
 \begin{itemize}
 \item \textbf{cpu :} Since the kaneton is designed to run on multiprocessor platforms, the CPU manager is used to handle these. In your implementation, you don't have to support this, a single CPU will be used.
 
-\item \textbf{event :} To build a preemptive scheduler, one must have an external event that will trigger the task switching. This is provided by interrupts, an the event manager provides the interrupts and exceptions handling.
+\item \textbf{event :} To build a preemptive scheduler, one must have an external event that will trigger the task switching. This is provided by interrupts while the event manager provides the interrupts and exceptions handling.
 
-\item \textbf{scheduler :} The scheduler is responsible for doing a task switch on a regular basis.
+\item \textbf{scheduler :} The scheduler is responsible for performing a task switch.
 
 \item \textbf{task :} This manager handles the task objects. A task means an address space and one or more threads running within this address space.
 
