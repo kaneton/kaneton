@@ -1,0 +1,980 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...ure/kernels/future/security/security.tex
+%
+% created       julien quintard   [fri oct 24 17:31:58 2008]
+% updated       julien quintard   [sat jan 17 17:15:18 2009]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Execution Part I: Interrupts}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% figures
+%
+
+\pgfdeclareimage[interpolate=true,width=320pt]
+                {ctx-svrestore}
+                {figures/ctx-svrestore}
+
+\pgfdeclareimage[interpolate=true,width=370pt]
+                {intc-dcr}
+                {figures/intc-dcr}
+
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+%
+% introduction
+%
+
+\section{Introduction}
+
+\subsection{About this course}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Course overview}
+
+  This course targets interrupts handling and mechanisms. Kernel internals management of interrupts as hardware controllers will be discussed.
+
+  \-
+
+This course will focus on the very purpose of exceptions and interrupts. How exceptions and interrupts are managed by the kernel, the interrupt handling process on various architecture (mainly IA-32 and PowerPC), and some advanced techniques to profit from interrupts.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Assumptions}
+
+  Interrupts  depends on system-level and implementing interrupts management in a kernel is tightly binded to the architecture. Therefore a good comprehension and some pre-requisities in hardware are mandatory.
+
+  \-
+
+We will extensively deal with concepts such as registers, stacks, frames, controllers, I/O, ...
+
+\end{frame}
+
+%
+% overview
+%
+
+% ----------------------
+% Overview
+% ----------------------
+
+\subsection{Overview}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Why}
+
+Because sometimes a condition exists in the system, and this condition requires the immediate attention of another program.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{What}
+
+  Interrupts are the cornerstone of any advanced kernel because they permits things like:
+
+  \begin{itemize}
+    \item
+      I/O handlings (remember that network communication like hard-drives accesses rely on I/O)
+    \item
+      Multiprocessing
+    \item
+      Machine fault management
+    \item
+      Virtual memory management
+    \item
+      \etc{}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How}
+
+When input pins of the processor are asserted, the processor transfer the execution to another program than the one currently running.
+
+  \-
+
+In the same way, if an error condition exists in the system, the execution is transfered to another program than the one currently running.
+
+\end{frame}
+
+%
+% internals
+%
+
+% ----------------------
+% Internals
+% ----------------------
+
+\section{Internals}
+
+\subsection{Interrupt basics}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Definition}
+
+Interrupts and exceptions are events that indicate that a condition exists somewhere in the system (computer, disks, I/O, \etc{}), the program, or within the currently executing program or task that requires the attention of a program.
+
+\-
+
+They typically result in a forced transfer from the currently running program or task to a special software routine called an interrupt handler or an exception handler.
+
+\-
+
+The action taken by a program in response to an interrupt or exception is referred to as servicing or handling the interrupt or exception.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Program-context save}
+
+When an interrupt or an exception occurs, the program needs to save its state of execution, and begin the execution of an appropriated handler depending on the type of interruption.
+
+\-
+
+The interrupted task or program own a context mostly defined by his registers. At any moment during the execution, this context is unique. Therefore when an interrupt take over the executing task or program, the first thing to do is to save the context of the interrupted task or program: this operation is called program context-saving.
+
+\-
+
+All of the interrupted program's registers are saved in a dedicated data structure, located in the random access memory of the system (i.e. in data cache, and/or RAM) or eventually on the interrupted program stack.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Program-context save/restore}
+
+ \begin{center}
+   \pgfuseimage{ctx-svrestore}
+  \end{center}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Program-context save :: Setting up a context for the interrupt handler}
+
+An interrupt handler is just like any other program, it is basically functions and data. Therefore, executing an interrupt handler needs at least a basic execution environnement set up with:
+
+   \begin{itemize}
+   \item
+   A code segment containing the code of the interrupt handler.
+   \item
+   A data segment because an ibnterrupt handler will probably do some data processing.
+   \item
+   A stack segment, because an interrupt handler is made of functions, and functions needs frames (for nested calls, automatic variables allocations, etc...)
+   \end{itemize}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Program-context restore}
+
+When the handler has completed handling the interrupt or exception, program control is returned to the interrupted program or task.
+
+\-
+
+When the interrupt handler has completed, it retrieves the interrupted program's context data structure from the memory, and put the saved values into the corresponding registers: this is called program-context restore.
+
+\-
+
+When returning from the interrupt, the program-counter is automatically set either with the instruction of the interrupted program that caused the exception or the interrupt, or the instruction directly following the instruction that caused the interrupt or the exception.
+
+\-
+
+For instance, when an input I/O is detected, the program restart at the next instruction following the last instruction executed.
+
+\end{frame}
+
+% x)
+
+\begin{frame}
+        \frametitle{Interrupt overhead}
+
+Interrupt latency is the time from the assertion of a hardware interrupt
+until the first instruction of the device driver's interrupt handler is
+executed.
+
+\-
+
+Some parts of an interrupt handler may need to be protected: somme parts of the code can't be interrupted another time, or run by another processor. These parts of code are called \textbf{critical sections}. 
+
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Returning from an interrupt :: Special instruction}
+
+Returning from an interruption is done with a special assembly instruction.
+
+\-
+
+Some registers are automatically saved when an interruption is detected, thus there are automatically restored: the normal instrution for returning from a procedure cannot know it was an interrupt.
+
+\-
+
+Moreover, returning from an interrupt may implie a privilege level change.
+
+\-
+
+When returning from an interrupt, the processor may either execute the faulting instruction (for instance), or execute the instruction following the faulting instruction. It depends on the nature of the interrupt.
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Returning from an interrupt :: Error-code}
+
+For a single type of exception or interrupt, causes might be multiple, and the exception or interrupt handler needs more information to undertake action or correction.
+
+\-
+
+For instance, it could be the cause that trigged a general protection fault exception: attempt to write in a read-only data page, or to execute code from a non executable page.
+
+\-
+
+Error code gives a hint to the interrupt handler, thus the interrupt handler can undertake various actions for a single exception or interrupt.
+
+\-
+
+On Intel IA-32, the error code returned contains the segment selector referenced by the exception, altough not all exception will return an error-code.
+
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{The interrupt-vector}
+
+The processor uses an interrupt-vector to retrieve the address of the first instruction of an interrupt handler.
+
+\-
+
+Each exception and interrupt handler has an identification number which acts as an index into the interrupt-vector. Because the interrupt identifiers are defined during the system bootstrap, when an interrupt or an exception is detected, the processor knows where to fetch the interrupt or exception handler code.
+
+\-
+
+Exceptions' identifiers numbers are usually predefined by the processor, and these numbers cannot be modified. In the other hand, external and software interrupts can be assigned a random number within a predefined set of values. 
+
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{The interrupt-vector :: On IA-32}
+
+Retrieving the correct handler on IA-32. (Schema)
+
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{The interrupt-vector :: On PowerPC}
+
+The PowerPC architecture proposes a slightly different mechanism than the IA-32. On PowerPC, there are fixed location (understand defined address) where the code for defined handlers has to be loaded.
+
+\-
+
+On some PowerPC, the address is not hard fixed. Instead, a special register will be loaded with a base address, and every single handler will be loaded at an offset from this base address. On the other hand, the offset defined for each interrupt handlers is hard fixed.
+
+\-
+
+For instance on the PowerPC 405, the base address register is the EVPR () and all handlers will be at an offset in this interrupt-vector.
+
+\begin{itemize}
+\item
+System reset : 0x0100
+\item
+Machine check : 0x0200
+\item
+DSI : 0x0300
+\item
+ISI : 0x0400
+\end{itemize}
+
+\end{frame}
+
+% 10)
+
+\begin{frame}
+  \frametitle{Direct and indirect branching}
+
+Some processors branch on the correct interrupt handler internally. For instance, Intel or PowerPC processors internally retrieve the correct handler for an exception or an interrupt. Internal registers managing interrupts are invisible to the user.
+
+\-
+
+Some other processors requires a direct management of interrupts by the software. For instance, MIPS has a special readable register (the Cause register) which can be readed by a generic user-defined handler. When any interrupt or exception is raised, it is up to this user-defined handler to route the instruction pointer to the good handler.
+
+\end{frame}
+
+% ----------------------
+% Exceptions
+% ----------------------
+
+\subsection{Exceptions}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Definition}
+
+Exceptions occur when the processor detects an error condition while executing an instruction, such as a division by zero.
+
+\-
+
+Majority of processors detect a variety of error conditions including protection violations, page faults, alignment, system call, reset and internal machine faults.
+
+\-
+
+The machine-check architecture of the recent Intel processors, as PowerPC, also permits a machine-check exception to be generated when internal hardware errors and bus errors are detected.
+
+\-
+
+Basically, exceptions descriptors take place at the beginning of the interrupt-vector. 
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Attributes :: Critical and non-critical}
+
+Critical and non-critical interrupts are a way to handle a two-level interrupt nesting, using a different set of save/restore registers for the program counter.
+
+\-
+
+ A first set save and restore non critical interrupts program counter and machine state (footnote: The MSR (Machine State Register) register on the PowerPC architecture), and a second set is dedicated to save and restore machine state and program counter for critical interrupts.
+
+\-
+
+When a critical interrupt is detected, it is handled immediately whether or not the processor was handling a low priority interrupt. When returning from the critical interrupt handler, the processor branch into the interrupted interrupt handler with the second set of save/restore registers. Therefore it is able to handle two-level nested interrupts.
+
+\-
+
+For instance, a trap instruction for debugging generates a critical exception, otherwise, debugging certain interrupt handler would not be possible. Besides, watchdog interrupt and machine-check exceptions are usually critical.
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Attributes :: Synchronous and asynchronous}
+
+Asynchronous interrupts are caused by events which are independent of instruction execution. Basically, I/O interrupts are asynchronous.
+
+\-
+
+Synchronous interrupts are caused directly by the execution (or attempted execution) of instructions. Page faults exceptions imply a synchronous handling.
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Attributes :: Precise and imprecise}
+
+Precise interrupts are those for which the instruction pointer saved by the interrupt must be either the address of the excepting instruction or the address of the next sequential instruction. Such an interrupt has four properties:
+
+  \begin{itemize}
+    \item
+     The Program Counter (PC) is saved in a known place.
+    \item
+     All instructions before the one pointed to by the PC have fully executed.
+    \item
+     No instruction beyond the one pointed to by the PC has been executed (That is no prohibition on instruction beyond that in PC, it is just that any changes they make to registers or memory must be undone before the interrupt happens).
+    \item
+     The execution state of the instruction pointed to by the PC is known.
+    \item
+      \etc{}
+  \end{itemize}
+
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Attributes :: Precise and imprecise}
+
+Imprecise interrupts are those for which it is possible (but not required) for the saved instruction pointer to be something else, possibly prohibiting guaranteed software recovery.
+
+\-
+
+When a imprecise interrupt occurs, the excepting instruction is unrelated to the exception condition. Here, there is a delay between the point where the exception is recognized by the processor and the time when the interrupt occurs. The delay can span several instructions before the recognigtion of an exception state into the system.
+
+\-
+
+ Therefore, returning from an imprecise interrupt is most of the time impossible. This parameter defines which exception is hazardous for the system, rather than the critical/non-critical parameter.
+
+\end{frame}
+
+
+% 6)
+
+\begin{frame}
+  \frametitle{Exemple :: The machine-check}
+
+The machine-check exception (\#MC) occurs when an unrecoverable hardware problem happens. This exception is reported on Windows with the famous blue screen and on Linux with a \r{kernel panic} message.
+
+\-
+
+The AMD Athlon\texttrademark 64 processor and AMD Opteron\texttrademark processor machine check mechanism allows the processor to detect and report a variety of hardware (or machine) errors found when reading and writing data, probing, cache-line fills and writebacks.
+
+\-
+
+These include:
+
+  \begin{itemize}
+    \item
+      Parity errors associated with caches and TLBs.
+    \item
+     ECC errors associated with caches and DRAM.
+    \item
+     System bus errors associated with reading and writing to the external bus (between the processor and components on the motherboard).
+  \end{itemize}
+
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Exemple :: The machine-check}
+
+
+Normal causes for machine-check errors include overheating and/or incorrect hardware installation.
+
+\-
+
+Overheating can cause electrons to become more animated and thus escape from the silicon tracks, resulting in corrupted data. Overclocking, by naturally increasing heat output, is one manually induced cause of machine-check exception.
+
+\-
+
+Another one is software performing read or writes operations to non-existent memory regions which leads to confusion for the processor and/or the system bus. 
+
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Exemple :: The Page-Fault}
+
+On Intel IA-32, this exceptions is also known as \#PF. It is raised when the user or the kernel try to access 
+
+\end{frame}
+
+
+% ----------------------
+% Interruptions
+% ----------------------
+
+\subsection{Interruptions}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Definition}
+
+Interrupts occur at random times during the execution of a program, in response to signal from hardware. System hardware uses interrupts to handle external events to the processor, such as requests to service peripheral devices (disk I/O, receiving of a packet by the network adapter, \etc{}).
+
+\-
+
+Depending on the processor model, software can generate interrupts from dedicated instructions. An act of interrupting is referred to as an interrupt request ("IRQ").
+
+\-
+
+Unlike exceptions, which are rarely directly throwable by the user, interrupts are a way for the user to create an interrupt-driven system, where the operating system, and at an upper level, the application, will respond to signal sent by asynchronous and external events to the machine.
+
+\-
+
+This can be done in two way : external interrupts, and software-generated interrupts.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{External}
+
+External interrupts handle external events such as inputs and outputs (disks access, network traffic, RS-232, sensors and triggers, \etc{}).
+
+\-
+
+They are received through pins on the processor. Because the number of input pins is limited on a processor, processor comes linked to an interrupt controller. The interrupt controller receive all external input which could potentially be handled by an interrupt handler, and use only one pin (usually, the external interrupt input pin) to notice the processor that an external interrupt has been detected.
+
+\-
+
+The processor reads a memory mapped register to know what interrupt has been detected and set the program counter to the correct interrupt handler. In the remainder of the section, various external interrupt controllers will be described.
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Software-generated}
+
+Software-generated interrupts are a way for programmers to immediately call the processor from a task or a program. These interrupts are generated from within software by supplying an interrupt vector number as an operand, to an instruction.
+
+\-
+
+For instance, on Intel architecture, the \textbf{INT 35} instruction forces an implicit call to the interrupt handler for interrupt 35.
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Secure software-generated interrupts}
+
+Software-generated must be provided to the application programmers with very much care. It is important to point out that interrupt handlers, as exception handlers, are executed at the most privileged level.
+
+\-
+
+Therefore any instruction from the instruction set could be executed inside an interrupt handler. Without proper kernel protection with interrupt management, a program which uses an interrupt handler is potentially hazardous for entire system.
+
+\-
+
+To protect the system from this privilege bypass, the kernel should fill the interrupt-vector with a special generic handler for software-generated interrupts, and this handler then launch a user-thread in charge of executing the user interrupt routine, thus at a user-level privilege level.
+
+\end{frame}
+
+%
+% kernel tuning
+%
+
+\section{Kernel tuning}
+
+% 1)
+
+\subsection{System call}
+
+\begin{frame}
+  \frametitle{System call}
+
+Interrupts of exceptions are one of the mechanisms to make a call to kernel services.
+
+\-
+
+Either by issuing a software-generated interrupts with system call number as operand, or making a call to a processor supplied exception. 
+
+\-
+
+Intel offers many different mechanisms to make a system call, one of them is the software-generated interrupt with an \textit{INT n} instruction. The PowerPC architecture relies on the \textit{sc} exception.
+
+\end{frame}
+
+% 2)
+
+\subsection{Stack protection}
+
+\begin{frame}
+  \frametitle{Stack protection}
+
+Each process (or thread), has his own private stack. Usually, a page is allocated for each stack. Because foreseeing a stack size is not as easy as it could seems, if a process push too much data, beyond stack's page limits, these data will be potentially written over another page's data.
+
+\-
+
+In order to prevent the system from data corruption by stack overflow, some operating systems have implemented stack protection features.
+
+\end{frame}
+
+% 3)
+
+\subsection{Stack protection}
+
+\begin{frame}
+  \frametitle{Sun Microsystems and the red zones}
+
+Sun Microsystems, with his operating system Solaris, offer a stack protection mechanism based on the page fault exception.
+
+\-
+
+Each stack page is rounded by two blank page (virtual pages without physical memory allocated). These pages are called \r{red zones} because when the process push data farther than the stack limit, it no more write out data of another process.
+
+\-
+
+When writing on the blank page, the page fault exception is thrown and the kernel is able to handle this error (by killing the faulting process, or by allocating a new page for the stack).
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Intel and the stack segment}
+
+Intel offers a protection mechanism with de SS slectors and the \#SS exceptions.
+
+\end{frame}
+
+% 5)
+
+\subsection{Swap memory}
+
+\begin{frame}
+  \frametitle{Basics of swapping}
+
+The Memory Management Unit offers a mechanism to the programmer to replace pages in the system: page-fault exceptions.
+
+\-
+
+This exceptions is know as \#PF for IA-32, DTLB-miss and ITLB-miss for Power-PC\etc{}.
+
+\-
+
+ Using this exception, physical memory can be emulated: the processor will see more physical memory than it really exists.
+
+\-
+
+To add this feature, the system need a secondary mass storage device beside the Random Access Memory : Flash memory, hard drives, \etc{}
+
+\end{frame}
+
+% 6) 
+
+\begin{frame}
+  \frametitle{Implementation}
+
+A single physical address in Random Access Memory can be mapped by several virtual addresses.
+
+\-
+
+In the same way, several pages may share the same physical address as long as only one of these pages is physically mapped into the RAM, and other pages are gently sleeping on a secondary storage device.
+
+\-
+
+During a memory access to a logical address which is not present in RAM but on an external storage, a page-fault exception will be thrown, because the address is not present into the page directory.
+
+\-
+
+The handler will search for the corresponding page on the external storage, and then will copy it to the RAM. Pages' entries may be used to determine whether pages are physically present in RAM: the P (present) flag for IA-32, the U0 (user-defined) bit for the PPC 405).
+
+\end{frame}
+
+% 7)
+
+\subsection{Interrupts handling in real-time systems}
+
+\begin{frame}
+  \frametitle{Issues}
+
+Managing interrupts in an elegant way is not so easy when talking of real-time.
+
+\-
+
+ On the one hand, interrupts handling delay program execution by diverting execution path for a while, therefore they are usually prohibited (or at least avoided) inside hard real-time systems.
+
+\-
+
+For instance, to prevent the kernel from searching and reloading a translation into the TLB, MMU are rarely used by hard real-time operating systems, and if it is used, the TLB is loaded with every translation (thus if a TLB has a depth of 128 translations, only 128 pages can be mapped for the entire system).
+
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Issues (yet!)}
+
+On the other hand, dealing without exceptions and external interrupts is almost impossible for much system.
+
+\-
+
+ Using an external interrupt to reschedule tasks is the basic of any multitasking operating systems. The timer interrupt is usually used by the OS's task scheduler to reschedule the priorities of running processes.
+
+\-
+
+Counters are popular, but some older computers used the power line frequency instead, because power companies in most Western countries control the power-line frequency with a very accurate atomic clock).
+
+\-
+
+Masking interrupts, thus masking the timer-interrupt, delay the rescheduling of the system whereas more important tasks might be ready to run.
+
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+Therefore, in a hard real-time operating system, the timer interrupt shall never be delayed (masked).
+
+\-
+
+Moreover, asynchronous interrupts and exceptions should be avoided.
+
+\-
+
+ Handling interrupts in a hard real-time and deterministic operating-system is a difficult tradeoff between asserting the real-time capabilities of the system, and offering minimum inputs and outputs services.
+
+
+\end{frame}
+
+%
+% case-study 
+%
+
+\section{Case-study: the MMU of the PowerPC 405}
+
+% 1)
+
+\begin{frame}
+  \frametitle{The basics of the PPC405 MMU}
+
+On real-time operating systems for the PPC 405, a user-defined TLB (physically present into the RAM) contains 64 entries for translation, for both instruction and data addresses.
+
+\-
+
+Internal mechanisms (shadow TLBs) pick correct translation inside this user-defined TLB (UTLB). If a translation is not present into the shadow TLBs, the MMU search into the UTLB for the correct translation, and finally if the MMU cannot find the translation, a TLB-miss exception is raised.
+
+\end{frame}
+
+%2)
+
+\begin{frame}
+  \frametitle{The issue}
+
+The handler is in charge of searching the correct translation into a user managed Page Translation Table (a page directory), and replacing any entry of the UTLB with this new translation. Computing time for this kind of operation is typically not acceptable for critical systems.
+
+\-
+
+Therefore, such systems will fill the UTLB with 64 entries during the bootstrap, and shall not have more than 64 pages in the entire system. In this way, TLB-miss exceptions shall never happen.
+
+\end{frame}
+
+%
+% hardware
+%
+
+\section{Hardware}
+
+\subsection{External interrupts trigger}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Level-triggered}
+
+A level-triggered interrupt is a class of interrupts where the presence of an unserviced interrupt is indicated by a high level (1), or low level (0), of the interrupt request line.
+
+\-
+
+A device wishing to signal an interrupt drives the line to its active level, and then holds it at that level until serviced. It ceases asserting the line when the CPU commands it to or otherwise handles the condition that caused it to signal the interrupt.
+
+\-
+
+Level-triggered interrupt lines are well suited to prevent the system from spurious interrupt handling, but sharing an interrupt line between multiple devices might not be easy, not even efficient.
+
+\-
+
+PCI bus uses level-triggered interrupts. 
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Edge-triggered}
+
+An edge-triggered interrupt is a class of interrupts that are signalled by a level transition on the interrupt line, either a falling edge (1 to 0) or a rising edge (0 to 1).
+
+\-
+
+ A device wishing to signal an interrupt drives a pulse onto the line and then releases the line to its quiescent state. If the pulse is too short to be detected by polled I/O then special hardware may be required to detect the edge.
+
+\-
+
+ Edge-triggered interrupt lines are suited for sharing a single line between multiple devices, but the tradeoff is their weakness to prevent the system from spurious interrupts.
+
+\-
+
+Parallel port and ISA bus use edge-triggered interrupts.
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Hybrid}
+
+Some systems use a hybrid of level-triggered and edge-triggered signalling.
+
+\-
+
+The hardware not only looks for an edge, but it also verifies that the interrupt signal stays active for a certain period of time.
+
+\-
+
+A common use of a hybrid interrupt is for the NMI (non-maskable interrupt) input. Because NMIs generally signal major - or even catastrophic - system events, a good implementation of this signal tries to ensure that the interrupt is valid by verifying that it remains active for a period of time.
+
+\-
+
+This 2-step approach helps to eliminate false interrupts from affecting the system.
+
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Message-signalled}
+
+A message-signalled interrupt does not use a physical interrupt line.
+
+\-
+
+Instead, a device signals its request for service by sending a short message over some communications medium, typically a computer bus. The message might be of a type reserved for interrupts, or it might be of some pre-existing type such as a memory write.
+
+\-
+
+Message-signalled interrupts behave very much like edge-triggered interrupts, in that the interrupt is a momentary signal rather than a continuous condition. Interrupt-handling software treats the two in much the same manner. Typically, multiple pending message-signalled interrupts with the same message (the same virtual interrupt line) are allowed to merge, just as closely-spaced edge-triggered interrupts can merge.
+
+\-
+
+PCI Express use message-signaled interrupt.
+
+\end{frame}
+
+\subsection{External interrupt controller}
+
+% 1)
+
+\begin{frame}
+  \frametitle{The PDP-11 external controller}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Implementing an external controller for the PPC405}
+
+ \begin{center}
+   \pgfuseimage{intc-dcr}
+  \end{center}
+
+
+
+\end{frame}
+
+
+
+
+
+
+
+%
+% conclusion
+%
+
+\section{Conclusion}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  In this course, basic concepts of interrupts handling has been shown. Interrupts are the cornerstone of any high-end kernel. They permits things such as :
+
+ \begin{itemize}
+    \item
+        Program fault handling
+    \item
+        Inputs and outputs with external devices
+    \item
+        Library
+    \item
+        High-end kernel internals like multiprocessing
+    \item
+      \etc{}
+  \end{itemize}
+
+\end{frame}
+
+
+
+%
+% bibliography
+%
+
+\section{Bibliography}
+
+\begin{thebibliography}{3}
+  \bibitem{Hp-UX}
+HP-UX Linker and Libraries User's Guide, HP 9000 Computers, HP
+
+  \bibitem{Sun}
+Linkers and Libraries Guide, Sun Microsystems
+
+\end{thebibliography}
+
+
+\end{document}
