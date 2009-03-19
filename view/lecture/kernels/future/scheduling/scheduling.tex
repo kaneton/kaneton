@@ -109,6 +109,88 @@ The bibliography contains many good papers and books, read it!
 
 \section{Threads and processes}
 
+% 1)
+
+\begin{frame}
+  \frametitle{Threads :: Definition}
+
+Threads are the entities scheduled for execution on the CPU. A thread is a single sequence stream within a process. Because threads have some properties of processes, they are sometimes called lightweight processes.
+
+\-
+
+In many respect, threads are a popular way to improve application through parallelism. The CPU switches rapidly back and forth among threads, giving illusaion that the threads are running in parallel.
+
+\-
+
+Each thread has its own stack. Since thread will generally call different procedures and thus a different execution history. This is why thread needs its own stack.
+
+\-
+
+A thread has, or consists of, a program counter (PC), a register set and a stack space. Threads of a process share together their code and data section, and operating system ressources like file descriptors and signals.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Threads :: Processes versus threads}
+
+Similarities:
+
+Like processes, thread share CPU and only one thread is active (running) at the time.
+
+Like processes, threads within a process execute sequentially.
+
+Like processes, threads can create children.
+
+Like processes, if one thread is blocked, another thread can run.
+
+Differencies:
+
+Unlike processes, threads are not independent one from antother.
+
+Unlike processes, all threads can access every address in the task.
+
+Unlike processes, thread are designed to assist one another. It is important to notice that processes might or might not assist one another because processes may have been created by different user. Process are to compete to get access to the CPU, not to cooperate.
+
+\end{frame}
+
+
+
+%
+% thread implementation
+%
+
+\section{Thread implementation}
+
+\subsection{In user-space}
+
+%1)
+
+\begin{frame}
+  \frametitle{Presentation}
+
+Each process owns a private \textbf{thread table} to keep track of the threads in that process. When a thread does something that may cause it to become blocked locally, for example waiting for another thread in its process to complete some work, it call a run-time system procedure. This procedure checks if that thread should be put in a blocked state, and if so starts to run another ready thread. Thread's context are stored locally, in the \textbf{thread table}.
+
+\end{frame}
+
+%2)
+
+\begin{frame}
+  \frametitle{Advantages}
+
+Some architectures offer ways (understand \textit{instructions}) to store and load general-purpose registers, stack pointer and program counter. Therefore, the thread context-switch may be extremly fast with a thread implementation in user-space. Another benefit from this kind of implementation is the availability of threads on systems which do not initially support threads (no kernel support of threads).
+
+\end{frame}
+
+%3)
+
+\begin{frame}
+  \frametitle{Drawbacks}
+
+\end{frame}
+
+\subsection{In kernel space}
 
 %
 % kernel implementation
@@ -224,26 +306,36 @@ Many other operations could result in a call to the context-switch routine, for 
 \begin{frame}
 \frametitle{Priority-inversion}
 
+
 Priority-inversion is evil.
-
-solution
-
-Solutions address situations where a thread is holding a critical ressources, such as a mutex lock, and a few extra ticks of execution time will allow the thread to complete its task and free the lock. Otherwise, if the thread is taken off the processor before releasing the ressource, other threads that need the same ressource will begin to block as long as the owner thread get rescheduled on a processor.
-
-1 prio inheritance
-The most common solution in microkernel architecture is the priority inheritance. When a thread get preempted whereas holding a critical ressource, if a higher priority thread needs that ressource, the owner thread will be assigned with the waiting thread priority as long as owning the critical ressource.
-
-2 Operating-systems such as Solaris offer a way to give a kernel thread some extra timeslices by stretching a thread's time quantum for a short time : this is known as \textit{preemption control}. What this does is effectively give the kthread a few extra clock ticks of execution time on a processor, beyond its time quantum, before it is switched off. This feature addresses 
-
-
-3 policies
-A simple solution is to establish policies : a thread should never ever wait for a ressource that a lower priority thread could acquire. In other word, differents priority threads and a ressource don't mix.
 
 \end{frame}
 
+%5)
 
+\begin{frame}
+\frametitle{The solution to priority-inversion}
 
+Solutions address situations where a thread is holding a critical ressources, such as a mutex lock, and a few extra ticks of execution time will allow the thread to complete its task and free the lock. Otherwise, if the thread is taken off the processor before releasing the ressource, other threads that need the same ressource will begin to block as long as the owner thread get rescheduled on a processor.
 
+\end{frame}
+
+%6)
+
+\begin{frame}
+\frametitle{The solution to priority-inversion}
+
+\textbf{Priority inheritance} : The most common solution in microkernel architecture is the priority inheritance. When a thread get preempted whereas holding a critical ressource, if a higher priority thread needs that ressource, the owner thread will be assigned with the waiting thread priority as long as owning the critical ressource.
+
+\-
+
+\textbf{Quantum stretching} : Operating-systems such as Solaris offer a way to give a kernel thread some extra timeslices by stretching a thread's time quantum for a short time : this is known as \textit{preemption control}. What this does is effectively give the kthread a few extra clock ticks of execution time on a processor, beyond its time quantum, before it is switched off. This feature addresses 
+
+\-
+
+\textbf{Policies} : A simple solution is to establish policies : a thread should never ever wait for a ressource that a lower priority thread could acquire. In other word, differents priority threads and a ressource don't mix.
+
+\end{frame}
 
 \section{Processes \& threads in various kernels}
 
@@ -377,12 +469,64 @@ Of course, the most significant innovation in Solaris 7 software was the introdu
 
 By default, each thread stack has an adjacent \textit{red zone}, an unmapped region of at least one page that will trap stack overflows. Although red zones do not consume physical memory, they do reduce the amount of address space available for other purposes. Each kernel thread also has a stack and a red zone. The kernel thread stack size is configurable. In 32-bit kernels on UltraSPARC systems, it defaults to eight kilobytes (KB).  All kernel thread stacks are allocated in the \textit{kernel pageable segment} known as \textit{segkp}, but this is fixed at 512 MB for all 32-bit kernels and the 64-bit kernel of Solaris 7 software.
 
-\-
+\end{frame}
+
+% 7bis)
+
+\begin{frame}
+\frametitle{Breaking the 32-Bit Barrier}
 
 So, with 16-KB stacks (each with an eight-KB red zone) there is a limit of approximately 21,000 stacks (a maximum of 21,000 LWPs system-wide), consuming about 340 MB of physical memory. From Solaris 8 software onwards, the 64-bit kernel allows segkp to be sized from 512 MB to 24 GB, with the default being two gigabtye (sufficient for more than 87,000 kernel thread stacks/LWPs).
 
 \end{frame}
 
+% 8)
+
+\begin{frame}
+\frametitle{What's wrong with the MxN implementation}
+
+For some reasons, the MxN implementation has been retired since Solaris 2.8. We will discuss the two main reasons which lead to this removal.
+
+\end{frame}
+
+% 9)
+
+\begin{frame}
+\frametitle{Threads and Signals Don't Mix}
+
+The implementation of synchronous signals in a multithreaded environment is not difficult. The signal can simply be delivered straight to the LWP on which the thread that triggered the signal is running. However, asynchronous signals are a different matter in an MxN implementation, since the only application thread that has the signal unmasked may not be currently running on an LWP.
+
+\-
+
+The old MxN implementation attempted to solve the asynchronous signal issue by introducing a dedicated LWP, Asynchronous Signal LWP (ASLWP), into the process model. Whenever the kernel wants to deliver an asynchronous signal to a process and ASLWP is present, the kernel will notify ASLWP instead of attempting to deliver the signal directly to an LWP. Once ASLWP sees a suitable application thread running on an LWP, it asks the kernel to redirect the pending signal to that LWP. Not only is this very complex to implement correctly, but it also means that ASLWP can become a bottleneck where there is a high volume of signals.
+
+\end{frame}
+
+% 10)
+
+\begin{frame}
+\frametitle{Bringing fresh stuffs with Solaris 9}
+
+Solaris 9 brought new concepts about thread's implementation. Thereafter shows some of the most noticeable innovations \etc{}
+
+\end{frame}
+
+% 11)
+
+\begin{frame}
+\frametitle{Bringing fresh stuffs with Solaris 9}
+
+\textbf{MxN Implementation Retired} : The old MxN implementation has been gracefully retired and replaced with an enhanced version of the 1:1 implementation.
+
+\-
+
+\textbf{Adaptive Mutexes Revisited} : A thread waiting for a process private mutex will spin only if the lock holder is currently running on a CPU. The process shared case remains unchanged. If there is more than one CPU, the thread will always spin before blocking. If there is only one processor on the system, there is no need to spin because there is a little chance that anything release the lock (aside from \textit{SEU}), therefore the thread shall be immediately preempted.
+
+\-
+
+\textbf{Adaptive Mutex Unlock} : When a thread is about to release the mutex it is holding, it looks to see if there are any waiters spinning. If so, it releases the lock and spins itself for a short while to see if the lock is acquired by another thread. This boosts performance because the thread releasing the lock no longer needs to enter the kernel to wake up a waiter.
+
+\end{frame}
 
 \subsection{Processes \& threads in QNX}
 
