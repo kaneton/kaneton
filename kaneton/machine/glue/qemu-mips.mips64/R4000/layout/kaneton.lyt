@@ -3,9 +3,23 @@ ENTRY(kaneton)
 
 SECTIONS
 {
-	. = 0x8000000000000000;
-	.text : { *(.text) }
-	.data : { *(.data) *(.rdata) *(.rodata) }
-	_gp = ALIGN(8);
-	.bss : { *(.bss) }
+	. = 0xffffffffa0000000;
+	.text :
+	{
+		*(.text)
+	}
+	
+	.data :
+	{
+		*(.data)
+		*(.rdata)
+		*(.rodata)
+	}
+	
+	__gp = ALIGN(8);
+	
+	.bss :
+	{
+		*(.bss)
+	}
 }

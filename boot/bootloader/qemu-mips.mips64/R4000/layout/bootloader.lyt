@@ -4,9 +4,24 @@ ENTRY(bootloader_entry)
 SECTIONS
 {
 	. = 0xffffffffbfc00000;
-	.text : { *(.text) }
-	.data : { *(.data) *(.rdata) *(.rodata) }
-	_gp = ALIGN(8);
-	.bss : { *(.bss) }
+	.text :
+	{
+		*(.text)
+	}
+
+	.data :
+	{
+		*(.data)
+		*(.rdata)
+		*(.rodata)
+	}
+
+	__gp = ALIGN(4);
+
+	.bss :
+	{
+		*(.bss)
+	}
+
 	__bootloader_end = .;
 }

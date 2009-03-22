@@ -8,7 +8,7 @@
 # file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       enguerrand raymond   [sun jan 25 23:15:27 2009]
+# updated          [thu mar 12 10:24:10 2009]
 #
 
 #
@@ -113,10 +113,10 @@ def			install():
 
   # creates binary files : bootloader and kaneton
   os.system(env._OBJCOPY_ + " -S -j .text -j .data --output-target binary " + env._BOOTLOADER_ + " " + env._BOOTLOADER_ + ".bin")
-  os.system(env._OBJCOPY_ + " -S -j .text -j .data --output-target binary " + env._KANETON_ + " " + env._KANETON_ + ".bin")
+#  os.system(env._OBJCOPY_ + " -S -j .text -j .data --output-target binary " + env._KANETON_ + " " + env._KANETON_ + ".bin")
 
   # cat the binary files in the mips_bios.bin file
-  os.system("cat " + env._BOOTLOADER_ + ".bin " + env._SOURCE_DIR_ + "/flag " + env._KANETON_ + ".bin " + env._SOURCE_DIR_ + "/flag" + " > " + env._SOURCE_DIR_ + "/mipsel_bios.bin")
+  os.system("cat " + env._BOOTLOADER_ + ".bin " + env._SOURCE_DIR_ + "/flag " + env._KANETON_ + " " + env._SOURCE_DIR_ + "/flag" + " > " + env._SOURCE_DIR_ + "/mipsel_bios.bin")
 
   #env.copy(env._KANETON_, env._IMAGE_, env.OPTION_NONE)
 
@@ -139,7 +139,7 @@ def			build():
   env.push(env._SOURCE_DIR_ + "/flag", "\a\a\a\a", None)
 
   # display some stuff.
-  env.display(env.HEADER_OK, "mips_bios.bin file created",
+  env.display(env.HEADER_OK, "mipsel_bios.bin file created",
               env.OPTION_NONE)
 
 
