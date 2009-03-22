@@ -137,21 +137,29 @@ A thread has, or consists of, a program counter (PC), a register set and a stack
 
 Similarities:
 
+\begin{itemize}
+\item
 Like processes, thread share CPU and only one thread is active (running) at the time.
-
+\item
 Like processes, threads within a process execute sequentially.
-
+\item
 Like processes, threads can create children.
-
+\item
 Like processes, if one thread is blocked, another thread can run.
+\end{itemize}
+
+\-
 
 Differencies:
 
+\begin{itemize}
+\item
 Unlike processes, threads are not independent one from antother.
-
+\item
 Unlike processes, all threads can access every address in the task.
-
+\item
 Unlike processes, thread are designed to assist one another. It is important to notice that processes might or might not assist one another because processes may have been created by different user. Process are to compete to get access to the CPU, not to cooperate.
+\end{itemize}
 
 \end{frame}
 
@@ -186,11 +194,105 @@ Some architectures offer ways (understand \textit{instructions}) to store and lo
 %3)
 
 \begin{frame}
-  \frametitle{Drawbacks}
+  \frametitle{Advantages}
+
+\begin{itemize}
+\item
+Available on operating systems which does not offer a native support of threads (threads facilities in user-space usually come as a library linked with the threaded application). User-level threads do not require modification of the operating system.
+\item
+A thread must explicitely call the thread scheduler when it finished its work (with a call to \code{thread\_yield()} fo example). Therefore, thread in user-space implementation is often called \textbf{cooperative} multi-threading.
+\item
+Threads in user-space are lightweight, saving and restoring context are just local procedures. Much more efficient than issuing system calls to the kernel (no context save/restore, no cache flush, ...) ! Scheduling is very fast.
+\item
+Another advantage is that users can define thei own scheduliung algorithm for a precise task.
+\end{itemize}
 
 \end{frame}
 
+%4)
+
+\begin{frame}
+  \frametitle{Drawbacks}
+
+\begin{itemize}
+\item
+Despite their overall better performance, threads in user-space suffer from a major problem : how blocking system calls are implemented ? If a thread blocks in the kernel, how the kernel can notice the user-space scheduler to reschedule the task ? (solutions : rewrite syscalls as non-blocking (forget about it), \textbf{door upcall}, \etc{}, \textbf{wrapper}, ...).
+\item
+On a page-fault, the thread will block until the disk I/O for a remote page is completed ! Even though another thread could be executed during the I/O access.
+\item
+Roud-robin fashion scheduling is almost impossible since there is no clock interrupts inside a process.
+\end{itemize}
+
+\end{frame}
+
+%5)
+
+\begin{frame}
+  \frametitle{Final words about user-space threads}
+
+Despite better performance, user-space threads lack \textbf{preemption} facilities. Threads are precisely usefull in application which issue numerous possibly blocking syscalls such as servers \etc{}
+
+\end{frame}
+
+
 \subsection{In kernel space}
+
+%6)
+
+\begin{frame}
+  \frametitle{Implementing thread in Kernel (kernel-thread)}
+
+When a thread wants to create a new thread, or destroy an existing one, it makes a syscall to the thread manager of the kernel. It is the kernel which manage threads's context saving and restoring into kernel's structures.
+\end{frame}
+
+%7)
+
+\begin{frame}
+  \frametitle{Advantages}
+
+\begin{itemize}
+\item
+All call that might block are implemented as system call, therefore if the kernel will block into a system call (semaphore \textit{P} operation for instance), it can schedule another thread to run while the blocked thread wait for the completion of his syscall. This is one aspect of \textbf{preemption}.
+\item
+Because the kernel knows how many threads a process own, it can give more time to an heavy process.
+\item
+SMP support.
+\end{itemize}
+
+\end{frame}
+
+%8)
+
+\begin{frame}
+  \frametitle{Drawbacks}
+
+\begin{itemize}
+\item
+Issuing syscalls is much more heavier than calling run-time procedures. Therefore creating, destroying threads, and any other possibly blocking syscalls are implemented at greater cost, much more overhrad will be incured.
+\item
+The kernel must support this thread implementation.
+\end{itemize}
+
+\end{frame}
+
+
+\subsection{Hybrid implementation}
+
+\begin{frame}
+  \frametitle{Scheduler activations}
+
+The goal of \textbf{scheduler activation} is to combine the advantages of user threads (good performance) with the advantages of kernel threads (not having to use a lot of tricks to make thing work).
+
+\-
+
+The kernel gives a certain number of virtual processors to processes, and the user-space runtime allocate these processors to its user-space threads. Obviously, virtual processors are replaced by real processors on multiprocessors systems.
+
+\-
+
+Another feature of scheduler activation is the \textbf{door upcall}, whenever a thread make a blocking syscall, the kernel has some ways to notice the user-space that this threads is now blocked. This is roughly analogous to a signal in UNIX.
+
+\end{frame}
+
 
 %
 % kernel implementation
@@ -576,7 +678,40 @@ QNX offers significantly more thread's state than any other common kernels. QNX'
 
 
 
+\section{Kernel tuning}
 
+% 1)
+
+\begin{frame}
+\frametitle{Everything as a thread}
+
+In microkernel, very few code make part of the essential monolitic code of the kernel, everything in a microkernel must be considered as a thread.
+
+\-
+
+Therefore, most of kernel services are regarded as a thread : for example the code for waiting for a thread is ported to a \textbf{kernel-thread}. Kernel-thread are like user-defined threads, excepts there are created directly by the kernel. Finally very few code remains monolitic.
+
+\-
+
+The drawback of this implementation is greater cost of calling the system. Refer to the \name{mach} kernel for performance benchmarks.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+\frametitle{Secure the interrupt handlers}
+
+One most of systems (including Solaris), interrupts handler are ported threads. It brings two big advantages :
+
+\begin{itemize}
+\item
+Security: interrupts handlers no more run with superuser privilege.
+\item
+Priority: even though the low-level handler can preempt the system, the code for the user-defined interrupt handler can be assigned a priority and run as a thread. Therefore an implicit priority can be assigned to any interrupt-handlers, just with assigning a certain priority to the interrupt handler thread.
+\end{itemize}
+
+\end{frame}
 
 
 %
