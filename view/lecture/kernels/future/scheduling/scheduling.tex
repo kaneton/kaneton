@@ -714,6 +714,145 @@ Priority: even though the low-level handler can preempt the system, the code for
 \end{frame}
 
 
+
+%
+% multicore
+%
+
+\section{Multicore}
+
+% 1)
+
+\begin{frame}
+\frametitle{Asymetrical MultiProcessor}
+
+Each processor gets :
+\begin{itemize}
+\item
+One space memory
+\item
+One image of the kernel loaded into his private memory
+\end{itemize}
+
+\-
+
+Communication between cores must be explicit, with the use of a communication protocol. Processors must exchange gloabl data such as global variables, and global events such as process preemption, ressource freeing, ...
+
+\-
+
+The good thing about AMP is it require a little modification of the kernel core.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+\frametitle{Drawbacks of AMP}
+
+In this context, migrating task from one core to another became extremly painful : a complex protocol has to be setup to migrate the task context frome one kernel to another.
+
+\-
+
+Moreover, because each processor needs one kernel image, the memory is quickly wasted with additional processor. Because of bus contention, it is almost impossible to have more than two processors in this architecture.
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+\frametitle{Symetrical MultiProcessing}
+
+Each processor sees the same memory, there is only one kernel image in memory. This image is the same for every processors. Nonetheless, each processors cannot be in the same kernel service (or running the same threads) at the same time.
+
+\-
+
+Communication between cores became implicit. Every processors shares the same memory, therefore access to global variables are seen locals. No need to use some heavy message passing protocol, but take care of concurrent access !
+
+\-
+
+Easy task migration (and possibly load balancing) : tasks are dispatched on the first available processor.
+
+\-
+
+Working with more than two processor is transparent, and an SMP system will work even if only one processor is available, which may make think of reduncy.
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+\frametitle{Kernel modification}
+
+Some complex modifications of code have to be undertaken :
+
+\begin{itemize}
+\item
+Cache coherency
+\item
+Scheduling and cache contention
+\item
+I/O routing
+\item
+Task affinity
+\item
+Atomic access
+\end{itemize}
+
+\end{frame}
+
+% 5) 
+
+\begin{frame}
+\frametitle{Enforcing atomic access}
+
+Atomic access can be achieved with many different means:
+
+\-
+
+The first mean is to assert an exclusive access on the data bus : for example with the LOCK instruction on Intel. This instruction prevent any other processor to access the memory during a lap of time.
+
+\-
+
+Another mean is to use atomic instructions provided by the architecture (like \textit{lwarx/strcx} on PowerPC).
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+\frametitle{Asserting cache coherency}
+
+\textbf{Race condition} happens when two or more processors have a diffrent image of the main portion of memory, stored into their L1 cache.
+
+\-
+
+To assert the cache coherency, functions should be protected with spinlock or reentrant. Modern architectures like Intel offer an hardware solution : the snooper. The snooper spy data bus accesses made by processors and is in charge of assuring the cache coherency.
+
+\end{frame}
+
+% 7)
+
+\begin{frame}
+\frametitle{InterProcessor Interrupt}
+
+Some actions of one processors must be notified to other processors immediately.
+
+\begin{itemize}
+\item
+Task suspension
+\item
+Task wakeup
+\item
+Semaphore \textit{verhog}
+\item
+Message send
+\item
+\etc{}
+\end{itemize}
+
+\end{frame}
+
+
 %
 % conclusion
 %
