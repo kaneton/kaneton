@@ -1,0 +1,35 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /data/mycure/repositories/kaneton/test/server/README
+#
+# created       julien quintard   [mon mar 23 12:31:12 2009]
+# updated       julien quintard   [mon mar 23 12:41:48 2009]
+#
+
+The following steps must be followed in order to properly set up the server.
+
+---[ Files
+
+store/database/
+
+store/certificate/ca.crt
+store/certificate/server.crt
+
+store/code/server.cod
+
+store/database/database.yml
+
+store/key/server.key
+
+---[ Scripts
+
+server/server.py
+
+---[ Packages
+
+packages/ktc.py -> server/ktc.py
