@@ -77,10 +77,10 @@ int main(int argc, char *argv[])
   // XXX
   char* dbname = argv[1];
 
-  FILEID_DB = malloc(strlen(dbname) + 3 + 1 + 2 + 1);
+  FILEID_DB = malloc(strlen(dbname) + 1 + 2 + 1 + 2 + 1);
   sprintf(FILEID_DB, "%s-id.db", dbname);
 
-  CTFNODE_DB = malloc(strlen(dbname) + 5 + 1 + 2 + 1);
+  CTFNODE_DB = malloc(strlen(dbname) + 1 + 5 + 1 + 2 + 1);
   sprintf(CTFNODE_DB, "%s-nodes.db", dbname);
 
   /* Process every file on the command-line */

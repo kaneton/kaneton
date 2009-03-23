@@ -684,10 +684,10 @@ int main(int argc, char *argv[])
   // XXX[patch to use a specific db file]
   char* dbname = argv[2];
 
-  FILEID_DB = malloc(strlen(dbname) + 3 + 1 + 2 + 1);
+  FILEID_DB = malloc(strlen(dbname) + 1 + 2 + 1 + 2 + 1);
   sprintf(FILEID_DB, "%s-id.db", dbname);
 
-  CTFNODE_DB = malloc(strlen(dbname) + 5 + 1 + 2 + 1);
+  CTFNODE_DB = malloc(strlen(dbname) + 1 + 5 + 1 + 2 + 1);
   sprintf(CTFNODE_DB, "%s-nodes.db", dbname);
 
   argc -= 2;

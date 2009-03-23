@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [sun feb  8 08:30:08 2009]
+# updated       julien quintard   [sun mar 22 18:08:58 2009]
 #
 
 #
@@ -75,7 +75,7 @@ endif
 #
 
 initialize:
-	cd environment							&& \
+	cd environment/							&& \
 	$(_PYTHON_) initialize.py					&& \
 	cd ..
 
@@ -90,7 +90,7 @@ ifeq ($(_SIGNATURE_),kaneton)
 #
 
 clean:
-	$(call env_launch,$(_ENVIRONMENT_DIR_)/clean.py,,)
+	$(call env_launch,$(_CLEAN_SCRIPT_),,)
 
 #
 # ---------- variables --------------------------------------------------------

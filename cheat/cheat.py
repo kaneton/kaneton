@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/cheat/cheat.py
+# file          /data/mycure/repositories/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [tue sep 16 14:09:48 2008]
+# updated       julien quintard   [mon mar 23 00:44:25 2009]
 #
 
 #
@@ -455,10 +455,11 @@ def                     prepare():
   # look for a base snapshot.
   if env.path(env._HISTORY_DIR_ + "/" + g_school + "/" + g_year +       \
               "/snapshot.tar.bz2", env.OPTION_EXIST):
-    g_base = {}
-    g_base["snapshot"] = env._HISTORY_DIR_ + "/" + g_school + "/" +     \
-        g_year + "/snapshot.tar.bz2"
-    g_base["temporary"] = env.temporary(env.OPTION_DIRECTORY)
+    g_base = { "snapshot": env._HISTORY_DIR_ + "/" + g_school + "/" + \
+                 g_year + "/snapshot.tar.bz2",
+               "path": g_directory + "/snapshot" }
+
+    env.mkdir(g_base["path"], env.OPTION_NONE)
   else:
     g_base = None
 
@@ -468,28 +469,66 @@ def                     prepare():
                           env.OPTION_DIRECTORY))
 
   for year in years:
-    # retrieve the students in this year.
-    students = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year,
-                               env.OPTION_DIRECTORY))
-
     # skip the younger works.
     if year > g_year:
       continue
 
-    # for every student.
-    for student in students:
-      # retrieve the work of this student.
-      stages = env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year +
-                        "/" + student,
-                        env.OPTION_DIRECTORY)
+    # for the work from the same year, simply compare the same stages.
+    if year == g_year:
+      # retrieve the students in this year.
+      students = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year,
+                                 env.OPTION_DIRECTORY))
 
-      # for each stage.
-      for stage in g_stages:
-        # skip higher stages.
-        if (year == g_year) and (stage > g_stage):
+      # for every student.
+      for student in students:
+        # add the student to the list.
+        g_history += [                                                  \
+          {
+            "name": year + "/" + student + "/" + g_stage,
+            "year": year,
+            "student": student,
+            "stage": g_stage,
+            "people": transform(env.pull(env._HISTORY_DIR_ + "/" +      \
+                                         g_school + "/" + year + "/" +  \
+                                         student + "/people",
+                                         env.OPTION_NONE)),
+            "snapshot": env._HISTORY_DIR_ + "/" + g_school + "/" + year + "/" +
+                        student + "/sources/" + g_stage + ".tar.bz2",
+            "sources": g_directory + "/" + year + "/" + student + "/" + g_stage,
+            "fingerprint": g_directory + "/" + year + "/" + student + "/" +
+                           g_stage + ".ctf",
+            "base": base,
+            "database": g_directory + "/" + year + "/" + student + "/tokens",
+            "trace": g_directory + "/" + year + "/" + student + "/trace"
+          } ]
+
+    # for older work, take the most recent work from every older student.
+    if year < g_year:
+      # retrieve the students in this year.
+      students = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year,
+                                 env.OPTION_DIRECTORY))
+
+      # for every student.
+      for student in students:
+        # find the works for this student.
+        stages = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school + "/" +
+                                 year + "/" + student + "/sources/",
+                                 env.OPTION_FILE))
+
+        # ignore students that skipped the project.
+        if len(stages) == 0:
           continue
 
-        # add the student to the list.
+        # find the most recent work.
+        match = re.match("^(.*)\.tar\.bz2$", stages[len(stages) - 1])
+
+        if not match:
+          continue
+
+        # retrieve the stage name.
+        stage = match.group(1)
+
+        # add the last student's work to the list.
         g_history += [                                                  \
           {
             "name": year + "/" + student + "/" + stage,
@@ -557,18 +596,18 @@ def                     extract():
   # extract the bases.
   if g_base:
     env.unpack(g_base["snapshot"],
-               g_base["temporary"],
+               g_base["path"],
                  env.OPTION_NONE)
 
     # verify that the extracted snapshot has created a 'kaneton/' directory.
-    if not (env.path(g_base["temporary"] + "/kaneton/",
+    if not (env.path(g_base["path"] + "/kaneton/",
                      env.OPTION_EXIST)):
       env.display(env.HEADER_ERROR,
                   "the extracted base snapshot '" + g_base["snapshot"] +
                   "' does not contain a 'kaneton/' directory",
                   env.OPTION_NONE)
 
-    if len(env.list(g_base["temporary"],
+    if len(env.list(g_base["path"],
                     env.OPTION_FILE | env.OPTION_DIRECTORY)) != 1:
       env.display(env.HEADER_ERROR,
                   "the extracted base snapshot '" + g_base["snapshot"] +
@@ -620,9 +659,6 @@ def                     generate():
                   "  " + student["name"],
                   env.OPTION_NONE)
 
-      # generate a temporary file for the database related to this user.
-      student["database"] = env.temporary(env.OPTION_FILE)
-
       # find the list of student snaphosts that will be tested against it.
       for snapshot in g_history:
         # skip the previous stages of the same user.
@@ -637,7 +673,7 @@ def                     generate():
       # finally, gather the information into a single database.
       env.launch(env._CTC_GATHER_TOOL_,
                  student["database"] + " " + " ".join(fingerprints),
-                 env.OPTION_QUIET)
+                 env.OPTION_NONE)
 
 #
 # compare()
@@ -663,14 +699,11 @@ def                     compare():
                   "  " + student["name"],
                   env.OPTION_NONE)
 
-      # create a temporary file.
-      student["trace"] = env.temporary(env.OPTION_FILE)
-
       # launch the program.
       env.launch(env._CTC_COMPARE_TOOL_,
                  student["trace"] + " " + student["database"] + " -r " +
                  student["fingerprint"],
-                 env.OPTION_NONE)
+                 env.OPTION_QUIET)
 
 #
 # highlight()
@@ -1173,7 +1206,7 @@ def             shear():
     if (student["year"] == g_year) and g_base:
       # remove the common parts.
       walk(student["sources"] + "/kaneton",
-           g_base["temporary"] + "/kaneton",
+           g_base["path"] + "/kaneton",
            None)
 
 #
@@ -1186,18 +1219,6 @@ def                     clean():
   # remove the temporary directory which contains all the extracted
   # snapshots etc.
   env.remove(g_directory, env.OPTION_NONE)
-
-  # remove the extracted base snapshot if it exists.
-  if g_base:
-    env.remove(g_base["temporary"], env.OPTION_NONE)
-
-  # remove the student traces and database files.
-  for student in g_history:
-    if "trace" in student:
-      env.remove(student["trace"], env.OPTION_NONE)
-    if "database" in student:
-      env.remove(student["database"] + "-id.db", env.OPTION_NONE)
-      env.remove(student["database"] + "-nodes.db", env.OPTION_NONE)
 
 #
 # main()
