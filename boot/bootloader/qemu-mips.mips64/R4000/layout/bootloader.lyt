@@ -3,7 +3,8 @@ ENTRY(bootloader_entry)
 
 SECTIONS
 {
-	. = 0xffffffffbfc00000;
+	__start = 0xffffffffbfc00000;
+	. = __start;
 	.text :
 	{
 		*(.text)
@@ -16,7 +17,8 @@ SECTIONS
 		*(.rodata)
 	}
 
-	__gp = ALIGN(4);
+	__gp = ALIGN(8);
+	__offset = __gp - __start;
 
 	.bss :
 	{

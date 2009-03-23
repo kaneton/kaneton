@@ -13,7 +13,6 @@ flag_address:
 bootloader_entry:
 	.set	noat
 	move $1, $0
-	.set	at
 	move $2, $0
 	move $3, $0
 	move $4, $0
@@ -49,7 +48,8 @@ bootloader_entry:
 
 	# Initialize the general pointer register
 
-	la $gp, __gp
+	lui $gp, 0xbfc0
+	daddiu $gp, $gp, __offset
 
 	# Clear all write right coprocessor 0 registers
 

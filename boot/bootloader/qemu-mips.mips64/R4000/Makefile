@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...otloader/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated          [tue mar 17 00:57:11 2009]
+# updated          [mon mar 23 07:47:43 2009]
 #
 
 #
@@ -35,8 +35,11 @@ include			../../../../environment/env.mk
 
 BOOTLOADER		:=		bootloader
 
+BOOTLOADER_BIN		:=		bootloader.bin
+
 BOOTLOADER_C		:=		bootloader.c				\
-					opmode.c
+					opmode.c				\
+					mmu.c
 
 BOOTLOADER_S		:=		entry.S
 
@@ -69,6 +72,8 @@ clear:
 	$(call env_remove,$(BOOTLOADER),)
 
 	$(call env_remove,$(_BOOTLOADER_LO_),)
+
+	$(call env_remove,$(BOOTLOADER_BIN),)
 
 	$(call env_purge,)
 
