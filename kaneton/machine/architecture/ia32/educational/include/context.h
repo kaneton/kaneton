@@ -31,6 +31,9 @@
 	 "	pusha					\n"		\
 	 "	movw %ds, %ax				\n"		\
 	 "	pushl %eax				\n"		\
+	 "	movl %cr3, %eax				\n"		\
+	 "	movl %eax, ia32_local_jump_pdbr		\n"		\
+	 "	movl 36(%esp), %ebx			\n"		\
 	 "	movl ia32_interrupt_pdbr, %eax		\n"		\
 	 "	movl %eax, %cr3				\n"		\
 	 "	movw ia32_interrupt_ds, %ax		\n"		\

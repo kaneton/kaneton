@@ -56,19 +56,22 @@
 #define IA32_EXCEPTION_PREHANDLER_CODE(nr)		       		\
   asm	(".section .handler				\n"		\
 	 "prehandler_exception" #nr ":			\n"		\
+	 "	cli					\n"		\
 	 IA32_SAVE_CONTEXT()						\
-	 "	pushl 40(%esp)				\n"		\
+	 "	pushl %ebx				\n"		\
 	 "	pushl $" #nr "				\n"		\
 	 "	call ia32_handler_exception		\n"		\
 	 "	addl $8, %esp				\n"		\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
+	 "	sti					\n"		\
 	 "	iret					\n"		\
 	 ".text						")
 
 #define IA32_EXCEPTION_PREHANDLER_NOCODE(nr)		       		\
   asm	(".section .handler				\n"		\
 	 "prehandler_exception" #nr ":			\n"		\
+	 "	cli					\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 IA32_SAVE_CONTEXT()						\
 	 "	pushl $0				\n"		\
@@ -77,12 +80,14 @@
 	 "	addl $8, %esp				\n"		\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
+	 "	sti					\n"		\
 	 "	iret					\n"		\
 	 ".text						")
 
 #define IA32_IRQ_PREHANDLER(nr)				       		\
   asm	(".section .handler				\n"		\
 	 "prehandler_irq" #nr ":			\n"		\
+	 "	cli					\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 IA32_SAVE_CONTEXT()						\
 	 "	pushl $" #nr "				\n"		\
@@ -90,12 +95,14 @@
 	 "	addl $4, %esp				\n"		\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
+	 "	sti					\n"		\
 	 "	iret					\n"		\
 	 ".text						")
 
 #define IA32_IPI_PREHANDLER(nr)				       		\
   asm	(".section .handler				\n"		\
 	 "prehandler_ipi" #nr ":			\n"		\
+	 "	cli					\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 IA32_SAVE_CONTEXT()						\
 	 "	pushl $" #nr "				\n"		\
@@ -103,12 +110,14 @@
 	 "	addl $4, %esp				\n"		\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
+	 "	sti					\n"		\
 	 "	iret					\n"		\
 	 ".text						")
 
 #define IA32_SYSCALL_PREHANDLER(nr)			       		\
   asm	(".section .handler				\n"		\
 	 "prehandler_syscall" #nr ":			\n"		\
+	 "	cli					\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 IA32_SAVE_CONTEXT()						\
 	 "	pushl $" #nr "				\n"		\
@@ -116,6 +125,7 @@
 	 "	addl $4, %esp				\n"		\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
+	 "	sti					\n"		\
 	 "	iret					\n"		\
 	 ".text						")
 
