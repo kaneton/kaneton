@@ -73,7 +73,7 @@ static void	thread2(void)
  * XXX
  */
 
-void		check_message_sync_02(void)
+void		check_message_sync_02_entry(void)
 {
   i_task	tsk1, tsk2;
   t_id		id;
@@ -131,3 +131,5 @@ void		check_message_sync_02(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_message_sync_02)

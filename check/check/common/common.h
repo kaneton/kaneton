@@ -100,6 +100,23 @@ typedef struct
   ASSERT(as_release(As) == ERROR_NONE, "Failed to release as\n");	\
   ASSERT(task_release(Task) == ERROR_NONE, "Failed to release task\n")
 
+#define CHECK_WITH_THREAD(_test_)					\
+    void _test_ ## _wrapper(void);					\
+    void _test_ ## _wrapper(void)					\
+	{								\
+	    _test_ ## _entry();						\
+	    while (1)							\
+	    	;							\
+	}								\
+    void _test_ (void)							\
+	{								\
+	   i_thread		th;					\
+	   extern i_task	ktask;					\
+	   check_thread_create(ktask, THREAD_PRIOR, _test_ ## _wrapper, &th); \
+	   scheduler_add(th); 						\
+	   STI();							\
+	}
+
 typedef struct
 {
 

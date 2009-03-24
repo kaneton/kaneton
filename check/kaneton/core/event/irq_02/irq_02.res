@@ -1,3 +1,3 @@
-Test check_event_irq_02
+Test check_event_irq_02_entry
  - Triggering IRQ
-check_event_irq_02 done.
+check_event_irq_02_entry done.

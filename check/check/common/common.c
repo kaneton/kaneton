@@ -255,6 +255,7 @@ int		check_thread_create(i_task		task,
   o_thread*		o;
   t_thread_context	ctx;
   t_stack		stack;
+  t_ia32_context	ia32_ctx;
 
   if (thread_reserve(task, prior, thread) != ERROR_NONE)
     {
@@ -286,5 +287,21 @@ int		check_thread_create(i_task		task,
       return -1;
     }
 
+  if (ia32_get_context(*thread, &ia32_ctx) != ERROR_NONE)
+  {
+      printf("failed to get the context\n");
+      return -1;
+  }
+
+  ia32_ctx.eflags |= (1 << 12);
+  ia32_ctx.eflags |= (1 << 13);
+
+  if (ia32_set_context(*thread, &ia32_ctx, IA32_CONTEXT_EFLAGS) != ERROR_NONE)
+  {
+      printf("failed to set eflags\n");
+      return -1;
+  }
+
   return 0;
 }
+

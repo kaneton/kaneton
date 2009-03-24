@@ -28,7 +28,7 @@ asm ("thread1:				\n"
  * XXX
  */
 
-void		check_sched_simple_02(void)
+void		check_sched_simple_02_entry(void)
 {
   t_id		id1, id2;
   t_uint32	start;
@@ -55,3 +55,5 @@ void		check_sched_simple_02(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_sched_simple_02)

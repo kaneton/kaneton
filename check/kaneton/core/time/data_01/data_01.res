@@ -1,2 +1,2 @@
-Test check_time_data_01
-check_time_data_01 done.
+Test check_time_data_01_entry
+check_time_data_01_entry done.

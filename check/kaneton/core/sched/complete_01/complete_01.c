@@ -30,7 +30,7 @@ static void	thread1(void)
  * XXX
  */
 
-void		check_sched_complete_01(void)
+void		check_sched_complete_01_entry(void)
 {
   i_task	tsk;
   t_id		id;
@@ -68,3 +68,5 @@ void		check_sched_complete_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_sched_complete_01)

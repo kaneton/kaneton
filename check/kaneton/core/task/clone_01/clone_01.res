@@ -1,2 +1,2 @@
-Test check_task_clone_01
-check_task_clone_01 done.
+Test check_task_clone_01_entry
+check_task_clone_01_entry done.

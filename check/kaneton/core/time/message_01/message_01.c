@@ -21,7 +21,7 @@ static volatile t_uint32 timed = 0;
  * XXX
  */
 
-void		check_time_message_01(void)
+void		check_time_message_01_entry(void)
 {
   o_timer_message	evt;
   t_vsize		sz;
@@ -54,3 +54,5 @@ void		check_time_message_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_time_message_01)

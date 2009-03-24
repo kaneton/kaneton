@@ -51,7 +51,7 @@ asm ("thread2:				\n"
  * XXX
  */
 
-void		check_sched_yield_01(void)
+void		check_sched_yield_01_entry(void)
 {
   t_id		id1, id2;
   t_uint32	start;
@@ -86,3 +86,5 @@ void		check_sched_yield_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_sched_yield_01)

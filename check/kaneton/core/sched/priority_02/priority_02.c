@@ -51,7 +51,7 @@ THREAD(8);
  * XXX
  */
 
-void		check_sched_priority_02(void)
+void		check_sched_priority_02_entry(void)
 {
   t_id		id[8];
   t_uint32	start;
@@ -101,3 +101,5 @@ void		check_sched_priority_02(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_sched_priority_02)

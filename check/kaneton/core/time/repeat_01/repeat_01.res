@@ -1,4 +1,4 @@
-Test check_time_repeat_01
+Test check_time_repeat_01_entry
 Timer shot
 Timer shot
-check_time_repeat_01 done.
+check_time_repeat_01_entry done.

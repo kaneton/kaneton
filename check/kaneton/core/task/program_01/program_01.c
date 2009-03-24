@@ -30,7 +30,6 @@ static void	thread1(void)
 	       : "=a" (cs));
 
   printf ("Ring %d\n", cs & 0x3);
-
   executed = 1;
 
   while (1)
@@ -41,7 +40,7 @@ static void	thread1(void)
  * XXX
  */
 
-void		check_task_program_01(void)
+void		check_task_program_01_entry(void)
 {
   i_task	tsk;
   t_id		id;
@@ -65,7 +64,7 @@ void		check_task_program_01(void)
   while ((start + 3) % 60 != check_cmos_sec() && !executed)
     ;
 
-  ASSERT(executed == 1, "Thread not executed\n")
+  ASSERT(executed == 1, "Thread not executed\n");
 
   ASSERT(thread_store(id, &ctx) == ERROR_NONE,
 	 "error in thread_store\n");
@@ -73,3 +72,5 @@ void		check_task_program_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_task_program_01)

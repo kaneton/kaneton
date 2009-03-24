@@ -1,3 +1,3 @@
-Test check_task_driver_01
+Test check_task_driver_01_entry
 Ring 1
-check_task_driver_01 done.
+check_task_driver_01_entry done.

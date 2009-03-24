@@ -31,7 +31,7 @@ static void	thread1(void)
  * XXX
  */
 
-void		check_task_clone_01(void)
+void		check_task_clone_01_entry(void)
 {
   i_task	tsk;
   i_task	cloned;
@@ -72,3 +72,5 @@ void		check_task_clone_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_task_clone_01)

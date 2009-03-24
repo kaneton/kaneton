@@ -1,2 +1,2 @@
-Test check_sched_medium_01
-check_sched_medium_01 done.
+Test check_sched_medium_01_entry
+check_sched_medium_01_entry done.

@@ -1,2 +1,2 @@
-Test check_sched_context_03
-check_sched_context_03 done.
+Test check_sched_context_03_entry
+check_sched_context_03_entry done.

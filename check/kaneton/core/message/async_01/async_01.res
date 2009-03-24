@@ -1,2 +1,2 @@
-Test check_message_async_01
-check_message_async_01 done.
+Test check_message_async_01_entry
+check_message_async_01_entry done.

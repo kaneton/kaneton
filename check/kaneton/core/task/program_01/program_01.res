@@ -1,3 +1,3 @@
-Test check_task_program_01
+Test check_task_program_01_entry
 Ring 3
-check_task_program_01 done.
+check_task_program_01_entry done.

@@ -34,7 +34,7 @@ asm ("thread1:				\n"
  * XXX
  */
 
-void		check_sched_context_01(void)
+void		check_sched_context_01_entry(void)
 {
   t_id		id;
   t_uint32	start;
@@ -61,3 +61,5 @@ void		check_sched_context_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_sched_context_01)

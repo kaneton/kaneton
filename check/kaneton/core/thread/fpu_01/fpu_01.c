@@ -102,7 +102,7 @@ static void thread2(void)
  * XXX
  */
 
-void		check_thread_fpu_01(void)
+void		check_thread_fpu_01_entry(void)
 {
   t_id		id;
   t_uint32	start;
@@ -139,3 +139,5 @@ void		check_thread_fpu_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_thread_fpu_01)

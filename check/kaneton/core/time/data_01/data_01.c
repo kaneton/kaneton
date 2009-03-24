@@ -29,11 +29,12 @@ static void	check_timer_handler(t_id tid, t_vaddr data)
  * XXX
  */
 
-void		check_time_data_01(void)
+void		check_time_data_01_entry(void)
 {
   t_uint32	start;
-
+  
   TEST_ENTER();
+
 
   start = check_cmos_sec();
   while (start == check_cmos_sec())
@@ -52,3 +53,5 @@ void		check_time_data_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_time_data_01)

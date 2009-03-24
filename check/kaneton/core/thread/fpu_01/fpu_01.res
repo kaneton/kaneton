@@ -1,2 +1,2 @@
-Test check_thread_fpu_01
-check_thread_fpu_01 done.
+Test check_thread_fpu_01_entry
+check_thread_fpu_01_entry done.

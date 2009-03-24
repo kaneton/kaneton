@@ -76,8 +76,7 @@ static void	check_irq8(t_id	id)
 /*
  * reserve event onto int3 and throw an int3.
  */
-
-void		check_event_irq_02(void)
+static void		check_event_irq_02_entry(void)
 {
   int		i;
 
@@ -109,3 +108,5 @@ void		check_event_irq_02(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_event_irq_02)

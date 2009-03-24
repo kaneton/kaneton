@@ -25,7 +25,7 @@ static void	check_timer_handler(void)
  * XXX
  */
 
-void		check_time_release_01(void)
+void		check_time_release_01_entry(void)
 {
   i_timer	id;
   t_uint32	start;
@@ -47,3 +47,5 @@ void		check_time_release_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_time_release_01)

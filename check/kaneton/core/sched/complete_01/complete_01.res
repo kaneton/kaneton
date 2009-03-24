@@ -1,2 +1,2 @@
-Test check_sched_complete_01
-check_sched_complete_01 done.
+Test check_sched_complete_01_entry
+check_sched_complete_01_entry done.

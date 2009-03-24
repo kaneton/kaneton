@@ -1,2 +1,2 @@
-Test check_message_sync_02
-check_message_sync_02 done.
+Test check_message_sync_02_entry
+check_message_sync_02_entry done.

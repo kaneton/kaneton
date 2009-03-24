@@ -1,2 +1,2 @@
-Test check_sched_priority_02
-check_sched_priority_02 done.
+Test check_sched_priority_02_entry
+check_sched_priority_02_entry done.

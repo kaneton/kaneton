@@ -25,7 +25,7 @@ static void	check_irq6(t_id	id)
  * reserve event onto int3 and throw an int3.
  */
 
-void		check_event_irq_01(void)
+void		check_event_irq_01_entry(void)
 {
   int		i;
 
@@ -54,3 +54,5 @@ void		check_event_irq_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_event_irq_01)

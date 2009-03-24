@@ -1,4 +1,4 @@
-Test check_event_int_state_01
+Test check_event_int_state_01_entry
 Interrupt disabled in ISR
 Interrupt enabled after ISR
-check_event_int_state_01 done.
+check_event_int_state_01_entry done.

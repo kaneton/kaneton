@@ -31,7 +31,7 @@ static void	check_int3(t_id	id)
  * reserve event onto int3 and throw an int3.
  */
 
-void		check_event_int_state_01(void)
+void		check_event_int_state_01_entry(void)
 {
   static t_uint32	eflags;
 
@@ -53,3 +53,5 @@ void		check_event_int_state_01(void)
 
   TEST_LEAVE();
 }
+
+CHECK_WITH_THREAD(check_event_int_state_01)
