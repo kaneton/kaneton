@@ -1,0 +1,277 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane.../kernels/prerequisites/prerequisites.tex
+%
+% created       julien quintard   [wed may 16 19:28:59 2007]
+% updated       julien quintard   [wed may 16 19:29:16 2007]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Devices}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% figures
+%
+
+\begin{frame}
+        \tableofcontents
+\end{frame}
+  % -)
+
+\section{Hardware memory access}
+\begin{frame}
+  \frametitle{Minimal components and buses}
+  \begin{center}
+    \includegraphics[width=150pt,height=150pt]{pic/arch-basic}
+  \end{center}
+\end{frame}
+
+
+\subsection{Memory accesses}
+\begin{frame}
+  \frametitle{Memory accesses}
+  \begin{center}
+    \begin{overlayarea}{10cm}{10cm}
+      \only<1>{\includegraphics[width=240pt,height=200pt]{pic/memory-access-step1}}
+      \only<2>{\includegraphics[width=240pt,height=200pt]{pic/memory-access-step2}}
+      \only<3>{\includegraphics[width=240pt,height=200pt]{pic/memory-access-step3}}
+      \only<4>{\includegraphics[width=240pt,height=200pt]{pic/memory-access-step4}}
+    \end{overlayarea}
+  \end{center}
+\end{frame}
+
+% -)
+
+\subsection{Memory controller}
+\begin{frame}
+  \frametitle{Memory controller}
+  \begin{center}
+    \only<1>{\includegraphics[width=300pt,height=110pt]{pic/memory-controller}}
+  \end{center}
+\end{frame}
+
+% -)
+
+\subsection{Misaligned Memory access}
+\begin{frame}
+\frametitle{Misaligned memory access}
+  \begin{itemize}
+    \item Memory access are not every time aligned.
+    \item For instance "movl (\$0xABCD57), \%eax".
+    \item Some architecture doesn't support unaligned memory access, the
+    processor raise an exception (Sparc).
+    \item Hopufully (or not) x86 supports unaligned memory access.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Misaligned memory access}
+  \begin{center}
+\begin{overlayarea}{10cm}{10cm}
+    \only<1>{\includegraphics[width=300pt,height=150pt]{pic/unaligned-step1}}
+    \only<2>{\includegraphics[width=300pt,height=150pt]{pic/unaligned-step2}}
+    \only<3>{\includegraphics[width=300pt,height=150pt]{pic/unaligned-step3}}
+    \only<4>{\includegraphics[width=300pt,height=150pt]{pic/unaligned-step4}}
+\end{overlayarea}
+  \end{center}
+\end{frame}
+
+\section{Devices}
+
+\subsection{What is a device?}
+\begin{frame}
+\begin{itemize}
+  \item A device is a piece of hardware connected on a computer via a
+        bus.
+  \item It can be a wired bus or over the air, like bluetooth.
+  \item A device can make actions and has different status.
+  \item To store all those informations device use registers.
+  \item Devices need interrupts in order to notify the computer. It's
+  for synchronous actions.
+\end{itemize}
+\end{frame}
+\subsection{Register}
+\begin{frame}
+\frametitle{Devies Registers}
+\begin{itemize}
+        \item Registers can be access using an address on the device.
+        \item Sometimes the device memory is mapped on the computer
+        physical memory, sometime it required to use some I/O
+        instrucitons.
+        \item There is 2 types of registers:
+        \begin{itemize}
+          \item Actions registers, ofen write only (but ca be RW),
+          writing to those registers do an action.
+          \item Status registers, read only. This is ofen the result of
+          an action.
+        \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\section{Different way to get in...}
+\subsection{PIO}
+
+\begin{frame}
+        \frametitle{PIO}
+        \begin{itemize}
+        \item Programmed Input Output.
+        \item Use instruction in{b,w,l} and out{b,w,l}.
+        \item Very slow.
+        \item Takes a lot of CPU loads.
+        \item The processor cannot do something else when data are
+        transfering.
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\begin{overlayarea}{10cm}{10cm}
+\only<1>{\includegraphics[height=225pt]{pic/ioport_1.pdf}}
+\only<2>{\includegraphics[height=225pt]{pic/ioport_2.pdf}}
+\only<3>{\includegraphics[height=225pt]{pic/ioport_3.pdf}}
+\only<4>{\includegraphics[height=225pt]{pic/ioport_4.pdf}}
+\end{overlayarea}
+\end{center}
+\end{frame}
+
+\subsection{MMIO}
+\begin{frame}
+        \frametitle{MMIO}
+        \begin{itemize}
+        \item Memory Mapped Input Output.
+        \item It's a physicall address but it's not RAM.
+        \item Can be mapped using pagination or segmentation.
+        \item Can be cached, but be careful.
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\begin{overlayarea}{10cm}{10cm}
+\only<1>{\includegraphics[height=150pt]{pic/mmio_1.pdf}}
+\only<2>{\includegraphics[height=150pt]{pic/mmio_2.pdf}}
+\only<3>{\includegraphics[height=150pt]{pic/mmio_3.pdf}}
+\only<4>{\includegraphics[height=150pt]{pic/mmio_4.pdf}}
+\only<5>{\includegraphics[height=150pt]{pic/mmio_5.pdf}}
+\only<6>{\includegraphics[height=150pt]{pic/mmio_6.pdf}}
+\only<7>{\includegraphics[height=150pt]{pic/mmio_7.pdf}}
+\only<8>{\includegraphics[height=150pt]{pic/mmio_8.pdf}}
+\only<9>{\includegraphics[height=150pt]{pic/mmio_9.pdf}}
+\only<10>{\includegraphics[height=150pt]{pic/mmio_10.pdf}}
+\end{overlayarea}
+\end{center}
+\end{frame}
+
+\subsection{DMA}
+\begin{frame}
+\frametitle{DMA}
+        \begin{itemize}
+        \item Direct Memory Access
+        \item Background transfert from phys memory to phys memory.
+        \item An interupt is raised when the transfert is done.
+        \item Modern way to do big transfert.
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\begin{overlayarea}{10cm}{10cm}
+\only<1>{\includegraphics[height=150pt]{pic/dma-step1}}
+\only<2>{\includegraphics[height=150pt]{pic/dma-step2}}
+\only<3>{\includegraphics[height=150pt]{pic/dma-step3}}
+\end{overlayarea}
+\end{center}
+\end{frame}
+
+\section{Driver exemple, i8042}
+
+\begin{frame}
+\frametitle{Description}
+\begin{itemize}
+\item i8042 is the standar keyboard controller.
+\item i8042 got 2 IO ports, 0x60 and 0x64.
+\item 0x60 is the data port, 0x64 is the cmd port.
+\item i8042 wired on the IRQ 1.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{enumerate}
+\item Received and interrupt.
+\item Read status register (cmd).
+\item Read data register.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exemple i8042}
+\begin{verbatim}
+void irq1_handler(void)
+{
+    uint8_t st;
+
+    st = inb(0x64);
+    if (st & 0x10 || st & 0x20)
+       inb(0x60)
+    else
+      printf("Not a i8042 event\n");
+}
+\end{verbatim}
+\end{frame}
+
+
+\section{PCI Bus}
+\subsection*{Background}
+\subsection{BDF}
+\subsection{PCI Classes}
+\subsection{Config Space}
+\subsection{Base address register}
+
+\section{USB}
+\subsection*{Background}
+\subsection{Protocoles}
+\subsection{Transfert modes}
+\subsection{UHCI}
+\subsection{Futurs}
+
+\end{document}

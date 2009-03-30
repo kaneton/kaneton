@@ -90,7 +90,8 @@
 \pgfdeclareimage{l4ipc}
                 {figures/l4ipc}
 
-\pgfdeclareimage{xenarchi}
+\pgfdeclareimage[height=180pt]
+                {xenarchi}
                 {figures/xenarchi}
 
 \tableofcontents
@@ -106,26 +107,27 @@
 
         \begin{itemize}
                 \item 60s - IBM - First main frame
-                \item 70s - Unix - Server operating system 
-                \item 80s - Microsoft  - Personnal compuer (PC)
+                \item 70s - Unix - Servers operating system 
+                \item 80s - Microsoft  - Personnal computer (PC)
                 \item 90s - Linux / Minix / GNU - Open source
-                \item 2000 - VmWare / Goggle - Virtualisation / Distribution 
+                \item 2000 - VMware / Goggle - Virtualisation / Distribution 
         \end{itemize}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Evolution ...}
-The way to use computer has changed through the year.
+The way to use computer has changed through the years.
 
   \-
 
-The kernel and operating systems as to adapt over the years.
+The kernel and operating systems had to evolve according to those new
+use cases.
 
   \-
 
-Kernel went from massively multi-user to mono-user and then end up begin
-a mix of that with virtualisation and distrubution.
+Kernel came from massively multi-user to mono-user and then end up begin
+a mix with virtualisation and distrubution.
 \end{frame}
 
 \section{Introduction}
@@ -217,16 +219,16 @@ a mix of that with virtualisation and distrubution.
 
 \section{Kernel choisses}
 
-\section{Mono/Multi user}
+\subsection{Mono/Multi user}
 \begin{frame}
-  \frametitle{Mono/Multi user}
+  \frametitle{Mono/Multi user/task}
   \begin{itemize}
-        \item Usally this problem comes allong with the multi-tasking.
-        If we decide to go for the multi-tasking we might want to as
+        \item Usally this problem comes along with the multi-tasking.
+        If we decide to go for the multi-tasking we might want to have 
         multi-user support to provide security.
         \item Some systems don't need multi-user/multi-tasking. They are
-        ofen use for embedded/Real-Time application.
-        \item Multi-user support involve to thing about a system to
+        ofen use for embedded/Real-Time applications.
+        \item Multi-user support involves to thing about a system to
         protect data from one user against another. It could be
         ACL/capabalities/\ldots
   \end{itemize}
@@ -239,11 +241,12 @@ a mix of that with virtualisation and distrubution.
   \begin{itemize}
         \item Segmentation/Pagination are generally used to improved
         security and flexibility.
-        \item The walking throw the page tables takes a bit of time and
+        \item Walkes throw the page tables takes a bit of time and
         it's not deterministic. Therefor it can't be used of hard
         real-time.
         \item To support the pagination you have to have a MMU on your
-        platform.
+        platform. The MMU is usally part of the processor because it
+        needs to be called every time the execution access the memory.
   \end{itemize}
 \end{frame}
 
@@ -254,7 +257,7 @@ a mix of that with virtualisation and distrubution.
         \item Online:
         \begin{itemize}
                 \item The online scheduling is the usal way to schedule
-                nowadays. The scheduler is dynamic and alloce the
+                nowadays. The scheduler is dynamic and allocate the
                 timeslices on demand.
                 \item It's much more flexible than the scheduling
                 offline.
@@ -265,8 +268,8 @@ a mix of that with virtualisation and distrubution.
                 \item The order in which the tasks will be executed is
                 pre-computed.
                 \item You need a limited number of taks.
-                \item It's not dymaic.
-                \item Fill perfectly in a lockdown system (real-time
+                \item It's not dynamic.
+                \item Fit perfectly in a lockdown environment (real-time
                 again?)
         \end{itemize}
         \end{itemize}
@@ -361,7 +364,7 @@ a mix of that with virtualisation and distrubution.
     Small amount of code in kernel-space: less bugs and risks of
     crashes
   \item
-    Clearest design, easy to understand
+    Clear design, easy to understand
   \item
     Services can be started and stopped: reduce system load, run
     concurrent services\ldots
@@ -407,14 +410,15 @@ a mix of that with virtualisation and distrubution.
                 \item IPC
         \end{itemize}
         \item Concept of recursive address space, $\sigma{}_0$ 
-        \item IPC communication: Chiefs and clan.
+        \item IPC communication: Chiefs and clans.
   \end{itemize}
 \end{frame}
 \begin{frame}
   \frametitle{L4 IPCs: Chiefs and clans}
   \begin{center}
-  \pgfuseimage{l4ipc}
-  Chiefs and Clans in L4. 
+  \pgfuseimage{l4ipc} \\
+  Chiefs and Clans in L4. \\ Exemple of communication between to sub
+  entities.
   \end{center}
 \end{frame}
 
@@ -422,12 +426,12 @@ a mix of that with virtualisation and distrubution.
         \frametitle{Xen the open source hypervisor}
         \begin{itemize}
                 \item Xen boots and then start linux/solaris/netbsd dom0.
-                \item Dom0 is a module of the kernel xen.
+                \item Dom0 is a module of xen.
                 \item Each domain (virtual machine) is a module.
                 \item In the futur dom0 could be split in different
-                volume (stub-domain).
-                \item There is communication mechanisme between the
-                different layer (xenstore, ring buffers).
+                domain/module (stub-domain).
+                \item There are communication mechanismes between the
+                different layers (xenstore, ring buffers, \ldots:).
         \end{itemize}
 \end{frame}
 \begin{frame}
@@ -653,19 +657,37 @@ The xen architecture
 %
 
 \begin{frame}
-  \frametitle{Example: K}
+  \frametitle{Example: Kastor}
 
-  K is a specific kernel providing a reduced set of functionnality. K
+  Kastor is a specific kernel providing a reduced set of functionnality. K
   is intended to run small games.
 
   \begin{center}
     \pgfuseimage{k}
   \end{center}
 
-  K does not provide some classical functionnalities such as virtual
+  Kastor does not provide some classical functionnalities such as virtual
   memory or process management, but is provides some main functions
   for its specific domain like video or sound drivers.
 
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+        There is a lot of different type of kernel out there.
+
+        \-
+
+        A lot of systems need their own specific design specily in
+        real-time or embedded system.
+
+        \-
+
+        The futur of the kernel and computing in general tourns out to
+        be cloud computing and virtualisation.
+        There is still lot of effort that needs to be
+        made to achive those goals of distributivity,
+        flexibility and compatibility.
 \end{frame}
 
 \end{document}

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...view/lecture/kernels/future/bus/Makefile
+# file          /home/mycure/kane...ure/kernels/future/generalities/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [fri nov 28 16:28:09 2008]
+# updated       julien quintard   [fri nov 28 16:29:03 2008]
 #
 
 #
@@ -27,9 +27,9 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		bus
+PAPER			:=		devices
 
-SOURCES			:=		bus.tex			
+SOURCES			:=		devices.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
@@ -39,6 +39,7 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.blg)		\
 					$(SOURCES:.tex=.nav)		\
 					$(SOURCES:.tex=.out)		\
+					$(SOURCES:.tex=.vrb)		\
 					$(SOURCES:.tex=.snm)		
 
 #
