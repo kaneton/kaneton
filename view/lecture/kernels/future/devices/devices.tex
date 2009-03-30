@@ -216,9 +216,9 @@
 \begin{frame}
 \begin{center}
 \begin{overlayarea}{10cm}{10cm}
-\only<1>{\includegraphics[height=150pt]{pic/dma-step1}}
-\only<2>{\includegraphics[height=150pt]{pic/dma-step2}}
-\only<3>{\includegraphics[height=150pt]{pic/dma-step3}}
+\only<1>{\includegraphics[height=150pt,width=302pt]{pic/dma-step1}}
+\only<2>{\includegraphics[height=150pt,width=302pt]{pic/dma-step2}}
+\only<3>{\includegraphics[height=150pt,width=302pt]{pic/dma-step3}}
 \end{overlayarea}
 \end{center}
 \end{frame}
@@ -236,6 +236,7 @@
 \end{frame}
 
 \begin{frame}
+\frametitle{Steps}
 \begin{enumerate}
 \item Received and interrupt.
 \item Read status register (cmd).
@@ -262,10 +263,113 @@ void irq1_handler(void)
 
 \section{PCI Bus}
 \subsection*{Background}
-\subsection{BDF}
-\subsection{PCI Classes}
-\subsection{Config Space}
-\subsection{Base address register}
+\begin{frame}
+\frametitle{Background}
+\begin{itemize}
+\item PCI, Peripheral Component Interconnect
+\item Different version exists:
+\begin{itemize}
+\item PCI 2.2 32 bits, 33MHz, 133 Mo/s.
+\item PCI 2.2 64 bits, 64 MHz, 528 Mo/s.
+\item PCI-X 64 bits, 133 MHz, 1066 Mo/s.
+\end{itemize}
+\item The bandwidth is shared between the devices on the same bus. That
+why AGP has been created, to dedicate some bandwidth to the graphic
+card.
+\item In PCI express the bandwidth is not shared anymore. 
+\item PCI is even used for internal device connexion in the southbridge
+like (network card or sound card).
+\end{itemize}
+\end{frame}
+
+\subsection{BDF, Bus Device Fonction}
+\begin{frame}[fragile]
+\frametitle{Bus Device Fonction}
+This is the naming convention for pci device.
+
+\-
+
+00:12.4:
+\begin{itemize}
+\item Bus: 00
+\item Device: 12
+\item Function: 4
+\end{itemize}
+
+\-
+
+A same device can expose mutiple functions, it's ofen the case for usb
+controllers:
+
+\begin{verbatim}
+00:1d.0 USB Controller [0c03]:USB UHCI Controller #1 [8086:27c8]
+00:1d.1 USB Controller [0c03]:USB UHCI Controller #2 [8086:27c9]
+00:1d.2 USB Controller [0c03]:USB UHCI Controller #3 [8086:27ca]
+00:1d.3 USB Controller [0c03]:USB UHCI Controller #4 [8086:27cb]
+00:1d.7 USB Controller [0c03]:USB2 EHCI Controller [8086:27cc]
+\end{verbatim}
+
+\end{frame}
+
+\subsection{Config Space and BAR}
+\begin{frame}
+\frametitle{Config space and BAR}
+In order to configure, list, play with the pci devices. Each device got
+there own configuration table, called Config space.
+
+\-
+
+The pci config space expose the different MMIO region and I/O port that
+a specific device use. By default the pci space starts at 0x80000000,
+but it can be remmaped.
+
+\-
+
+The pci BAR (Base address register), is an offset where to find the
+memory region of the devices. This is where are the registers.
+
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[height=150pt]{pic/config_space}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{ATI graphic card exemple}
+\begin{verbatim}
+01:00.0 0300: 1002:7104 (prog-if 00 [VGA controller])
+  Subsystem: 1002:0b32
+  Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+  Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+  Latency: 0, Cache Line Size: 64 bytes
+  Interrupt: pin A routed to IRQ 16
+  Region 0: Memory at d0000000 (64-bit, prefetchable) [size=256M]
+  Region 2: Memory at efde0000 (64-bit, non-prefetchable) [size=64K]
+  Region 4: I/O ports at dc00 [size=256]
+  Expansion ROM at efe00000 [disabled] [size=128K]
+\end{verbatim}
+
+\begin{verbatim}
+00: 02 10 04 71 07 00 10 00 00 00 00 03 10 00 80 00
+10: 0c 00 00 d0 00 00 00 00 04 00 de ef 00 00 00 00
+20: 01 dc 00 00 00 00 00 00 00 00 00 00 02 10 32 0b
+30: 00 00 e0 ef 50 00 00 00 00 00 00 00 0b 01 00 00
+40: 00 00 00 00 00 00 00 00 00 00 00 00 02 10 32 0b
+50: 01 58 02 06 00 00 00 00 10 80 01 00 a0 0f 64 08
+60: 16 09 00 00 01 0d 00 00 40 00 01 11 00 00 00 00
+70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+80: 05 00 80 00 00 00 00 00 00 00 00 00 00 00 00 00
+90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+\end{verbatim}
+\end{frame}
 
 \section{USB}
 \subsection*{Background}
