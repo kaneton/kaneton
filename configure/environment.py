@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/environment.py
 #
 # created       julien quintard   [thu may 24 16:58:00 2007]
-# updated       julien quintard   [sat aug 23 20:50:21 2008]
+# updated       julien quintard   [sun mar 29 00:36:36 2009]
 #
 
 #
@@ -142,7 +142,7 @@ def			load(directories, pattern, option):
       if not re.match(pattern, file):
         continue
 
-      content += env.pull(directory + "/" + file, env.OPTION_READ) + "\n"
+      content += env.pull(directory + "/" + file, env.OPTION_NONE) + "\n"
 
       if (option & OPTION_COMMENTS):
         content = comments(content)

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/dialog.py
 #
 # created       julien quintard   [wed may 23 10:36:51 2007]
-# updated       julien quintard   [tue may 29 21:13:25 2007]
+# updated       julien quintard   [sun mar 29 00:37:50 2009]
 #
 
 #
@@ -60,7 +60,7 @@ def			menu(title, description, entries):
                        " " + str(MENU_HEIGHT) + " " + menu + " 2> " +	\
                        g_temporary, env.OPTION_NONE)
 
-  choice = env.pull(g_temporary, env.OPTION_READ)
+  choice = env.pull(g_temporary, env.OPTION_NONE)
 
   if not choice:
     return None
@@ -97,7 +97,7 @@ def			radio(title, description, entries, current):
                        " " + str(MENU_HEIGHT) + " " + menu + " 2> " +	\
                        g_temporary, env.OPTION_NONE)
 
-  choice = env.pull(g_temporary, env.OPTION_READ)
+  choice = env.pull(g_temporary, env.OPTION_NONE)
 
   if not choice:
     return None
@@ -122,7 +122,7 @@ def			input(title, description, current):
                        " " + current + " 2> " +	g_temporary,
                        env.OPTION_NONE)
 
-  choice = env.pull(g_temporary, env.OPTION_READ)
+  choice = env.pull(g_temporary, env.OPTION_NONE)
 
   return choice
 

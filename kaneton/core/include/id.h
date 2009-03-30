@@ -59,6 +59,7 @@ typedef t_id			i_machine;
  * such a task is first identified the but machine holding it, and then
  * by the task identifier.
  */
+
 typedef struct
 {
   i_machine			machine;

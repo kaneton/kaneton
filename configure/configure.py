@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/configure.py
 #
 # created       julien quintard   [wed may 23 10:17:59 2007]
-# updated       julien quintard   [thu may 31 22:03:41 2007]
+# updated       julien quintard   [sun mar 29 00:36:54 2009]
 #
 
 #
@@ -96,7 +96,7 @@ def			load(path):
   key = None
 
   # load the YAML entries.
-  streams = yaml.load(env.pull(path, env.OPTION_READ))
+  streams = yaml.load(env.pull(path, env.OPTION_NONE))
 
   # create an new frame object.
   g_frame = c_frame()
