@@ -8,7 +8,7 @@
 # file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated          [sun mar 22 23:38:14 2009]
+# updated          [fri mar 27 06:09:19 2009]
 #
 
 #
@@ -113,6 +113,7 @@ def			install():
 
   # creates binary files : bootloader and kaneton
   os.system(env._OBJCOPY_ + " -S -j .text -j .data -j .bss --output-target binary " + env._BOOTLOADER_ + " " + env._BOOTLOADER_ + ".bin")
+
 #  os.system(env._OBJCOPY_ + " -S -j .text -j .data --output-target binary " + env._KANETON_ + " " + env._KANETON_ + ".bin")
 
   # cat the binary files in the mips_bios.bin file

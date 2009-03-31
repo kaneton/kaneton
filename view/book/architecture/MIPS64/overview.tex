@@ -8,7 +8,7 @@
 % file          /home/enguerrand/...ew/book/architecture/MIPS64/overview.tex
 %
 % created       enguerrand raymond   [sun oct  5 16:54:35 2008]
-% updated       enguerrand raymond   [sun nov  9 10:21:50 2008]
+% updated          [fri mar 27 15:15:26 2009]
 %
 
 %
@@ -24,6 +24,10 @@ In fact, the EPITA students must follow MIPS architecture lessons, so it is inte
 for them to develop on MIPS architecture concurently to the kaneton microkernel development
 project.
 
-The MIPS 64 bits kaneton port gathers several microprocessors. The first of them is the MIPS R4000. In the following chapters, subsection will describe the MIPS R4000 development specification.
+The MIPS 64 bits kaneton port gathers several microprocessors. The first of them is the MIPS R4000. In the following chapters, subsection will describe all development specifications.
+
+The MIPS R4000 kaneton port is destinated to students. So, the development must be the least platform specific as possible.
+The mips qemu platform does not emule real machine but is sufficient for kernel development.
 
 This document is composed of X parts, each part corresponds to one or several source files. The memory management for example is developed in Region dependant code and MIPS64 library. For each chapter, the source files concerned will be given.
+For each of them, if a kernel part is different according to a specific MIPS64 CPUs or platforms a specific part will describe this particularyties.

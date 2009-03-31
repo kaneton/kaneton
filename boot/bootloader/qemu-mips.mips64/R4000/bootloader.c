@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.c
  *
  * created          [sun feb  8 17:24:44 2009]
- * updated          [wed mar 25 18:04:50 2009]
+ * updated          [fri mar 27 14:13:59 2009]
  */
 
 /*
@@ -39,14 +39,14 @@ void		bootloader_error(void)
     ;
 }
 
-void		kernel_move(int* kernel_src, int* kernel_dest)
+void		kernel_move(long* kernel_src, long* kernel_dest)
 {
   /*while(!((*kernel_src == 0x07) && (*(kernel_src + 1) == 0x07)
     && (*(kernel_src + 2) == 0x07) && (*(kernel_src + 3) == 0x07)))  */
   int i = 0;
   while(i < 512)
     {
-      *kernel_dest++ = i;//*kernel_src++;*/
+      *kernel_dest++ = 0x0707070707070707;//*kernel_src++;*/
       ++i;
     }
 }
@@ -66,8 +66,8 @@ void		kernel_move(int* kernel_src, int* kernel_dest)
 
 void		bootloader(void)
 {
-  int*	kernel_dest = (int*)KERNEL_BASE_ADDRESS;
-  int*	kernel_src = 0;
+  long*	kernel_dest = (long*)KERNEL_BASE_ADDRESS;
+  long*	kernel_src = 0;
 
   /*
    * 1)
@@ -76,7 +76,7 @@ void		bootloader(void)
   if(*flag_address != 0x07)
     bootloader_error();
 
-  kernel_src = (int*)(flag_address + 4);
+  kernel_src = ((long*)(flag_address)) + 1;
 
   /*
    * 2)

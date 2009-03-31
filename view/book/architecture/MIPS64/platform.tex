@@ -8,7 +8,7 @@
 % file          /home/enguerrand/...ew/book/architecture/MIPS64/platform.tex
 %
 % created       enguerrand raymond   [mon oct 13 11:31:56 2008]
-% updated          [mon nov 24 17:24:25 2008]
+% updated          [fri mar 27 15:18:49 2009]
 %
 
 %
@@ -52,6 +52,7 @@ We use the qemu-mips platform with the R4000 microprocessor. The command line to
 \end{verbatim}
 
 There is no mips firmware (or bios for qemu) today but we will launch the kernel as it. It will load at the address \code{0xFFFFFFFFBFC00000}. To do that, the kernel must be copied to \code{mips\_bios.bin} and the \code{L} option must indicate the path to this file. We will develop a firmware later.
+The bootloader will be executed like a firmware.
 
 \subsubsection{MIPS R4000 microprocessor}
 
