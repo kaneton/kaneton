@@ -1,3 +1,5 @@
+STACK_BASE_ADDRESS = 0xa001
+	
 .global bootloader_entry
 .global flag_address
 
@@ -16,7 +18,7 @@ bootloader_entry:
 	move $gp, $0
 
 	# Initialize the stack pointer register
-	lui $sp, 0xb000
+	lui $sp, STACK_BASE_ADDRESS
 	move $fp, $0
 	move $ra, $0
 
@@ -25,14 +27,9 @@ bootloader_entry:
 	lui $gp, 0xbfc0
 	daddiu $gp, $gp, __offset
 
-	# Clear all write right coprocessor 0 registers
-
-
-	# Reset the TLB
-
-
 	# Save the stack pointer in the fp register and in the stack
 	daddiu $sp, $sp, -8
 	move $fp, $sp
 	sd $fp, 0($sp)
 	jal bootloader
+	nop

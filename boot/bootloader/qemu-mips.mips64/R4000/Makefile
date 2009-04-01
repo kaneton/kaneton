@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...otloader/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated          [mon mar 23 17:52:59 2009]
+# updated          [wed apr  1 09:37:08 2009]
 #
 
 #
@@ -48,7 +48,7 @@ BOOTLOADER_O		:=		$(BOOTLOADER_S:.S=.o)			\
 					$(BOOTLOADER_C:.c=.o)
 
 BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h	\
-					$(_BOOTLOADER_DIR_)/cp0.h
+					$(_BOOTLOADER_DIR_)/r4000.h
 
 #
 # ---------- rules ------------------------------------------------------------

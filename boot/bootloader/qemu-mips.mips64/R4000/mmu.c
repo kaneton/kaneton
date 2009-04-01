@@ -8,14 +8,14 @@
  * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/R4000/mmu.c
  *
  * created          [mon mar 23 07:36:48 2009]
- * updated          [mon mar 23 07:46:26 2009]
+ * updated          [wed apr  1 09:52:04 2009]
  */
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include "cp0.h"
+#include "r4000.h"
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -36,6 +36,24 @@ void	set_page_size(int page_mask)
 	  :
 	  :"r"(page_mask)
 	  );
+}
+
+/*
+ * Flushes the TLB. This function is used during bootstrap
+ * operations
+ */
+
+void	tlb_flush(void)
+{
+}
+
+/*
+ * Flushes the primary data cache. This function is used during
+ *  bootstrap operations
+ */
+
+void	cache_flush(void)
+{
 }
 
 /*
