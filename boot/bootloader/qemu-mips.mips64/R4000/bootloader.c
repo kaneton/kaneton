@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.c
  *
  * created          [sun feb  8 17:24:44 2009]
- * updated          [thu apr  2 14:37:31 2009]
+ * updated          [thu apr  2 14:52:31 2009]
  */
 
 /*
@@ -77,7 +77,7 @@ void		bootloader(void)
    * 1)
    */
 
-  if(*flag_address != 0x07070707)
+  if(*flag_address != BOOTLOADER_FLAG)
     bootloader_error();
 
   kernel_src = ((t_uint8*)(flag_address)) + 4;

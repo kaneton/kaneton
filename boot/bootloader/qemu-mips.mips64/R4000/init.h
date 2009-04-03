@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...bootloader/qemu-mips.mips64/R4000/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated          [thu apr  2 12:05:00 2009]
+ * updated          [thu apr  2 14:48:31 2009]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -24,6 +24,8 @@
  * ---------- macros ----------------------------------------------------------
  */
 
+#define BOOTLOADER_FLAG		0x07070707
+
 /*
  * The kernel is moved in the ckseg0 region
  */
@@ -35,7 +37,7 @@
  * register
  */
 
-#define PAGE_SIZE	0
+#define PAGE_SIZE		0
 
 /*
  * ---------- types -----------------------------------------------------------
