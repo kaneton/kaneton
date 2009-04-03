@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.h
  *
  * created       enguerrand raymond   [sun oct 12 18:58:49 2008]
- * updated          [thu apr  2 13:30:47 2009]
+ * updated          [thu apr  2 14:41:12 2009]
  */
 
 #ifndef BOOTLOADER_H
@@ -33,6 +33,7 @@
  * ---------- prototypes ------------------------------------------------------
  *
  *	bootloader.c
+ *	init.c
  */
 
 /*
@@ -45,6 +46,9 @@ void		bootloader_error(void);
 
 void		bootloader(void);
 
+/*
+ * init.c
+ */
 
 /*
  * eop

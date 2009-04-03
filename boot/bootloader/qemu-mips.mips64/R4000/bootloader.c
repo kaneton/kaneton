@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.c
  *
  * created          [sun feb  8 17:24:44 2009]
- * updated          [thu apr  2 14:33:04 2009]
+ * updated          [thu apr  2 14:37:31 2009]
  */
 
 /*
@@ -61,8 +61,9 @@ void		bootloader_error(void)
  * 4) Set the page size in the page mask register
  * 5) Active the 64 bits mode for all memory spaces
  * 6) Move the kernel to this destination KERNEL_BASE_ADDRESS
- * 7) Set the kernel stack
- * 8) Jump to the kernel
+ * 7) Prepare the kernel memory space
+ * 8) Set the kernel stack
+ * 9) Jump to the kernel
  */
 
 void		bootloader(void)
@@ -119,6 +120,10 @@ void		bootloader(void)
 
   /*
    * 8)
+   */
+
+  /*
+   * 9)
    */
 
   kernel_entry = (t_uint64*)(KERNEL_BASE_ADDRESS + 0x18);
