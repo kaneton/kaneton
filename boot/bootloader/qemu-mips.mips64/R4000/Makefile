@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...otloader/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated          [thu apr  2 13:34:53 2009]
+# updated          [thu apr  2 14:46:57 2009]
 #
 
 #
@@ -41,7 +41,8 @@ BOOTLOADER_C		:=		bootloader.c				\
 					opmode.c				\
 					mmu.c					\
 					interrupt.c				\
-					libc.c
+					libc.c					\
+					init.c
 
 BOOTLOADER_S		:=		entry.S
 
