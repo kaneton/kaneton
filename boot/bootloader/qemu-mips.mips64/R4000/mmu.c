@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/R4000/mmu.c
  *
  * created          [mon mar 23 07:36:48 2009]
- * updated          [thu apr  2 13:41:01 2009]
+ * updated          [thu apr  2 14:32:11 2009]
  */
 
 /*
@@ -29,7 +29,7 @@
  * Set the mask register to 0 for 4k size page
  */
 
-void	set_page_size(int page_mask)
+void	set_page_size(t_uint32 page_mask)
 {
   __asm__(".set noat\n\t"
 	  "mtc0 $0, $5\n\t"

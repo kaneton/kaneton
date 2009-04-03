@@ -39,7 +39,7 @@
  * bootloader.c
  */
 
-void		kernel_move(char* kernel_src, char* kernel_dest);
+void		kernel_move(t_uint8* kernel_src, t_uint8* kernel_dest);
 
 void		bootloader_error(void);
 
