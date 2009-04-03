@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.h
  *
  * created       enguerrand raymond   [sun oct 12 18:58:49 2008]
- * updated          [wed apr  1 09:45:30 2009]
+ * updated          [thu apr  2 11:59:19 2009]
  */
 
 #ifndef BOOTLOADER_H
@@ -23,23 +23,16 @@
   }
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include "init.h"
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
 #include "r4000.h"
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define KERNEL_BASE_ADDRESS	0xffffffff80020000
-
-/*
- * 4K page size is equal to 0 for the page mask
- * register
- */
-
-#define PAGE_SIZE	0
 
 /*
  * ---------- prototypes ------------------------------------------------------

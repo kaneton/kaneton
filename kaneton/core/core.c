@@ -94,9 +94,10 @@ static void wait_command()
 
 void			kaneton(t_init*				bootloader)
 {
-  /*
-   * 1)
-   */
+
+#ifdef MIPSR4000_DEV
+  while(1);
+#endif
 
 #ifdef O2
   io_cons_init();
@@ -107,6 +108,11 @@ void			kaneton(t_init*				bootloader)
   mipsr10k_event_init();
   while(1);
 #endif
+
+
+  /*
+   * 1)
+   */
 
   init = bootloader;
 

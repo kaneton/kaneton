@@ -42,6 +42,8 @@ void	disable_interrupt(void);
 
 void	disable_bootstrap_mode(void);
 
+void	set_kernel_mode(void);
+
 
 /*
  * mmu.c

@@ -1,9 +1,10 @@
 OUTPUT_FORMAT("elf64-littlemips")
-ENTRY(kaneton)
+ENTRY(kaneton);
 
 SECTIONS
 {
-	. = 0xffffffffa0000000;
+	. = 0xffffffff80021000;
+
 	.text :
 	{
 		*(.text)
