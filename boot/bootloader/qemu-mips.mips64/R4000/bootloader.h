@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.h
  *
  * created       enguerrand raymond   [sun oct 12 18:58:49 2008]
- * updated          [thu apr  2 11:59:19 2009]
+ * updated          [thu apr  2 13:30:47 2009]
  */
 
 #ifndef BOOTLOADER_H
@@ -27,12 +27,7 @@
  */
 
 #include "init.h"
-
-/*
- * ---------- includes --------------------------------------------------------
- */
-
-#include "r4000.h"
+#include "libR4000.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
