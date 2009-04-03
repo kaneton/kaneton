@@ -8,14 +8,14 @@
  * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/R4000/mmu.c
  *
  * created          [mon mar 23 07:36:48 2009]
- * updated          [wed apr  1 09:52:04 2009]
+ * updated          [thu apr  2 13:41:01 2009]
  */
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include "r4000.h"
+#include "libR4000.h"
 
 /*
  * ---------- functions -------------------------------------------------------

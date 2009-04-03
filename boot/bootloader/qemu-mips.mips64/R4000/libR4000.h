@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...ootloader/qemu-mips.mips64/R4000/r4000.h
+ * file          /home/enguerrand/...loader/qemu-mips.mips64/R4000/libR4000.h
  *
  * created          [wed apr  1 09:34:19 2009]
- * updated          [wed apr  1 09:36:23 2009]
+ * updated          [thu apr  2 13:47:49 2009]
  */
 
-#ifndef R4000_H
-#define R4000_H
+#ifndef LIBR4000_H
+#define LIBR4000_H
 
 /*
  * ---------- includes --------------------------------------------------------
