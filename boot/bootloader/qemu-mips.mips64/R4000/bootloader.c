@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.c
  *
  * created          [sun feb  8 17:24:44 2009]
- * updated          [thu apr  2 14:52:31 2009]
+ * updated          [fri apr  3 12:00:59 2009]
  */
 
 /*
@@ -26,17 +26,6 @@ extern t_uint32*	flag_address;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * This function moves the kernel to this final destination
- */
-
-void		kernel_move(t_uint8* kernel_src, t_uint8* kernel_dest)
-{
-  while(!((*kernel_src == 0x07) && (*(kernel_src + 1) == 0x07)
-	  && (*(kernel_src + 2) == 0x07) && (*(kernel_src + 3) == 0x07)))
-    *kernel_dest++ = *kernel_src++;
-}
 
 /*
  * A funny function which does nothing.
@@ -68,19 +57,16 @@ void		bootloader_error(void)
 
 void		bootloader(void)
 {
-  t_uint8*	kernel_dest	= (t_uint8*)KERNEL_BASE_ADDRESS;
-  t_uint8*	kernel_src	= 0;
   t_uint64*	kernel_entry	= 0;
-  void (*kernel)(t_init*);
-  
+  void		(*kernel)(t_init*);
+  t_vaddr	init		= 0;
+
   /*
    * 1)
    */
 
   if(*flag_address != BOOTLOADER_FLAG)
     bootloader_error();
-
-  kernel_src = ((t_uint8*)(flag_address)) + 4;
 
   /*
    * 2)
@@ -112,7 +98,7 @@ void		bootloader(void)
    * 6)
    */
 
-  kernel_move(kernel_src, kernel_dest);
+  init = bootloader_kernel_init((t_vaddr)flag_address + 4);
 
   /*
    * 7)
@@ -130,7 +116,7 @@ void		bootloader(void)
 
   kernel = (void (*)(t_init*))(*kernel_entry);
 
-  kernel(0);
+  kernel((t_init*) init);
 
   while(1)
     ;
