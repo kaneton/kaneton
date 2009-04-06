@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...els/future/file-systems/file-systems.tex
 %
 % created       julien quintard   [tue jan 13 05:55:34 2009]
-% updated       julien quintard   [mon mar 30 20:35:10 2009]
+% updated       julien quintard   [tue apr  7 00:09:28 2009]
 %
 
 %
@@ -70,7 +70,7 @@
 % 1)
 
 \begin{frame}
-  \frametitle{}
+  \frametitle{Overview}
 
   This course is intended to present file systems through their history,
   the principles, the access control and so forth.
@@ -81,14 +81,164 @@
 \begin{frame}
   \frametitle{Need}
 
-  
+  Both operating systems and users need to store data in a permanent way
+  \ie{} so that data can be retrieve after the computer has been shut down.
 \end{frame}
 
-o Introduction
- o What do people need?
- o What does the hardware provide?
- o What should the software do to abstract the hardware into something meaningful.
-   - storing and organising data abstracted into files.
+% 3)
+
+\begin{frame}
+  \frametitle{Equipment}
+
+  Storage devices were early integrated to computers to provide a way
+  to store information starting with punched cards but more recently with
+  hard drives, floppies and so on.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Software}
+
+  Providing a storage capacity such as a hard disk does not suffice. Indeed,
+  software must be provided to manage the space provided and possibly organise
+  data, in other words, abstract the hardware into something meaningful to
+  users and applications.
+
+  \-
+
+  As such, many systems rely on the \textbf{file} abstraction, the most popular
+  being \textit{UNIX} because of its motto \textit{``Everything is file''}.
+\end{frame}
+
+XXX
+
+definition: used to store, catalog and retrieve information from a storage
+  stable or not
+
+abstraction: information is abstracted into files i.e data gathered logically
+  together
+
+objective: keep track of the files stored, including the data but also info
+  on the file itself: file name, etc.. besides the storage capacity needs to
+  be manage to find space etc.
+
+%
+% dinosaurs
+%
+
+\section{Dinosaurs}
+
+% dectape
+
+\subsection{DECTape}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  In the $60s$ early days of computing, computers of the size of refrigerators,
+  hence far smaller than room-wide maiframes, used tapes for storing
+  data in a permanent way.
+
+  \-
+
+  At this age of computing, every computer came with its own operating system
+  and each operating system had its way for accessing the permanently stored
+  data.
+
+  \-
+
+  Therefore, the \textit{DEC} \textit{PDP-11} minicomputer, for instance,
+  had a few instructions in its instruction set for reading and writing blocks
+  of the inserted tape.
+
+  \-
+
+  Note that, no abstraction was provided and the operating system and
+  applications, which were tightly related at this time, had to consider
+  the data directly.
+\end{frame}
+
+% cp/m
+
+\subsection{CP/M}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  \textit{CP/M - Control Program for Microcomputers} was invented by
+  \textit{Gary Kildall} in $1973$.
+
+  \-
+
+  This operating system was able to control at least one floppy disk
+  and provided a way to store information in what was called \textbf{files}.
+
+  \-
+
+  However, although the system provided a way to store files in a flat
+  organisation, the name \textit{file system} was not used yet.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Files}
+
+  \textit{CP/M} actually introduced the file abstraction concept.
+
+  \-
+
+  Files were limited to eight characters and were given a \textbf{extension}
+  composed of three characters following a period.
+
+  \-
+
+  This file extension was used for determining the file type.
+
+  \-
+
+  Although this can be seen as extremely limitating, it was not the case
+  back then since computers suffered the same kind of limitations anyway.
+\end{frame}
+
+%
+% monkeys
+%
+
+\section{Monkeys}
+
+% fat
+
+\subsection{FAT}
+
+\begin{frame}
+  \frametitle{QDOS}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{DOS}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{FAT}
+
+\end{frame}
+
+%
+% cats
+%
+
+\section{Cats}
+
+
+XXX
 
 %
 % support
@@ -101,16 +251,40 @@ o Introduction
 \begin{frame}
   \frametitle{Overview}
 
-  XXX
+  Although the storage support does not matter much it obviously impact on
+  the file system design.
+
+  \-
+
+  For instance, \textit{Google} relies on the \textit{GFS - Google File System}
+  which has been designed to handle more reads than writes.
+
+  \-
+
+  Besides, according to the storage support speed and capacity, not all
+  file systems will be equally efficient.
 \end{frame}
 
-o Storage
- - the storage does not matter much but can obviously impact on the file system design.
-   - RAM
-   - Flash
-   - Disk
-   - Network
-   - etc.
+% 2)
+
+\begin{frame}
+  \frametitle{List}
+
+  The storages that are commonly used are listed below:
+
+  \begin{itemize}
+    \item
+      \textit{RAM - Random Access Memory};
+    \item
+      \textit{Flash};
+    \item
+      \textit{Disk};
+    \item
+      \textit{CD-ROM};
+    \item
+      \etc{}
+  \end{itemize}
+\end{frame}
 
 %
 % terminology
@@ -173,13 +347,11 @@ o Overview
 
 \subsection{Centralised}
 
+% XXX
+\subsection{CP/M}
+
 % 1)
 
-\begin{frame}
-  \frametitle{Overview}
-
-  XXX
-\end{frame}
 
  o CP/M: in 1973
  o FAT
