@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/kernels/future/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [sat nov 29 20:32:22 2008]
+# updated       julien quintard   [mon apr  6 14:00:49 2009]
 #
 
 #
@@ -32,10 +32,9 @@ SUBDIRS			:=		boot				\
 					portability			\
 					memory				\
 					interrupts			\
-					concurrency			\
 					scheduling			\
 					ipc				\
-					bus				\
+					devices				\
 					security			\
 					file-systems			\
 					windows-nt			
