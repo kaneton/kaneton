@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.c
  *
  * created          [sun feb  8 17:24:44 2009]
- * updated          [fri apr  3 12:00:59 2009]
+ * updated          [sat apr  4 07:50:31 2009]
  */
 
 /*
@@ -28,9 +28,9 @@ extern t_uint32*	flag_address;
  */
 
 /*
- * A funny function which does nothing.
+ * a funny function which does nothing.
  *
- * This function is called when a fatal error occurs.
+ * this function is called when a fatal error occurs.
  */
 
 void		bootloader_error(void)
@@ -40,30 +40,31 @@ void		bootloader_error(void)
 }
 
 /*
- * The bootloader entry point.
+ * the bootloader entry point.
  *
  * steps:
  *
- * 1) Check the bootloader end flag
- * 2) Set the real kernel mode
- * 3) Disable the bootstrap mode
- * 4) Set the page size in the page mask register
- * 5) Active the 64 bits mode for all memory spaces
- * 6) Move the kernel to this destination KERNEL_BASE_ADDRESS
- * 7) Prepare the kernel memory space
- * 8) Set the kernel stack
- * 9) Jump to the kernel
+ * 1) check the bootloader end flag
+ * 2) set the real kernel mode
+ * 3) disable the bootstrap mode
+ * 4) set the page size in the page mask register
+ * 5) active the 64 bits mode for all memory spaces
+ * 6) initialize the kernel and the init structure
+ * 7) init the kernel stack
+ * 8) jump to the kernel
  */
 
 void		bootloader(void)
 {
   t_uint64*	kernel_entry	= 0;
   void		(*kernel)(t_init*);
-  t_vaddr	init		= 0;
+  t_init*	init		= NULL;
 
   /*
    * 1)
    */
+
+  //debug_register(flag_address);
 
   if(*flag_address != BOOTLOADER_FLAG)
     bootloader_error();
@@ -98,7 +99,7 @@ void		bootloader(void)
    * 6)
    */
 
-  init = bootloader_kernel_init((t_vaddr)flag_address + 4);
+  init = bootloader_init_relocate((t_vaddr)flag_address + 4);
 
   /*
    * 7)
@@ -116,7 +117,7 @@ void		bootloader(void)
 
   kernel = (void (*)(t_init*))(*kernel_entry);
 
-  kernel((t_init*) init);
+  kernel(init);
 
   while(1)
     ;

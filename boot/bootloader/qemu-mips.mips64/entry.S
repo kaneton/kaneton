@@ -17,17 +17,19 @@ bootloader_entry:
 	.set	noreorder
 	move $gp, $0
 
-	# Initialize the stack pointer register
+	# initialize the stack pointer register
+	
 	lui $sp, STACK_BASE_ADDRESS
 	move $fp, $0
 	move $ra, $0
 
-	# Initialize the general pointer register
+	# initialize the general pointer register
 
 	lui $gp, 0xbfc0
 	daddiu $gp, $gp, __offset
 
-	# Save the stack pointer in the fp register and in the stack
+	# save the stack pointer in the fp register and in the stack
+	
 	daddiu $sp, $sp, -8
 	move $fp, $sp
 	sd $fp, 0($sp)

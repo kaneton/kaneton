@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...loader/qemu-mips.mips64/R4000/libR4000.h
+ * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/libmips64.h
  *
  * created          [wed apr  1 09:34:19 2009]
- * updated          [thu apr  2 14:34:04 2009]
+ * updated          [sun apr  5 06:08:12 2009]
  */
 
-#ifndef BOOTLOADER_LIBR4000_H
-#define BOOTLOADER_LIBR4000_H
+#ifndef BOOTLOADER_LIBMIPS64_H
+#define BOOTLOADER_LIBMIPS64_H
 
 /*
  * ---------- includes --------------------------------------------------------

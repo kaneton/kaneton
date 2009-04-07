@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...ader/qemu-mips.mips64/R4000/bootloader.h
+ * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.h
  *
  * created       enguerrand raymond   [sun oct 12 18:58:49 2008]
- * updated          [fri apr  3 11:57:59 2009]
+ * updated          [sun apr  5 06:05:43 2009]
  */
 
 #ifndef BOOTLOADER_H
@@ -29,7 +29,7 @@
 #include "types.h"
 #include "libc.h"
 #include "init.h"
-#include "libR4000.h"
+#include "libmips64.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -51,9 +51,12 @@ void		bootloader(void);
  * init.c
  */
 
-t_size		kernel_size(t_vaddr	kernel_flag);
+t_paddr		bootloader_init_alloc(t_psize	size,
+				      t_psize*	psize);
 
-t_vaddr		bootloader_kernel_init(t_vaddr kernel_address);
+t_size		bootloader_init_kernel_size(t_vaddr	kernel_address);
+
+t_init*		bootloader_init_relocate(t_vaddr	kernel_address);
 
 
 /*

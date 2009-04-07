@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/...ine/glue/qemu-mips.mips64/R4000/Makefile
+# file          /home/enguerrand/...n/machine/glue/qemu-mips.mips64/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 19:32:08 2008]
-# updated       enguerrand raymond   [sun jan 25 15:19:14 2009]
+# updated          [sun apr  5 06:02:42 2009]
 #
 
 #
@@ -21,7 +21,7 @@ component		:=		kaneton/machine/glue
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../../environment/env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------

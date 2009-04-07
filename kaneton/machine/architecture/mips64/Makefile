@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/...chine/architecture/mips64/R4000/Makefile
+# file          /home/enguerrand/...ton/machine/architecture/mips64/Makefile
 #
 # created       laurent lec   [fri mar 28 17:10:22 2008]
-# updated       enguerrand raymond   [sun nov  9 04:18:35 2008]
+# updated          [sun apr  5 06:02:33 2009]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../../environment/env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------

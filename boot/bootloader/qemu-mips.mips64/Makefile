@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/...otloader/qemu-mips.mips64/R4000/Makefile
+# file          /home/enguerrand/...oot/bootloader/qemu-mips.mips64/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated          [thu apr  2 14:46:57 2009]
+# updated          [sun apr  5 06:08:27 2009]
 #
 
 #
@@ -21,7 +21,7 @@ component		:=		bootloader
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -50,7 +50,7 @@ BOOTLOADER_O		:=		$(BOOTLOADER_S:.S=.o)			\
 					$(BOOTLOADER_C:.c=.o)
 
 BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h	\
-					$(_BOOTLOADER_DIR_)/libR4000.h		\
+					$(_BOOTLOADER_DIR_)/libmips64.h		\
 					$(_BOOTLOADER_DIR_)/libc.h
 
 #

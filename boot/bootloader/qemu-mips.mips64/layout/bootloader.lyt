@@ -10,15 +10,15 @@ SECTIONS
 		*(.text)
 	}
 
+	__gp = ALIGN(8);
+	__offset = __gp - __start;
+
 	.data :
 	{
 		*(.data)
 		*(.rdata)
 		*(.rodata)
 	}
-
-	__gp = ALIGN(8);
-	__offset = __gp - __start;
 
 	.bss :
 	{
