@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [sun mar 22 18:08:58 2009]
+# updated       julien quintard   [wed apr  8 01:25:42 2009]
 #
 
 #
@@ -42,6 +42,7 @@ ifeq ($(_SIGNATURE_),kaneton)
 
 PATHS			=		$(dir $(_INPUTS_))
 
+# XXX
 ifneq ($(_TESTSUITE_),)
 PATHS                   := $(_CHECK_DIR_) $(PATHS)
 endif
@@ -143,15 +144,14 @@ headers:
 build:
 	$(call env_launch,$(_MBL_SCRIPT_),build,)
 
-install: main $(_IMAGE_)
-
-$(_IMAGE_):     $(_KANETON_)
+install:		main
 	$(call env_launch,$(_MBL_SCRIPT_),install,)
 
 #
 # ---------- test -------------------------------------------------------------
 #
 
+# XXX
 test:
 	$(call env_launch,$(_TEST_DIR_)/Makefile,,)
 

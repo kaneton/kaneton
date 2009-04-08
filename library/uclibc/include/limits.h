@@ -31,10 +31,9 @@
    the correct value.  */
 #define MB_LEN_MAX	16
 
-
 /* If we are not using GNU CC we have to define all the symbols ourself.
    Otherwise use gcc's definitions (see below).  */
-#if !defined __GNUC__ || __GNUC__ < 2
+// XXX #if !defined __GNUC__ || __GNUC__ < 2
 
 /* We only protect from multiple inclusion here, because all the other
    #include's protect themselves, and in GCC 2 we may #include_next through
@@ -110,7 +109,7 @@
 #  endif /* ISO C99 */
 
 # endif	/* limits.h  */
-#endif	/* GCC 2.  */
+// XXX #endif	/* GCC 2.  */
 
 #endif	/* !_LIBC_LIMITS_H_ */
 
@@ -119,13 +118,15 @@
     We put this #include_next outside the double inclusion check because
     it should be possible to include this file more than once and still get
     the definitions from gcc's header.  */
+/* XXX
 #if defined __GNUC__ && !defined _GCC_LIMITS_H_
-/* `_GCC_LIMITS_H_' is what GCC's file defines.  */
+
+// `_GCC_LIMITS_H_' is what GCC's file defines.
 # include_next <limits.h>
 
-/* The <limits.h> files in some gcc versions don't define LLONG_MIN,
-   LLONG_MAX, and ULLONG_MAX.  Instead only the values gcc defined for
-   ages are available.  */
+// The <limits.h> files in some gcc versions don't define LLONG_MIN,
+// LLONG_MAX, and ULLONG_MAX.  Instead only the values gcc defined for
+// ages are available.
 # ifdef __USE_ISOC99
 #  ifndef LLONG_MIN
 #   define LLONG_MIN	LONG_LONG_MIN
@@ -138,9 +139,10 @@
 #  endif
 # endif
 #endif
+*/
 
 #ifdef	__USE_POSIX
-/* POSIX adds things to <limits.h>.  */
+// POSIX adds things to <limits.h>.
 # include <bits/posix1_lim.h>
 #endif
 

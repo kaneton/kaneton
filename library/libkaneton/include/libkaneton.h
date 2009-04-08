@@ -27,6 +27,10 @@
 #include "core_macros.h"
 #endif
 
+// XXX
+extern t_uint64 __task_id;
+extern t_uint64 __as_id;
+
 /*
  * ---------- macro-functions -------------------------------------------------
  */

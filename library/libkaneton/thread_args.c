@@ -24,7 +24,6 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <crt.h>
 #include <libkaneton.h>
 
 /*
@@ -74,9 +73,9 @@ t_error			thread_args(i_thread			threadid,
    * 3)
    */
 
-  if (_crt_get_as_id() != asid)
+  if (__as_id != asid)
     {
-      if (as_copy(_crt_get_as_id(), (t_vaddr)args,
+      if (as_copy(__as_id, (t_vaddr)args,
 		  asid, context.sp, size) != ERROR_NONE)
 	return (ERROR_UNKNOWN);
     }
