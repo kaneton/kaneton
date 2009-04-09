@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/feedback/kernels/Makefile
 #
 # created       julien quintard   [tue may 15 21:52:06 2007]
-# updated       julien quintard   [mon jun 11 06:15:37 2007]
+# updated       julien quintard   [thu apr  9 13:26:32 2009]
 #
 
 #
@@ -41,8 +41,6 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 #
 # ---------- rules ------------------------------------------------------------
 #
-
-XXX:
 
 main:			build
 

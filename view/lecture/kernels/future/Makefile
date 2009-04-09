@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/kernels/future/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [mon apr  6 14:00:49 2009]
+# updated       julien quintard   [thu apr  9 13:36:44 2009]
 #
 
 #
@@ -33,7 +33,6 @@ SUBDIRS			:=		boot				\
 					memory				\
 					interrupts			\
 					scheduling			\
-					ipc				\
 					devices				\
 					security			\
 					file-systems			\

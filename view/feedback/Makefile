@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/feedback/Makefile
 #
 # created       julien quintard   [mon may 14 22:16:45 2007]
-# updated       julien quintard   [fri jun 22 18:09:34 2007]
+# updated       julien quintard   [thu apr  9 13:26:44 2009]
 #
 
 #
@@ -28,8 +28,7 @@ include			../../environment/env.mk
 #
 
 SUBDIRS			:=		mips				\
-					kaneton				\
-					kernels				
+					kaneton				
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/book/assignments/Makefile
 #
 # created       julien quintard   [mon may 14 19:03:18 2007]
-# updated       julien quintard   [mon dec  3 14:43:02 2007]
+# updated       julien quintard   [thu apr  9 13:23:24 2009]
 #
 
 #
@@ -27,10 +27,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		2006				\
-					2007				\
-					2008				\
-					future				
+SUBDIRS			:=		future				
 
 #
 # ---------- rules ------------------------------------------------------------
