@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 	token_count = 0;
 	line_number = 1;
 	index = 0;
-	printf("%s\n", *name);
+	//printf("%s\n", *name);
 	break;
 
       case LINE:

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repositories/kaneton/cheat/cheat.py
+# file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [mon mar 23 00:44:25 2009]
+# updated       julien quintard   [thu apr  9 19:37:32 2009]
 #
 
 #
@@ -445,6 +445,9 @@ def                     prepare():
   # create a temporary directory for holding unpacked snapshots.
   g_directory = env.temporary(env.OPTION_DIRECTORY)
 
+# XXX
+  g_directory = "/data/XXX"
+
   # set the output file path.
   g_output = env._HISTORY_DIR_ + "/" + g_school + "/" + g_year + "/" +  \
              g_stage + ".html"
@@ -574,7 +577,7 @@ def                     extract():
     if env.path(student["snapshot"], env.OPTION_EXIST):
       env.unpack(student["snapshot"],
                  student["sources"],
-                 env.OPTION_NONE)
+                 env.OPTION_QUIET)
     else:
       env.mkdir(student["sources"] + "/kaneton/", env.OPTION_NONE)
 
@@ -597,7 +600,7 @@ def                     extract():
   if g_base:
     env.unpack(g_base["snapshot"],
                g_base["path"],
-                 env.OPTION_NONE)
+                 env.OPTION_QUIET)
 
     # verify that the extracted snapshot has created a 'kaneton/' directory.
     if not (env.path(g_base["path"] + "/kaneton/",
@@ -673,7 +676,7 @@ def                     generate():
       # finally, gather the information into a single database.
       env.launch(env._CTC_GATHER_TOOL_,
                  student["database"] + " " + " ".join(fingerprints),
-                 env.OPTION_NONE)
+                 env.OPTION_QUIET)
 
 #
 # compare()
