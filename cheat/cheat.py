@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [thu apr  9 19:37:32 2009]
+# updated       julien quintard   [fri apr 10 02:05:37 2009]
 #
 
 #
@@ -444,9 +444,6 @@ def                     prepare():
 
   # create a temporary directory for holding unpacked snapshots.
   g_directory = env.temporary(env.OPTION_DIRECTORY)
-
-# XXX
-  g_directory = "/data/XXX"
 
   # set the output file path.
   g_output = env._HISTORY_DIR_ + "/" + g_school + "/" + g_year + "/" +  \
