@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /Users/francois/kaneton/tool/export/export.py
+# file          /home/mycure/kaneton/export/export.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
-# updated       francois goudal   [wed nov 12 05:26:29 2008]
+# updated       julien quintard   [sun apr 12 15:45:57 2009]
 #
 
 #

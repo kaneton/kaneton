@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kane.../kernels/prerequisites/prerequisites.tex
+% file          /home/mycure/kane...els/future/generalities/generalities.tex
 %
 % created       julien quintard   [wed may 16 19:28:59 2007]
-% updated       julien quintard   [wed may 16 19:29:16 2007]
+% updated       julien quintard   [mon apr 13 03:02:36 2009]
 %
 
 %
@@ -45,6 +45,16 @@
 
 \begin{frame}
   \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
 \end{frame}
 
 %
@@ -93,8 +103,6 @@
 \pgfdeclareimage[height=180pt]
                 {xenarchi}
                 {figures/xenarchi}
-
-\tableofcontents
 
 %
 % roles of a kernel
@@ -253,8 +261,7 @@ a mix with virtualisation and distrubution.
 \subsection{Scheduling Offline/Online}
 \begin{frame}
   \frametitle{Scheduling: Offline/Online}
-        \begin{itemize}
-        \item Online:
+        Online:
         \begin{itemize}
                 \item The online scheduling is the usal way to schedule
                 nowadays. The scheduler is dynamic and allocate the
@@ -263,7 +270,8 @@ a mix with virtualisation and distrubution.
                 offline.
                 \item The scheduler itself consumes some CPU time.
         \end{itemize}
-        \item Offline:
+        \-
+        Offline:
         \begin{itemize}
                 \item The order in which the tasks will be executed is
                 pre-computed.
@@ -271,7 +279,6 @@ a mix with virtualisation and distrubution.
                 \item It's not dynamic.
                 \item Fit perfectly in a lockdown environment (real-time
                 again?)
-        \end{itemize}
         \end{itemize}
 \end{frame}
 
@@ -674,6 +681,7 @@ The xen architecture
 
 \section{Conclusion}
 \begin{frame}
+  \frametitle{Conclusion}
         There is a lot of different type of kernel out there.
 
         \-

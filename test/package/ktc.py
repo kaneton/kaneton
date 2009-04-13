@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repositories/kaneton/test/server/ktc.py
+# file          /home/mycure/kaneton/test/package/ktc.py
 #
 # created       julien quintard   [sun mar 22 13:54:03 2009]
-# updated       julien quintard   [mon mar 23 14:20:37 2009]
+# updated       julien quintard   [sun apr 12 15:42:59 2009]
 #
 
 #
@@ -136,9 +136,10 @@ def                     Validate(key,
                                  capability):
   object = Extract(capability)
 
-  h = hmac.new(key, pickle.dumps( (object["id"],
-                                   object["school"], object["year"],
-                                   object["group"], object["name"], object["email"] )))
+  h = hmac.new(key,
+               pickle.dumps( (object["id"],
+                              object["school"], object["year"],
+                              object["group"], object["name"], object["email"] )))
   token = h.hexdigest()
 
   if token != object["token"]:

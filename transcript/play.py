@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/transcript/play.py
 #
 # created       julien quintard   [mon may 28 12:39:21 2007]
-# updated       julien quintard   [mon may 28 12:44:50 2007]
+# updated       julien quintard   [mon apr 13 16:35:07 2009]
 #
 
 #
@@ -50,7 +50,7 @@ def			launch():
   env.display(env.HEADER_OK, "playing the session...", env.OPTION_NONE)
 
   # finally launch the recording.
-  env.play(g_path, env.OPTION_NONE)
+  env.play(env._TRANSCRIPT_DIR_ + "/" + g_path, env.OPTION_NONE)
 
 
 

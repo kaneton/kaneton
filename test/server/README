@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repositories/kaneton/test/server/README
+# file          /home/mycure/kaneton/test/server/README
 #
 # created       julien quintard   [mon mar 23 12:31:12 2009]
-# updated       julien quintard   [mon mar 23 12:41:48 2009]
+# updated       julien quintard   [mon apr 13 02:25:23 2009]
 #
 
 The following steps must be followed in order to properly set up the server.
@@ -33,3 +33,9 @@ server/server.py
 ---[ Packages
 
 packages/ktc.py -> server/ktc.py
+env.py (one from the same environment as the server's)
+
+---[ Suites
+
+les suites de tests doivent etre dans un repertoire genre suites/ donc
+etre copiees sur le server.

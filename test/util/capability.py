@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repositories/kaneton/test/util/capability.py
+# file          /home/mycure/kaneton/test/util/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon mar 23 12:23:46 2009]
+# updated       julien quintard   [fri apr 10 02:25:41 2009]
 #
 
 #
@@ -138,7 +138,7 @@ def                     generate(code,
 
   # display.
   env.display(env.HEADER_OK,
-              "generating the capabilities",
+              "generating the students' capabilities",
               env.OPTION_NONE)
 
   # for every student, generate a capability and store it.

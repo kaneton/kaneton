@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/util/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [sun mar 22 21:28:17 2009]
+# updated       julien quintard   [fri apr 10 02:33:33 2009]
 #
 
 #
@@ -47,6 +47,12 @@ capability:
 
 capability-%:
 	$(call env_launch,$(_TEST_CAPABILITY_SCRIPT_),$*,)
+
+database:
+	$(call env_launch,$(_TEST_DATABASE_SCRIPT_),,)
+
+database-%:
+	$(call env_launch,$(_TEST_DATABASE_SCRIPT_),$*,)
 
 clear:
 	$(call purge,)

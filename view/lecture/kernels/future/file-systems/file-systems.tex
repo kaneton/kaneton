@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...els/future/file-systems/file-systems.tex
 %
 % created       julien quintard   [tue jan 13 05:55:34 2009]
-% updated       julien quintard   [tue apr  7 00:09:28 2009]
+% updated       julien quintard   [mon apr 13 20:06:38 2009]
 %
 
 %
@@ -56,6 +56,22 @@
 
   \tableofcontents
 \end{frame}
+
+%
+% figures
+%
+
+\pgfdeclareimage[interpolate=true,width=220pt]
+                {fat}
+                {figures/fat}
+
+\pgfdeclareimage[interpolate=true,width=200pt]
+                {ext2-overview}
+                {figures/ext2-overview}
+
+\pgfdeclareimage[interpolate=true,width=240pt]
+                {ext2-inode}
+                {figures/ext2-inode}
 
 %
 % ---------- text -------------------------------------------------------------
@@ -216,19 +232,431 @@ objective: keep track of the files stored, including the data but also info
 
 \subsection{FAT}
 
+% 1)
+
 \begin{frame}
   \frametitle{QDOS}
 
+  Other people soon got the same idea as \textit{Kildall} and \textit{Tim
+  Patterson} wrote his own operating system called \textit{QDOS - Quick
+  and Dirty Operating System}.
+
+  \-
+
+  \textit{QDOS} was a quickly-writte clone of \textit{CP/M} for $16-bit$
+  computers because it needed an operating system for such machines and
+  \textit{CP/M} did not support it.
+
+  \-
+
+  \textit{QDOS} had a slightly different file system although it provided
+  the same features such as a flat naming model, file extensions \etc{}
+
+  \-
+
+  The \textit{QDOS} file system used an organisation method called
+  \textit{FAT - File Allocation Table} so the file system itself was given
+  the incredibly sticky and imaginative name of \textit{FAT}.
 \end{frame}
+
+% 2)
 
 \begin{frame}
   \frametitle{DOS}
 
+  \textit{Bill Gates} bought \textit{QDOS} for $\$50,000$ and renamed it
+  \textit{MS-DOS} so that he was now able to sell it to \textit{IBM} and
+  every company making \textit{IBM} clones.
 \end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Metadata}
+
+  Metadata literally means \textit{``data about data''} and that's exactly
+  what it is.
+
+  \-
+
+  While metadata may sound relatively recent and modern, all file systems
+  right from the very beginning had to store at least some metadata along.
+
+  \-
+
+  However, we can consider \textit{CP/M} file system, hence \textit{FAT},
+  to be the first to introduce metadata the way file systems now use it.
+
+  \-
+
+  A file system is given a storage space. At the very beginning of this
+  storage, a data structure is recorded containing general information
+  about the file system: the \textbf{metadata}.
+
+  \-
+
+  Obviously, depending on the file systems, the metadata give more or less
+  information such as the size of the storage space, the block size,
+  location of other data structures \etc{}
+\end{frame}
+
+% 4)
 
 \begin{frame}
   \frametitle{FAT}
 
+  As for \textit{CP/M} file system, \textit{FAT} names the files according
+  to a $8-3$ file name/extension scheme.
+
+  \-
+
+  Besides, the way file are stored was designed around the physical structure
+  of floppy disks, the primary storage device of the day.
+
+  \-
+
+  The \textit{File Allocation Table} describes which area of the disk were
+  allocated to files, which were free space and which were damaged and
+  unused, known as \textit{``bad sectors''}.
+
+  \-
+
+  Because each floppy had very little space \ie{} $8 sectors x 40 tracks x
+  512 bytes = 160 KB$, the table itself needed to be very small. To keep it
+  small, the disk was divided into \textbf{clusters}, a cluster---groups
+  of contiguous sectors---hence becoming the smallest storage unit.
+
+  \-
+
+  In order to cope with files bigger than a cluster, the file system uses
+  a \textbf{block chaining} technique by relying on the \textit{FAT} to
+  know what is the next block that contains the data related to a file.
+
+  \-
+
+  Note however that while increasing the cluster size decreases the table
+  size, it also increases internal fragmentation, hence the waste of
+  storage space.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Versions}
+
+  The first version of the \textit{FAT} file system was \textit{FAT-12}
+  because it used a $12-bit$ number for counting the clusters: $2^{12} x
+  8KB cluster = 32MB$. The file system was therefore limited to a total
+  storage capacity of $32MB$.
+
+  \-
+
+  Although this sounded reasonable at the time, it was without counting on
+  the amazing evolution of computing. \textit{FAT-12} quickly become
+  far too limited for modern storage devices such as hard disks.
+
+  \-
+
+  \textit{FAT-16}($2 GB$) and even \textit{FAT-32}($8 TB$) were later released
+  for dealing with the increasing storage capacity. It is however interesting
+  to note that, although a plain text string indicates the file system type
+  \textit{``FAT16''}, \textit{``FAT32''} \etc{}, it cannot be used by
+  the file system driver to detect the \textit{FAT} version and a sophisticate
+  computation must be performed according to the storage capacity, cluster
+  size \etc{} This anecdocte explains the \textit{dirty} name-part.
+
+  \-
+
+  Later came \textit{VFAT - Virtual FAT} that was able to handle long
+  file names up to $255$ characters. However, for compatibility reason, a
+  short name was also created: \textit{``TETON~1.TXT''} for instance.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Directories}
+
+  Id did not really matter that \textit{FAT} did not provide any way to
+  organise files because, on a floppy disk, only a few files could be stored
+  anyway.
+
+  \-
+
+  However, since \textit{IBM} was about to release the \textit{PC-XT} with
+  an optional $20 MB$ hard disk, it would be better if this enormous space
+  could be organised.
+
+  \-
+
+  Therefore, the \textbf{directory} concept was introduced, using the
+  backslash character as a separator.
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Example}
+
+  \begin{center}
+    \pgfuseimage{fat}
+  \end{center}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Limitations}
+
+  Although \textit{FAT} has been used for decades, it is nonetheless a
+  very strange piece of software.
+
+  \-
+
+  Among its limitations can be counted:
+
+  \begin{itemize}
+    \item
+      The name length constraint;
+    \item
+      The file size;
+    \item
+      The storage space size limit;
+    \item
+      The internal fragmentation;
+    \item
+      The poor data structure; and
+    \item
+      The lack of features including late directories \etc{}
+  \end{itemize}
+\end{frame}
+
+% ufs
+
+\subsection{UFS}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textit{UFS - Unix File System}, also known as the \textit{Berkeley}
+  \textit{FFS - Fast File System}, came out of the research community devoted
+  to \textit{UNIX}.
+
+  \-
+
+  Among notable improvements and differences with other file systems are
+  the case sensitive names, $32-bit$ pointers and \textbf{cylinder}-grouping
+  to improve disk head movement time.
+
+  \-
+
+  Another interesting thing was introduced to check the file system
+  consistency. Indeed, since file metadata can be corrupted if the computer
+  crashes \etc{}, the tool \textit{FSCK - File System Check} was introduced.
+
+  \-
+
+  Finally, \textit{UFS} introduces the \textbf{links}, both hard and symbolic.
+
+  \-
+
+  Many \textit{UNIX} vendors and other operating systems implemented their
+  own version of \textit{UFS}, often making them incompatible with each
+  other.
+\end{frame}
+
+% ext2
+
+\subsection{ext2}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  \textit{Ext2} is basically a clone of \textit{UFS} in the very exact way
+  to \textit{Linux} is a clone of \textit{UNIX}.
+
+  \-
+
+  \textit{Ext2} was designed as a successor of \textit{ext} to bring a new
+  file system to the \textit{Linux} operating system.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Design}
+
+  The concepts explained below are the same in \textit{UFS} but are described
+  for \textit{ext2}.
+
+  \-
+
+  Firstly, the file system metadata are known to be stored in the
+  \textbf{superblock}, a special block, at the beginning of the storage
+  space.
+
+  \-
+
+  Secondly, files metadata are stored in what are known as \textbf{Inode}s
+  and every \textit{Inode} is identified by a \textit{\textbf{INO} - Inode No}.
+
+  \-
+
+  The storage space is divided into \textbf{blocks}, usually of $8 KB$.
+  Besides, in order to keep the file metadata close to the data itself,
+  both are stored in the same \textbf{group} \ie{} \textit{UFS}'s
+  containers.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Details}
+
+  \textit{Ext2} keeps track of allocated blocks inside a group by relying
+  on a very simple data structure: a bitmap.
+
+  \-
+
+  Likewise, a bitmap is used to know which are the \textit{inode} used and
+  which are the one free. Indeed, \textit{inode}s are pre-allocated according
+  to the file system size.
+
+  \-
+
+  Those \textit{inode}s are kept in an \textit{inode} table following the
+  \textit{inode} bitmap.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Example}
+
+  \begin{center}
+    \pgfuseimage{ext2-overview}
+  \end{center}
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Example}
+
+  \begin{center}
+    \pgfuseimage{ext2-inode}
+  \end{center}
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Example}
+
+  As an example, let's consider a file \textit{teton.txt} located in the root
+  directory.
+
+  \-
+
+  Assuming that the system knows the associated \textit{ino}, it will first
+  start by computing the group in charge of this \textit{ino}.
+
+  \-
+
+  Since the metadata contains information regarding the number of groups,
+  the number of inodes and so forth, the system can easily know in which
+  group lies an inode according to its \textit{ino}.
+
+  \-
+
+  Once the group located, the system will retrieve the \textit{inode} from
+  the \textit{inode} table and then access the data through its pointers,
+  being direct or indirects.
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Size}
+
+  So, how big can a file be in \textit{ext2}?
+
+  \-
+
+  Let's do the math since we know that the standardised block size is $8 KB$.
+
+  \-
+
+  \begin{eqnarray*}
+    size & = & 8192 + \\
+         &   & \frac{8192}{4} x 8192 + \\
+         &   & \frac{8192}{4}^{2} x 8192 + \\
+         &   & \frac{8192}{4}^{3} x 8192 + \\
+         & = & 70403120701440 B \\
+         & = & 64 TB \\
+  \end{eqnarray*}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Limitations}
+
+  Although \textit{ext2} has been used for years and is loved by many for
+  being very stable, it still lack a few things though it is undeniably,
+  a clean file system design.
+
+  \begin{itemize}
+    \item
+      The file system consistency is not ensured and must be checked on
+      a regular basis through \textit{fsck};
+    \item
+      Many components are static such as the number of inodes, the number of
+      blocks \etc{} such that it is impossible to have a single big file
+      or millions of small files;
+    \item
+      Some data structures are still very slow, especially the directory
+      entries that must be explored sequentially to find a particular entry;
+    \item
+      Both internal and external fragmentations are still major problems
+      in \textit{ext2}.
+  \end{itemize}
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Journaling}
+
+  Updating file systems to reflect changes to files and directories usually
+  requires many separate write operations.
+
+  \-
+
+  This introduces a race condition for which an interruption like a power
+  failure between writes can leave data structures in an invalid intermediate
+  state.
+
+  \-
+
+  For example, deleting a file on a \textit{ext2} involves two steps: removing
+  its directory entry and marking space for the file and its inode as free in
+  the free space map.
+
+  \-
+
+  To avoid both leaking space and having to walk through the entire data
+  structure with \textit{fsck}, journaling can be used.
+
+  \-
+
+  A journaled file system maintains a journal of the changes it intends to
+  make, ahead of time. After a crash, recovery simply involves replaying
+  changes from this journal until the file system is consistent again.
 \end{frame}
 
 %
@@ -237,8 +665,24 @@ objective: keep track of the files stored, including the data but also info
 
 \section{Cats}
 
+% reiserfs
 
-XXX
+\subsection{ReiserFS}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  Because no file system provided a way to prevent corruptions, \textit{Hans
+  Reiser} decided to create his own file system and very modestly name
+  it \textbf{ReiserFS}.
+
+  \-
+
+  
+\end{frame}
+
 
 %
 % support
@@ -300,17 +744,6 @@ XXX
   XXX
 \end{frame}
 
-o Terminology
-  - Names
-  - Metadata/Superblock
-  - Ino
-  - Inodes
-  - Blocks
-  - Clusters
-  - Groups
-  - Links
-  - etc.
-
 %
 % principles
 %
@@ -353,17 +786,6 @@ o Overview
 % 1)
 
 
- o CP/M: in 1973
- o FAT
-  - fat allocation table
-  - blocks chain
-  - limitations: names, file size, file system size
- o ext2 (FFS/UFS)
-  - groups
-  - inode tables
-  - block tables
-  - fsck
-  - limitations: names, directory size, file system size, consistency(fsck)
  o ext3
   - journaling
  o NTFS
@@ -481,3 +903,6 @@ o Conclusion
 \end{frame}
 
 \end{document}
+
+XXX algo d'allocation: first fit, next fit, last fit, best fit, worst fit
+XXX partitions
