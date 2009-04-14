@@ -95,7 +95,7 @@ static void wait_command()
 void			kaneton(t_init*				bootloader)
 {
 
-#ifdef MIPSR4000_DEV
+#ifdef MIPS64_DEV
   while(1);
 #endif
 

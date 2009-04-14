@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...ootloader/ibm-pc.ia32/educational/libc.c
+ * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/libc.c
  *
  * created       matthieu bucchianeri   [thu jun 28 16:14:31 2007]
- * updated       matthieu bucchianeri   [thu jun 28 17:41:15 2007]
+ * updated          [thu apr  9 23:05:58 2009]
  */
 
 /*

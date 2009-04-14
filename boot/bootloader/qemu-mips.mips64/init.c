@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.c
  *
  * created          [thu apr  2 14:39:33 2009]
- * updated          [sun apr  5 06:22:28 2009]
+ * updated          [fri apr 10 07:58:56 2009]
  */
 
 /*
@@ -16,20 +16,6 @@
  */
 
 #include "bootloader.h"
-
-/*
- * ---------- globals ---------------------------------------------------------
- */
-
-/*
- * this variable is used by the page allocator.
- *
- * it is necessary to initialize it because variable in bss
- * shift the flag and the flag address pointer is set after
- * the real flag
- */
-
-static t_paddr		relocate = KERNEL_BASE_ADDRESS;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -42,17 +28,18 @@ static t_paddr		relocate = KERNEL_BASE_ADDRESS;
  * page tables etc.
  */
 
-t_paddr		bootloader_init_alloc(t_psize	size,
+t_paddr		bootloader_init_alloc(t_paddr*	relocate,
+				      t_psize	size,
 				      t_psize*	psize)
 {
-  t_paddr	allocated = relocate;
+  t_paddr	allocated = *relocate;
   t_psize	padded;
-
+      
   padded = size / PAGESZ;
   padded += size % PAGESZ ? 1 : 0;
-
-  relocate += padded * PAGESZ;
-
+      
+  *relocate += padded * PAGESZ;
+  
   if (psize != NULL)
     *psize = padded * PAGESZ;
 
@@ -79,13 +66,15 @@ t_size		bootloader_init_kernel_size(t_vaddr	kernel_address)
  * steps:
  *
  * 1) copy the kernel to this final location
- * 2) 
+ * 2) create init structure
+ * 3) fill first init fields (mem, kernel and init fields)
  */
 
 t_init*		bootloader_init_relocate(t_vaddr	kernel_address)
 {
-  t_size	kernelsz = 0;
-  t_init*	init = NULL;
+  t_paddr	relocate	= KERNEL_BASE_ADDRESS;
+  t_size	kernelsz	= 0;
+  t_init*	init		= NULL;
   t_paddr	kcode;
   t_psize	kcodesz;
   t_psize	initsz;
@@ -96,23 +85,30 @@ t_init*		bootloader_init_relocate(t_vaddr	kernel_address)
 
   kernelsz = bootloader_init_kernel_size(kernel_address);
 
-  kcode = bootloader_init_alloc(kernelsz, &kcodesz);
+  kcode = bootloader_init_alloc(&relocate, kernelsz, &kcodesz);
 
-  memcpy((t_uint8*)KERNEL_BASE_ADDRESS, (t_uint8*) kernel_address, kernelsz);
+  memcpy((t_uint8*)kcode, (t_uint8*)kernel_address, kernelsz);
 
   /*
    * 2)
    */
 
-  init = (t_init*)bootloader_init_alloc((t_psize)sizeof(t_init), &initsz);
-  memset(init, 0, sizeof(t_init));
-  
+  init = (t_init*)bootloader_init_alloc(&relocate, sizeof(t_init), &initsz);
+  memset(init, 0, initsz);
+
   /*
    * 3)
    */
 
+  init->mem = 0;
+  init->memsz = 0;
+
   init->kcode = kcode;
   init->kcodesz = kcodesz;
+  
+  init->init = (t_paddr)init;
+  init->initsz = initsz;
+
 
 
   return init;

@@ -3,8 +3,15 @@ ENTRY(bootloader_entry)
 
 SECTIONS
 {
-	__start = 0xffffffffbfc00000;
+	__start = 0xffffffffbfc00000;	
 	. = __start;
+	
+	.text __start :
+	{
+		entry.o(.text)
+		exception_handlers.o(.text)
+	}
+
 	.text :
 	{
 		*(.text)

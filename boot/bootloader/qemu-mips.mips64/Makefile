@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...oot/bootloader/qemu-mips.mips64/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated          [sun apr  5 06:08:27 2009]
+# updated          [wed apr  8 16:08:06 2009]
 #
 
 #
@@ -42,9 +42,11 @@ BOOTLOADER_C		:=		bootloader.c				\
 					mmu.c					\
 					interrupt.c				\
 					libc.c					\
-					init.c
+					init.c					\
+					exception.c
 
-BOOTLOADER_S		:=		entry.S
+BOOTLOADER_S		:=		entry.S					\
+					exception_handlers.S
 
 BOOTLOADER_O		:=		$(BOOTLOADER_S:.S=.o)			\
 					$(BOOTLOADER_C:.c=.o)

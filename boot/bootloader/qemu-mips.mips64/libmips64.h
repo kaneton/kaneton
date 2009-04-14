@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/libmips64.h
  *
  * created          [wed apr  1 09:34:19 2009]
- * updated          [sun apr  5 06:08:12 2009]
+ * updated          [wed apr  8 08:12:27 2009]
  */
 
 #ifndef BOOTLOADER_LIBMIPS64_H
@@ -27,6 +27,7 @@
  *	opmode.c
  *	mmu.c
  *	interrupt.c
+ *	exception.c
  */
 
 /*
@@ -70,6 +71,17 @@ void	user_mem_space_64(void);
 void	clear_ip_bit(t_uint32 value);
 
 void	clear_cause_register(void);
+
+
+/*
+ * exception.c
+ */
+
+void	cache_error(void);
+
+void	general_exception(void);
+
+void	xtlb_refill(void);
 
 
 /*

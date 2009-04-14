@@ -51,7 +51,8 @@ void		bootloader(void);
  * init.c
  */
 
-t_paddr		bootloader_init_alloc(t_psize	size,
+t_paddr		bootloader_init_alloc(t_paddr*	relocate,
+				      t_psize	size,
 				      t_psize*	psize);
 
 t_size		bootloader_init_kernel_size(t_vaddr	kernel_address);

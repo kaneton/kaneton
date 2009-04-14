@@ -35,3 +35,8 @@ bootloader_entry:
 	sd $fp, 0($sp)
 	jal bootloader
 	nop
+
+bootloader_entry_end:
+	.rept	(0x80 - (bootloader_entry_end - bootloader_entry)) / 4
+	nop
+	.endr

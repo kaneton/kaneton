@@ -72,7 +72,7 @@ static t_error		debug_exec_cmd_tab(t_serial_data *cmd)
    * 4)
    */
 
-#ifndef MIPSR4000_DEPENDENT
+#ifndef MIPS64_DEPENDENT
 
   printf_init(cons_print_char, cons_attr);
 
