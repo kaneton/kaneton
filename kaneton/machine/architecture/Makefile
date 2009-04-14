@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/machine/architecture/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [tue apr 14 22:13:53 2009]
+# updated       julien quintard   [tue apr 14 22:21:34 2009]
 #
 
 #
@@ -40,7 +40,6 @@ main:
 
 clear:
 	for d in $(SUBDIRS) ; do					\
-	  echo "[XXX] $${d}" ;\
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
