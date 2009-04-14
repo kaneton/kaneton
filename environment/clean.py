@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/clean.py
 #
 # created       julien quintard   [sat dec 16 20:57:38 2006]
-# updated       julien quintard   [sun jun 10 18:36:29 2007]
+# updated       julien quintard   [tue apr 14 21:55:57 2009]
 #
 
 #
@@ -28,6 +28,7 @@ import env
 #
 # this function removes the links to the machine dependent files
 # and directories.
+#
 def			machine():
   env.display(env.HEADER_OK,
               "removing links to machine-dependent directories",
@@ -90,7 +91,7 @@ def			clean():
 #
 # this function initializes the development environment.
 #
-
+import sys
 def			main():
   # display some stuff.
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
@@ -101,6 +102,8 @@ def			main():
 
   # uninstall the chosen machine.
   machine()
+
+#  sys.exit(0)
 
   # clear the kaneton development tree.
   clear()

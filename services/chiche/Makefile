@@ -58,6 +58,8 @@ clear:
 	$(call env_remove,$(CHICHE_O),)
 	$(call env_remove,$(CHICHE),)
 
+	$(call env_launch,$(_LIBKANETON_DIR_)/Makefile,clear,)
+
 	$(call env_purge,)
 
 prototypes:

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/package/ktc.py
+# file          /data/mycure/repositories/kaneton/test/package/ktc.py
 #
 # created       julien quintard   [sun mar 22 13:54:03 2009]
-# updated       julien quintard   [sun apr 12 15:42:59 2009]
+# updated       julien quintard   [tue apr 14 12:36:18 2009]
 #
 
 #
@@ -28,13 +28,31 @@ import string
 import random
 import hmac
 import pickle
+import sys
+
+#
+# ---------- definitions ------------------------------------------------------
+#
+
+StatusOk = True
+StatusError = False
 
 #
 # ---------- functions --------------------------------------------------------
 #
 
 #
-# this method generates a cryptographic key.
+# this function wraps a call to a remote method.
+#
+def                     Call(value):
+  if value[0] == StatusError:
+    print "[error] " + value[1]
+    sys.exit(42)
+  else:
+    return value[1]
+
+#
+# this function generates a cryptographic key.
 #
 def                     Key(type = crypto.TYPE_RSA,
                             length = 2048):
@@ -45,7 +63,7 @@ def                     Key(type = crypto.TYPE_RSA,
   return key
 
 #
-# this method returns a certificate request.
+# this function returns a certificate request.
 #
 def                     Request(key,
                                 digest = "md5",
@@ -63,7 +81,7 @@ def                     Request(key,
   return request
 
 #
-# this method builds a certificate according to the given
+# this function builds a certificate according to the given
 # certificate request.
 #
 def                     Certificate(request,
@@ -85,21 +103,21 @@ def                     Certificate(request,
   return certificate
 
 #
-# this method stores a key.
+# this function stores a key.
 #
 def                     Put(name,
                             key):
   open(name + ".key", 'w').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, key))
 
 #
-# this method saves the given certificate on the file system.
+# this function saves the given certificate on the file system.
 #
 def                     Save(name,
                              certificate):
   open(name + ".crt", 'w').write(crypto.dump_certificate(crypto.FILETYPE_PEM, certificate))
 
 #
-# this method generates a random code.
+# this function generates a random code.
 #
 def                     Code():
   random.seed()
@@ -109,7 +127,7 @@ def                     Code():
   return code
 
 #
-# this method builds a capability.
+# this function builds a capability.
 #
 def                     Capability(key,
                                    id,
@@ -129,7 +147,7 @@ def                     Capability(key,
   return capability
 
 #
-# this method validates the capability according to the given
+# this function validates the capability according to the given
 # key that has been used for issuing this capability.
 #
 def                     Validate(key,
@@ -146,7 +164,7 @@ def                     Validate(key,
     raise Exception("invalid token")
 
 #
-# this method takes a capability and returns the original data structure.
+# this function takes a capability and returns the original data structure.
 #
 def                     Extract(capability):
   object = pickle.loads(capability)
@@ -154,14 +172,14 @@ def                     Extract(capability):
   return object
 
 #
-# this method stores a code on the file system.
+# this function stores a code on the file system.
 #
 def                     Store(name,
                               code):
   open(name + ".cod", 'w').write(code)
 
 #
-# this method reads a code file from the file system
+# this function reads a code file from the file system
 #
 def                     Read(name):
   code = open(name + ".cod", 'r').read()
@@ -169,14 +187,14 @@ def                     Read(name):
   return code
 
 #
-# this method dumps a capability on the file system.
+# this function dumps a capability on the file system.
 #
 def                     Dump(name,
                              capability):
   open(name + ".cap", 'w').write(capability)
 
 #
-# this method loads a capability from the file system.
+# this function loads a capability from the file system.
 #
 def                     Load(name):
   capability = open(name + ".cap", 'r').read()

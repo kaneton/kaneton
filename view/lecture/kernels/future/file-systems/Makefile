@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ure/kernels/future/file-systems/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [fri nov 28 16:28:48 2008]
+# updated       julien quintard   [tue apr 14 21:58:56 2009]
 #
 
 #
@@ -35,6 +35,7 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
 					$(SOURCES:.tex=.toc)		\
 					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.dvi)		\
 					$(SOURCES:.tex=.bbl)		\
 					$(SOURCES:.tex=.blg)		\
 					$(SOURCES:.tex=.nav)		\

@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton/test/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [mon apr 13 19:14:39 2009]
+# updated       julien quintard   [tue apr 14 06:46:12 2009]
 #
 
 #
@@ -18,6 +18,9 @@
 
 import socket
 import yaml
+import os
+import tempfile
+import re
 
 import SocketServer
 import BaseHTTPServer
@@ -26,7 +29,6 @@ import SimpleXMLRPCServer
 
 from OpenSSL import SSL, crypto
 
-import env
 import ktc
 
 #
@@ -37,15 +39,12 @@ import ktc
 
 CACertificate = "../store/certificate/ca.crt"
 
-ServerHost = "localhost" # XXX "test.opaak.org"
+ServerHost = "test.opaak.org"
 ServerPort = 8421
 ServerCertificate = "../store/certificate/server.crt"
 ServerKey = "../store/key/server.key"
 ServerCode = "../store/code/server"
 ServerDatabaseDirectory = "../store/database"
-
-StatusOk = True
-StatusError = False
 
 ScriptCompile = "scripts/compile.py"
 ScriptTest = "scripts/test.py"
@@ -144,7 +143,7 @@ class TestServer:
 
     # verify the given capability.
     if Test.Verify(capability) != True:
-      return (StatusError, "invalid capability")
+      return (ktc.StatusError, "invalid capability")
 
     # retrieve the object.
     object = ktc.Extract(capability)
@@ -154,24 +153,21 @@ class TestServer:
 
     if profile:
       if profile[suite] <= 0:
-        return (StatusError, "no tests left")
+        return (ktc.StatusError, "no tests left")
 
     # create a temporary directory and file.
-    directory = env.temporary(env.OPTION_DIRECTORY)
-    file = env.temporary(env.OPTION_FILE)
+    directory = Test.Temporary(Test.OptionDirectory)
+    file = Test.Temporary(Test.OptionFile)
 
     # save the snapshot in the temporary file.
-    env.push(file, str(snapshot), env.OPTION_NONE)
-
-    # extract the snapshot in the temporary directory.
-    env.unpack(file, directory, env.OPTION_NONE)
+    Test.Push(file, str(snapshot))
 
     # launch the compile script that will compile the snapshot, producing
     # a bootable floppy image.
-# XXX    env.launch(ScriptCompile, directory + " " + file, env.OPTION_NONE)
+#    Test.launch(ScriptCompile, object["id"] + " " + directory + " " + file)
 
     # launch the test script that will run the test suite in a virtual machine.
-    env.launch(ScriptTest, file, env.OPTION_NONE)
+# XXX    Test.Launch(ScriptTest, file)
 
 # XXX
 #    ./compile directory file
@@ -192,10 +188,10 @@ class TestServer:
 #     restants
 
     # remove the temporary file and directory.
-    env.remove(file, env.OPTION_NONE)
-    env.remove(directory, env.OPTION_NONE)
+    Test.Remove(file)
+    Test.Remove(directory)
 
-    return (StatusOk, None)
+    return (ktc.StatusOk, None)
 
   #
   # this method returns information regarding the user capabilities.
@@ -209,7 +205,7 @@ class TestServer:
 
     # verify the given capability.
     if Test.Verify(capability) != True:
-      return (StatusError, "invalid capability")
+      return (ktc.StatusError, "invalid capability")
 
     # retrieve the object.
     object = ktc.Extract(capability)
@@ -223,15 +219,23 @@ class TestServer:
     if profile:
       information["profile"] = profile
 
-    return (StatusOk, information)
+    return (ktc.StatusOk, information)
 
 #
 # ---------- test -------------------------------------------------------------
 #
 
 class Test:
+  OptionNone = 0
+  OptionFile = 1
+  OptionDirectory = 2
+  OptionQuiet = 1
+
   code = None
 
+  #
+  # this method initializes the Test static class.
+  #
   def Initialize():
     # read the server code.
     Test.code = ktc.Read(ServerCode)
@@ -258,7 +262,7 @@ class Test:
     # compute the path.
     path = ServerDatabaseDirectory + "/" + id + ".db"
 
-    if not env.path(path, env.OPTION_EXIST):
+    if not os.path.exists(path):
       return None
 
     # load the database.
@@ -280,18 +284,128 @@ class Test:
                          file(ServerDatabaseDirectory + "/" + id, 'w'))
 
   #
+  # this function creates a temporary file or directory.
+  #
+  def Temporary(options):
+    location = None
+
+    if options == OptionFile:
+      tuple = tempfile.mkstemp()
+
+      os.close(tuple[0])
+
+      location = tuple[1]
+    elif options == OptionDirectory:
+      location = tempfile.mkdtemp()
+
+    return location
+
+  #
+  # this function writes a file.
+  #
+  def Push(file, content):
+    handle = None
+
+    handle = open(file, "w")
+
+    handle.write(content)
+
+    handle.close()
+
+  #
+  # this function reads a file.
+  #
+  def Pull(file):
+    handle = None
+    line = None
+
+    if not os.path.exists(file):
+      return None
+
+    try:
+      handle = open(file, "r")
+    except IOError:
+      return None
+
+    content = ""
+    for line in handle.readlines():
+      content += line
+
+    handle.close()
+
+    return content
+
+  #
+  # this function executes something.
+  #
+  def Launch(file, arguments, options = OptionNone):
+    directory = None
+    info = None
+    status = 0
+    wd = None
+
+    if options & OptionQuiet:
+      output = " >/dev/null 2>&1"
+    else:
+      output = ""
+
+    info = os.path.split(file)
+
+    directory = info[0]
+    file = info[1]
+
+    if directory:
+      wd = os.getcwd()
+      os.chdir(directory)
+
+    if re.match("^.*\.py$", file):
+      status = os.system("python " + file + " " + arguments + output)
+    else:
+      if directory:
+        file = "./" + file
+
+      status = os.system(file + " " + arguments + output)
+
+    if directory:
+      os.chdir(wd)
+
+    return status
+
+  #
+  # this function removes the target.
+  #
+  def Remove(target):
+    entries = None
+    entry = None
+
+    if os.path.isfile(target) or os.path.islink(target):
+      os.unlink(target)
+
+    if os.path.isdir(target):
+      entries = os.listdir(target)
+
+      for entry in entries:
+        Remove(target + "/" + entry)
+
+      os.rmdir(target)
+
+  #
   # static methods
   #
   Initialize = staticmethod(Initialize)
   Verify = staticmethod(Verify)
   Load = staticmethod(Load)
   Store = staticmethod(Store)
+  Temporary = staticmethod(Temporary)
+  Push = staticmethod(Push)
+  Pull = staticmethod(Pull)
+  Remove = staticmethod(Remove)
 
 #
 # ---------- entry point ------------------------------------------------------
 #
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   # create the server.
   server = SSLXMLRPCServer((ServerHost, ServerPort),
                            SSLXMLRPCRequestHandler)

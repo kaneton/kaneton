@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/initialize.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [wed apr  8 16:28:36 2009]
+# updated       julien quintard   [tue apr 14 18:54:57 2009]
 #
 
 #
@@ -59,6 +59,7 @@ def			warning():
 #
 # this function installs the links to the glue, platform and architecture
 # dependent files and directories.
+#
 def			machine():
   env.display(env.HEADER_OK,
               "installing links to machine-dependent directories",

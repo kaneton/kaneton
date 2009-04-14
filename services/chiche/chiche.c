@@ -162,10 +162,7 @@ int			main(void)
   if (cons_init())
     return (-1);
 
-  while (1)
-    ;
-
-  // XXX print_string("[chiche] initialised\n");
+  print_string("[chiche] initialised\n");
 
   return 0;
 }
