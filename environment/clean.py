@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/clean.py
 #
 # created       julien quintard   [sat dec 16 20:57:38 2006]
-# updated       julien quintard   [tue apr 14 21:55:57 2009]
+# updated       julien quintard   [tue apr 14 22:15:24 2009]
 #
 
 #
@@ -100,13 +100,11 @@ def			main():
               env.OPTION_NONE)
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
-  # uninstall the chosen machine.
-  machine()
-
-#  sys.exit(0)
-
   # clear the kaneton development tree.
   clear()
+
+  # uninstall the chosen machine.
+  machine()
 
   # generate the kaneton dependencies.
   dependencies()

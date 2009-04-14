@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [fri aug 29 20:09:20 2008]
+# updated       julien quintard   [tue apr 14 22:16:58 2009]
 #
 
 #
