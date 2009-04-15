@@ -1,16 +1,11 @@
 OUTPUT_FORMAT("elf64-littlemips")
-ENTRY(bootloader_entry)
+ENTRY(firmware)
 
 SECTIONS
 {
-	__start = 0xffffffffa0100000;	
+	__start = 0xffffffffbfc00000;	
 	. = __start;
-
-	.text __start :
-	{
-		exception_handlers.o(.text)
-	}
-
+	
 	.text :
 	{
 		*(.text)

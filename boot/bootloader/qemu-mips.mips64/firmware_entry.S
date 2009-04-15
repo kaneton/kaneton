@@ -1,20 +1,15 @@
-STACK_BASE_ADDRESS = 0xa020
-	
+STACK_BASE_ADDRESS = 0xa001
+
 .global bootloader_entry
 .global flag_address
-
-	.data
-	.align	8
-
-flag_address:
-	.quad	__bootloader_end
 
 	.text
 	.align	4
 
-bootloader_entry:
-	.set	noat
-	.set	noreorder
+firmware_entry:
+	.set noat
+	.set noreorder
+
 	move $gp, $0
 
 	# initialize the stack pointer register
@@ -33,6 +28,5 @@ bootloader_entry:
 	daddiu $sp, $sp, -8
 	move $fp, $sp
 	sd $fp, 0($sp)
-	jal bootloader
+	jal firmware
 	nop
-

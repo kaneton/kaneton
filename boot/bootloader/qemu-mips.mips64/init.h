@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...bootloader/qemu-mips.mips64/R4000/init.h
+ * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated          [sat apr  4 09:41:55 2009]
+ * updated          [fri apr 10 23:04:10 2009]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -30,7 +30,7 @@
  * the kernel is moved in the ckseg0 region
  */
 
-#define KERNEL_BASE_ADDRESS	0xffffffff80020000
+#define KERNEL_BASE_ADDRESS	0xffffffff8001e000
 
 /*
  * 4K page size is equal to 0 for the page mask
@@ -39,6 +39,13 @@
 
 #define PAGESZ			0x1000
 #define PAGE_SIZE		0
+
+/*
+ * Kernel layout size
+ */
+
+#define STACKSZ			0x2000
+#define ALLOCSZ			0x10000
 
 /*
  * ---------- types -----------------------------------------------------------

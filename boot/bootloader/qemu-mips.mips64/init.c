@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.c
  *
  * created          [thu apr  2 14:39:33 2009]
- * updated          [fri apr 10 07:58:56 2009]
+ * updated          [fri apr 10 14:11:38 2009]
  */
 
 /*
@@ -78,6 +78,8 @@ t_init*		bootloader_init_relocate(t_vaddr	kernel_address)
   t_paddr	kcode;
   t_psize	kcodesz;
   t_psize	initsz;
+  t_psize	kstacksz;
+  t_psize	allocsz;
 
   /*
    * 1)
@@ -109,7 +111,11 @@ t_init*		bootloader_init_relocate(t_vaddr	kernel_address)
   init->init = (t_paddr)init;
   init->initsz = initsz;
 
+  init->kstack = bootloader_init_alloc(&relocate, STACKSZ, &kstacksz);
+  init->kstacksz = kstacksz;
 
+  init->alloc = bootloader_init_alloc(&relocate, ALLOCSZ, &allocsz);
+  init->allocsz = allocsz;
 
   return init;
 }

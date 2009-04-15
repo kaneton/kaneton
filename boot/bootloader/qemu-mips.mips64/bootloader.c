@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.c
  *
  * created          [sun feb  8 17:24:44 2009]
- * updated          [fri apr 10 07:57:41 2009]
+ * updated          [fri apr 10 14:49:31 2009]
  */
 
 /*
@@ -45,13 +45,14 @@ void		bootloader_error(void)
  * steps:
  *
  * 1) check the bootloader end flag
- * 2) set the page size in the page mask register
- * 3) active the 64 bits mode for all memory spaces
- * 4) initialize the kernel and the init structure
- * 5) set the real kernel mode
- * 6) disable the bootstrap mode
- * 7) init the kernel stack
- * 8) jump to the kernel
+ * 2) enable coprocessor 0
+ * 3) set the page size in the page mask register
+ * 4) active the 64 bits mode for all memory spaces
+ * 5) initialize the kernel and the init structure
+ * 6) set the real kernel mode
+ * 7) disable the bootstrap mode
+ * 8) init the kernel stack
+ * 9) jump to the kernel
  */
 
 void		bootloader(void)
@@ -71,10 +72,14 @@ void		bootloader(void)
    * 2)
    */
 
+  /*
+   * 3)
+   */
+
   set_page_size(PAGE_SIZE);
 
   /*
-   * 3)
+   * 4)
    */
 
   kernel_mem_space_64();
@@ -82,29 +87,29 @@ void		bootloader(void)
   user_mem_space_64();
 
   /*
-   * 4)
+   * 5)
    */
 
   init = bootloader_init_relocate((t_vaddr)(flag_address + 1));
 
   /*
-   * 5)
+   * 6)
    */
 
   set_kernel_mode();
 
   /*
-   * 6)
+   * 7)
    */
 
   disable_bootstrap_mode();
 
   /*
-   * 7)
+   * 8)
    */
 
   /*
-   * 8)
+   * 9)
    */
 
   kernel_entry = (t_uint64*)(KERNEL_BASE_ADDRESS + 0x18);
