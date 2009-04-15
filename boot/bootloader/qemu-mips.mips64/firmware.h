@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...oot/firmware/qemu-mips.mips64/firmware.h
+ * file          /home/enguerrand/...t/bootloader/qemu-mips.mips64/firmware.h
  *
- * created          [fri apr 10 13:11:49 2009]
- * updated          [fri apr 10 23:03:29 2009]
+ * created       enguerrand raymond   [fri apr 10 13:11:49 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:37:53 2009]
  */
 
 #ifndef FIRMWARE_H

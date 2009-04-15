@@ -7,8 +7,8 @@
  *
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.c
  *
- * created          [thu apr  2 14:39:33 2009]
- * updated          [fri apr 10 14:11:38 2009]
+ * created       enguerrand raymond   [thu apr  2 14:39:33 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:38:03 2009]
  */
 
 /*

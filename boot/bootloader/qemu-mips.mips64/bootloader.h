@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.h
  *
  * created       enguerrand raymond   [sun oct 12 18:58:49 2008]
- * updated          [sun apr  5 06:05:43 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:37:07 2009]
  */
 
 #ifndef BOOTLOADER_H

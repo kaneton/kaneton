@@ -7,8 +7,8 @@
  *
  * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/interrupt.c
  *
- * created          [mon mar 23 17:50:38 2009]
- * updated          [sun apr  5 06:06:23 2009]
+ * created       enguerrand raymond   [mon mar 23 17:50:38 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:38:22 2009]
  */
 
 /*

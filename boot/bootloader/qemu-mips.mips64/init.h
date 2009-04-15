@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated          [fri apr 10 23:04:10 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:38:11 2009]
  */
 
 #ifndef BOOTLOADER_INIT_H

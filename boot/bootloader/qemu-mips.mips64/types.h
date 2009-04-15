@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...ootloader/qemu-mips.mips64/R4000/types.h
+ * file          /home/enguerrand/...boot/bootloader/qemu-mips.mips64/types.h
  *
  * created       matthieu bucchianeri   [tue jul 17 15:14:07 2007]
- * updated          [thu apr  2 14:15:53 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:38:47 2009]
  */
 
 #ifndef BOOTLOADER_TYPES_H

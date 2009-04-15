@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/R4000/cp0.h
+ * file          /home/enguerrand/...n/boot/bootloader/qemu-mips.mips64/cp0.h
  *
- * created          [mon mar 16 23:04:40 2009]
- * updated          [sat apr  4 05:30:05 2009]
+ * created       enguerrand raymond   [mon mar 16 23:04:40 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:37:19 2009]
  */
 
 #ifndef BOOTLOADER_CP0_H

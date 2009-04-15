@@ -7,8 +7,8 @@
  *
  * file          /home/enguerrand/...oot/bootloader/qemu-mips.mips64/opmode.c
  *
- * created          [mon mar 16 23:13:41 2009]
- * updated          [sun apr  5 06:06:47 2009]
+ * created       enguerrand raymond   [mon mar 16 23:13:41 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:38:42 2009]
  */
 
 /*

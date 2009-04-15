@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/libc.c
  *
  * created       matthieu bucchianeri   [thu jun 28 16:14:31 2007]
- * updated          [thu apr  9 23:05:58 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:39:12 2009]
  */
 
 /*

@@ -7,8 +7,8 @@
  *
  * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/libmips64.h
  *
- * created          [wed apr  1 09:34:19 2009]
- * updated          [wed apr  8 08:12:27 2009]
+ * created       enguerrand raymond   [wed apr  1 09:34:19 2009]
+ * updated       enguerrand raymond   [sat apr 11 02:38:30 2009]
  */
 
 #ifndef BOOTLOADER_LIBMIPS64_H
