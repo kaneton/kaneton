@@ -1,0 +1,26 @@
+OUTPUT_FORMAT("elf64-littlemips")
+ENTRY(main);
+
+SECTIONS
+{
+	. = 0x0000000000001000;
+
+	.text :
+	{
+		*(.text)
+	}
+	
+	.data :
+	{
+		*(.data)
+		*(.rdata)
+		*(.rodata)
+	}
+	
+	__gp = ALIGN(8);
+	
+	.bss :
+	{
+		*(.bss)
+	}
+}

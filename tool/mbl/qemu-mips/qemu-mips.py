@@ -8,7 +8,7 @@
 # file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       enguerrand raymond   [sat apr 11 02:45:24 2009]
+# updated       enguerrand raymond   [sat apr 11 12:41:00 2009]
 #
 
 #
@@ -27,6 +27,7 @@ import env
 import os
 import sys
 import re
+import struct
 import subprocess
 
 #
@@ -112,10 +113,12 @@ def			install():
               env.OPTION_NONE)
 
   # creates binary files : bootloader and kaneton
-  os.system(env._OBJCOPY_ + " -S -j .text -j .data -j .rdata -j .rodata -j .bss --output-target binary " + env.FIRMWARE + " " + env.FIRMWARE_BIN)
+  env.binary_extract(env.FIRMWARE, ".text .data .rdata .rodata .bss", env.FIRMWARE_BIN)
 
   # cat the binary files in the mips_bios.bin file
-  os.system("cat " + env.FIRMWARE_BIN + " " + env._SOURCE_DIR_ + "/flag " + env._BOOTLOADER_ + " " + env._SOURCE_DIR_ + "/flag " + env._KANETON_ + " " + env._SOURCE_DIR_ + "/flag" + " > " + env._SOURCE_DIR_ + "/mipsel_bios.bin")
+  env.concat_file(env.FIRMWARE_BIN, env.MIPS_BIOS)
+  env.concat_file(env._SOURCE_DIR_ + "/header", env.MIPS_BIOS)
+  env.concat_file(env.MODULES, env.MIPS_BIOS)
 
   #env.copy(env._KANETON_, env._IMAGE_, env.OPTION_NONE)
 
@@ -127,6 +130,8 @@ def			install():
 #
 def			build():
   handle = None
+  mod_list = None
+  header_file = None
 
   # warn the user before performing any action.
   warning()
@@ -134,11 +139,26 @@ def			build():
   # creates the mips_bios.bin file
   env.push(env._SOURCE_DIR_ + "/mipsel_bios.bin", "", None)
 
-  # creates the flag file
-  env.push(env._SOURCE_DIR_ + "/flag", "\a\a\a\a", None)
+  # creates the flag file with header information
+
+  mod_list = env._INPUT_MOD_.split()
+
+  header_file = open(env._SOURCE_DIR_ + "/header", "wb");
+
+  # write the flag
+  header_file.write(struct.pack("<l", 0x07070707))
+
+  # write the number of module : min 2 (bootloader and kernel)
+  header_file.write(struct.pack("<l", len(mod_list)))  
+
+  for mod in mod_list:
+    header_file.write(struct.pack("<l", os.path.getsize(mod)))
+    env.concat_file(mod, env.MODULES)
+
+  header_file.close()
 
   # display some stuff.
-  env.display(env.HEADER_OK, "mipsel_bios.bin file created",
+  env.display(env.HEADER_OK, "header file and mipsel_bios.bin file created",
               env.OPTION_NONE)
 
 

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
+# file          /home/enguerrand/.../environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [sun mar 22 18:21:09 2009]
+# updated          [sat apr 11 12:41:39 2009]
 #
 
 #
@@ -225,3 +225,32 @@ def			play(transcript, options):
 #
 def			locate(file, options):
   return launch(_WHICH_, file + " 1>/dev/null 2>/dev/null", OPTION_NONE)
+
+
+
+#
+# binary_extract()
+#
+# this function extracts given sections (section names separate by space) 
+# from elf to put in binary
+#
+def			binary_extract(elf, sections, binary):
+  section_list = sections.split()
+  cmd_option = "-S"
+
+  for section in section_list:
+    cmd_option += " -j " + section
+
+  cmd_option += " --output-target binary " + elf + " " + binary
+
+  launch(_OBJCOPY_, cmd_option, "")
+
+
+
+#
+# concat_file()
+#
+# this function concatenates file a the result file end
+#
+def			concat_file(file, result):
+  os.system(_CAT_ + " " + file + " >> " + result)
