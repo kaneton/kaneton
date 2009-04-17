@@ -8,7 +8,7 @@
 # file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       enguerrand raymond   [sat apr 11 12:41:00 2009]
+# updated          [sun apr 12 00:56:03 2009]
 #
 
 #
@@ -103,6 +103,8 @@ def			warning():
 #
 def			install():
   input = None
+  mod_list = None
+  header_file = None
 
   # warn the user before performing any action.
   warning()
@@ -115,13 +117,31 @@ def			install():
   # creates binary files : bootloader and kaneton
   env.binary_extract(env.FIRMWARE, ".text .data .rdata .rodata .bss", env.FIRMWARE_BIN)
 
+  mod_list = env._INPUT_MOD_.split()
+
+  # open the flag file to write header information
+  header_file = open(env._SOURCE_DIR_ + "/header", "ab");
+
+  # write the number of module : min 2 (bootloader and kernel)
+  header_file.write(struct.pack("<l", len(mod_list) + 2))  
+
+  header_file.write(struct.pack("<l", os.path.getsize(env._BOOTLOADER_)))
+  header_file.write(struct.pack("<l", os.path.getsize(env._KANETON_)))
+
+  for mod in mod_list:
+    header_file.write(struct.pack("<l", os.path.getsize(mod)))
+    header_file.write(mod.split("/")[len(mod.split("/")) - 1])
+    header_file.write('\0')
+    env.concat_file(mod, env.MODULES)
+
   # cat the binary files in the mips_bios.bin file
   env.concat_file(env.FIRMWARE_BIN, env.MIPS_BIOS)
   env.concat_file(env._SOURCE_DIR_ + "/header", env.MIPS_BIOS)
+  env.concat_file(env._BOOTLOADER_, env.MIPS_BIOS)
+  env.concat_file(env._KANETON_, env.MIPS_BIOS)
   env.concat_file(env.MODULES, env.MIPS_BIOS)
 
-  #env.copy(env._KANETON_, env._IMAGE_, env.OPTION_NONE)
-
+  header_file.close()
 
 #
 # build()
@@ -130,7 +150,6 @@ def			install():
 #
 def			build():
   handle = None
-  mod_list = None
   header_file = None
 
   # warn the user before performing any action.
@@ -139,21 +158,11 @@ def			build():
   # creates the mips_bios.bin file
   env.push(env._SOURCE_DIR_ + "/mipsel_bios.bin", "", None)
 
-  # creates the flag file with header information
-
-  mod_list = env._INPUT_MOD_.split()
-
+  # creates the flag file
   header_file = open(env._SOURCE_DIR_ + "/header", "wb");
 
   # write the flag
   header_file.write(struct.pack("<l", 0x07070707))
-
-  # write the number of module : min 2 (bootloader and kernel)
-  header_file.write(struct.pack("<l", len(mod_list)))  
-
-  for mod in mod_list:
-    header_file.write(struct.pack("<l", os.path.getsize(mod)))
-    env.concat_file(mod, env.MODULES)
 
   header_file.close()
 

@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.c
  *
  * created       enguerrand raymond   [sun feb  8 17:24:44 2009]
- * updated       enguerrand raymond   [sat apr 11 02:36:58 2009]
+ * updated       enguerrand raymond   [sat apr 11 15:30:22 2009]
  */
 
 /*
@@ -16,12 +16,6 @@
  */
 
 #include "bootloader.h"
-
-/*
- * ---------- globals ---------------------------------------------------------
- */
-
-extern t_uint32*	flag_address;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -62,13 +56,6 @@ void		bootloader(void)
   t_init*	init		= NULL;
 
   /*
-   * 1)
-   */
-
-  if(*flag_address != BOOTLOADER_FLAG)
-    bootloader_error();
-
-  /*
    * 2)
    */
 
@@ -90,7 +77,7 @@ void		bootloader(void)
    * 5)
    */
 
-  init = bootloader_init_relocate((t_vaddr)(flag_address + 1));
+  //init = bootloader_init_relocate((t_vaddr)(flag_address + 1));
 
   /*
    * 6)

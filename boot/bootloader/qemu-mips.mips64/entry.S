@@ -1,13 +1,6 @@
 STACK_BASE_ADDRESS = 0xa020
 	
 .global bootloader_entry
-.global flag_address
-
-	.data
-	.align	8
-
-flag_address:
-	.quad	__bootloader_end
 
 	.text
 	.align	4

@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       enguerrand raymond   [sat apr 11 02:38:11 2009]
+ * updated       enguerrand raymond   [sat apr 11 15:29:25 2009]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -23,8 +23,6 @@
 /*
  * ---------- macros ----------------------------------------------------------
  */
-
-#define BOOTLOADER_FLAG		0x07070707
 
 /*
  * the kernel is moved in the ckseg0 region
