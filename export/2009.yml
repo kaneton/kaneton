@@ -1,4 +1,7 @@
 -
+  operation: svnexport
+
+-
   operation: import
   filename: k1
 

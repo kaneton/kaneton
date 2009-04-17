@@ -1,23 +1,10 @@
 ---
 -
-  operation: freplace
-  src: export/data/Makefile
-  dst: Makefile
+  operation: localexport
+
 -
-  operation: fremove
-  path: history
+  operation: initenv
+
 -
-  operation: fremove
-  path: check
--
-  operation: fremove
-  path: cheat
--
-  operation: fremove
-  path: test
--
-  operation: fremove
-  path: export
--
-  operation: import
-  filename: test2
+  operation: fremovepattern
+  pattern: .*\.svn

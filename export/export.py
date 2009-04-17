@@ -106,10 +106,7 @@ def main():
 
   g_export_dir = env.temporary(env.OPTION_DIRECTORY) + "/kaneton"
 
-  env.display(env.HEADER_OK, 'copying the source tree to ' + g_export_dir, env.OPTION_NONE)
-
-  #env.copy(env._SOURCE_DIR_, g_export_dir, env.OPTION_NONE)
-  env.launch("svn", "export svn+ssh://subversion@repositories.opaak.org/kaneton " + g_export_dir,env.OPTION_NONE)
+  env.display(env.HEADER_OK, 'exporting to ' + g_export_dir, env.OPTION_NONE)
 
   env.display(env.HEADER_OK, 'running export actions', env.OPTION_NONE)
 

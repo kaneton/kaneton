@@ -21,6 +21,10 @@ import env
 
 import os
 
+import sys
+
+import getopt
+
 #
 # ---------- functions --------------------------------------------------------
 #
@@ -59,11 +63,11 @@ def			warning():
 #
 # this function installs the links to the glue, platform and architecture
 # dependent files and directories.
-#
-def			machine():
-  env.display(env.HEADER_OK,
-              "installing links to machine-dependent directories",
-              env.OPTION_NONE)
+def			machine(options):
+  if not options & env.OPTION_QUIET:
+    env.display(env.HEADER_OK,
+                "installing links to machine-dependent directories",
+                env.OPTION_NONE)
 
   env.remove(env._GLUE_CURRENT_, env.OPTION_NONE)
   env.link(env._GLUE_CURRENT_, env._GLUE_DIR_, env.OPTION_NONE)
@@ -82,13 +86,14 @@ def			machine():
 # this function looks for every binary the behaviour profile needs to work
 # properly.
 #
-def			check():
+def			check(options):
   binaries = None
   binary = None
 
-  env.display(env.HEADER_OK,
-              "looking for programs needed by the development environment",
-              env.OPTION_NONE)
+  if not options & env.OPTION_QUIET:
+    env.display(env.HEADER_OK,
+                "looking for programs needed by the development environment",
+                env.OPTION_NONE)
 
   binaries = env._BINARIES_.split(",")
 
@@ -101,7 +106,7 @@ def			check():
     if env.locate(binary[0], env.OPTION_NONE) != 0:
       env.display(env.HEADER_ERROR,
                   "  the program " + binary[0] + " is not present "	\
-                  "on your system",
+                    "on your system",
                   env.OPTION_NONE)
 
 
@@ -111,12 +116,13 @@ def			check():
 #
 # this function generates the kaneton prototypes.
 #
-def			prototypes():
+def			prototypes(options):
   useless = None
 
-  env.display(env.HEADER_OK,
-              "generating the kaneton prototypes",
-              env.OPTION_NONE)
+  if not options & env.OPTION_QUIET:
+    env.display(env.HEADER_OK,
+                "generating the kaneton prototypes",
+                env.OPTION_NONE)
   env.launch(env._SOURCE_DIR_ + "/Makefile", "prototypes", env.OPTION_QUIET)
 
 
@@ -126,10 +132,11 @@ def			prototypes():
 #
 # this function generates the kaneton header dependencies.
 #
-def			headers():
-  env.display(env.HEADER_OK,
-              "generating the kaneton header dependencies",
-              env.OPTION_NONE)
+def			headers(options):
+  if not options & env.OPTION_QUIET:
+    env.display(env.HEADER_OK,
+                "generating the kaneton header dependencies",
+                env.OPTION_NONE)
   env.launch(env._SOURCE_DIR_ + "/Makefile", "headers", env.OPTION_QUIET)
 
 
@@ -140,32 +147,43 @@ def			headers():
 # this function initializes the development environment.
 #
 def			main():
+
+  options = env.OPTION_NONE
+
+  opts,args = getopt.getopt(sys.argv[1:],"q",["quiet"])
+  for o,a in opts:
+    if o in ("-q", "--quiet"):
+      options = env.OPTION_QUIET
+
   # display some stuff.
-  env.display(env.HEADER_OK,
-              "installing the kaneton development environment",
-              env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+  if not options & env.OPTION_QUIET:
+    env.display(env.HEADER_OK,
+                "installing the kaneton development environment",
+                env.OPTION_NONE)
+    env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
   # display the current configuration and ask the user to continue.
-  warning()
+  if not options & env.OPTION_QUIET:
+    warning()
 
   # install the chosen machine: platform/architecture.
-  machine()
+  machine(options)
 
   # check the presence of the binaries used by the behaviour profile.
-  check()
+  check(options)
 
   # generate the kaneton prototypes.
-  prototypes()
+  prototypes(options)
 
   # generate the kaneton headers.
-  headers()
+  headers(options)
 
   # display some stuff.
-  env.display(env.HEADER_OK,
-              "environment development installed successfully",
-              env.OPTION_NONE)
-
+  if not options & env.OPTION_QUIET:
+    env.display(env.HEADER_OK,
+                "environment development installed successfully",
+                env.OPTION_NONE)
+    
 #
 # ---------- entry point ------------------------------------------------------
 #
