@@ -58,7 +58,7 @@ typedef struct
   unsigned int			boot_device;
   unsigned int			cmdline;
   unsigned int			mods_count;
-  unsigned int			mods_addr;
+  unsigned long			mods_addr;
 
   union
   {
