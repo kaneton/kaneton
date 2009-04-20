@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../environment/env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -24,24 +24,12 @@ include			../environment/env.mk
 .PHONY:		main clear prototypes headers
 
 #
-# ---------- variables --------------------------------------------------------
-#
-
-SUBDIRS			:=		modules
-
-#
 # ---------- rules ------------------------------------------------------------
 #
 
 main:
 
 clear:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,clear,)			; \
-	done
-
-	$(call env_remove,$(_EXPORT_).tar.bz2,)
-
 	$(call env_purge)
 
 prototypes:
