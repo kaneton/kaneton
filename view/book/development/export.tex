@@ -18,11 +18,8 @@
 \subsection{Export}
 \label{section:export}
 
-XXX[This section is \textbf{deprecated} as the tool was \textbf{temporarily}
-re-written while the documentation has not been updated.]
-
 The \name{export} tool was introduced for making the releasing process
-easier. The tool takes an argument specifying the type of target release.
+easier. The tool does its job based on action description YAML files.
 
 Recall the kaneton microkernel project is used as a material for operating
 system courses. The source code of the microkernel is distributed to
@@ -32,64 +29,41 @@ kernel internals. Additionnaly, the kaneton project is also a research project
 in operating systems design.
 
 As a result, the \name{export} tool sometimes has to build a release
-with pieces of code removed, sometimes not. Below are listed the different
-type of release:
+with pieces of code removed, sometimes not. The tool has been build to
+be flexible enough to fulfil multiple needs.
+
+The tool is build on a modular approach. Each module provides an action that
+can be used within a YAML file.
+
+A YAML file describes the sequence of actions to be performed to make an export. All the operations are performed in a temporary directory displayed at the begin of the export.
+
+Here is the list of the currently available modules :
 
 \begin{itemize}
-  \item
-    \term{backup}: this release type is basically a bare backup of
-    the kaneton microkernel project repository.
-  \item
-    \term{dist}: the distribution release is performed by removing
-    the repository-specific stuff: \location{.svn/}, \location{CVS/} \etc{}
-  \item
-    \term{k$\gamma$,$\tau$}: this type of release is intended
-    to students. Therefore, repository-specific stuff is removed. Also,
-    teaching materials such as courses, testing scripts, cheating scripts
-    \etc{}. - specified in the kaneton development environment variable
-    \code{\_HIDDEN\_} - are removed.
-
-    \-
-
-    Finally, the pieces of code comprised in the range $[\gamma,\tau]$
-    are removed from the release. These pieces of code are marked using the
-    \name{export} syntax described next.
-
-    \-
-
-    The stages $\gamma$ and $\tau$ represent kaneton sub-project ranks:
-
-    \begin{itemize}
-      \item
-	\term{k0}: boot stuff: boostrap, bootloader \etc{};
-      \item
-	\term{k1}: memory management;
-      \item
-	\term{k2}: event management: interrupts, I/O \etc{};
-      \item
-	\term{k3}: task management, scheduling;
-      \item
-	\term{k4}: communication management.
-    \end{itemize}
+\item{svnexport} This module takes no argument. It performs an svn export of the kaneton SVN repository.
+\item{localexport} This module takes no argument. It performs a copy of the user's working copy.
+\item{import} This is a built-in module, it takes one argument : \name{filename}. This argument is the name of another YAML file to import and run. The YAML file has to be in the export folder, no path and no file extension should be put in the argument.
+\item{initenv} This module takes no argument. It de-initializes the kaneton environment. It can be used after calling localexport to clean the environment before making a snapshot.
+\item{fremovepattern} This module deletes every file or directory that matches the \name{pattern} argument which is a regular expression. For instance, to clean the export of all the subversion folders, the pattern \code{.*\textbackslash.svn} can be used.
+\item{fremove} This module deletes the file or directory described in the argument \name{path}. It should be a relative path based on the repository root directory, like for instance : \location{boot/bootloader}.
+\item{fmove} This module moves the file or directory described in the argument \name{src} to the path described in the argument \name{dst}. If the entity to be moved is a file, the \name{dst} argument must be a filename, not a directory where the file should be moved.
+\item{freplace} This module copies the file described in the argument \name{src} to the path described in the argument \name{dst}. The \name{dst} argument must be a filename, not a directory where the file should be copied. This module can be used to replace files by templates stored in \location{export/data}.
+\item{symlink} This modules creates a symbolic link named by the argument \name{name} pointing to the file described in the argument \name{target}.
+\item{bremove} This module removes a block of lines in a file. It takes one argument : \name{id} which has this syntax : \code{path/to/file::block\_name}. The syntax of blocks declaration is explained below.
+\item{breplace}This module replaces a block of lines in a file. It takes two arguments : \name{id} which has this syntax : \code{path/to/file::block\_name} and \name{data} which is the text to be put instead of the removed lines. The syntax of blocks declaration is explained below.
 \end{itemize}
-
-Finally, the generated release is named based on the \code{\_EXPORT\_}
-kaneton environment variable followed by the date and type of the release:
-\name{backup}, \name{dist} or \name{k$\gamma$,$\tau$}.
 
 % syntax
 
-\subsubsubsection{Syntax}
+\subsubsubsection{Blocks Syntax}
 
-As explained previously, pieces of code are removed in order to build
-\name{stage} releases.
+As explained previously, pieces of code are being identified by blocks, in
+order to be processed by the export tool.
 
-The kaneton source code is marked so that the \name{export} tool knows
-what stage a piece of code belongs to. Indeed, every piece of educational
-code is marked by a tag as illustrated below:
+The code below illustrates how to tag some code to make a block:
 
 \begin{verbatim}
-  /*                                                                [cut] k1 */
+  /*                                                          [block::clone] */
 
   /*
    * this function clones a segment.
@@ -130,35 +104,85 @@ code is marked by a tag as illustrated below:
     SEGMENT_LEAVE(segment, ERROR_NONE);
   }
 
-  /*                                                               [cut] /k1 */
+  /*                                                       [endblock::clone] */
 \end{verbatim}
 
-In this example, the kaneton teachers decided \code{segment\_clone()}
-was a functionality the students should implement.
-
-The markings at the top \code{[cut] k1} and bottom \code{[cut] /k1} of this
-example indicate the \name{export} tool the location of the piece of code
-to remove for the stage \name{k1}.
+The markings at the top \code{[block::clone]} and bottom \code{[endblock::clone]} of this
+example indicate the \name{export} tool that the block called \name{clone} in this file
+contains the function segment\_clone. This block can then be used in YAML files to perform
+actions such as removal or replacement on the content of this block.
 
 Note that the marked areas must not overlap, the \name{export} tool's
 behaviour being undetermined in such cases.
 
-Let us suppose a teacher $T_{1}$ wants to use kaneton leading the students to
-the development of the memory management functionality, only. On the other
-hand, another teacher, $T_{2}$, wants to use the whole kaneton project starting
-with the bootloader implementation to the task management. Additionally,
-this teacher chooses to hide the communication management pieces of code,
-to avoid cheating between students of different universities for instance.
+\subsubsubsection{YAML Syntax}
+An export is described in a YAML file. It contains a list of modules to call with their arguments. The tag for the module to call is \name{operation}. Some optional tags must be added, depending on the module that is being called.
 
-In the first case, since the students have to implement the kaneton managers
-around the memory management, $T_{1}$ has to provide the students everything
-the memory management stuff relies on, including some fundamental managers,
-the bootloader \etc{} Also, the teacher does not need to provide the source
-code of the upper-level managers. As a result, a \name{k1,1} release will
-remove the pieces of codes marked $k_{\alpha}$ for $1 \le \alpha \le 1$.
+Here is an example of a YAML file :
 
-The teacher $T_{2}$ needs something different since the students are going
-to implement every major pieces of the kaneton source code. Since this teacher
-wants their students to implement all the steps, starting with \name{k0}
-to \name{k4}, a \name{k0,4} release will not contain the pieces of source
-code marked $k_{\alpha}$ for $0 \le \alpha \le 4$.
+\begin{verbatim}
+---
+-
+  operation: localexport
+
+-
+  operation: initenv
+
+-
+  operation: fremovepattern
+  pattern: .*\.svn
+
+-
+  operation: import
+  filename: k1
+
+-
+  operation: fremove
+  path: tool/ctc
+
+-
+  operation: fmove
+  src: kaneton/libc
+  dst: libc
+
+-
+  operation: freplace
+  src: export/data/Makefile
+  dst: Makefile
+
+-
+  operation: breplace
+  id: kaneton/core/id/id.c::test
+  data: |
+    if (a)
+      b = 2;
+    else
+      c = 3;
+
+-
+  operation: bremove
+  id: kaneton/core/core.c::foo
+
+-
+  operation: symlink
+  name: kaneton/core/test
+  target: kaneton/core/region
+
+\end{verbatim}
+
+All the paths that are used must be relative to the repository root directory.
+
+\subsubsubsection{Usage}
+
+All YAML files must be in the \location{export/} directory.
+
+They can be called by running : \code{make export-filename} where filename is the name of a YAML file without the extension.
+
+It's important that the YAML file that is run starts by one of the two export commands : \code{svnexport} or \code{localexport}. For that reason, all YAML files are not executable, since some of them are being imported by others.
+
+Note that the commands are executed within the temporary directory sequentially. If your YAML script moves a folder, all other commands following the move command dealing with files in that folder must refer to the new location of the folder within the temporary folder.
+
+You have to write a YAML file for each export need you have, but operations can be factorized by using the import command.
+
+The export tool doesn't make a tarball for the moment. Instead, it displays the temporary folder when run, and does all the work in that folder, so the user can then make a tarball of this folder, or work in this folder directly.
+
