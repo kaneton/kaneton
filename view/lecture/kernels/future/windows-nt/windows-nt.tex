@@ -114,7 +114,7 @@
 
   HANDLE Handles[4];
 
-  // object model
+  // handles abstract every object type
   Handles[0] = CreateFile(...);
   Handles[1] = CreateThread(...);
   Handles[2] = CreateEvent(...);
@@ -426,7 +426,7 @@
         \item
           triple (access - deny, permissions, SID)
         \item
-          grant or refuse a permission mask to a given SID. An audit feature is available too.
+          grant or refuse a permission mask to a given SID. An audit feature is available too
         \item
           permission: read, write, syncrhonize, delete, traverse...
       \end{itemize}
@@ -485,7 +485,7 @@
 \begin{frame}
   \frametitle{Insecurity of Windows NT}
 
-  While NT core pieces were designed to besecure, \term{conceptual} and \term{implementation}
+  While NT core pieces were designed to be secure, \term{conceptual} and \term{implementation}
   holes remain, making the whole kernel unsecure. Most of the kernel exploitable bugs come from:
 
   \begin{itemize}
@@ -892,8 +892,8 @@
  Choosing the right synchronization primitive is very important
 
  \begin{itemize}
-  \item highly impact on the overall system performance
-  \item even more important mp systems
+  \item highly impacts on the overall system performance
+  \item even more important in mp systems
  \end{itemize}
 
 \end{frame}
