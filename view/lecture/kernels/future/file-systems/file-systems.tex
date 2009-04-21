@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...els/future/file-systems/file-systems.tex
 %
 % created       julien quintard   [tue jan 13 05:55:34 2009]
-% updated       julien quintard   [mon apr 13 20:06:38 2009]
+% updated       julien quintard   [tue apr 21 19:16:45 2009]
 %
 
 %
@@ -125,6 +125,52 @@
 
   As such, many systems rely on the \textbf{file} abstraction, the most popular
   being \textit{UNIX} because of its motto \textit{``Everything is file''}.
+\end{frame}
+
+%
+% support
+%
+
+\section{Support}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  Although the storage support does not matter much it obviously impact on
+  the file system design.
+
+  \-
+
+  For instance, \textit{Google} relies on the \textit{GFS - Google File System}
+  which has been designed to handle more reads than writes.
+
+  \-
+
+  Besides, according to the storage support speed and capacity, not all
+  file systems will be equally efficient.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{List}
+
+  The storages that are commonly used are listed below:
+
+  \begin{itemize}
+    \item
+      \textit{RAM - Random Access Memory};
+    \item
+      \textit{Flash};
+    \item
+      \textit{Disk};
+    \item
+      \textit{CD-ROM};
+    \item
+      \etc{}
+  \end{itemize}
 \end{frame}
 
 XXX
@@ -406,7 +452,7 @@ objective: keep track of the files stored, including the data but also info
 % 8)
 
 \begin{frame}
-  \frametitle{Limitations}
+  \frametitle{Summary}
 
   Although \textit{FAT} has been used for decades, it is nonetheless a
   very strange piece of software.
@@ -467,6 +513,12 @@ objective: keep track of the files stored, including the data but also info
   other.
 \end{frame}
 
+% partitioning
+
+\subsection{Partitioning}
+
+XXX
+
 % ext2
 
 \subsection{ext2}
@@ -496,8 +548,7 @@ objective: keep track of the files stored, including the data but also info
   \-
 
   Firstly, the file system metadata are known to be stored in the
-  \textbf{superblock}, a special block, at the beginning of the storage
-  space.
+  \textbf{superblock}, a special block, at the beginning of the partition.
 
   \-
 
@@ -506,7 +557,7 @@ objective: keep track of the files stored, including the data but also info
 
   \-
 
-  The storage space is divided into \textbf{blocks}, usually of $8 KB$.
+  The partition is divided into \textbf{blocks}, usually of $8 KB$.
   Besides, in order to keep the file metadata close to the data itself,
   both are stored in the same \textbf{group} \ie{} \textit{UFS}'s
   containers.
@@ -604,7 +655,26 @@ objective: keep track of the files stored, including the data but also info
 % 8)
 
 \begin{frame}
-  \frametitle{Limitations}
+  \frametitle{Fault Tolerance}
+
+  \textit{ext2} provides some fault tolerance features.
+
+  \-
+
+  For example, in order to deal with corrupted metadata, the superblock is
+  replicated at fixed positions in the partition.
+
+  \-
+
+  As such, if the superblock is detected as being corrupted because the magic
+  number is invalid, another superblock is used and the first one is updated,
+  getting back to a consistent state.
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Summary}
 
   Although \textit{ext2} has been used for years and is loved by many for
   being very stable, it still lack a few things though it is undeniably,
@@ -627,7 +697,7 @@ objective: keep track of the files stored, including the data but also info
   \end{itemize}
 \end{frame}
 
-% 9)
+% 10)
 
 \begin{frame}
   \frametitle{Journaling}
@@ -650,7 +720,7 @@ objective: keep track of the files stored, including the data but also info
   \-
 
   To avoid both leaking space and having to walk through the entire data
-  structure with \textit{fsck}, journaling can be used.
+  structure with \textit{fsck}, \textbf{journaling} can be used.
 
   \-
 
@@ -680,114 +750,347 @@ objective: keep track of the files stored, including the data but also info
 
   \-
 
-  
-\end{frame}
-
-
-%
-% support
-%
-
-\section{Support}
-
-% 1)
-
-\begin{frame}
-  \frametitle{Overview}
-
-  Although the storage support does not matter much it obviously impact on
-  the file system design.
+  \textit{ReiserFS} added not only journaling but attempted to improve
+  many aspects of \textit{ext2} such as dynamic inodes management, tail
+  packing, efficient space management, improved directory handling \etc{}
 
   \-
 
-  For instance, \textit{Google} relies on the \textit{GFS - Google File System}
-  which has been designed to handle more reads than writes.
-
-  \-
-
-  Besides, according to the storage support speed and capacity, not all
-  file systems will be equally efficient.
+  Although \textit{ReiserFS} performance has been measured to be $10-15\%$
+  faster than \textit{ext2}, its extreme complexity and lack of compatibility
+  between versions were largely criticized.
 \end{frame}
 
 % 2)
 
 \begin{frame}
-  \frametitle{List}
+  \frametitle{Superblock}
 
-  The storages that are commonly used are listed below:
+  The superblock is located at byte $65536$, leaving the first $64K$ unused.
 
-  \begin{itemize}
-    \item
-      \textit{RAM - Random Access Memory};
-    \item
-      \textit{Flash};
-    \item
-      \textit{Disk};
-    \item
-      \textit{CD-ROM};
-    \item
-      \etc{}
-  \end{itemize}
+  \-
+
+  The superblock is not replicated making the file system vulnerable to
+  metadata corruption.
 \end{frame}
 
-%
-% terminology
-%
-
-\section{Terminology}
-
-% 1)
+% 3)
 
 \begin{frame}
-  \frametitle{Overview}
+  \frametitle{Blocks}
+
+  The partition can contain a maximum of $2^{32}$ blocks so that the
+  block size might be set according to the file system size factor.
+
+  \-
+
+  Directly following the superblock is a bitmap of free blocks that is used
+  for finding space. As such, if the block size is $4,096K$, a block bitmap
+  keeps track of $32,768$ blocks.
+
+  \-
+
+  More bitmap blocks might be necessary to reference all the file system
+  blocks. Those blocks would simply follow the first bitmap block.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Tree}
+
+  \textit{ReiserFS} relies on the \textbf{b+tree} data structure for keeping
+  information. \textit{b+tree}s are very efficient data structures that allows
+  for searches, insertions and deletions in logarithmic time; hence are very
+  suitable for file systems.
+
+  \-
+
+  This special and unique data structure is actually called \textbf{s+tree}
+  in the \textit{ReiserFS} documentation because it has been specifically
+  implemented so that balancing can be deferred until data is commit to the
+  disk; hence improving the performance.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Tree}
+
+  The tree is composed of internal and leaf nodes such that every node is
+  a disk block.
+
+  \-
+
+  Each object, called an \textbf{item}, such as files, directories \etc{} is
+  assigned a unique \textbf{key}. Such keys can very much be compared as
+  \textit{ino} in \textit{ext2} for instance.
+
+  \-
+
+  Such keys are actually represented by a tuple $(directory-id, object-id,
+  offset, type)$ so that files belonging to the same directory but also blocks
+  of the same file lie in the same sub-tree.
+
+  \-
+
+  Note that to handle large files, several internal blocks are required to
+  provide enough pointers since a internal block can only contain
+  $(block-size - 48) / 4$ pointers to data blocks.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Tail Packing}
+
+  Since most small files are very common in current operating systems,
+  \textit{ReiserFS} has been designed for reducing internal fragmentation
+  by storing those small files at the end of not-fully used blocks.
+
+  \-
+
+  This technique is sometimes called \textbf{tail packing}, \textbf{block
+  sub-allocation} or even \textbf{tail merging}
+
+  \-
+
+  In some scenarios, where the majority of files are smaller than half
+  the block size such as source code files, configuration files \etc{}, tail
+  packing can both increase storage efficiency but also increase performance
+  due to space locality by reading contiguous blocks containing multiple
+  small files.
+
+  \-
+
+  Note that these advantages can be negated by the increased complexity
+  of implementation as it is the case for \textit{ReiserFS}.
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Journal}
+
+  The \textbf{journal} is composed of few contiguous blocks that follow the
+  blocks bitmap.
+
+  \-
+
+  The journal describes the \textbf{transactions}---operations respecting the
+  \textit{ACID - Atomicity, Consistency, Isolation and Durability}
+  properties---performed on the file system. Therefore, the file system is
+  kept in a consistent state at all times.
+
+  \-
+
+  At a later point, the journal is flushed and, if everything is successful,
+  marked as such so that operations are made effective.
+
+  \-
+
+  Note that originally, journaling was applied only on metadata but
+  \textit{Reiser 4} introduced journaling for both metadata and data.
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Journal}
+
+  The journal is a circular array that contains \textbf{transactions} needed
+  to be commit on the disk.
+
+  \-
+
+  The first block contains the journal header that specify where the
+  first transaction to process is located in the journal.
+
+  \-
+
+  Every transaction is assigned a transaction identifier and a transaction
+  is considered as to be processed if its identifier is lower than the current
+  identifier which is stored in the journal header.
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Transaction}
 
   XXX
 \end{frame}
 
-%
-% principles
-%
+% 10)
 
-\section{Principles}
+\begin{frame}
+  \frametitle{Epilogue}
+
+  The company responsible for \textit{ReiserFS} decided to discontinue
+  \textit{ReiserFS} stopping maintaining it and to move to \textit{Reiser 4}.
+
+  \-
+
+  Although this has been criticized a lot by the community especially
+  because of the file system complexity; hence difficulty to maintain it,
+  an unexpected event put an end to the project.
+
+  \-
+
+  Indeed, in $2006$, \textit{Hans Reiser}'s wife disappeared and \textit{Hans
+  Reiser} was arrested for murder. Although he denied for two years,
+  he finally led the police to his wife body and was jailed for life in
+  $2008$.
+\end{frame}
+
+% vfs
+
+\subsection{VFS}
 
 % 1)
 
 \begin{frame}
-  \frametitle{Overview}
+  \frametitle{Introduction}
 
-  XXX
+  Until now, several file systems have been described. Therefore, it is
+  reasonable to think that an operating system could use different
+  file systems, potentially at the same time.
+
+  \-
+
+  Indeed, a partition could use \textit{ext2} while another could use
+  \textit{Reiser 4} for example.
+
+  \-
+
+  How could the operating system make sure that applications work
+  independently of the file system in use?
 \end{frame}
 
-o Overview
-  - General organisation
-  - VFS abstraction
-
-%
-% file systems
-%
-
-\section{File Systems}
-
-% 1)
+% 2)
 
 \begin{frame}
   \frametitle{Overview}
 
-  XXX
+  The purpose of a \textit{VFS - Virtual File System} is to allow client
+  applications to access different types of concrete file systems in a uniform
+  way by providing an abstract layer.
+
+  \-
+
+  The first \textit{VFS} mechanism in \textit{UNIX}-like systems was introduced
+  by \textit{Sun Microsystems} in \textit{SunOS} $2.0$ in $1985$.
+
+  \-
+
+  It allowed client applications to transparently access either the local
+  file system or a network storage through \textit{NFS - Network File System}.
+
+  \-
+
+  On \textit{Windows} systems, the same concept is provided under the
+  name \textit{IFS - Installable File System}.
 \end{frame}
 
-% centralised
+% 3)
 
-\subsection{Centralised}
+\begin{frame}
+  \frametitle{Interface}
 
-% XXX
-\subsection{CP/M}
+  The \textit{VFS} provides an standardized interface composed of
+  \texttt{open()}, \texttt{stat()}, \texttt{chmod()} \etc{}
 
-% 1)
+  \-
 
+  When an operation is performed, given a pathname, the \textit{VFS} kernel
+  layer stats by looking in the \textit{dcache} for a \textit{dentry}, loading
+  \textit{inode} from the disk into \textit{vnode} and a new \textit{dentry}
+  to complete the lookup process if required.
 
- o ext3
-  - journaling
+  \-
+
+  To lookup for an \textit{inode}, the \textit{VFS} calls \texttt{lookup()}
+  provided by a file system specific implementation such as \textit{ext2}.
+
+  \-
+
+  Once the \textit{dentry} has been located, performing the operation is quite
+  straightforward since everything is standardized. Thus, the \textit{VFS}
+  can perform \texttt{stat()} by returning the userspace applications the
+  information it needs.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Implementations}
+
+  The actual file systems register to the \textit{VFS} at the startup by
+  providing a \texttt{file\_system\_type} structure describing the file
+  system.
+
+  \-
+
+  This structure includes a file system name, a function pointer on a
+  method to read the superblock and some flags.
+
+  \-
+
+  The \texttt{read\_super()} method is responsible for determining if the
+  device contains a file system of the given type.
+
+  \-
+
+  This method returns a \texttt{super\_block} structure that contains
+  information among which is a \texttt{super\_operations} structure that
+  defines the file system implementation interface with function pointers
+  to \texttt{read\_inode()}, \texttt{write\_super}, \texttt{clear\_inode}
+  and so on.
+
+  \-
+
+  Likewise, a \texttt{inode\_operations} and a \texttt{file\_operations} are
+  provided containing function pointers such as \texttt{create()},
+  \texttt{link()}, \texttt{mknode}, \texttt{truncate} but also \texttt{read},
+  \texttt{write}, \texttt{lock} \etc{}
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{FUSE}
+
+  Recently, the same concept was taken to user-land so that file systems
+  can run in user-land.
+
+  \-
+
+  Indeed, system calls are redirected and passed to the user-land through
+  a virtual device acting as a communication channel between the kernel
+  and user-land driver.
+
+  \-
+
+  This technique is very useful for developing file systems as there is
+  no need to restart the kernel after every modification; hence providing the
+  very same advantages as micro-kernels.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  Although the \textit{VFS} may seem very complicated when described in
+  books, it is actually extremely logic and simple.
+
+  \-
+
+  Indeed, the \textit{VFS} does nothing but providing a file system abstraction
+  that every actual file system must match.
+\end{frame}
+
+XXX
  o NTFS
   - advanced data structures (compared to fat)
   - reliability(journaling)
@@ -796,12 +1099,6 @@ o Overview
   - compression
   - hard/symbolic links
   - encryption
- o reiserfs
-  - by (murderer) Hans Reiser
-  - journaling
-  - very efficient for small files (directly included in the directory inode's block)
-  - good performance
-  - b+tree
  o JFS
   - from IBM
   - 64-bit
@@ -818,54 +1115,11 @@ o Overview
   - copy-on-write transactional model
   - etc.
 
-% networked
-
-\subsection{Networked}
-
-% 1)
-
-\begin{frame}
-  \frametitle{Overview}
-
-  XXX
-\end{frame}
-
- o NFS
- o Plan9
-
-%
-% access control
-%
-
-\section{Access Control}
-
-% 1)
-
-\begin{frame}
-  \frametitle{Overview}
-
-  XXX
-\end{frame}
-
 o Access Control
  - reference to the Security lecture
  o Unix permissions
  o ACL
  o Advanced modeles?
-
-%
-% advanced features
-%
-
-\section{Advanced Features}
-
-% 1)
-
-\begin{frame}
-  \frametitle{Overview}
-
-  XXX
-\end{frame}
 
 o Advanced Features
  o Union mounts
