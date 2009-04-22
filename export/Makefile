@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/export/Makefile
+# file          /data/mycure/repo...ies/kaneton/export/.svn/tmp/tempfile.tmp
 #
 # created       julien quintard   [sun jun 10 14:53:00 2007]
-# updated       julien quintard   [mon jun 11 19:29:21 2007]
+# updated       julien quintard   [wed apr 22 11:32:09 2009]
 #
 
 #
@@ -39,8 +39,6 @@ clear:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
-
-	$(call env_remove,$(_EXPORT_).tar.bz2,)
 
 	$(call env_purge)
 

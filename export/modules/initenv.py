@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /Users/francois/kaneton/tool/export/modules/remove.py
+# file          /home/mycure/kaneton/export/modules/initenv.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
-# updated       francois goudal   [wed nov 12 05:26:29 2008]
+# updated       julien quintard   [mon apr 20 15:03:29 2009]
 #
 
 #
@@ -41,6 +41,6 @@ def module_init():
 #
 def module_action(export_dir, arg):
     env.display(env.HEADER_OK, 'action initenv', env.OPTION_NONE)
-    env.launch(export_dir + '/environment/initialize.py', "-q", env.OPTION_QUIET)
+    env.launch(export_dir + '/environment/initialize.py', "", env.OPTION_QUIET)
     env.launch(export_dir + '/Makefile', "clean", env.OPTION_QUIET)
     return 0
