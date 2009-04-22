@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/view.py
 #
 # created       julien quintard   [sun may 13 11:04:52 2007]
-# updated       julien quintard   [mon jun 11 06:24:52 2007]
+# updated       julien quintard   [mon apr 20 03:33:46 2009]
 #
 
 #
@@ -110,19 +110,15 @@ def			lookup():
 #
 # warning()
 #
-# this function asks the user if everything is right.
+# this function displays the configuration.
 #
 def			warning():
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
   env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  document:               " + g_document,
               env.OPTION_NONE)
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter", env.OPTION_NONE)
-
-  # wait for the user's approval
-  env.input(env.OPTION_NONE)
 
 
 
@@ -175,7 +171,6 @@ def			main():
   env.display(env.HEADER_OK,
               "looking for the document in the documents database",
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
   # set the document name looked for.
   g_document = sys.argv[1]
@@ -187,7 +182,6 @@ def			main():
   if g_path == None:
     env.display(env.HEADER_ERROR, "no document named '" + g_document +
                 "' found in the document database", env.OPTION_NONE)
-    env.display(env.HEADER_NONE, "", env.OPTION_NONE)
     usage()
     sys.exit(42)
 

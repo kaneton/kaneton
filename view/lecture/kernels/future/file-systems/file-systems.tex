@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...els/future/file-systems/file-systems.tex
 %
 % created       julien quintard   [tue jan 13 05:55:34 2009]
-% updated       julien quintard   [tue apr 21 19:16:45 2009]
+% updated       julien quintard   [wed apr 22 11:01:23 2009]
 %
 
 %
@@ -517,7 +517,109 @@ objective: keep track of the files stored, including the data but also info
 
 \subsection{Partitioning}
 
-XXX
+% 1)
+
+\begin{frame}
+  \frametitle{Introduction}
+
+  Until now, operating system files and user files were stored on the
+  file system such that re-installing the system implied making a backup
+  of the user files.
+
+  \-
+
+  Additionally, an experimented user wishing to use multiple operating system
+  on the same machine could not because every operating system believed
+  to have the whole disk space for its own use.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  \textbf{Partitioning} targets these limitations by enabling the disk to
+  be divided into multiple partitions.
+
+  \-
+
+  Nowadays, this technique has more general purposes such as:
+
+  \begin{itemize}
+    \item
+      Separation of the operating system and user files;
+    \item
+      Possibility to use a special area for swaping;
+    \item
+      Separation of operating systems on a single disk;
+    \item
+      Specialization so that specific-purpose file systems can be used
+      on a partition, providing some advantages over another file system on
+      another partition.
+  \end{itemize}
+
+  \-
+
+  The following will briefly describe the partitioning scheme used on
+  \textit{PC} compatible systems.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{MBR}
+
+  The disk storage space is divided into up to four, and at least one,
+  \textbf{primary} partitions.
+
+  \-
+
+  One of these can be an \textbf{extended} partition, providing a way to
+  have more than four partitions.
+
+  \-
+
+  All these partitions are described by a $16-byte$ entry in the
+  \textbf{partition table} located in the \textit{MBR - Master Boot Record}.
+
+  \-
+
+  Partition table entries contain information such as the status, bootable or
+  not, the start and end address of the partition, in \textit{CHS - Cylinder
+  Head Sector} format, the partition type \etc{}
+
+  \-
+
+  Note that these information are not standardized so that different operating
+  systems and file systems could claim to be using the same partition type
+  for example.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Type}
+
+  Primary partitions contain an actual file system. For example, in
+  \textit{MS-DOS} and earlier versions of \textit{Windows}, the first
+  partition, used as \textit{C:/} had to be a primary partition.
+
+  \-
+
+  An extended partition contains a \textit{EBR - Extended Boot Record} that
+  describes logical partitions.
+
+  \-
+
+  In order to allow for a large number of partitions to be created, unlike
+  the primary partitions, the extended partitions are described through
+  a chain of \textit{EBR} descriptors.
+
+  \-
+
+  Each \textit{EBR} describes the partition that generally follows and points
+  to the next descriptor that generally follows the described partitions.
+\end{frame}
 
 % ext2
 
@@ -799,8 +901,8 @@ XXX
 \begin{frame}
   \frametitle{Tree}
 
-  \textit{ReiserFS} relies on the \textbf{b+tree} data structure for keeping
-  information. \textit{b+tree}s are very efficient data structures that allows
+  \textit{ReiserFS} relies on the \textbf{B+tree} data structure for keeping
+  information. \textit{B+tree}s are very efficient data structures that allows
   for searches, insertions and deletions in logarithmic time; hence are very
   suitable for file systems.
 
@@ -941,6 +1043,14 @@ XXX
   Reiser} was arrested for murder. Although he denied for two years,
   he finally led the police to his wife body and was jailed for life in
   $2008$.
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Summary}
+
+  XXX
 \end{frame}
 
 % vfs
@@ -1090,7 +1200,97 @@ XXX
   that every actual file system must match.
 \end{frame}
 
+% ext3
+
+\subsection{ext3}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Introduction}
+
+  Although \textit{ext3} started before \textit{ReiserFS}, around $1998$ and
+  $2001$ for \textit{ReiserFS}, the latter has been accepted by the community
+  as being the most efficient one.
+
+  \-
+
+  However, with the recent troubles surrounding the project including the
+  maintaining discontinuation of \textit{ReiserFS} in favour of
+  \textit{Reiser4}, and the conviction of \textit{Hans Reiser} for murder;
+  users started to migrate to \textit{ext3}.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  \textit{ext3} is essentially \textit{ext2} with journaling support added on.
+
+  \-
+
+  Note that by being compliant with \textit{ext2}, the developers were able
+  to re-use most of \textit{ext2} code; hence benefiting from its extreme
+  time-tested stability though less efficient in terms of speed.
+
+  \-
+
+  Besides, \textit{ext3} introduces a few improvements while remaining
+  compliant with \textit{ext2}.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Improvements}
+
+  Among the improvements can be noted the possibility to resize a file system
+  while being in use but also a more efficient directory management.
+
+  \-
+
+  Indeed, in \textit{ext2}, directory entries must be explored one after the
+  other in order to locate an element, leading to a $O(n)$ lookup complexity
+  time.
+
+  \-
+
+  \textbf{HTree} indexing was introduced in \textit{ext3} with respect to
+  \textit{ext2} directory format. \textit{HTree}s are specializing
+  \textit{B-tree}s with $32-bit$ keys and constant depth, one or two levels.
+  Additionally, a tree key does not point to directory entry but to a range
+  of entries stored in a data block.
+
+  \-
+
+  Thus, although this scheme is less efficient than other, it lies in the
+  \textit{ext} philosophy which is to rely on very simple and robust data
+  structures.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Summary}
+
+  Although major improvements were brought to \textit{ext3}, the backward
+  compatibility still limits the file system that does not provide advanced
+  features such as:
+
+  \begin{itemize}
+    \item
+      Dyanmic \textit{inode} allocation;
+    \item
+      Tail packing;
+    \item
+      
+  \end{itemize}
+\end{frame}
+
+
 XXX
+ o ext3/4
  o NTFS
   - advanced data structures (compared to fat)
   - reliability(journaling)
