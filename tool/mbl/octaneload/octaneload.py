@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/lec_l/kaneton/tool/mbl/octaneload/octaneload.py
+# file          /home/mycure/kaneton/tool/mbl/octaneload/octaneload.py
 #
 # created       julien quintard   [tue jun 26 11:33:57 2007]
-# updated       laurent lec   [fri mar 28 17:25:36 2008]
+# updated       julien quintard   [mon apr 20 03:31:22 2009]
 #
 
 #
@@ -86,12 +86,6 @@ def			warning():
   env.display(env.HEADER_OK,
               "  image path:             " + env._IMAGE_,
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter", env.OPTION_NONE)
-
-  # wait for the user's approval
-  env.input(env.OPTION_NONE)
 
 
 #
