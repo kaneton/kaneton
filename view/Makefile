@@ -29,7 +29,6 @@ include			../environment/env.mk
 
 SUBDIRS			:=		bibliography			\
 					book				\
-					curriculum			\
 					exam				\
 					feedback			\
 					figures				\
