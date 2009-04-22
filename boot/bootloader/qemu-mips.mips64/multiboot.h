@@ -84,10 +84,10 @@ typedef struct
 
 typedef struct
 {
-  unsigned int			mod_start;
-  unsigned int			mod_end;
-  unsigned int			string;
-  unsigned int			reserved;
+  unsigned long			mod_start;
+  unsigned long			mod_end;
+  unsigned long			string;
+  unsigned long			reserved;
 }				module_t;
 
 typedef struct

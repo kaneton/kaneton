@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...oot/bootloader/qemu-mips.mips64/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated       enguerrand raymond   [sat apr 11 02:29:05 2009]
+# updated       enguerrand raymond   [wed apr 22 06:16:37 2009]
 #
 
 #
@@ -43,8 +43,7 @@ BOOTLOADER_C		:=		bootloader.c				\
 					init.c					\
 					exception.c
 
-BOOTLOADER_S		:=		entry.S					\
-					exception_handlers.S
+BOOTLOADER_S		:=		entry.S
 
 BOOTLOADER_O		:=		$(BOOTLOADER_S:.S=.o)			\
 					$(BOOTLOADER_C:.c=.o)
@@ -57,14 +56,17 @@ FIRMWARE		:=		firmware
 
 FIRMWARE_BIN		:=		firmware.bin
 
-FIRMWARE_C		:=		firmware.c
+FIRMWARE_C		:=		firmware.c				\
+					libc.c					\
+					uart.c
 
 FIRMWARE_S		:=		firmware_entry.S
 
-FIRMWARE_O		:=		$(FIRMWARE_S:.S=.o)		\
+FIRMWARE_O		:=		$(FIRMWARE_S:.S=.o)			\
 					$(FIRMWARE_C:.c=.o)
 
-FIRMWARE_INCLUDE	:=		$(_FIRMWARE_DIR_)/firmware.h
+FIRMWARE_INCLUDE	:=		$(_FIRMWARE_DIR_)/firmware.h		\
+					$(_FIRMWARE_DIR_)/uart.h
 
 
 #

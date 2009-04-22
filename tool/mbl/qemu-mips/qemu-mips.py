@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/tool/mbl/qemu-mips/qemu-mips.py
+# file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       julien quintard   [mon apr 20 03:31:03 2009]
+# updated       enguerrand raymond   [wed apr 22 08:32:36 2009]
 #
 
 #
@@ -58,7 +58,7 @@ def			usage():
   env.display(env.HEADER_ERROR, "  build", env.OPTION_NONE)
   env.display(env.HEADER_ERROR, "  install", env.OPTION_NONE)
 
-
+  
 
 #
 # warning()
@@ -92,6 +92,58 @@ def			warning():
 
 
 #
+# padding()
+#
+# this function write padding information to file following alignment and update adr
+#
+def			padding(file, alignment, adr):
+  wfile = open(file, "ab")
+  
+  while (adr % alignment) <> 0:
+    wfile.write('\0')
+    adr += 1
+
+  return adr
+
+
+
+#
+# module_name()
+#
+# this function writes the module name in the modules file
+#
+def			module_name(modules, name):
+  mod_file = open(modules, "ab")
+  mod_file.write(name)
+  mod_file.write('\0')
+
+  mod_file.close()
+
+
+
+#
+# header_write()
+#
+# this function upadtes the header file with module to load
+#
+def			header_write(module, name, image, header_file, modules):
+  header_file.write(struct.pack("<l", os.path.getsize(module)))
+  
+  image = padding(modules, 4, image)
+
+  header_file.write(struct.pack("<Q", image))
+  image += 1 + len(name)
+
+  module_name(modules, name)
+
+  image = padding(modules, 4, image)
+
+  header_file.write(struct.pack("<Q", image))
+  image += os.path.getsize(module)
+  
+  return image
+
+#
 # install()
 #
 # this function installs the kaneton binaries onto the boot device.
@@ -100,6 +152,7 @@ def			install():
   input = None
   mod_list = None
   header_file = None
+  image = 0
 
   # warn the user before performing any action.
   warning()
@@ -114,29 +167,30 @@ def			install():
 
   mod_list = env._INPUT_MOD_.split()
 
-  # open the flag file to write header information
+  image = ((len(mod_list) + 2) * 20) + int(env.MIPS_START_ADDRESS, 16) + os.path.getsize(env.FIRMWARE_BIN) + 8
+
+  # open the header file to write header information
   header_file = open(env._SOURCE_DIR_ + "/header", "ab");
 
   # write the number of module : min 2 (bootloader and kernel)
   header_file.write(struct.pack("<l", len(mod_list) + 2))  
 
-  header_file.write(struct.pack("<l", os.path.getsize(env._BOOTLOADER_)))
-  header_file.write(struct.pack("<l", os.path.getsize(env._KANETON_)))
+  image = header_write(env._BOOTLOADER_, env.BOOTLOADER_NAME, image, header_file, env.MODULES)
+  env.concat_file(env._BOOTLOADER_, env.MODULES)
+
+  image = header_write(env._KANETON_, env.KANETON_NAME, image, header_file, env.MODULES)
+  env.concat_file(env._KANETON_, env.MODULES)
 
   for mod in mod_list:
-    header_file.write(struct.pack("<l", os.path.getsize(mod)))
-    header_file.write(mod.split("/")[len(mod.split("/")) - 1])
-    header_file.write('\0')
+    image = header_write(mod, mod.split("/")[len(mod.split("/")) - 1], image, header_file, env.MODULES)
     env.concat_file(mod, env.MODULES)
+
+  header_file.close()
 
   # cat the binary files in the mips_bios.bin file
   env.concat_file(env.FIRMWARE_BIN, env.MIPS_BIOS)
   env.concat_file(env._SOURCE_DIR_ + "/header", env.MIPS_BIOS)
-  env.concat_file(env._BOOTLOADER_, env.MIPS_BIOS)
-  env.concat_file(env._KANETON_, env.MIPS_BIOS)
   env.concat_file(env.MODULES, env.MIPS_BIOS)
-
-  header_file.close()
 
 #
 # build()
@@ -150,8 +204,9 @@ def			build():
   # warn the user before performing any action.
   warning()
 
-  # creates the mips_bios.bin file
+  # creates the mips_bios.bin and the modules files
   env.push(env._SOURCE_DIR_ + "/mipsel_bios.bin", "", None)
+  env.push(env.MODULES, "", None)
 
   # creates the flag file
   header_file = open(env._SOURCE_DIR_ + "/header", "wb");
