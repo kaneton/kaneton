@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [fri apr 10 02:05:37 2009]
+# updated       julien quintard   [mon apr 20 03:32:56 2009]
 #
 
 #
@@ -353,11 +353,11 @@ def			usage():
 #
 # warning()
 #
-# this function asks the user if everything is right.
+# this function displays the configuration.
 #
 def			warning():
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
   env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
-
   env.display(env.HEADER_OK,
               "  school:                 " + g_school,
               env.OPTION_NONE)
@@ -367,12 +367,7 @@ def			warning():
   env.display(env.HEADER_OK,
               "  stage:                  " + g_stage,
               env.OPTION_NONE)
-
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter", env.OPTION_NONE)
-
-  env.input(env.OPTION_NONE)
 
 #
 # check()
