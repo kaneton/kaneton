@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/transcript/play.py
 #
 # created       julien quintard   [mon may 28 12:39:21 2007]
-# updated       julien quintard   [mon apr 13 16:35:07 2009]
+# updated       julien quintard   [mon apr 20 03:34:10 2009]
 #
 
 #
@@ -102,16 +102,12 @@ def			lookup():
 # this function asks the user if everything is right.
 #
 def			warning():
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
   env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  transcript:             " + g_transcript,
               env.OPTION_NONE)
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter", env.OPTION_NONE)
-
-  # wait for the user's approval
-  env.input(env.OPTION_NONE)
 
 
 
@@ -162,7 +158,6 @@ def			main():
   env.display(env.HEADER_OK,
               "looking for the transcript in the transcripts database",
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
   # set the transcript name looked for.
   g_transcript = sys.argv[1]
@@ -174,7 +169,6 @@ def			main():
   if g_path == None:
     env.display(env.HEADER_ERROR, "no transcript named '" + g_transcript +
                 "' found in the transcript database", env.OPTION_NONE)
-    env.display(env.HEADER_NONE, "", env.OPTION_NONE)
     usage()
     sys.exit(42)
 
