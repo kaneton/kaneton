@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...t/bootloader/qemu-mips.mips64/firmware.c
  *
  * created       enguerrand raymond   [fri apr 10 13:11:23 2009]
- * updated       enguerrand raymond   [wed apr 22 08:25:52 2009]
+ * updated       enguerrand raymond   [wed apr 22 09:04:05 2009]
  */
 
 /*
@@ -59,7 +59,9 @@ void			firmware(void)
    * 2)
    */
 
- 
+  bootloader_cons_init();
+  bootloader_cons_msg('+', "Kaneton qemu-mips firmware starting\n");
+  while(1);
   /*
    * 3)
    */

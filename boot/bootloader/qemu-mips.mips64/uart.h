@@ -63,7 +63,7 @@
  * uart.c
  */
 
-void		write_init(void);
+void		uart_init(void);
 
 void	write_char(char c);
 

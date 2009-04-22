@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...t/bootloader/qemu-mips.mips64/firmware.h
  *
  * created       enguerrand raymond   [fri apr 10 13:11:49 2009]
- * updated       enguerrand raymond   [wed apr 22 06:31:40 2009]
+ * updated       enguerrand raymond   [wed apr 22 08:50:31 2009]
  */
 
 #ifndef FIRMWARE_H
@@ -21,7 +21,7 @@
 #include "types.h"
 #include "libc.h"
 #include "multiboot.h"
-#include "uart.h"
+#include "cons.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
