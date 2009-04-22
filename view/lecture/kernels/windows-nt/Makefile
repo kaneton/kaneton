@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/lecture/c-preprocessor/Makefile
+# file          /home/mycure/kane...view/lecture/kernels/windows-nt/Makefile
 #
 # created       julien quintard   [wed may 16 18:44:45 2007]
-# updated       julien quintard   [mon jun 11 06:16:47 2007]
+# updated       julien quintard   [wed apr 22 11:24:36 2009]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../../environment/env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------

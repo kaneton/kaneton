@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ure/kernels/future/file-systems/Makefile
+# file          /home/mycure/kane...ew/lecture/kernels/file-systems/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [tue apr 14 21:58:56 2009]
+# updated       julien quintard   [wed apr 22 11:22:16 2009]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../../environment/env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------

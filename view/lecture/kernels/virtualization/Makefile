@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/lecture/kernels/boot/Makefile
+# file          /home/mycure/kane.../lecture/kernels/virtualization/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [wed apr 22 11:22:03 2009]
+# updated       julien quintard   [wed apr 22 11:24:26 2009]
 #
 
 #
@@ -27,9 +27,9 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		boot
+PAPER			:=		virtualization
 
-SOURCES			:=		boot.tex			
+SOURCES			:=		virtualization.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
