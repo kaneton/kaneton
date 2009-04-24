@@ -1,0 +1,216 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane.../kernels/prerequisites/prerequisites.tex
+%
+% created       julien quintard   [wed may 16 19:28:59 2007]
+% updated       julien quintard   [wed may 16 19:29:16 2007]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+
+%
+% path
+%
+
+\def\path{../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Inter Process Communication}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% figures
+%
+
+\begin{frame}
+        \tableofcontents
+\end{frame}
+  % -)
+
+\section{Intro}
+\subsection{Needs of IPCs}
+\begin{frame}
+\frametitle{Needs of IPCs}
+\begin{itemize}
+\item In a micro kernel everything is a different task.
+\item Drivers run inside task.
+\item There is a need for communication between those entities.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{History}
+\begin{itemize}
+\item Since the micro kernel research exist everyone tries to come out
+with the best and the fast IPC implement.
+\item A micro kernel will spend most of its time doing ipcs
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Why IPC are slow}
+\begin{itemize}
+\item IPC is about communication between two process that run in user
+space.
+\item The kernel has to allow them to communicate together.
+\item The IPC are forced to pass by the kernel, otherwise there is some
+security breach.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Smalest set of operation to perform an IPC}
+\begin{itemize}
+\item Thread A
+\begin{enumerate}
+\item load ID of B
+\item set msg leght to 0
+\item call kernel
+\end{enumerate}
+\item Kernel
+\begin{enumerate}
+\item access Thread B
+\item Switch stack pointer
+\item Switch address space
+\item load if of A
+\item return to user
+\end{enumerate}
+\item Thread B
+\begin{enumerate}
+\item Received msg
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Where is the time spend?}
+\begin{itemize}
+\item Let T the time of the all sequence.
+\item 70\% of T is spent by context switching.
+\item An address space switching take a lot of time.
+\item Switching of address space flush the TLBs.
+\end{itemize}
+\end{frame}
+
+\section{IPCs}
+\section{Pipe}
+\begin{frame}
+\frametitle{Pipe}
+
+\begin{itemize}
+\item This is a synchronous IPC paradigm.
+\item Can be repesented as a file, or just an fd.
+\item FIFO.
+\item The buffer is stored in the kernel.
+\end{itemize}
+\end{frame}
+
+\section{Socket}
+\begin{frame}
+\frametitle{Socket}
+\begin{itemize}
+\item Socket is used for wide range communication.
+\item A lot of RPC use TCP/IP so they use sockets.
+\item MPI use sockets.
+\item Socket are slow, and got a big latency but they work on remote
+systems.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{RPC over Sockets}
+\begin{itemize}
+\item XML-RPC
+\item SOAP
+\item Sun RPC (NFS)
+\item Java RMI
+\item Corba
+\item And so many more ...
+\end{itemize}
+\end{frame}
+
+\subsection{Shared memory}
+\begin{frame}
+\begin{itemize}
+\item The kernel allocate a physical page.
+\item The same physical page is mapped in both address spaces.
+\item Semaphore can be used inside the region.
+\item This is a fastest way to exanche data from one process to another.
+\item This is a 0 copy paradigm.
+\item This mecanism is a bit intrusive and can lead to security issues.
+\end{itemize}
+\end{frame}
+
+\subsection{Message queue}
+\begin{frame}
+\frametitle{Message queue}
+Message queues are basically a ring buffer over shared mem.
+\end{frame}
+
+
+\section{Kaneton IPC}
+\subsection{Init}
+\begin{frame}
+\frametitle{Init}
+\begin{itemize}
+\item Each thread own a mailbox
+\item The mailbox is used to store the messages in asynchronous mode.
+\end{itemize}
+\end{frame}
+
+\subsection{Synchronous}
+\begin{frame}
+\frametitle{Synchronous}
+\begin{itemize}
+\item message\_transmit send a synchronous message, wait until the
+received thread comes.
+\item message\_received block is there is no pending message, otherwise
+give the message.
+\end{itemize}
+\end{frame}
+
+\subsection{Asynchronous}
+\begin{frame}
+\frametitle{Asynchronous}
+\begin{itemize}
+\item message\_send send an asynchronous message.
+\item message\_throw send an asynchronous message. The buffer is not
+copied directly. to garanty than the caller need to use the request
+argument to make the copy has been performed. On non smp system this
+function perform like message\_send.
+\item message\_poll non blocking function, works also for syncronous
+message.
+\end{itemize}
+\end{frame}
+
+\end{document}

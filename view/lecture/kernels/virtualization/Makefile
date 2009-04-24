@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane.../lecture/kernels/virtualization/Makefile
+# file          /home/mycure/kane...ure/kernels/future/generalities/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [wed apr 22 11:24:26 2009]
+# updated       julien quintard   [fri nov 28 16:29:03 2008]
 #
 
 #
@@ -39,6 +39,7 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.blg)		\
 					$(SOURCES:.tex=.nav)		\
 					$(SOURCES:.tex=.out)		\
+					$(SOURCES:.tex=.vrb)		\
 					$(SOURCES:.tex=.snm)		
 
 #
