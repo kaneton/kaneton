@@ -1,0 +1,2 @@
+# Redefinition of variable names in the platform mips64.conf
+# Rewrite the libc.h macro functions
