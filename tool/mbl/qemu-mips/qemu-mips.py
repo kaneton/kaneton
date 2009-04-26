@@ -8,7 +8,7 @@
 # file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       enguerrand raymond   [wed apr 22 08:32:36 2009]
+# updated       enguerrand raymond   [sun apr 26 14:07:02 2009]
 #
 
 #
@@ -127,7 +127,7 @@ def			module_name(modules, name):
 # this function upadtes the header file with module to load
 #
 def			header_write(module, name, image, header_file, modules):
-  header_file.write(struct.pack("<l", os.path.getsize(module)))
+  header_file.write(struct.pack("<Q", os.path.getsize(module)))
   
   image = padding(modules, 4, image)
 
@@ -167,7 +167,7 @@ def			install():
 
   mod_list = env._INPUT_MOD_.split()
 
-  image = ((len(mod_list) + 2) * 20) + int(env.MIPS_START_ADDRESS, 16) + os.path.getsize(env.FIRMWARE_BIN) + 8
+  image = ((len(mod_list) + 2) * 24) + int(env.MIPS_START_ADDRESS, 16) + os.path.getsize(env.FIRMWARE_BIN) + 8
 
   # open the header file to write header information
   header_file = open(env._SOURCE_DIR_ + "/header", "ab");

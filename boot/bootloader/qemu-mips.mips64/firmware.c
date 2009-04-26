@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...t/bootloader/qemu-mips.mips64/firmware.c
  *
  * created       enguerrand raymond   [fri apr 10 13:11:23 2009]
- * updated       enguerrand raymond   [thu apr 23 04:22:27 2009]
+ * updated       enguerrand raymond   [sun apr 26 14:08:25 2009]
  */
 
 /*
@@ -89,10 +89,10 @@ void			firmware(void)
 
   kmmod = (kaneton_mips_module*)(image_header + 1);
   mbi_mod = (module_t*)mbi->mods_addr;
-  bootloader_cons_msg('+', "kmmod->module = %x\n", kmmod->modsz);
-  bootloader_cons_msg('+', "kmmod->module = %lx\n", kmmod->name);
+  bootloader_cons_msg('+', "kmmod-> = %lx\n", kmmod);
+  bootloader_cons_msg('+', "kmmod->modsz = %lx\n", kmmod->modsz);
+  bootloader_cons_msg('+', "kmmod->name = %s\n", kmmod->name);
   bootloader_cons_msg('+', "kmmod->module = %lx\n", kmmod->module);
-  while(1);
 
   /*
    * 7)
