@@ -8,7 +8,7 @@
 # file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       enguerrand raymond   [sun apr 26 14:07:02 2009]
+# updated       enguerrand raymond   [mon apr 27 12:39:47 2009]
 #
 
 #
@@ -163,11 +163,11 @@ def			install():
               env.OPTION_NONE)
 
   # creates binary files : bootloader and kaneton
-  env.binary_extract(env.FIRMWARE, ".text .data .rdata .rodata .bss", env.FIRMWARE_BIN)
+  env.binary_extract(env._FIRMWARE_, ".text .data .rdata .rodata .bss", env._MBL_FIRMWARE_BIN_)
 
   mod_list = env._INPUT_MOD_.split()
 
-  image = ((len(mod_list) + 2) * 24) + int(env.MIPS_START_ADDRESS, 16) + os.path.getsize(env.FIRMWARE_BIN) + 8
+  image = ((len(mod_list) + 2) * 24) + int(env._QEMU_MIPS_START_ADDRESS_, 16) + os.path.getsize(env._MBL_FIRMWARE_BIN_) + 8
 
   # open the header file to write header information
   header_file = open(env._SOURCE_DIR_ + "/header", "ab");
@@ -175,22 +175,22 @@ def			install():
   # write the number of module : min 2 (bootloader and kernel)
   header_file.write(struct.pack("<l", len(mod_list) + 2))  
 
-  image = header_write(env._BOOTLOADER_, env.BOOTLOADER_NAME, image, header_file, env.MODULES)
-  env.concat_file(env._BOOTLOADER_, env.MODULES)
+  image = header_write(env._BOOTLOADER_, env._BOOTLOADER_MODULE_NAME_, image, header_file, env._MODULES_)
+  env.concat_file(env._BOOTLOADER_, env._MODULES_)
 
-  image = header_write(env._KANETON_, env.KANETON_NAME, image, header_file, env.MODULES)
-  env.concat_file(env._KANETON_, env.MODULES)
+  image = header_write(env._KANETON_, env._KANETON_MODULE_NAME_, image, header_file, env._MODULES_)
+  env.concat_file(env._KANETON_, env._MODULES_)
 
   for mod in mod_list:
-    image = header_write(mod, mod.split("/")[len(mod.split("/")) - 1], image, header_file, env.MODULES)
-    env.concat_file(mod, env.MODULES)
+    image = header_write(mod, mod.split("/")[len(mod.split("/")) - 1], image, header_file, env._MODULES_)
+    env.concat_file(mod, env._MODULES_)
 
   header_file.close()
 
   # cat the binary files in the mips_bios.bin file
-  env.concat_file(env.FIRMWARE_BIN, env.MIPS_BIOS)
-  env.concat_file(env._SOURCE_DIR_ + "/header", env.MIPS_BIOS)
-  env.concat_file(env.MODULES, env.MIPS_BIOS)
+  env.concat_file(env._MBL_FIRMWARE_BIN_, env._QEMU_MIPS_BIOS_)
+  env.concat_file(env._SOURCE_DIR_ + "/header", env._QEMU_MIPS_BIOS_)
+  env.concat_file(env._MODULES_, env._QEMU_MIPS_BIOS_)
 
 #
 # build()
@@ -206,7 +206,7 @@ def			build():
 
   # creates the mips_bios.bin and the modules files
   env.push(env._SOURCE_DIR_ + "/mipsel_bios.bin", "", None)
-  env.push(env.MODULES, "", None)
+  env.push(env._MODULES_, "", None)
 
   # creates the flag file
   header_file = open(env._SOURCE_DIR_ + "/header", "wb");

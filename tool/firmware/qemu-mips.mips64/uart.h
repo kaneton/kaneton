@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/uart.h
+ * file          /home/enguerrand/...on/tool/firmware/qemu-mips.mips64/uart.h
  *
  * created       enguerrand raymond   [wed apr 22 06:11:59 2009]
- * updated       enguerrand raymond   [mon apr 27 12:26:11 2009]
+ * updated       enguerrand raymond   [mon apr 27 12:25:49 2009]
  */
 
-#ifndef BOOTLOADER_UART_H
-#define BOOTLOADER_UART_H
+#ifndef FIRMWARE_UART_H
+#define FIRMWARE_UART_H
 
 /*
  * ---------- dependencies ----------------------------------------------------
