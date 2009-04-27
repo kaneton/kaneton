@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.h
  *
  * created       enguerrand raymond   [sun oct 12 18:58:49 2008]
- * updated       enguerrand raymond   [sat apr 11 02:37:07 2009]
+ * updated       enguerrand raymond   [mon apr 27 07:22:56 2009]
  */
 
 #ifndef BOOTLOADER_H
@@ -30,6 +30,9 @@
 #include "libc.h"
 #include "init.h"
 #include "libmips64.h"
+#include "elf.h"
+#include "multiboot.h"
+#include "cons.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -44,7 +47,7 @@
 
 void		bootloader_error(void);
 
-void		bootloader(void);
+void		bootloader(multiboot_info_t* mbi);
 
 
 /*

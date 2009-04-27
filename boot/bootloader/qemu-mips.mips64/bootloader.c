@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.c
  *
  * created       enguerrand raymond   [sun feb  8 17:24:44 2009]
- * updated       enguerrand raymond   [sat apr 11 15:30:22 2009]
+ * updated       enguerrand raymond   [mon apr 27 07:28:22 2009]
  */
 
 /*
@@ -49,16 +49,21 @@ void		bootloader_error(void)
  * 9) jump to the kernel
  */
 
-void		bootloader(void)
+void		bootloader(multiboot_info_t* mbi)
 {
   t_uint64*	kernel_entry	= 0;
   void		(*kernel)(t_init*);
   t_init*	init		= NULL;
 
   /*
-   * 2)
+   * 1)
    */
 
+  bootloader_cons_init();
+  printf("\n");
+  printf("                --- the kaneton microkernel project ---\n");
+  printf("\n");
+  
   /*
    * 3)
    */
@@ -99,11 +104,11 @@ void		bootloader(void)
    * 9)
    */
 
-  kernel_entry = (t_uint64*)(KERNEL_BASE_ADDRESS + 0x18);
+  /*  kernel_entry = (t_uint64*)(KERNEL_BASE_ADDRESS + 0x18);
 
   kernel = (void (*)(t_init*))(*kernel_entry);
 
-  kernel(init);
+  kernel(init);*/
   
   while(1)
     ;

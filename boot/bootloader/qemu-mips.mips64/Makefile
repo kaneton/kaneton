@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...oot/bootloader/qemu-mips.mips64/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated       enguerrand raymond   [wed apr 22 10:34:06 2009]
+# updated       enguerrand raymond   [mon apr 27 11:23:33 2009]
 #
 
 #
@@ -54,42 +54,17 @@ BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h	\
 					$(_BOOTLOADER_DIR_)/libmips64.h		\
 					$(_BOOTLOADER_DIR_)/libc.h
 
-FIRMWARE		:=		firmware
-
-FIRMWARE_BIN		:=		firmware.bin
-
-FIRMWARE_C		:=		firmware.c				\
-					libc.c					\
-					uart.c					\
-					cons.c
-
-FIRMWARE_S		:=		firmware_entry.S
-
-FIRMWARE_O		:=		$(FIRMWARE_S:.S=.o)			\
-					$(FIRMWARE_C:.c=.o)
-
-FIRMWARE_INCLUDE	:=		$(_FIRMWARE_DIR_)/firmware.h		\
-					$(_FIRMWARE_DIR_)/uart.h		\
-					$(_FIRMWARE_DIR_)/cons.h
-
-
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(BOOTLOADER)	$(FIRMWARE)
+main:			$(BOOTLOADER)
 
 $(BOOTLOADER):	$(BOOTLOADER_O)
 	$(call env_executable,$(BOOTLOADER),				\
 			      $(BOOTLOADER_O),				\
 			      $(_BOOTLOADER_DIR_)/layout/bootloader.lyt,\
-			      $(ENV_OPTION_NO_STANDARD))
-
-$(FIRMWARE):	$(FIRMWARE_O)
-	$(call env_executable,$(FIRMWARE),				\
-			      $(FIRMWARE_O),				\
-			      $(_FIRMWARE_DIR_)/layout/firmware.lyt,	\
 			      $(ENV_OPTION_NO_STANDARD))
 
 clear:
@@ -101,34 +76,18 @@ clear:
 
 	$(call env_remove,$(BOOTLOADER_BIN),)
 
-	$(call env_remove,$(FIRMWARE_O),)
-
-	$(call env_remove,$(FIRMWARE),)
-
-	$(call env_remove,$(_FIRMWARE_LO_),)
-
-	$(call env_remove,$(FIRMWARE_BIN),)
-
 	$(call env_purge,)
 
 prototypes:
 	$(call env_prototypes,$(BOOTLOADER_INCLUDE),)
-
-	$(call env_prototypes,$(FIRMWARE_INCLUDE),)
-
-	$(call env_headers,$(FIRMWARE_C),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(BOOTLOADER_C),)
 
-	$(call env_headers,$(FIRMWARE_C),)
-
 dependencies:
 	$(call env_launch,Makefile,.,$(BOOTLOADER),)
-
-	$(call env_launch,Makefile,.,$(FIRMWARE),)
 
 endif
 #

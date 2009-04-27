@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/libc.c
  *
  * created       matthieu bucchianeri   [thu jun 28 16:14:31 2007]
- * updated       enguerrand raymond   [thu apr 23 02:27:31 2009]
+ * updated       enguerrand raymond   [mon apr 27 07:26:42 2009]
  */
 
 /*
@@ -16,12 +16,6 @@
  */
 
 #include "libc.h"
-
-/*
- * Very bad technic to debug qemu-mips firmware
- */
-
-#include "cons.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -50,11 +44,7 @@
  * ---------- globals ---------------------------------------------------------
  */
 
-/*
- * Very bad technic to debug qemu-mips firmware
- */
-//t_printf_char_fn	printf_char = NULL;
-#define printf_char	bootloader_cons_print_char
+t_printf_char_fn	printf_char = NULL;
 t_printf_attr_fn	printf_attr = NULL;
 
 /*
@@ -402,7 +392,7 @@ int			vprintf(const char*			fmt,
 int			printf_init(t_printf_char_fn		pc,
 				    t_printf_attr_fn		pa)
 {
-  // printf_char = pc;
+  printf_char = pc;
   printf_attr = pa;
 
   return (0);

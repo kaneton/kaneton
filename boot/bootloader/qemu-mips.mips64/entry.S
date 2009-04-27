@@ -28,4 +28,3 @@ bootloader_entry:
 	sd $fp, 0($sp)
 	jal bootloader
 	nop
-
