@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...t/bootloader/qemu-mips.mips64/firmware.c
+ * file          /home/enguerrand/...ool/firmware/qemu-mips.mips64/firmware.c
  *
  * created       enguerrand raymond   [fri apr 10 13:11:23 2009]
- * updated       enguerrand raymond   [mon apr 27 06:17:31 2009]
+ * updated       enguerrand raymond   [mon apr 27 13:23:36 2009]
  */
 
 /*
@@ -50,7 +50,7 @@ static void		firmware_module_display(kaneton_mips_module*	kmmod,
   firmware_cons_msg('+', "kmmod->name = %s\n", kmmod->name);
   firmware_cons_msg('+', "kmmod->module = 0x%lx\n", kmmod->module);
   firmware_cons_msg('+', "mbi_mod->mod_start = 0x%lx\n", mbi_mod->mod_start);
-  firmware_cons_print_string("\n\n");
+  firmware_cons_print_string("\n");
 }
 
 /*
@@ -166,7 +166,8 @@ void			firmware(void)
    */
 
   bootloader = (void (*)(multiboot_info_t*))kaneton_bootloader->e_entry;
-
+  
+  firmware_cons_print_char('\n');
   firmware_cons_msg('+', "Jump to the bootloader function 0x%lx\n", bootloader);
 
   bootloader(mbi);

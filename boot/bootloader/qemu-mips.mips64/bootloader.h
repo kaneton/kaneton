@@ -58,9 +58,7 @@ t_paddr		bootloader_init_alloc(t_paddr*	relocate,
 				      t_psize	size,
 				      t_psize*	psize);
 
-t_size		bootloader_init_kernel_size(t_vaddr	kernel_address);
-
-t_init*		bootloader_init_relocate(t_vaddr	kernel_address);
+t_init*		bootloader_init_relocate(multiboot_info_t*	mbi);
 
 
 /*

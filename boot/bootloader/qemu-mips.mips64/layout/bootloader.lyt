@@ -3,7 +3,7 @@ ENTRY(bootloader_entry)
 
 SECTIONS
 {
-	__start = 0xffffffffa0101000;	
+	__start = 0xffffffffa0401000;	
 	. = __start;
 
 	.text :

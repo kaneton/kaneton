@@ -3,7 +3,7 @@ ENTRY(kaneton);
 
 SECTIONS
 {
-	. = 0xffffffff80021000;
+	. = 0xffffffff80002000;
 
 	.text :
 	{

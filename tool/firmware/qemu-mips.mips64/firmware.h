@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ool/firmware/qemu-mips.mips64/firmware.h
  *
  * created       enguerrand raymond   [fri apr 10 13:11:49 2009]
- * updated       enguerrand raymond   [mon apr 27 12:24:37 2009]
+ * updated       enguerrand raymond   [tue apr 28 04:25:16 2009]
  */
 
 #ifndef FIRMWARE_H
@@ -30,9 +30,9 @@
 
 #define FIRMWARE_FLAG		0x07070707
 
-#define IMAGE_BASE_ADDRESS	0xffffffffa0100000
+#define IMAGE_BASE_ADDRESS	0xffffffffa0400000
 
-#define MULTIBOOT_ADDRESS	0xffffffffa0300000
+#define MULTIBOOT_ADDRESS	0xffffffffa0800008
 
 /*
  * ---------- types -----------------------------------------------------------

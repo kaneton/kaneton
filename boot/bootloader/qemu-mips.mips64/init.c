@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.c
  *
  * created       enguerrand raymond   [thu apr  2 14:39:33 2009]
- * updated       enguerrand raymond   [sat apr 11 02:38:03 2009]
+ * updated       enguerrand raymond   [tue apr 28 04:43:16 2009]
  */
 
 /*
@@ -47,22 +47,6 @@ t_paddr		bootloader_init_alloc(t_paddr*	relocate,
 }
 
 /*
- * this function calculates the kernel size between the
- * two flags
- */
-
-t_size		bootloader_init_kernel_size(t_vaddr	kernel_address)
-{
-  t_uint8*	ptr = (t_uint8*)kernel_address;
-  
-  while(!((*ptr == 0x07) && (*(ptr + 1) == 0x07)
-	  && (*(ptr + 2) == 0x07) && (*(ptr + 3) == 0x07)))
-    ++ptr;
-
-  return ((t_vaddr)ptr - 1) - kernel_address;
-}
-
-/*
  * steps:
  *
  * 1) copy the kernel to this final location
@@ -70,11 +54,12 @@ t_size		bootloader_init_kernel_size(t_vaddr	kernel_address)
  * 3) fill first init fields (mem, kernel and init fields)
  */
 
-t_init*		bootloader_init_relocate(t_vaddr	kernel_address)
+t_init*		bootloader_init_relocate(multiboot_info_t*	mbi)
 {
   t_paddr	relocate	= KERNEL_BASE_ADDRESS;
   t_size	kernelsz	= 0;
   t_init*	init		= NULL;
+  module_t*	mbi_mod		= NULL;
   t_paddr	kcode;
   t_psize	kcodesz;
   t_psize	initsz;
@@ -85,11 +70,13 @@ t_init*		bootloader_init_relocate(t_vaddr	kernel_address)
    * 1)
    */
 
-  kernelsz = bootloader_init_kernel_size(kernel_address);
+  mbi_mod = (module_t*)mbi->mods_addr + 1;
+  
+  kernelsz = mbi_mod->mod_end - mbi_mod->mod_start;
 
   kcode = bootloader_init_alloc(&relocate, kernelsz, &kcodesz);
 
-  memcpy((t_uint8*)kcode, (t_uint8*)kernel_address, kernelsz);
+  memcpy((t_uint8*)kcode, (t_uint8*)mbi_mod->mod_start, kernelsz);
 
   /*
    * 2)

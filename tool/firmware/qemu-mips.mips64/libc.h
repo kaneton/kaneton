@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...on/tool/firmware/qemu-mips.mips64/libc.h
  *
  * created       matthieu bucchianeri   [thu jun 28 14:47:59 2007]
- * updated       enguerrand raymond   [mon apr 27 12:25:30 2009]
+ * updated       enguerrand raymond   [tue apr 28 08:53:28 2009]
  */
 
 #ifndef FIRMWARE_LIBC_H
@@ -25,7 +25,7 @@
  * ---------- types -----------------------------------------------------------
  */
 
-typedef char*			va_list;
+typedef __builtin_va_list	va_list;
 typedef t_sint32		size_t;
 
 /*
@@ -52,31 +52,19 @@ typedef t_sint32		size_t;
     (_i2_) = _tmp_;							\
   }
 
-#define __va_rounded_size(TYPE)  \
-  (((sizeof (TYPE) + sizeof (long) - 1) / sizeof (long))		\
-   * sizeof (long))
-
-/* 
- * Alignment of an arg of given type (char,short promote to reg), - 1.
+/*
+ * ---------- macros ----------------------------------------------------------
  */
 
-#define __va_alignoff(TYPE)  						\
-  (((__alignof(TYPE) <= __alignof(long)) 				\
-    ?__alignof(long)							\
-    : __alignof(TYPE)) - 1)
+#define va_end          __builtin_va_end
+#define va_arg          __builtin_va_arg
 
-#define va_start(AP, LASTARG) 						\
- (AP = ((va_list) __builtin_next_arg(LASTARG)))
+/*
+ * ---------- macro-functions -------------------------------------------------
+ */
 
-#define va_end(AP)	((void)0)
-
-#define __va_copy(dest, src) (dest) = (src)
-
-#define va_arg(AP, TYPE) 						\
- (AP = 									\
-   (va_list) (((long)AP + __va_alignoff(TYPE)) & ~__va_alignoff(TYPE))  \
-      + __va_rounded_size(TYPE), 					\
-   *((TYPE *) (void *) ((char *)AP - __va_rounded_size(TYPE))))
+#define va_start(v,l)   __builtin_stdarg_start((v),l)
+#define va_copy(d,s)    __builtin_va_copy((d),(s))
 
 /*
  * ---------- prototypes ------------------------------------------------------

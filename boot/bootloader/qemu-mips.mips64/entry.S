@@ -1,4 +1,4 @@
-STACK_BASE_ADDRESS = 0xa020
+STACK_BASE_ADDRESS = 0xa080
 	
 .global bootloader_entry
 

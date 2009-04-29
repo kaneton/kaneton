@@ -111,5 +111,6 @@ void			bootloader_cons_msg(char		indicator,
 int			bootloader_cons_init(void)
 {
   printf_init(bootloader_cons_print_char, bootloader_cons_attr);
+
   return 0;
 }

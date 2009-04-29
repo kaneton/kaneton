@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.c
  *
  * created       enguerrand raymond   [sun feb  8 17:24:44 2009]
- * updated       enguerrand raymond   [mon apr 27 07:28:22 2009]
+ * updated       enguerrand raymond   [tue apr 28 11:33:32 2009]
  */
 
 /*
@@ -51,9 +51,9 @@ void		bootloader_error(void)
 
 void		bootloader(multiboot_info_t* mbi)
 {
-  t_uint64*	kernel_entry	= 0;
-  void		(*kernel)(t_init*);
-  t_init*	init		= NULL;
+  void		(*kaneton)(t_init*);
+  t_init*	init = NULL;
+  Elf64_Ehdr*	kaneton_kernel = NULL;
 
   /*
    * 1)
@@ -62,8 +62,8 @@ void		bootloader(multiboot_info_t* mbi)
   bootloader_cons_init();
   printf("\n");
   printf("                --- the kaneton microkernel project ---\n");
-  printf("\n");
-  
+  printf("\n\n");
+
   /*
    * 3)
    */
@@ -82,7 +82,7 @@ void		bootloader(multiboot_info_t* mbi)
    * 5)
    */
 
-  //init = bootloader_init_relocate((t_vaddr)(flag_address + 1));
+  init = bootloader_init_relocate(mbi);
 
   /*
    * 6)
@@ -104,12 +104,14 @@ void		bootloader(multiboot_info_t* mbi)
    * 9)
    */
 
-  /*  kernel_entry = (t_uint64*)(KERNEL_BASE_ADDRESS + 0x18);
+  kaneton_kernel = (Elf64_Ehdr*)KERNEL_BASE_ADDRESS;
 
-  kernel = (void (*)(t_init*))(*kernel_entry);
+  bootloader_cons_msg('+', "Jump to the kaneton function 0x%lx\n", kaneton_kernel->e_entry);
 
-  kernel(init);*/
+  kaneton = (void (*)(t_init*))kaneton_kernel->e_entry;
   
+  kaneton(init);
+
   while(1)
     ;
 }

@@ -8,7 +8,7 @@
  * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       enguerrand raymond   [sat apr 11 15:29:25 2009]
+ * updated       enguerrand raymond   [tue apr 28 04:33:57 2009]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -28,7 +28,7 @@
  * the kernel is moved in the ckseg0 region
  */
 
-#define KERNEL_BASE_ADDRESS	0xffffffff8001e000
+#define KERNEL_BASE_ADDRESS	0xffffffff80001000
 
 /*
  * 4K page size is equal to 0 for the page mask
