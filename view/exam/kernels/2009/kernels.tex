@@ -108,4 +108,28 @@ XXX[Jean]
 
 XXX[Julien \& Fabien]
 
+Questions Kernel NT
+
+\begin{itemize}
+  \item Dans un texte structur\'{e}, d\'{e}crivez les principes fondamentaux autour
+  desquels le noyau NT a \'{e}t\'{e} concu. En particulier, vous \'{e}noncerez de
+  mani\`{e}re claire les probl\'{e}matiques cibl\'{e}es par ce type de noyau, puis
+  vous mettrez l'accent sur les r\'{e}ponses apport\'{e}es par NT et son design.
+  Lorsque cela s'av\`{e}re pertinent, vous incluerez des d\'{e}tails d'impl\'{e}mentation.
+  \`{A} titre d'exemple, des comparaisons pourront \^{e}tres faites avec d'autres noyaux
+  existants, tels que Linux. (2.5 points)
+
+Reponse: une reponse comprendra les points suivants:
+    \begin{itemize}
+      \item multithreaded monolithic kernel
+      \item object model (by HANDLE in userland, interface, security)
+      \item object manager: naming, storing...
+      \item scheduler acts as a central place for object synchronization
+      \item asynchronous IO
+      \item kind of message passing
+      \item Windows Driver Model, Windows Driver Kit
+    \end{itemize}
+
+\end{itemize}
+
 \end{document}
