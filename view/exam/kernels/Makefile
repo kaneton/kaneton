@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/exam/kernels/Makefile
 #
 # created       julien quintard   [mon may 14 21:34:22 2007]
-# updated       julien quintard   [fri jun 22 18:09:13 2007]
+# updated       julien quintard   [wed apr 29 17:47:06 2009]
 #
 
 #
@@ -28,7 +28,8 @@ include			../../../environment/env.mk
 #
 
 SUBDIRS			:=		2007				\
-					2008
+					2008				\
+					2009				\
 
 #
 # ---------- rules ------------------------------------------------------------
