@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...ew/lecture/kernels/security/security.tex
 %
 % created       julien quintard   [fri oct 24 17:31:58 2008]
-% updated       julien quintard   [wed apr 22 20:54:57 2009]
+% updated       julien quintard   [thu apr 30 12:50:09 2009]
 %
 
 %
@@ -1569,26 +1569,3 @@
 \end{frame}
 
 \end{document}
-
-Exam: repertoires apache/ subversion/ et trac/. chacun contient des sous-rep
-  pour les users. on veut restreindre l'acces des repertoires users aux autres
-  users *mais* on veut que: (i) le rep apache d'un user soit accessible
-  en lecture par le user apache (ii) le rep subversion d'un user soit
-  accessible en lecture/ecriture par le user subversion et en lecture par
-  le user apache (iii) le repertoire trac d'un user soit accessible en
-  lecture/ecriture par le user apache.
-  de plus bien sur chaque user doit pouvoir acceder son propre repertoire
-  personnel de chaque repertoire apache, subversion et trac et les autres
-  doivent en etre exclus.
-  proposez une solution, la plus simple possible qui fournisse tout cela.
-  cet exemple est tres concret!
-
-Exam: disons qu'on veut un systeme avec des capabilities mais l'on ne veut
-  pas que les processes puisse se refiler des capabilities pour les utiliser.
-  en d'autre termes on veut que seuls les gens qui ont crees des objets
-  puissent utiliser leurs cap mais pas un autre process qui utilise une cap
-  qu'il n'a pas cree -> principal-specific capability (on ajoute juste l'id
-  de la tache dans la cap et on hash ca avec les rights)
-  de plus ca protege du vol. par contre ca suppose que l'on peut detecter
-  l'appelant (dans le cas d'un OS c'est bon mais ce ne serait pas forcement
-  le cas dans un systeme reparti).

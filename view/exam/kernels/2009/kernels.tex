@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/exam/kernels/2009/kernels.tex
 %
 % created       julien quintard   [mon may 14 21:56:41 2007]
-% updated       julien quintard   [wed apr 29 17:39:22 2009]
+% updated       julien quintard   [thu apr 30 13:36:36 2009]
 %
 
 %
@@ -26,12 +26,6 @@
 %
 
 \input{\path/template/exam.tex}
-
-%
-% header
-%
-
-\lhead{\scriptsize{2009}}
 
 %
 % title
@@ -80,7 +74,8 @@
 % premiere partie
 %
 
-\section{Premi\`ere Partie \hfill{} \scriptsize{4 points/30 minutes}}
+\section{Premi\`ere Partie}
+{\hfill{} \scriptsize{4 points/30 minutes}}
 
 XXX[Francois]
 
@@ -88,7 +83,8 @@ XXX[Francois]
 % deuxieme partie
 %
 
-\section{Deuxi\`eme Partie \hfill{} \scriptsize{6 points/50 minutes}}
+\section{Deuxi\`eme Partie}
+{\hfill{} \scriptsize{6 points/50 minutes}}
 
 XXX[Benoit]
 
@@ -96,7 +92,8 @@ XXX[Benoit]
 % troisieme partie
 %
 
-\section{Troisi\`eme Partie \hfill{} \scriptsize{5 points/45 minutes}}
+\section{Troisi\`eme Partie}
+{\hfill{} \scriptsize{5 points/45 minutes}}
 
 XXX[Jean]
 
@@ -104,32 +101,84 @@ XXX[Jean]
 % quatrieme partie
 %
 
-\section{Quatri\`eme Partie \hfill{} \scriptsize{5 points/45 minutes}}
+\section{Quatri\`eme Partie}
+{\hfill{} \scriptsize{45 minutes}}
 
-XXX[Julien \& Fabien]
+%
+% securite
+%
+\subsection{S\'ecurit\'e}
+{\hfill{} \scriptsize{2.5 points}}
 
-Questions Kernel NT
+Un service d\'esire fournir \`a certains clients la possibilit\'e
+d'effectuer des op\'erations via l'utilisation de \name{capabilities}.
+
+\'Etant donn\'e que le service ne g\`ere aucun objet mais propose
+aux clients d'effectuer un maximum de $13$ op\'erations diff\'erentes,
+veuillez d\'efinir le format des \name{capabilities} \`a utiliser en
+d\'ecrivant la taille et l'utilit\'e de chaque champ.
+
+Enfin, vous d\'etaillerez le processus de v\'erification effectu\'e
+par le service en question.
+
+\begin{correction}
+
+Consid\'erant un syst\`eme d'exploitation non r\'eparti, un champ sera
+utilis\'e pour identifi\'e le service en question, un \texttt{i\_task}
+sur $64$ bits par exemple. Un champ de $13$ bits sera utilis\'e pour
+d\'ecrire les $13$ op\'erations autoris\'ees. Enfin, un champ \name{Check}
+de $64$ bits, par exemple, sera utilis\'e pour s\'ecuriser la
+\name{capability}.
+
+Le processus de v\'erification consiste \`a r\'ecup\'erer le \name{Check}
+d'origine \`a partir d'une structure interne au service, \`a appliquer un
+\name{XOR} entre le \name{Check} d'origine et le champ \name{Operations}
+de la \name{capability} re\c{c}ue pour enfin appliquer une fonction
+\`a sens unique. Il suffit finalement de comparer le r\'esultat avec le
+champ \name{Check} contenu dans la \name{capability}. Si ils sont
+\'egaux, alors la \name{capability} est valide.
+
+\end{correction}
+
+%
+% windows nt
+%
+\subsection{Windows NT}
+{\hfill{} \scriptsize{2.5 points}}
+
+Dans un texte structur\'e, d\'ecrivez les principes fondamentaux autour
+desquels le noyau \name{NT} a \'et\'e con\c{c}u. En particulier, vous
+\'enoncerez de mani\`ere claire les probl\'ematiques cibl\'ees par ce type de
+noyau, puis vous mettrez l'accent sur les r\'eponses apport\'ees par \name{NT}
+et son design.
+
+Lorsque cela s'av\`ere pertinent, vous incluerez des d\'etails d'implantation.
+\`A titre d'exemple, des comparaisons pourront \^etre faites avec d'autres
+noyaux existants, tels que \name{Linux}.
+
+Une reponse compl\`ete comprendra les points suivants:
 
 \begin{itemize}
-  \item Dans un texte structur\'{e}, d\'{e}crivez les principes fondamentaux autour
-  desquels le noyau NT a \'{e}t\'{e} concu. En particulier, vous \'{e}noncerez de
-  mani\`{e}re claire les probl\'{e}matiques cibl\'{e}es par ce type de noyau, puis
-  vous mettrez l'accent sur les r\'{e}ponses apport\'{e}es par NT et son design.
-  Lorsque cela s'av\`{e}re pertinent, vous incluerez des d\'{e}tails d'impl\'{e}mentation.
-  \`{A} titre d'exemple, des comparaisons pourront \^{e}tres faites avec d'autres noyaux
-  existants, tels que Linux. (2.5 points)
-
-Reponse: une reponse comprendra les points suivants:
-    \begin{itemize}
-      \item multithreaded monolithic kernel
-      \item object model (by HANDLE in userland, interface, security)
-      \item object manager: naming, storing...
-      \item scheduler acts as a central place for object synchronization
-      \item asynchronous IO
-      \item kind of message passing
-      \item Windows Driver Model, Windows Driver Kit
-    \end{itemize}
-
+  \item
+    Multithreaded monolithic kernel;
+  \item
+    Object model (by HANDLE in userland, interface, security);
+  \item
+    Object manager: naming, storing \etc{}
+  \item
+    Scheduler acts as a central place for object synchronization;
+  \item
+    Asynchronous \name{IO};
+  \item
+    Kind of message passing;
+  \item
+    Windows Driver Model, Windows Driver Kit.
 \end{itemize}
+
+\begin{correction}
+
+XXX[Fabien]
+
+\end{correction}
 
 \end{document}
