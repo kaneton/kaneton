@@ -8,7 +8,7 @@
 # file          /data/mycure/repositories/kaneton/test/package/ktc.py
 #
 # created       julien quintard   [sun mar 22 13:54:03 2009]
-# updated       julien quintard   [tue apr 14 12:36:18 2009]
+# updated       julien quintard   [thu apr 16 16:13:15 2009]
 #
 
 #
@@ -30,6 +30,8 @@ import hmac
 import pickle
 import sys
 
+import xmlrpclib
+
 #
 # ---------- definitions ------------------------------------------------------
 #
@@ -45,11 +47,18 @@ StatusError = False
 # this function wraps a call to a remote method.
 #
 def                     Call(value):
-  if value[0] == StatusError:
-    print "[error] " + value[1]
+  type = value[0]
+  data = value[1]
+
+  if isinstance(data, xmlrpclib.Binary) == True:
+    data = str(value[1])
+
+  if type == StatusError:
+    print "[error] " + data
+
     sys.exit(42)
-  else:
-    return value[1]
+
+  return data
 
 #
 # this function generates a cryptographic key.

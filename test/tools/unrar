@@ -1,6 +1,0 @@
-#! /bin/sh
-
-filename=$TEST_FILENAME
-dest=${TEST_OUTPUT:-.}
-
-tar -C $dest -xvf $filename

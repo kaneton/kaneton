@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repositories/kaneton/test/util/certificate.py
+# file          /home/mycure/kaneton/test/util/certificate.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon mar 23 00:10:21 2009]
+# updated       julien quintard   [mon apr 20 03:29:09 2009]
 #
 
 #
@@ -28,18 +28,6 @@ import ktc
 #
 # ---------- functions --------------------------------------------------------
 #
-
-#
-# warning()
-#
-# this function asks the user the permission to continue.
-#
-def			warning():
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter",
-              env.OPTION_NONE)
-
-  env.input(env.OPTION_NONE)
 
 #
 # ca()
@@ -119,10 +107,6 @@ def                     main():
   env.display(env.HEADER_OK,
               "generating the CA and server's key/certificate pair",
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-  # display a warning.
-  warning()
 
   # generate the ca certificate.
   (ca_key, ca_certificate) = ca()

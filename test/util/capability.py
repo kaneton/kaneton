@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/util/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [fri apr 10 02:25:41 2009]
+# updated       julien quintard   [mon apr 20 03:29:34 2009]
 #
 
 #
@@ -47,18 +47,6 @@ def			usage():
   env.display(env.HEADER_ERROR,
               "usage: capability.py [school::year]",
               env.OPTION_NONE)
-
-#
-# warning()
-#
-# this function asks the user the permission to continue.
-#
-def			warning():
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter",
-              env.OPTION_NONE)
-
-  env.input(env.OPTION_NONE)
 
 #
 # extract()
@@ -285,10 +273,6 @@ def                     main():
   env.display(env.HEADER_OK,
               "generating capabilities",
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-  # display a warning.
-  warning()
 
   # retrieve the server's code.
   code = ktc.Read(env._TEST_STORE_CODE_DIR_ + "/server")

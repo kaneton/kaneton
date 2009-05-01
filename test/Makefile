@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [fri jun 29 11:21:03 2007]
+# updated       julien quintard   [fri may  1 20:11:19 2009]
 #
 
 #
@@ -21,16 +21,16 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main build run clear prototypes headers
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-# Temporary, don't know where to put this
-# machine dependant .env.conf
-_COMPILE_PY_	:=	compile.py
-#_TEST_LO_	:=	test.lo
+SUBDIRS			:=		client				\
+					package				\
+					tests				\
+					util				\
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -39,22 +39,18 @@ _COMPILE_PY_	:=	compile.py
 main:
 
 clear:
-	$(call purge,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
+
+	$(call env_purge,)
 
 prototypes:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
 
 headers:
-
-test-tarball:
-	rm -f tests.tar.bz2
-	$(call env_launch,$(_TEST_TARBALL_SCRIPT_),$(_TESTSUITE_),)
-
-kaneton.tar.bz2: $(_IMAGE_)
-	$(call env_launch,$(_KANETON_TARBALL_SCRIPT_),,)
-
-custom: kaneton.tar.bz2 test-tarball
-	chmod 600 id_rsa_kaneton-test
-	./scripts/custom-test.sh $(_USER_) $(_TEST_HOST_)
-
-test:
-	tools/moulette.rb test.yml  res.yml
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done

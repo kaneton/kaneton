@@ -1,3 +1,0 @@
-#! /bin/sh
-
-mkisofs -pad -b "$TEST_IMG" -R -o "$TEST_ISO" "$TEST_IMG"

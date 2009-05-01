@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/util/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [sun apr 12 18:03:50 2009]
+# updated       julien quintard   [fri may  1 19:09:02 2009]
 #
 
 #
@@ -36,8 +36,6 @@ import copy
 g_school = None
 g_year = None
 
-g_stages = "data/stages.yml"
-
 #
 # ---------- functions --------------------------------------------------------
 #
@@ -51,18 +49,6 @@ def			usage():
   env.display(env.HEADER_ERROR,
               "usage: database.py [school::year]",
               env.OPTION_NONE)
-
-#
-# warning()
-#
-# this function asks the user the permission to continue.
-#
-def			warning():
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter",
-              env.OPTION_NONE)
-
-  env.input(env.OPTION_NONE)
 
 #
 # extract()
@@ -145,7 +131,7 @@ def                     generate(students, name):
               env.OPTION_NONE)
 
   # load the stages information.
-  stages = yaml.load(file(g_stages, 'r'))
+  stages = yaml.load(file(env._TEST_CONFIGURATION_SUITES_, 'r'))
 
   # for every student, generate a capability and store it.
   for student in students:
@@ -197,10 +183,6 @@ def                     main():
   env.display(env.HEADER_OK,
               "generating database",
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-  # display a warning.
-  warning()
 
   # read the file and extract the students information.
   students = extract(path)

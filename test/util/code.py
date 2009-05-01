@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/util/code.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [sun mar 22 21:19:41 2009]
+# updated       julien quintard   [mon apr 20 03:28:48 2009]
 #
 
 #
@@ -29,18 +29,6 @@ import ktc
 #
 
 #
-# warning()
-#
-# this function asks the user the permission to continue.
-#
-def			warning():
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter",
-              env.OPTION_NONE)
-
-  env.input(env.OPTION_NONE)
-
-#
 # main()
 #
 # this is the main function.
@@ -52,10 +40,6 @@ def                     main():
   env.display(env.HEADER_OK,
               "generating the server's code",
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-  # display a warning.
-  warning()
 
   # generate a code.
   code = ktc.Code()
