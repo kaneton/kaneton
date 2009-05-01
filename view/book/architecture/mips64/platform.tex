@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/enguerrand/...ew/book/architecture/MIPS64/platform.tex
+% file          /home/enguerrand/...ew/book/architecture/mips64/platform.tex
 %
 % created       enguerrand raymond   [mon oct 13 11:31:56 2008]
-% updated          [fri apr 10 00:51:37 2009]
+% updated          [wed apr 29 01:11:35 2009]
 %
 
 %
@@ -20,7 +20,7 @@
 This chapter describes the different platform for which kaneton has been developed. These platforms are described following you need to understand the current document.
 
 
-\subsection{qemu-mips platform}
+\subsection{Qemu-mips platform}
 
 \subsubsection{Description}
 
@@ -60,3 +60,9 @@ The emulators do not respect perfectly the real architecture. Moreover, the qemu
 real equivalent and so platform reference. But, the most important is the microprocessor that can have bug behaviour
 and false quality, for example the status register is always well set after reset contrarily to the documentation that specifies the content of this register
 is undefined except for four bits.
+
+\subsubsection{Booting process}
+
+The firmware lack for the qemu-mips is a real problem to launch kaneton and this modules.
+For the moment the bootloader, the kernel and this modules are concatenate in a single file
+named \location(mipsel\_bios) (for little endian version). This file is structures like this :
