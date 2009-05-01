@@ -156,28 +156,86 @@ Lorsque cela s'av\`ere pertinent, vous incluerez des d\'etails d'implantation.
 \`A titre d'exemple, des comparaisons pourront \^etre faites avec d'autres
 noyaux existants, tels que \name{Linux}.
 
-Une reponse compl\`ete comprendra les points suivants:
+\begin{correction}
+
+Le noyau \name{NT} est con\c{c}u et d\'{e}velopp\'{e} au d\'{e}but des ann\'{e}es
+1990 par une \'{e}quipe dirig\'{e}e par \name{Dave Cutler} (\name{DEC, VMS}). C'est
+un noyau monolithique qualifi\'{e} par certains d'hybride du fait de la communication
+par messages entre les drivers. Tous les drivers partagent le m\^{e}me espace d'adressage,
+ce qui le diff\'{e}rencie donc d'un micronoyau. Le choix d'une communication par message
+r\'{e}pond ainsi \`{a} une probl\'{e}matique de modularit\'{e}, et non d'isolation.
+
+Depuis sa cr\'{e}ation, les aspects fondamentaux du noyau n'ont pas chang\'{e}
+malgr\'{e} l'\'{e}volution des architectures: passage au multiprocesseur, multiplication
+des resources \`{a} g\'{e}rer (plus de devices, plus de fichiers ouverts)... Ceci est
+en quelque sorte la preuve de la flexibilit\'{e} du design, qui s'articule autour des
+points suivants:
 
 \begin{itemize}
   \item
-    Multithreaded monolithic kernel;
+    Mod\`{e}le d'IO asynchrones: le noyau g\`{e}re toutes les IOs de mani\`{e}re
+    asynchrone. De ce fait, l'appel \`{a} une fonction synchrone (ie. \name{WriteFile})
+    est implement\'{e} par dessus ce mod\`{e}le. L'int\'{e}r\^{e}t principal d'un
+    mod\`{e}le asynchrone est de permettre l'ex\'{e}cution de code li\'{e} au cpu
+    (\name{cpu bound}) en parall\`{e}le de l'attente de la completion d'une IO
+    (\name{io bound}). Par exemple, une solution de chiffrement peut maintenir une liste
+    de donn\'{e}es \`{a} chiffrer dans l'attente de la compl\'{e}tion d'une IO. On a de
+    cette mani\`{e}re une progression globale du syst\`{e}me.
   \item
-    Object model (by HANDLE in userland, interface, security);
+    Mod\`{e}le de thread 1:1: Chaque thread utilisateur est repr\'{e}sent\'{e} par
+    un thread noyau. Puisque la programmation multithread\'{e}e est un mod\`{e}le
+    largement adopt\'{e} par les programmeurs, un mapping 1:1 permet de gagner en
+    performance en \'{e}vitant \`{a} un processus d'\^{e}tre bloqu\'{e} par un
+    thread dans l'attente de la compl\'{e}tion d'une IO.
   \item
-    Object manager: naming, storing \etc{}
+    Mod\`{e}le orient\'{e} objet: Toute resource est manipul\'{e}e par le noyau
+    via une interface commune, celle d'objet. Cette interface comprend entre autre
+    les proc\'{e}dures d'ouverture, de fermeture et de securit\'{e}. Chaque type de
+    resource a un objet correspondant: \name{FILE\_OBJECT}, \name{DEVICE\_OBJECT},
+    \name{DRIVER\_OBJECT} ... Un programme utilisateur manipule tous les objets
+    par \name{HANDLE}.
   \item
-    Scheduler acts as a central place for object synchronization;
+    Le gestionnaire d'objet (\name{Object Manager}) centralise les aspects fondamentaux
+    li\'{e}s \`{a} la gestion des resources, \`{a} savoir:
+    \begin{itemize}
+      \item
+      Le nommage: la r\'{e}cup\'{e}ration d'une resource \`{a} partir d'un nom. Ce
+      nom est structur\'{e} de la m\^{e}me fa\c{c}on qu'un chemin dans un syst\`{e}me
+      de fichier. Il y a en g\'{e}n\'{e}ral un r\'{e}pertoire par type de resource,
+      et les liens symboliques sont support\'{e}s. C'est de cette facon qu'une lettre
+      (ie. \name{C:}) peut \^{e}tre li\'{e}e \`{a} un volume (ie. \name{/Device/HarddiskVolume0}).
+      \item
+      La recherche: la r\'{e}cup\'{e}ration de l'instance d'une resource \`{a} partir
+      d'un \name{HANDLE}.
+      \item
+      la s\'{e}curit\'{e}: lorsqu'un processus utilisateur effectue une operation sur
+      un objet (ie. ReadFile), le noyau doit valider cette operation. Pour ce faire,
+      la proc\'{e}dure de s\'{e}curit\'{e} associ\'{e}e au type d'objet sera invoqu\'{e}e,
+      et cela quel que soit le type d'objet. La fonction document\'{e}e est
+      \name{ObReferenceObjectByHandle}. Cela permet une gestion du contr\^{o}le d'acc\`{e}s
+      centralis\'{e}e et coh\'{e}rente, ce qui n'est pas le cas dans \name{Linux}.n
+    \end{itemize}
   \item
-    Asynchronous \name{IO};
-  \item
-    Kind of message passing;
-  \item
-    Windows Driver Model, Windows Driver Kit.
+    Mod\`{e}le de driver en stack: Pour permettre l'interaction entre les differents
+    periph\'{e}riques, le noyau organise les drivers sous la forme de stack selon leur
+    relation. \`{A} cette fin, le gestionnaire d'IO expose deux primitives:
+    \begin{itemize}
+      \item
+      Une structure d\'{e}crivant les messages: \name{IRP} (Interrupt Request Packet),
+      \item
+      Une fonction de message passing: \name{IoCallDriver}.
+    \end{itemize}
+    De cette mani\`{e}re, des interactions dynamiques complexes peuvent etre modelis\'{e}es:
+    solutions de stockage, chiffrement de disque, piles r\'{e}seau, syst\`{e}mes de fichier
+    virtuels ...
+    Ce mod\`{e}le permet \`{a} des drivers propri\'{e}taires de cohabiter, pour autant que
+    chacun respecte l'ensemble des conventions impos\'{e}es, telles que le routage des
+    messages aux drivers sous jaccents ansi que leur compl\'{e}tion.
 \end{itemize}
 
-\begin{correction}
-
-XXX[Fabien]
+Aussi, il est important de noter la qualit\'{e} du kit de d\'{e}vloppement de driver pour
+\name{NT} (ie. \name{Windows Driver Kit}), ainsi que les outils associ\'{e}s: injection de
+faute, analyse dynamique d'erreurs communes lors de la conception d'un driver...
 
 \end{correction}
 
