@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/clean.py
 #
 # created       julien quintard   [sat dec 16 20:57:38 2006]
-# updated       julien quintard   [tue apr 14 22:15:24 2009]
+# updated       julien quintard   [mon apr 20 03:33:17 2009]
 #
 
 #
@@ -54,6 +54,18 @@ def			clear():
 
 
 #
+# boot()
+#
+# this function removes everything that has been generated
+# for booting the kernel like images and so forth.
+#
+def                     boot():
+  if env.path(env._IMAGE_, env.OPTION_EXIST):
+    env.remove(env._IMAGE_, env.OPTION_NONE)
+
+
+
+#
 # dependencies()
 #
 # this function removes the kaneton dependencies.
@@ -94,14 +106,15 @@ def			clean():
 import sys
 def			main():
   # display some stuff.
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "cleaning the kaneton development environment",
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
   # clear the kaneton development tree.
   clear()
+
+  # remove the generated boot stuff.
+  boot()
 
   # uninstall the chosen machine.
   machine()
@@ -109,7 +122,7 @@ def			main():
   # generate the kaneton dependencies.
   dependencies()
 
-  # call to the machine and user specific clean scripts.
+  # remove the environment-specific files.
   clean()
 
   # display some stuff.

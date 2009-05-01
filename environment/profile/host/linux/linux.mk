@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/.../environment/profile/host/linux/linux.mk
+# file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       enguerrand raymond   [wed nov 26 00:54:45 2008]
+# updated       julien quintard   [sun apr 19 01:40:01 2009]
 #
 
 #
@@ -125,7 +125,7 @@ define env_print
       print_options="$${print_options} -n"				; \
     fi									; \
   fi									&& \
-  $(_ECHO_) $${print_options} $(1)
+  $(_ECHO_) $${print_options} "$(1)"
 endef
 
 endif

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [tue apr 14 22:16:58 2009]
+# updated       julien quintard   [fri may  1 19:04:55 2009]
 #
 
 #
@@ -176,6 +176,12 @@ define env_display
 endef
 
 #
+# ---------- information ------------------------------------------------------
+#
+
+directory		:=		$(CURDIR)
+
+#
 # ---------- component-based behaviour ----------------------------------------
 #
 
@@ -194,3 +200,9 @@ ifeq ($(call findstring,$(component),$(components)),)
 endif
 
 export components
+
+#
+# ---------- cc flags ---------------------------------------------------------
+#
+
+_CC_FLAGS_		+=		$(foreach m,$(_MODULES_),-DMODULE_$(m))

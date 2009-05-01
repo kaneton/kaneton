@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [fri mar 20 16:03:25 2009]
+# updated       julien quintard   [mon apr 20 03:09:12 2009]
 #
 
 #
@@ -82,7 +82,7 @@ OPTION_CURRENT_DIRECTORY = 1
 #
 def			display(header, text, options):
   if header == HEADER_NONE:
-    sys.stdout.write(colorize(text, COLOR_NONE, OPTION_NONE))
+    sys.stdout.write(colorize(text, COLOR_WHITE, OPTION_NONE))
   elif header == HEADER_OK:
     sys.stdout.write(colorize("[", COLOR_BLUE, OPTION_NONE))
     sys.stdout.write(colorize("+", COLOR_GREEN, OPTION_NONE))
