@@ -79,11 +79,6 @@ def	config() :
 			    env.OPTION_NONE)
 		env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
-	env.display(env.HEADER_INTERACTIVE,
-		    "to cancel press CTRL^C, otherwise press enter",
-		    env.OPTION_NONE)
-	env.input(env.OPTION_NONE)
-
 	return
 
 

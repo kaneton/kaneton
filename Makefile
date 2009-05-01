@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [wed apr  8 01:25:42 2009]
+# updated       julien quintard   [wed apr 22 12:10:35 2009]
 #
 
 #
@@ -40,9 +40,11 @@ _MAKE_			?=		$(MAKE)
 
 ifeq ($(_SIGNATURE_),kaneton)
 
+# XXX[to remove since this should be done in kayou: services and so
+#     careful, PATHS is use several times in this file]
 PATHS			=		$(dir $(_INPUTS_))
 
-# XXX
+# XXX[to remove]
 ifneq ($(_TESTSUITE_),)
 PATHS                   := $(_CHECK_DIR_) $(PATHS)
 endif
@@ -97,9 +99,10 @@ clean:
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		environment configure		\
-					view export test cheat		\
-					library tool $(PATHS)
+SUBDIRS			:=		cheat configure environment	\
+					export history license test	\
+					tool transcript view		\
+					$(PATHS)
 
 #
 # ---------- kaneton ----------------------------------------------------------
@@ -151,7 +154,7 @@ install:		main
 # ---------- test -------------------------------------------------------------
 #
 
-# XXX
+# XXX[remove custom-test]
 test:
 	$(call env_launch,$(_TEST_DIR_)/Makefile,,)
 
