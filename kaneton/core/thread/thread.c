@@ -264,14 +264,10 @@ t_error			thread_clone(i_task			taskid,
   switch(to->sched)
     {
       case SCHEDULER_STATE_RUN:
-	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_RUN) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_add(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
       case SCHEDULER_STATE_STOP:
-	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_STOP) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_remove(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
@@ -279,8 +275,6 @@ t_error			thread_clone(i_task			taskid,
 	/* XXX */
 	break;
       case SCHEDULER_STATE_BLOCK:
-	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_BLOCK) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_remove(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
@@ -634,14 +628,10 @@ t_error			thread_state(i_thread			threadid,
   switch(sched)
     {
       case SCHEDULER_STATE_RUN:
-	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_RUN) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_add(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
       case SCHEDULER_STATE_STOP:
-	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_STOP) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_remove(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
@@ -649,8 +639,6 @@ t_error			thread_state(i_thread			threadid,
 	/* XXX */
 	break;
       case SCHEDULER_STATE_BLOCK:
-	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_BLOCK) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_remove(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;

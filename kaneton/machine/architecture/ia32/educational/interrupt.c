@@ -308,8 +308,6 @@ void			ia32_handler_exception(t_uint32			nr,
 
   ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
 
-  ASSERT(VIEW_SIGNAL("exception", nr, VIEW_SIGNAL_IRQ) == ERROR_NONE);
-
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
@@ -323,7 +321,6 @@ void			ia32_handler_exception(t_uint32			nr,
     }
 
   ASSERT(scheduler_current(&current) == ERROR_NONE);
-  ASSERT(VIEW_SIGNAL("thread", current, VIEW_SIGNAL_RESUME) == ERROR_NONE);
 }
 
 /*
@@ -338,8 +335,6 @@ void			ia32_handler_irq(t_uint32			nr)
   i_thread		current;
 
   ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
-
-  ASSERT(VIEW_SIGNAL("irq", nr, VIEW_SIGNAL_IRQ) == ERROR_NONE);
 
   if (event_get(id, &o) == ERROR_NONE)
     {
@@ -358,7 +353,6 @@ void			ia32_handler_irq(t_uint32			nr)
     }
 
   ASSERT(scheduler_current(&current) == ERROR_NONE);
-  ASSERT(VIEW_SIGNAL("thread", current, VIEW_SIGNAL_RESUME) == ERROR_NONE);
 }
 
 /*
@@ -373,8 +367,6 @@ void			ia32_handler_ipi(t_uint32			nr)
   i_thread		current;
 
   ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
-
-  ASSERT(VIEW_SIGNAL("ipi", nr, VIEW_SIGNAL_SYSCALL) == ERROR_NONE);
 
   ia32_ipi_acknowledge();
 
@@ -391,7 +383,6 @@ void			ia32_handler_ipi(t_uint32			nr)
     }
 
   ASSERT(scheduler_current(&current) == ERROR_NONE);
-  ASSERT(VIEW_SIGNAL("thread", current, VIEW_SIGNAL_RESUME) == ERROR_NONE);
 }
 
 /*
@@ -407,8 +398,6 @@ void			ia32_handler_syscall(t_uint32			nr)
 
   ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
 
-  ASSERT(VIEW_SIGNAL("syscall", nr, VIEW_SIGNAL_SYSCALL) == ERROR_NONE);
-
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
@@ -422,7 +411,6 @@ void			ia32_handler_syscall(t_uint32			nr)
     }
 
   ASSERT(scheduler_current(&current) == ERROR_NONE);
-  ASSERT(VIEW_SIGNAL("thread", current, VIEW_SIGNAL_RESUME) == ERROR_NONE);
 }
 
 /*

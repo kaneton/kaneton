@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/Makefile
 #
 # created       julien quintard   [tue jun 26 15:39:11 2007]
-# updated       julien quintard   [fri may  1 00:52:35 2009]
+# updated       julien quintard   [fri may  1 23:55:59 2009]
 #
 
 #
@@ -36,7 +36,6 @@ include			../../environment/env.mk
 SUBDIRS			:=		as				\
 					capability			\
 					cpu				\
-					debug				\
 					event				\
 					id				\
 					interface			\

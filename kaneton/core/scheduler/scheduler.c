@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...neton/kaneton/core/scheduler/scheduler.c
+ * file          /home/mycure/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [wed jan  9 10:53:57 2008]
+ * updated       julien quintard   [fri may  1 23:51:42 2009]
  */
 
 /*
@@ -421,9 +421,6 @@ t_error			scheduler_switch(void)
   if (cpu_current(&cpuid) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  if (VIEW_SIGNAL("scheduler", cpuid, VIEW_SIGNAL_SCHEDULING) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-
   if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
@@ -590,9 +587,6 @@ t_error			scheduler_switch(void)
    */
 
   if (cpu_stats(cpuid, scheduler->quantum) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-
-  if (VIEW_SIGNAL("thread", elected, VIEW_SIGNAL_PREEMPT) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   /*							  [endblock::switch] */

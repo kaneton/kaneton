@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/configure.py
 #
 # created       julien quintard   [wed may 23 10:17:59 2007]
-# updated       julien quintard   [sun mar 29 00:36:54 2009]
+# updated       julien quintard   [fri may  1 22:22:54 2009]
 #
 
 #
@@ -24,7 +24,6 @@
 
 import critical
 
-import env
 import yaml
 import sys
 
@@ -96,7 +95,7 @@ def			load(path):
   key = None
 
   # load the YAML entries.
-  streams = yaml.load(env.pull(path, env.OPTION_NONE))
+  streams = yaml.load(file(path, 'r'))
 
   # create an new frame object.
   g_frame = c_frame()

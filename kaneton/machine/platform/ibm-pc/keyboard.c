@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...neton/machine/platform/ibm-pc/keyboard.c
+ * file          /home/mycure/kane...neton/machine/platform/ibm-pc/keyboard.c
  *
  * created       matthieu bucchianeri   [sun jun 17 19:04:00 2007]
- * updated       matthieu bucchianeri   [wed jan  9 11:44:33 2008]
+ * updated       julien quintard   [fri may  1 23:49:53 2009]
  */
 
 /*
@@ -47,13 +47,6 @@ static void		ibmpc_kbd_handler(t_id			id)
 	    printf("\n");
 	    scheduler_dump();
 	    printf("\n");
-	    break;
-	  case 'd':
-#ifdef VIEW_ENABLE
-	    view_download();
-#else
-	    cons_msg('!', "view manager support not enabled\n");
-#endif
 	    break;
 	  default:
 	    printf("%c", scancodes[scancode]);
