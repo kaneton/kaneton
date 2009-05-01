@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...hine/glue/ibm-pc.ia32/optimised/region.c
+ * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/optimised/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [mon dec 24 19:44:27 2007]
+ * updated       julien quintard   [fri may  1 19:44:25 2009]
  */
 
 /*
@@ -23,7 +23,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
 #include <kaneton.h>
 
 #include <glue/glue.h>

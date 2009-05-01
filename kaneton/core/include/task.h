@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/task.h
+ * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       matthieu bucchianeri   [mon jul 23 12:38:19 2007]
+ * updated       julien quintard   [wed apr 15 07:28:31 2009]
  */
 
 #ifndef CORE_TASK_H

@@ -5,7 +5,7 @@
  *
  * license       kaneton
  *
- * file          /home/lec_l/kaneton/kaneton/libc/include/limits.h
+ * file          /home/lec_l/kaneton/kaneton/library/include/limits.h
  *
  * created       julien quintard   [sun jun 10 17:53:28 2007]
  * updated       laurent lec   [sun mar 30 17:55:59 2008]
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <libc/types.h>
+#include <library/types.h>
 
 /*
  * ---------- macro-functions -------------------------------------------------

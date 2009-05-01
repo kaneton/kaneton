@@ -5,7 +5,7 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/libc/include/libc.h
+ * file          /home/buckman/crypt/kaneton/kaneton/library/include/library.h
  *
  * created       julien quintard   [sun jun 10 17:31:41 2007]
  * updated       matthieu bucchianeri   [fri sep  7 16:52:36 2007]
@@ -34,8 +34,8 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/types.h>
-#include <libc/stdarg.h>
+#include <library/types.h>
+#include <library/stdarg.h>
 
 /*
  * ---------- types -----------------------------------------------------------

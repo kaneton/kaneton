@@ -3,32 +3,32 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/libstring/strtoul.c
+ * file          /home/buckman/kaneton/libs/klibrary/libstring/strtol.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:56:20 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 11:56:25 2006]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
-#include <libc/limits.h>
-#include <libc/ctype.h>
+#include <library/library.h>
+#include <library/limits.h>
+#include <library/ctype.h>
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-unsigned long		strtoul(const char*			nptr,
-				char**				endptr,
-				int				base)
+long			strtol(const char*			nptr,
+			       char**				endptr,
+			       int				base)
 {
   const char*		s = nptr;
-  unsigned long		cutoff;
+  long			cutoff;
   int			cutlim;
-  unsigned long		acc;
+  long			acc;
   int			neg;
   int			any;
   int			c;
@@ -66,8 +66,19 @@ unsigned long		strtoul(const char*			nptr,
   if (base == 0)
     base = c == '0' ? 8 : 10;
 
-  cutoff = ULONG_MAX / (unsigned long) base;
-  cutlim = (int) (ULONG_MAX % (unsigned long) base);
+  cutoff = neg ? SLONG_MIN : SLONG_MAX;
+  cutlim = (int) (cutoff % base);
+  cutoff /= base;
+
+  if (neg == 1)
+    {
+      if (cutlim > 0)
+	{
+	  cutlim -= base;
+	  cutoff += 1;
+	}
+      cutlim = -cutlim;
+    }
 
   for (acc = 0, any = 0; ; c = (unsigned char) *s++)
     {
@@ -82,27 +93,45 @@ unsigned long		strtoul(const char*			nptr,
 	break;
       if (any < 0)
 	continue;
-
-      if (acc > cutoff || (acc == cutoff && c > cutlim))
+      if (neg == 1)
 	{
-	  any = -1;
-	  acc = ULONG_MAX;
+	  if (acc < cutoff || (acc == cutoff && c > cutlim))
+	    {
+	      any = -1;
+	      acc = SLONG_MIN;
 
-	  /* XXX
-	  errno = E2BIG;
-	  suberrno = ERANGE;
-	  */
+	      /* XXX
+	      errno = E2BIG;
+	      suberrno = ERANGE;
+	      */
+	    }
+	  else
+	    {
+	      any = 1;
+	      acc *= base;
+	      acc -= c;
+	    }
 	}
       else
 	{
-	  any = 1;
-	  acc *= (unsigned long) base;
-	  acc += c;
+	  if (acc > cutoff || (acc == cutoff && c > cutlim))
+	    {
+	      any = -1;
+	      acc = SLONG_MAX;
+
+	      /* XXX
+	      errno = E2BIG;
+	      suberrno = ERANGE;
+	      */
+	    }
+	  else
+	    {
+	      any = 1;
+	      acc *= base;
+	      acc += c;
+	    }
 	}
     }
-
-  if (neg != 0 && any > 0)
-    acc = -acc;
 
   if (endptr != 0)
     *endptr = (char*) (any ? s - 1 : nptr);

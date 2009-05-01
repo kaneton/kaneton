@@ -3,7 +3,7 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/libstring/strncmp.c
+ * file          /home/buckman/kaneton/libs/klibrary/libstring/strncmp.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
  * updated       matthieu bucchianeri   [sat may  5 19:20:22 2007]
@@ -13,7 +13,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
+#include <library/library.h>
 
 /*
  * ---------- functions -------------------------------------------------------

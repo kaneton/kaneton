@@ -8,7 +8,6 @@
 ** Last update Ven 19 déc 20:24:28 2008 Jean Guyader
 */
 
-#include <libc/libc.h>
 #include <kaneton.h>
 
 struct debug_shell_cmd_t
@@ -36,11 +35,17 @@ static struct debug_shell_cmd_t        debug_shell_cmd[] =
   {"unset ", debug_shell_unset},
 };
 
+// XXX[NON MAIS FAUT PAS DECONNER!!!! c'etait dans core.h]
+#define array_size(_array_)                                             \
+  (sizeof (_array_) / sizeof (_array_[0]))
+
 void debug_shell(char   (*i_read)(void))
 {
   char  buff[512];
   char  *p = buff;
   int   i = 0;
+
+  ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)"[ready]", 8);
 
   while ((*p = i_read()))
   {

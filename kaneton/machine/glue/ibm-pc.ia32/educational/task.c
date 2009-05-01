@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...hine/glue/ibm-pc.ia32/educational/task.c
+ * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       matthieu bucchianeri   [wed jan  9 12:00:40 2008]
+ * updated       julien quintard   [wed apr 15 07:24:08 2009]
  */
 
 /*
@@ -22,7 +22,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
 #include <kaneton.h>
 
 #include <glue/glue.h>

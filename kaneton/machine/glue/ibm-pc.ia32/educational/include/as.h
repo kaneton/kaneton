@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/as.h
+ * file          /home/mycure/kane...lue/ibm-pc.ia32/educational/include/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       matthieu bucchianeri   [fri jun 15 09:42:29 2007]
+ * updated       julien quintard   [fri may  1 18:01:07 2009]
  */
 
 #ifndef GLUE_AS_H

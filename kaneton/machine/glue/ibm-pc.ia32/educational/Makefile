@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/machine/glue/.current/Makefile
+# file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       julien quintard   [wed jan  2 17:21:01 2008]
+# updated       julien quintard   [fri may  1 00:53:36 2009]
 #
 
 #
@@ -55,6 +55,7 @@ GLUE_INCLUDE		:=		$(_GLUE_INCLUDE_DIR_)/as.h	\
 					$(_GLUE_INCLUDE_DIR_)/region.h	\
 					$(_GLUE_INCLUDE_DIR_)/scheduler.h \
 					$(_GLUE_INCLUDE_DIR_)/segment.h	\
+					$(_GLUE_INCLUDE_DIR_)/test.h	\
 					$(_GLUE_INCLUDE_DIR_)/task.h	\
 					$(_GLUE_INCLUDE_DIR_)/thread.h	\
 					$(_GLUE_INCLUDE_DIR_)/timer.h

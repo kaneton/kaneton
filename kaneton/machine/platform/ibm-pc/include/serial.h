@@ -56,6 +56,9 @@
  * ../serial.c
  */
 
+t_uint32		chk_sum(void				*data,
+				unsigned int			size);
+
 void        		ibmpc_serial_read(t_uint32		com_port,
 					  t_uint8*		data,
 					  t_uint32 		size);
@@ -76,6 +79,10 @@ int			serial_put(char				c);
 t_error			serial_init(t_uint32			com_port,
 				    t_uint8			baud_rate,
 				    t_uint8			bit_type);
+
+t_error			ibmpc_serial_init(t_uint32		com_port,
+					  t_uint8		baud_rate,
+					  t_uint8		bit_type);
 
 
 /*

@@ -3,7 +3,7 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/libdata/alloc.c
+ * file          /home/buckman/kaneton/libs/klibrary/libdata/alloc.c
  *
  * created       cedric aubouy   [sun sep 25 19:57:33 2005]
  * updated       matthieu bucchianeri   [wed dec  6 00:31:11 2006]
@@ -18,8 +18,8 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
-#include <libc/alloc.h>
+#include <library/library.h>
+#include <library/alloc.h>
 #include <kaneton.h>
 
 /*

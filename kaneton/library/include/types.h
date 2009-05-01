@@ -5,7 +5,7 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/library/libc/include/libsys/types.h
+ * file          /home/buckman/kaneton/library/library/include/libsys/types.h
  *
  * created       julien quintard   [sun jun 10 17:37:19 2007]
  * updated       matthieu bucchianeri   [sun aug  5 17:52:11 2007]

@@ -3,31 +3,30 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/libstring/memset.c
+ * file          /home/buckman/kaneton/libs/klibrary/libstring/strchr.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:57:15 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 11:57:00 2006]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
+#include <library/library.h>
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-void*			memset(void*				s,
-			       int				c,
-			       size_t				n)
+char*			strchr(const char*			p,
+			       int				ch)
 {
-  char*			d = s;
   u_int			i;
 
-  for (i = 0; i < n; i++)
-    d[i] = c;
+  for (i = 0; p[i]; i++)
+    if (p[i] == ch)
+      return ((char *) p + i);
 
-  return (d);
+  return (NULL);
 }

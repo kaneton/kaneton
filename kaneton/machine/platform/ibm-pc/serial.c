@@ -13,7 +13,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
 #include <kaneton.h>
 
 #include <platform/platform.h>
@@ -26,7 +25,7 @@
  * compute packet checksum.
  */
 
-static t_uint32		chk_sum(void				*data,
+t_uint32		chk_sum(void				*data,
 				unsigned int			size)
 {
   t_uint32		crc = 0;
@@ -89,7 +88,8 @@ int			serial_send(t_uint32			com_port,
 				    t_uint32			size)
 {
   ibmpc_serial_write(com_port, data, size);
-  return 0;
+
+  return (0);
 }
 
 /*
@@ -99,8 +99,9 @@ int			serial_send(t_uint32			com_port,
 int			serial_recv(t_uint32			com_port,
 				    t_serial_data		*rdata)
 {
-	ibmpc_serial_read(com_port, (t_uint8 *)rdata, sizeof(*rdata));
-	return (0);
+  ibmpc_serial_read(com_port, (t_uint8 *)rdata, sizeof(*rdata));
+
+  return (0);
 }
 
 /*
@@ -122,12 +123,12 @@ int			serial_put(char				c)
           buffer[n++] = '\r';
 	buffer[n++] = c;
       }
-#ifndef DEBUG_SERIAL // XXX
-      //serial_send(SERIAL_PRIMARY, (t_uint8*)"printf", 6);
-#endif
+
       serial_send(SERIAL_PRIMARY, (t_uint8*)buffer, n);
+
       n = 0;
     }
+
   return (1);
 }
 
@@ -138,6 +139,23 @@ int			serial_put(char				c)
 t_error			serial_init(t_uint32			com_port,
 				    t_uint8			baud_rate,
 				    t_uint8			bit_type)
+{
+  OUTB(com_port + 1, 0x00);
+  OUTB(com_port + 3, 0x80);
+  OUTB(com_port + 0, baud_rate);
+  OUTB(com_port + 1, 0x00);
+  OUTB(com_port + 3, bit_type);
+  OUTB(com_port + 2, IBMPC_SERIAL_FIFO_8);
+  OUTB(com_port + 4, 0x08);
+
+  return (ERROR_NONE);
+}
+
+// XXX[real name!]
+
+t_error			ibmpc_serial_init(t_uint32		com_port,
+					  t_uint8		baud_rate,
+					  t_uint8		bit_type)
 {
   OUTB(com_port + 1, 0x00);
   OUTB(com_port + 3, 0x80);

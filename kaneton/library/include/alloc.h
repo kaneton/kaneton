@@ -5,7 +5,7 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libc/include/alloc.h
+ * file          /home/buckman/kaneton/kaneton/library/include/alloc.h
  *
  * created       julien quintard   [sun jun 10 17:33:03 2007]
  * updated       matthieu bucchianeri   [sat sep  1 13:00:54 2007]
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <libc/types.h>
+#include <library/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

@@ -31,7 +31,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
 #include <kaneton.h>
 
 #include <architecture/architecture.h>

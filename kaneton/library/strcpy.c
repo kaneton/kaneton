@@ -3,30 +3,30 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/libstring/strdup.c
+ * file          /home/buckman/kaneton/libs/klibrary/libstring/strcpy.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:56:48 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 11:56:52 2006]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
+#include <library/library.h>
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-char*			strdup(const char*			from)
+char*			strcpy(char*				to,
+			       const char*			from)
 {
-  char*			to;
+  u_int			i;
 
-  if ((to = malloc((strlen(from) + 1) * sizeof(char))) == NULL)
-    return (NULL);
-
-  strcpy(to, from);
+  for (i = 0; from[i]; i++)
+    to[i] = from[i];
+  to[i] = 0;
 
   return (to);
 }

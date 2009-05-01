@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/core.h
+ * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       matthieu bucchianeri   [wed jul 25 20:03:56 2007]
+ * updated       julien quintard   [fri may  1 00:54:19 2009]
  */
 
 #ifndef CORE_CORE_H
@@ -51,9 +51,6 @@
     while (1)								\
       ;									\
   }
-
-#define array_size(_array_)                                             \
-  (sizeof (_array_) / sizeof (_array_[0]))
 
 /*
  * ---------- includes --------------------------------------------------------

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan.../machine/glue/ibm-pc.ia32/optimised/io.c
+ * file          /home/mycure/kane.../machine/glue/ibm-pc.ia32/optimised/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       matthieu bucchianeri   [mon dec 24 19:44:48 2007]
+ * updated       julien quintard   [fri may  1 19:44:20 2009]
  */
 
 /*
@@ -30,7 +30,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
 #include <kaneton.h>
 
 /*

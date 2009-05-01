@@ -5,7 +5,7 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/library/libc/libstring/strrchr.c
+ * file          /home/buckman/kaneton/library/library/libstring/strrchr.c
  *
  * created       matthieu bucchianeri   [mon aug  6 21:54:06 2007]
  * updated       matthieu bucchianeri   [mon aug  6 21:56:48 2007]
@@ -15,7 +15,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
+#include <library/library.h>
 
 /*
  * ---------- functions -------------------------------------------------------

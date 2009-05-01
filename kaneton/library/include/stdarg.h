@@ -5,7 +5,7 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libc/include/stdarg.h
+ * file          /home/buckman/kaneton/kaneton/library/include/stdarg.h
  *
  * created       julien quintard   [sun jun 10 18:04:06 2007]
  * updated       matthieu bucchianeri   [sat sep  1 13:35:36 2007]

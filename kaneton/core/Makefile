@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/Makefile
 #
 # created       julien quintard   [tue jun 26 15:39:11 2007]
-# updated       julien quintard   [wed jan  7 22:30:50 2009]
+# updated       julien quintard   [fri may  1 00:52:35 2009]
 #
 
 #
@@ -48,8 +48,8 @@ SUBDIRS			:=		as				\
 					scheduler			\
 					segment				\
 					set				\
-					thread				\
 					task				\
+					thread				\
 					time
 
 # kaneton objects
@@ -69,8 +69,8 @@ KANETON_LO		:=		$(_AS_LO_)			\
 					$(_SCHEDULER_LO_)		\
 					$(_SEGMENT_LO_)			\
 					$(_SET_LO_)			\
-					$(_THREAD_LO_)			\
 					$(_TASK_LO_)			\
+					$(_THREAD_LO_)			\
 					$(_TIME_LO_)
 
 # core component

@@ -3,7 +3,7 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/libdata/sum2.c
+ * file          /home/buckman/kaneton/libs/klibrary/libdata/sum2.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
  * updated       matthieu bucchianeri   [wed jul 26 19:18:50 2006]
@@ -13,7 +13,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
+#include <library/library.h>
 
 /*
  * ---------- functions -------------------------------------------------------

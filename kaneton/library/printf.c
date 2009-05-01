@@ -3,7 +3,7 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/libstring/printf.c
+ * file          /home/mycure/kaneton/libs/klibrary/libstring/printf.c
  *
  * created       julien quintard   [thu may  6 14:37:44 2004]
  * updated       julien quintard   [fri mar 10 03:49:08 2006]
@@ -13,7 +13,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
+#include <library/library.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

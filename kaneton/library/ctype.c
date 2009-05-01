@@ -3,7 +3,7 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/libstring/ctype.c
+ * file          /home/buckman/kaneton/libs/klibrary/libstring/ctype.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
  * updated       matthieu bucchianeri   [tue jan 24 11:57:43 2006]
@@ -13,9 +13,9 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
-#include <libc/limits.h>
-#include <libc/ctype.h>
+#include <library/library.h>
+#include <library/limits.h>
+#include <library/ctype.h>
 
 /*
  * ---------- globals ---------------------------------------------------------

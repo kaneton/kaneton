@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...kaneton/machine/glue/ibm-pc.ia32/timer.c
+ * file          /home/mycure/kane...chine/glue/ibm-pc.ia32/optimised/timer.c
  *
  * created       julien quintard   [mon jun 11 05:41:14 2007]
- * updated       matthieu bucchianeri   [mon jul 30 16:51:39 2007]
+ * updated       julien quintard   [fri may  1 19:44:30 2009]
  */
 
 /*
@@ -22,7 +22,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
 #include <kaneton.h>
 
 #include <glue/glue.h>

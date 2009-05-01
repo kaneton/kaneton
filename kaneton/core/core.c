@@ -22,7 +22,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
 #include <kaneton.h>
 
 /*
@@ -71,7 +70,7 @@ static void wait_command()
 {
 #ifdef TESTSUITE_REGISTER_TESTS
 	void check_register_tests();
-	check_register_tests();
+	// XXX check_register_tests();
 	cons_msg('+', "wait for command ...\n");
 #endif
 	debug_shell(read_from_serial);
@@ -87,9 +86,10 @@ static void wait_command()
  * 3) displays the current kaneton version.
  * 4) initializes the fine grained allocator.
  * 5) initializes the kernel manager.
- * 6) performs the kernel work...
- * 7) cleans the kernel manager.
- * 8) shutdown the system.
+ * 6) initializes the test system.
+ * 7) launches the very first service.
+ * 8) cleans the kernel manager.
+ * 9) shutdown the system.
  */
 
 void			kaneton(t_init*				bootloader)
@@ -123,23 +123,6 @@ void			kaneton(t_init*				bootloader)
   if (cons_init() != ERROR_NONE)
     core_error("cannot initialize the console manager\n");
 
-// XXX
-// note that a define has been added to the file:
-//
-//  kaneton/machine/platform/ibm-pc/serial.c
-//
-// so that the "printf" message is not displayed
-// prior to any serial transmission.
-//
-#ifdef DEBUG_SERIAL
-  serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1);
-  printf_init(serial_put, 0);
-
-  printf("[DEBUG_SERIAL] activated\r\n");
-
-#endif
-// XXX
-
   /*
    * 3)
    */
@@ -164,16 +147,20 @@ void			kaneton(t_init*				bootloader)
 
   kernel_initialize();
 
-#ifdef VIEW_ENABLE
-  view_initialize();
-#endif
+  cons_msg('+', "kaneton started\n");
 
   /*
    * 6)
    */
 
-  cons_msg('+', "kaneton started\n");
+  module_call(test, test_run);
 
+  // XXX[remove]
+#ifdef VIEW_ENABLE
+  view_initialize();
+#endif
+
+  // XXX[remove]
 #ifdef IA32_DEPENDENT
   ibmpc_keyboard_init();
 #endif
@@ -246,7 +233,12 @@ void			kaneton(t_init*				bootloader)
   kthread = 0;
 #endif
 
+  /*
+   * 7)
+   */
+
   cons_msg('+', "launching the initial service: mod\n");
+
   if (kaneton_launch() != ERROR_NONE)
     cons_msg('!', "failed to start the initial mod service\n");
 

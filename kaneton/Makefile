@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [fri aug 29 19:57:36 2008]
+# updated       julien quintard   [fri may  1 19:16:17 2009]
 #
 
 #
@@ -35,7 +35,8 @@ include			../environment/env.mk
 
 SUBDIRS			:=		core				\
 					machine				\
-					libc
+					library				\
+					modules				
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -44,17 +45,12 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_KANETON_)
 
-ifneq ($(_TESTSUITE_),)
-INPUTS = $(_TEST_LO_)
-SUBDIRS += $(_TEST_DIR_)			
-endif
-
-$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_) $(INPUTS)
+$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)
 	$(call env_remove,$(_KANETON_),)
 
 	$(call env_executable,$(_KANETON_),				\
-			      $(_CORE_LO_) $(_MACHINE_LO_) $(_LIBC_LO_)	\
-			      $(INPUTS),				\
+			      $(_CORE_LO_) $(_MACHINE_LO_)		\
+			      $(_LIBRARY_LO_) $(_MODULES_LO_),		\
 			      $(_KANETON_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 

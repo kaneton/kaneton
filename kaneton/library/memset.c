@@ -3,28 +3,31 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/libstring/strlen.c
+ * file          /home/buckman/kaneton/libs/klibrary/libstring/memset.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:56:44 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 11:57:15 2006]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc/libc.h>
+#include <library/library.h>
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-size_t			strlen(const char*			str)
+void*			memset(void*				s,
+			       int				c,
+			       size_t				n)
 {
+  char*			d = s;
   u_int			i;
 
-  for (i = 0; str[i]; i++)
-    ;
+  for (i = 0; i < n; i++)
+    d[i] = c;
 
-  return (i);
+  return (d);
 }
