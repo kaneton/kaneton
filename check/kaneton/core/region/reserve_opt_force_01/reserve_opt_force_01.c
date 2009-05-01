@@ -14,12 +14,12 @@ void		check_region_reserve_opt_force_01(void)
 
   TEST_NEW_AS(task, as);
 
-  ASSERT(segment_reserve(as,
+  assert(segment_reserve(as,
 			    2 * PAGESZ,
 			    PERM_READ,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
-  ASSERT(region_reserve(as,
+  assert(region_reserve(as,
 			   seg,
 			   PAGESZ,
 			   REGION_OPT_FORCE,
@@ -28,14 +28,14 @@ void		check_region_reserve_opt_force_01(void)
 			   &reg) == ERROR_NONE,
 	    "error reserving region\n");
 
-  ASSERT(region_get(as, reg, &o) == ERROR_NONE,
+  assert(region_get(as, reg, &o) == ERROR_NONE,
 	    "error getting region\n");
 
-  ASSERT(o->regid == reg, "Bad regid field\n");
-  ASSERT(o->segid == seg, "Bad segid field\n");
-  ASSERT(o->address == (t_vaddr)reg, "Bad address field\n");
-  ASSERT(o->offset == PAGESZ, "Bad offset field\n");
-  ASSERT(o->size == PAGESZ, "Bad size field\n");
+  assert(o->regid == reg, "Bad regid field\n");
+  assert(o->segid == seg, "Bad segid field\n");
+  assert(o->address == (t_vaddr)reg, "Bad address field\n");
+  assert(o->offset == PAGESZ, "Bad offset field\n");
+  assert(o->size == PAGESZ, "Bad size field\n");
 
   TEST_LEAVE_AS(task, as);
 

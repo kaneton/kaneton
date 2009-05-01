@@ -20,13 +20,13 @@ void		check_segment_read_write_01(void)
       buff[i] = (i * 2 + 4) % 256;
     }
 
-  ASSERT(segment_reserve(as,
+  assert(segment_reserve(as,
 			    PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  ASSERT(segment_write(seg, 0, buff, PAGESZ) == ERROR_NONE,
+  assert(segment_write(seg, 0, buff, PAGESZ) == ERROR_NONE,
 	    "error writing\n");
 
   for (i = 0; i < PAGESZ; i++)
@@ -34,12 +34,12 @@ void		check_segment_read_write_01(void)
       buff[i] = 0;
     }
 
-  ASSERT(segment_read(seg, 0, buff, PAGESZ) == ERROR_NONE,
+  assert(segment_read(seg, 0, buff, PAGESZ) == ERROR_NONE,
 	    "error reading\n");
 
   for (i = 0; i < PAGESZ; i++)
     {
-      ASSERT(buff[i] == (i * 2 + 4) % 256, "bad data\n");
+      assert(buff[i] == (i * 2 + 4) % 256, "bad data\n");
     }
 
   TEST_LEAVE_AS(task, as);

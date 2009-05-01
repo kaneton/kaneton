@@ -21,8 +21,8 @@ static void	check_timer_handler(t_id tid, t_vaddr data)
 {
   timed = 1;
 
-  ASSERT(tid == id, " x Bad timer id parameter\n");
-  ASSERT(data == 0x41414141, " x Bad pv data parameter\n");
+  assert(tid == id, " x Bad timer id parameter\n");
+  assert(data == 0x41414141, " x Bad pv data parameter\n");
 }
 
 /*
@@ -40,7 +40,7 @@ void		check_time_data_01_entry(void)
   while (start == check_cmos_sec())
     ;
 
-  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer_handler),
+  assert(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer_handler),
 		       0x41414141,
 		       500, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
@@ -49,7 +49,7 @@ void		check_time_data_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && !timed)
     ;
 
-  ASSERT(timed == 1, "Timer failed\n");
+  assert(timed == 1, "Timer failed\n");
 
   TEST_LEAVE();
 }

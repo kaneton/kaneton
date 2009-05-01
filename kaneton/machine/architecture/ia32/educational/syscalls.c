@@ -65,10 +65,10 @@ void			ia32_syshandler_register(void)
   t_vsize		size;
   t_ia32_context	ctx;
 
-  ASSERT(scheduler_current(&caller) == ERROR_NONE);
-  ASSERT(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_NONE);
+  assert(task_current(&task) == ERROR_NONE);
 
-  ASSERT(ia32_get_context(caller, &ctx));
+  assert(ia32_get_context(caller, &ctx));
 
   type = ctx.eax;
   size = ctx.ebx;
@@ -77,7 +77,7 @@ void			ia32_syshandler_register(void)
 
   ctx.eax = res;
 
-  ASSERT(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
+  assert(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
 }
 
 
@@ -95,10 +95,10 @@ void			ia32_syshandler_size(void)
   t_vsize		size;
   t_ia32_context	ctx;
 
-  ASSERT(scheduler_current(&caller) == ERROR_NONE);
-  ASSERT(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_NONE);
+  assert(task_current(&task) == ERROR_NONE);
 
-  ASSERT(ia32_get_context(caller, &ctx));
+  assert(ia32_get_context(caller, &ctx));
 
   type = ctx.eax;
 
@@ -107,7 +107,7 @@ void			ia32_syshandler_size(void)
   ctx.eax = res;
   ctx.ebx = size;
 
-  ASSERT(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX | IA32_CONTEXT_EBX));
+  assert(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX | IA32_CONTEXT_EBX));
 }
 
 /*
@@ -129,10 +129,10 @@ void			ia32_syshandler_send(void)
     t_uint32		reg[4];
   }			u;
 
-  ASSERT(scheduler_current(&caller) == ERROR_NONE);
-  ASSERT(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_NONE);
+  assert(task_current(&task) == ERROR_NONE);
 
-  ASSERT(ia32_get_context(caller, &ctx));
+  assert(ia32_get_context(caller, &ctx));
 
   u.reg[0] = ctx.eax;
   u.reg[1] = ctx.ebx;
@@ -146,7 +146,7 @@ void			ia32_syshandler_send(void)
 
   ctx.eax = res;
 
-  ASSERT(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
+  assert(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
 }
 
 /*
@@ -168,10 +168,10 @@ void			ia32_syshandler_transmit(void)
     t_uint32		reg[4];
   }			u;
 
-  ASSERT(scheduler_current(&caller) == ERROR_NONE);
-  ASSERT(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_NONE);
+  assert(task_current(&task) == ERROR_NONE);
 
-  ASSERT(ia32_get_context(caller, &ctx));
+  assert(ia32_get_context(caller, &ctx));
 
   u.reg[0] = ctx.eax;
   u.reg[1] = ctx.ebx;
@@ -185,7 +185,7 @@ void			ia32_syshandler_transmit(void)
 
   ctx.eax = res;
 
-  ASSERT(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
+  assert(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
 }
 
 /*
@@ -207,10 +207,10 @@ void			ia32_syshandler_receive(void)
     t_uint32		reg[4];
   }			u;
 
-  ASSERT(scheduler_current(&caller) == ERROR_NONE);
-  ASSERT(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_NONE);
+  assert(task_current(&task) == ERROR_NONE);
 
-  ASSERT(ia32_get_context(caller, &ctx));
+  assert(ia32_get_context(caller, &ctx));
 
   type = ctx.eax;
   data = ctx.ebx;
@@ -224,7 +224,7 @@ void			ia32_syshandler_receive(void)
   ctx.esi = u.reg[2];
   ctx.edi = u.reg[3];
 
-  ASSERT(ia32_set_context(caller,
+  assert(ia32_set_context(caller,
 			  &ctx,
 			  IA32_CONTEXT_EAX | IA32_CONTEXT_EBX |
 			  IA32_CONTEXT_ECX | IA32_CONTEXT_EDX |
@@ -250,10 +250,10 @@ void			ia32_syshandler_poll(void)
     t_uint32		reg[4];
   }			u;
 
-  ASSERT(scheduler_current(&caller) == ERROR_NONE);
-  ASSERT(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_NONE);
+  assert(task_current(&task) == ERROR_NONE);
 
-  ASSERT(ia32_get_context(caller, &ctx));
+  assert(ia32_get_context(caller, &ctx));
 
   type = ctx.eax;
   data = ctx.ebx;
@@ -267,7 +267,7 @@ void			ia32_syshandler_poll(void)
   ctx.esi = u.reg[2];
   ctx.edi = u.reg[3];
 
-  ASSERT(ia32_set_context(caller,
+  assert(ia32_set_context(caller,
 			  &ctx,
 			  IA32_CONTEXT_EAX | IA32_CONTEXT_EBX |
 			  IA32_CONTEXT_ECX | IA32_CONTEXT_EDX |

@@ -37,18 +37,18 @@ void		check_event_pic_02(void)
 
   TEST_ENTER();
 
-  ASSERT(event_reserve(32 + 9,
+  assert(event_reserve(32 + 9,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_irq), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Checking Master PIC\n");
   INB(MASTER_PORT_B, mask);
-  ASSERT(((mask & (1 << 2))) == 0,
+  assert(((mask & (1 << 2))) == 0,
 	 " x Bad PIC mask\n");
   printf(" - Checking Slave PIC\n");
   INB(SLAVE_PORT_B, mask);
-  ASSERT(mask == 0xfd,
+  assert(mask == 0xfd,
 	 " x Bad PIC mask\n");
 
   TEST_LEAVE();

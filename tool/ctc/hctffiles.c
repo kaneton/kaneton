@@ -21,8 +21,8 @@
 #include "crc32.h"
 #include "tokens.h"
 
-#define ASSERT
-#ifdef ASSERT
+#define assert
+#ifdef assert
 #include <assert.h>
 #endif
 

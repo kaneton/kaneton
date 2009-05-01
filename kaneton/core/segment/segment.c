@@ -228,7 +228,7 @@ t_error			segment_clone(i_as			asid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(new != NULL);
+  assert(new != NULL);
 
   /*
    * 1)
@@ -237,7 +237,7 @@ t_error			segment_clone(i_as			asid,
   if (segment_get(old, &from) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  ASSERT(from->type != SEGMENT_TYPE_SYSTEM);
+  assert(from->type != SEGMENT_TYPE_SYSTEM);
 
   /*
    * 2)
@@ -305,13 +305,13 @@ t_error			segment_inject(i_as		asid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(o != NULL);
-  ASSERT(o->type == SEGMENT_TYPE_MEMORY ||
+  assert(o != NULL);
+  assert(o->type == SEGMENT_TYPE_MEMORY ||
 	 o->type == SEGMENT_TYPE_CATCH ||
 	 o->type == SEGMENT_TYPE_SYSTEM);
-  ASSERT(o->size != 0);
-  ASSERT((o->perms & PERM_INVALID) == 0);
-  ASSERT(segid != NULL);
+  assert(o->size != 0);
+  assert((o->perms & PERM_INVALID) == 0);
+  assert(segid != NULL);
 
   /*
    * 1)
@@ -450,8 +450,8 @@ t_error			segment_resize(i_segment	old,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(size != 0);
-  ASSERT(new != NULL);
+  assert(size != 0);
+  assert(new != NULL);
 
   /*
    * 1)
@@ -562,9 +562,9 @@ t_error			segment_split(i_segment		segid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(size != 0);
-  ASSERT(left != NULL);
-  ASSERT(right != NULL);
+  assert(size != 0);
+  assert(left != NULL);
+  assert(right != NULL);
 
   /*
    * 1)
@@ -636,8 +636,8 @@ t_error			segment_coalesce(i_segment	left,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(left != right);
-  ASSERT(segid != NULL);
+  assert(left != right);
+  assert(segid != NULL);
 
   /*
    * 1)
@@ -703,7 +703,7 @@ t_error			segment_read(i_segment		segid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(sz != 0);
+  assert(sz != 0);
 
   /*
    * 1)
@@ -753,7 +753,7 @@ t_error			segment_write(i_segment		segid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(sz != 0);
+  assert(sz != 0);
 
   /*
    * 1)
@@ -806,7 +806,7 @@ t_error			segment_copy(i_segment		dst,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(sz != 0);
+  assert(sz != 0);
 
   /*
    * 1)
@@ -865,9 +865,9 @@ t_error			segment_reserve(i_as			asid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(size != 0);
-  ASSERT((perms & PERM_INVALID) == 0);
-  ASSERT(segid != NULL);
+  assert(size != 0);
+  assert((perms & PERM_INVALID) == 0);
+  assert(segid != NULL);
 
   /*
    * 1)
@@ -1230,7 +1230,7 @@ t_error			segment_get(i_segment			segid,
 {
   SEGMENT_ENTER(segment);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   if (set_get(segment->segments, segid, (void**)o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);

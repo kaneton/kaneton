@@ -41,23 +41,23 @@ void		check_sched_context_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
 
   start = check_cmos_sec();
   while ((start + 3) % 60 != check_cmos_sec() && !executed)
     ;
 
-  ASSERT(executed == 1, "Thread not executed\n");
+  assert(executed == 1, "Thread not executed\n");
 
-  ASSERT(!(eflags & (1 << 0)), "flag CF should not be set\n");
-  ASSERT(!(eflags & (1 << 2)), "flag PF should not be set\n");
-  ASSERT(!(eflags & (1 << 6)), "flag ZF should not be set\n");
-  ASSERT(!(eflags & (1 << 7)), "flag SF should not be set\n");
-  ASSERT(!(eflags & (1 << 11)), "flag OF should not be set\n");
+  assert(!(eflags & (1 << 0)), "flag CF should not be set\n");
+  assert(!(eflags & (1 << 2)), "flag PF should not be set\n");
+  assert(!(eflags & (1 << 6)), "flag ZF should not be set\n");
+  assert(!(eflags & (1 << 7)), "flag SF should not be set\n");
+  assert(!(eflags & (1 << 11)), "flag OF should not be set\n");
 
   TEST_LEAVE();
 }

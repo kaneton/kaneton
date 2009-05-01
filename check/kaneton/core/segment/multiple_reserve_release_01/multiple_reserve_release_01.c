@@ -26,15 +26,15 @@ void		check_segment_multiple_reserve_release_01(void)
   RESERVE_AND_CHECK(as, 2, seg);
   RESERVE_AND_CHECK(as, 8, seg + 1);
   RESERVE_AND_CHECK(as, 2, seg + 2);
-  ASSERT(segment_release(seg[1]) == ERROR_NONE, "error releasing segment\n");
+  assert(segment_release(seg[1]) == ERROR_NONE, "error releasing segment\n");
   RESERVE_AND_CHECK(as, 5, seg + 1);
-  ASSERT(segment_release(seg[0]) == ERROR_NONE, "error releasing segment\n");
+  assert(segment_release(seg[0]) == ERROR_NONE, "error releasing segment\n");
   RESERVE_AND_CHECK(as, 8, seg);
   RESERVE_AND_CHECK(as, 4, seg + 3);
-  ASSERT(segment_release(seg[0]) == ERROR_NONE, "error releasing segment\n");
-  ASSERT(segment_release(seg[1]) == ERROR_NONE, "error releasing segment\n");
-  ASSERT(segment_release(seg[2]) == ERROR_NONE, "error releasing segment\n");
-  ASSERT(segment_release(seg[3]) == ERROR_NONE, "error releasing segment\n");
+  assert(segment_release(seg[0]) == ERROR_NONE, "error releasing segment\n");
+  assert(segment_release(seg[1]) == ERROR_NONE, "error releasing segment\n");
+  assert(segment_release(seg[2]) == ERROR_NONE, "error releasing segment\n");
+  assert(segment_release(seg[3]) == ERROR_NONE, "error releasing segment\n");
 
   TEST_LEAVE_AS(task, as);
 

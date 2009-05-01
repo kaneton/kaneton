@@ -21,14 +21,14 @@
   {											\
     o_segment*	o;									\
 											\
-    ASSERT(segment_reserve((As), (Nbpages) * PAGESZ, PERM_READ, (Seg)) == ERROR_NONE,	\
+    assert(segment_reserve((As), (Nbpages) * PAGESZ, PERM_READ, (Seg)) == ERROR_NONE,	\
 	 "error reserving segment\n");							\
-    ASSERT(segment_get(*(Seg), &o) == ERROR_NONE, "error getting segment\n");		\
-    ASSERT(o->segid == *(Seg), "Bad segid field\n");					\
-    ASSERT(o->asid == (As), "Bad asid field\n");					\
-    ASSERT(o->address == (t_uint32)(*(Seg)), "Bad address field\n");			\
-    ASSERT(o->size == (Nbpages) * PAGESZ, "Bad size field\n");				\
-    ASSERT(o->perms == PERM_READ, "Bad perms field\n");					\
+    assert(segment_get(*(Seg), &o) == ERROR_NONE, "error getting segment\n");		\
+    assert(o->segid == *(Seg), "Bad segid field\n");					\
+    assert(o->asid == (As), "Bad asid field\n");					\
+    assert(o->address == (t_uint32)(*(Seg)), "Bad address field\n");			\
+    assert(o->size == (Nbpages) * PAGESZ, "Bad size field\n");				\
+    assert(o->perms == PERM_READ, "Bad perms field\n");					\
   }											\
   while (0)
 

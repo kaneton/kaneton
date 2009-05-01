@@ -14,10 +14,10 @@ void		check_segment_perms_04(void)
 
   TEST_NEW_AS(task, as);
 
-  ASSERT(segment_reserve(as, PAGESZ, PERM_READ , &seg) == ERROR_NONE,
+  assert(segment_reserve(as, PAGESZ, PERM_READ , &seg) == ERROR_NONE,
          "Error reserving segment\n");
 
-  ASSERT(segment_write(seg, 0, &i, sizeof(t_uint32)) != ERROR_NONE,
+  assert(segment_write(seg, 0, &i, sizeof(t_uint32)) != ERROR_NONE,
 	    "error: wrote to ro segment\n");
 
 

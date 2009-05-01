@@ -51,15 +51,15 @@ void		check_event_softint_02(void)
   event_release(57);
   event_release(58);
 
-  ASSERT(event_reserve(56,
+  assert(event_reserve(56,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_softint1), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
-  ASSERT(event_reserve(57,
+  assert(event_reserve(57,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_softint2), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
-  ASSERT(event_reserve(58,
+  assert(event_reserve(58,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_softint3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
@@ -68,7 +68,7 @@ void		check_event_softint_02(void)
   asm volatile("int $56");
   asm volatile("int $57");
   asm volatile("int $58");
-  ASSERT(thrown == 3, " x One or more softint were not caught\n");
+  assert(thrown == 3, " x One or more softint were not caught\n");
   printf(" - Execution resumed\n");
 
   TEST_LEAVE();

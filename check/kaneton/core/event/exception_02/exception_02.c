@@ -31,14 +31,14 @@ void		check_event_exception_02(void)
 {
   TEST_ENTER();
 
-  ASSERT(event_reserve(3,
+  assert(event_reserve(3,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_int3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Throwing exception\n");
   asm volatile("int $3");
-  ASSERT(thrown == 1, " x Exception not caught\n");
+  assert(thrown == 1, " x Exception not caught\n");
   printf(" - Execution resumed\n");
 
   TEST_LEAVE();

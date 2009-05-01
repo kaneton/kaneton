@@ -61,26 +61,26 @@ void		check_sched_priority_02_entry(void)
   TEST_ENTER();
 
   CLI();
-  ASSERT(check_thread_create(ktask, 70, (t_vaddr)thread1, &id[0]) == 0,
+  assert(check_thread_create(ktask, 70, (t_vaddr)thread1, &id[0]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, 130, (t_vaddr)thread2, &id[1]) == 0,
+  assert(check_thread_create(ktask, 130, (t_vaddr)thread2, &id[1]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, 150, (t_vaddr)thread3, &id[2]) == 0,
+  assert(check_thread_create(ktask, 150, (t_vaddr)thread3, &id[2]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, 170, (t_vaddr)thread4, &id[3]) == 0,
+  assert(check_thread_create(ktask, 170, (t_vaddr)thread4, &id[3]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, 190, (t_vaddr)thread5, &id[4]) == 0,
+  assert(check_thread_create(ktask, 190, (t_vaddr)thread5, &id[4]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, 210, (t_vaddr)thread6, &id[5]) == 0,
+  assert(check_thread_create(ktask, 210, (t_vaddr)thread6, &id[5]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, 230, (t_vaddr)thread7, &id[6]) == 0,
+  assert(check_thread_create(ktask, 230, (t_vaddr)thread7, &id[6]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, 250, (t_vaddr)thread8, &id[7]) == 0,
+  assert(check_thread_create(ktask, 250, (t_vaddr)thread8, &id[7]) == 0,
 	 "error creating thread\n");
 
   for (i = 0; i < 8; i++)
     {
-      ASSERT(thread_state(id[i], SCHEDULER_STATE_RUN) == ERROR_NONE,
+      assert(thread_state(id[i], SCHEDULER_STATE_RUN) == ERROR_NONE,
 	     "cannot start thread\n");
     }
   STI();
@@ -90,13 +90,13 @@ void		check_sched_priority_02_entry(void)
     ;
 
   for (i = 0; i < 8; i++)
-    ASSERT(executed[i] != 0, "One or more threads not executed\n");
+    assert(executed[i] != 0, "One or more threads not executed\n");
 
   for (i = 0; i < 7; i++)
     {
       if (!(executed[i] < executed[i + 1]))
 	err++;
-      ASSERT(err < 2, "Priority not respected\n");
+      assert(err < 2, "Priority not respected\n");
     }
 
   TEST_LEAVE();

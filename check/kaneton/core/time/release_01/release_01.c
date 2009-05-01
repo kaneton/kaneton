@@ -32,18 +32,18 @@ void		check_time_release_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer_handler), 0,
+  assert(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer_handler), 0,
 		       1000, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
 
-  ASSERT(timer_release(id) == ERROR_NONE,
+  assert(timer_release(id) == ERROR_NONE,
 	 "Cannot timer_release\n");
 
   start = check_cmos_sec();
   while ((start + 3) % 60 != check_cmos_sec())
     ;
 
-  ASSERT(timed == 0, "Timer was not cancelled\n");
+  assert(timed == 0, "Timer was not cancelled\n");
 
   TEST_LEAVE();
 }

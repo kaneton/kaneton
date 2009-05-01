@@ -19,18 +19,18 @@ void		check_as_as_switching_01(void)
 
   TEST_ENTER();
 
-  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_PROGRAM,
 		      TASK_BEHAV_INTERACTIVE,
 		      TASK_PRIOR_INTERACTIVE,
 		      &task) == ERROR_NONE,
 	 "Error creating task\n");
-  ASSERT(as_reserve(task, &as) == ERROR_NONE,
+  assert(as_reserve(task, &as) == ERROR_NONE,
 	 "Error creating as\n");
 
-  ASSERT(as_get(as, &o) == ERROR_NONE,
+  assert(as_get(as, &o) == ERROR_NONE,
 	 "Error in as_get\n");
 
-  ASSERT(region_reserve(as,
+  assert(region_reserve(as,
 			(i_segment)init->kstack,
 			0,
 			REGION_OPT_FORCE,
@@ -39,13 +39,13 @@ void		check_as_as_switching_01(void)
 			&reg) == ERROR_NONE,
 	 "Error reserving region for kstack\n");
 
-  ASSERT(segment_reserve(as,
+  assert(segment_reserve(as,
 			 PAGESZ,
 			 PERM_READ | PERM_WRITE,
 			 &seg) == ERROR_NONE,
 	 "Error in segment_reserve");
 
-  ASSERT(region_reserve(as,
+  assert(region_reserve(as,
 			seg,
 			0,
 			REGION_OPT_NONE,
@@ -54,25 +54,25 @@ void		check_as_as_switching_01(void)
 			&reg)  == ERROR_NONE,
 	 "Error in region_reserve");
 
-  ASSERT(map_reserve(as,
+  assert(map_reserve(as,
 		     MAP_OPT_NONE,
 		     PAGESZ,
 		     PERM_READ | PERM_WRITE,
 		     &addr) == ERROR_NONE,
 	 "Error in map_reserve");
 
-  ASSERT(as_get(kasid, &o) == ERROR_NONE,
+  assert(as_get(kasid, &o) == ERROR_NONE,
 	    "cannot get kernel as\n");
 
   kdir = o->machdep.pd;
 
-  ASSERT(as_get(as, &o) == ERROR_NONE,
+  assert(as_get(as, &o) == ERROR_NONE,
 	    "cannot get created as\n");
 
   ptr1 = (int*)(t_uint32)reg;
   ptr2 = (int*)addr;
 
-  ASSERT(ia32_pd_activate(o->machdep.pd, IA32_PD_CACHED,
+  assert(ia32_pd_activate(o->machdep.pd, IA32_PD_CACHED,
 			  IA32_PD_WRITEBACK) == ERROR_NONE,
 	    "cannot switch as\n");
 
@@ -83,13 +83,13 @@ void		check_as_as_switching_01(void)
 
   ia32_pd_activate(kdir, IA32_PD_CACHED, IA32_PD_WRITEBACK);
 
-  ASSERT(i == 0x41424344, "read/write test failed\n");
+  assert(i == 0x41424344, "read/write test failed\n");
 
-  ASSERT(j == 0x40414243, "read/write test failed\n");
+  assert(j == 0x40414243, "read/write test failed\n");
 
-  ASSERT(as_release(as) == ERROR_NONE,
+  assert(as_release(as) == ERROR_NONE,
 	 "Failed to release as\n");
-  ASSERT(task_release(task) == ERROR_NONE,
+  assert(task_release(task) == ERROR_NONE,
 	 "Failed to release task\n");
 
   TEST_LEAVE();

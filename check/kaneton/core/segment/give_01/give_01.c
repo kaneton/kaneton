@@ -29,54 +29,54 @@ void		check_segment_give_01(void)
   void*		chiche;
 
   TEST_ENTER();
-  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task1) == ERROR_NONE,
 	   "error creating task\n");
 
-  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task2) == ERROR_NONE,
 	   "error creating task\n");
 
-  ASSERT(as_reserve(task1, &as1) == ERROR_NONE, "error creating as\n");
+  assert(as_reserve(task1, &as1) == ERROR_NONE, "error creating as\n");
 
-  ASSERT(as_reserve(task2, &as2) == ERROR_NONE, "error creating as\n");
+  assert(as_reserve(task2, &as2) == ERROR_NONE, "error creating as\n");
 
-  ASSERT(segment_reserve(as1,
+  assert(segment_reserve(as1,
 			    2 * PAGESZ,
 			    PERM_READ,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  ASSERT(segment_give(as2, seg) == ERROR_NONE, "error giving segment\n");
+  assert(segment_give(as2, seg) == ERROR_NONE, "error giving segment\n");
 
-  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after segment_give\n");
+  assert(segment_get(seg, &o) == ERROR_NONE, "error getting segment after segment_give\n");
 
-  ASSERT(o->asid == as2, "Bad asid field after segment_give\n");
+  assert(o->asid == as2, "Bad asid field after segment_give\n");
 
-  ASSERT(as_get(as1, &oas) == ERROR_NONE, "error getting as after segment_give\n");
+  assert(as_get(as1, &oas) == ERROR_NONE, "error getting as after segment_give\n");
 
-  ASSERT(set_get(oas->segments, seg, &chiche) != ERROR_NONE,
+  assert(set_get(oas->segments, seg, &chiche) != ERROR_NONE,
 	    "error: segment not removed from source as after segment_give\n");
 
-  ASSERT(as_get(as2, &oas) == ERROR_NONE, "error getting as after segment_give\n");
+  assert(as_get(as2, &oas) == ERROR_NONE, "error getting as after segment_give\n");
 
-  ASSERT(set_get(oas->segments, seg, &chiche) == ERROR_NONE,
+  assert(set_get(oas->segments, seg, &chiche) == ERROR_NONE,
 	    "error: segment not added to destination as after segment_give\n");
 
-  ASSERT(as_release(as1) == ERROR_NONE,
+  assert(as_release(as1) == ERROR_NONE,
 	    "failed to release as\n");
 
-  ASSERT(as_release(as2) == ERROR_NONE,
+  assert(as_release(as2) == ERROR_NONE,
 	    "failed to release as\n");
 
-  ASSERT(task_release(task1) == ERROR_NONE,
+  assert(task_release(task1) == ERROR_NONE,
 	    "failed to release task\n");
 
-  ASSERT(task_release(task2) == ERROR_NONE,
+  assert(task_release(task2) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();

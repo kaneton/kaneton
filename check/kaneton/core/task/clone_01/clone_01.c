@@ -40,14 +40,14 @@ void		check_task_clone_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(check_task_create(TASK_CLASS_DRIVER, &tsk) == 0,
+  assert(check_task_create(TASK_CLASS_DRIVER, &tsk) == 0,
 	"error creating task\n");
 
-  ASSERT(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+  assert(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start task\n");
   STI();
 
@@ -55,12 +55,12 @@ void		check_task_clone_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && !executed)
     ;
 
-  ASSERT(executed == 1, "Thread not executed\n");
+  assert(executed == 1, "Thread not executed\n");
 
   go = 1;
 
   CLI();
-  ASSERT(task_clone(tsk, &cloned) == ERROR_NONE,
+  assert(task_clone(tsk, &cloned) == ERROR_NONE,
 	 "cannot clone task\n");
   STI();
 
@@ -68,7 +68,7 @@ void		check_task_clone_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && executed != 2)
     ;
 
-  ASSERT(executed == 2, "Cloned thread not executed\n")
+  assert(executed == 2, "Cloned thread not executed\n")
 
   TEST_LEAVE();
 }

@@ -27,15 +27,15 @@ void		check_segment_coalesce_01(void)
   o_segment*	o;
 
   TEST_ENTER();
-  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+  assert(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  ASSERT(segment_reserve(as,
+  assert(segment_reserve(as,
 			    PAGESZ,
 			    PERM_READ,
 			    &seg) == ERROR_NONE,
@@ -43,7 +43,7 @@ void		check_segment_coalesce_01(void)
 
   while (try < 40)
     {
-      ASSERT(segment_reserve(as,
+      assert(segment_reserve(as,
 				PAGESZ,
 				PERM_READ,
 				&seg2) == ERROR_NONE,
@@ -58,23 +58,23 @@ void		check_segment_coalesce_01(void)
     }
 
   if (try == 40)
-    ASSERT(0, "FATAL ERROR\n");
+    assert(0, "FATAL ERROR\n");
 
-  ASSERT(segment_coalesce(seg, seg2, &seg) == ERROR_NONE,
+  assert(segment_coalesce(seg, seg2, &seg) == ERROR_NONE,
 	    "error in coalesce\n");
 
-  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after coalesce\n");
+  assert(segment_get(seg, &o) == ERROR_NONE, "error getting segment after coalesce\n");
 
-  ASSERT(o->segid == seg, "Bad segid field after coalesce\n");
-  ASSERT(o->asid == as, "Bad asid field after coalesce\n");
-  ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after coalesce\n");
-  ASSERT(o->address == (t_uint32)seg, "Bad address field after coalesce\n");
-  ASSERT(o->size == 2 * PAGESZ, "Bad size field after coalesce\n");
-  ASSERT(o->perms == PERM_READ, "Bad perms field after coalesce\n");
+  assert(o->segid == seg, "Bad segid field after coalesce\n");
+  assert(o->asid == as, "Bad asid field after coalesce\n");
+  assert(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after coalesce\n");
+  assert(o->address == (t_uint32)seg, "Bad address field after coalesce\n");
+  assert(o->size == 2 * PAGESZ, "Bad size field after coalesce\n");
+  assert(o->perms == PERM_READ, "Bad perms field after coalesce\n");
 
-  ASSERT(segment_get(seg2, &o) != ERROR_NONE, "old segment not removed after coalesce\n");
+  assert(segment_get(seg2, &o) != ERROR_NONE, "old segment not removed after coalesce\n");
 
-  ASSERT(segment_reserve(as,
+  assert(segment_reserve(as,
 			    PAGESZ,
 			    PERM_READ,
 			    &seg) == ERROR_NONE,
@@ -83,7 +83,7 @@ void		check_segment_coalesce_01(void)
   try = 0;
   while (try < 40)
     {
-      ASSERT(segment_reserve(as,
+      assert(segment_reserve(as,
 				PAGESZ,
 				PERM_READ,
 				&seg2) == ERROR_NONE,
@@ -98,18 +98,18 @@ void		check_segment_coalesce_01(void)
     }
 
   if (try == 40)
-    ASSERT(0, "FATAL ERROR\n");
+    assert(0, "FATAL ERROR\n");
 
-  ASSERT(segment_perms(seg, PERM_WRITE) == ERROR_NONE,
+  assert(segment_perms(seg, PERM_WRITE) == ERROR_NONE,
 	    "error setting perms\n");
 
-  ASSERT(segment_coalesce(seg, seg2, &seg) != ERROR_NONE,
+  assert(segment_coalesce(seg, seg2, &seg) != ERROR_NONE,
 	    "coalesced segments with different perms\n");
 
-  ASSERT(as_release(as) == ERROR_NONE,
+  assert(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  ASSERT(task_release(task) == ERROR_NONE,
+  assert(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();

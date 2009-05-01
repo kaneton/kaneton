@@ -46,20 +46,20 @@ void		check_sched_stack_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id1) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id1) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id2) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id2) == 0,
 	 "error creating thread\n");
 
-  ASSERT(thread_store(id1, &ctx1) == ERROR_NONE,
+  assert(thread_store(id1, &ctx1) == ERROR_NONE,
 	 "error in thread_store\n");
-  ASSERT(thread_store(id2, &ctx2) == ERROR_NONE,
+  assert(thread_store(id2, &ctx2) == ERROR_NONE,
 	 "error in thread_store\n");
 
   CLI();
-  ASSERT(thread_state(id1, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id1, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
-  ASSERT(thread_state(id2, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id2, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 
@@ -67,10 +67,10 @@ void		check_sched_stack_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && (!esp1 || !esp2))
     ;
 
-  ASSERT(esp1 != 0 && esp2 != 0, "Thread not executed\n");
+  assert(esp1 != 0 && esp2 != 0, "Thread not executed\n");
 
-  ASSERT(esp1 - 2048 < ctx1.sp && esp1 + 2048 > ctx1.sp, "Bad stack\n");
-  ASSERT(esp2 - 2048 < ctx2.sp && esp2 + 2048 > ctx2.sp, "Bad stack\n");
+  assert(esp1 - 2048 < ctx1.sp && esp1 + 2048 > ctx1.sp, "Bad stack\n");
+  assert(esp2 - 2048 < ctx2.sp && esp2 + 2048 > ctx2.sp, "Bad stack\n");
 
   TEST_LEAVE();
 }

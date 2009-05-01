@@ -85,9 +85,9 @@ static void		pf_handler(t_id				id,
   t_uint32              addr;
   t_ia32_context	ctx;
 
-  ASSERT(scheduler_current(&th) == ERROR_NONE);
+  assert(scheduler_current(&th) == ERROR_NONE);
 
-  ASSERT(ia32_get_context(th, &ctx) == ERROR_NONE);
+  assert(ia32_get_context(th, &ctx) == ERROR_NONE);
 
   SCR2(addr);
 

@@ -67,8 +67,8 @@ t_error			id_clone(o_id*				o,
 
   ID_ENTER(id);
 
-  ASSERT(o != NULL);
-  ASSERT(new != NULL);
+  assert(o != NULL);
+  assert(new != NULL);
 
   r = id_reserve(o, new);
 
@@ -84,8 +84,8 @@ t_error			id_reserve(o_id*			o,
 {
   ID_ENTER(id);
 
-  ASSERT(o != NULL);
-  ASSERT(i != NULL);
+  assert(o != NULL);
+  assert(i != NULL);
 
   *i = o->id++;
 
@@ -101,7 +101,7 @@ t_error			id_release(o_id*			o,
 {
   ID_ENTER(id);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   ID_LEAVE(id, ERROR_NONE);
 }
@@ -114,7 +114,7 @@ t_error			id_build(o_id*				o)
 {
   ID_ENTER(id);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   memset(o, 0x0, sizeof(o_id));
 
@@ -129,7 +129,7 @@ t_error			id_destroy(o_id*			o)
 {
   ID_ENTER(id);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   memset(o, 0x0, sizeof(o_id));
 

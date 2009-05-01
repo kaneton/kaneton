@@ -62,8 +62,8 @@ t_error			ia32_map_chunk(t_vaddr		v,
   i_segment		seg;
   o_region*		reg = alloc;
 
-  ASSERT(!(v % PAGESZ));
-  ASSERT(!(p % PAGESZ));
+  assert(!(v % PAGESZ));
+  assert(!(p % PAGESZ));
 
   if (reg == NULL)
     return (ERROR_UNKNOWN);
@@ -156,7 +156,7 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
   t_ia32_table		pt;
   o_as*			as;
 
-  ASSERT(!(v % PAGESZ));
+  assert(!(v % PAGESZ));
 
   /*
    * 1)
@@ -291,9 +291,9 @@ t_error			ia32_map_region(i_as		asid,
   i_segment		ptseg;
   t_uint32		clear_pt;
 
-  ASSERT(!(size % PAGESZ));
-  ASSERT(!(offset % PAGESZ));
-  ASSERT(!(address % PAGESZ));
+  assert(!(size % PAGESZ));
+  assert(!(offset % PAGESZ));
+  assert(!(address % PAGESZ));
 
   /*
    * 1)
@@ -472,8 +472,8 @@ t_error			ia32_unmap_region(i_as		asid,
   t_ia32_pde		pde;
   t_ia32_pte		pte;
 
-  ASSERT(!(address % PAGESZ));
-  ASSERT(!(size % PAGESZ));
+  assert(!(address % PAGESZ));
+  assert(!(size % PAGESZ));
 
   /*
    * 1)

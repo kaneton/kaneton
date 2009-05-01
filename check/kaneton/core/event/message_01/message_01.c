@@ -27,7 +27,7 @@ void		check_event_message_01(void)
 
   TEST_ENTER();
 
-  ASSERT(event_reserve(3,
+  assert(event_reserve(3,
 		       EVENT_MESSAGE,
 		       EVENT_TASK(ktask),
 		       0x42424242) == ERROR_NONE,
@@ -36,15 +36,15 @@ void		check_event_message_01(void)
   printf(" - Throwing exception\n");
   asm volatile("int $3");
 
-  ASSERT(message_poll(ktask, MESSAGE_TYPE_EVENT, (t_vaddr)&evt, &sz,
+  assert(message_poll(ktask, MESSAGE_TYPE_EVENT, (t_vaddr)&evt, &sz,
 		      &sender) == ERROR_NONE, " x Exception not caught\n");
 
   printf(" + Exception thrown\n");
 
-  ASSERT(evt.id == 3, " x Bad event id in message\n");
-  ASSERT(evt.data == 0x42424242, " x Bad pv data in message\n");
+  assert(evt.id == 3, " x Bad event id in message\n");
+  assert(evt.data == 0x42424242, " x Bad pv data in message\n");
 
-  ASSERT(sender.task == 0, " x Bad sender task\n");
+  assert(sender.task == 0, " x Bad sender task\n");
 
   printf(" - Execution continued\n");
 

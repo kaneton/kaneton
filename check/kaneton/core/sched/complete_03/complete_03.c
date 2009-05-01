@@ -39,16 +39,16 @@ void		check_sched_complete_03_entry(void)
   CLI();
   for (i = 0; i < 5; i++)
     {
-      ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
+      assert(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
 	     "error creating task\n");
 
       for (j = 0; j < 3; j++)
 	{
-	  ASSERT(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+	  assert(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 		 "error creating thread\n");
 	}
 
-      ASSERT(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
+      assert(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start task\n");
     }
   STI();
@@ -57,7 +57,7 @@ void		check_sched_complete_03_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && executed != 15)
     ;
 
-  ASSERT(executed == 15, "Thread not executed\n")
+  assert(executed == 15, "Thread not executed\n")
 
   TEST_LEAVE();
 }

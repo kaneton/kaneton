@@ -73,10 +73,10 @@ void			check_event_context_02(void)
   seg.privilege = ia32_prvl_supervisor;
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
-  ASSERT(ia32_gdt_add_segment(NULL, 14, seg) == ERROR_NONE,
+  assert(ia32_gdt_add_segment(NULL, 14, seg) == ERROR_NONE,
 	 "cannot add gdt segment\n");
 
-  ASSERT(event_reserve(3,
+  assert(event_reserve(3,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_int3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
@@ -111,7 +111,7 @@ void			check_event_context_02(void)
 	       "	movl %%esp, %1		"
 	       : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
-  ASSERT(thrown == 1, " x Exception not caught\n");
+  assert(thrown == 1, " x Exception not caught\n");
 
   if (esp != ctx1)
     printf("esp differs\n");

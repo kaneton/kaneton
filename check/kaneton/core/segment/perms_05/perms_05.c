@@ -18,10 +18,10 @@ void		check_segment_perms_05(void)
 
   TEST_NEW_AS(task, as);
 
-  ASSERT(segment_reserve(as, PAGESZ, PERM_READ | PERM_WRITE, &seg_ref) == ERROR_NONE,
+  assert(segment_reserve(as, PAGESZ, PERM_READ | PERM_WRITE, &seg_ref) == ERROR_NONE,
          "Error reserving segment\n");
 
-  ASSERT(segment_reserve(as,
+  assert(segment_reserve(as,
 			    PAGESZ,
 			    PERM_READ,
 			    &seg) == ERROR_NONE,
@@ -32,10 +32,10 @@ void		check_segment_perms_05(void)
       buff[i] = (i * 4 - 1) % 256;
     }
 
-  ASSERT(segment_write(seg_ref, 0, buff, PAGESZ) == ERROR_NONE,
+  assert(segment_write(seg_ref, 0, buff, PAGESZ) == ERROR_NONE,
 	 "error writing\n");
 
-  ASSERT(segment_copy(seg, 0, seg_ref, 0,
+  assert(segment_copy(seg, 0, seg_ref, 0,
 			 PAGESZ) != ERROR_NONE,
 	    "copy to ro segment\n");
 

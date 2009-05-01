@@ -50,16 +50,16 @@ void		check_time_multiple_reserve_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer1_handler), 0,
+  assert(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer1_handler), 0,
 		       1000, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
-  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer2_handler), 0,
+  assert(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer2_handler), 0,
 		       200, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
-  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer3_handler), 0,
+  assert(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer3_handler), 0,
 		       500, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
-  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer4_handler), 0,
+  assert(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer4_handler), 0,
 		       700, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
 
@@ -67,7 +67,7 @@ void		check_time_multiple_reserve_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec())
     ;
 
-  ASSERT(timed == 0xf, "Timer failed\n");
+  assert(timed == 0xf, "Timer failed\n");
 
   TEST_LEAVE();
 }

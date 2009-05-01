@@ -28,19 +28,19 @@ void		check_segment_simple_reserve_01(void)
 
   TEST_NEW_AS(task, as);
 
-  ASSERT(segment_reserve(as,
+  assert(segment_reserve(as,
 			    2 * PAGESZ,
 			    PERM_READ,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
+  assert(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
 
-  ASSERT(o->segid == seg, "Bad segid field\n");
-  ASSERT(o->asid == as, "Bad asid field\n");
-  ASSERT(o->address == (t_uint32)seg, "Bad address field\n");
-  ASSERT(o->size == 2 * PAGESZ, "Bad size field\n");
-  ASSERT(o->perms == PERM_READ, "Bad perms field\n");
+  assert(o->segid == seg, "Bad segid field\n");
+  assert(o->asid == as, "Bad asid field\n");
+  assert(o->address == (t_uint32)seg, "Bad address field\n");
+  assert(o->size == 2 * PAGESZ, "Bad size field\n");
+  assert(o->perms == PERM_READ, "Bad perms field\n");
 
   TEST_LEAVE_AS(task, as);
 

@@ -35,7 +35,7 @@ void		check_event_exception_errorcode_02(void)
 {
   TEST_ENTER();
 
-  ASSERT(event_reserve(13,
+  assert(event_reserve(13,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_np), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
@@ -44,7 +44,7 @@ void		check_event_exception_errorcode_02(void)
   asm volatile("mov %0, %%gs"
 	       :
 	       : "m" (gs));
-  ASSERT(thrown == 1, " x Exception not caught\n");
+  assert(thrown == 1, " x Exception not caught\n");
   printf(" - Execution resumed\n");
 
   TEST_LEAVE();

@@ -16,17 +16,17 @@ void		check_region_multiple_flush_01(void)
 
   TEST_NEW_AS(task, as);
 
-  ASSERT(as_get(as, &o) == ERROR_NONE, "error getting as\n");
+  assert(as_get(as, &o) == ERROR_NONE, "error getting as\n");
 
   for (i = 0; i < 10; i++)
     {
-      ASSERT(segment_reserve(as,
+      assert(segment_reserve(as,
 				PAGESZ,
 				PERM_READ | PERM_WRITE,
 				&seg) == ERROR_NONE,
 		"error reserving segment\n");
 
-      ASSERT(region_reserve(as,
+      assert(region_reserve(as,
 			       seg,
 			       0,
 			       REGION_OPT_NONE,
@@ -36,11 +36,11 @@ void		check_region_multiple_flush_01(void)
 		"error reserving region\n");
     }
 
-  ASSERT(region_flush(as) == ERROR_NONE, "error flushing regions\n");
+  assert(region_flush(as) == ERROR_NONE, "error flushing regions\n");
 
-  ASSERT(set_size(o->regions, &sz) == ERROR_NONE, "error in get size\n");
+  assert(set_size(o->regions, &sz) == ERROR_NONE, "error in get size\n");
 
-  ASSERT(sz == 0, "wrong size\n");
+  assert(sz == 0, "wrong size\n");
 
   TEST_LEAVE_AS(task, as);
 

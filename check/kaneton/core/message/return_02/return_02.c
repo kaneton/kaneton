@@ -83,33 +83,33 @@ void		check_message_return_02_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk1) == 0,
+  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk1) == 0,
 	"error creating task\n");
 
-  ASSERT(message_register(tsk1, 0, 3000) == ERROR_NONE,
+  assert(message_register(tsk1, 0, 3000) == ERROR_NONE,
 	 "cannot register message type\n");
 
   machine = kernel->machine;
   destt = tsk1;
 
-  ASSERT(check_thread_create(tsk1, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+  assert(check_thread_create(tsk1, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
+  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
 	"error creating task\n");
 
-  ASSERT(message_register(tsk2, 0, 3000) == ERROR_NONE,
+  assert(message_register(tsk2, 0, 3000) == ERROR_NONE,
 	 "cannot register message type\n");
 
   source = tsk2;
 
-  ASSERT(check_thread_create(tsk2, THREAD_HPRIOR, (t_vaddr)thread2, &id) == 0,
+  assert(check_thread_create(tsk2, THREAD_HPRIOR, (t_vaddr)thread2, &id) == 0,
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(task_state(tsk1, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(task_state(tsk1, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start task\n");
-  ASSERT(task_state(tsk2, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(task_state(tsk2, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start task\n");
   STI();
 
@@ -119,11 +119,11 @@ void		check_message_return_02_entry(void)
 
   CLI();
 
-  ASSERT(executed1 == 1 && executed2 == 1, "Thread not executed\n");
+  assert(executed1 == 1 && executed2 == 1, "Thread not executed\n");
 
-  ASSERT(finished == 1, "Messages not exchanged\n");
+  assert(finished == 1, "Messages not exchanged\n");
 
-  ASSERT(error == 0, "Invalid sender or size\n");
+  assert(error == 0, "Invalid sender or size\n");
 
   task_state(tsk1, SCHEDULER_STATE_STOP);
   task_state(tsk2, SCHEDULER_STATE_STOP);

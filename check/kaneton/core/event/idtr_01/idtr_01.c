@@ -31,9 +31,9 @@ void		check_event_idtr_01(void)
 
   SIDT(idtr);
 
-  ASSERT(idtr.size == 2048, "IDT is not 256 entries wide\n");
+  assert(idtr.size == 2048, "IDT is not 256 entries wide\n");
 
-  ASSERT(!(idtr.address % 8), "IDT is not aligned on 8-byte address\n");
+  assert(!(idtr.address % 8), "IDT is not aligned on 8-byte address\n");
 
   TEST_LEAVE();
 }

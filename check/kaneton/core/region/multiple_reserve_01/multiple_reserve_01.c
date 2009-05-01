@@ -11,26 +11,26 @@ void		check_region_multiple_reserve_01(void)
 
   TEST_ENTER();
 
-  ASSERT(segment_reserve(kasid,
+  assert(segment_reserve(kasid,
 			    10 * PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE, "error segment_reserve\n");
 
-  ASSERT(region_reserve(kasid,
+  assert(region_reserve(kasid,
 			   seg,
 			   0,
 			   REGION_OPT_NONE,
 			   0,
 			   2 * PAGESZ,
 			   &reg1) == ERROR_NONE, "error region_reserve 1\n");
-  ASSERT(region_reserve(kasid,
+  assert(region_reserve(kasid,
 			   seg,
 			   3 * PAGESZ,
 			   REGION_OPT_NONE,
 			   0,
 			   2 * PAGESZ,
 			   &reg2) == ERROR_NONE, "error region_reserve 2\n");
-  ASSERT(region_reserve(kasid,
+  assert(region_reserve(kasid,
 			   seg,
 			   6 * PAGESZ,
 			   REGION_OPT_NONE,

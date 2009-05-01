@@ -45,15 +45,15 @@ void		check_sched_priority_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id1) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id1) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_HPRIOR, (t_vaddr)thread2, &id2) == 0,
+  assert(check_thread_create(ktask, THREAD_HPRIOR, (t_vaddr)thread2, &id2) == 0,
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(thread_state(id1, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id1, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
-  ASSERT(thread_state(id2, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id2, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 
@@ -61,15 +61,15 @@ void		check_sched_priority_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec())
     ;
 
-  ASSERT(executed1 != 0 && executed2 != 0, "Thread not executed\n");
+  assert(executed1 != 0 && executed2 != 0, "Thread not executed\n");
 
   CLI();
-  ASSERT(thread_state(id1, SCHEDULER_STATE_STOP) == ERROR_NONE,
+  assert(thread_state(id1, SCHEDULER_STATE_STOP) == ERROR_NONE,
 	 "cannot start thread\n");
-  ASSERT(thread_state(id2, SCHEDULER_STATE_STOP) == ERROR_NONE,
+  assert(thread_state(id2, SCHEDULER_STATE_STOP) == ERROR_NONE,
 	 "cannot start thread\n");
 
-  ASSERT(executed1 < executed2, "Priority not respected\n");
+  assert(executed1 < executed2, "Priority not respected\n");
 
   STI();
 

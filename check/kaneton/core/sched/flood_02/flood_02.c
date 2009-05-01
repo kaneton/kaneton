@@ -39,10 +39,10 @@ void		check_sched_flood_02_entry(void)
   CLI();
   for (i = 0; i < 50; i++)
     {
-      ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+      assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	     "error creating thread\n");
 
-      ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
+      assert(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	     "cannot start thread\n");
     }
   STI();
@@ -51,7 +51,7 @@ void		check_sched_flood_02_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && executed != 50)
     ;
 
-  ASSERT(executed == 50, "One or more threads not executed\n")
+  assert(executed == 50, "One or more threads not executed\n")
 
   TEST_LEAVE();
 }

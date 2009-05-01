@@ -82,8 +82,8 @@ typedef struct
   printf("%s done.\n", __FUNCTION__);					\
   return
 
-#undef ASSERT
-#define ASSERT(Test,Error)						\
+#undef assert
+#define assert(Test,Error)						\
   if (!(Test))								\
     {									\
       printf(Error);							\
@@ -91,14 +91,14 @@ typedef struct
     }
 
 #define TEST_NEW_AS(Task,As)						\
-  ASSERT(task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_INTERACTIVE,	\
+  assert(task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_INTERACTIVE,	\
 		      TASK_PRIOR_INTERACTIVE, &(Task)) == ERROR_NONE,	\
 	 "Error creating task\n");					\
-  ASSERT(as_reserve((Task), &(As)) == ERROR_NONE, "Error creating as\n")
+  assert(as_reserve((Task), &(As)) == ERROR_NONE, "Error creating as\n")
 
 #define TEST_LEAVE_AS(Task,As)						\
-  ASSERT(as_release(As) == ERROR_NONE, "Failed to release as\n");	\
-  ASSERT(task_release(Task) == ERROR_NONE, "Failed to release task\n")
+  assert(as_release(As) == ERROR_NONE, "Failed to release as\n");	\
+  assert(task_release(Task) == ERROR_NONE, "Failed to release task\n")
 
 #define CHECK_WITH_THREAD(_test_)					\
     void _test_ ## _wrapper(void);					\

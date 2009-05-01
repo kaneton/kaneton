@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/...oot/bootloader/qemu-mips.mips64/Makefile
+# file          /home/mycure/kaneton/boot/loader/qemu-mips.mips64/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated       enguerrand raymond   [mon apr 27 11:23:33 2009]
+# updated       julien quintard   [sat may  2 00:02:40 2009]
 #
 
 #
@@ -33,8 +33,6 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-BOOTLOADER		:=		bootloader
-
 BOOTLOADER_C		:=		bootloader.c				\
 					opmode.c				\
 					mmu.c					\
@@ -50,31 +48,27 @@ BOOTLOADER_S		:=		entry.S
 BOOTLOADER_O		:=		$(BOOTLOADER_S:.S=.o)			\
 					$(BOOTLOADER_C:.c=.o)
 
-BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h	\
-					$(_BOOTLOADER_DIR_)/libmips64.h		\
-					$(_BOOTLOADER_DIR_)/libc.h
+BOOTLOADER_INCLUDE	:=		$(_LOADER_DIR_)/bootloader.h		\
+					$(_LOADER_DIR_)/libmips64.h		\
+					$(_LOADER_DIR_)/libc.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(BOOTLOADER)
+main:			$(_LOADER_)
 
-$(BOOTLOADER):	$(BOOTLOADER_O)
-	$(call env_executable,$(BOOTLOADER),				\
+$(_LOADER_):		$(BOOTLOADER_O)
+	$(call env_executable,$(_LOADER_),				\
 			      $(BOOTLOADER_O),				\
-			      $(_BOOTLOADER_DIR_)/layout/bootloader.lyt,\
+			      $(_LOADER_DIR_)/layout/bootloader.lyt,	\
 			      $(ENV_OPTION_NO_STANDARD))
 
 clear:
 	$(call env_remove,$(BOOTLOADER_O),)
 
-	$(call env_remove,$(BOOTLOADER),)
-
-	$(call env_remove,$(_BOOTLOADER_LO_),)
-
-	$(call env_remove,$(BOOTLOADER_BIN),)
+	$(call env_remove,$(_LOADER_),)
 
 	$(call env_purge,)
 
@@ -87,7 +81,6 @@ headers:
 	$(call env_headers,$(BOOTLOADER_C),)
 
 dependencies:
-	$(call env_launch,Makefile,.,$(BOOTLOADER),)
 
 endif
 #

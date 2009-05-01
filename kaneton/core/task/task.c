@@ -86,7 +86,7 @@ t_error			task_current(i_task*			tsk)
 
   TASK_ENTER(task);
 
-  ASSERT(tsk != NULL);
+  assert(tsk != NULL);
 
   if (!scheduler)
     {
@@ -211,7 +211,7 @@ t_error			task_clone(i_task			old,
 
   TASK_ENTER(task);
 
-  ASSERT(new != NULL);
+  assert(new != NULL);
 
   /*
    * 1)
@@ -315,7 +315,7 @@ t_error			task_reserve(t_class			class,
 
   TASK_ENTER(task);
 
-  ASSERT(id != NULL);
+  assert(id != NULL);
 
   /*
    * 1)
@@ -856,7 +856,7 @@ t_error			task_wait(i_task			id,
 
   TASK_ENTER(task);
 
-  ASSERT(wait != NULL);
+  assert(wait != NULL);
 
   /* XXX */
 
@@ -949,7 +949,7 @@ t_error			task_get(i_task				id,
 {
   TASK_ENTER(task);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   if (set_get(task->tasks, id, (void**)o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -1056,7 +1056,7 @@ t_error			task_initialize(void)
       segment->size = init->segments[i].size;
       segment->perms = init->segments[i].perms;
 
-      ASSERT(segment->size != 0);
+      assert(segment->size != 0);
 
       if (segment_inject(asid, segment, &segments[i]) != ERROR_NONE)
 	{
@@ -1085,7 +1085,7 @@ t_error			task_initialize(void)
       region->size = init->regions[i].size;
       region->opts = init->regions[i].opts;
 
-      ASSERT(region->size != 0);
+      assert(region->size != 0);
 
       if (region_inject(asid, region, &useless) != ERROR_NONE)
 	{

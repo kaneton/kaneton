@@ -11,26 +11,26 @@ void		check_region_multiple_reserve_release_01(void)
 
   TEST_ENTER();
 
-  ASSERT(segment_reserve(kasid,
+  assert(segment_reserve(kasid,
 			    10 * PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE, "error segment_reserve\n");
 
-  ASSERT(region_reserve(kasid,
+  assert(region_reserve(kasid,
 			   seg,
 			   0,
 			   REGION_OPT_NONE,
 			   0,
 			   2 * PAGESZ,
 			   &reg1) == ERROR_NONE, "error region_reserve 1\n");
-  ASSERT(region_reserve(kasid,
+  assert(region_reserve(kasid,
 			   seg,
 			   3 * PAGESZ,
 			   REGION_OPT_NONE,
 			   0,
 			   2 * PAGESZ,
 			   &reg2) == ERROR_NONE, "error region_reserve 2\n");
-  ASSERT(region_reserve(kasid,
+  assert(region_reserve(kasid,
 			   seg,
 			   6 * PAGESZ,
 			   REGION_OPT_NONE,
@@ -48,14 +48,14 @@ void		check_region_multiple_reserve_release_01(void)
   for (; p < (t_uint8*)(t_vaddr)reg3 + 4 * PAGESZ; p++)
     *p = 0x0;
 
-  ASSERT(region_release(kasid, reg1) == ERROR_NONE,
+  assert(region_release(kasid, reg1) == ERROR_NONE,
 	    "failed to release region\n");
-  ASSERT(region_release(kasid, reg2) == ERROR_NONE,
+  assert(region_release(kasid, reg2) == ERROR_NONE,
 	    "failed to release region\n");
-  ASSERT(region_release(kasid, reg3) == ERROR_NONE,
+  assert(region_release(kasid, reg3) == ERROR_NONE,
 	    "failed to release region\n");
 
-  ASSERT(segment_release(seg) == ERROR_NONE,
+  assert(segment_release(seg) == ERROR_NONE,
 	    "failed to release segment\n");
 
   TEST_LEAVE();

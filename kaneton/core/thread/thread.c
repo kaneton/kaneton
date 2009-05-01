@@ -226,7 +226,7 @@ t_error			thread_clone(i_task			taskid,
 
   THREAD_ENTER(thread);
 
-  ASSERT(new != NULL);
+  assert(new != NULL);
 
   /*
    * 1)
@@ -332,7 +332,7 @@ t_error			thread_reserve(i_task			taskid,
 
   THREAD_ENTER(thread);
 
-  ASSERT(threadid != NULL);
+  assert(threadid != NULL);
 
   /*
    * 1)
@@ -823,7 +823,7 @@ t_error			thread_get(i_thread			threadid,
 {
   THREAD_ENTER(thread);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   if (set_get(thread->threads, threadid, (void**)o) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);

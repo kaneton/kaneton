@@ -73,8 +73,8 @@ t_error			set_reserve_stack(t_opts		opts,
 
   SET_ENTER(set);
 
-  ASSERT(datasz >= sizeof (t_id));
-  ASSERT(setid != NULL);
+  assert(datasz >= sizeof (t_id));
+  assert(setid != NULL);
 
   /*
    * 1)

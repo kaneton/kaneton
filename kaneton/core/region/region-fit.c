@@ -169,8 +169,8 @@ t_error			region_space(i_as		asid,
 
   REGION_ENTER(region);
 
-  ASSERT(size != 0);
-  ASSERT(address != NULL);
+  assert(size != 0);
+  assert(address != NULL);
 
   if (as_get(asid, &as) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);

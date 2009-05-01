@@ -60,26 +60,26 @@ void		check_sched_medium_03_entry(void)
   TEST_ENTER();
 
   CLI();
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id[0]) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id[0]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id[1]) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id[1]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread3, &id[2]) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread3, &id[2]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread4, &id[3]) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread4, &id[3]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread5, &id[4]) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread5, &id[4]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread6, &id[5]) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread6, &id[5]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread7, &id[6]) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread7, &id[6]) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread8, &id[7]) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread8, &id[7]) == 0,
 	 "error creating thread\n");
 
   for (i = 0; i < 8; i++)
     {
-      ASSERT(thread_state(id[i], SCHEDULER_STATE_RUN) == ERROR_NONE,
+      assert(thread_state(id[i], SCHEDULER_STATE_RUN) == ERROR_NONE,
 	     "cannot start thread\n");
     }
   STI();
@@ -89,7 +89,7 @@ void		check_sched_medium_03_entry(void)
     ;
 
   for (i = 0; i < 8; i++)
-    ASSERT(executed[i] > 15, "One or more threads not executed\n")
+    assert(executed[i] > 15, "One or more threads not executed\n")
 
   TEST_LEAVE();
 }

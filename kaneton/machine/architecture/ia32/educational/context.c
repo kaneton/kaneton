@@ -375,8 +375,8 @@ t_error			ia32_status_context(i_thread		threadid,
 {
   t_ia32_context	ctx;
 
-  ASSERT(pc != NULL);
-  ASSERT(sp != NULL);
+  assert(pc != NULL);
+  assert(sp != NULL);
 
   if (ia32_get_context(threadid, &ctx) != ERROR_NONE)
     return (ERROR_UNKNOWN);

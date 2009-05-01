@@ -25,43 +25,43 @@ void		check_segment_type_01(void)
   o_segment*	o;
 
   TEST_ENTER();
-  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_PROGRAM,
 
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+  assert(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  ASSERT(segment_reserve(as,
+  assert(segment_reserve(as,
 			    2 * PAGESZ,
 			    PERM_READ | PERM_EXEC,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  ASSERT(segment_perms(seg, PERM_READ | PERM_WRITE) == ERROR_NONE,
+  assert(segment_perms(seg, PERM_READ | PERM_WRITE) == ERROR_NONE,
 	    "error setting perms\n");
 
-  ASSERT(segment_type(seg, SEGMENT_TYPE_CATCH) == ERROR_NONE,
+  assert(segment_type(seg, SEGMENT_TYPE_CATCH) == ERROR_NONE,
 	    "error setting type\n");
 
-  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as\n");
+  assert(segment_get(seg, &o) == ERROR_NONE, "error getting as\n");
 
-  ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad perm field after changing perms\n");
-  ASSERT(o->type == SEGMENT_TYPE_CATCH, "Bad type field after changing type\n");
+  assert(o->perms == (PERM_READ | PERM_WRITE), "Bad perm field after changing perms\n");
+  assert(o->type == SEGMENT_TYPE_CATCH, "Bad type field after changing type\n");
 
-  ASSERT(segment_perms(seg, ~(PERM_READ | PERM_WRITE | PERM_EXEC)) !=
+  assert(segment_perms(seg, ~(PERM_READ | PERM_WRITE | PERM_EXEC)) !=
 	    ERROR_NONE,
 	    "error setting bad perms\n");
 
-  ASSERT(segment_type(seg, (1 << 4)) != ERROR_NONE,
+  assert(segment_type(seg, (1 << 4)) != ERROR_NONE,
 	    "error setting bad type\n");
 
-  ASSERT(as_release(as) == ERROR_NONE,
+  assert(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  ASSERT(task_release(task) == ERROR_NONE,
+  assert(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();

@@ -148,7 +148,7 @@ t_error			set_head_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(iterator != NULL);
+  assert(iterator != NULL);
 
   /*
    * 1)
@@ -200,7 +200,7 @@ t_error			set_tail_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(iterator != NULL);
+  assert(iterator != NULL);
 
   /*
    * 1)
@@ -252,7 +252,7 @@ t_error			set_previous_array(i_set		setid,
 
   SET_ENTER(set);
 
-  ASSERT(previous != NULL);
+  assert(previous != NULL);
 
   /*
    * 1)
@@ -302,7 +302,7 @@ t_error			set_next_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(next != NULL);
+  assert(next != NULL);
 
   /*
    * 1)
@@ -350,7 +350,7 @@ static t_error		set_expand_array(o_set			*o,
   t_setsz		i;
   t_setsz		sz;
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   i = o->u.array.arraysz;
 
@@ -401,7 +401,7 @@ static t_error		set_insert_at(o_set			*o,
 {
   t_setsz		limit;
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   /*
    * 1)
@@ -478,7 +478,7 @@ t_error			set_insert_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -546,7 +546,7 @@ t_error			set_append_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -626,7 +626,7 @@ t_error			set_before_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -701,7 +701,7 @@ t_error			set_after_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -786,7 +786,7 @@ t_error			set_add_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -1185,7 +1185,7 @@ t_error			set_locate_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(iterator != NULL);
+  assert(iterator != NULL);
 
   /*
    * 1)
@@ -1278,7 +1278,7 @@ t_error			set_object_array(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -1328,8 +1328,8 @@ t_error			set_reserve_array(t_opts		opts,
 
   SET_ENTER(set);
 
-  ASSERT(datasz >= sizeof (t_id));
-  ASSERT(setid != NULL);
+  assert(datasz >= sizeof (t_id));
+  assert(setid != NULL);
 
   /*
    * 1)

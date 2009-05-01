@@ -35,7 +35,7 @@ void		check_time_message_01_entry(void)
   while (start == check_cmos_sec())
     ;
 
-  ASSERT(timer_reserve(TIMER_MESSAGE, TIMER_TASK(ktask),
+  assert(timer_reserve(TIMER_MESSAGE, TIMER_TASK(ktask),
 		       0x41414141,
 		       500, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
@@ -44,13 +44,13 @@ void		check_time_message_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && !timed)
     ;
 
-  ASSERT(message_poll(ktask, MESSAGE_TYPE_TIMER, (t_vaddr)&evt, &sz,
+  assert(message_poll(ktask, MESSAGE_TYPE_TIMER, (t_vaddr)&evt, &sz,
 		      &sender) == ERROR_NONE, "Timer failed\n");
 
-  ASSERT(evt.id == id, " x Bad event id in message\n");
-  ASSERT(evt.data == 0x41414141, " x Bad pv data in message\n");
+  assert(evt.id == id, " x Bad event id in message\n");
+  assert(evt.data == 0x41414141, " x Bad pv data in message\n");
 
-  ASSERT(sender.task == 0, " x Bad sender task\n");
+  assert(sender.task == 0, " x Bad sender task\n");
 
   TEST_LEAVE();
 }

@@ -21,18 +21,18 @@ void		check_segment_inject_01(void)
   new_seg->size = 2 * PAGESZ;
   new_seg->type = SEGMENT_TYPE_MEMORY;
 
-  ASSERT(segment_inject(as, new_seg, &seg) == ERROR_NONE,
+  assert(segment_inject(as, new_seg, &seg) == ERROR_NONE,
 	    "error injecting segment\n");
 
-  ASSERT((t_paddr)seg == 0x50000000, "Bad segment id after segment_inject\n");
+  assert((t_paddr)seg == 0x50000000, "Bad segment id after segment_inject\n");
 
-  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as after segment_inject\n");
+  assert(segment_get(seg, &o) == ERROR_NONE, "error getting as after segment_inject\n");
 
-  ASSERT(o->segid == seg, "Bad segid field after segment_inject\n");
-  ASSERT(o->asid == as, "Bad asid field after segment_inject\n");
-  ASSERT(o->address == (t_uint32)seg, "Bad address field after segment_inject\n");
-  ASSERT(o->size == 2 * PAGESZ, "Bad size field after segment_inject\n");
-  ASSERT(o->perms == (PERM_READ | PERM_EXEC), "Bad perms field after segment_inject\n");
+  assert(o->segid == seg, "Bad segid field after segment_inject\n");
+  assert(o->asid == as, "Bad asid field after segment_inject\n");
+  assert(o->address == (t_uint32)seg, "Bad address field after segment_inject\n");
+  assert(o->size == 2 * PAGESZ, "Bad size field after segment_inject\n");
+  assert(o->perms == (PERM_READ | PERM_EXEC), "Bad perms field after segment_inject\n");
 
   segment_release(seg);
 

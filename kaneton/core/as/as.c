@@ -248,7 +248,7 @@ t_error			as_vaddr(i_as			asid,
 
   AS_ENTER(as);
 
-  ASSERT(virtual != NULL);
+  assert(virtual != NULL);
 
   /*
    * 1)
@@ -325,7 +325,7 @@ t_error			as_paddr(i_as		asid,
 
   AS_ENTER(as);
 
-  ASSERT(physical != NULL);
+  assert(physical != NULL);
 
   /*
    * 1)
@@ -409,7 +409,7 @@ t_error			as_read(i_as				asid,
 
   AS_ENTER(as);
 
-  ASSERT(size != 0);
+  assert(size != 0);
 
   /*
    * 1)
@@ -551,7 +551,7 @@ t_error			as_write(i_as				asid,
 
   AS_ENTER(as);
 
-  ASSERT(size != 0);
+  assert(size != 0);
 
   /*
    * 1)
@@ -701,8 +701,8 @@ t_error			as_copy(i_as				src_as,
 
   AS_ENTER(as);
 
-  ASSERT(size != 0);
-  ASSERT(src_as != dst_as);
+  assert(size != 0);
+  assert(src_as != dst_as);
 
   /*
    * 1)
@@ -893,7 +893,7 @@ t_error			as_clone(i_task				tskid,
 
   AS_ENTER(as);
 
-  ASSERT(new != NULL);
+  assert(new != NULL);
 
   /*
    * 1)
@@ -1030,7 +1030,7 @@ t_error			as_reserve(i_task			tskid,
 
   AS_ENTER(as);
 
-  ASSERT(asid != NULL);
+  assert(asid != NULL);
 
   /*
    * 1)
@@ -1208,7 +1208,7 @@ t_error			as_get(i_as				asid,
 {
   AS_ENTER(as);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   if (set_get(as->ass, asid, (void**)o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);

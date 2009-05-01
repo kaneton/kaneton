@@ -186,10 +186,10 @@ t_error			region_inject(i_as		asid,
 
   REGION_ENTER(region);
 
-  ASSERT(o != NULL);
-  ASSERT(regid != NULL);
-  ASSERT((o->opts & REGION_OPT_INVALID) == 0);
-  ASSERT(o->size != 0);
+  assert(o != NULL);
+  assert(regid != NULL);
+  assert((o->opts & REGION_OPT_INVALID) == 0);
+  assert(o->size != 0);
 
   /*
    * 1)
@@ -254,9 +254,9 @@ t_error			region_split(i_as			asid,
 
   REGION_ENTER(region);
 
-  ASSERT(size != 0);
-  ASSERT(left != NULL);
-  ASSERT(right != NULL);
+  assert(size != 0);
+  assert(left != NULL);
+  assert(right != NULL);
 
   /*
    * 1)
@@ -354,8 +354,8 @@ t_error			region_resize(i_as			as,
 
   REGION_ENTER(region);
 
-  ASSERT(size != 0);
-  ASSERT(new != NULL);
+  assert(size != 0);
+  assert(new != NULL);
 
   /*
    * 1)
@@ -456,8 +456,8 @@ t_error			region_coalesce(i_as		asid,
 
   REGION_ENTER(region);
 
-  ASSERT(left != right);
-  ASSERT(regid != NULL);
+  assert(left != right);
+  assert(regid != NULL);
 
   /*
    * 1)
@@ -547,9 +547,9 @@ t_error			region_reserve(i_as			asid,
 
   REGION_ENTER(region);
 
-  ASSERT((opts & REGION_OPT_INVALID) == 0);
-  ASSERT(size != 0);
-  ASSERT(regid != NULL);
+  assert((opts & REGION_OPT_INVALID) == 0);
+  assert(size != 0);
+  assert(regid != NULL);
 
   /*
    * 1)
@@ -746,7 +746,7 @@ t_error			region_get(i_as				asid,
 
   REGION_ENTER(region);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   if (as_get(asid, &as) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -782,7 +782,7 @@ t_error			region_initialize(t_vaddr		start,
    * 1)
    */
 
-  ASSERT(size != 0);
+  assert(size != 0);
 
   if ((region = malloc(sizeof(m_region))) == NULL)
     {

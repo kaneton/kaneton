@@ -203,7 +203,7 @@ t_error			timer_insert(o_timer*			o)
 
   TIMER_ENTER(timer);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   /*
    * 1)
@@ -256,8 +256,8 @@ t_error			timer_reserve(t_type			type,
 
   TIMER_ENTER(timer);
 
-  ASSERT((type == EVENT_FUNCTION) || (type == EVENT_MESSAGE));
-  ASSERT(id != NULL);
+  assert((type == EVENT_FUNCTION) || (type == EVENT_MESSAGE));
+  assert(id != NULL);
 
   /*
    * 1)
@@ -502,7 +502,7 @@ t_error			timer_get(i_timer			id,
 {
   TIMER_ENTER(timer);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   if (set_get(timer->timers, id, (void**)o) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);

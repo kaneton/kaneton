@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri may  1 21:05:46 2009]
+ * updated       julien quintard   [sat may  2 00:25:34 2009]
  */
 
 /*
@@ -235,7 +235,7 @@ void			test_dump(void)
 
 t_error			test_run(void)
 {
-  cons_msg('+', "starting the test module\n");
+  cons_msg('+', "test module loaded\n");
 
   /*
    * 1)

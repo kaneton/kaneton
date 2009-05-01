@@ -114,17 +114,17 @@ void		check_thread_fpu_01_entry(void)
   memset(&regs2, 0, sizeof (regs2));
 
   CLI();
-  /*  ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
+  /*  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
       "error creating task\n");*/
   tsk = ktask;
 
-  ASSERT(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+  assert(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,
+  assert(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start task\n");
   STI();
 
@@ -132,9 +132,9 @@ void		check_thread_fpu_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && !invalid)
     ;
 
-  ASSERT(executed1 == 1 && executed2 == 1, "Thread not executed\n");
+  assert(executed1 == 1 && executed2 == 1, "Thread not executed\n");
 
-  ASSERT(invalid == 0, "Error in context switching, "
+  assert(invalid == 0, "Error in context switching, "
 	"some FPU registers are not preserved\n");
 
   TEST_LEAVE();

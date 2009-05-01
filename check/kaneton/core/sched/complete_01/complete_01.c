@@ -39,24 +39,24 @@ void		check_sched_complete_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
+  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
 	"error creating task\n");
 
-  ASSERT(task_get(tsk, &o) == ERROR_NONE,
+  assert(task_get(tsk, &o) == ERROR_NONE,
 	 "error in task_get\n");
 
-  ASSERT(map_reserve(o->asid,
+  assert(map_reserve(o->asid,
 		     MAP_OPT_NONE,
 		     PAGESZ,
 		     PERM_READ | PERM_WRITE,
 		     (t_vaddr*)&ptr) == ERROR_NONE,
 	 "error in map_reserve\n");
 
-  ASSERT(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+  assert(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start task\n");
   STI();
 
@@ -64,7 +64,7 @@ void		check_sched_complete_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && !executed)
     ;
 
-  ASSERT(executed == 1, "Thread not executed\n")
+  assert(executed == 1, "Thread not executed\n")
 
   TEST_LEAVE();
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/core/include/debug.h
+ * file          /home/mycure/kaneton/kaneton/core/debug.TO-REVIEW/debug.h
  *
  * created       julien quintard   [wed jun  6 13:11:05 2007]
- * updated       matthieu bucchianeri   [wed jan  9 20:09:55 2008]
+ * updated       julien quintard   [sat may  2 00:15:28 2009]
  */
 
 /*
@@ -51,38 +51,6 @@
 
 #define DEBUG								\
   (0)
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-#define ASSERT(_test_)							\
-  if (!(_test_))							\
-    {									\
-      printf("assert(%s) failed at %s:%d\n",				\
-             #_test_, __FILE__, __LINE__);				\
-									\
-      while (1)								\
-	;								\
-    }
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct
-{
-  t_uint32			size;
-  t_uint32			magic;
-  t_uint32			crc;
-  t_uint8*			data;
-}				t_serial_data;
-
-typedef struct
-{
- char*				name;
- void*				data;
-}				t_serial_buffer;
 
 /*
  * ---------- prototypes ------------------------------------------------------

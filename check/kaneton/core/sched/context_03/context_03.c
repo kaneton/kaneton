@@ -55,24 +55,24 @@ void		check_sched_context_03_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
 
   start = check_cmos_sec();
   while ((start + 3) % 60 != check_cmos_sec() && !executed)
     ;
 
-  ASSERT(executed == 1, "Thread not executed\n");
+  assert(executed == 1, "Thread not executed\n");
 
-  ASSERT(cs == 0x8, "Bad value for cs\n");
-  ASSERT(ds == 0x10, "Bad value for ds\n");
-  ASSERT(es == 0x10, "Bad value for es\n");
-  ASSERT(fs == 0x10, "Bad value for fs\n");
-  ASSERT(gs == 0x10, "Bad value for gs\n");
-  ASSERT(ss == 0x10, "Bad value for ss\n");
+  assert(cs == 0x8, "Bad value for cs\n");
+  assert(ds == 0x10, "Bad value for ds\n");
+  assert(es == 0x10, "Bad value for es\n");
+  assert(fs == 0x10, "Bad value for fs\n");
+  assert(gs == 0x10, "Bad value for gs\n");
+  assert(ss == 0x10, "Bad value for ss\n");
 
   TEST_LEAVE();
 }

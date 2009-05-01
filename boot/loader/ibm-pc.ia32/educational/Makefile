@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...tloader/ibm-pc.ia32/educational/Makefile
+# file          /home/mycure/kane.../loader/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       julien quintard   [thu jun 28 23:08:39 2007]
+# updated       julien quintard   [sat may  2 00:03:28 2009]
 #
 
 #
@@ -33,8 +33,6 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-BOOTLOADER		:=		bootloader
-
 BOOTLOADER_C		:=		bootloader.c			\
 					cons.c				\
 					init.c				\
@@ -50,28 +48,28 @@ BOOTLOADER_S		:=		multiboot.S			\
 BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
 					$(BOOTLOADER_S:.S=.o)
 
-BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h \
-					$(_BOOTLOADER_DIR_)/cons.h	\
-					$(_BOOTLOADER_DIR_)/libia32.h	\
-					$(_BOOTLOADER_DIR_)/libc.h
+BOOTLOADER_INCLUDE	:=		$(_LOADER_DIR_)/bootloader.h 	\
+					$(_LOADER_DIR_)/cons.h		\
+					$(_LOADER_DIR_)/libia32.h	\
+					$(_LOADER_DIR_)/libc.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(BOOTLOADER)
+main:			$(_LOADER_)
 
-$(BOOTLOADER):		$(BOOTLOADER_O)
-	$(call env_executable,$(_BOOTLOADER_),				\
+$(_LOADER_):		$(BOOTLOADER_O)
+	$(call env_executable,$(_LOADER_),				\
 			      $(BOOTLOADER_O),				\
-			      $(_BOOTLOADER_DIR_)/layout/bootloader.lyt,\
+			      $(_LOADER_DIR_)/layout/bootloader.lyt,\
 			      $(ENV_OPTION_NO_STANDARD))
 
 clear:
 	$(call env_remove,$(BOOTLOADER_O),)
 
-	$(call env_remove,$(BOOTLOADER),)
+	$(call env_remove,$(_LOADER_),)
 
 	$(call env_purge,)
 
@@ -84,7 +82,6 @@ headers:
 	$(call env_headers,$(BOOTLOADER_C),)
 
 dependencies:
-	$(call env_launch,Makefile,.,$(BOOTLOADER),)
 
 endif
 #

@@ -29,7 +29,7 @@ void		check_event_exception_03(void)
 {
   TEST_ENTER();
 
-  ASSERT(event_reserve(3,
+  assert(event_reserve(3,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_int3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
@@ -50,7 +50,7 @@ void		check_event_exception_03(void)
   asm volatile("int $3");
   printf(" - Execution resumed\n");
 
-  ASSERT(thrown == 5, " x One or more exception was not caught\n");
+  assert(thrown == 5, " x One or more exception was not caught\n");
 
   TEST_LEAVE();
 }

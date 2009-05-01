@@ -462,8 +462,8 @@ int compare_runs(Ctfhashnode * src, Ctfhashnode * dst,
 #ifdef STATS
   potential_count++;
 #endif
-#undef MYASSERT
-#ifdef MYASSERT
+#undef MYassert
+#ifdef MYassert
   if ((src->fileid > numfileids) || (dst->fileid > numfileids)) {
     printf("One of the fids is out of bounds!\n");
     exit(1);

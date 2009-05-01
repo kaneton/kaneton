@@ -12,12 +12,12 @@ void		check_region_resize_error_01(void)
 
   TEST_ENTER();
 
-  ASSERT(segment_reserve(kasid,
+  assert(segment_reserve(kasid,
 			    10 * PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE, "error segment_reserve\n");
 
-  ASSERT(region_reserve(kasid,
+  assert(region_reserve(kasid,
 			   seg,
 			   PAGESZ,
 			   REGION_OPT_NONE,
@@ -25,13 +25,13 @@ void		check_region_resize_error_01(void)
 			   2 * PAGESZ,
 			   &reg) == ERROR_NONE, "error region_reserve\n");
 
-  ASSERT(region_resize(kasid, reg, 20 * PAGESZ, &reg) != ERROR_NONE,
+  assert(region_resize(kasid, reg, 20 * PAGESZ, &reg) != ERROR_NONE,
 	    "resized a region to a bad size !\n");
 
-  ASSERT(region_release(kasid, reg) == ERROR_NONE,
+  assert(region_release(kasid, reg) == ERROR_NONE,
 	    "failed to release region\n");
 
-  ASSERT(segment_release(seg) == ERROR_NONE,
+  assert(segment_release(seg) == ERROR_NONE,
 	    "failed to release region\n");
 
   TEST_LEAVE();

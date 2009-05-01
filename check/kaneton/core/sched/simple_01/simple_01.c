@@ -35,11 +35,11 @@ void		check_sched_simple_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 
@@ -47,7 +47,7 @@ void		check_sched_simple_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && !executed)
     ;
 
-  ASSERT(executed == 1, "Thread not executed\n")
+  assert(executed == 1, "Thread not executed\n")
 
   TEST_LEAVE();
 }

@@ -40,13 +40,13 @@ void		check_event_as_map_01(void)
 
   for (i = 0; i < 3; i++)
     {
-      ASSERT(task_reserve(TASK_CLASS_CORE,
+      assert(task_reserve(TASK_CLASS_CORE,
 			  TASK_BEHAV_INTERACTIVE,
 			  TASK_PRIOR_INTERACTIVE,
 			  &tskid) == ERROR_NONE,
 	     "Cannot task_reserve\n");
 
-      ASSERT(as_reserve(tskid, &asid) == ERROR_NONE,
+      assert(as_reserve(tskid, &asid) == ERROR_NONE,
 	     "Cannot as_reserve\n");
     }
 
@@ -55,15 +55,15 @@ void		check_event_as_map_01(void)
   SIDT(idtr);
 
   /* look for IDT paddr */
-  ASSERT(as_paddr(kasid, idtr.address, &paddr) == ERROR_NONE,
+  assert(as_paddr(kasid, idtr.address, &paddr) == ERROR_NONE,
 	 "Cannot as_paddr\n");
 
   set_foreach(SET_OPT_FORWARD, as->ass, &it, state)
     {
-      ASSERT(set_object(as->ass, it, (void**)&o) == ERROR_NONE,
+      assert(set_object(as->ass, it, (void**)&o) == ERROR_NONE,
 	     "Cannot set_object\n");
 
-      ASSERT(as_vaddr(o->asid, paddr, &vaddr) == ERROR_NONE,
+      assert(as_vaddr(o->asid, paddr, &vaddr) == ERROR_NONE,
 	     "IDT not mapped in address space\n");
     }
 

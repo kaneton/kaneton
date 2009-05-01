@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...machine/platform/ibm-pc/include/serial.h
+ * file          /home/mycure/kaneton/kaneton/include/platform/serial.h
  *
  * created       julien quintard   [wed jun  6 14:06:42 2007]
- * updated       matthieu bucchianeri   [wed jan  9 21:03:42 2008]
+ * updated       julien quintard   [sat may  2 00:14:50 2009]
  */
 
 #ifndef	PLATFORM_SERIAL_H
@@ -19,7 +19,6 @@
  */
 
 #include <core/types.h>
-#include <core/debug.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -45,6 +44,24 @@
 #define IBMPC_SERIAL_FIFO_8	0x87
 #define	IBMPC_SERIAL_FIFO_4	0x47
 #define IBMPC_SERIAL_FIFO_1	0x07
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct
+{
+  t_uint32			size;
+  t_uint32			magic;
+  t_uint32			crc;
+  t_uint8*			data;
+}				t_serial_data;
+
+typedef struct
+{
+ char*				name;
+ void*				data;
+}				t_serial_buffer;
 
 /*
  * ---------- prototypes ------------------------------------------------------

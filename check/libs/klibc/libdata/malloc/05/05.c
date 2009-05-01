@@ -30,34 +30,34 @@ void		check_malloc_05(void)
 
   TEST_ENTER();
 
-  ASSERT(as_get(kasid, &kas) == ERROR_NONE,
+  assert(as_get(kasid, &kas) == ERROR_NONE,
 	    "cannot get kernel as\n");
 
-  ASSERT(set_size(kas->regions, &nb_regions) == ERROR_NONE,
+  assert(set_size(kas->regions, &nb_regions) == ERROR_NONE,
 	    "cannot get region count\n");
 
   p = check_init_memory(malloc(big), big);
   check_memory(p, big);
 
-  ASSERT(set_size(kas->regions, &nb_regions_after) == ERROR_NONE,
+  assert(set_size(kas->regions, &nb_regions_after) == ERROR_NONE,
 	    "cannot get region count\n");
 
-  ASSERT(nb_regions < nb_regions_after,
+  assert(nb_regions < nb_regions_after,
 	    "no region has been created\n");
 
-  ASSERT(region_get(kasid, (i_region)(t_uint32)p -
+  assert(region_get(kasid, (i_region)(t_uint32)p -
 		       sizeof(t_chunk) - sizeof(t_area),
 		       &reg) == ERROR_NONE,
 	    "cannot get associated region\n");
 
-  ASSERT(reg->size > big, "region size does not match\n");
+  assert(reg->size > big, "region size does not match\n");
 
   free(p);
 
-  ASSERT(set_size(kas->regions, &nb_regions_after) == ERROR_NONE,
+  assert(set_size(kas->regions, &nb_regions_after) == ERROR_NONE,
 	    "cannot get region count\n");
 
-  ASSERT(nb_regions == nb_regions_after,
+  assert(nb_regions == nb_regions_after,
 	    "region not released\n");
 
   TEST_LEAVE();

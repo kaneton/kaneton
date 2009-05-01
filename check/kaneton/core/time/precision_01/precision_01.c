@@ -40,7 +40,7 @@ void		check_time_precision_01_entry(void)
   while (start == check_cmos_sec())
     ;
 
-  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer_handler), 0,
+  assert(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer_handler), 0,
 		       500, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
 
@@ -48,7 +48,7 @@ void		check_time_precision_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && !timed)
     ;
 
-  ASSERT(timed == 1, "Timer failed\n");
+  assert(timed == 1, "Timer failed\n");
 
   if (ticks - start > 1)
     printf("Imprecise timer ! ticks = %u\n", (ticks - start) * 1000);

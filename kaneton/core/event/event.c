@@ -204,7 +204,7 @@ t_error			event_reserve(i_event			id,
 
   EVENT_ENTER(event);
 
-  ASSERT(type == EVENT_FUNCTION || type == EVENT_MESSAGE);
+  assert(type == EVENT_FUNCTION || type == EVENT_MESSAGE);
 
   /*
    * 1)
@@ -293,7 +293,7 @@ t_error			event_get(i_event			id,
 {
   EVENT_ENTER(event);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   if (set_get(event->events, id, (void**)o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);

@@ -72,7 +72,7 @@ t_error			ia32_pt_build(t_paddr			base,
 {
   /*							   [block::pt_build] */
 
-  ASSERT(table != NULL);
+  assert(table != NULL);
 
   /*
    * 1)
@@ -114,7 +114,7 @@ t_error			ia32_pt_add_page(t_ia32_table*		tab,
   t_ia32_pte*		t;
   t_uint32		opts = 0;
 
-  ASSERT(entry < IA32_PT_MAX_ENTRIES);
+  assert(entry < IA32_PT_MAX_ENTRIES);
 
   /*
    * 1)
@@ -127,7 +127,7 @@ t_error			ia32_pt_add_page(t_ia32_table*		tab,
    * 2)
    */
 
-  ASSERT(tab->vaddr != 0);
+  assert(tab->vaddr != 0);
   t = (t_ia32_pte*)tab->vaddr;
 
   /*
@@ -179,13 +179,13 @@ t_error			ia32_pt_get_page(t_ia32_table*		tab,
 
   t_ia32_pte*		t;
 
-  ASSERT(page != NULL);
+  assert(page != NULL);
 
   /*
    * 1)
    */
 
-  ASSERT(tab->vaddr != 0);
+  assert(tab->vaddr != 0);
   t = (t_ia32_pte*)tab->vaddr;
 
   /*
@@ -240,7 +240,7 @@ t_error			ia32_pt_delete_page(t_ia32_table*	tab,
    * 1)
    */
 
-  ASSERT(tab->vaddr != 0);
+  assert(tab->vaddr != 0);
   t = (t_ia32_pte*)tab->vaddr;
 
   /*

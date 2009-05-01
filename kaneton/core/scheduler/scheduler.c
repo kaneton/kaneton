@@ -228,7 +228,7 @@ t_error			scheduler_quantum(t_quantum			quantum)
 
   /*							    [block::quantum] */
 
-  ASSERT(quantum != 0);
+  assert(quantum != 0);
 
   /*
    * 1)
@@ -358,7 +358,7 @@ t_error			scheduler_current(i_thread*			thread)
 
   /*							    [block::current] */
 
-  ASSERT(thread != NULL);
+  assert(thread != NULL);
 
   if (cpu_current(&cpuid) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
@@ -747,7 +747,7 @@ t_error			scheduler_remove(i_thread			thread)
       if (set_get(scheduler->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
 	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-      ASSERT(ent->current != thread);
+      assert(ent->current != thread);
     }
 
   /*

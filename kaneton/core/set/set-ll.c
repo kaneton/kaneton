@@ -126,7 +126,7 @@ t_error			set_head_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(iterator != NULL);
+  assert(iterator != NULL);
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
@@ -154,7 +154,7 @@ t_error			set_tail_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(iterator != NULL);
+  assert(iterator != NULL);
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
@@ -182,7 +182,7 @@ t_error			set_previous_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(previous != NULL);
+  assert(previous != NULL);
 
   memset(previous, 0x0, sizeof(t_iterator));
 
@@ -210,7 +210,7 @@ t_error			set_next_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(next != NULL);
+  assert(next != NULL);
 
   memset(next, 0x0, sizeof(t_iterator));
 
@@ -247,7 +247,7 @@ t_error			set_insert_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -345,7 +345,7 @@ t_error			set_append_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -445,7 +445,7 @@ t_error			set_before_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -545,7 +545,7 @@ t_error			set_after_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -649,7 +649,7 @@ t_error			set_add_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(data != NULL);
+  assert(data != NULL);
 
   /*
    * 1)
@@ -1040,7 +1040,7 @@ t_error			set_locate_ll(i_set			setid,
 
   SET_ENTER(set);
 
-  ASSERT(iterator != NULL);
+  assert(iterator != NULL);
 
   /*
    * 1)
@@ -1110,8 +1110,8 @@ t_error			set_reserve_ll(t_opts			opts,
 
   SET_ENTER(set);
 
-  ASSERT(datasz >= sizeof (t_id));
-  ASSERT(setid != NULL);
+  assert(datasz >= sizeof (t_id));
+  assert(setid != NULL);
 
   /*
    * 1)

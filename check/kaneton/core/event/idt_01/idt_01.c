@@ -43,7 +43,7 @@ void		check_event_idt_01(void)
 
   ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_CS, ia32_prvl_supervisor, &cs);
 
-  ASSERT(event_reserve(3,
+  assert(event_reserve(3,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_int3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");

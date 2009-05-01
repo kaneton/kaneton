@@ -58,22 +58,22 @@ void		check_sched_yield_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(event_reserve(56,
+  assert(event_reserve(56,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(scheduler_yield)) == ERROR_NONE,
 	 "error in syscall reserve\n");
 
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id1) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id1) == 0,
 	 "error creating thread\n");
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id2) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id2) == 0,
 	 "error creating thread\n");
 
   tutu = 0;
 
   CLI();
-  ASSERT(thread_state(id1, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id1, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
-  ASSERT(thread_state(id2, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id2, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 
@@ -81,8 +81,8 @@ void		check_sched_yield_01_entry(void)
   while ((start + 3) % 60 != check_cmos_sec() && executed != 2)
     ;
 
-  ASSERT(executed == 3, "Thread not executed\n");
-  ASSERT(error == 0, "Thread not yield correctly\n");
+  assert(executed == 3, "Thread not executed\n");
+  assert(error == 0, "Thread not yield correctly\n");
 
   TEST_LEAVE();
 }

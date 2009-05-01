@@ -56,7 +56,7 @@ void		check_event_exception_errorcode_03(void)
   TEST_ENTER();
 
   event_release(14);
-  ASSERT(event_reserve(14,
+  assert(event_reserve(14,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_pf), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
@@ -64,7 +64,7 @@ void		check_event_exception_errorcode_03(void)
   printf(" - Throwing exception\n");
   *ptr = 0x42;
   asm volatile("nop");
-  ASSERT(thrown == 1, " x Exception not caught\n");
+  assert(thrown == 1, " x Exception not caught\n");
   printf(" - Execution resumed\n");
 
   TEST_LEAVE();

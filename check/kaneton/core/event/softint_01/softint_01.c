@@ -32,14 +32,14 @@ void		check_event_softint_01(void)
   TEST_ENTER();
 
   event_release(56);
-  ASSERT(event_reserve(56,
+  assert(event_reserve(56,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_softint), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Softint\n");
   asm volatile("int $56");
-  ASSERT(thrown == 1, " x Softint not caught\n");
+  assert(thrown == 1, " x Softint not caught\n");
   printf(" - Execution resumed\n");
 
   TEST_LEAVE();

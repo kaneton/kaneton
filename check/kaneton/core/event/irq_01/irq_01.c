@@ -31,7 +31,7 @@ void		check_event_irq_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(event_reserve(32 + 6,
+  assert(event_reserve(32 + 6,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_irq6), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
@@ -49,7 +49,7 @@ void		check_event_irq_01_entry(void)
   OUTB(0x3F0 + 2, 0x0C);
   for (i = 0; i < 10000000; i++)
     asm volatile("nop");
-  ASSERT(thrown == 2, " x One or more IRQ was not caught\n");
+  assert(thrown == 2, " x One or more IRQ was not caught\n");
   printf(" - Execution resumed\n");
 
   TEST_LEAVE();

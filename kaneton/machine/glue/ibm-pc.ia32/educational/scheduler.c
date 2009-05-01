@@ -77,7 +77,7 @@ asm (".text				\n"
 
 static void		glue_scheduler_switch_handler(void)
 {
-  ASSERT(scheduler_switch() == ERROR_NONE);
+  assert(scheduler_switch() == ERROR_NONE);
 }
 
 /*

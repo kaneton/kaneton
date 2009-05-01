@@ -97,7 +97,7 @@ static char*		get_activity(const char*		name,
     if (!strcmp(activity, view->flyweight[i]))
       return view->flyweight[i];
 
-  ASSERT(i < 999);
+  assert(i < 999);
 
   return (view->flyweight[i] = strdup(activity));
 }

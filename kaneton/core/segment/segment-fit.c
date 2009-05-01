@@ -75,8 +75,8 @@ t_error			segment_space(i_as		asid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(size != 0);
-  ASSERT(address != NULL);
+  assert(size != 0);
+  assert(address != NULL);
 
   if (as_get(asid, &as) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);

@@ -33,7 +33,7 @@ void		check_event_exception_04(void)
 
   div = 0;
 
-  ASSERT(event_reserve(0,
+  assert(event_reserve(0,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_dv), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
@@ -47,7 +47,7 @@ void		check_event_exception_04(void)
 	       : "eax", "edx");
   printf(" - Execution resumed\n");
 
-  ASSERT(thrown == 1, " x Exception not caught\n");
+  assert(thrown == 1, " x Exception not caught\n");
 
   TEST_LEAVE();
 }

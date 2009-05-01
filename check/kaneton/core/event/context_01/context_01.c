@@ -49,7 +49,7 @@ void			check_event_context_01(void)
 
   TEST_ENTER();
 
-  ASSERT(event_reserve(3,
+  assert(event_reserve(3,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_int3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
@@ -74,7 +74,7 @@ void			check_event_context_01(void)
 	       "	movl %%esp, %1		"
 	       : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
-  ASSERT(thrown == 1, " x Exception not caught\n");
+  assert(thrown == 1, " x Exception not caught\n");
 
   if (esp != ctx1)
     printf("esp differs\n");

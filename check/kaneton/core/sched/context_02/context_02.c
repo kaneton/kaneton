@@ -104,16 +104,16 @@ void		check_sched_context_02_entry(void)
   regs[0] = regs[1] = regs[2] = regs[3] = regs[4] =regs[5] = 0 ;
 
   CLI();
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
 
-  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,
+  assert(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
+  assert(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 
@@ -121,9 +121,9 @@ void		check_sched_context_02_entry(void)
   while ((start + 3) % 60 != check_cmos_sec())
     ;
 
-  ASSERT(executed1 == 1 && executed2 == 1, "Thread not executed\n");
+  assert(executed1 == 1 && executed2 == 1, "Thread not executed\n");
 
-  ASSERT(invalid == 0, "Error in context switching, "
+  assert(invalid == 0, "Error in context switching, "
 	"some registers are not preserved\n");
 
   TEST_LEAVE();

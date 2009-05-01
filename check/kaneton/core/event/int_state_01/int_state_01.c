@@ -37,13 +37,13 @@ void		check_event_int_state_01_entry(void)
 
   TEST_ENTER();
 
-  ASSERT(event_reserve(3,
+  assert(event_reserve(3,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_int3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   asm volatile("int $3");
-  ASSERT(thrown == 1, " x Exception not caught\n");
+  assert(thrown == 1, " x Exception not caught\n");
 
   asm volatile("	pushf		\n"
 	       "	popl %0		"

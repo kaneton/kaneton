@@ -165,7 +165,7 @@ t_error			set_size(i_set				setid,
 
   SET_ENTER(set);
 
-  ASSERT(size != NULL);
+  assert(size != NULL);
 
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
@@ -189,7 +189,7 @@ t_error			set_new(o_set*				o)
 {
   SET_ENTER(set);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   /*
    * 1)
@@ -273,7 +273,7 @@ t_error			set_descriptor(i_set			setid,
 {
   SET_ENTER(set);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   /*
    * 1)
@@ -314,7 +314,7 @@ t_error			set_get(i_set				setid,
 
   SET_ENTER(set);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   /*
    * 1)

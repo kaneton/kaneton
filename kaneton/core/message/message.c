@@ -85,7 +85,7 @@ static t_error		message_box(i_task			task,
 
   MESSAGE_ENTER(message);
 
-  ASSERT(o != NULL);
+  assert(o != NULL);
 
   if (task_get(task, &otask) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
@@ -358,8 +358,8 @@ t_error			message_send(i_task			task,
       void*		buffer;
       i_node		source;
 
-      ASSERT(task != ktask);
-      ASSERT(size != 0);
+      assert(task != ktask);
+      assert(size != 0);
 
       source.machine = kernel->machine;
       source.task = task;
@@ -624,7 +624,7 @@ t_error			message_throw(i_task			task,
 {
   MESSAGE_ENTER(message);
 
-  ASSERT(request != NULL);
+  assert(request != NULL);
 
   if (cpu_multiprocessor() == ERROR_NONE)
     {
