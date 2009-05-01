@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [wed apr 22 12:10:35 2009]
+# updated       julien quintard   [fri may  1 21:58:31 2009]
 #
 
 #
@@ -23,7 +23,7 @@
 
 .SILENT:
 
-.PHONY:		main initialize clean kaneton clear prototypes		\
+.PHONY:		main initialize clean clear prototypes			\
 		headers build install test info view view-		\
 		export export- cheat cheat- play play- record record-
 
@@ -40,14 +40,7 @@ _MAKE_			?=		$(MAKE)
 
 ifeq ($(_SIGNATURE_),kaneton)
 
-# XXX[to remove since this should be done in kayou: services and so
-#     careful, PATHS is use several times in this file]
 PATHS			=		$(dir $(_INPUTS_))
-
-# XXX[to remove]
-ifneq ($(_TESTSUITE_),)
-PATHS                   := $(_CHECK_DIR_) $(PATHS)
-endif
 
   main:
 	for path in $(PATHS) ; do					\
@@ -57,7 +50,7 @@ endif
 else
 
   main									\
-  kaneton clear								\
+  clear									\
   prototypes								\
   headers								\
   build install								\
@@ -99,17 +92,12 @@ clean:
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		cheat configure environment	\
-					export history license test	\
-					tool transcript view		\
+SUBDIRS			:=		boot cheat configure		\
+					environment export history	\
+					kaneton license sample		\
+					test tool transcript		\
+					view				\
 					$(PATHS)
-
-#
-# ---------- kaneton ----------------------------------------------------------
-#
-
-kaneton:
-	$(call env_launch,$(_KANETON_DIR_)/Makefile,,)
 
 #
 # ---------- clear ------------------------------------------------------------
@@ -154,12 +142,8 @@ install:		main
 # ---------- test -------------------------------------------------------------
 #
 
-# XXX[remove custom-test]
 test:
-	$(call env_launch,$(_TEST_DIR_)/Makefile,,)
-
-custom-test: install
-	$(call env_launch,$(_TEST_DIR_)/Makefile,custom,)
+	@echo "XXX[todo]"
 
 #
 # ---------- view -------------------------------------------------------------

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/modules/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       julien quintard   [fri may  1 21:03:25 2009]
+# updated       julien quintard   [fri may  1 22:01:14 2009]
 #
 
 #
@@ -58,6 +58,7 @@ clear:
 	done
 
 	$(call env_remove,$(_MODULES_LO_),)
+	$(call env_remove,$(MODULES_O),)
 
 	$(call env_purge,)
 
