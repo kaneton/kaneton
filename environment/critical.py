@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [fri may  1 01:48:05 2009]
+# updated       julien quintard   [fri may  1 20:04:26 2009]
 #
 
 #
@@ -356,12 +356,12 @@ def			main():
           "or is incorrect.\n")
 
   if not (platform != None and
-          os.path.isdir("profile/kaneton/platform/" + platform)):
+          os.path.isdir("profile/kaneton/machine/platform/" + platform)):
     error("the shell environment variable KANETON_PLATFORM is not " +	\
           "set or is incorrect.\n")
 
   if not (architecture != None and
-          os.path.isdir("profile/kaneton/architecture/" + architecture)):
+          os.path.isdir("profile/kaneton/machine/architecture/" + architecture)):
     error("the shell environment variable KANETON_ARCHITECTURE is " +	\
           "not set or is incorrect.\n")
 
