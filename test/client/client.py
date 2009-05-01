@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repositories/kaneton/test/client/client.py
+# file          /home/mycure/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [mon apr 20 03:27:31 2009]
+# updated       julien quintard   [fri may  1 21:06:57 2009]
 #
 
 #
@@ -105,7 +105,7 @@ def                     Main():
   capability = ktc.Load(env._TEST_CAPABILITY_)
 
   report = ktc.Call(server.Launch(capability,
-                                  xmlrpclib.Binary(env.pull("/home/mycure/kaneton/kaneton-snapshot.tar.bz2", env.OPTION_NONE)),
+                                  xmlrpclib.Binary(env.pull("/home/mycure/kaneton/test/kaneton-snapshot.tar.bz2", env.OPTION_NONE)),
                                   "kaneton"))
 
   # XXX

@@ -57,25 +57,6 @@ i_segment		mod;
  * ---------- functions -------------------------------------------------------
  */
 
-static char read_from_serial()
-{
-	uint8_t	c;
-#ifdef IA32_DEPENDENT
-	ibmpc_serial_read(SERIAL_PRIMARY, &c, 1);
-#endif
-	return c;
-}
-
-static void wait_command()
-{
-#ifdef TESTSUITE_REGISTER_TESTS
-	void check_register_tests();
-	// XXX check_register_tests();
-	cons_msg('+', "wait for command ...\n");
-#endif
-	debug_shell(read_from_serial);
-}
-
 /*
  * this function simply initializes and cleans the kernel manager.
  *
@@ -155,92 +136,14 @@ void			kaneton(t_init*				bootloader)
 
   module_call(test, test_run);
 
-  // XXX[remove]
-#ifdef VIEW_ENABLE
-  view_initialize();
-#endif
-
-  // XXX[remove]
-#ifdef IA32_DEPENDENT
-  ibmpc_keyboard_init();
-#endif
-
-#ifdef DEBUG_SHELL
-  wait_command();
-#endif
-
-#ifdef TESTSUITE_MANUAL_ENABLE
-  extern i_thread kthread;
-
-  kthread = ID_UNUSED;
-
-  //  STI();
-
-  cons_msg('+', "running manual tests\n");
-  check_tests();
-
-  CLI();
-
-#ifdef TESTSUITE_FAST_REBOOT
-  /* disable paging to remap the bootloader */
-  asm volatile("movl %%cr0, %%eax\n\t"
-	       "andl $0x7FFFFFFF, %%eax\n\t"
-	       "movl %%eax, %%cr0\n\t"
-	       :
-	       :
-	       : "%eax", "memory");
-
-  /* back to the bootloader */
-  return;
-#else
-  while (1)
-    ;
-#endif
-
-  kthread = 0;
-#endif
-
-#if TESTSUITE_DEBUG_ENABLE
-  extern i_thread kthread;
-
-  cons_msg('+', "starting debug manager\n");
-  kthread = ID_UNUSED;
-
-#ifdef IA32_DEPENDENT
-  STI();
-#endif
-  debug_initialize();
-#ifdef IA32_DEPENDENT
-  CLI();
-#endif
-
-#ifdef TESTSUITE_FAST_REBOOT
-  /* disable paging to remap the bootloader */
-  asm volatile("movl %%cr0, %%eax\n\t"
-	       "andl $0x7FFFFFFF, %%eax\n\t"
-	       "movl %%eax, %%cr0\n\t"
-	       :
-	       :
-	       : "%eax", "memory");
-
-  /* back to the bootloader */
-  return;
-#else
-  while (1)
-    ;
-#endif
-
-  kthread = 0;
-#endif
-
   /*
    * 7)
    */
 
-  cons_msg('+', "launching the initial service: mod\n");
+  cons_msg('+', "launching the initial server\n");
 
   if (kaneton_launch() != ERROR_NONE)
-    cons_msg('!', "failed to start the initial mod service\n");
+    cons_msg('!', "failed to start the initial server\n");
 
 #ifdef IA32_DEPENDENT
   STI();
@@ -273,10 +176,6 @@ void			kaneton(t_init*				bootloader)
   /*
    * 7)
    */
-
-#ifdef VIEW_ENABLE
-  view_clean();
-#endif
 
   kernel_clean();
 
@@ -320,7 +219,7 @@ t_error			kaneton_launch(void)
 
   if (init->mcodesz == 0)
     {
-      cons_msg('!', "no initial module\n");
+      cons_msg('!', "no initial server provided in the inputs\n");
 
       return (ERROR_UNKNOWN);
     }

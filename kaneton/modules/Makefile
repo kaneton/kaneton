@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/modules/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       julien quintard   [fri may  1 19:00:52 2009]
+# updated       julien quintard   [fri may  1 21:03:25 2009]
 #
 
 #
@@ -35,7 +35,10 @@ include			../../environment/env.mk
 
 SUBDIRS			:=		test
 
-MODULES_LO		:=		$(foreach m,$(SUBDIRS),$(m)/$(m).lo)
+MODULES_C		:=		modules.c
+MODULES_O		:=		modules.o
+
+MODULES_LO		:=		$(foreach m,$(_MODULES_),$(m)/$(m).lo)
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -44,10 +47,10 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_MODULES_LO_)
 
-$(_MODULES_LO_):	$(MODULES_LO)
+$(_MODULES_LO_):	$(MODULES_O) $(MODULES_LO)
 	$(call env_remove,$(_MODULES_LO_),)
 
-	$(call env_archive,$(_MODULES_LO_),$(MODULES_LO),)
+	$(call env_archive,$(_MODULES_LO_),$(MODULES_O) $(MODULES_LO),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\

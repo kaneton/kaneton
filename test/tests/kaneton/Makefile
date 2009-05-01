@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/tests/kaneton/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [fri may  1 20:39:24 2009]
+# updated       julien quintard   [fri may  1 20:57:07 2009]
 #
 
 #
@@ -27,10 +27,16 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		.engine				\
-					id				
+ENGINE_DIR		:=		.engine
+ENGINE_LO		:=		$(ENGINE_DIR)/engine.lo
 
-MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
+UNITS			:=		id				
+
+SUBDIRS			:=		$(ENGINE_DIR)			\
+					$(UNITS)
+
+MODULES			:=		$(ENGINE_LO)			\
+					$(foreach s,$(UNITS),${s}/${s}.lo)
 
 INVENTORY_C		:=		inventory.c
 INVENTORY_O		:=		$(INVENTORY_C:.c=.o)

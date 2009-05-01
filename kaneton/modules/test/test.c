@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri may  1 19:18:16 2009]
+ * updated       julien quintard   [fri may  1 21:05:46 2009]
  */
 
 /*
@@ -281,3 +281,71 @@ t_error			test_run(void)
 
   return (ERROR_NONE);
 }
+
+/* XXX
+
+#ifdef TESTSUITE_MANUAL_ENABLE
+  extern i_thread kthread;
+
+  kthread = ID_UNUSED;
+
+  //  STI();
+
+  cons_msg('+', "running manual tests\n");
+  check_tests();
+
+  CLI();
+
+#ifdef TESTSUITE_FAST_REBOOT
+  // disable paging to remap the bootloader
+  asm volatile("movl %%cr0, %%eax\n\t"
+	       "andl $0x7FFFFFFF, %%eax\n\t"
+	       "movl %%eax, %%cr0\n\t"
+	       :
+	       :
+	       : "%eax", "memory");
+
+// back to the bootloader
+  return;
+#else
+  while (1)
+    ;
+#endif
+
+  kthread = 0;
+#endif
+
+#if TESTSUITE_DEBUG_ENABLE
+  extern i_thread kthread;
+
+  cons_msg('+', "starting debug manager\n");
+  kthread = ID_UNUSED;
+
+#ifdef IA32_DEPENDENT
+  STI();
+#endif
+  debug_initialize();
+#ifdef IA32_DEPENDENT
+  CLI();
+#endif
+
+#ifdef TESTSUITE_FAST_REBOOT
+// disable paging to remap the bootloader
+  asm volatile("movl %%cr0, %%eax\n\t"
+	       "andl $0x7FFFFFFF, %%eax\n\t"
+	       "movl %%eax, %%cr0\n\t"
+	       :
+	       :
+	       : "%eax", "memory");
+
+// back to the bootloader
+  return;
+#else
+  while (1)
+    ;
+#endif
+
+  kthread = 0;
+#endif
+
+*/
