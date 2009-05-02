@@ -1,3 +1,4 @@
+# Rewrite the MBL script with new variables
 # Redefinition of variable names in the platform mips64.conf
 # Rewrite the libc.h macro functions
 # Check inclusion system in firmware and bootloader
