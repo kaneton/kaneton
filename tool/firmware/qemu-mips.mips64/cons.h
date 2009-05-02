@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...on/tool/firmware/qemu-mips.mips64/cons.h
  *
  * created       julien quintard   [wed jun  6 15:53:35 2007]
- * updated       enguerrand raymond   [mon apr 27 12:25:08 2009]
+ * updated       enguerrand raymond   [sat may  2 12:32:59 2009]
  */
 
 /*
@@ -30,11 +30,11 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *	firmware-cons.c
+ *	cons.c
  */
 
 /*
- * firmware-cons.c
+ * cons.c
  */
 
 void			firmware_cons_clear(void);

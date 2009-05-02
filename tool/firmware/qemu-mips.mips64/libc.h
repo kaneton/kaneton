@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...on/tool/firmware/qemu-mips.mips64/libc.h
  *
  * created       matthieu bucchianeri   [thu jun 28 14:47:59 2007]
- * updated       enguerrand raymond   [tue apr 28 08:53:28 2009]
+ * updated       enguerrand raymond   [sat may  2 12:32:32 2009]
  */
 
 #ifndef FIRMWARE_LIBC_H
@@ -69,11 +69,11 @@ typedef t_sint32		size_t;
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *	firmware-libc.c
+ *	libc.c
  */
 
 /*
- * firmware-libc.c
+ * libc.c
  */
 
 int			printf_string(char*			string,
