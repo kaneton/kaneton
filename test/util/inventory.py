@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/util/inventory.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [fri apr 17 11:15:08 2009]
+# updated       julien quintard   [sat may  2 00:49:01 2009]
 #
 
 #
@@ -106,7 +106,7 @@ def                     generate(functions,
 
 %(prototypes)s
 
-s_test          test_functions[] =
+s_test_function test_functions[] =
 {
 %(tests)s
   { NULL, NULL }

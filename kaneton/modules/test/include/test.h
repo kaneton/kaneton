@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/include/test.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [fri may  1 16:52:27 2009]
+ * updated       julien quintard   [sat may  2 00:49:25 2009]
  */
 
 #ifndef MODULES_TEST_TEST_H
@@ -21,6 +21,7 @@
 /*
  * this type represents a test function pointer.
  */
+
 typedef				void (*f_test)(void);
 
 /*
@@ -28,12 +29,22 @@ typedef				void (*f_test)(void);
  *
  * note that the inventory array 'tests' is automatically generated.
  */
+
 typedef struct
 {
   char*			symbol;
   f_test		function;
-}			s_test;
+}			s_test_function;
 
+typedef struct
+{
+  char*			command;
+  void			(*function)(char*);
+}			s_test_command;
+
+/*
+ * the module structure.
+ */
 
 typedef struct
 {
@@ -49,13 +60,13 @@ typedef struct
  * types
  */
 
-#define TEST_TYPE_COMMAND 1
-#define TEST_TYPE_TEXT 2
+#define TEST_TYPE_COMMAND	0x1
+#define TEST_TYPE_TEXT		0x2
 
 /*
  * magic
  */
-#define TEST_MAGIC 0xf4859632
+#define TEST_MAGIC		0xf4859632
 
 /*
  * ---------- prototypes ------------------------------------------------------

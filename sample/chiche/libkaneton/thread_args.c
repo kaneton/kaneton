@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/library/libkaneton/thread_args.c
+ * file          /home/mycure/kaneton/sample/chiche/libkaneton/thread_args.c
  *
  * created       matthieu bucchianeri   [mon aug  6 19:07:18 2007]
- * updated       matthieu bucchianeri   [mon sep 10 00:11:30 2007]
+ * updated       julien quintard   [sat may  2 00:40:19 2009]
  */
 
 /*
@@ -22,9 +22,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <stdint.h>
-#include <string.h>
-#include <libkaneton.h>
+#include "include/libkaneton.h"
 
 /*
  * ---------- functions -------------------------------------------------------

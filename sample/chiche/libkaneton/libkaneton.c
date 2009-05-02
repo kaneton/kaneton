@@ -16,9 +16,9 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <stdint.h>
-#include <core/core.h>
-#include <libkaneton.h>
+#include <kaneton.h>
+
+#include "include/libkaneton.h"
 
 /*
  * ---------- functions -------------------------------------------------------

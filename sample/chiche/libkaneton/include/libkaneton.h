@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan.../library/libkaneton/include/libkaneton.h
+ * file          /home/mycure/kane...e/chiche/libkaneton/include/libkaneton.h
  *
  * created       matthieu bucchianeri   [sun aug  5 23:20:36 2007]
- * updated       matthieu bucchianeri   [thu sep  6 00:49:51 2007]
+ * updated       julien quintard   [sat may  2 00:40:35 2009]
  */
 
 #ifndef LIBKANETON_LIBKANETON_H
@@ -18,16 +18,8 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/types.h>
-#include <core/id.h>
-#include <core/error.h>
+#include <kaneton.h>
 
-#ifndef CORE_CORE_H
-#include "core_types.h"
-#include "core_macros.h"
-#endif
-
-// XXX
 extern t_uint64 __task_id;
 extern t_uint64 __as_id;
 

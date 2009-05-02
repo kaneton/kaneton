@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sat may  2 00:25:34 2009]
+ * updated       julien quintard   [sat may  2 11:10:44 2009]
  */
 
 /*
@@ -28,14 +28,19 @@
  * ---------- extern ----------------------------------------------------------
  */
 
-extern s_test		test_functions[];
+/*
+ * this array of mappings between function names and function symbols is
+ * automatically generated.
+ */
+
+extern s_test_function	test_functions[];
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
 
 /*
- * the manager structure.
+ * the module structure.
  */
 
 m_test			test;
@@ -44,11 +49,7 @@ m_test			test;
  * the test commands.
  */
 
-struct
-{
-  char*			command;
-  void			(*function)(char*);
-} test_commands[] =
+s_test_command		test_commands[] =
   {
     { "[call] ", test_call },
     { NULL, NULL }
@@ -59,8 +60,9 @@ struct
  */
 
 /*
- * XXX
+ * this function performs a very simple XOR-based checksum on the given data.
  */
+
 t_uint32		test_checksum(void*			data,
 				      t_uint32			size)
 {
@@ -75,7 +77,13 @@ t_uint32		test_checksum(void*			data,
 }
 
 /*
- * XXX
+ * this function sends a message, either a text or command.
+ *
+ * steps:
+ *
+ * 1) flushes the buffer to make sure there is no pending text messages.
+ * 2) construct a message by computing the CRC and setting the magic.
+ * 3) send the message by issuing multiple serial_write()
  */
 
 t_error			test_send(t_uint8			type,
@@ -85,13 +93,20 @@ t_error			test_send(t_uint8			type,
   t_uint32		magic;
   t_uint32		crc;
 
+  /*
+   * 1)
+   */
   test_flush();
 
+  /*
+   * 2)
+   */
   magic = TEST_MAGIC;
   crc = chk_sum(message, length);
 
-  // XXX printf("[XXX][send] 0x%x %u %u 0x%x '%s'\n", magic, type, length, crc, message);
-
+  /*
+   * 3)
+   */
   ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)&magic, sizeof(t_uint32));
   ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)&type, sizeof(t_uint8));
   ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)&length, sizeof(t_uint32));
@@ -102,7 +117,7 @@ t_error			test_send(t_uint8			type,
 }
 
 /*
- * XXX
+ * this function receives a message, either a text or command.
  */
 
 t_error			test_receive(t_uint8*			type,
@@ -116,7 +131,7 @@ t_error			test_receive(t_uint8*			type,
 
   if (magic != TEST_MAGIC)
     {
-      printf("[error] invalid magic\n");
+      cons_msg('!', "wrong magic\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -129,7 +144,7 @@ t_error			test_receive(t_uint8*			type,
 
   if (crc != chk_sum(message, length))
     {
-      printf("[error] invalid CRC\n");
+      cons_msg('!', "wrong CRC\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -138,7 +153,7 @@ t_error			test_receive(t_uint8*			type,
 }
 
 /*
- * XXX
+ * this function is a wrapper for sending commands.
  */
 
 t_error			test_issue(char*			command)
@@ -147,7 +162,8 @@ t_error			test_issue(char*			command)
 }
 
 /*
- * XXX
+ * this function flushes the pending text by sending a text message
+ * before reinitializing the buffer.
  */
 
 t_error			test_flush(void)
@@ -166,6 +182,15 @@ t_error			test_flush(void)
 
   return (ERROR_NONE);
 }
+
+/*
+ * this function adds a single character to the buffer. this function
+ * is used by printf_init() so that printf() uses it every time
+ * it needs to print a character, that this function actually buffers.
+ *
+ * then, whenever the buffer is full or the character '\n' is received,
+ * the buffer is flushed into a text message.
+ */
 
 int			test_write(char				c)
 {
@@ -194,7 +219,7 @@ f_test			test_locate(char*			symbol)
 }
 
 /*
- * this function takes a test function symbol and executes it.
+ * this function takes a test function symbol and calls it.
  */
 
 void			test_call(char*				symbol)
@@ -203,7 +228,7 @@ void			test_call(char*				symbol)
 
   if ((test = test_locate(symbol)) == NULL)
     {
-      printf("[error] unknown test '%s'\n", symbol);
+      cons_msg('!', "unknown test '%s'", symbol);
 
       return;
     }
@@ -223,14 +248,16 @@ void			test_dump(void)
 {
   unsigned int  i;
 
-  printf("[tests]\n");
+  cons_msg('#', "[tests]\n");
 
   for (i = 0; test_functions[i].symbol != NULL; i++)
-    printf("  [%s] 0x%x\n", test_functions[i].symbol, test_functions[i].function);
+    cons_msg('#', "  [%s] 0x%x\n", test_functions[i].symbol, test_functions[i].function);
 }
 
 /*
- * this function actually runs the test system.
+ * this function actually runs the test system by first initializing
+ * the serial line, switching printf() before performing a handshake
+ * and waiting for commands.
  */
 
 t_error			test_run(void)

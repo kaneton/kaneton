@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/drivers/cons-simple/cons-simple.c
+ * file          /home/mycure/kaneton/sample/chiche/chiche.c
  *
  * created       matthieu bucchianeri   [sat jun  9 18:36:19 2007]
- * updated       matthieu bucchianeri   [mon sep 10 00:14:07 2007]
+ * updated       julien quintard   [sat may  2 00:42:14 2009]
  */
 
 #include "chiche.h"
@@ -23,18 +23,18 @@ static t_simple_cons	cons = { .vga = 0 };
  * this function scrolls the screen.
  */
 
-static void	       	cons_scroll(t_uint16			lines)
+static void	       	console_scroll(t_uint16			lines)
 {
   t_uint16		src;
   t_uint16		dst;
 
-  for (src = lines * CONS_COLUMNS * CONS_BPC, dst = 0;
-       src < CONS_SIZE;
+  for (src = lines * CONSOLE_COLUMNS * CONSOLE_BPC, dst = 0;
+       src < CONSOLE_SIZE;
        src++, dst++)
     {
       cons.vga[dst] = cons.vga[src];
 
-      if ((src >= ((CONS_LINES - lines) * CONS_COLUMNS * CONS_BPC)) &&
+      if ((src >= ((CONSOLE_LINES - lines) * CONSOLE_COLUMNS * CONSOLE_BPC)) &&
 	  ((src % 2) == 0))
 	{
 	  cons.vga[src + 0] = 0;
@@ -54,8 +54,8 @@ static int		print_char(char			c)
 {
   t_uint16		pos;
 
-  if (cons.line >= CONS_LINES)
-    cons_scroll(1);
+  if (cons.line >= CONSOLE_LINES)
+    console_scroll(1);
   if (c == '\n')
     {
       cons.line++;
@@ -71,15 +71,15 @@ static int		print_char(char			c)
       return (1);
     }
 
-  if (cons.column >= CONS_COLUMNS)
+  if (cons.column >= CONSOLE_COLUMNS)
     {
       cons.column = 0;
       ++cons.line;
-      if (cons.line >= CONS_LINES)
-	cons_scroll(1);
+      if (cons.line >= CONSOLE_LINES)
+	console_scroll(1);
     }
 
-  pos = cons.line * CONS_COLUMNS * CONS_BPC + cons.column * CONS_BPC;
+  pos = cons.line * CONSOLE_COLUMNS * CONSOLE_BPC + cons.column * CONSOLE_BPC;
 
   cons.vga[pos] = c;
   cons.vga[pos + 1] = cons.attr;
@@ -110,7 +110,7 @@ int			print_string(const char* p)
  * clear the screen.
  */
 
-void                    cons_clear(void)
+void                    console_clear(void)
 {
   t_uint16              i;
 
@@ -128,7 +128,7 @@ void                    cons_clear(void)
  * initialize VGA text console and console structure.
  */
 
-int			cons_init(void)
+int			console_init(void)
 {
   i_region		reg;
   t_uint16		line;
@@ -137,19 +137,19 @@ int			cons_init(void)
 
   if (region_reserve(__as_id,
 		     0x1000,
-		     CONS_ADDR - 0x1000,
+		     CONSOLE_ADDR - 0x1000,
 		     REGION_OPT_NONE,
 		     0,
 		     PAGESZ,
 		     &reg) != ERROR_NONE)
     return (-1);
 
-  cons.attr = CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT;
+  cons.attr = CONSOLE_FRONT(CONSOLE_WHITE) | CONSOLE_BACK(CONSOLE_BLACK) | CONSOLE_INT;
   cons.vga = (char*)(t_vaddr)reg;
   cons.line = 0;
   cons.column = 0;
 
-  cons_clear();
+  console_clear();
 
   return (0);
 }
@@ -159,7 +159,7 @@ int			cons_init(void)
  */
 int			main(void)
 {
-  if (cons_init())
+  if (console_init())
     return (-1);
 
   print_string("[chiche] initialised\n");
