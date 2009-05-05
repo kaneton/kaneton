@@ -40,7 +40,7 @@ void		check_event_as_map_01(void)
 
   for (i = 0; i < 3; i++)
     {
-      assert(task_reserve(TASK_CLASS_CORE,
+      assert(task_reserve(TASK_CLASS_KERNEL,
 			  TASK_BEHAV_INTERACTIVE,
 			  TASK_PRIOR_INTERACTIVE,
 			  &tskid) == ERROR_NONE,

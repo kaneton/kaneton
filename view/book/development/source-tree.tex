@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/source-tree.tex
 %
 % created       julien quintard   [thu may 17 22:41:36 2007]
-% updated       julien quintard   [tue may 20 17:06:23 2008]
+% updated       julien quintard   [mon may  4 19:33:22 2009]
 %
 
 %
@@ -38,8 +38,8 @@ listing:
   export/
   history/
   kaneton/
-  library/
   license/
+  sample/
   test/
   tool/
   transcript/
@@ -218,14 +218,22 @@ components forming the \name{machine}.
 For more information on the kaneton portability system, please refer to the
 \reference{The kaneton microkernel} book.
 
-%
 % library/
-%
 
-\subsection*{library/}
+\subsubsection*{library/}
 
-This directory contains the libraries used by the kaneton microkernel itself,
-the bootloaders \etc{}
+This directory contains whatever the kernel needs \ie{} very much like
+the \name{C} library for userland applications.
+
+% modules/
+
+\subsubsection*{modules/}
+
+This directory contains additional functionalities that can be statically
+added to the kernel.
+
+For example, the test system is composed of a kernel part which, when activated,
+is compiled and linked with the kernel.
 
 %
 % license/
@@ -244,6 +252,14 @@ implementing or even using the kaneton microkernel project..
 
 Indeed, every user of the kaneton-related stuff is considered as having
 implicitly accepted the kaneton license.
+
+%
+% sample/
+%
+
+\subsection*{sample/}
+
+This directory contains demonstration servers.
 
 %
 % test/

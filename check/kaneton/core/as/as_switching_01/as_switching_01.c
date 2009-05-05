@@ -19,7 +19,7 @@ void		check_as_as_switching_01(void)
 
   TEST_ENTER();
 
-  assert(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_GUEST,
 		      TASK_BEHAV_INTERACTIVE,
 		      TASK_PRIOR_INTERACTIVE,
 		      &task) == ERROR_NONE,

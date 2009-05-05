@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/boot.tex
 %
 % created       julien quintard   [mon dec 17 21:36:28 2007]
-% updated       julien quintard   [mon may 19 23:09:13 2008]
+% updated       julien quintard   [mon may  4 20:37:33 2009]
 %
 
 %
@@ -34,8 +34,10 @@ so that the kernel can be launched properly. The bootloader takes some
 \term{inputs} which represents additional files: configuration files,
 execution files \etc{} For example, the first input the bootloader uses is
 the kaneton microkernel binary file which is loaded and launched by the
-bootloader itself. In addition, the second input must be the \term{mod}
-service which is launched by the kernel.
+bootloader itself. In addition, the second input must be a valid kaneton
+server since the kaneton microkernel will launch it. As such, the kaneton
+microkernel assumes the second input is the \term{system} server, the
+very first and fundamental server the operating system needs.
 
 The kaneton microkernel is launched with an \term{init} structure
 as argument. This structure is described next.
@@ -49,10 +51,10 @@ as argument. This structure is described next.
     t_paddr                       kcode;
     t_psize                       kcodesz;
 
-    t_paddr                       mcode;
-    t_psize                       mcodesz;
-    t_vaddr                       mlocation;
-    t_vaddr                       mentry;
+    t_paddr                       scode;
+    t_psize                       scodesz;
+    t_vaddr                       slocation;
+    t_vaddr                       sentry;
 
     t_paddr                       init;
     t_psize                       initsz;
@@ -116,26 +118,26 @@ location and size of the kernel code.
 
 % mod service
 
-\subsection*{\name{mod} Service}
+\subsection*{\name{system} Server}
 
-The \name{mod} service is the very first server launched by the kaneton
+The \name{system} server is the very first server launched by the kaneton
 microkernel. This server is responsible for creating and starting the
 other servers.
 
-Fields \code{mcode} and \code{mcodesz} specify the location of the physical
-memory area containing the \code{mod} service code.
+Fields \code{scode} and \code{scodesz} specify the location of the physical
+memory area containing the \code{system} service code.
 
-\code{mlocation} contains the virtual memory address the code area must
-be mapped whilst \code{mentry} contains the virtual address of the code's
+\code{slocation} contains the virtual memory address the code area must
+be mapped whilst \code{sentry} contains the virtual address of the code's
 entry point.
 
-These fields were introduced so that the parsing of the \name{mod} binary
-is performed by the bootloader. This way, the kernel does not have take
-care of handling multiples executable file formats like \name{ELF},
-\name{COFF} \etc{}
+These fields were introduced so that the parsing of the \name{system} binary
+is performed by the bootloader, not the kernel. This way, the kernel does not
+have to take care of handling multiples executable file formats such as
+\name{ELF}, \name{COFF} \etc{}
 
 Indeed, the kernel receives the \name{init} structure, creates a new task,
-maps the \name{mod} service code and points the task's thread to the
+maps the \name{system} service code and points the task's thread to the
 entry point.
 
 % init structure

@@ -39,7 +39,7 @@ void		check_sched_complete_01_entry(void)
 
   TEST_ENTER();
 
-  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
+  assert(check_task_create(TASK_CLASS_GUEST, &tsk) == 0,
 	"error creating task\n");
 
   assert(task_get(tsk, &o) == ERROR_NONE,

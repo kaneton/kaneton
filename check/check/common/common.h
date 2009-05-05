@@ -91,7 +91,7 @@ typedef struct
     }
 
 #define TEST_NEW_AS(Task,As)						\
-  assert(task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_INTERACTIVE,	\
+  assert(task_reserve(TASK_CLASS_GUEST, TASK_BEHAV_INTERACTIVE,	\
 		      TASK_PRIOR_INTERACTIVE, &(Task)) == ERROR_NONE,	\
 	 "Error creating task\n");					\
   assert(as_reserve((Task), &(As)) == ERROR_NONE, "Error creating as\n")

@@ -33,7 +33,7 @@ void		check_segment_resize_02(void)
   t_uint8*	buff;
 
   TEST_ENTER();
-  assert(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_GUEST,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,

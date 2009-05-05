@@ -20,9 +20,6 @@ _start:
 	movl $__as_id, %edi
 	popl 0(%edi)
 	popl 4(%edi)
-	movl $__mod_id, %edi
-	popl 0(%edi)
-	popl 4(%edi)
 
 	popl %esi		/* Pop the argument count.  */
 	movl %esp, %ecx		/* argv starts just at the current stack top.*/
@@ -61,8 +58,8 @@ __task_id:
 __as_id:
 .long 0
 .long 0
-.global __mod_id
-__mod_id:
+.global __system_id
+__system_id:
 .long 0
 .long 0
 

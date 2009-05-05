@@ -39,7 +39,7 @@ void		check_sched_complete_03_entry(void)
   CLI();
   for (i = 0; i < 5; i++)
     {
-      assert(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
+      assert(check_task_create(TASK_CLASS_GUEST, &tsk) == 0,
 	     "error creating task\n");
 
       for (j = 0; j < 3; j++)

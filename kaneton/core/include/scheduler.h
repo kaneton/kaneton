@@ -88,7 +88,7 @@
 									\
     task_prior = ((otsk->prior - TASK_LPRIOR_BACKGROUND) *		\
 		  SCHEDULER_N_PRIORITY_QUEUE) /				\
-      (TASK_HPRIOR_CORE - TASK_LPRIOR_BACKGROUND);			\
+      (TASK_HPRIOR_KERNEL - TASK_LPRIOR_BACKGROUND);			\
 									\
     thread_prior = ((oth->prior - THREAD_LPRIOR) *			\
 		    SCHEDULER_N_PRIORITY_QUEUE) /			\

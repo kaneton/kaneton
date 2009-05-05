@@ -257,7 +257,7 @@ t_error			ia32_init_context(i_task		taskid,
    * 3)
    */
 
-  /* XXX can be deleted after first cs when task->class == TASK_CLASS_CORE*/
+  /* XXX can be deleted after first cs when task->class == TASK_CLASS_KERNEL*/
   if (map_reserve(task->asid, MAP_OPT_NONE, PAGESZ, PERM_READ | PERM_WRITE,
 		  &o->machdep.interrupt_stack) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -275,7 +275,7 @@ t_error			ia32_init_context(i_task		taskid,
 
   switch (task->class)
     {
-      case TASK_CLASS_CORE:
+      case TASK_CLASS_KERNEL:
 	ctx.ds = ctx.ss = thread->machdep.core_ds;
 	ctx.cs = thread->machdep.core_cs;
 	break;
@@ -287,7 +287,7 @@ t_error			ia32_init_context(i_task		taskid,
 	ctx.ds = ctx.ss = thread->machdep.service_ds;
 	ctx.cs = thread->machdep.service_cs;
 	break;
-      case TASK_CLASS_PROGRAM:
+      case TASK_CLASS_GUEST:
 	ctx.ds = ctx.ss = thread->machdep.program_ds;
 	ctx.cs = thread->machdep.program_cs;
 	break;
@@ -512,7 +512,7 @@ t_error			ia32_context_ring0_stack(void)
   if (task_get(o->taskid, &otask) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (otask->class == TASK_CLASS_CORE)
+  if (otask->class == TASK_CLASS_KERNEL)
     {
       o->machdep.interrupt_stack = ia32_cpu_local_get(ia32_local_jump_stack);
       o->machdep.interrupt_stack += sizeof (t_ia32_context);
@@ -593,7 +593,7 @@ t_error			ia32_context_switch(i_thread		current,
 
   if (current == ID_UNUSED ||
       (from->taskid != to->taskid && (task->class == TASK_CLASS_SERVICE ||
-				      task->class == TASK_CLASS_PROGRAM)) ||
+				      task->class == TASK_CLASS_GUEST)) ||
       task->machdep.ioflush)
     {
       memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,

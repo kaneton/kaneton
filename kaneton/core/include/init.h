@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/include/core/init.h
+ * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       matthieu bucchianeri   [wed jul 18 18:09:11 2007]
+ * updated       julien quintard   [mon may  4 20:23:12 2009]
  */
 
 #ifndef CORE_INIT_H
@@ -101,10 +101,10 @@ typedef struct
   t_paddr			kcode;
   t_psize			kcodesz;
 
-  t_paddr			mcode;
-  t_psize			mcodesz;
-  t_vaddr			mlocation;
-  t_vaddr			mentry;
+  t_paddr			scode;
+  t_psize			scodesz;
+  t_vaddr			slocation;
+  t_vaddr			sentry;
 
   t_paddr			init;
   t_psize			initsz;

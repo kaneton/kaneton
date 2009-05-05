@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       matthieu bucchianeri   [mon aug 27 17:59:45 2007]
+ * updated       julien quintard   [mon may  4 21:21:54 2009]
  */
 
 /*
@@ -49,11 +49,11 @@ extern t_init*		init;
 extern m_scheduler*	scheduler;
 
 /*
- * the identifier of the pre-reserved segment containing the mod service
+ * the identifier of the pre-reserved segment containing the system service
  * code.
  */
 
-extern i_segment	mod;
+extern i_segment	system;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -321,13 +321,13 @@ t_error			task_reserve(t_class			class,
    * 1)
    */
 
-  if ((class != TASK_CLASS_CORE) &&
+  if ((class != TASK_CLASS_KERNEL) &&
       (class != TASK_CLASS_DRIVER) &&
       (class != TASK_CLASS_SERVICE) &&
-      (class != TASK_CLASS_PROGRAM))
+      (class != TASK_CLASS_GUEST))
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  if ((behav != TASK_BEHAV_CORE) &&
+  if ((behav != TASK_BEHAV_KERNEL) &&
       (behav != TASK_BEHAV_REALTIME) &&
       (behav != TASK_BEHAV_INTERACTIVE) &&
       (behav != TASK_BEHAV_TIMESHARING) &&
@@ -336,8 +336,8 @@ t_error			task_reserve(t_class			class,
 
   switch (behav)
     {
-      case TASK_BEHAV_CORE:
-	if (prior < TASK_LPRIOR_CORE || prior > TASK_HPRIOR_CORE)
+      case TASK_BEHAV_KERNEL:
+	if (prior < TASK_LPRIOR_KERNEL || prior > TASK_HPRIOR_KERNEL)
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
 	break;
       case TASK_BEHAV_REALTIME:
@@ -670,8 +670,8 @@ t_error			task_priority(i_task			id,
 
   switch (o->behav)
     {
-      case TASK_BEHAV_CORE:
-	if (prior < TASK_LPRIOR_CORE || prior > TASK_HPRIOR_CORE)
+      case TASK_BEHAV_KERNEL:
+	if (prior < TASK_LPRIOR_KERNEL || prior > TASK_HPRIOR_KERNEL)
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
 	break;
       case TASK_BEHAV_REALTIME:
@@ -970,8 +970,8 @@ t_error			task_get(i_task				id,
  * 3) reserve the task set which will contain the tasks built later.
  * 4) reserve the kernel task and its address space.
  * 5) add the segments to the kernel address space.
- *    note that for the segment corresponding to the mod service code, the
- *    segment identifier is saved in the mod global variable so that the
+ *    note that for the segment corresponding to the system service code, the
+ *    segment identifier is saved in the system global variable so that the
  *    core can retrieve it, build a task, map the segment, and launch it.
  * 6) add the regions to the kernel address space.
  * 7) call the machine-dependent code.
@@ -1027,8 +1027,8 @@ t_error			task_initialize(void)
    * 4)
    */
 
-  if (task_reserve(TASK_CLASS_CORE, TASK_BEHAV_CORE,
-		   TASK_PRIOR_CORE, &ktask) != ERROR_NONE)
+  if (task_reserve(TASK_CLASS_KERNEL, TASK_BEHAV_KERNEL,
+		   TASK_PRIOR_KERNEL, &ktask) != ERROR_NONE)
     {
       cons_msg('!', "task: unable to reserve the kernel task\n");
 
@@ -1066,8 +1066,8 @@ t_error			task_initialize(void)
 	  return (ERROR_UNKNOWN);
 	}
 
-      if (init->mcode == init->segments[i].address)
-	mod = segments[i];
+      if (init->scode == init->segments[i].address)
+	system = segments[i];
     }
 
   /*

@@ -45,13 +45,13 @@ t_init*			init;
 /*
  * this variable is filled by the task manager when it injects the
  * pre-reserved segments. this variable holds the identifier of the
- * segment containing the mod service code.
+ * segment containing the system service code.
  *
  * indeed, the kernel needs to retrieve this segment to map it and then
  * build a task for this very first service.
  */
 
-i_segment		mod;
+i_segment		system;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -195,7 +195,7 @@ void			kaneton(t_init*				bootloader)
  * task.
  *
  * the new task's address space is only composed of a stack and the
- * code which is a mapping of the code provided by the booloader: init->mcode.
+ * code which is a mapping of the code provided by the booloader: init->scode.
  */
 
 t_error			kaneton_launch(void)
@@ -211,20 +211,19 @@ t_error			kaneton_launch(void)
   {
     i_task		taskid;
     i_as		asid;
-    i_task		mod;
     int			argc;
     char*		argv;
     char*		envp;
   }			args;
 
-  if (init->mcodesz == 0)
+  if (init->scodesz == 0)
     {
       cons_msg('!', "no initial server provided in the inputs\n");
 
       return (ERROR_UNKNOWN);
     }
 
-  if (task_reserve(TASK_CLASS_PROGRAM,
+  if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAV_TIMESHARING,
 		   TASK_PRIOR_TIMESHARING,
 		   &task) != ERROR_NONE)
@@ -234,9 +233,9 @@ t_error			kaneton_launch(void)
     return (ERROR_UNKNOWN);
 
   if (region_reserve(as,
-		     mod, 0,
+		     system, 0,
 		     REGION_OPT_FORCE,
-		     init->mlocation, init->mcodesz,
+		     init->slocation, init->scodesz,
 		     &region) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -260,14 +259,13 @@ t_error			kaneton_launch(void)
     return (ERROR_UNKNOWN);
 
   ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = init->mentry;
+  ctx.pc = init->sentry;
 
   if (thread_load(thread, ctx) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   args.taskid = task;
   args.asid = as;
-  args.mod = ID_UNUSED;
   args.argc = 1;
   args.argv = (char*)init->inputs;
   args.envp = NULL;

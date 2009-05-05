@@ -695,7 +695,7 @@ t_error			thread_stack(i_thread			threadid,
   if (!stack.base)
     {
       if (map_reserve(task->asid,
-		      MAP_OPT_NONE | (task->class == TASK_CLASS_CORE ? MAP_OPT_PRIVILEGED : MAP_OPT_USER),
+		      MAP_OPT_NONE | (task->class == TASK_CLASS_KERNEL ? MAP_OPT_PRIVILEGED : MAP_OPT_USER),
 		      stack.size,
 		      PERM_READ | PERM_WRITE,
 		      &(o->stack)) != ERROR_NONE)

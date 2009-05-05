@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [wed apr 15 07:28:31 2009]
+ * updated       julien quintard   [tue may  5 00:36:41 2009]
  */
 
 #ifndef CORE_TASK_H
@@ -33,16 +33,16 @@
  * classes
  */
 
-#define TASK_CLASS_CORE		(1 << 0)
+#define TASK_CLASS_KERNEL	(1 << 0)
 #define TASK_CLASS_DRIVER	(1 << 1)
 #define TASK_CLASS_SERVICE	(1 << 2)
-#define TASK_CLASS_PROGRAM	(1 << 3)
+#define TASK_CLASS_GUEST	(1 << 3)
 
 /*
  * behaviours
  */
 
-#define TASK_BEHAV_CORE		(1 << 0)
+#define TASK_BEHAV_KERNEL	(1 << 0)
 #define TASK_BEHAV_REALTIME	(1 << 1)
 #define TASK_BEHAV_INTERACTIVE	(1 << 2)
 #define TASK_BEHAV_TIMESHARING	(1 << 3)
@@ -52,9 +52,9 @@
  * priorities
  */
 
-#define TASK_PRIOR_CORE		230
-#define TASK_HPRIOR_CORE	250
-#define TASK_LPRIOR_CORE	210
+#define TASK_PRIOR_KERNEL	230
+#define TASK_HPRIOR_KERNEL	250
+#define TASK_LPRIOR_KERNEL	210
 
 #define TASK_PRIOR_REALTIME	190
 #define TASK_HPRIOR_REALTIME	210

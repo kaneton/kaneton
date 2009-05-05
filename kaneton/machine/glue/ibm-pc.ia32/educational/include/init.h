@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...itecture/ia32/educational/include/init.h
+ * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/init.h
  *
  * created       julien quintard   [wed jun  6 16:16:48 2007]
- * updated       matthieu bucchianeri   [sat jun 16 17:22:30 2007]
+ * updated       julien quintard   [mon may  4 21:33:21 2009]
  */
 
 #ifndef GLUE_INIT_H
@@ -27,7 +27,7 @@
  *
  * the segments are composed of ISA, kernel code, the init structure, the
  * module structures, the segment structures, the region structures, the
- * kernel stack, the malloc preallocated pages, the mod service code, the
+ * kernel stack, the malloc preallocated pages, the system service code, the
  * global offset table and the page directory.
  */
 

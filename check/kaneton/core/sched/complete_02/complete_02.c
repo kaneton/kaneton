@@ -50,7 +50,7 @@ void		check_sched_complete_02_entry(void)
 
   TEST_ENTER();
 
-  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
+  assert(check_task_create(TASK_CLASS_GUEST, &tsk) == 0,
 	"error creating task\n");
 
   assert(check_thread_create(tsk, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,

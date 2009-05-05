@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [fri may  1 20:04:26 2009]
+# updated       julien quintard   [mon may  4 19:41:21 2009]
 #
 
 #
@@ -379,13 +379,13 @@ def			main():
                    "profile/kaneton/",
                    "profile/kaneton/core/",
                    "profile/kaneton/machine/",
-                   "profile/kaneton/machine/glue/",
-                   "profile/kaneton/machine/glue/" + platform + "." +   \
-                     architecture + "/",
                    "profile/kaneton/machine/platform/",
                    "profile/kaneton/machine/platform/" + platform + "/",
                    "profile/kaneton/machine/architecture/",
                    "profile/kaneton/machine/architecture/" +            \
+                     architecture + "/",
+                   "profile/kaneton/machine/glue/",
+                   "profile/kaneton/machine/glue/" + platform + "." +   \
                      architecture + "/",
                    "profile/kaneton/library/",
                    "profile/kaneton/modules/",

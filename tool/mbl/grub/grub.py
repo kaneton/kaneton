@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/tool/mbl/grub/grub.py
 #
 # created       julien quintard   [tue jun 26 11:33:57 2007]
-# updated       julien quintard   [mon apr 20 03:31:32 2009]
+# updated       julien quintard   [tue may  5 10:27:46 2009]
 #
 
 #
@@ -33,7 +33,7 @@ import re
 
 g_image="data/kaneton.img"
 g_menu = None
-g_inputs = None
+g_components = None
 g_action = None
 
 #
@@ -93,10 +93,10 @@ def			warning():
 # this function generates the grub menu file.
 #
 def			menu():
-  global g_inputs
+  global g_components
   global g_menu
   content = None
-  input = None
+  component = None
 
   # initialize the file content.
   content = "timeout 0\n" +						\
@@ -122,15 +122,15 @@ def			menu():
                 "'", env.OPTION_NONE)
     sys.exit(42)
 
-  # retrieve the grub modules from the _INPUTS_ environment variables.
-  g_inputs = re.split("[ \t]+", env._INPUTS_.strip())
+  # retrieve the grub modules from the _COMPONENTS_ environment variables.
+  g_components = re.split("[ \t]+", env._COMPONENTS_.strip())
 
-  # set the first input as the grub kernel.
-  content += re.sub("^.*\/", "kernel /modules/", g_inputs[0]) + "\n"
+  # set the first component as the grub kernel.
+  content += re.sub("^.*\/", "kernel /modules/", g_components[0]) + "\n"
 
-  # set the other inputs as grub modules.
-  for input in g_inputs[1:]:
-    content += re.sub("^.*\/", "module /modules/", input) + "\n"
+  # set the other components as grub modules.
+  for component in g_components[1:]:
+    content += re.sub("^.*\/", "module /modules/", component) + "\n"
 
   # create the temporary file and fill it.
   g_menu = env.temporary(env.OPTION_FILE)
@@ -145,7 +145,7 @@ def			menu():
 # this function installs the kaneton binaries onto the boot device.
 #
 def			install():
-  input = None
+  component = None
 
   # warn the user before performing any action.
   warning()
@@ -164,30 +164,30 @@ def			install():
   if env._BOOT_MODE_ == "peripheral":
     env.load(g_menu, env._MDEVICE_, "/boot/grub/menu.lst", env.OPTION_DEVICE)
 
-    for input in g_inputs:
-      if not env.path(input, env.OPTION_EXIST):
-        env.display(env.HEADER_ERROR, "  " + input, env.OPTION_NONE)
+    for component in g_components:
+      if not env.path(component, env.OPTION_EXIST):
+        env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
       else:
-        env.load(input, env._MDEVICE_, "/modules/", env.OPTION_DEVICE)
-        env.display(env.HEADER_OK, "  " + input, env.OPTION_NONE)
+        env.load(component, env._MDEVICE_, "/modules/", env.OPTION_DEVICE)
+        env.display(env.HEADER_OK, "  " + component, env.OPTION_NONE)
   elif env._BOOT_MODE_ == "network":
     env.load(g_menu, env._MDEVICE_, "/boot/grub/menu.lst", env.OPTION_DEVICE)
 
-    for input in g_inputs:
-      if not env.path(input, env.OPTION_EXIST):
-        env.display(env.HEADER_ERROR, "  " + input, env.OPTION_NONE)
+    for component in g_components:
+      if not env.path(component, env.OPTION_EXIST):
+        env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
       else:
-        env.copy(input, env._TFTP_DIRECTORY_, env.OPTION_NONE)
-        env.display(env.HEADER_OK, "  " + input, env.OPTION_NONE)
+        env.copy(component, env._TFTP_DIRECTORY_, env.OPTION_NONE)
+        env.display(env.HEADER_OK, "  " + component, env.OPTION_NONE)
   elif env._BOOT_MODE_ == "image":
     env.load(g_menu, env._IMAGE_, "/boot/grub/menu.lst", env.OPTION_IMAGE)
 
-    for input in g_inputs:
-      if not env.path(input, env.OPTION_EXIST):
-        env.display(env.HEADER_ERROR, "  " + input, env.OPTION_NONE)
+    for component in g_components:
+      if not env.path(component, env.OPTION_EXIST):
+        env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
       else:
-        env.load(input, env._IMAGE_, "/modules/", env.OPTION_IMAGE)
-        env.display(env.HEADER_OK, "  " + input, env.OPTION_NONE)
+        env.load(component, env._IMAGE_, "/modules/", env.OPTION_IMAGE)
+        env.display(env.HEADER_OK, "  " + component, env.OPTION_NONE)
   else:
     env.display(env.HEADER_ERROR, "unknown boot mode '" + env._BOOT_MODE_ +
                 "'", env.OPTION_NONE)

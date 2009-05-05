@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [fri jun 13 11:09:43 2008]
+% updated       julien quintard   [mon may  4 19:41:14 2009]
 %
 
 %
@@ -151,18 +151,27 @@ With, for instance, the following values:
 Note that the possibility to include files in the configuration syntax allows
 very similar profiles to share a huge amount of definitions.
 
+% boot
+
+\subsubsubsection{Boot}
+
+The \name{boot} profile is both used for configuring the boot components
+such as the \name{loader} \etc{} but also to set up the way a bootable
+system is built.
+
 % kaneton
 
 \subsubsubsection{kaneton}
 
 The \name{kaneton} profile is composed of four sub-profiles: \name{core},
-\name{platform}, \name{architecture} and \name{libc}.
+\name{machine}, \name{library} and \name{modules} for the \name{kaneton}
+microkernel sub-components respectively. Likewise, \name{machine} is
+sub-divided into \name{platform}, \name{architecture} and \name{glue}.
 
 The \name{core} sub-profile contains variables for parameterizing the
 kaneton core. The \name{platform} and \name{architecture} sub-profiles
 focus on the configuration of the platform- and architecture-dependent code
-of the kaneton microkernel, respectively. The \name{libc} sub-profile
-contains parameters for the \name{C Library} used in the kernel.
+of the kaneton microkernel, respectively.
 
 The user-defined shell variables \code{\$\{KANETON\_PLATFORM\}} and
 \code{\$\{KANETON\_ARCHITECTURE\}} are used to address the \name{platform}
@@ -289,14 +298,20 @@ described below, starting with the lowest-level layer thourgh the highest one.
 \begin{verbatim}
   profile/
   profile/host
-  profile/host/${KANETON_HOST}/${KANETON_ARCHITECTURE}
+  profile/host/${KANETON_HOST}.${KANETON_ARCHITECTURE}
+  profile/boot
+  profile/boot/${KANETON_PLATFORM}.${KANETON_ARCHITECTURE}
   profile/kaneton
   profile/kaneton/core
-  profile/kaneton/platform
-  profile/kaneton/platform/${KANETON_PLATFORM}
-  profile/kaneton/architecture
-  profile/kaneton/architecture/${KANETON_ARCHITECTURE}
-  profile/kaneton/libc
+  profile/kaneton/machine
+  profile/kaneton/machine/platform
+  profile/kaneton/machine/platform/${KANETON_PLATFORM}
+  profile/kaneton/machine/architecture
+  profile/kaneton/machine/architecture/${KANETON_ARCHITECTURE}
+  profile/kaneton/machine/glue
+  profile/kaneton/machine/glue/${KANETON_PLATFORM}.${KANETON_ARCHITECTURE}
+  profile/kaneton/library
+  profile/kaneton/modules
   profile/user
   profile/user/${KANETON_USER}         
 \end{verbatim}

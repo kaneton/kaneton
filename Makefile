@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [fri may  1 21:58:31 2009]
+# updated       julien quintard   [tue may  5 10:33:50 2009]
 #
 
 #
@@ -40,11 +40,13 @@ _MAKE_			?=		$(MAKE)
 
 ifeq ($(_SIGNATURE_),kaneton)
 
-PATHS			=		$(dir $(_INPUTS_))
+PATHS			=		$(dir $(_COMPONENTS_))
 
   main:
 	for path in $(PATHS) ; do					\
-	  $(call env_launch,$${path}/Makefile,,)			; \
+          if [ -f "$${path}/Makefile" ] ; then				\
+	    $(call env_launch,$${path}/Makefile,,)			; \
+	  fi								\
 	done
 
 else

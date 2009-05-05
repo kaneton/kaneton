@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/view.py
 #
 # created       julien quintard   [sun may 13 11:04:52 2007]
-# updated       julien quintard   [mon apr 20 03:33:46 2009]
+# updated       julien quintard   [mon may  4 19:27:46 2009]
 #
 
 #
@@ -31,12 +31,13 @@ import re
 #
 
 g_directories = ("book",
-                 "curriculum",
                  "exam",
                  "feedback",
                  "internship",
                  "lecture",
-                 "paper")
+                 "paper",
+                 "talk")
+
 g_store = []
 g_document = None
 g_path = None

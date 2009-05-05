@@ -114,7 +114,7 @@ void		check_thread_fpu_01_entry(void)
   memset(&regs2, 0, sizeof (regs2));
 
   CLI();
-  /*  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk) == 0,
+  /*  assert(check_task_create(TASK_CLASS_GUEST, &tsk) == 0,
       "error creating task\n");*/
   tsk = ktask;
 

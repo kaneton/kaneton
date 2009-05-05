@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/portability.tex
 %
 % created       julien quintard   [tue jun 19 15:44:42 2007]
-% updated       julien quintard   [mon may 19 23:09:54 2008]
+% updated       julien quintard   [mon may  4 20:32:51 2009]
 %
 
 %
@@ -69,8 +69,8 @@ of the two following categories:
     \-
 
     Indeed, these basic operations are present on about every modern
-    architectures. Nevertheless, some architectures --- currently existing or
-    not ---- may possibly not fit this interface.
+    architectures. Nevertheless, some architectures---currently existing or
+    not---may possibly not fit this interface.
 \end{enumerate}
 
 %
@@ -134,7 +134,7 @@ Note that these macro-functions are generally handled by the glue component
 as it is the most suitable for knowing what to do when dealing with
 portability depending on the underlying platform and architecture.
 
-\function{machine\_include}{\argument{manager}}
+\function{}{machine\_include}{\argument{manager}}
 	 {
 	   This macro-function can be used by the core to include
 	   machine-dependent code for the precise manager \argument{manager}.
@@ -145,13 +145,13 @@ portability depending on the underlying platform and architecture.
 	   machine-dependent variables in the core.
 	 }
 
-\function{machine\_data}{\argument{object}}
+\function{}{machine\_data}{\argument{object}}
 	 {
 	   This macro-function can be used by the machine-dependent code
 	   to add extra fields into the kaneton object type \argument{object}.
 	 }
 
-\function{machine\_call}{\argument{manager},
+\function{}{machine\_call}{\argument{manager},
                          \argument{function},
                          \argument{args...}}
 	 {

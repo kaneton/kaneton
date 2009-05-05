@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/paper/design/design.tex
 %
 % created       julien quintard   [wed may 16 18:26:51 2007]
-% updated       julien quintard   [thu may 22 16:19:53 2008]
+% updated       julien quintard   [tue may  5 00:30:48 2009]
 %
 
 %
@@ -499,31 +499,31 @@ of the kernel complexity in a single point: the set manager.
 The rest of the kaneton core implementation is so extremely simple.
 
 %
-% process
+% tasks
 %
 
-\subsection{Process}
+\subsection{Tasks}
 
 The kaneton microkernel uses a specific nomenclature which is different
 from other operating systems.
 
 The system is composed of five different entities in relation with execution.
 
-A \term{module} represents a passive execution entity in main memory.
-Indeed, a module does not run and has no execution context. The modules are
-managed by the module service to reside in main memory the time it is
-necessary. For example a very used program like \location{/bin/ls} will
-certainly become an important module due to its frequent use.
+A \term{program}/\term{application} represents a passive execution entity in
+main memory. Indeed, a program does not run and has no execution context. The
+programs are managed by the system service to reside in main memory the time
+it is necessary. For example a very used program like \location{/bin/ls} will
+certainly become an important program due to its frequent use.
 
-Fundamental system's drivers and services are persistent modules because
+Fundamental system's drivers and services are persistent programs because
 they would be used in the case of a crash to restart the crashed service
 without any dependency to the hard drive device driver for example.
 
-A \term{program} is the lowest privileged task on the system.
+A \term{guest} is the lowest privileged task on the system.
 The common user programs are the well-known UNIX{\scriptsize \copyright}
 programs like \location{/bin/ls}, \location{/bin/wc}, \location{/usr/bin/cc}
-\etc{} A program is a task with no privilege. All it can do is compute some
-things, manage data and send messages to more privileged processes.
+\etc{} A guest is a task with no privilege. All it can do is compute some
+things, manage data and send messages to more privileged tasks.
 
 A \term{service} is a server which provides a so-called service. A service
 waits for messages, performs a task, and returns the result of the service

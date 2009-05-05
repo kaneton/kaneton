@@ -27,13 +27,13 @@ void		check_segment_catch_01(void)
   o_segment*	o;
 
   TEST_ENTER();
-  assert(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_GUEST,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task1) == ERROR_NONE,
 	   "error creating task\n");
 
-  assert(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_GUEST,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task2) == ERROR_NONE,

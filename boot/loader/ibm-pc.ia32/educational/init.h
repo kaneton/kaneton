@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ootloader/ibm-pc.ia32/educational/init.h
+ * file          /home/mycure/kane...ot/loader/ibm-pc.ia32/educational/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       matthieu bucchianeri   [wed jul 18 18:53:15 2007]
+ * updated       julien quintard   [mon may  4 20:24:31 2009]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -125,10 +125,10 @@ typedef struct
   t_paddr			kcode;
   t_psize			kcodesz;
 
-  t_paddr			mcode;
-  t_psize			mcodesz;
-  t_vaddr			mlocation;
-  t_vaddr			mentry;
+  t_paddr			scode;
+  t_psize			scodesz;
+  t_vaddr			slocation;
+  t_vaddr			sentry;
 
   t_paddr			init;
   t_psize			initsz;

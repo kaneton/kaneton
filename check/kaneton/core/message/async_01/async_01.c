@@ -95,7 +95,7 @@ void		check_message_async_01_entry(void)
 
   TEST_ENTER();
 
-  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk1) == 0,
+  assert(check_task_create(TASK_CLASS_GUEST, &tsk1) == 0,
 	"error creating task\n");
 
   machine = kernel->machine;
@@ -104,7 +104,7 @@ void		check_message_async_01_entry(void)
   assert(check_thread_create(tsk1, THREAD_HPRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
-  assert(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
+  assert(check_task_create(TASK_CLASS_GUEST, &tsk2) == 0,
 	"error creating task\n");
 
   assert(check_thread_create(tsk2, THREAD_HPRIOR, (t_vaddr)thread2, &id) == 0,

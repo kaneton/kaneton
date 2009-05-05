@@ -25,7 +25,7 @@ void		check_segment_type_01(void)
   o_segment*	o;
 
   TEST_ENTER();
-  assert(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_GUEST,
 
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,

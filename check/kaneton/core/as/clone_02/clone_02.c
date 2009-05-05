@@ -38,13 +38,13 @@ void		check_as_clone_02(void)
 
   TEST_ENTER();
 
-  assert(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_GUEST,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  assert(task_reserve(TASK_CLASS_PROGRAM,
+  assert(task_reserve(TASK_CLASS_GUEST,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &forked) == ERROR_NONE,

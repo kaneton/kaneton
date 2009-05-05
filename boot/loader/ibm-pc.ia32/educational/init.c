@@ -24,7 +24,7 @@
  *
  * this structure will be passed to the kernel describing inputs,
  * physical memory reserved by the hardware etc. thus the kernel will
- * be able to initialize its managers: segment manager, module manager etc.
+ * be able to initialize its managers: segment manager etc.
  */
 
 t_init*			init;
@@ -62,12 +62,12 @@ void			bootloader_init_dump(void)
 		      init->kcode,
 		      init->kcodesz);
 
-  bootloader_cons_msg('#', " mod code: 0x%x - %u bytes :: "
+  bootloader_cons_msg('#', " system code: 0x%x - %u bytes :: "
 		      "location: 0x%x\n - entry: 0x%x\n",
-		      init->mcode,
-		      init->mcodesz,
-		      init->mlocation,
-		      init->mentry);
+		      init->scode,
+		      init->scodesz,
+		      init->slocation,
+		      init->sentry);
 
   bootloader_cons_msg('#', " init structure: 0x%x - %u bytes\n",
 		      init,
@@ -164,7 +164,7 @@ void			bootloader_init_dump(void)
  * 10) add the global offset table segment.
  * 11) add the page directory segment.
  * 12) add the inputs segment.
- * 13) add the mod service code segment.
+ * 13) add the system service code segment.
  */
 
 void			bootloader_init_segments(void)
@@ -280,10 +280,10 @@ void			bootloader_init_segments(void)
    * 13)
    */
 
-  if (init->mcodesz != 0) // mod is loaded ?
+  if (init->scodesz != 0) // system is loaded ?
   {
-    init->segments[13].address = init->mcode;
-    init->segments[13].size = init->mcodesz;
+    init->segments[13].address = init->scode;
+    init->segments[13].size = init->scodesz;
     init->segments[13].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
   }
   else
@@ -479,7 +479,7 @@ t_paddr			bootloader_init_alloc(t_psize		size,
  *    into the kernel address space to continue to provide its service.
  *    so the alloc() function needs an amount of critical pages to work with
  *    until the virtual memory is initialized.
- * 9) allocate memory for the mod service code.
+ * 9) allocate memory for the system service code.
  */
 
 t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
@@ -645,20 +645,20 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 
       modsz = mod[1].mod_end - mod[1].mod_start;
 
-      init->mcode = bootloader_init_alloc(modsz, &init->mcodesz);
-      init->mlocation = 0x60000000; /* XXX very ugly hard-coded value */
-      init->mentry = khdr->e_entry;
+      init->scode = bootloader_init_alloc(modsz, &init->scodesz);
+      init->slocation = 0x60000000; /* XXX very ugly hard-coded value */
+      init->sentry = khdr->e_entry;
 
-      memcpy((void*)init->mcode, (const void*)mod[1].mod_start, modsz);
+      memcpy((void*)init->scode, (const void*)mod[1].mod_start, modsz);
 
       bootloader_cons_msg('+', " mod relocated from 0x%x to 0x%x (0x%x)\n",
-			  mod[1].mod_start, init->mcode, modsz);
+			  mod[1].mod_start, init->scode, modsz);
     }
   else
     {
-      init->mcode = 0;
-      init->mlocation = 0;
-      init->mentry = 0;
+      init->scode = 0;
+      init->slocation = 0;
+      init->sentry = 0;
     }
 
   return (kentry);

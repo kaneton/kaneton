@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/implementation.tex
 %
 % created       julien quintard   [mon dec 17 12:05:06 2007]
-% updated       julien quintard   [mon may 19 22:04:47 2008]
+% updated       julien quintard   [mon may  4 20:31:52 2009]
 %
 
 %
@@ -74,7 +74,7 @@ whilst the \code{release()} function releases it.
 The function \code{clone()} creates a copy of the given object. Cloning an
 object implies cloning every object this object holds or depends on.
 
-The \code{get()} function is used for retrieving a kaneton object given its
+The \code{object()} function is used for retrieving a kaneton object given its
 identifier. Note that this function is private to the manager though it is
 sometimes used by other intrusive managers.
 
@@ -91,8 +91,9 @@ In addition, the kaneton managers generally provide functions for modifying
 a property of a given identified object. Such functions typically take the
 name of the property to modify.
 
-Finally, every manager provides an \code{attribute()} function which
-returns the state of an object's property.
+Finally, every manager provides an \code{get()} function which
+returns the state of an object's property while \code{set()} enables the
+caller to update a property.
 
 %
 % organisation
@@ -105,11 +106,12 @@ The \location{kaneton/} directory is organised as follows:
 \begin{verbatim}
   core/
   include/
-  libc/
+  library/
   machine/
+  modules/
 \end{verbatim}
 
-The \location{libc/} directory contains the microkernel-specific C library
+The \location{library/} directory contains the microkernel-specific C library
 whilst the \location{include/} directory contains links to the include
 directories of every component.
 
@@ -136,3 +138,7 @@ in order to place the different elements at precise memory locations.
 The \location{platform/} and \location{architecture/} directories are organised
 the same way with subdirectories for every supported platforms and
 architectures, respectively.
+
+Finally the \location{modules/} directory contains conditionally-linked
+static modules \ie{} pieces of code that add a functionality to the
+microkernel without being intrusive.
