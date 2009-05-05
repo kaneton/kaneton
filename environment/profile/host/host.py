@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [mon apr 20 03:09:12 2009]
+# updated       julien quintard   [tue may  5 12:06:53 2009]
 #
 
 #
@@ -58,6 +58,7 @@ OPTION_QUIET = 1
 
 OPTION_NO_NEWLINE = 1
 OPTION_FLICKERING = 2
+OPTION_BOLD = 4
 
 OPTION_FILE = 1
 OPTION_DIRECTORY = 2
@@ -82,25 +83,25 @@ OPTION_CURRENT_DIRECTORY = 1
 #
 def			display(header, text, options):
   if header == HEADER_NONE:
-    sys.stdout.write(colorize(text, COLOR_WHITE, OPTION_NONE))
+    sys.stdout.write(colorize(text, COLOR_NONE, OPTION_NONE))
   elif header == HEADER_OK:
-    sys.stdout.write(colorize("[", COLOR_BLUE, OPTION_NONE))
-    sys.stdout.write(colorize("+", COLOR_GREEN, OPTION_NONE))
-    sys.stdout.write(colorize("]", COLOR_BLUE, OPTION_NONE))
+    sys.stdout.write(colorize("[", COLOR_BLUE, OPTION_BOLD))
+    sys.stdout.write(colorize("+", COLOR_GREEN, OPTION_BOLD))
+    sys.stdout.write(colorize("]", COLOR_BLUE, OPTION_BOLD))
     sys.stdout.write(" ")
-    sys.stdout.write(colorize(text, COLOR_WHITE, OPTION_NONE))
+    sys.stdout.write(colorize(text, COLOR_NONE, OPTION_NONE))
   elif header == HEADER_ERROR:
-    sys.stdout.write(colorize("[", COLOR_BLUE, OPTION_NONE))
-    sys.stdout.write(colorize("!", COLOR_RED, OPTION_NONE))
-    sys.stdout.write(colorize("]", COLOR_BLUE, OPTION_NONE))
+    sys.stdout.write(colorize("[", COLOR_BLUE, OPTION_BOLD))
+    sys.stdout.write(colorize("!", COLOR_RED, OPTION_BOLD))
+    sys.stdout.write(colorize("]", COLOR_BLUE, OPTION_BOLD))
     sys.stdout.write(" ")
-    sys.stdout.write(colorize(text, COLOR_WHITE, OPTION_NONE))
+    sys.stdout.write(colorize(text, COLOR_NONE, OPTION_NONE))
   elif header == HEADER_INTERACTIVE:
-    sys.stdout.write(colorize("[", COLOR_BLUE, OPTION_NONE))
-    sys.stdout.write(colorize("?", COLOR_YELLOW, OPTION_FLICKERING))
-    sys.stdout.write(colorize("]", COLOR_BLUE, OPTION_NONE))
+    sys.stdout.write(colorize("[", COLOR_BLUE, OPTION_BOLD))
+    sys.stdout.write(colorize("?", COLOR_YELLOW, OPTION_FLICKERING | OPTION_BOLD))
+    sys.stdout.write(colorize("]", COLOR_BLUE, OPTION_BOLD))
     sys.stdout.write(" ")
-    sys.stdout.write(colorize(text, COLOR_WHITE, OPTION_NONE))
+    sys.stdout.write(colorize(text, COLOR_NONE, OPTION_NONE))
 
   sys.stdout.write("\n")
 

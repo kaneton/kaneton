@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/critical.py
 #
 # created       julien quintard   [wed may 23 10:31:42 2007]
-# updated       julien quintard   [wed may 30 19:24:33 2007]
+# updated       julien quintard   [tue may  5 11:03:21 2009]
 #
 
 #
@@ -178,13 +178,13 @@ def			architecture():
   a = None
 
   # get the processors entries.
-  processors = list(g_directory + "/environment/profile/kaneton/architecture",
+  processors = list(g_directory + "/environment/profile/kaneton/machine/architecture",
                     OPTION_DIRECTORY | OPTION_SKIP)
 
   # get the implementations to form the complete architecture entries.
   for p in processors:
     implementations = list(g_directory +
-                           "/environment/profile/kaneton/architecture/" +
+                           "/environment/profile/kaneton/machine/architecture/" +
                            p, OPTION_DIRECTORY | OPTION_SKIP)
 
     for i in implementations:
@@ -226,7 +226,7 @@ def			platform():
   p = None
 
   # get the platform entries.
-  platforms = list(g_directory + "/environment/profile/kaneton/platform",
+  platforms = list(g_directory + "/environment/profile/kaneton/machine/platform",
                    OPTION_DIRECTORY | OPTION_SKIP)
 
   # display a message and list the platforms actually available.
@@ -264,7 +264,7 @@ def			host():
   global g_host
   processors = []
   systems = []
-  hosts = []
+  hosts = {}
   s = None
   p = None
   h = None
@@ -280,7 +280,7 @@ def			host():
                       OPTION_DIRECTORY | OPTION_SKIP)
 
     for p in processors:
-      hosts.append(s + "/" + p.split(".")[0])
+      hosts[s + "/" + p.split(".")[0]] = None
 
   # display a message and list the hosts actually available.
   print "[+] the host profile represents the host you are currently using"
@@ -431,7 +431,7 @@ def			warning():
 #
 def			main():
   a = None
-  p = None
+  y = None
   p = None
   h = None
   u = None
@@ -439,12 +439,13 @@ def			main():
   # get the shell environment variables.
   u = os.getenv("KANETON_USER")
   h = os.getenv("KANETON_HOST")
-  p = os.getenv("KANETON_PYTHON")
+  y = os.getenv("KANETON_PYTHON")
   p = os.getenv("KANETON_PLATFORM")
   a = os.getenv("KANETON_ARCHITECTURE")
 
   # check the presence of the shell environment variables.
-  if u != None and h != None and p != None and p != None and a != None:
+  if u != None and h != None and y != None and p != None and a != None:
+    print "[+] it looks like you already set up your environment variables"
     return
 
   # ask the user to continue.

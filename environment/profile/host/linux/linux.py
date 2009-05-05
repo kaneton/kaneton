@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/.../environment/profile/host/linux/linux.py
+# file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       enguerrand raymond   [fri apr 17 20:58:32 2009]
+# updated       julien quintard   [tue may  5 12:10:22 2009]
 #
 
 #
@@ -49,26 +49,28 @@ def			colorize(text, color, options):
     return text
 
   if options & OPTION_FLICKERING:
-    text = "[01;05m" + text + "[39;49;00m"
+    text = "[05m" + text
+  if options & OPTION_BOLD:
+    text = "[01m" + text
 
   if color == COLOR_BLACK:
-    text = "[30;01m" + text + "[39;49;00m"
+    text = "[30m" + text
   elif color == COLOR_RED:
-    text = "[31;01m" + text + "[39;49;00m"
+    text = "[31m" + text
   elif color == COLOR_GREEN:
-    text = "[32;01m" + text + "[39;49;00m"
+    text = "[32m" + text
   elif color == COLOR_YELLOW:
-    text = "[33;01m" + text + "[39;49;00m"
+    text = "[33m" + text
   elif color == COLOR_BLUE:
-    text = "[34;01m" + text + "[39;49;00m"
+    text = "[34m" + text
   elif color == COLOR_MAGENTA:
-    text = "[35;01m" + text + "[39;49;00m"
+    text = "[35m" + text
   elif color == COLOR_CYAN:
-    text = "[36;01m" + text + "[39;49;00m"
+    text = "[36m" + text
   elif color == COLOR_WHITE:
-    text = "[37;01m" + text + "[39;49;00m"
+    text = "[37m" + text
 
-  return text
+  return text + "[39;49;00m"
 
 
 
