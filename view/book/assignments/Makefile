@@ -1,15 +1,15 @@
-#
-# ---------- header -----------------------------------------------------------
-#
-# project       kaneton
-#
-# license       kaneton
-#
-# file          /home/mycure/kaneton/view/book/assignments/Makefile
-#
-# created       julien quintard   [mon may 14 19:03:18 2007]
-# updated       julien quintard   [thu apr  9 13:23:24 2009]
-#
+##
+## ---------- header ----------------------------------------------------------
+##
+## project       kaneton
+##
+## license       kaneton
+##
+## file          /home/mycure/kaneton/view/books/ia32-virtual/Makefile
+##
+## created       julien quintard   [sat oct 14 11:07:49 2006]
+## updated       julien quintard   [sat oct 14 11:08:09 2006]
+##
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -21,28 +21,39 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main build clear
+.PHONY:		main view build clear
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		future				
+PAPER			:=		assignments
+
+SOURCES			:=		introduction.tex		\
+					requirements.tex		\
+					documentation.tex		\
+					support.tex			\
+					k0.tex				\
+					snapshot.tex			\
+					k1.tex				\
+					k2.tex				\
+					k3.tex				\
+					further.tex			\
+					faq.tex
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-main:		build
+main:			build
+
+view:			build
+	$(call env_view,$(PAPER),)
 
 build:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,build,)			; \
-	done
+	$(call env_document,$(PAPER),)
 
 clear:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,clear,)			; \
-	done
+	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)
