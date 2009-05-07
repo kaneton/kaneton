@@ -76,8 +76,6 @@ i_segment		system;
 void			kaneton(t_init*				bootloader)
 {
 
-  while(1); // XXX
-
 #ifdef MIPS64_DEV
   while(1);
 #endif
