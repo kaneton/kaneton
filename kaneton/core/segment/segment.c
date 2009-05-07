@@ -297,11 +297,7 @@ t_error			segment_inject(i_as		asid,
 				       o_segment*	o,
 				       i_segment*	segid)
 {
-  o_as			*as;
-
-  // XXX[to fix]
-  if ((o->size & 0xfffff000) != o->size)
-      o->size = (o->size + 4096) & 0xfffff000;
+  o_as*			as;
 
   SEGMENT_ENTER(segment);
 

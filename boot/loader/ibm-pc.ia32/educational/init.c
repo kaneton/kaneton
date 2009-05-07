@@ -267,27 +267,31 @@ void			bootloader_init_segments(void)
    * 12)
    */
 
-  if (init->inputssz != 0) // some input ?
-  {
-    init->segments[12].address = (t_paddr)init->inputs;
-    init->segments[12].size = init->inputssz;
-    init->segments[12].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
-  }
+  if (init->inputssz != 0)
+    {
+      init->segments[12].address = (t_paddr)init->inputs;
+      init->segments[12].size = init->inputssz;
+      init->segments[12].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+    }
   else
-    init->nsegments--;
+    {
+      init->nsegments--;
+    }
 
   /*
    * 13)
    */
 
-  if (init->scodesz != 0) // system is loaded ?
-  {
-    init->segments[13].address = init->scode;
-    init->segments[13].size = init->scodesz;
-    init->segments[13].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
-  }
+  if (init->scodesz != 0)
+    {
+      init->segments[13].address = init->scode;
+      init->segments[13].size = init->scodesz;
+      init->segments[13].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+    }
   else
-    init->nsegments--;
+    {
+      init->nsegments--;
+    }
 }
 
 /*
