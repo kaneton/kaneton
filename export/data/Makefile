@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/mycure/kaneton/Makefile
+# file          /home/mycure/kaneton/export/data/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [fri nov 28 16:25:30 2008]
+# updated       julien quintard   [tue may  5 12:21:08 2009]
 #
 
 #
@@ -139,11 +139,11 @@ install:		main
 #
 
 info:
-	$(call env_print,,white,)
+	$(call env_print,,,)
 
 	$(call env_print,"--- ",blue,$(ENV_OPTION_NO_NEWLINE))
-	$(call env_print,http://www.kaneton.org,white,)
+	$(call env_print,http://www.kaneton.org,,)
 
-	$(call env_print,,white,)
+	$(call env_print,,,)
 
 endif

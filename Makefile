@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [tue may  5 10:33:50 2009]
+# updated       julien quintard   [tue may  5 12:19:39 2009]
 #
 
 #
@@ -182,12 +182,12 @@ record-%:
 #
 
 info:
-	$(call env_print,,white,)
+	$(call env_print,,,)
 
 	$(call env_print,"--- ",blue,$(ENV_OPTION_NO_NEWLINE))
-	$(call env_print,http://kaneton.opaak.org,white,)
+	$(call env_print,http://kaneton.opaak.org,,)
 
-	$(call env_print,,white,)
+	$(call env_print,,,)
 
 #
 # ---------- export -----------------------------------------------------------
