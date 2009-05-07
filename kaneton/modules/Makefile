@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/modules/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       julien quintard   [fri may  1 22:01:14 2009]
+# updated       julien quintard   [wed may  6 16:05:31 2009]
 #
 
 #
@@ -33,7 +33,8 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		test
+SUBDIRS			:=		test				\
+					console				
 
 MODULES_C		:=		modules.c
 MODULES_O		:=		modules.o

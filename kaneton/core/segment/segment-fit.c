@@ -121,7 +121,7 @@ t_error			segment_space(i_as		asid,
       if (set_object(segment->segments, i, (void**)&current) !=
 	  ERROR_NONE)
 	{
-	  cons_msg('!', "segment: cannot find the segment object "
+	  module_call(console, console_message, '!', "segment: cannot find the segment object "
 		   "corresponding to its identifier\n");
 
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);

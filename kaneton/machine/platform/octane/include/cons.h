@@ -38,7 +38,7 @@ int			cons_print_char(char			c);
 
 void			cons_print_string(char*			string);
 
-void			cons_msg(char				indicator,
+void			module_call(console, console_message, char				indicator,
 				 char*				fmt,
 				 ...);
 

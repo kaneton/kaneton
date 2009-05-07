@@ -22,31 +22,31 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define CONSOLE_ADDR		0xb8000
-#define CONSOLE_SIZE		0xfa0
-#define CONSOLE_LINES		25
-#define CONSOLE_COLUMNS		80
-#define CONSOLE_BPC		2
-#define CONSOLE_TAB		8
+#define CONS_ADDR		0xb8000
+#define CONS_SIZE		0xfa0
+#define CONS_LINES		25
+#define CONS_COLUMNS		80
+#define CONS_BPC		2
+#define CONS_TAB		8
 
-#define CONSOLE_FLI		(1 << 7)
-#define CONSOLE_INT		(1 << 3)
+#define CONS_FLI		(1 << 7)
+#define CONS_INT		(1 << 3)
 
-#define CONSOLE_BLACK		0x0
-#define CONSOLE_BLUE		0x1
-#define CONSOLE_GREEN		0x2
-#define CONSOLE_CYAN		0x3
-#define CONSOLE_RED		0x4
-#define CONSOLE_MAGENTA		0x5
-#define CONSOLE_YELLOW		0x6
-#define CONSOLE_WHITE		0x7
+#define CONS_BLACK		0x0
+#define CONS_BLUE		0x1
+#define CONS_GREEN		0x2
+#define CONS_CYAN		0x3
+#define CONS_RED		0x4
+#define CONS_MAGENTA		0x5
+#define CONS_YELLOW		0x6
+#define CONS_WHITE		0x7
 
 /*
  * ---------- macro functions -------------------------------------------------
  */
 
-#define CONSOLE_FRONT(_color_)	(_color_)
-#define CONSOLE_BACK(_color_)	(_color_ << 4)
+#define CONS_FRONT(_color_)	(_color_)
+#define CONS_BACK(_color_)	(_color_ << 4)
 
 /*
  * ---------- types -----------------------------------------------------------

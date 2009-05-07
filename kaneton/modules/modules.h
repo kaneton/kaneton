@@ -35,6 +35,17 @@
  */
 
 /*
+ * console
+ */
+#ifdef MODULE_console
+# include <modules/console/include/console.h>
+# define module_call_console(_function_, _arguments_...)			\
+  module_dispatch(_function_, ##_arguments_)
+#else
+# define module_call_console(_function_, _arguments_...)
+#endif
+
+/*
  * test
  */
 #ifdef MODULE_test

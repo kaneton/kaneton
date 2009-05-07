@@ -87,7 +87,7 @@ t_error			timer_show(i_timer			id)
    * 2)
    */
 
-  cons_msg('#', "  timer %qd: delay = %u\n",
+  module_call(console, console_message, '#', "  timer %qd: delay = %u\n",
 	   o->timerid, o->delay - timer->timeref);
 
   TIMER_LEAVE(timer, ERROR_NONE);
@@ -119,7 +119,7 @@ t_error			timer_dump(void)
   if (set_size(timer->timers, &size) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
-  cons_msg('#', "dumping %qd timer(s):\n", size);
+  module_call(console, console_message, '#', "dumping %qd timer(s):\n", size);
 
   /*
    *  2)
@@ -531,7 +531,7 @@ t_error			timer_initialize(void)
 
   if ((timer = malloc(sizeof(m_timer))) == NULL)
     {
-      cons_msg('!', "timer: cannot allocate memory for the timer manager "
+      module_call(console, console_message, '!', "timer: cannot allocate memory for the timer manager "
                "structure\n");
 
       return (ERROR_UNKNOWN);
@@ -545,7 +545,7 @@ t_error			timer_initialize(void)
 
   if (id_build(&timer->id) != ERROR_NONE)
     {
-      cons_msg('!', "timer: unable to initialize the identifier object\n");
+      module_call(console, console_message, '!', "timer: unable to initialize the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -559,7 +559,7 @@ t_error			timer_initialize(void)
   if (set_reserve(ll, SET_OPT_ALLOC,
                   sizeof(o_timer), &timer->timers) != ERROR_NONE)
     {
-      cons_msg('!', "timer: unable to reserve the timer set\n");
+      module_call(console, console_message, '!', "timer: unable to reserve the timer set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -601,7 +601,7 @@ t_error			timer_clean(void)
 
   if (set_release(timer->timers) != ERROR_NONE)
     {
-      cons_msg('!', "timer: unable to release the timer set\n");
+      module_call(console, console_message, '!', "timer: unable to release the timer set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -612,7 +612,7 @@ t_error			timer_clean(void)
 
   if (id_destroy(&timer->id) != ERROR_NONE)
     {
-      cons_msg('!', "timer: unable to destroy the identifier object\n");
+      module_call(console, console_message, '!', "timer: unable to destroy the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }

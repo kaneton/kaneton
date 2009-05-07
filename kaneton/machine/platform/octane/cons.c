@@ -84,7 +84,7 @@ void			cons_print_string(char*			string)
  * '!' is used for printing warning and error messages.
  */
 
-void			cons_msg(char				indicator,
+void			module_call(console, console_message, char				indicator,
 				 char*				fmt,
 				 ...)
 {

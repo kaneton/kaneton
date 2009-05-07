@@ -23,18 +23,18 @@ static t_simple_cons	cons = { .vga = 0 };
  * this function scrolls the screen.
  */
 
-static void	       	console_scroll(t_uint16			lines)
+static void	       	cons_scroll(t_uint16			lines)
 {
   t_uint16		src;
   t_uint16		dst;
 
-  for (src = lines * CONSOLE_COLUMNS * CONSOLE_BPC, dst = 0;
-       src < CONSOLE_SIZE;
+  for (src = lines * CONS_COLUMNS * CONS_BPC, dst = 0;
+       src < CONS_SIZE;
        src++, dst++)
     {
       cons.vga[dst] = cons.vga[src];
 
-      if ((src >= ((CONSOLE_LINES - lines) * CONSOLE_COLUMNS * CONSOLE_BPC)) &&
+      if ((src >= ((CONS_LINES - lines) * CONS_COLUMNS * CONS_BPC)) &&
 	  ((src % 2) == 0))
 	{
 	  cons.vga[src + 0] = 0;
@@ -54,8 +54,8 @@ static int		print_char(char			c)
 {
   t_uint16		pos;
 
-  if (cons.line >= CONSOLE_LINES)
-    console_scroll(1);
+  if (cons.line >= CONS_LINES)
+    cons_scroll(1);
   if (c == '\n')
     {
       cons.line++;
@@ -71,15 +71,15 @@ static int		print_char(char			c)
       return (1);
     }
 
-  if (cons.column >= CONSOLE_COLUMNS)
+  if (cons.column >= CONS_COLUMNS)
     {
       cons.column = 0;
       ++cons.line;
-      if (cons.line >= CONSOLE_LINES)
-	console_scroll(1);
+      if (cons.line >= CONS_LINES)
+	cons_scroll(1);
     }
 
-  pos = cons.line * CONSOLE_COLUMNS * CONSOLE_BPC + cons.column * CONSOLE_BPC;
+  pos = cons.line * CONS_COLUMNS * CONS_BPC + cons.column * CONS_BPC;
 
   cons.vga[pos] = c;
   cons.vga[pos + 1] = cons.attr;
@@ -110,7 +110,7 @@ int			print_string(const char* p)
  * clear the screen.
  */
 
-void                    console_clear(void)
+void                    cons_clear(void)
 {
   t_uint16              i;
 
@@ -125,10 +125,10 @@ void                    console_clear(void)
 }
 
 /*
- * initialize VGA text console and console structure.
+ * initialize VGA text cons and cons structure.
  */
 
-int			console_init(void)
+int			cons_init(void)
 {
   i_region		reg;
   t_uint16		line;
@@ -137,19 +137,19 @@ int			console_init(void)
 
   if (region_reserve(__as_id,
 		     0x1000,
-		     CONSOLE_ADDR - 0x1000,
+		     CONS_ADDR - 0x1000,
 		     REGION_OPT_NONE,
 		     0,
 		     PAGESZ,
 		     &reg) != ERROR_NONE)
     return (-1);
 
-  cons.attr = CONSOLE_FRONT(CONSOLE_WHITE) | CONSOLE_BACK(CONSOLE_BLACK) | CONSOLE_INT;
+  cons.attr = CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT;
   cons.vga = (char*)(t_vaddr)reg;
   cons.line = 0;
   cons.column = 0;
 
-  console_clear();
+  cons_clear();
 
   return (0);
 }
@@ -159,7 +159,7 @@ int			console_init(void)
  */
 int			main(void)
 {
-  if (console_init())
+  if (cons_init())
     return (-1);
 
   print_string("[chiche] initialised\n");

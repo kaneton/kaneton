@@ -117,13 +117,13 @@ t_error			capability_show(t_id			id)
   if (set_get(capability->descriptors, id, (void**)&descriptor) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  cons_msg('#', "  [%8qd] node: %qd object: %qd operations: %024b\n",
+  module_call(console, console_message, '#', "  [%8qd] node: %qd object: %qd operations: %024b\n",
 	   descriptor->id,
 	   descriptor->capability.node,
 	   descriptor->capability.object,
 	   descriptor->capability.operations);
 
-  cons_msg('#', "             check: %qd parent: %qd children:\n",
+  module_call(console, console_message, '#', "             check: %qd parent: %qd children:\n",
 	   descriptor->check,
 	   descriptor->parent);
 
@@ -137,13 +137,13 @@ t_error			capability_show(t_id			id)
 	{
 	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_NONE)
 	    {
-	      cons_msg('!', "capability: cannot find the object "
+	      module_call(console, console_message, '!', "capability: cannot find the object "
 		       "corresponding to its identifier\n");
 
 	      CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 	    }
 
-	  cons_msg('#', "             [child] %qd\n", *data);
+	  module_call(console, console_message, '#', "             [child] %qd\n", *data);
 	}
     }
 
@@ -179,7 +179,7 @@ t_error			capability_dump(void)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu capability descriptor(s) from the "
+  module_call(console, console_message, '#', "dumping %qu capability descriptor(s) from the "
 	   "capability set:\n", size);
 
   /*
@@ -190,7 +190,7 @@ t_error			capability_dump(void)
     {
       if (set_object(capability->descriptors, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "capability: cannot find the capability descriptor "
+	  module_call(console, console_message, '!', "capability: cannot find the capability descriptor "
 		   "corresponding to its identifier\n");
 
 	  CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
@@ -299,7 +299,7 @@ t_error			capability_release(t_id			id)
 	{
 	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_NONE)
 	    {
-	      cons_msg('!', "capability: cannot find the object "
+	      module_call(console, console_message, '!', "capability: cannot find the object "
 		       "corresponding to its identifier\n");
 
 	      CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
@@ -425,7 +425,7 @@ t_error			capability_invalidate(t_id		p,
 	{
 	  if (set_object(restricted->children, i, (void**)&data) != ERROR_NONE)
 	    {
-	      cons_msg('!', "capability: cannot find the object "
+	      module_call(console, console_message, '!', "capability: cannot find the object "
 		       "corresponding to its identifier\n");
 
 	      CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
@@ -547,7 +547,7 @@ t_error			capability_initialize(void)
 
   if ((capability = malloc(sizeof(m_capability))) == NULL)
     {
-      cons_msg('!', "capability: cannot allocate memory for the capability "
+      module_call(console, console_message, '!', "capability: cannot allocate memory for the capability "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);
@@ -563,7 +563,7 @@ t_error			capability_initialize(void)
 		  sizeof(t_capability_descriptor),
 		  &capability->descriptors) != ERROR_NONE)
     {
-      cons_msg('!', "capability: unable to reserve the capability "
+      module_call(console, console_message, '!', "capability: unable to reserve the capability "
 	       "descriptors set\n");
 
       return (ERROR_UNKNOWN);
@@ -619,7 +619,7 @@ t_error			capability_clean(void)
     {
       if (set_object(capability->descriptors, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "capability: cannot find the capability descriptor "
+	  module_call(console, console_message, '!', "capability: cannot find the capability descriptor "
 		   "corresponding to its identifier\n");
 
 	  return (ERROR_UNKNOWN);
@@ -631,7 +631,7 @@ t_error			capability_clean(void)
 
   if (set_release(capability->descriptors) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to release the capability descriptor set\n");
+      module_call(console, console_message, '!', "task: unable to release the capability descriptor set\n");
 
       return (ERROR_UNKNOWN);
     }

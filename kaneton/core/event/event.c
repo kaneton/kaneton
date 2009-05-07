@@ -80,7 +80,7 @@ t_error			event_show(i_event			id)
    * 2)
    */
 
-  cons_msg('#', "  event %qd: task %qd\n", o->eventid, o->handler.taskid);
+  module_call(console, console_message, '#', "  event %qd: task %qd\n", o->eventid, o->handler.taskid);
 
   /*
    * 3)
@@ -121,7 +121,7 @@ t_error			event_dump(void)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu event(s):\n", size);
+  module_call(console, console_message, '#', "dumping %qu event(s):\n", size);
 
   set_foreach(SET_OPT_FORWARD, event->events, &i, state)
     {
@@ -320,7 +320,7 @@ t_error			event_initialize(void)
 
   if ((event = malloc(sizeof(m_event))) == NULL)
     {
-      cons_msg('!', "event: cannot allocate memory for the event manager "
+      module_call(console, console_message, '!', "event: cannot allocate memory for the event manager "
 	       "structure\n");
 
       return (ERROR_UNKNOWN);
@@ -334,7 +334,7 @@ t_error			event_initialize(void)
 
   if (id_build(&event->id) != ERROR_NONE)
     {
-      cons_msg('!', "event: unable to initialize the identifier object\n");
+      module_call(console, console_message, '!', "event: unable to initialize the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -346,7 +346,7 @@ t_error			event_initialize(void)
   if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
 		  sizeof(o_event), &event->events) != ERROR_NONE)
     {
-      cons_msg('!', "event: unable to reserve the event set\n");
+      module_call(console, console_message, '!', "event: unable to reserve the event set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -393,7 +393,7 @@ t_error			event_clean(void)
     {
       if (set_object(event->events, i, (void**)&o) != ERROR_NONE)
 	{
-	  cons_msg('!', "event: cannot find the event object "
+	  module_call(console, console_message, '!', "event: cannot find the event object "
 		   "corresponding to its identifier\n");
 
 	  return (ERROR_UNKNOWN);
@@ -409,7 +409,7 @@ t_error			event_clean(void)
 
   if (set_release(event->events) != ERROR_NONE)
     {
-      cons_msg('!', "event: unable to release the event set\n");
+      module_call(console, console_message, '!', "event: unable to release the event set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -420,7 +420,7 @@ t_error			event_clean(void)
 
   if (id_destroy(&event->id) != ERROR_NONE)
     {
-      cons_msg('!', "event: unable to destroy the identifier object\n");
+      module_call(console, console_message, '!', "event: unable to destroy the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }

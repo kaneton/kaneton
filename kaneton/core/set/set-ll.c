@@ -98,7 +98,7 @@ t_error			set_show_ll(i_set			setid)
    * 2)
    */
 
-  cons_msg('#', "  %qd node(s) from the linked-list set %qd\n",
+  module_call(console, console_message, '#', "  %qd node(s) from the linked-list set %qd\n",
 	   o->size,
 	   setid);
 
@@ -106,7 +106,7 @@ t_error			set_show_ll(i_set			setid)
     {
       t_set_ll_node*	n = i.u.ll.node;
 
-      cons_msg('#', "    %qd <0x%x, 0x%x, 0x%x>\n",
+      module_call(console, console_message, '#', "    %qd <0x%x, 0x%x, 0x%x>\n",
 	       *((t_id*)n->data), n->prv, n, n->nxt);
     }
 
@@ -720,7 +720,7 @@ t_error			set_add_ll(i_set			setid,
 		   * i)
 		   */
 
-		  cons_msg('!', "set: identifier collision detected "
+		  module_call(console, console_message, '!', "set: identifier collision detected "
 			   "in the set %qu on the object identifier %qu\n",
 			   o->setid,
 			   *((t_id*)n->data));

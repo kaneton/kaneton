@@ -133,7 +133,7 @@ t_error			set_dump(void)
    * 2)
    */
 
-  cons_msg('#', "dumping the set container %qd with %qd node(s)\n",
+  module_call(console, console_message, '#', "dumping the set container %qd with %qd node(s)\n",
 	   set->sets,
 	   o->size);
 
@@ -141,7 +141,7 @@ t_error			set_dump(void)
     {
       if (set_object(set->sets, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "set: cannot find the set object "
+	  module_call(console, console_message, '!', "set: cannot find the set object "
 		   "corresponding to its identifier\n");
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
@@ -211,7 +211,7 @@ t_error			set_new(o_set*				o)
 
   if (set_add(set->sets, o) != ERROR_NONE)
     {
-      cons_msg('!', "set: unable to add this set descriptor "
+      module_call(console, console_message, '!', "set: unable to add this set descriptor "
 	       "to the set container\n");
 
       SET_LEAVE(set, ERROR_UNKNOWN);
@@ -250,7 +250,7 @@ t_error			set_destroy(i_set			setid)
 
   if (set_remove(set->sets, setid) != ERROR_NONE)
     {
-      cons_msg('!', "set: unable to remove this descriptor "
+      module_call(console, console_message, '!', "set: unable to remove this descriptor "
 	       "from the set container\n");
 
       SET_LEAVE(set, ERROR_UNKNOWN);
@@ -360,7 +360,7 @@ t_error			set_initialize(void)
 
   if ((set = malloc(sizeof(m_set))) == NULL)
     {
-      cons_msg('!', "set: cannot allocate memory for the set manager "
+      module_call(console, console_message, '!', "set: cannot allocate memory for the set manager "
 	       "structure\n");
 
       return (ERROR_UNKNOWN);
@@ -374,7 +374,7 @@ t_error			set_initialize(void)
 
   if (id_build(&set->id) != ERROR_NONE)
     {
-      cons_msg('!', "set: unable to initialize the identifier object\n");
+      module_call(console, console_message, '!', "set: unable to initialize the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -385,7 +385,7 @@ t_error			set_initialize(void)
 
   if (id_reserve(&set->id, &set->sets) != ERROR_NONE)
     {
-      cons_msg('!', "set: unable to reserve an identifier\n");
+      module_call(console, console_message, '!', "set: unable to reserve an identifier\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -397,7 +397,7 @@ t_error			set_initialize(void)
   if (set_reserve(bpt, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
 		  sizeof(o_set), PAGESZ, &needless) != ERROR_NONE)
     {
-      cons_msg('!', "set: unable to reserve the set container\n");
+      module_call(console, console_message, '!', "set: unable to reserve the set container\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -430,7 +430,7 @@ t_error			set_clean(void)
 
       if (set_object(set->sets, iterator, (void**)&o) != ERROR_NONE)
 	{
-	  cons_msg('!', "set: cannot find the set object "
+	  module_call(console, console_message, '!', "set: cannot find the set object "
 		   "corresponding to its identifier\n");
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
@@ -438,7 +438,7 @@ t_error			set_clean(void)
 
       if (set_release(o->setid) != ERROR_NONE)
 	{
-	  cons_msg('!', "set: cannot releases a set object located in the "
+	  module_call(console, console_message, '!', "set: cannot releases a set object located in the "
 		   "set container\n");
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
@@ -451,7 +451,7 @@ t_error			set_clean(void)
 
   if (set_release(set->sets) != ERROR_NONE)
     {
-      cons_msg('!', "set: unable to release the set container\n");
+      module_call(console, console_message, '!', "set: unable to release the set container\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -462,7 +462,7 @@ t_error			set_clean(void)
 
   if (id_destroy(&set->id) != ERROR_NONE)
     {
-      cons_msg('!', "set: unable to destroy the identifier object\n");
+      module_call(console, console_message, '!', "set: unable to destroy the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }

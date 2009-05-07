@@ -109,7 +109,7 @@ t_error			thread_dump(void)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu thread(s):\n");
+  module_call(console, console_message, '#', "dumping %qu thread(s):\n");
 
   set_foreach(SET_OPT_FORWARD, thread->threads, &i, state)
     {
@@ -290,7 +290,7 @@ t_error			thread_clone(i_task			taskid,
 
       if (set_object(from->waits, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "thread: cannot find the object "
+	  module_call(console, console_message, '!', "thread: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
@@ -604,7 +604,7 @@ t_error			thread_state(i_thread			threadid,
 
       if (set_object(o->waits, i, (void**)&w) != ERROR_NONE)
 	{
-	  cons_msg('!', "thread: cannot find the object "
+	  module_call(console, console_message, '!', "thread: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
@@ -772,7 +772,7 @@ t_error			thread_flush(i_task			taskid)
     {
       if (set_object(task->threads, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "thread: cannot find the object "
+	  module_call(console, console_message, '!', "thread: cannot find the object "
 		   "corresponding to ist identifier\n");
 
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
@@ -850,7 +850,7 @@ t_error			thread_initialize(void)
 
   if ((thread = malloc(sizeof(m_thread))) == NULL)
     {
-      cons_msg('!', "thread: cannot allocate memory "
+      module_call(console, console_message, '!', "thread: cannot allocate memory "
 	       "for the thread manager structure\n");
 
       return ERROR_UNKNOWN;
@@ -864,7 +864,7 @@ t_error			thread_initialize(void)
 
   if (id_build(&thread->id) != ERROR_NONE)
     {
-      cons_msg('!', "thread: unable to initialize the identifier object\n");
+      module_call(console, console_message, '!', "thread: unable to initialize the identifier object\n");
 
       return ERROR_UNKNOWN;
     }
@@ -876,7 +876,7 @@ t_error			thread_initialize(void)
   if (set_reserve(ll, SET_OPT_ALLOC, sizeof(o_thread), &thread->threads)
       != ERROR_NONE)
     {
-      cons_msg('!', "thread: unable to reserve the thread set\n\n");
+      module_call(console, console_message, '!', "thread: unable to reserve the thread set\n\n");
 
       return ERROR_UNKNOWN;
     }
@@ -917,7 +917,7 @@ t_error			thread_clean(void)
 
   if (set_release(thread->threads) != ERROR_NONE)
     {
-      cons_msg('!', "thread: unable to release the thread set\n");
+      module_call(console, console_message, '!', "thread: unable to release the thread set\n");
 
       return ERROR_UNKNOWN;
     }
@@ -928,7 +928,7 @@ t_error			thread_clean(void)
 
   if (id_destroy(&thread->id) != ERROR_NONE)
     {
-      cons_msg('!', "thread: unable to destroy the identifier object\n");
+      module_call(console, console_message, '!', "thread: unable to destroy the identifier object\n");
 
       return ERROR_UNKNOWN;
     }

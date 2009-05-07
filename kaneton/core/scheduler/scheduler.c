@@ -132,20 +132,20 @@ t_error			scheduler_dump(void)
       if (set_object(scheduler->cpus, ic, (void**)&ent) != ERROR_NONE)
 	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-      cons_msg('#', "cpu %qd\n", ent->cpuid);
+      module_call(console, console_message, '#', "cpu %qd\n", ent->cpuid);
 
       /*
        * 1)
        */
 
-      cons_msg('#', " scheduler current thread: %qd (%d, %d ms)\n",
+      module_call(console, console_message, '#', " scheduler current thread: %qd (%d, %d ms)\n",
 	       ent->current, ent->prio, ent->timeslice);
 
       /*
        * 2)
        */
 
-      cons_msg('#', " scheduler active queues:");
+      module_call(console, console_message, '#', " scheduler active queues:");
 
       prio = 0;
       set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
@@ -171,7 +171,7 @@ t_error			scheduler_dump(void)
        * 3)
        */
 
-      cons_msg('#', " scheduler expired queues:");
+      module_call(console, console_message, '#', " scheduler expired queues:");
 
       set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
 	{
@@ -878,7 +878,7 @@ t_error			scheduler_initialize(void)
 
   if ((scheduler = malloc(sizeof(m_scheduler))) == NULL)
     {
-      cons_msg('!', "scheduler: cannot allocate memory for the scheduler "
+      module_call(console, console_message, '!', "scheduler: cannot allocate memory for the scheduler "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);

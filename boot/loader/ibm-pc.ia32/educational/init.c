@@ -588,8 +588,8 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   modsz = mod[0].mod_end - mod[0].mod_start;
   memcpy((void*)init->kcode, (const void*)mod[0].mod_start, modsz);
 
-  bootloader_cons_msg('+', " kernel relocated from 0x%x to 0x%x (0x%x)\n",
-		      mod[0].mod_start, init->kcode, modsz);
+  bootloader_cons_msg('+', " kernel '%s' relocated from 0x%x to 0x%x (0x%x)\n",
+		      mod[0].string, mod[0].mod_start, init->kcode, modsz);
 
   /*
    * 6)
@@ -602,29 +602,32 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 7)
    */
 
-  for (i = 2,
-	 input = (t_input*)((t_uint32)init->inputs + sizeof(t_inputs));
-       i < ninputs;
-       i++)
+  if ((ninputs - 2) > 0)
     {
-      modsz = mod[i].mod_end - mod[i].mod_start;
+      for (i = 2,
+	     input = (t_input*)((t_uint32)init->inputs + sizeof(t_inputs));
+	   i < ninputs;
+	   i++)
+	{
+	  modsz = mod[i].mod_end - mod[i].mod_start;
 
-      input->name = (char*)((t_uint32)input + sizeof(t_input) + modsz);
-      strcpy(input->name, (char*)mod[i].string);
+	  input->name = (char*)((t_uint32)input + sizeof(t_input) + modsz);
+	  strcpy(input->name, (char*)mod[i].string);
 
-      memcpy((void*)((t_uint32)input + sizeof(t_input)),
-	     (const void*)mod[i].mod_start, modsz);
+	  memcpy((void*)((t_uint32)input + sizeof(t_input)),
+		 (const void*)mod[i].mod_start, modsz);
 
-      input->size = modsz;
+	  input->size = modsz;
 
-      bootloader_cons_msg('+', " %s relocated from 0x%x to 0x%x (0x%x)\n",
-			  input->name,
-			  mod[i].mod_start,
-			  input,
-			  input->size);
+	  bootloader_cons_msg('+', " input '%s' relocated from 0x%x to 0x%x (0x%x)\n",
+			      input->name,
+			      mod[i].mod_start,
+			      input,
+			      input->size);
 
-      input = (t_input*)((t_uint32)input + sizeof(t_input) +
-			   input->size + strlen(input->name) + 1);
+	  input = (t_input*)((t_uint32)input + sizeof(t_input) +
+			     input->size + strlen(input->name) + 1);
+	}
     }
 
   /*
@@ -638,7 +641,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 9)
    */
 
-  if (mbi->mods_count >= 1)
+  if (ninputs >= 1)
     {
       khdr = (Elf32_Ehdr*)mod[1].mod_start;
       phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
@@ -651,8 +654,8 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 
       memcpy((void*)init->scode, (const void*)mod[1].mod_start, modsz);
 
-      bootloader_cons_msg('+', " mod relocated from 0x%x to 0x%x (0x%x)\n",
-			  mod[1].mod_start, init->scode, modsz);
+      bootloader_cons_msg('+', " server '%s' relocated from 0x%x to 0x%x (0x%x)\n",
+			  mod[1].string, mod[1].mod_start, init->scode, modsz);
     }
   else
     {

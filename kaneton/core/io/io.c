@@ -209,7 +209,7 @@ t_error			io_initialize(void)
 
   if ((io = malloc(sizeof(m_io))) == NULL)
     {
-      cons_msg('!', "io: cannot allocate memory for the io "
+      module_call(console, console_message, '!', "io: cannot allocate memory for the io "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);

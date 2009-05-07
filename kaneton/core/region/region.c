@@ -74,7 +74,7 @@ t_error			region_show(i_as			asid,
   if (region_get(asid, regid, &o) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  cons_msg('#', "  region %qd in address space %qd:\n",
+  module_call(console, console_message, '#', "  region %qd in address space %qd:\n",
 	   regid,
 	   asid);
 
@@ -82,7 +82,7 @@ t_error			region_show(i_as			asid,
    * 2)
    */
 
-  cons_msg('#', "    0x%08x [%qd] (%u) %c\n",
+  module_call(console, console_message, '#', "    0x%08x [%qd] (%u) %c\n",
 	   o->address,
 	   o->segid,
 	   o->size,
@@ -142,13 +142,13 @@ t_error			region_dump(i_as		asid)
    * 3)
    */
 
-  cons_msg('#', "dumping %qu regions(s) from the region set:\n", size);
+  module_call(console, console_message, '#', "dumping %qu regions(s) from the region set:\n", size);
 
   set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
     {
       if (set_object(o->regions, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "region: cannot find the region object "
+	  module_call(console, console_message, '!', "region: cannot find the region object "
 		   "corresponding to its identifier\n");
 
 	  REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -707,14 +707,14 @@ t_error			region_flush(i_as			asid)
     {
       if (set_object(as->regions, it, (void**)&obj) != ERROR_NONE)
 	{
-	  cons_msg('!', "region: cannot get region to release.\n");
+	  module_call(console, console_message, '!', "region: cannot get region to release.\n");
 
 	  REGION_LEAVE(region, ERROR_UNKNOWN);
 	}
 
       if (region_release(asid, *obj) != ERROR_NONE)
 	{
-	  cons_msg('!', "region: cannot release a region.\n");
+	  module_call(console, console_message, '!', "region: cannot release a region.\n");
 
 	  REGION_LEAVE(region, ERROR_UNKNOWN);
 	}
@@ -786,7 +786,7 @@ t_error			region_initialize(t_vaddr		start,
 
   if ((region = malloc(sizeof(m_region))) == NULL)
     {
-      cons_msg('!', "region: cannot allocate memory for the region "
+      module_call(console, console_message, '!', "region: cannot allocate memory for the region "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);

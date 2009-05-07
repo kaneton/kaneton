@@ -24,7 +24,7 @@
  * ../cons-text.c
  */
 
-void			cons_msg(char				indicator,
+void			module_call(console, console_message, char				indicator,
 				 char*				fmt,
 				 ...);
 

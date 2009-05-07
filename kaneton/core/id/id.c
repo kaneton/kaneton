@@ -49,7 +49,7 @@ t_error			id_show(o_id*				o)
 {
   ID_ENTER(id);
 
-  cons_msg('#', "    id object's state: %qu\n", o->id);
+  module_call(console, console_message, '#', "    id object's state: %qu\n", o->id);
 
   ID_LEAVE(id, ERROR_NONE);
 }
@@ -146,7 +146,7 @@ t_error			id_initialize(void)
 {
   if ((id = malloc(sizeof(m_id))) == NULL)
     {
-      cons_msg('!', "id: cannot allocate memory for the identifier manager "
+      module_call(console, console_message, '!', "id: cannot allocate memory for the identifier manager "
 	       "structure\n");
 
       return (ERROR_UNKNOWN);

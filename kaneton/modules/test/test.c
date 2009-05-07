@@ -16,6 +16,9 @@
  *
  * this file implements the in-kernel test system that basically waits for
  * incoming calls and launches the according tests.
+ *
+ * this module is not portable as it relies on the ibm-pc platform for
+ * serial communication.
  */
 
 /*
@@ -102,16 +105,16 @@ t_error			test_send(t_uint8			type,
    * 2)
    */
   magic = TEST_MAGIC;
-  crc = chk_sum(message, length);
+  crc = test_checksum(message, length);
 
   /*
    * 3)
    */
-  ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)&magic, sizeof(t_uint32));
-  ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)&type, sizeof(t_uint8));
-  ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)&length, sizeof(t_uint32));
-  ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)&crc, sizeof(t_uint32));
-  ibmpc_serial_write(SERIAL_PRIMARY, (t_uint8*)message, length);
+  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&magic, sizeof(t_uint32));
+  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&type, sizeof(t_uint8));
+  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&length, sizeof(t_uint32));
+  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&crc, sizeof(t_uint32));
+  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)message, length);
 
   return (ERROR_NONE);
 }
@@ -127,24 +130,24 @@ t_error			test_receive(t_uint8*			type,
   t_uint32		length;
   t_uint32		crc;
 
-  ibmpc_serial_read(SERIAL_PRIMARY, (t_uint8*)&magic, sizeof(t_uint32));
+  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)&magic, sizeof(t_uint32));
 
   if (magic != TEST_MAGIC)
     {
-      cons_msg('!', "wrong magic\n");
+      module_call(console, console_message, '!', "wrong magic\n");
 
       return (ERROR_UNKNOWN);
     }
 
-  ibmpc_serial_read(SERIAL_PRIMARY, (t_uint8*)type, sizeof(t_uint8));
-  ibmpc_serial_read(SERIAL_PRIMARY, (t_uint8*)&length, sizeof(t_uint32));
-  ibmpc_serial_read(SERIAL_PRIMARY, (t_uint8*)&crc, sizeof(t_uint32));
+  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)type, sizeof(t_uint8));
+  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)&length, sizeof(t_uint32));
+  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)&crc, sizeof(t_uint32));
 
-  ibmpc_serial_read(SERIAL_PRIMARY, (t_uint8*)message, length);
+  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)message, length);
 
-  if (crc != chk_sum(message, length))
+  if (crc != test_checksum(message, length))
     {
-      cons_msg('!', "wrong CRC\n");
+      module_call(console, console_message, '!', "wrong CRC\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -228,7 +231,7 @@ void			test_call(char*				symbol)
 
   if ((test = test_locate(symbol)) == NULL)
     {
-      cons_msg('!', "unknown test '%s'", symbol);
+      module_call(console, console_message, '!', "unknown test '%s'", symbol);
 
       return;
     }
@@ -248,10 +251,10 @@ void			test_dump(void)
 {
   unsigned int  i;
 
-  cons_msg('#', "[tests]\n");
+  module_call(console, console_message, '#', "[tests]\n");
 
   for (i = 0; test_functions[i].symbol != NULL; i++)
-    cons_msg('#', "  [%s] 0x%x\n", test_functions[i].symbol, test_functions[i].function);
+    module_call(console, console_message, '#', "  [%s] 0x%x\n", test_functions[i].symbol, test_functions[i].function);
 }
 
 /*
@@ -262,12 +265,12 @@ void			test_dump(void)
 
 t_error			test_run(void)
 {
-  cons_msg('+', "test module loaded\n");
+  module_call(console, console_message, '+', "test module loaded\n");
 
   /*
    * 1)
    */
-  ibmpc_serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1);
+  ibmpc_serial_init(IBMPC_SERIAL_PRIMARY, IBMPC_SERIAL_BR57600, IBMPC_SERIAL_8N1);
 
   /*
    * 2)
@@ -318,7 +321,7 @@ t_error			test_run(void)
 
   //  STI();
 
-  cons_msg('+', "running manual tests\n");
+  module_call(console, console_message, '+', "running manual tests\n");
   check_tests();
 
   CLI();
@@ -345,7 +348,7 @@ t_error			test_run(void)
 #if TESTSUITE_DEBUG_ENABLE
   extern i_thread kthread;
 
-  cons_msg('+', "starting debug manager\n");
+  module_call(console, console_message, '+', "starting debug manager\n");
   kthread = ID_UNUSED;
 
 #ifdef IA32_DEPENDENT

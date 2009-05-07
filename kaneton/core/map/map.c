@@ -293,7 +293,7 @@ t_error			map_initialize(void)
 
   if ((map = malloc(sizeof(m_map))) == NULL)
     {
-      cons_msg('!', "map: cannot allocate memory for the map "
+      module_call(console, console_message, '!', "map: cannot allocate memory for the map "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);

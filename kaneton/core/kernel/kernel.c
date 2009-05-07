@@ -86,7 +86,7 @@ void			kernel_initialize(void)
    */
 
   if ((kernel = malloc(sizeof(m_kernel))) == NULL)
-    cons_msg('!', "kernel: cannot allocate memory for the kernel manager "
+    module_call(console, console_message, '!', "kernel: cannot allocate memory for the kernel manager "
 	     "structure\n");
 
   memset(kernel, 0x0, sizeof(m_kernel));
@@ -102,7 +102,7 @@ void			kernel_initialize(void)
    * 2)
    */
 
-  cons_msg('+', "starting id manager\n");
+  module_call(console, console_message, '+', "starting id manager\n");
 
   if (id_initialize() != ERROR_NONE)
     core_error("cannot initialize the id manager\n");
@@ -111,7 +111,7 @@ void			kernel_initialize(void)
    * 3)
    */
 
-  cons_msg('+', "starting set manager\n");
+  module_call(console, console_message, '+', "starting set manager\n");
 
   if (set_initialize() != ERROR_NONE)
     core_error("cannot initialize the set manager\n");
@@ -120,7 +120,7 @@ void			kernel_initialize(void)
    * 4)
    */
 
-  cons_msg('+', "starting as manager\n");
+  module_call(console, console_message, '+', "starting as manager\n");
 
   if (as_initialize() != ERROR_NONE)
     core_error("cannot initialize the address space manager\n");
@@ -129,7 +129,7 @@ void			kernel_initialize(void)
    * 5)
    */
 
-  cons_msg('+', "starting segment manager\n");
+  module_call(console, console_message, '+', "starting segment manager\n");
 
   if (segment_initialize() != ERROR_NONE)
     core_error("cannot initialize the segment manager\n");
@@ -138,7 +138,7 @@ void			kernel_initialize(void)
    * 6)
    */
 
-  cons_msg('+', "starting region manager\n");
+  module_call(console, console_message, '+', "starting region manager\n");
 
   if (region_initialize(REGION_VMEM_MIN, REGION_VMEM_MAX -
 			REGION_VMEM_MIN) != ERROR_NONE)
@@ -148,7 +148,7 @@ void			kernel_initialize(void)
    * 7)
    */
 
-  cons_msg('+', "starting map manager\n");
+  module_call(console, console_message, '+', "starting map manager\n");
 
   if (map_initialize() != ERROR_NONE)
     core_error("cannot initialize the map manager\n");
@@ -157,7 +157,7 @@ void			kernel_initialize(void)
    * 8)
    */
 
-  cons_msg('+', "starting task manager\n");
+  module_call(console, console_message, '+', "starting task manager\n");
 
   if (task_initialize() != ERROR_NONE)
     core_error("cannot initialize the task manager\n");
@@ -168,7 +168,7 @@ void			kernel_initialize(void)
    * 9)
    */
 
-  cons_msg('+', "starting thread manager\n");
+  module_call(console, console_message, '+', "starting thread manager\n");
 
   if (thread_initialize() != ERROR_NONE)
     core_error("cannot initialize the thread manager\n");
@@ -177,7 +177,7 @@ void			kernel_initialize(void)
    * 10)
    */
 
-  cons_msg('+', "starting event manager\n");
+  module_call(console, console_message, '+', "starting event manager\n");
 
   if (event_initialize() != ERROR_NONE)
     core_error("cannot initialize the event manager\n");
@@ -186,7 +186,7 @@ void			kernel_initialize(void)
    * 11)
    */
 
-  cons_msg('+', "starting timer manager\n");
+  module_call(console, console_message, '+', "starting timer manager\n");
 
   if (timer_initialize() != ERROR_NONE)
     core_error("cannot initialize the timer manager\n");
@@ -195,7 +195,7 @@ void			kernel_initialize(void)
    * 12)
    */
 
-  cons_msg('+', "starting io manager\n");
+  module_call(console, console_message, '+', "starting io manager\n");
 
   if (io_initialize() != ERROR_NONE)
     core_error("cannot initialize the io manager\n");
@@ -204,7 +204,7 @@ void			kernel_initialize(void)
    * 13)
    */
 
-  cons_msg('+', "starting message manager\n");
+  module_call(console, console_message, '+', "starting message manager\n");
 
   if (message_initialize() != ERROR_NONE)
     core_error("cannot initialize the message manager\n");
@@ -213,7 +213,7 @@ void			kernel_initialize(void)
    * 14)
    */
 
-  cons_msg('+', "starting capability manager\n");
+  module_call(console, console_message, '+', "starting capability manager\n");
 
   if (capability_initialize() != ERROR_NONE)
     core_error("cannot initialize the capability manager\n");
@@ -222,7 +222,7 @@ void			kernel_initialize(void)
    * 15)
    */
 
-  cons_msg('+', "starting cpu manager\n");
+  module_call(console, console_message, '+', "starting cpu manager\n");
 
   if (cpu_initialize() != ERROR_NONE)
     core_error("cannot initialize the cpu manager\n");
@@ -231,7 +231,7 @@ void			kernel_initialize(void)
    * 16)
    */
 
-  cons_msg('+', "starting scheduler manager\n");
+  module_call(console, console_message, '+', "starting scheduler manager\n");
 
   if (scheduler_initialize() != ERROR_NONE)
     core_error("cannot initialize the scheduler manager\n");

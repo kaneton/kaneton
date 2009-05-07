@@ -28,11 +28,9 @@
 #include <core/types.h>
 #include <core/error.h>
 
-#include <platform/timer.h>
-#include <platform/keyboard.h>
+#include <platform/console.h>
 #include <platform/irq.h>
-#include <platform/cons.h>
-#include <platform/vga.h>
 #include <platform/serial.h>
+#include <platform/timer.h>
 
 #endif

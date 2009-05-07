@@ -108,7 +108,7 @@ t_error			set_show_array(i_set			setid)
    * 2)
    */
 
-  cons_msg('#', "  %qd node(s) from the array set %qu:\n",
+  module_call(console, console_message, '#', "  %qd node(s) from the array set %qu:\n",
 	   o->size,
 	   setid);
 
@@ -120,9 +120,9 @@ t_error			set_show_array(i_set			setid)
 	continue;
 
       if (id == ID_UNUSED)
-	cons_msg('!', "warning: unused object detected !\n");
+	module_call(console, console_message, '!', "warning: unused object detected !\n");
 
-      cons_msg('#', "  array[%qd] = %qd\n", pos, id);
+      module_call(console, console_message, '#', "  array[%qd] = %qd\n", pos, id);
       ++pos;
     }
 
@@ -839,7 +839,7 @@ t_error			set_add_array(i_set			setid,
 	      empty = 0;
 	      if (current == id)
 		{
-		  cons_msg('!', "set: identifier collision detected "
+		  module_call(console, console_message, '!', "set: identifier collision detected "
 			   "in the set %qu on the object identifier %qu\n",
 			   o->setid, id);
 

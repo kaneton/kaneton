@@ -70,7 +70,7 @@ t_error			cpu_show(i_cpu				id)
   if (cpu_get(id, &o) != ERROR_NONE)
     CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
-  cons_msg('#', "  cpu %qd: execution time %qd ms\n", id,
+  module_call(console, console_message, '#', "  cpu %qd: execution time %qd ms\n", id,
 	   o->efficiency);
 
   if (machine_call(cpu, cpu_show, id) != ERROR_NONE)
@@ -103,7 +103,7 @@ t_error			cpu_dump(void)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu cpu(s):\n", size);
+  module_call(console, console_message, '#', "dumping %qu cpu(s):\n", size);
 
   set_foreach(SET_OPT_FORWARD, cpu->cpus, &i, state)
     {
@@ -298,7 +298,7 @@ t_error			cpu_initialize(void)
 
   if ((cpu = malloc(sizeof(m_cpu))) == NULL)
     {
-      cons_msg('!', "cpu: cannot allocate memory for the cpu "
+      module_call(console, console_message, '!', "cpu: cannot allocate memory for the cpu "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);
@@ -313,7 +313,7 @@ t_error			cpu_initialize(void)
   if (set_reserve(array, SET_OPT_ALLOC, init->ncpus,
 		  sizeof(o_cpu), &cpu->cpus) != ERROR_NONE)
     {
-      cons_msg('!', "cpu: unable to reserve the cpu set\n");
+      module_call(console, console_message, '!', "cpu: unable to reserve the cpu set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -326,7 +326,7 @@ t_error			cpu_initialize(void)
     {
       if (set_append(cpu->cpus, &init->cpus[i]) != ERROR_NONE)
 	{
-	  cons_msg('!', "cpu: cannot add a cpu to the cpu set\n");
+	  module_call(console, console_message, '!', "cpu: cannot add a cpu to the cpu set\n");
 
 	  return (ERROR_UNKNOWN);
 	}
@@ -335,9 +335,9 @@ t_error			cpu_initialize(void)
     }
 
   if (init->ncpus == 1)
-    cons_msg('#', " system is running in mono-processor mode.\n");
+    module_call(console, console_message, '#', " system is running in mono-processor mode.\n");
   else
-    cons_msg('#', " system is running in multi-processor mode.\n");
+    module_call(console, console_message, '#', " system is running in multi-processor mode.\n");
 
   /*
    * 4)

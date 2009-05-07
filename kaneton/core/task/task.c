@@ -133,7 +133,7 @@ t_error			task_show(i_task			id)
 	break;
     }
 
-  cons_msg('#', "  task %qd: %s on cpu %qd\n", id, state, o->cpuid);
+  module_call(console, console_message, '#', "  task %qd: %s on cpu %qd\n", id, state, o->cpuid);
 
   if (machine_call(task, task_show, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -170,7 +170,7 @@ t_error			task_dump(void)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu task(s):\n", size);
+  module_call(console, console_message, '#', "dumping %qu task(s):\n", size);
 
   set_foreach(SET_OPT_FORWARD, task->tasks, &i, state)
     {
@@ -255,7 +255,7 @@ t_error			task_clone(i_task			old,
 
       if (set_object(from->threads, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "task: cannot find the object "
+	  module_call(console, console_message, '!', "task: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -717,7 +717,7 @@ t_error			task_priority(i_task			id,
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_NONE)
 	{
-	  cons_msg('!', "task: cannot find the object "
+	  module_call(console, console_message, '!', "task: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -800,7 +800,7 @@ t_error			task_state(i_task			id,
 
       if (set_object(o->waits, i, (void**)&w) != ERROR_NONE)
 	{
-	  cons_msg('!', "task: cannot find the object "
+	  module_call(console, console_message, '!', "task: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -829,7 +829,7 @@ t_error			task_state(i_task			id,
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_NONE)
 	{
-	  cons_msg('!', "task: cannot find the object "
+	  module_call(console, console_message, '!', "task: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -992,7 +992,7 @@ t_error			task_initialize(void)
 
   if ((task = malloc(sizeof(m_task))) == NULL)
     {
-      cons_msg('!', "task: cannot allocate memory for the task manager "
+      module_call(console, console_message, '!', "task: cannot allocate memory for the task manager "
 	       "structure\n");
 
       return (ERROR_UNKNOWN);
@@ -1006,7 +1006,7 @@ t_error			task_initialize(void)
 
   if (id_build(&task->id) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to initialize the identifier object\n");
+      module_call(console, console_message, '!', "task: unable to initialize the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1018,7 +1018,7 @@ t_error			task_initialize(void)
   if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
 		  sizeof(o_task), &task->tasks) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to reserve the task set\n");
+      module_call(console, console_message, '!', "task: unable to reserve the task set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1030,14 +1030,14 @@ t_error			task_initialize(void)
   if (task_reserve(TASK_CLASS_KERNEL, TASK_BEHAV_KERNEL,
 		   TASK_PRIOR_KERNEL, &ktask) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to reserve the kernel task\n");
+      module_call(console, console_message, '!', "task: unable to reserve the kernel task\n");
 
       return (ERROR_UNKNOWN);
     }
 
   if (as_reserve(ktask, &asid) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to reserve the kernel address space\n");
+      module_call(console, console_message, '!', "task: unable to reserve the kernel address space\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1060,7 +1060,7 @@ t_error			task_initialize(void)
 
       if (segment_inject(asid, segment, &segments[i]) != ERROR_NONE)
 	{
-	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
+	  module_call(console, console_message, '!', "segment: cannot add a pre-reserved segment in "
 		   "the segment set\n");
 
 	  return (ERROR_UNKNOWN);
@@ -1089,7 +1089,7 @@ t_error			task_initialize(void)
 
       if (region_inject(asid, region, &useless) != ERROR_NONE)
 	{
-	  cons_msg('!', "region: cannot map a region to a pre-reserved "
+	  module_call(console, console_message, '!', "region: cannot map a region to a pre-reserved "
 		   "region\n");
 
 	  return (ERROR_UNKNOWN);
@@ -1137,7 +1137,7 @@ t_error			task_clean(void)
     {
       if (set_object(task->tasks, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "task: cannot find the task object "
+	  module_call(console, console_message, '!', "task: cannot find the task object "
 		   "corresponding to its identifier\n");
 
 	  return (ERROR_UNKNOWN);
@@ -1149,7 +1149,7 @@ t_error			task_clean(void)
 
   if (set_release(task->tasks) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to release the task set\n");
+      module_call(console, console_message, '!', "task: unable to release the task set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1160,7 +1160,7 @@ t_error			task_clean(void)
 
   if (id_destroy(&task->id) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to destroy the identifier object\n");
+      module_call(console, console_message, '!', "task: unable to destroy the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }

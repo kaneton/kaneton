@@ -83,9 +83,7 @@ int			bootloader(t_uint32			magic,
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
     bootloader_error();
 
-  printf("\n");
-  printf("                --- the kaneton microkernel project ---\n");
-  printf("\n");
+  bootloader_cons_msg('+', "loader launched\n");
 
   /*
    * 2)

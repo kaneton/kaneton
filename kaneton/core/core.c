@@ -76,6 +76,8 @@ i_segment		system;
 void			kaneton(t_init*				bootloader)
 {
 
+  while(1); // XXX
+
 #ifdef MIPS64_DEV
   while(1);
 #endif
@@ -101,22 +103,21 @@ void			kaneton(t_init*				bootloader)
    * 2)
    */
 
-  if (cons_init() != ERROR_NONE)
-    core_error("cannot initialize the console manager\n");
+  module_call(console, console_initialize);
 
   /*
    * 3)
    */
 
   printf("\n");
-  cons_msg('+', "%s\n", version);
+  module_call(console, console_message, '+', "%s\n", version);
   printf("\n");
 
   /*
    * 4)
    */
 
-  cons_msg('+', "starting malloc\n");
+  module_call(console, console_message, '+', "starting malloc\n");
 
   alloc_init(init->alloc, init->allocsz);
 
@@ -124,11 +125,11 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
-  cons_msg('+', "starting kernel manager\n");
+  module_call(console, console_message, '+', "starting kernel manager\n");
 
   kernel_initialize();
 
-  cons_msg('+', "kaneton started\n");
+  module_call(console, console_message, '+', "kaneton started\n");
 
   /*
    * 6)
@@ -140,10 +141,10 @@ void			kaneton(t_init*				bootloader)
    * 7)
    */
 
-  cons_msg('+', "launching the initial server\n");
+  module_call(console, console_message, '+', "launching the initial server\n");
 
   if (kaneton_launch() != ERROR_NONE)
-    cons_msg('!', "failed to start the initial server\n");
+    module_call(console, console_message, '!', "failed to start the initial server\n");
 
 #ifdef IA32_DEPENDENT
   STI();
@@ -171,7 +172,7 @@ void			kaneton(t_init*				bootloader)
   CLI();
 #endif
 
-  cons_msg('#', "kaneton is stopping...\n");
+  module_call(console, console_message, '#', "kaneton is stopping...\n");
 
   /*
    * 7)
@@ -183,7 +184,7 @@ void			kaneton(t_init*				bootloader)
    * 8)
    */
 
-  cons_msg('+', "system shutdown\n");
+  module_call(console, console_message, '+', "system shutdown\n");
 
 #ifdef IA32_DEPENDENT
   HLT();
@@ -218,7 +219,7 @@ t_error			kaneton_launch(void)
 
   if (init->scodesz == 0)
     {
-      cons_msg('!', "no initial server provided in the inputs\n");
+      module_call(console, console_message, '!', "no initial server provided in the inputs\n");
 
       return (ERROR_UNKNOWN);
     }

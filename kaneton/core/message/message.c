@@ -990,7 +990,7 @@ t_error			message_initialize(void)
 
   if ((message = malloc(sizeof(m_message))) == NULL)
     {
-      cons_msg('!', "message: cannot allocate memory for the message "
+      module_call(console, console_message, '!', "message: cannot allocate memory for the message "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);

@@ -112,7 +112,7 @@ static t_error		region_first_fit(o_as*			as,
       if (set_object(as->regions, i, (void**)&current) !=
 	  ERROR_NONE)
 	{
-	  cons_msg('!', "region: cannot find the region object "
+	  module_call(console, console_message, '!', "region: cannot find the region object "
 		   "corresponding to its identifier\n");
 
 	  REGION_LEAVE(region, ERROR_UNKNOWN);

@@ -89,7 +89,7 @@ t_error			segment_show(i_segment			segid)
   if (segment_get(segid, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  cons_msg('#', "  segment %qd in address space %qd:\n",
+  module_call(console, console_message, '#', "  segment %qd in address space %qd:\n",
 	   segid,
 	   o->asid);
 
@@ -133,7 +133,7 @@ t_error			segment_show(i_segment			segid)
    * 4)
    */
 
-  cons_msg('#', "    [%s] 0x%08x - 0x%08x %s (%u bytes)\n",
+  module_call(console, console_message, '#', "    [%s] 0x%08x - 0x%08x %s (%u bytes)\n",
 	   type,
 	   o->address,
 	   o->address + o->size,
@@ -183,7 +183,7 @@ t_error			segment_dump(void)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu segment(s) from the segment set:\n", size);
+  module_call(console, console_message, '#', "dumping %qu segment(s) from the segment set:\n", size);
 
   /*
    * 3)
@@ -193,7 +193,7 @@ t_error			segment_dump(void)
     {
       if (set_object(segment->segments, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "segment: cannot find the segment object "
+	  module_call(console, console_message, '!', "segment: cannot find the segment object "
 		   "corresponding to its identifier\n");
 
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
@@ -1207,7 +1207,7 @@ t_error			segment_flush(i_as			asid)
     {
       if (set_object(as->segments, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "segment: cannot find the object "
+	  module_call(console, console_message, '!', "segment: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
@@ -1260,7 +1260,7 @@ t_error			segment_initialize(void)
 
   if ((segment = malloc(sizeof(m_segment))) == NULL)
     {
-      cons_msg('!', "segment: cannot allocate memory for the segment "
+      module_call(console, console_message, '!', "segment: cannot allocate memory for the segment "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);
@@ -1282,7 +1282,7 @@ t_error			segment_initialize(void)
   if (set_reserve(bpt, SET_OPT_SORT | SET_OPT_FREE, sizeof(o_segment),
 		  SEGMENT_BPT_NODESZ, &segment->segments) != ERROR_NONE)
     {
-      cons_msg('!', "segment: unable to reserve the segment set\n");
+      module_call(console, console_message, '!', "segment: unable to reserve the segment set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1329,7 +1329,7 @@ t_error			segment_clean(void)
     {
       if (set_object(segment->segments, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "segment: cannot find the object "
+	  module_call(console, console_message, '!', "segment: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  return (ERROR_UNKNOWN);
@@ -1341,7 +1341,7 @@ t_error			segment_clean(void)
 
   if (set_release(segment->segments) != ERROR_NONE)
     {
-      cons_msg('!', "segment: unable to release the segment set\n");
+      module_call(console, console_message, '!', "segment: unable to release the segment set\n");
 
       return (ERROR_UNKNOWN);
     }

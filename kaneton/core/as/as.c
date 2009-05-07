@@ -82,7 +82,7 @@ t_error			as_show(i_as				asid)
   if (as_get(asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  cons_msg('#', "  address space %qd in task %qd:\n",
+  module_call(console, console_message, '#', "  address space %qd in task %qd:\n",
 	   asid,
 	   o->tskid);
 
@@ -90,28 +90,28 @@ t_error			as_show(i_as				asid)
    * 2)
    */
 
-  cons_msg('#', "    segments %qd:\n", o->segments);
+  module_call(console, console_message, '#', "    segments %qd:\n", o->segments);
 
   set_foreach(SET_OPT_FORWARD, o->segments, &i, state)
     {
       if (set_object(o->segments, i, (void**)&seg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      cons_msg('#', "      %qd\n", seg);
+      module_call(console, console_message, '#', "      %qd\n", seg);
     }
 
   /*
    * 3)
    */
 
-  cons_msg('#', "    regions %qd:\n", o->regions);
+  module_call(console, console_message, '#', "    regions %qd:\n", o->regions);
 
   set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
     {
       if (set_object(o->regions, i, (void**)&reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      cons_msg('#', "      %qd\n", reg);
+      module_call(console, console_message, '#', "      %qd\n", reg);
     }
 
   /*
@@ -154,7 +154,7 @@ t_error			as_dump(void)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu address space(s):\n", size);
+  module_call(console, console_message, '#', "dumping %qu address space(s):\n", size);
 
   set_foreach(SET_OPT_FORWARD, as->ass, &i, state)
     {
@@ -949,7 +949,7 @@ t_error			as_clone(i_task				tskid,
 
       if (set_object(from->segments, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "as: cannot find the object "
+	  module_call(console, console_message, '!', "as: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  AS_LEAVE(as, ERROR_UNKNOWN);
@@ -982,7 +982,7 @@ t_error			as_clone(i_task				tskid,
 
       if (set_object(from->regions, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "as: cannot find the object "
+	  module_call(console, console_message, '!', "as: cannot find the object "
 		   "corresponding to its identifier\n");
 
 	  AS_LEAVE(as, ERROR_UNKNOWN);
@@ -1240,7 +1240,7 @@ t_error			as_initialize(void)
 
   if ((as = malloc(sizeof(m_as))) == NULL)
     {
-      cons_msg('!', "as: cannot allocate memory for the address space manager "
+      module_call(console, console_message, '!', "as: cannot allocate memory for the address space manager "
 	       "structure\n");
 
       return (ERROR_UNKNOWN);
@@ -1254,7 +1254,7 @@ t_error			as_initialize(void)
 
   if (id_build(&as->id) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to initialize the identifier object\n");
+      module_call(console, console_message, '!', "as: unable to initialize the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1266,7 +1266,7 @@ t_error			as_initialize(void)
   if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
 		  sizeof(o_as), &as->ass) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to reserve the address space set\n");
+      module_call(console, console_message, '!', "as: unable to reserve the address space set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1312,7 +1312,7 @@ t_error			as_clean(void)
     {
       if (set_object(as->ass, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "as: cannot find the address space object "
+	  module_call(console, console_message, '!', "as: cannot find the address space object "
 		   "corresponding to its identifier\n");
 
 	  return (ERROR_UNKNOWN);
@@ -1327,7 +1327,7 @@ t_error			as_clean(void)
 
   if (set_release(as->ass) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to release the as' set\n");
+      module_call(console, console_message, '!', "as: unable to release the as' set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1338,7 +1338,7 @@ t_error			as_clean(void)
 
   if (id_destroy(&as->id) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to destroy the identifier object\n");
+      module_call(console, console_message, '!', "as: unable to destroy the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
