@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/book/assignments/future/k3.tex
+% file          /home/mycure/kaneton/view/book/assignments/future-k3/k3.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [fri nov 28 05:35:43 2008]
+% updated       julien quintard   [thu apr  9 23:58:26 2009]
 %
 
 %
@@ -18,7 +18,8 @@
 \chapter{k3}
 \label{chapter:k3}
 
-\name{k3} consists for students to study drivers development.
+\name{k3} is the final stage and consists for students to experiment on top
+of their freshly developed microkernel.
 
 \newpage
 
@@ -32,20 +33,16 @@
 
 \section{Objectives}
 
-The main objectives of this project is to understand who drivers are
-generaly developed inside micro-kernels.
+Throughout this project, students will explore the multiple ways of
+providing a major operating system feature, being a file system, a
+network service or any other feature that has been granted approval by
+the teaching board.
 
-Students will be asked to implement their own driver
-of the device of their choise. It could be a ATA driver, ehternet
-driver, etc, \ldots{}. The device must support DMA transfert and the
-driver \textbf{must} support this capability.
+Students will have to study the pros and cons of every technique in order to
+choose the right algorithms to use for their implementation.
 
-The driver will run under a less privileged level than the core,
-therefore students will have to implement a communication mechanism 
-on the top of the existing IPC infrastructure.
-
-In this project, students are free to design and implement whatever
-they wish.
+Therefore, in this project, students are free to design and implement whatever
+they wish as long as the required feature is eventually provided.
 
 %
 % requirements
@@ -53,7 +50,7 @@ they wish.
 
 \section{Requirements}
 
-This stage requires a working core (IPC, Memory, Scheduler).
+This stage requires a working microkernel.
 
 %
 % snapshot
@@ -61,8 +58,12 @@ This stage requires a working core (IPC, Memory, Scheduler).
 
 \section{Snapshot}
 
-For this project, nothing is provided to the students but the freedom to
-innovate.
+A demonstration application is provided. Note however that this application
+contains the bare minimum \ie{} a \textit{CRT - C Runtime} along with a
+dummy function.
+
+Finally, a system library is provided for issuing system call in
+an easy way.
 
 %
 % assignments
@@ -74,20 +75,15 @@ innovate.
 
 \subsection*{Design}
 
-Students are asked to follow the micro-kernel design for this driver.
-Their futur driver have to run under a less privileged level than the
-core.
+Students are asked to study the different algorithms, data structures,
+techniques in order to provide the chosen feature.
 
 % implementation
 
 \subsection*{Implementation}
 
-Students are then asked to implement a driver for the device of their
-choice. The driver \textbf{must} support DMA.
+Students are then asked to implement the service of their choice
+along with any extra component required.
 
-If needed, in order to support the driver, extra componnants could be
-integrated inside the core. If so students will be asked to argue about the
-reason why those componnants have to be inside the core.
-
-In order to illustrate the functionalities of their driver, students
-should also provide user-level applications.
+Finally, students should provide user-level applications for illustration
+purposes.

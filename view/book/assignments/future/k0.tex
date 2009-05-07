@@ -51,46 +51,6 @@ load a kernel.
 
 \clearpage
 
-\section{Before starting}
-
-\begin{itemize}
-\item
-  You have to follow \textbf{gas} syntax. Use \textbf{gcc} to assemble your
-  code and \textbf{ld} to output the flat binary.
-  \begin{verbatim}
-gcc  -c bootsect.S -o bootsect.o
-ld bootsect.o -o bootsect ---oformat binary ---Ttext 0x7c00
-  \end{verbatim}
-\item
-  You will use \textbf{qemu} to test your binary.
-  \begin{verbatim}
-qemu -fda bootsect
-  \end{verbatim}
-\item
-  Remember that x86 processors start in 16-bit mode, so you must find a
-  directive to tell \textbf{gcc} to assemble 16-bit code. When you later
-  switch to protected mode, find another directive to assemble 32-bit code.
-\item
-  \emph{No} register shall be modified unless explicitly requested.
-\item
-  Your bootsector must end with signature 0xaa55 to be valid. This means you
-  have to insert bytes after your code until byte 510, and then dump the
-  signature.
-  \begin{verbatim}
-signature:
-        .org 510, 0
-        .short 0xaa55
-  \end{verbatim}
-\item
-  Screen output will be strictly tested, so be careful: it must not differ.
-\item
-  Your test code must be removed from final source but the signature must be
-  present. Your code must not include a label \textbf{\_start} or labels
-  starting with two underscores.
-\end{itemize}
-
-Good luck and have fun!
-
 %
 % String display
 %
@@ -112,7 +72,7 @@ a string.
 
 \subsubsection*{File}
 \begin{itemize}
-  \item \location{k0-login\_x/ex1/ex1.S}
+  \item \location{ex1/ex1.S}
 \end{itemize}
 
 \subsubsection*{Interface}
@@ -151,7 +111,7 @@ a function which will dump the values stored in some registers.
 
 \subsubsection*{File}
 \begin{itemize}
-  \item \location{k0-login\_x/ex2/ex2.S}
+  \item \location{ex2/ex2.S}
 \end{itemize}
 
 \subsubsection*{Interface}
@@ -215,7 +175,7 @@ buffer, and then, use this function to print entered text on the screen.
 
 \subsubsection*{File}
 \begin{itemize}
-  \item \location{k0-login\_x/ex3/ex3.S}
+  \item \location{ex3/ex3.S}
 \end{itemize}
 
 \subsubsection*{Interface}
@@ -255,7 +215,7 @@ Be careful, sectors are actually numbered starting from 1, and not 0.
 
 \subsubsection*{File}
 \begin{itemize}
-  \item \location{k0-login\_x/ex4/ex4.S}
+  \item \location{ex4/ex4.S}
 \end{itemize}
 
 \subsubsection*{Interface}
@@ -295,19 +255,19 @@ Since kernels generally use 32-bit mode, it's time to know how to switch from
 \emph{real} 16-bit mode to \emph{protected} 32-bit mode.
 
 \subsubsection*{Assignments}
-You will first read \emph{Intel IA-32 mode switching procedure} and code a
-function to switch to that mode. Then, you will have to display a string in
-32-bit mode.
+You will first read \emph{Intel IA-32 mode switching procedure} on the wiki
+and code a function to switch to that mode. Then, you will have to display a
+string in 32-bit mode.
 
 {\em Warning:}
 
 Don't forget that the code executed after switching to protected mode must be
 32-byte assembled code. Moreover, BIOS interrupts cannot be used in protected
-mode, see \emph{VGA text Framebuffer} appendix to know how to do.
+mode, see \emph{VGA text Framebuffer} on the Wiki to know how to do.
 
 \subsubsection*{File}
 \begin{itemize}
-  \item \location{k0-login\_x/ex5/ex5.S}
+  \item \location{ex5/ex5.S}
 \end{itemize}
 
 \subsubsection*{Interface}
@@ -342,9 +302,9 @@ You will write a complete bootloader which loads and executes an ELF file
 - located right after the bootsector - and then relocate it in memory
 before jumping on it.
 
-An ELF binary is provided to be loaded with your bootsector. To build
-a disk image with your bootsector on the first sector, and the kernel on the
-next ones, you can use the following command:
+An ELF binary is provided to be loaded with your bootsector (see \emph{Files}
+on the Wiki). To build a disk image with your bootsector on the first sector,
+and the kernel on the next ones, you can use the following command:
 
 \begin{verbatim}
 42sh$ cat bootsector kernel.elf /dev/zero | dd bs=512 count=2880 of=disk.img
@@ -354,63 +314,11 @@ To load and execute an ELF file, you will have to parse the ELF header at the
 beginning of the file. Each ELF file is divided into \emph{segments} which are
 located into different offsets, and must be separately relocated at different
 memory locations. The segment list of the executable file is described by the
-\emph{Program Headers} table - \emph{Phdr} - in the ELF header.
-
-The structure of the ELF header is described in \emph{elf.h}, located in many
-UNIX systems in \verb+/usr/include/+.
-
-Here is a simplified view of the elf.h file :
-
-\begin{verbatim}
-typedef uint16_t Elf32_Half;
-typedef uint32_t Elf32_Word;
-typedef uint32_t Elf32_Addr;
-typedef uint32_t Elf32_Off;
-
-/* The ELF file header.  This appears at the start of every ELF file.  */
-
-#define EI_NIDENT (16)
-
-typedef struct                      /* Offset   Description */
-{
-  unsigned char e_ident[EI_NIDENT]; /* +0       Magic number and other info */
-  Elf32_Half    e_type;             /* +16      Object file type */
-  Elf32_Half    e_machine;          /* +18      Architecture */
-  Elf32_Word    e_version;          /* +20      Object file version */
-  Elf32_Addr    e_entry;            /* +24      Entry point virtual address */
-  Elf32_Off     e_phoff;            /* +28      Program header table file offset */
-  Elf32_Off     e_shoff;            /* +32      Section header table file offset */
-  Elf32_Word    e_flags;            /* +36      Processor-specific flags */
-  Elf32_Half    e_ehsize;           /* +40      ELF header size in bytes */
-  Elf32_Half    e_phentsize;        /* +42      Program header table entry size */
-  Elf32_Half    e_phnum;            /* +44      Program header table entry count */
-  Elf32_Half    e_shentsize;        /* +46      Section header table entry size */
-  Elf32_Half    e_shnum;            /* +48      Section header table entry count */
-  Elf32_Half    e_shstrndx;         /* +50      Section header string table index */
-} Elf32_Ehdr;                       /* sizeof(Elf32_Ehdr) = 52 */
-\end{verbatim}
-\newpage
-\begin{verbatim}
-/* Conglomeration of the identification bytes, for easy testing as a word.  */
-#define	ELFMAG		"\177ELF"
-#define	SELFMAG		4
-
-typedef struct                      /* Offset   Description */
-{
-  Elf32_Word    p_type;             /* +0       Segment type */
-  Elf32_Off     p_offset;           /* +4       Segment file offset */
-  Elf32_Addr    p_vaddr;            /* +8       Segment virtual address */
-  Elf32_Addr    p_paddr;            /* +12      Segment physical address */
-  Elf32_Word    p_filesz;           /* +16      Segment size in file */
-  Elf32_Word    p_memsz;            /* +20      Segment size in memory */
-  Elf32_Word    p_flags;            /* +24      Segment flags */
-  Elf32_Word    p_align;            /* +28      Segment alignment */
-} Elf32_Phdr;                       /* sizeof(Elf32_Phdr) = 32 */
-\end{verbatim}
+\emph{Program Headers} table - \emph{Phdr} - in the ELF header (read \emph{ELF Header} on the Wiki).
 
 \subsubsection*{File}
 \begin{itemize}
-  \item \location{k0-login\_x/ex6/ex6.S}
+  \item \location{ex6/ex6.S}
 \end{itemize}
 
 \subsubsection*{Interface}

@@ -5,21 +5,20 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/book/assignments/future/k2.tex
+% file          /home/mycure/kaneton/view/book/assignments/future-k2/k2.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [fri nov 28 05:35:36 2008]
+% updated       julien quintard   [wed mar 18 11:19:03 2009]
 %
 
 %
-% ---------- k2 ---------------------------------------------------------------
+% ---------- k1 ---------------------------------------------------------------
 %
 
 \chapter{k2}
 \label{chapter:k2}
 
-Through \name{k2}, \name{kaneton} is going to be given the possibility to
-handle multiple execution contexts.
+\name{k2} consists in the development of multitasking in the kaneton kernel.
 
 \newpage
 
@@ -27,3 +26,172 @@ handle multiple execution contexts.
 % ---------- text -------------------------------------------------------------
 %
 
+%
+% objectives
+%
+
+\section{Objectives}
+
+This project aims at learning multitasking concepts in kernels. The students will have to implement part of the task switching code, that will allow to distribute the CPU time between several threads.
+
+The students will also have to implement a scheduling algorithm.
+
+%
+% requirements
+%
+
+\section{Requirements}
+
+The students must know the concepts of Interrupts, in order to get an event on a regular basis. The students must also be familiar with the concept of thread context. Eventually, the students must know some scheduling algorithms, such as Round-Robin.
+
+%
+% snapshot
+%
+
+\section{Snapshot}
+
+There are 6 managers in the kaneton design that are used to handle multitasking :
+
+\begin{itemize}
+\item \textbf{cpu :} Since the kaneton is designed to run on multiprocessor platforms, the CPU manager is used to handle these. In your implementation, you don't have to support this, a single CPU will be used.
+
+\item \textbf{event :} To build a preemptive scheduler, one must have an external event that will trigger the task switching. This is provided by interrupts while the event manager provides the interrupts and exceptions handling.
+
+\item \textbf{scheduler :} The scheduler is responsible for performing a task switch.
+
+\item \textbf{task :} This manager handles the task objects. A task means an address space and one or more threads running within this address space.
+
+\item \textbf{thread :} A thread belongs to a task and has its own execution context.
+
+\item \textbf{time :} The time manager provides a way to setup timers, so you can setup a callback function on a regular basis.
+
+\end{itemize}
+
+%
+% assignments
+%
+
+\section{Assignments}
+
+\subsection*{Abstract}
+
+The students must only work on the scheduler manager. The other managers are fully provided in the snapshot.
+
+Especially, most of the work will be on the core part, only a few things have to be done on the machine part.
+
+\subsection*{Files}
+
+\begin{tabular}{| l | l |}
+  \hline
+  machine-independent & {\em kaneton/core/scheduler/scheduler.c}\\\hline
+  machine-independent & {\em kaneton/core/include/scheduler.c}\\\hline
+  machine-dependent & {\em kaneton/machine/architecture/ia32/include/context.h}\\\hline
+\end{tabular}
+
+\subsection*{Required implementation}
+
+\function{t\_error}{scheduler\_initialize}{\type{void}}
+{
+  This function initializes the ressources of the scheduler manager.
+}
+
+\function{t\_error}{scheduler\_clean}{\type{void}}
+{
+  This function releases the ressources of the scheduler manager.
+}
+
+\function{t\_error}{scheduler\_add}{\type{i\_thread} \argument{thread}}
+{
+  This functions adds the thread \argument{thread} to the scheduler, so it can
+  be executed.
+}
+
+\function{t\_error}{scheduler\_remove}{\type{i\_thread} \argument{thread}}
+{
+  This function removes the thread \argument{thread} from the scheduler, so it
+  is not going to be executed anymore.
+
+  \-
+
+  If the thread is being executed when this function is called, then another
+  thread must be elected before the removal.
+}
+
+\function{t\_error}{scheduler\_update}{\type{i\_thread} \argument{thread}}
+{
+  This function removes and adds back the thread \argument{thread} from the
+  scheduler, to take into account some possible modifications that can have
+  been done to it.
+}
+
+\function{t\_error}{scheduler\_switch}{\type{void}}
+{
+  This function has to be called on a regular basis, it will elect a new thread
+  to be executed and transfer the execution to it by switching the contexts.
+
+  \-
+
+  If no thread can be executed, then scheduler->idle must be elected.
+  
+  \-
+
+  The algorithm for the election is free, but it must be fair, and the
+  prioriries of the threads must be working. You can implement a simple
+  Round-Robin algorithm with priorities, for example.
+}
+
+\function{t\_error}{scheduler\_quantum}{\type{t\_quantum} \argument{quantum}}
+{
+  This function provides a way to set how often the scheduler
+  (scheduler\_switch) is called. The period is set using \argument{quantum} (in
+  milliseconds).
+}
+
+\function{t\_error}{scheduler\_yield}{\type{i\_cpu} \argument{cpuid}}
+{
+  This function provides a way for a thread to relinquish the CPU.
+
+  \-
+
+  When a thread calls this function, the scheduler must find another thread
+  to execute, if possible, and switch to it immediately.
+
+  \-
+
+  Since you are not working on SMP, you can ignore the \argument{cpuid}
+  argument.
+}
+
+\function{t\_error}{scheduler\_current}{\type{i\_thread*} \argument{thread}}
+{
+  This function should return the current running thread in the parameter
+  \argument{thread}.
+}
+
+\function{}{IA32\_SAVE\_CONTEXT}{}
+{
+  This macro must define the assembly code necessary to save a thread context.
+}
+
+\function{}{IA32\_RESTORE\_CONTEXT}{}
+{
+  This macro must define the assembly code that will restore a thread context
+  that has been saved with IA32\_SAVE\_CONTEXT.
+}
+
+\subsection*{Optional implementation}
+
+The following functions are not going to be tested by our test suite, you are
+not forced to do them although we strongly recommend you to do it, since they
+are very helpful for debugging your implementation.
+
+\-
+
+Since this is not tested, the output format is up to you.
+
+\function{t\_error}{scheduler\_dump}{\type{void}}
+{
+  This function will print some information about the scheduler, like the list
+  of threads that are registered in the scheduler, their states, and the
+  currently running thread.
+}

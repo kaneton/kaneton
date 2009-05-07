@@ -38,7 +38,6 @@ SOURCES			:=		introduction.tex		\
 					k1.tex				\
 					k2.tex				\
 					k3.tex				\
-					k4.tex				\
 					further.tex			\
 					faq.tex
 
