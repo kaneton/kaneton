@@ -37,14 +37,6 @@ SOURCES			:=		t6.tex				\
 					scheduling.tex			\
 					sleep_wakeup.tex		
 
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.blg)		
-
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -63,8 +55,6 @@ correction:
 	$(call env_document,$(PAPER),$(ENV_OPTION_PRIVATE))
 
 clear:
-	$(call env_remove,$(GARBAGE),)
-
 	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

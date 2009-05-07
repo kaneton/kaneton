@@ -41,14 +41,6 @@ SOURCES			:=		bibliography.tex		\
 					task.tex			\
 					timer.tex
 
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.blg)
-
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -62,8 +54,6 @@ build:
 	$(call env_document,$(PAPER),)
 
 clear:
-	$(call env_remove,$(GARBAGE),)
-
 	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

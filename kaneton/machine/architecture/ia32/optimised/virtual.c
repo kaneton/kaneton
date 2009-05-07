@@ -90,9 +90,9 @@ t_error			ia32_kernel_as_init(i_as	asid)
    * 2)
    */
 
-  memcpy(&o->machdep.pd, &init->machdep.pd, sizeof(t_ia32_directory));
+  memcpy(&o->machine.pd, &init->machine.pd, sizeof(t_ia32_directory));
 
-  if (ia32_pd_activate(o->machdep.pd,
+  if (ia32_pd_activate(o->machine.pd,
 		       IA32_PD_CACHED,
 		       IA32_PD_WRITEBACK) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -101,7 +101,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
    * 3)
    */
 
-  if (ia32_pt_build((t_paddr)o->machdep.pd, &pt) != ERROR_NONE)
+  if (ia32_pt_build((t_paddr)o->machine.pd, &pt) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   pt.present = 1;
@@ -110,7 +110,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
   pt.cached = IA32_PT_NOTCACHED;
   pt.writeback = IA32_PT_WRITEBACK;
 
-  if (ia32_pd_add_table(&o->machdep.pd, IA32_PD_MIRROR, pt) != ERROR_NONE)
+  if (ia32_pd_add_table(&o->machine.pd, IA32_PD_MIRROR, pt) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /*
@@ -179,7 +179,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
       for (pde = pde_start; pde <= pde_end; pde++)
 	{
 	  if (pde != IA32_PD_MIRROR &&
-	      ia32_pd_get_table(&o->machdep.pd, pde, &pt) == ERROR_NONE)
+	      ia32_pd_get_table(&o->machine.pd, pde, &pt) == ERROR_NONE)
 	    {
 	      pt.vaddr = pt.paddr;
 
@@ -214,7 +214,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
 
       for (pde = pde_start; pde <= pde_end; pde++)
 	{
-	  if (ia32_pd_get_table(&o->machdep.pd, pde, &pt) == ERROR_NONE)
+	  if (ia32_pd_get_table(&o->machine.pd, pde, &pt) == ERROR_NONE)
 	    {
 	      seg = pt.paddr;
 
@@ -249,7 +249,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
    */
 
   if (ia32_pd_get_cr3((t_uint32*)&ia32_interrupt_pdbr,
-		      o->machdep.pd,
+		      o->machine.pd,
 		      IA32_PD_CACHED,
 		      IA32_PD_WRITEBACK) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -326,7 +326,7 @@ t_error			ia32_task_as_init(i_as		asid)
    * 3)
    */
 
-  pd = o->machdep.pd = (t_ia32_directory)(t_uint32)seg;
+  pd = o->machine.pd = (t_ia32_directory)(t_uint32)seg;
 
   if (ia32_map_pd(&pd) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -386,7 +386,7 @@ t_error			ia32_task_as_init(i_as		asid)
     return (ERROR_UNKNOWN);
 #endif
 
-  if (region_get(kasid, (i_region)(t_uint32)thread->machdep.tss,
+  if (region_get(kasid, (i_region)(t_uint32)thread->machine.tss,
 		 &preg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -395,7 +395,7 @@ t_error			ia32_task_as_init(i_as		asid)
 		     0,
 		     REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
 		     REGION_OPT_GLOBAL,
-		     (t_vaddr)thread->machdep.tss,
+		     (t_vaddr)thread->machine.tss,
 		     preg->size,
 		     &reg) != ERROR_NONE)
     return (ERROR_UNKNOWN);

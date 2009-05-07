@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...ew/lecture/kernels/security/security.tex
 %
 % created       julien quintard   [fri oct 24 17:31:58 2008]
-% updated       julien quintard   [tue may  5 10:49:33 2009]
+% updated       julien quintard   [thu may  7 12:21:54 2009]
 %
 
 %
@@ -1508,26 +1508,66 @@
 \begin{frame}
   \frametitle{Overview}
 
-  \name{kaneton} provides both \textit{DAC} and \textit{MAC} categories.
+  \name{kaneton} provides both \name{DAC} and \name{MAC} categories.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{DAC}
+
+  Indeed, the capabilities enable tasks to implement a \name{DAC} policy since
+  every time an entity creates an object, it is given a capbility.
 
   \-
 
-  Indeed, the capabilities enable tasks to implement a \name{DAC} policy while
-  the kernel implements the \name{MAC} policy in order to give access to
-  devices, mapped memory regions \etc{} to precise tasks \eg{} the \name{VGA}
-  mapped-memory to the \name{VGA} driver \etc{}
+  Then, the entity is allowed to distribute this capability or even to
+  attenuate it, hence to manage the object's permissions.
+\end{frame}
 
-  \-
+% 3)
+
+\begin{frame}
+  \frametitle{MAC}
+
+  The kernel, on the other side, implements the \name{MAC} policy by strictly
+  controlling which task receives a capability on hardware objects such
+  as mapped memory regions like the \name{VGA} memory.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Capabilities}
 
   The \name{kaneton} microkernel adopted a different approach regarding the
-  capabilities format. Indeed, the format is not statically defined as it is
-  in \textit{Amoeba} so that every server manages its capabilities its own
-  way with its own specific format.
+  capabilities format.
 
   \-
 
-  Those two components seem enough to provide security in kaneton mostly
+  Indeed, the format is not statically defined as it is in \name{Amoeba} so
+  that every server manages its capabilities its own way with its own specific
+  format.
+
+  \-
+
+  Therefore, unlike \name{Amoeba}, a file system server could provide a
+  capability with a $64-bit$ identifier while a print service would rather
+  rely on $8$ bits for identifying all the connected printers.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Principles}
+
+  Those components seem enough to provide security in kaneton mostly
   because \name{kaneton} integrates the \name{security by design} principle.
+
+  \-
+
+  Therefore, all the developed applications must integrate security
+  principles to some degrees because the system design forces them to.
 \end{frame}
 
 %

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/inline-assembly/Makefile
 #
 # created       julien quintard   [wed may 16 18:48:18 2007]
-# updated       julien quintard   [thu feb 12 23:25:56 2009]
+# updated       julien quintard   [thu may  7 12:39:37 2009]
 #
 
 #
@@ -31,16 +31,6 @@ PAPER			:=		inline-assembly
 
 SOURCES			:=		inline-assembly.tex		
 
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		\
-					$(SOURCES:.tex=.nav)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.snm)		
-
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -54,8 +44,6 @@ build:
 	$(call env_document,$(PAPER),)
 
 clear:
-	$(call env_remove,$(GARBAGE),)
-
 	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

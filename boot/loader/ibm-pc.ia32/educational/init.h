@@ -159,7 +159,7 @@ typedef struct
   {
     t_ia32_gdt			gdt;
     t_ia32_directory		pd;
-  }				machdep;
+  }				machine;
 }				t_init;
 
 #endif

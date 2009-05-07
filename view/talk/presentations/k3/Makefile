@@ -31,16 +31,6 @@ PAPER			:=		k3
 
 SOURCES			:=		k3.tex		
 
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		\
-					$(SOURCES:.tex=.nav)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.snm)		
-
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -54,8 +44,6 @@ build:
 	$(call env_document,$(PAPER),)
 
 clear:
-	$(call env_remove,$(GARBAGE),)
-
 	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

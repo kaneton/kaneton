@@ -38,12 +38,12 @@
  */
 
 /*
- * machdep traps
+ * machine traps
  */
 
 #define		machine_data_init()					\
   struct								\
   {									\
-  }			machdep;
+  }			machine;
 
 #endif

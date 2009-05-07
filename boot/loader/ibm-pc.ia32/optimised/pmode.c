@@ -126,7 +126,7 @@ void			bootloader_pmode_init(void)
    * 5)
    */
 
-  memcpy(&init->machdep.gdt, &gdt, sizeof (t_ia32_gdt));
+  memcpy(&init->machine.gdt, &gdt, sizeof (t_ia32_gdt));
 }
 
 /*
@@ -151,7 +151,7 @@ void			bootloader_pmode_ap_init(void)
    * 1)
    */
 
-  memcpy(&gdt, &init->machdep.gdt, sizeof (t_ia32_gdt));
+  memcpy(&gdt, &init->machine.gdt, sizeof (t_ia32_gdt));
 
   /*
    * 2)

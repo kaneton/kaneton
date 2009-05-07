@@ -61,7 +61,7 @@
  */
 
 /*
- * machdep traps
+ * machine traps
  */
 
 #define		machine_data_init()					\
@@ -70,6 +70,6 @@
     t_ia32_gdt			gdt;					\
     t_ia32_idt			idt;					\
     t_ia32_directory		pd;					\
-  }				machdep;
+  }				machine;
 
 #endif

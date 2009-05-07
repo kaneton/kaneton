@@ -142,7 +142,7 @@ t_error			event_dump(void)
  *
  * 1) get the event object from the set.
  * 2) notify the task its event has occured.
- * 3) call machdep.
+ * 3) call machine.
  */
 
 t_error			event_notify(i_event			id)

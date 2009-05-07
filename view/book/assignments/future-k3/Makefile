@@ -42,14 +42,6 @@ SOURCES			:=		introduction.tex		\
 					further.tex			\
 					faq.tex
 
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).toc			\
-					$(PAPER).out			\
-					$(PAPER).pdf			\
-					$(PAPER).bbl			\
-					$(PAPER).blg		
-
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -63,8 +55,6 @@ build:
 	$(call env_document,$(PAPER),)
 
 clear:
-	$(call env_remove,$(GARBAGE),)
-
 	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

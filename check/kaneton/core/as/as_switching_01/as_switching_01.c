@@ -64,7 +64,7 @@ void		check_as_as_switching_01(void)
   assert(as_get(kasid, &o) == ERROR_NONE,
 	    "cannot get kernel as\n");
 
-  kdir = o->machdep.pd;
+  kdir = o->machine.pd;
 
   assert(as_get(as, &o) == ERROR_NONE,
 	    "cannot get created as\n");
@@ -72,7 +72,7 @@ void		check_as_as_switching_01(void)
   ptr1 = (int*)(t_uint32)reg;
   ptr2 = (int*)addr;
 
-  assert(ia32_pd_activate(o->machdep.pd, IA32_PD_CACHED,
+  assert(ia32_pd_activate(o->machine.pd, IA32_PD_CACHED,
 			  IA32_PD_WRITEBACK) == ERROR_NONE,
 	    "cannot switch as\n");
 

@@ -172,7 +172,7 @@ t_error			region_dump(i_as		asid)
  * 1) get the as object.
  * 2) fill the region id field.
  * 3) add the region to the set.
- * 4) call machdep code.
+ * 4) call machine code.
  *						    [endblock::inject::comment]
  */
 

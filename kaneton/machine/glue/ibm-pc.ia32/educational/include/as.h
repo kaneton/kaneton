@@ -39,7 +39,7 @@
   struct								\
   {									\
     t_ia32_directory		pd;					\
-  }				machdep;
+  }				machine;
 
 /*
  * ---------- prototypes ------------------------------------------------------

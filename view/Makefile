@@ -31,10 +31,8 @@ SUBDIRS			:=		bibliography			\
 					book				\
 					exam				\
 					feedback			\
-					figures				\
 					internship			\
 					lecture				\
-					logo				\
 					package				\
 					paper				\
 					talk				\

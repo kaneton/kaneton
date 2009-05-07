@@ -91,7 +91,7 @@ t_error			glue_scheduler_quantum(t_quantum	quantum)
 {
   SCHEDULER_ENTER(scheduler);
 
-  if (timer_delay(scheduler->machdep.timer, quantum) != ERROR_NONE)
+  if (timer_delay(scheduler->machine.timer, quantum) != ERROR_NONE)
     SCHEDULER_LEAVE(sched, ERROR_UNKNOWN);
 
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
@@ -117,7 +117,7 @@ t_error			glue_scheduler_initialize(void)
 		    0,
 		    scheduler->quantum,
 		    TIMER_REPEAT_ENABLE,
-		    &scheduler->machdep.timer) != ERROR_NONE)
+		    &scheduler->machine.timer) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   if (event_reserve(7, EVENT_FUNCTION,
@@ -157,7 +157,7 @@ t_error			glue_scheduler_clean(void)
 {
   SCHEDULER_ENTER(scheduler);
 
-  if (timer_release(scheduler->machdep.timer) != ERROR_NONE)
+  if (timer_release(scheduler->machine.timer) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   if (event_release(7) != ERROR_NONE)
@@ -181,11 +181,11 @@ void			glue_scheduler_switch_extended(i_event	id)
   if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
     return;
 
-  if (ia32_extended_context_switch(ent->machdep.mmx_context,
+  if (ia32_extended_context_switch(ent->machine.mmx_context,
 				   ent->current) != ERROR_NONE)
     return;
 
-  ent->machdep.mmx_context = ent->current;
+  ent->machine.mmx_context = ent->current;
 }
 
 /*

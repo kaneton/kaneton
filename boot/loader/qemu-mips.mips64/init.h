@@ -161,7 +161,7 @@ typedef struct
 
   struct
   {
-  }				machdep;
+  }				machine;
 }				t_init;
 
 #endif

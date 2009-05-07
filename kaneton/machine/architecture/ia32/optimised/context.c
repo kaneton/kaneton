@@ -92,7 +92,7 @@ t_error			ia32_clear_io_bitmap(i_task		tskid)
   if (task_get(tskid, &o) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  memset(&o->machdep.iomap, 0xFF, 8192);
+  memset(&o->machine.iomap, 0xFF, 8192);
 
   return (ERROR_NONE);
 }
@@ -110,7 +110,7 @@ t_error			ia32_duplicate_io_bitmap(i_task		old,
   if (task_get(old, &from) != ERROR_NONE || task_get(new, &to) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  memcpy(to->machdep.iomap, from->machdep.iomap, 8192);
+  memcpy(to->machine.iomap, from->machine.iomap, 8192);
 
   return (ERROR_NONE);
 }
@@ -183,14 +183,14 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
    */
 
   for (i = 0; i < width; i++)
-    io_bitmap_set(o->machdep.iomap, id + i, !allow);
+    io_bitmap_set(o->machine.iomap, id + i, !allow);
 
-  o->machdep.ioflush = 1;
+  o->machine.ioflush = 1;
 
   /* XXX beurk */
 #if 0
-  memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
-	 &o->machdep.iomap,
+  memcpy((t_uint8*)thread->machine.tss + thread->machine.tss->io,
+	 &o->machine.iomap,
 	 8192);
 #endif
 
@@ -250,10 +250,10 @@ t_error			ia32_init_context(i_task		taskid,
 
   /* XXX can be deleted after first cs when task->class == TASK_CLASS_KERNEL*/
   if (map_reserve(task->asid, MAP_OPT_NONE, PAGESZ, PERM_READ | PERM_WRITE,
-		  &o->machdep.interrupt_stack) != ERROR_NONE)
+		  &o->machine.interrupt_stack) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  o->machdep.interrupt_stack += (PAGESZ - 16);
+  o->machine.interrupt_stack += (PAGESZ - 16);
 
   /*
    * 4)
@@ -267,20 +267,20 @@ t_error			ia32_init_context(i_task		taskid,
   switch (task->class)
     {
       case TASK_CLASS_KERNEL:
-	ctx.ds = ctx.ss = thread->machdep.core_ds;
-	ctx.cs = thread->machdep.core_cs;
+	ctx.ds = ctx.ss = thread->machine.core_ds;
+	ctx.cs = thread->machine.core_cs;
 	break;
       case TASK_CLASS_DRIVER:
-	ctx.ds = ctx.ss = thread->machdep.driver_ds;
-	ctx.cs = thread->machdep.driver_cs;
+	ctx.ds = ctx.ss = thread->machine.driver_ds;
+	ctx.cs = thread->machine.driver_cs;
 	break;
       case TASK_CLASS_SERVICE:
-	ctx.ds = ctx.ss = thread->machdep.service_ds;
-	ctx.cs = thread->machdep.service_cs;
+	ctx.ds = ctx.ss = thread->machine.service_ds;
+	ctx.cs = thread->machine.service_cs;
 	break;
       case TASK_CLASS_GUEST:
-	ctx.ds = ctx.ss = thread->machdep.program_ds;
-	ctx.cs = thread->machdep.program_cs;
+	ctx.ds = ctx.ss = thread->machine.program_ds;
+	ctx.cs = thread->machine.program_cs;
 	break;
     }
 
@@ -293,17 +293,17 @@ t_error			ia32_init_context(i_task		taskid,
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
     {
-      memset(&o->machdep.u.sse, 0, sizeof(t_sse_state));
+      memset(&o->machine.u.sse, 0, sizeof(t_sse_state));
 
-      o->machdep.u.sse.fcw = 0x37f;
-      o->machdep.u.sse.ftw = 0xffff;
+      o->machine.u.sse.fcw = 0x37f;
+      o->machine.u.sse.ftw = 0xffff;
     }
   else
     {
-      memset(&o->machdep.u.x87, 0, sizeof(t_x87_state));
+      memset(&o->machine.u.x87, 0, sizeof(t_x87_state));
 
-      o->machdep.u.x87.fcw = 0x37f;
-      o->machdep.u.x87.ftw = 0xffff;
+      o->machine.u.x87.fcw = 0x37f;
+      o->machine.u.x87.ftw = 0xffff;
     }
 
   return (ERROR_NONE);
@@ -330,9 +330,9 @@ t_error			ia32_duplicate_context(i_thread		old,
     return (ERROR_UNKNOWN);
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
-    memcpy(&to->machdep.u.sse, &from->machdep.u.sse, sizeof(t_sse_state));
+    memcpy(&to->machine.u.sse, &from->machine.u.sse, sizeof(t_sse_state));
   else
-    memcpy(&to->machdep.u.x87, &from->machdep.u.x87, sizeof(t_x87_state));
+    memcpy(&to->machine.u.x87, &from->machine.u.x87, sizeof(t_x87_state));
 
   return (ERROR_NONE);
 }
@@ -420,9 +420,9 @@ t_error			ia32_init_switcher(void)
 		     0, 3 * PAGESZ, &reg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  thread->machdep.tss = (t_ia32_tss*)(t_vaddr)reg;
+  thread->machine.tss = (t_ia32_tss*)(t_vaddr)reg;
 
-  memset(thread->machdep.tss, 0x0, sizeof(t_ia32_tss));
+  memset(thread->machine.tss, 0x0, sizeof(t_ia32_tss));
 
   /* XXX one TSS per CPU */
 
@@ -449,7 +449,7 @@ t_error			ia32_init_switcher(void)
    * 4)
    */
 
-  if (ia32_tss_load(thread->machdep.tss,
+  if (ia32_tss_load(thread->machine.tss,
 		    IA32_SEGSEL(IA32_PMODE_GDT_CORE_DS, IA32_PRIV_RING0),
 		    int_stack + 2 * PAGESZ - 16,
 		    0x68) != ERROR_NONE)
@@ -461,7 +461,7 @@ t_error			ia32_init_switcher(void)
    * 5)
    */
 
-  if (ia32_tss_init(thread->machdep.tss) != ERROR_NONE)	/* XXX per CPU */
+  if (ia32_tss_init(thread->machine.tss) != ERROR_NONE)	/* XXX per CPU */
     return (ERROR_UNKNOWN);
 
   /*
@@ -469,21 +469,21 @@ t_error			ia32_init_switcher(void)
    */
 
   ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_CS, ia32_prvl_supervisor,
-			  &thread->machdep.core_cs);
+			  &thread->machine.core_cs);
   ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_DS, ia32_prvl_supervisor,
-			  &thread->machdep.core_ds);
+			  &thread->machine.core_ds);
   ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_CS, ia32_prvl_driver,
-			  &thread->machdep.driver_cs);
+			  &thread->machine.driver_cs);
   ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_DS, ia32_prvl_driver,
-			  &thread->machdep.driver_ds);
+			  &thread->machine.driver_ds);
   ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_CS, ia32_prvl_service,
-			  &thread->machdep.service_cs);
+			  &thread->machine.service_cs);
   ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_DS, ia32_prvl_service,
-			  &thread->machdep.service_ds);
+			  &thread->machine.service_ds);
   ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_CS, ia32_prvl_user,
-			  &thread->machdep.program_cs);
+			  &thread->machine.program_cs);
   ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_DS, ia32_prvl_user,
-			  &thread->machdep.program_ds);
+			  &thread->machine.program_ds);
 
   return (ERROR_NONE);
 }
@@ -509,8 +509,8 @@ t_error			ia32_context_ring0_stack(void)
 
   if (otask->class == TASK_CLASS_KERNEL)
     {
-      o->machdep.interrupt_stack = ia32_cpu_local_get(ia32_local_jump_stack);
-      o->machdep.interrupt_stack += sizeof (t_ia32_context);
+      o->machine.interrupt_stack = ia32_cpu_local_get(ia32_local_jump_stack);
+      o->machine.interrupt_stack += sizeof (t_ia32_context);
     }
 
   return (ERROR_NONE);
@@ -566,19 +566,19 @@ t_error			ia32_context_switch(i_thread		current,
    */
 
   if (ia32_pd_get_cr3(&cr3,
-		      as->machdep.pd,
+		      as->machine.pd,
 		      IA32_PD_CACHED,
 		      IA32_PD_WRITEBACK) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   ia32_cpu_local_set(&ia32_local_jump_pdbr, cr3);
 
-  ia32_cpu_local_set(&ia32_local_jump_stack, to->machdep.interrupt_stack -
+  ia32_cpu_local_set(&ia32_local_jump_stack, to->machine.interrupt_stack -
 		     sizeof (t_ia32_context));
 
-  if (ia32_tss_load(thread->machdep.tss,	/* XXX per CPU */
+  if (ia32_tss_load(thread->machine.tss,	/* XXX per CPU */
 		    IA32_SEGSEL(IA32_PMODE_GDT_CORE_DS, IA32_PRIV_RING0),
-		    to->machdep.interrupt_stack,
+		    to->machine.interrupt_stack,
 		    0x68) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -589,12 +589,12 @@ t_error			ia32_context_switch(i_thread		current,
   if (1 || current == ID_UNUSED || /* XXX */
       (from->taskid != to->taskid && (task->class == TASK_CLASS_SERVICE ||
 				      task->class == TASK_CLASS_GUEST)) ||
-      task->machdep.ioflush)
+      task->machine.ioflush)
     {
-      memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
-	     &task->machdep.iomap,
+      memcpy((t_uint8*)thread->machine.tss + thread->machine.tss->io,
+	     &task->machine.iomap,
 	     8192);
-      task->machdep.ioflush = 0;
+      task->machine.ioflush = 0;
     }
 
   /*
@@ -656,13 +656,13 @@ t_error			ia32_extended_context_switch(i_thread	current,
        * a)
        */
 
-      FXSAVE(old->machdep.u.sse);
+      FXSAVE(old->machine.u.sse);
 
       /*
        * b)
        */
 
-      FXRSTOR(o->machdep.u.sse);
+      FXRSTOR(o->machine.u.sse);
     }
   else
     {
@@ -674,13 +674,13 @@ t_error			ia32_extended_context_switch(i_thread	current,
        * a)
        */
 
-      FSAVE(old->machdep.u.x87);
+      FSAVE(old->machine.u.x87);
 
       /*
        * b)
        */
 
-      FRSTOR(o->machdep.u.x87);
+      FRSTOR(o->machine.u.x87);
     }
 
   return (ERROR_NONE);
@@ -771,7 +771,7 @@ t_error			ia32_get_context(i_thread		thread,
    */
 
   if (as_read(otask->asid,
-	      o->machdep.interrupt_stack - sizeof (t_ia32_context),
+	      o->machine.interrupt_stack - sizeof (t_ia32_context),
 	      sizeof (t_ia32_context),
 	      context) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -814,7 +814,7 @@ t_error			ia32_set_context(i_thread		thread,
    */
 
   if (as_read(otask->asid,
-	      o->machdep.interrupt_stack - sizeof (t_ia32_context),
+	      o->machine.interrupt_stack - sizeof (t_ia32_context),
 	      sizeof (t_ia32_context),
 	      &temp) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -857,7 +857,7 @@ t_error			ia32_set_context(i_thread		thread,
   if (as_write(otask->asid,
 	       &temp, sizeof
 	       (t_ia32_context),
-	       o->machdep.interrupt_stack - sizeof (t_ia32_context)) != ERROR_NONE)
+	       o->machine.interrupt_stack - sizeof (t_ia32_context)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);

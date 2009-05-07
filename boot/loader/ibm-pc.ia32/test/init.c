@@ -134,8 +134,8 @@ void			bootloader_init_dump(void)
 		      IBMPC_CONS_FRONT(IBMPC_CONS_WHITE) |
 		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
 		      IBMPC_CONS_INT,
-		      init->machdep.gdt.descriptor,
-		      init->machdep.gdt.count);
+		      init->machine.gdt.descriptor,
+		      init->machine.gdt.count);
 
   bootloader_cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
 		      IBMPC_CONS_FRONT(IBMPC_CONS_CYAN) |
@@ -144,7 +144,7 @@ void			bootloader_init_dump(void)
 		      IBMPC_CONS_FRONT(IBMPC_CONS_WHITE) |
 		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
 		      IBMPC_CONS_INT,
-		      init->machdep.pd);
+		      init->machine.pd);
 }
 
 /*
@@ -256,7 +256,7 @@ void			bootloader_init_segments(void)
    * 11)
    */
 
-  init->segments[11].address = (t_paddr)init->machdep.gdt.descriptor;
+  init->segments[11].address = (t_paddr)init->machine.gdt.descriptor;
   init->segments[11].size = PAGESZ;
   init->segments[11].perms = PERM_READ | PERM_WRITE;
 
@@ -264,7 +264,7 @@ void			bootloader_init_segments(void)
    * 12)
    */
 
-  init->segments[12].address = (t_paddr)init->machdep.pd;
+  init->segments[12].address = (t_paddr)init->machine.pd;
   init->segments[12].size = PAGESZ;
   init->segments[12].perms = PERM_READ | PERM_WRITE;
 }

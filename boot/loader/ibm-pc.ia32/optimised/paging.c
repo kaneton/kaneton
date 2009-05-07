@@ -78,7 +78,7 @@ void			bootloader_paging_init(void)
    * 2)
    */
 
-  init->machdep.pd = pd;
+  init->machine.pd = pd;
 
   /*
    * 3)
@@ -199,7 +199,7 @@ void			bootloader_paging_ap_init(void)
    * 1)
    */
 
-  pd_activate(init->machdep.pd, IA32_PD_CACHED, IA32_PD_WRITETHROUGH);
+  pd_activate(init->machine.pd, IA32_PD_CACHED, IA32_PD_WRITETHROUGH);
 
   /*
    * 2)

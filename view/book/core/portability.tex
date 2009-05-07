@@ -106,19 +106,19 @@ c-preprocessor facilities.
 
 Therefore, everything is transparent from the core point of view.
 
-\function{machdep\_include}{(\argument{manager})}
+\function{machine\_include}{(\argument{manager})}
 	 {
 	   This macro-function can be used by the core to include
 	   machine-dependent code for the precise manager \argument{manager}.
 	 }
 
-\function{machdep\_data}{(\argument{object})}
+\function{machine\_data}{(\argument{object})}
 	 {
 	   This macro-function can be used by the machine-dependent code
 	   to add data in the kaneton object \argument{object}.
 	 }
 
-\function{machdep\_call}{(\argument{manager},
+\function{machine\_call}{(\argument{manager},
                           \argument{function},
                           \argument{args...})}
 	 {
@@ -129,7 +129,7 @@ Therefore, everything is transparent from the core point of view.
 
 To better undestand how the kaneton portability system works, the reader
 should take a look at the file
-\textit{kaneton/include/arch/[architecture]/machdep.h}
+\textit{kaneton/include/arch/[architecture]/machine.h}
 and an example of manager using the portability system like the address
 space manager
 \textit{kaneton/include/arch/[architecture]/core/as.h}.

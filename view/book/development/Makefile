@@ -59,14 +59,6 @@ SOURCES			:=		asm.tex				\
 					view.tex			\
 					wiki.tex			
 
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		
-
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -80,8 +72,6 @@ build:
 	$(call env_document,$(PAPER),)
 
 clear:
-	$(call env_remove,$(GARBAGE),)
-
 	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

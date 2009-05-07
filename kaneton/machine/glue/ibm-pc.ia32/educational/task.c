@@ -97,7 +97,7 @@ t_error			glue_task_reserve(t_class			class,
   if (task_get(*id, &o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  o->machdep.ioflush = 0;
+  o->machine.ioflush = 0;
 
   TASK_LEAVE(task, ERROR_NONE);
 }

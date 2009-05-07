@@ -324,7 +324,7 @@ t_error			ia32_map_region(i_as		asid,
    * 4)
    */
 
-  pd = o->machdep.pd;
+  pd = o->machine.pd;
 
   if (asid != kasid)
     {
@@ -486,7 +486,7 @@ t_error			ia32_unmap_region(i_as		asid,
    * 3)
    */
 
-  pd = o->machdep.pd;
+  pd = o->machine.pd;
 
   if (asid != kasid)
     {

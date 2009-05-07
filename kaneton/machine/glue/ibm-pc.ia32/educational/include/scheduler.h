@@ -43,13 +43,13 @@
   struct								\
   {									\
     i_timer			timer;					\
-  }				machdep;
+  }				machine;
 
 #define		machine_data_o_scheduler()				\
   struct								\
   {									\
     i_thread			mmx_context;				\
-  }				machdep;
+  }				machine;
 
 /*
  * ---------- prototypes ------------------------------------------------------

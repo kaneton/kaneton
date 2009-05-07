@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/kernels/devices/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [wed apr 22 11:22:09 2009]
+# updated       julien quintard   [thu may  7 12:40:14 2009]
 #
 
 #
@@ -31,17 +31,6 @@ PAPER			:=		devices
 
 SOURCES			:=		devices.tex			
 
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		\
-					$(SOURCES:.tex=.nav)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.vrb)		\
-					$(SOURCES:.tex=.snm)		
-
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -55,8 +44,6 @@ build:
 	$(call env_document,$(PAPER),)
 
 clear:
-	$(call env_remove,$(GARBAGE),)
-
 	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

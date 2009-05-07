@@ -77,7 +77,7 @@ void			bootloader_paging_init(void)
    * 2)
    */
 
-  init->machdep.pd = pd;
+  init->machine.pd = pd;
 
   /*
    * 3)

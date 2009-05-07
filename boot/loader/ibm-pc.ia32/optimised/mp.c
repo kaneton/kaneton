@@ -107,8 +107,8 @@ void			bootloader_mp_init(void)
   *core_ptr = (t_uint32)bootloader_mp_ap_init;
   temp_gdtr = (void*)(0x8000 + &ap_boot_end - &ap_boot_start);
   gdtr->address = (t_paddr)temp_gdtr;
-  gdtr->size = init->machdep.gdt.count * sizeof (t_ia32_gdte);
-  memcpy(temp_gdtr, init->machdep.gdt.descriptor, gdtr->size);
+  gdtr->size = init->machine.gdt.count * sizeof (t_ia32_gdte);
+  memcpy(temp_gdtr, init->machine.gdt.descriptor, gdtr->size);
 
   asm volatile("wbinvd");
 

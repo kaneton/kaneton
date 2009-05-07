@@ -210,7 +210,7 @@ t_error			message_size(i_task			task,
  * 2) unblock waiters.
  * 3) free outgoing messages.
  * 4) release the sets.
- * 5) call machdep.
+ * 5) call machine.
  *
  */
 
@@ -657,7 +657,7 @@ t_error			message_throw(i_task			task,
  * 2) look for pending message.
  *  a) no pending message, block.
  *  b) incoming message, get it.
- * 3) call machdep code.
+ * 3) call machine code.
  *
  */
 

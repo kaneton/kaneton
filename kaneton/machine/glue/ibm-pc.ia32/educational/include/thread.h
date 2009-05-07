@@ -46,7 +46,7 @@
     t_uint16		service_ds;					\
     t_uint16		program_cs;					\
     t_uint16		program_ds;					\
-  }			machdep;
+  }			machine;
 
 #define         machine_data_o_thread()					\
   struct								\
@@ -58,7 +58,7 @@
       t_x87_state	x87;						\
       t_sse_state	sse;						\
     }			u;						\
-  }			machdep;
+  }			machine;
 
 /*
  * ---------- dependencies ----------------------------------------------------

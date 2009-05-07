@@ -131,7 +131,7 @@ void          tlb_miss(i_as asid)
 
       /* add the corresponding TLB entry */
       mips_set_tlb(mips_random_entry(),
-                   as->machdep.id, vaddr,
+                   as->machine.id, vaddr,
                    paddr, segment->perms);
 
       /* resume execution */
@@ -172,7 +172,7 @@ t_error       mipsr3000_region_release(i_as asid, i_region regid)
     {
       /* check if this entry correspond to a page in the */
       /* region to be removed */
-      if (as->machdep.id == id &&
+      if (as->machine.id == id &&
           reg->address <= vaddr &&
           reg->address + region->size > vaddr)
       {

@@ -437,7 +437,7 @@ t_error			timer_repeat(i_timer			id,
  * steps:
  *
  * 1) check if the timer exists and get it.
- * 2) call the machdep code.
+ * 2) call the machine code.
  * 3) clone the timer and update its delay and repeat mode.
  * 4) reorganize the timer position within the set.
  *

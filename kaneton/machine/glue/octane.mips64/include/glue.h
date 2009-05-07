@@ -19,7 +19,7 @@
  */
 
 /*
- * machdep transparent traps
+ * machine transparent traps
  */
 
 /* #define		machine_include(_manager_)				\ */

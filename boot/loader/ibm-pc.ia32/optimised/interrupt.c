@@ -101,7 +101,7 @@ void			bootloader_interrupt_init(void)
 
   asm volatile("sti");
 
-  memcpy(&init->machdep.idt, &idt, sizeof (t_ia32_idt));
+  memcpy(&init->machine.idt, &idt, sizeof (t_ia32_idt));
 }
 
 /*
@@ -116,7 +116,7 @@ void			bootloader_interrupt_ap_init(void)
 {
   t_ia32_idt		idt;
 
-  memcpy(&idt, &init->machdep.idt, sizeof (t_ia32_idt));
+  memcpy(&idt, &init->machine.idt, sizeof (t_ia32_idt));
 
   /*
    * 1)

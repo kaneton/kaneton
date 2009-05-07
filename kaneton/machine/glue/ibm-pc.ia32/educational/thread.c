@@ -161,7 +161,7 @@ t_error			glue_thread_args(i_thread		threadid,
 }
 
 /*
- * initialize the machdep related structures for the thread manager.
+ * initialize the machine related structures for the thread manager.
  *
  */
 

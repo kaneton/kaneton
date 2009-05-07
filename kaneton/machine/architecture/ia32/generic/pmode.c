@@ -78,7 +78,7 @@ t_error		ia32_pmode_init(void)
    * 1)
    */
 
-  memcpy(&ia32_gdt, &init->machdep.gdt, sizeof (t_ia32_gdt));
+  memcpy(&ia32_gdt, &init->machine.gdt, sizeof (t_ia32_gdt));
 
   /*
    * 2)

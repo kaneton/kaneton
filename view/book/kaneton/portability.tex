@@ -211,7 +211,7 @@ illustrates the case of the \code{o\_thread} object type.
         t_x87_state       x87;                                            \
         t_sse_state       sse;                                            \
       }                   u;                                              \
-    }                     machdep;
+    }                     machine;
 \end{verbatim}
 
 On that architecture, the developers decided to store the thread context
@@ -234,7 +234,7 @@ is processed, the \code{o\_thread} structure will look like:
         t_x87_state       x87;
         t_sse_state       sse;
       }                   u;
-    }                     machdep;
+    }                     machine;
   }                               o_thread;
 \end{verbatim}
 

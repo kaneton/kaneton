@@ -97,7 +97,7 @@ t_error			glue_message_return_info(i_thread	thread,
 }
 
 /*
- * initialize machdep part of message manager.
+ * initialize machine part of message manager.
  */
 
 t_error		glue_message_initialize(void)
@@ -111,7 +111,7 @@ t_error		glue_message_initialize(void)
 }
 
 /*
- * clean machdep part of message manager.
+ * clean machine part of message manager.
  */
 
 t_error		glue_message_clean(void)

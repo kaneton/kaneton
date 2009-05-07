@@ -46,7 +46,7 @@
   {									\
     t_uint8			iomap[8192];				\
     t_uint8			ioflush;				\
-  }				machdep;
+  }				machine;
 
 /*
  * ---------- prototypes ------------------------------------------------------

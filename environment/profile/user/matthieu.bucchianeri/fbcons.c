@@ -696,7 +696,7 @@ t_error			cons_init(void)
   int			pos;
   int			attr;
 
-  memcpy(&cons, &init->machdep.cons, sizeof(t_cons));
+  memcpy(&cons, &init->machine.cons, sizeof(t_cons));
   memcpy(buff, cons.vga, 10 * CONS_COLUMNS * CONS_BPC);
 
 #ifdef MODE1
