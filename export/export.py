@@ -82,7 +82,7 @@ def parse_data_file(filename):
   for i in g_action_data:
     if i['operation'] == 'import':
       env.display(env.HEADER_OK, 'action import ' + i['filename'], env.OPTION_NONE)
-      parse_data_file(i['filename'])
+      parse_data_file("behaviours/" + i['filename'])
     else:   
       arg = {}
       for j in range(1, len(g_modules_parameters[i['operation']])):
@@ -102,15 +102,32 @@ def main():
   global g_action_data
   global g_export_dir
 
+  if (len(sys.argv) != 2):
+    env.display(env.HEADER_ERROR, "usage: export.py [behaviour]",
+                env.OPTION_NONE)
+    env.display(env.HEADER_NONE, "",
+                env.OPTION_NONE)
+    env.display(env.HEADER_ERROR, "behaviours:",
+                env.OPTION_NONE)
+    for i in env.list(env._EXPORT_DIR_ + "/behaviours", env.OPTION_FILE):
+      env.display(env.HEADER_ERROR, "  " + i, env.OPTION_NONE)
+    return 1
+
   modules_load()
 
-  g_export_dir = env.temporary(env.OPTION_DIRECTORY) + "/kaneton"
+  work_dir = env.temporary(env.OPTION_DIRECTORY)
+  g_export_dir =  work_dir + "/kaneton"
 
   env.display(env.HEADER_OK, 'exporting to ' + g_export_dir, env.OPTION_NONE)
 
   env.display(env.HEADER_OK, 'running export actions', env.OPTION_NONE)
 
-  parse_data_file(sys.argv[1])
+  parse_data_file("behaviours/" + sys.argv[1])
+
+  env.display(env.HEADER_OK, 'cleaning temporary directory', env.OPTION_NONE)
+  env.remove(work_dir, env.OPTION_NONE)
+
+  env.display(env.HEADER_OK, 'export finished', env.OPTION_NONE)
   
 #
 # ---------- entry point ------------------------------------------------------

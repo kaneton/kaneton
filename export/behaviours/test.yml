@@ -8,3 +8,7 @@
 -
   operation: fremovepattern
   pattern: .*\.svn
+
+-
+  operation: tarball
+  filename: chicheteton

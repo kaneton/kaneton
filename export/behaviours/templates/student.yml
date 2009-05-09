@@ -1,6 +1,6 @@
 -
   operation: import
-  filename: educational
+  filename: templates/educational
 
 -
   operation: freplace
