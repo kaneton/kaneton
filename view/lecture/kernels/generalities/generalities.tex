@@ -116,7 +116,7 @@
         \begin{itemize}
                 \item 60s - IBM - First main frame
                 \item 70s - Unix - Servers operating system 
-                \item 80s - Microsoft  - Personnal computer (PC)
+                \item 80s - Microsoft  - Personal computer (PC)
                 \item 90s - Linux / Minix / GNU - Open source
                 \item 2000 - VMware / Goggle - Virtualisation / Distribution 
         \end{itemize}
@@ -134,8 +134,7 @@ use cases.
 
   \-
 
-Kernel came from massively multi-user to mono-user and then end up begin
-a mix with virtualisation and distrubution.
+Kernel came from massively multi-user to mono-user and then end up begin a mix with virtualisation and distribution.
 \end{frame}
 
 \section{Introduction}
@@ -145,9 +144,7 @@ a mix with virtualisation and distrubution.
 \begin{frame}
   \frametitle{Goals}
 
-  The kernel is the central part of an operating system. The kernel is
-  the entity offering abstraction of the hardware to the applications,
-  including:
+  The kernel is the central part of an operating system. The kernel is the entity offering abstraction of the hardware to the applications, including:
 
   \begin{itemize}
   \item
@@ -165,7 +162,7 @@ a mix with virtualisation and distrubution.
   \-
 
   The final goal of a kernel is to run user programs, to enable them
-  to interact with hardware and between each others, what constitues
+  to interact with hardware and between each others, what constitutes
   an operating system.
 
 \end{frame}
@@ -181,19 +178,15 @@ a mix with virtualisation and distrubution.
   \item
     Reliable. When a kernel crashes, the whole machine does.
   \item
-    Maintainable. Other developers must be able to write their own
-    drivers or services.
+    Maintainable. Other developers must be able to write their own drivers or services.
   \item
-    Fault tolerant. Either in terms of hardware faults and software
-    faults.
+    Fault tolerant. In terms of hardware faults and software faults.
   \item
     Secure.
   \item
-    Portable. To work on different hardware with less possible porting
-    effort.
+    Portable. To work on different hardware with less possible porting effort.
   \item
-    Distributed ? Some says a kernel has to handle distribution and looks
-    like a single instance even if it's running on thousand of machines.
+    Distributed? Some says a kernel has to handle distribution and looks like a single instance even if it's running on thousand of machines.
   \end{itemize}
 
 \end{frame}
@@ -203,16 +196,11 @@ a mix with virtualisation and distrubution.
 \begin{frame}
   \frametitle{Kernel-space \& User-land}
 
-  Kernel-space is the execution environment of the kernel. All
-  operations are permitted. Hardware can be accessed and
-  controlled. Microprocessor internal stuctures and control registers
-  too. The kernel can access all the tasks address spaces.
+  Kernel-space is the execution environment of the kernel. All operations are permitted. Hardware can be accessed and controlled. Microprocessor internal structures and control registers too. The kernel can access all the tasks address spaces.
 
   \-
 
-  User-land is the environment of classical programs, with many
-  restrictions. Hardware access is forbidden. Configuration facilities
-  are denied. A program can only access its own address space.
+  User-land is the environment of classical programs, with many restrictions. Hardware access is forbidden. Configuration facilities are denied. A program can only access its own address space.
 
   \-
 
@@ -222,23 +210,19 @@ a mix with virtualisation and distrubution.
 \end{frame}
 
 %
-% kernel choisses 
+% kernel choices 
 %
 
-\section{Kernel choisses}
+\section{Kernel choices}
 
 \subsection{Mono/Multi user}
 \begin{frame}
   \frametitle{Mono/Multi user/task}
   \begin{itemize}
-        \item Usally this problem comes along with the multi-tasking.
-        If we decide to go for the multi-tasking we might want to have 
-        multi-user support to provide security.
-        \item Some systems don't need multi-user/multi-tasking. They are
-        ofen use for embedded/Real-Time applications.
-        \item Multi-user support involves to thing about a system to
-        protect data from one user against another. It could be
-        ACL/capabalities/\ldots
+        \item Usually this problem comes along with the multi-tasking.
+        If we decide to go for the multi-tasking we might want to have multi-user support to provide security.
+        \item Some systems don't need multi-user/multi-tasking. They are often using for embedded/Real-Time applications.
+        \item Multi-user support involves to thing about a system to protect data from one user against another. It could be ACL, capabilities, \ldots
   \end{itemize}
 \end{frame}
 
@@ -249,11 +233,11 @@ a mix with virtualisation and distrubution.
   \begin{itemize}
         \item Segmentation/Pagination are generally used to improved
         security and flexibility.
-        \item Walkes throw the page tables takes a bit of time and
-        it's not deterministic. Therefor it can't be used of hard
+        \item Walks throw the page tables takes a bit of time and
+        it's not deterministic. Therefore it can't be used of hard
         real-time.
         \item To support the pagination you have to have a MMU on your
-        platform. The MMU is usally part of the processor because it
+        platform. The MMU is usually part of the processor because it
         needs to be called every time the execution access the memory.
   \end{itemize}
 \end{frame}
@@ -263,22 +247,17 @@ a mix with virtualisation and distrubution.
   \frametitle{Scheduling: Offline/Online}
         Online:
         \begin{itemize}
-                \item The online scheduling is the usal way to schedule
-                nowadays. The scheduler is dynamic and allocate the
-                timeslices on demand.
-                \item It's much more flexible than the scheduling
-                offline.
+                \item The online scheduling is the usual way to schedule nowadays. The scheduler is dynamic and allocate the time slices on demand.
+                \item It's much more flexible than the scheduling offline.
                 \item The scheduler itself consumes some CPU time.
         \end{itemize}
         \-
         Offline:
         \begin{itemize}
-                \item The order in which the tasks will be executed is
-                pre-computed.
-                \item You need a limited number of taks.
+                \item The order in which the tasks will be executed is pre-computed.
+                \item You need a limited number of tasks.
                 \item It's not dynamic.
-                \item Fit perfectly in a lockdown environment (real-time
-                again?)
+                \item Fit perfectly in a lockdown environment (real-time again?)
         \end{itemize}
 \end{frame}
 
@@ -296,13 +275,11 @@ a mix with virtualisation and distrubution.
 \begin{frame}
   \frametitle{Monolithic kernels}
 
-  Monolithic kernels includes everything into the kernel, even
-  drivers, filesystems, networking\ldots
+  Monolithic kernels includes everything into the kernel, even drivers, file systems, networking\ldots
 
   \-
 
-  \emph{This approach well known as ``The Big Mess''. The structure is
-  that there is no structure.} -- Tanenbaum
+  \emph{This approach well known as ``The Big Mess''. The structure is that there is no structure.} -- Tanenbaum
 
   \-
 
@@ -334,16 +311,15 @@ a mix with virtualisation and distrubution.
 \begin{frame}
   \frametitle{Example: BSD}
 
-  4.4BSD kernel include all functionnalities in kernel-land: from
-    process management to network layer, through filesystems.
+  4.4BSD kernel includes all functionalities in kernel-land: from process management to network layer, through file systems.
 
   \begin{center}
     \pgfuseimage{bsd}
   \end{center}
 
-  The kernel is about 200.000 lines long.
+  The kernel is about 200 000 lines long.
 
-\end{frame}
+\end{frame} 
 
 %
 % microkernels
@@ -358,9 +334,7 @@ a mix with virtualisation and distrubution.
 \begin{frame}
   \frametitle{Micro-kernels}
 
-  In micro-kernels, only the critical functionnalities are running in
-  kernels-space. The other services are running as user programs
-  (having extended privileges).
+  In micro-kernels, only the critical functionalities are running in kernels-space. The other services are running as user programs (having extended privileges).
 
   \-
 
@@ -368,13 +342,11 @@ a mix with virtualisation and distrubution.
 
   \begin{itemize}
   \item
-    Small amount of code in kernel-space: less bugs and risks of
-    crashes
+    Small amount of code in kernel-space: less bugs and risks of crashes.
   \item
     Clear design, easy to understand
   \item
-    Services can be started and stopped: reduce system load, run
-    concurrent services\ldots
+    Services can be started and stopped: reduce system load, run concurrent services\ldots
   \end{itemize}
 
   \-
@@ -396,14 +368,13 @@ a mix with virtualisation and distrubution.
   \frametitle{Example: kaneton}
 
   kaneton provide a dozen of critical managers: memory, process,
-  I/O\ldots{} Only these functionnalities are running in kernel-land.
+  I/O\ldots{} Only these functionalities are running in kernel-land.
 
   \begin{center}
     \pgfuseimage{kaneton}
   \end{center}
 
-  Advanced functionnalities (filesystems, network\ldots) are provided
-  by services in userland. IPC are omnipresent.
+  Advanced functionalities (file systems, network\ldots) are provided by services in userland. IPC are omnipresent.
 
 \end{frame}
 
@@ -424,21 +395,18 @@ a mix with virtualisation and distrubution.
   \frametitle{L4 IPCs: Chiefs and clans}
   \begin{center}
   \pgfuseimage{l4ipc} \\
-  Chiefs and Clans in L4. \\ Exemple of communication between to sub
-  entities.
+  Chiefs and Clans in L4. \\ Example of communication between to sub entities.
   \end{center}
 \end{frame}
 
 \begin{frame}
         \frametitle{Xen the open source hypervisor}
         \begin{itemize}
-                \item Xen boots and then start linux/solaris/netbsd dom0.
+                \item Xen boots and then start Linux, Solaris or Netbsd dom0.
                 \item Dom0 is a module of xen.
                 \item Each domain (virtual machine) is a module.
-                \item In the futur dom0 could be split in different
-                domain/module (stub-domain).
-                \item There are communication mechanismes between the
-                different layers (xenstore, ring buffers, \ldots:).
+                \item In the future dom0 could be split in different domain/module (stub-domain).
+                \item There are communication mechanisms between the different layers (xenstore, ring buffers, \ldots:).
         \end{itemize}
 \end{frame}
 \begin{frame}
@@ -465,9 +433,7 @@ The xen architecture
 \begin{frame}
   \frametitle{Nano-kernels}
 
-  The only difference with micro-kernels is that more and more
-  services are pushed out of kernel-space. The kernel code is then
-  reduced.
+  The only difference with micro-kernels is that more and more services are pushed out of kernel-space. The kernel code is then reduced.
 
 \end{frame}
 
@@ -478,16 +444,13 @@ The xen architecture
 \begin{frame}
   \frametitle{Example: LSE/OS}
 
-  LSE/OS has a nano-kernel conception to keep the code as tiny as
-  possible, preventing bugs into the kernel leading to global crashed
-  of the system. Only the core is running in kernel-land.
+  LSE/OS has a nano-kernel conception to keep the code as tiny as possible, preventing bugs into the kernel leading to global crashed of the system. Only the core is running in kernel-land.
 
   \begin{center}
     \pgfuseimage{lseos}
   \end{center}
 
-  LSE/OS pushes out of the kernel the timer and interrupt controller
-  modules and offers minimal services for task and memory management.
+  LSE/OS pushes out of the kernel the timer and interrupt controller modules and offers minimal services for task and memory management.
 
 \end{frame}
 
@@ -504,12 +467,11 @@ The xen architecture
 \begin{frame}
   \frametitle{Exo-kernels}
 
-  Exo-kernels is a very young class of kernel, still under research
-  effort. Principles:
+  Exo-kernels are a very young class of kernel, still under research effort. Principles:
 
   \begin{itemize}
   \item
-    A few abstraction as possible
+    A few abstractions as possible
   \item
     Abstractions are libraries
   \item
@@ -544,16 +506,14 @@ The xen architecture
 \begin{frame}
   \frametitle{Example: HEXO}
 
-  HEXO is a massively parallel heterogeneous multiprocessor
-  exo-kernel.
+  HEXO is a massively parallel heterogeneous multiprocessor exo-kernel.
 
   \begin{center}
     \pgfuseimage{hexo}
   \end{center}
 
-  HEXO is build over two abstractions : CPU-specific and
-  Platform-specific. Higher level abstractions can be wrote easily
-  over HEXO's primitives.
+  HEXO is build over two abstractions: CPU-specific and
+  Platform-specific. Higher-level abstractions can be written easily over HEXO's primitives.
 
 \end{frame}
 
@@ -570,19 +530,16 @@ The xen architecture
 \begin{frame}
   \frametitle{Hybrid kernels}
 
-  The hybrid kernels relies on all the previously studied kernel
-  models.
+  The hybrid kernels rely on all the previously studied kernel models.
 
   \begin{itemize}
   \item
     Structure similar to micro-kernels, with services
   \item
-    Most of the code is running in kernel-land to improve performance,
-    like in monolithic kernels
+    Most of the code is running in kernel-land to improve performance, like in monolithic kernels
   \end{itemize}
 
-  This class of kernels is considered as ``marketing argument'' by
-  many people, because there is no great innovation.
+  Many people consider this class of kernels as marketing argument, because there is no great innovation.
 
   \-
 
@@ -617,10 +574,7 @@ The xen architecture
     \pgfuseimage{nt}
   \end{center}
 
-  The NT kernel is a mix of exo-kernels (HAL), micro-kernels
-  (services) and monolithic kernels (everything in kernel-land). On
-  Windows NT, it is fun to notice that even the GUI services are part
-  of the kernel.
+  The NT kernel is a mix of exo-kernels (HAL), micro-kernels (services) and monolithic kernels (everything in kernel-land). On Windows NT, it is fun to notice that even the GUI services are part of the kernel.
 
 \end{frame}
 
@@ -641,7 +595,7 @@ The xen architecture
 
   \begin{itemize}
   \item
-    Some of the classical functionnalities are not provided
+    Some of the classical functionalities are not provided
   \item
     Important drivers are directly included into the kernel
   \item
@@ -654,8 +608,7 @@ The xen architecture
 
   \-
 
-  For example, the operating system of a washing machine does not need
-  virtual memory, scheduler or filesystems.
+  For example, the operating system of a washing machine does not need virtual memory, scheduler or file systems.
 
 \end{frame}
 
@@ -666,16 +619,13 @@ The xen architecture
 \begin{frame}
   \frametitle{Example: Kastor}
 
-  Kastor is a specific kernel providing a reduced set of functionnality. K
-  is intended to run small games.
+  Kastor is a specific kernel providing a reduced set of functionality. Kastor is intended to run small games.
 
   \begin{center}
     \pgfuseimage{k}
   \end{center}
 
-  Kastor does not provide some classical functionnalities such as virtual
-  memory or process management, but is provides some main functions
-  for its specific domain like video or sound drivers.
+  Kastor does not provide some classical functionalities such as virtual memory or process management, but is provides some main functions for its specific domain like video or sound drivers.
 
 \end{frame}
 
@@ -686,16 +636,13 @@ The xen architecture
 
         \-
 
-        A lot of systems need their own specific design specily in
-        real-time or embedded system.
+        A lot of systems need their own specific design especially in real-time or embedded system.
 
         \-
 
-        The futur of the kernel and computing in general tourns out to
-        be cloud computing and virtualisation.
-        There is still lot of effort that needs to be
-        made to achive those goals of distributivity,
-        flexibility and compatibility.
+        The future of the kernel and computing in general turns out to be cloud computing and virtualisation.
+        There is still lot of effort that needs to be made to achieve those goals of: distribution, flexibility and compatibility.
 \end{frame}
 
 \end{document}
+

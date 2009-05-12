@@ -97,12 +97,10 @@
 \begin{frame}
 \frametitle{Introduction}
 \begin{itemize}
-\item The Virtualisation platform create a abstraction
-in order to run multiple OS or system on the same physical machine.
+\item The Virtualisation platform create a abstraction in order to run multiple OS or system on the same physical machine.
 \item Virtualisation exists since a long time, 1960s with IBM.
 \item There is multiple level of virtualisation.
-\item Nowadays the succes of the virtualisation software made the
-hardware vendor to do some reaseach to add hardware assistance.
+\item Nowadays the success of the virtualisation software made the hardware vendor to do some research to add hardware assistance.
 \end{itemize}
 \end{frame}
 
@@ -114,7 +112,7 @@ hardware vendor to do some reaseach to add hardware assistance.
 \item This is basically a virtual machine.
 \item All the code is disassembled and translated.
 \item It's really slow but works without any hardware support.
-\item Exemple: QEMU
+\item Example: QEMU
 \end{itemize}
 \end{frame}
 
@@ -123,13 +121,11 @@ hardware vendor to do some reaseach to add hardware assistance.
 \frametitle{Binary Translation}
 \begin{itemize}
   \item Load the binaries into memory and modify the code directly.
-  \item Replace the special instructions with specific calls, (for
-  instance ldtr).
-  \item It's quite slow and force to parse all the code berfor executing
+  \item Replace the special instructions with specific calls, (for instance ldtr).
+  \item It's quite slow and force to parse all the code before executing
   it.
-  \item Like the binary translation this technics does'nt require any
-  hardaware support.
-  \item Exemple: VMWare workstation
+  \item Like the binary translation this techniques doesn’t require any hardware support.
+  \item Example: VMWare workstation
 \end{itemize}
 \end{frame}
 
@@ -137,12 +133,10 @@ hardware vendor to do some reaseach to add hardware assistance.
 \begin{frame}
 \frametitle{Emulation}
 \begin{itemize}
-\item The two previous technics can be consider as emulation.
-\item We usally talk about emuation for hardware emulation, not
-for the code being exected.
-\item In a virtualised environement most of the hardware is emulated
-because it's an abstraction.
-\item Exemple: QEMU is a hardaware emulation software
+\item The two previous techniques can be consider as emulation.
+\item We usually talk about emulation for hardware emulation, not for the code being executed.
+\item In a virtualised environment most of the hardware is emulated because it's an abstraction.
+\item Example: QEMU is a hardware emulation software
 \end{itemize}
 \end{frame}
 
@@ -150,10 +144,9 @@ because it's an abstraction.
 \begin{frame}
 \frametitle{Virtualisation}
 \begin{itemize}
-\item We often talk about virtualisation when there is hardaware
-assitance, or the technics in place don't have that much overhead.
-\item It's usally a mics of all the previous technics.
-\item Exemple: Xen, VmWare ESX
+\item We often talk about virtualisation when there is hardware assistance, or the techniques in place don't have that much overhead.
+\item It's usually a mix of all the previous techniques.
+\item Example: Xen, VMWare ESX
 \end{itemize}
 \end{frame}
 
@@ -162,16 +155,13 @@ assitance, or the technics in place don't have that much overhead.
 \begin{frame}
 \frametitle{Paravirtualisation}
 \begin{itemize}
-\item The kernel is modified in order to run inside a virtualised
-envrionement.
-\item So far it's mainly for linux running under Xen.
-\item You replace all hardaware calls with syscalls (hypercall in this
-case), like (ldtr, gtdr, cr3, \ldots ).
-\item The overheaA compared with native is less then 5\%.
-\item Linux have a paravirtualisation insterface since 2.6.22 (called
-pvops).
-\item Xen paravirtualised guest work since 2.6.24.
-\item This technics deson't required any special hardware.
+\item The kernel is modified in order to run inside a virtualised environment.
+\item So far it's mainly for Linux running under Xen.
+\item You replace all hardware calls with syscalls (hypercall in this case), like (ldtr, gtdr, cr3, \ldots ).
+\item The overhead compared with native is less then 5\%.
+\item Linux have a paravirtualisation interface since 2.6.22 (called pvops).
+\item Xen paravirtualized guest work since 2.6.24.
+\item This technique doesn’t required any special hardware.
 \end{itemize}
 \end{frame}
 
@@ -238,10 +228,8 @@ struct pv_mmu_ops {
 \begin{frame}
 \frametitle{Hardware assisted virtualisation (HVM)}
 \begin{itemize}
-\item A new set of instruction and table in order to do virtualisation
-in a more eficient way.
-\item Most of virtualisation solution required those processor feature
-like KVM.
+\item A new set of instruction and table in order to do virtualisation in a more efficient way.
+\item Most of virtualisation solution required those processor feature like KVM.
 \item Xen needs that in order to run unmodified kernel like windows.
 \end{itemize}
 \end{frame}
@@ -253,7 +241,7 @@ like KVM.
 \begin{itemize}
 \item Codename "Vanderpool Technology"
 \item Also called VT-x
-\item Start with pentium 4 662
+\item Start with Pentium 4 662
 \item It's a processor feature.
 \item VMENTER, VMEXIT, VMCS, VMM.
 \end{itemize}
@@ -280,7 +268,7 @@ system.
 \item On the top of it there are, privileged and non privileged virtual
 machine.
 \item It's more secure.
-\item In this case the hypervisor usally takes care of:
+\item In this case the hypervisor usually takes care of:
 \begin{itemize}
 \item Memory management
 \item Interrupts
@@ -306,7 +294,7 @@ machine.
 \item This is generally a kernel module.
 \item The VMM can be compromised through the OS.
 \item Much easier to install.
-\item Software: KVM, VmWare Fusion, Paralleles, virtual box, \ldots
+\item Software: KVM, VMWare Fusion, Paralleles, virtual box, \ldots
 \end{itemize}
 \end{frame}
 
@@ -334,14 +322,12 @@ machine.
 \begin{frame}
 \frametitle{PV driver}
 \begin{itemize}
-\item It's called vmware tools, xenTools or virtual box Tools.
-\item Instead of using the emulated device path, the tools load some
-driver that talks directly with the virtualisation layer.
-\item That technic completly by-pass the emulation layer.
+\item It's called VMWare tools, xenTools or virtual box Tools.
+\item Instead of using the emulated device path, the tools load some driver that talks directly with the virtualisation layer.
+\item That technique completely by-pass the emulation layer.
 \item It's very useful for high speed device, like hard drive or network
 card.
-\item You have to write a driver of each kind of OS you want to
-virtualise so it's not generic.
+\item You have to write a driver of each kind of OS you want to virtualise so it's not generic.
 \end{itemize}
 \end{frame}
 
@@ -373,8 +359,9 @@ virtualise so it's not generic.
 \begin{itemize}
 \item Extended page table.
 \item This is hardware accelerated page table.
-\item Comes with the nehalem.
+\item Comes with the Nehalem.
 \end{itemize}
 \end{frame}
 
 \end{document}
+

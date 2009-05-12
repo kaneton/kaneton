@@ -102,7 +102,7 @@
     \item For instance "movl (\$0xABCD57), \%eax".
     \item Some architecture doesn't support unaligned memory access, the
     processor raise an exception (Sparc).
-    \item Hopufully (or not) x86 supports unaligned memory access.
+    \item Hopefully (or not) x86 supports unaligned memory access.
   \end{itemize}
 \end{frame}
 
@@ -125,27 +125,23 @@
 \begin{itemize}
   \item A device is a piece of hardware connected on a computer via a
         bus.
-  \item It can be a wired bus or over the air, like bluetooth.
+  \item It can be a wired bus or over the air, like Bluetooth.
   \item A device can make actions and has different status.
-  \item To store all those informations device use registers.
+  \item To store all those information device use registers.
   \item Devices need interrupts in order to notify the computer. It's
   for synchronous actions.
 \end{itemize}
 \end{frame}
 \subsection{Register}
 \begin{frame}
-\frametitle{Devies Registers}
+\frametitle{Devices Registers}
 \begin{itemize}
         \item Registers can be access using an address on the device.
-        \item Sometimes the device memory is mapped on the computer
-        physical memory, sometime it required to use some I/O
-        instrucitons.
+        \item Sometimes the device memory is mapped on the computer physical memory, sometime it required to use some I/O instructions.
         \item There is 2 types of registers:
         \begin{itemize}
-          \item Actions registers, ofen write only (but ca be RW),
-          writing to those registers do an action.
-          \item Status registers, read only. This is ofen the result of
-          an action.
+          \item Actions registers, often write only (but ca be RW), writing to those registers do an action.
+          \item Status registers, read only. This is often the result of an action.
         \end{itemize}
 \end{itemize}
 \end{frame}
@@ -161,8 +157,7 @@
         \item Use instruction in{b,w,l} and out{b,w,l}.
         \item Very slow.
         \item Takes a lot of CPU loads.
-        \item The processor cannot do something else when data are
-        transfering.
+        \item The processor cannot do something else when data are transferring.
         \end{itemize}
 \end{frame}
 
@@ -182,7 +177,7 @@
         \frametitle{MMIO}
         \begin{itemize}
         \item Memory Mapped Input Output.
-        \item It's a physicall address but it's not RAM.
+        \item It's a physical address but it's not RAM.
         \item Can be mapped using pagination or segmentation.
         \item Can be cached, but be careful.
         \end{itemize}
@@ -210,9 +205,9 @@
 \frametitle{DMA}
         \begin{itemize}
         \item Direct Memory Access
-        \item Background transfert from phys memory to phys memory.
-        \item An interupt is raised when the transfert is done.
-        \item Modern way to do big transfert.
+        \item Background transfer from phys memory to phys memory.
+        \item An interrupt is raised when the transfer is done.
+        \item Modern way to do big transfer.
         \end{itemize}
 \end{frame}
 
@@ -226,12 +221,12 @@
 \end{center}
 \end{frame}
 
-\section{Driver exemple, i8042}
+\section{Driver example, i8042}
 
 \begin{frame}
 \frametitle{Description}
 \begin{itemize}
-\item i8042 is the standar keyboard controller.
+\item i8042 is the standard keyboard controller.
 \item i8042 got 2 IO ports, 0x60 and 0x64.
 \item 0x60 is the data port, 0x64 is the cmd port.
 \item i8042 wired on the IRQ 1.
@@ -248,7 +243,7 @@
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Exemple i8042}
+\frametitle{Example i8042}
 \begin{verbatim}
 void irq1_handler(void)
 {
@@ -280,14 +275,13 @@ void irq1_handler(void)
 why AGP has been created, to dedicate some bandwidth to the graphic
 card.
 \item In PCI express the bandwidth is not shared anymore. 
-\item PCI is even used for internal device connexion in the southbridge
-like (network card or sound card).
+\item PCI is even used for internal device connexion in the southbridge like (network card or sound card).
 \end{itemize}
 \end{frame}
 
-\subsection{BDF, Bus Device Fonction}
+\subsection{BDF, Bus Device Function}
 \begin{frame}[fragile]
-\frametitle{Bus Device Fonction}
+\frametitle{Bus Device Function}
 This is the naming convention for pci device.
 
 \-
@@ -301,8 +295,7 @@ This is the naming convention for pci device.
 
 \-
 
-A same device can expose mutiple functions, it's ofen the case for usb
-controllers:
+A same device can expose multiple functions; it's often the case for usb controllers:
 
 \begin{verbatim}
 00:1d.0 USB Controller [0c03]:USB UHCI Controller #1 [8086:27c8]
@@ -317,19 +310,16 @@ controllers:
 \subsection{Config Space and BAR}
 \begin{frame}
 \frametitle{Config space and BAR}
-In order to configure, list, play with the pci devices. Each device got
+In order to configure, enumerate, play with the pci devices. Each device got
 there own configuration table, called Config space.
 
 \-
 
-The pci config space expose the different MMIO region and I/O port that
-a specific device use. By default the pci space starts at 0x80000000,
-but it can be remmaped.
+The pci config space exposes the different MMIO region and I/O port that a specific device uses. By default the pci space starts at 0x80000000, but it can be remapped.
 
 \-
 
-The pci BAR (Base address register), is an offset where to find the
-memory region of the devices. This is where are the registers.
+The pci BAR (Base address register), is an offset where to find the memory region of the devices. This is where are the registers.
 
 \end{frame}
 
@@ -376,9 +366,86 @@ f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
 \section{USB}
 \subsection*{Background}
-\subsection{Protocoles}
-\subsection{Transfert modes}
+\begin{frame}
+\frametitle{Background}
+\begin{itemize}
+\item Universal Serial Bus.
+\item Support hot swapping since its creation.
+\item Goes from 1.5 MBit/s up to 480 MBits (and 4.8 GBit/s in the futur).
+\item Nowaday almost every type of devices got a usb version.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Normes}
+\begin{itemize}
+\item USB 1.1 (1998): 2 speeds available, low speed (1.5MBit/s) and
+full speed (12 MBit/s).
+\item USB 2.0 (2000): High speed (480 MBit/s).
+\item USB 3.0 (2008): Super speed (4.8 Gbit/s). Planned to 2010.
+\end{itemize}
+\end{frame}
+
+\subsection{Protocol}
+\begin{frame}
+\frametitle{Protocol}
+\begin{itemize}
+\item The bandwidth is temporarily shared between all the devices on the
+same bus.
+\item The time is divided in frame and micro-frame.
+\item The host control the communication with a token.
+\item Each device got a device number. This number is used as a address.
+This number is coded under 7 bits, so the maximum number of device on
+the same bus would be $2^7$
+\end{itemize}
+\end{frame}
+\subsection{Transfer modes}
+\begin{frame}
+\frametitle{Transfer modes}
+\begin{itemize}
+\item Command transfer, initialisation packets.
+\item Interrupt transfer, this is not a proper interrupt, but this message insure a low latency, it's used by mouse and keyboard.
+\item Isochronous transfer, this is for big transfer in real time, like video and audio stream (webcam).
+\item Mass transfer, used for large number of data (mass storage device).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Enumeration process}
+\begin{itemize}
+\item When a new device is plugged in the resistor change.
+\item The device use the address 0 at the beginning.
+\item Then the device send a bunch of characteristic about his class and about what the device is suppose to do.
+\end{itemize}
+\end{frame}
+
+\subsection{USB classes}
+\begin{frame}
+\frametitle{USB classes}
+\begin{center}
+\includegraphics[width=300pt]{pic/usb_classes}
+\end{center}
+\end{frame}
+
 \subsection{UHCI}
-\subsection{Futurs}
+\begin{frame}
+\frametitle{UHCI}
+\begin{itemize}
+\item This is a spec from Intel for usb controllers.
+\item This spec describe the controllers registers.
+\end{itemize}
+\end{frame}
+
+\subsection{Future}
+\begin{frame}
+\frametitle{Future}
+\begin{itemize}
+\item Wireless usb, but it's almost dead since Intel left the consortium.
+\item For wired link, USB 3.0 will be the new standards in the next years.
+\end{itemize}
+\end{frame}
+
 
 \end{document}
+
+
