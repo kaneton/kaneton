@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/view.py
 #
 # created       julien quintard   [sun may 13 11:04:52 2007]
-# updated       julien quintard   [mon may  4 19:27:46 2009]
+# updated       julien quintard   [mon may 11 21:45:47 2009]
 #
 
 #
@@ -115,7 +115,7 @@ def			lookup():
 #
 def			warning():
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  document:               " + g_document,
               env.OPTION_NONE)

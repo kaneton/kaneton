@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/tool/mbl/grub/grub.py
 #
 # created       julien quintard   [tue jun 26 11:33:57 2007]
-# updated       julien quintard   [tue may  5 10:27:46 2009]
+# updated       julien quintard   [mon may 11 21:44:29 2009]
 #
 
 #
@@ -62,7 +62,7 @@ def			usage():
 # this function warns the user about its configuration.
 #
 def			warning():
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  bootmode:               " + env._BOOT_MODE_,
               env.OPTION_NONE)

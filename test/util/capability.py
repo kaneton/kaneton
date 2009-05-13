@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/util/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon apr 20 03:29:34 2009]
+# updated       julien quintard   [mon may 11 22:10:00 2009]
 #
 
 #
@@ -221,7 +221,7 @@ def                     contributor(code):
                               id,
                               "research",
                               42,
-                              "kaneton",
+                              "contributors",
                               "contributor",
                               "admin@opaak.org")
 

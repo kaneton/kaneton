@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
+# file          /home/mycure/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       enguerrand raymond   [mon apr 27 12:39:47 2009]
+# updated       julien quintard   [mon may 11 21:45:09 2009]
 #
 
 #
@@ -66,7 +66,7 @@ def			usage():
 # this function warns the user about its configuration.
 #
 def			warning():
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  bootmode:               " + env._BOOT_MODE_,
               env.OPTION_NONE)

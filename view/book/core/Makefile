@@ -27,27 +27,10 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		kaneton
+PAPER			:=		core
 
-SOURCES			:=		architectures.tex		\
-					bibliography.tex		\
-					boot.tex			\
-					cheat.tex			\
-					coding-style.tex		\
-					core.tex			\
-					development-environment.tex	\
-					drivers.tex			\
-					goals.tex			\
-					history.tex			\
-					kaneton.tex			\
-					licenses.tex			\
-					nomenclature.tex		\
-					overview.tex			\
-					portability.tex			\
-					services.tex			\
-					source-tree.tex			\
-					test.tex			\
-					tools.tex			
+SOURCES			:=		core.tex			\
+					licenses.tex			
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/util/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [fri may  1 19:09:02 2009]
+# updated       julien quintard   [mon may 11 14:19:59 2009]
 #
 
 #
@@ -123,26 +123,38 @@ def                     extract(path):
 #
 def                     generate(students, name):
   student = None
-  database = {}
+  suites = None
 
   # display.
   env.display(env.HEADER_OK,
               "generating the students records",
               env.OPTION_NONE)
 
-  # load the stages information.
-  stages = yaml.load(file(env._TEST_CONFIGURATION_SUITES_, 'r'))
+  # load the suites information.
+  suites = yaml.load(file(env._TEST_CONFIGURATION_DIR_ + "/" + g_school + "::" + g_year + ".conf", 'r'))
 
   # for every student, generate a capability and store it.
   for student in students:
     # compute the id.
     id = student["name"].replace(" ", ".").lower()
 
-    # record the information in the database.
-    database[id] = copy.copy(stages);
-
     # store the database in the file.
-    yaml.dump(database, file(env._TEST_STORE_DATABASE_DIR_ + "/" + id + ".db", 'w'))
+    yaml.dump(suites, file(env._TEST_STORE_DATABASE_DIR_ + "/" + id + ".db", 'w'))
+
+#
+# contributor()
+#
+# this function creates a database for the contributors.
+#
+def                     contributor():
+  record = None
+  suites = None
+  
+  # load the suites information.
+  suites = yaml.load(file(env._TEST_CONFIGURATION_DIR_ + "/contributor.conf", 'r'))
+
+  # store the database in the file.
+  yaml.dump(suites, file(env._TEST_STORE_DATABASE_DIR_ + "/contributor.db", 'w'))
 
 #
 # main()
@@ -189,6 +201,9 @@ def                     main():
 
   # generate the database.
   generate(students, sys.argv[1])
+
+  # create a database for the contributors.
+  contributor()
 
   # display.
   env.display(env.HEADER_OK,

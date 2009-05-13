@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/tool/mbl/octaneload/octaneload.py
 #
 # created       julien quintard   [tue jun 26 11:33:57 2007]
-# updated       julien quintard   [mon apr 20 03:31:22 2009]
+# updated       julien quintard   [mon may 11 21:44:19 2009]
 #
 
 #
@@ -64,7 +64,7 @@ def			usage():
 # this function warns the user about its configuration.
 #
 def			warning():
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  bootmode:               " + env._BOOT_MODE_,
               env.OPTION_NONE)

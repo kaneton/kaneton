@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [mon apr 20 03:32:56 2009]
+# updated       julien quintard   [mon may 11 20:43:15 2009]
 #
 
 #
@@ -357,7 +357,7 @@ def			usage():
 #
 def			warning():
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  school:                 " + g_school,
               env.OPTION_NONE)

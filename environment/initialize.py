@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/initialize.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [fri may  1 20:46:55 2009]
+# updated       julien quintard   [mon may 11 21:42:25 2009]
 #
 
 #
@@ -33,7 +33,7 @@ import time
 #
 def			warning():
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  user:                   " + env._USER_,
               env.OPTION_NONE)

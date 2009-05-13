@@ -8,7 +8,16 @@
 # file          /home/mycure/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [fri may  1 21:06:57 2009]
+# updated       julien quintard   [tue may 12 13:48:21 2009]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+# this script connects to the test server and triggers operations.
+#
+# note that this script depends on the ktc package which relies on
+# the pyopenssl package.
 #
 
 #
@@ -17,6 +26,7 @@
 
 import sys
 import os
+import re
 
 import xmlrpclib
 
@@ -24,8 +34,54 @@ import ktc
 import env
 
 #
+# ---------- globals ----------------------------------------------------------
+#
+
+g_host = None
+g_capability = None
+g_suite = None
+g_machine = None
+
+#
 # ---------- functions --------------------------------------------------------
 #
+
+#
+# this function prints the usage.
+#
+def			Usage():
+  command = None
+
+  env.display(env.HEADER_ERROR, "usage: client.py [command]", env.OPTION_NONE)
+
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+
+  env.display(env.HEADER_ERROR, "commands:", env.OPTION_NONE)
+
+  for command in c_commands:
+    env.display(env.HEADER_ERROR, "  " + command, env.OPTION_NONE)
+
+#
+# this function simply displays the current configuration.
+#
+def                     Warning():
+  machine = None
+
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+  env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  host:                   " + g_host,
+              env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  capability:             " + g_capability + ".cap",
+              env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  suite:                  " + g_suite,
+              env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  machine:                " + str(g_machine),
+              env.OPTION_NONE)
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
 #
 # this function walk through the unit and sub-units and if every test
@@ -91,32 +147,133 @@ def                     Summary(unit, margin):
       Summary(u, margin + "  ")
 
 #
+# this function display any Python dictionary in a
+# hierarchical way.
+#
+def                     Display(data, margin):
+  key = None
+  length = None
+
+  for key in data:
+    if isinstance(data[key], dict):
+      env.display(env.HEADER_OK,
+                  margin + "  " + str(key) + ":",
+                  env.OPTION_NONE)
+
+      Display(data[key], margin + "  ")
+    else:
+      length = len(margin) + 2 + len(str(key)) + 1
+
+      env.display(env.HEADER_OK,
+                  margin + "  " + str(key) + ":" + (40 - length) * " " + str(data[key]),
+                  env.OPTION_NONE)
+
+#
+# this function asks the server for information related to
+# the given capability hence user.
+#
+# these information are then displayed.
+#
+def                     Information(server, capability):
+  information = None
+  item = None
+
+  # retrieve the information.
+  information = ktc.Call(server.Information(capability))
+
+  # display the information by exploring the tree.
+  env.display(env.HEADER_OK,
+              "information:",
+              env.OPTION_NONE)
+
+  Display(information, "")
+
+#
+# this function launches a test.
+#
+def                     Launch(server, capability):
+  snapshot = None
+
+  # read the snapshot.
+  snapshot = env.pull("/home/mycure/kaneton/test/kaneton-snapshot.tar.bz2", env.OPTION_NONE)
+
+  # launch a test.
+  report = ktc.Call(server.Launch(capability,
+                                  xmlrpclib.Binary(snapshot),
+                                  g_suite,
+                                  g_machine))
+
+  print report
+  return
+# XXX
+
+  # display the received report.
+  env.display(env.HEADER_OK,
+              "report",
+              env.OPTION_NONE)
+
+  for unit in report:
+    Summary(unit, "      ")
+
+#
 # this is the main function.
 #
 def                     Main():
+  global g_host
+  global g_capability
+  global g_suite
+  global g_machine
+
   server = None
   capability = None
+  command = None
 
+  # retrieve the command.
+  if len(sys.argv) != 2:
+    Usage()
+    sys.exit(42)
+
+  # set the command.
+  command = sys.argv[1]
+
+  # set the variables.
+  g_host = env._TEST_HOST_
+  g_capability = env._TEST_CAPABILITY_
+  g_suite = env._TEST_SUITE_
+  g_machine = env._TEST_MACHINE_.strip(" \t\n")
+
+  # warning
+  Warning()
+  
   # connect to the server.
-  server = xmlrpclib.Server(env._TEST_HOST_,
+  server = xmlrpclib.Server(g_host,
                             allow_none = True)
 
   # load the student capability.
-  capability = ktc.Load(env._TEST_CAPABILITY_)
+  capability = ktc.Load(g_capability)
 
-  report = ktc.Call(server.Launch(capability,
-                                  xmlrpclib.Binary(env.pull("/home/mycure/kaneton/test/kaneton-snapshot.tar.bz2", env.OPTION_NONE)),
-                                  "kaneton"))
+  # trigger the appropriate command.
+  for name in c_commands:
+    if command == name:
+      c_commands[name](server, capability)
+      sys.exit(0)
 
-  # XXX
-  suite = "kaneton"
-
-  env.display(env.HEADER_OK,
-              "displaying a report summary for '" + report["name"] + "'",
+  # wrong command.
+  env.display(env.HEADER_ERROR,
+              "unknown command '" + command + "'",
               env.OPTION_NONE)
 
-  for unit in report["suite"]:
-    Summary(unit, "      ")
+  # display usage.
+  Usage()
+
+#
+# ---------- constants --------------------------------------------------------
+#
+
+c_commands = {
+  "information": Information,
+  "launch": Launch
+}
 
 #
 # ---------- entry point ------------------------------------------------------
@@ -161,5 +318,11 @@ if __name__ == '__main__':
 # o matter ce flag: IA32_KERNEL_MAPPED, est-il necessaire pour les tests?
 # o les scripts compile/run a mettre dans des rep k0/ k1/ etc.
 # o rajouter un try/catch autour de compile/run et clean si ca foire
+# o rajouter le check de .svn env.mk env.py .dependency.mk etc. pour savoir
+#   si la tarball est clean: .o et .lo egalement.
+# o lock le fichier de database pour etre sur que le meme user ne lance
+#   pas deux fois le truc.
+# o rajouter des try/catch dans/autour des scripts prepare/run qui Clean
+#   et afficher traceback
 #
 # XXX

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/transcript/record.py
 #
 # created       julien quintard   [mon may 28 01:53:11 2007]
-# updated       julien quintard   [mon apr 20 03:34:19 2009]
+# updated       julien quintard   [mon may 11 21:45:30 2009]
 #
 
 #
@@ -79,7 +79,7 @@ def			usage():
 #
 def			warning():
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  transcript:             " + g_transcript,
               env.OPTION_NONE)
