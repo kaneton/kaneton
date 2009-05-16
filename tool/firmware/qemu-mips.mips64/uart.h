@@ -8,11 +8,11 @@
  * file          /home/enguerrand/...on/tool/firmware/qemu-mips.mips64/uart.h
  *
  * created       enguerrand raymond   [wed apr 22 06:11:59 2009]
- * updated       enguerrand raymond   [mon apr 27 12:25:49 2009]
+ * updated       enguerrand raymond   [wed may 13 08:43:13 2009]
  */
 
 #ifndef FIRMWARE_UART_H
-#define FIRMWARE_UART_H
+#define FIRMWARE_UART_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

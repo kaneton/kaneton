@@ -3,4 +3,4 @@
 # Rewrite the libc.h macro functions
 # Check inclusion system in firmware and bootloader
 # Write MIPS64 book about firmware, memory mapping and bootloader
-# Rewrite multiboot becaus type modification for 64 bits are note legal
+# Rewrite multiboot because type modification for 64 bits are note legal

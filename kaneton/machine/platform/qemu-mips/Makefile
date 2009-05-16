@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...eton/machine/platform/qemu-mips/Makefile
 #
 # created       enguerrand raymond   [sat oct 10 00:19:17 2008]
-# updated       enguerrand raymond   [sun jan 25 18:29:36 2009]
+# updated       enguerrand raymond   [thu may 14 01:23:22 2009]
 #
 
 #
@@ -33,13 +33,11 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PLATFORM_C		:=		timer.c				\
-					cons-text.c			\
-					serial.c
+PLATFORM_C		:=		timer.c
 
 PLATFORM_O		:=		$(PLATFORM_C:.c=.o)
 
-PLATFORM_INCLUDE	:=		$(_PLATFORM_INCLUDE_DIR_)/cons.h
+PLATFORM_INCLUDE	:=		$(_PLATFORM_INCLUDE_DIR_)/timer.h
 
 #
 # ---------- rules ------------------------------------------------------------

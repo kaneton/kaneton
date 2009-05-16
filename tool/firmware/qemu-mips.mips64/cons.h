@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...on/tool/firmware/qemu-mips.mips64/cons.h
  *
  * created       julien quintard   [wed jun  6 15:53:35 2007]
- * updated       enguerrand raymond   [sat may  2 12:32:59 2009]
+ * updated       enguerrand raymond   [wed may 13 08:42:28 2009]
  */
 
 /*
@@ -17,7 +17,7 @@
  */
 
 #ifndef FIRMWARE_CONS_H
-#define FIRMWARE_CONS_H		1
+#define FIRMWARE_CONS_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

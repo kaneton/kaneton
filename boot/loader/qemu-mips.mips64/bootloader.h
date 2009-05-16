@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...bootloader/qemu-mips.mips64/bootloader.h
+ * file          /home/enguerrand/...oot/loader/qemu-mips.mips64/bootloader.h
  *
  * created       enguerrand raymond   [sun oct 12 18:58:49 2008]
- * updated       enguerrand raymond   [mon apr 27 07:22:56 2009]
+ * updated       enguerrand raymond   [wed may 13 08:38:47 2009]
  */
 
 #ifndef BOOTLOADER_H
-#define BOOTLOADER_H
+#define BOOTLOADER_H	1
 
 #define		machine_data(_object_)					\
   //machine_data_##_object_()

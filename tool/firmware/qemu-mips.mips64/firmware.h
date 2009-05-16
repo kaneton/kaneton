@@ -8,11 +8,11 @@
  * file          /home/enguerrand/...ool/firmware/qemu-mips.mips64/firmware.h
  *
  * created       enguerrand raymond   [fri apr 10 13:11:49 2009]
- * updated       enguerrand raymond   [tue apr 28 04:25:16 2009]
+ * updated       enguerrand raymond   [wed may 13 08:42:47 2009]
  */
 
 #ifndef FIRMWARE_H
-#define FIRMWARE_H
+#define FIRMWARE_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

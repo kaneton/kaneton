@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/tool/mbl/qemu-mips/qemu-mips.py
+# file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       julien quintard   [mon may 11 21:45:09 2009]
+# updated       enguerrand raymond   [wed may 13 09:03:35 2009]
 #
 
 #
@@ -34,10 +34,15 @@ import subprocess
 # ---------- globals ----------------------------------------------------------
 #
 
-g_image="data/kaneton.img"
-g_menu = None
-g_inputs = None
-g_action = None
+g_image			="data/kaneton.img"
+g_menu			= None
+g_inputs		= None
+g_action		= None
+
+g_firmware_bin		= env._COMPONENT_FIRMWARE_ + ".bin"
+g_components_file	= env._SOURCE_DIR_ + "/components"
+g_qemu_mips_bios	= env._SOURCE_DIR_ + "/mipsel_bios.bin"
+g_header_file		= env._SOURCE_DIR_ + "/header"
 
 #
 # ---------- functions --------------------------------------------------------
@@ -143,6 +148,8 @@ def			header_write(module, name, image, header_file, modules):
   
   return image
 
+
+
 #
 # install()
 #
@@ -163,34 +170,30 @@ def			install():
               env.OPTION_NONE)
 
   # creates binary files : bootloader and kaneton
-  env.binary_extract(env._FIRMWARE_, ".text .data .rdata .rodata .bss", env._MBL_FIRMWARE_BIN_)
+  env.binary_extract(env._COMPONENT_FIRMWARE_, ".text .data .rdata .rodata .bss", g_firmware_bin)
 
-  mod_list = env._INPUT_MOD_.split()
+  mod_list = env._COMPONENTS_.split()
 
-  image = ((len(mod_list) + 2) * 24) + int(env._QEMU_MIPS_START_ADDRESS_, 16) + os.path.getsize(env._MBL_FIRMWARE_BIN_) + 8
+  image = ((len(mod_list) + 2) * 24) + int(env._QEMU_MIPS_START_ADDRESS_, 16) + os.path.getsize(g_firmware_bin) + 8
 
   # open the header file to write header information
-  header_file = open(env._SOURCE_DIR_ + "/header", "ab");
+  header_file = open(g_header_file, "ab");
 
   # write the number of module : min 2 (bootloader and kernel)
-  header_file.write(struct.pack("<l", len(mod_list) + 2))  
-
-  image = header_write(env._BOOTLOADER_, env._BOOTLOADER_MODULE_NAME_, image, header_file, env._MODULES_)
-  env.concat_file(env._BOOTLOADER_, env._MODULES_)
-
-  image = header_write(env._KANETON_, env._KANETON_MODULE_NAME_, image, header_file, env._MODULES_)
-  env.concat_file(env._KANETON_, env._MODULES_)
+  header_file.write(struct.pack("<l", len(mod_list)))  
 
   for mod in mod_list:
-    image = header_write(mod, mod.split("/")[len(mod.split("/")) - 1], image, header_file, env._MODULES_)
-    env.concat_file(mod, env._MODULES_)
+    image = header_write(mod, mod.split("/")[len(mod.split("/")) - 1], image, header_file, g_components_file)
+    env.concat_file(mod, g_components_file)
 
   header_file.close()
 
   # cat the binary files in the mips_bios.bin file
-  env.concat_file(env._MBL_FIRMWARE_BIN_, env._QEMU_MIPS_BIOS_)
-  env.concat_file(env._SOURCE_DIR_ + "/header", env._QEMU_MIPS_BIOS_)
-  env.concat_file(env._MODULES_, env._QEMU_MIPS_BIOS_)
+  env.concat_file(g_firmware_bin, g_qemu_mips_bios)
+  env.concat_file(g_header_file, g_qemu_mips_bios)
+  env.concat_file(g_components_file, g_qemu_mips_bios)
+
+
 
 #
 # build()
@@ -205,11 +208,11 @@ def			build():
   warning()
 
   # creates the mips_bios.bin and the modules files
-  env.push(env._SOURCE_DIR_ + "/mipsel_bios.bin", "", None)
-  env.push(env._MODULES_, "", None)
+  env.push(g_qemu_mips_bios, "", None)
+  env.push(g_components_file, "", None)
 
   # creates the flag file
-  header_file = open(env._SOURCE_DIR_ + "/header", "wb");
+  header_file = open(g_header_file, "wb");
 
   # write the flag
   header_file.write(struct.pack("<l", 0x07070707))
@@ -219,6 +222,7 @@ def			build():
   # display some stuff.
   env.display(env.HEADER_OK, "header file and mipsel_bios.bin file created",
               env.OPTION_NONE)
+
 
 
 #
@@ -247,6 +251,8 @@ def			main():
                 env.OPTION_NONE)
     usage()
     sys.exit(42)
+
+
 
 #
 # ---------- entry point ------------------------------------------------------

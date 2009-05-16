@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/.../bootloader/qemu-mips.mips64/libmips64.h
+ * file          /home/enguerrand/...boot/loader/qemu-mips.mips64/libmips64.h
  *
  * created       enguerrand raymond   [wed apr  1 09:34:19 2009]
- * updated       enguerrand raymond   [sat apr 11 02:38:30 2009]
+ * updated       enguerrand raymond   [wed may 13 08:39:41 2009]
  */
 
 #ifndef BOOTLOADER_LIBMIPS64_H
-#define BOOTLOADER_LIBMIPS64_H
+#define BOOTLOADER_LIBMIPS64_H	1
 
 /*
  * ---------- includes --------------------------------------------------------

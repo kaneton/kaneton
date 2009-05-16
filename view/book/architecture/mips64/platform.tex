@@ -8,7 +8,7 @@
 % file          /home/enguerrand/...ew/book/architecture/mips64/platform.tex
 %
 % created       enguerrand raymond   [mon oct 13 11:31:56 2008]
-% updated          [wed apr 29 01:11:35 2009]
+% updated       enguerrand raymond   [wed may 13 17:07:47 2009]
 %
 
 %
@@ -48,21 +48,32 @@ Qemu-mips does not have any firmware (on MIPS platform the bios is called a firm
 We use the qemu-mips platform with the R4000 microprocessor. The command line to launch him it the following :
 
 \begin{verbatim}
-  qemu-system-mips64el [-L path ot bios] -fda kaneton.img -M mips -cpu R4000
+  qemu-system-mips64el [-L path to bios] -fda kaneton.img -M mips -cpu R4000
 \end{verbatim}
-
-There is no mips firmware (or bios for qemu) today but we will launch the kernel as it. It will load at the address \code{0xFFFFFFFFBFC00000}. To do that, the kernel must be copied to \code{mips\_bios.bin} and the \code{L} option must indicate the path to this file. We will develop a firmware later.
-The bootloader will be executed like a firmware.
 
 \subsubsection{Emulation platform warning}
 
 The emulators do not respect perfectly the real architecture. Moreover, the qemu-mips platform has not
 real equivalent and so platform reference. But, the most important is the microprocessor that can have bug behaviour
-and false quality, for example the status register is always well set after reset contrarily to the documentation that specifies the content of this register
-is undefined except for four bits.
+and false quality, for example the status register is always well set after reset contrarily to the documentation that specifies the content of this register is undefined except for four bits.
 
-\subsubsection{Booting process}
+The qemu-mips plaftorm does not have any firmware. We have begun to develop a simple one to startup the platform. The firmware has no driver to load the kaneton image, but an alternative method described below has been developed.
 
-The firmware lack for the qemu-mips is a real problem to launch kaneton and this modules.
-For the moment the bootloader, the kernel and this modules are concatenate in a single file
-named \location(mipsel\_bios) (for little endian version). This file is structures like this :
+\subsection{Qemu-mips firmware}
+
+\subsubsection{MIPS64 initialization prerequisites}
+
+At starting, a MIPS64 microprocessor begins to execute instruction at the following virtual addresses :
+
+\begin{itemize}
+  \item
+    \textbf{0xBFC00000 in 32 bits mode}
+  \item
+    \textbf{0xFFFFFFFF BFC00000 in 64 bits mode}
+\end{itemize}
+
+These virtual addresses take part of an unmapped segment, the address translation is automatic. See the chapter about memory management. These addresses correspond to firmware memory. The memory must content the firmware code, this region is read only.
+
+\subsubsection{Operations}
+
+The firmware is a file loaded by qemu. The file is directly loaded to starting address. For development time reason, the kaneton MBL script concatenates the firmware code, the kaneton bootloader, the kaneton kernel and these modules. Also, the file is loaded in memory with all file needed.

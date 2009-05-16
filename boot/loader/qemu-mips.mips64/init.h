@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/init.h
+ * file          /home/enguerrand/kaneton/boot/loader/qemu-mips.mips64/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       enguerrand raymond   [tue apr 28 04:33:57 2009]
+ * updated       enguerrand raymond   [wed may 13 08:39:12 2009]
  */
 
 #ifndef BOOTLOADER_INIT_H
-#define BOOTLOADER_INIT_H			1
+#define BOOTLOADER_INIT_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

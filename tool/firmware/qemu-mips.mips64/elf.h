@@ -37,7 +37,7 @@
  */
 
 #ifndef _SYS_EXEC_ELF_H_
-#define	_SYS_EXEC_ELF_H_
+#define	_SYS_EXEC_ELF_H_	1
 
 /*
  * The current ELF ABI specification is available at:

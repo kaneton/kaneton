@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/...boot/bootloader/qemu-mips.mips64/types.h
+ * file          /home/enguerrand/...ton/boot/loader/qemu-mips.mips64/types.h
  *
  * created       matthieu bucchianeri   [tue jul 17 15:14:07 2007]
- * updated       enguerrand raymond   [sat apr 11 02:38:47 2009]
+ * updated       enguerrand raymond   [wed may 13 08:39:54 2009]
  */
 
 #ifndef BOOTLOADER_TYPES_H
-#define BOOTLOADER_TYPES_H
+#define BOOTLOADER_TYPES_H	1
 
 /*
  * ---------- macros ----------------------------------------------------------

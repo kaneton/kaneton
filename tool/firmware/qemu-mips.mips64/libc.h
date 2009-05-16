@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...on/tool/firmware/qemu-mips.mips64/libc.h
  *
  * created       matthieu bucchianeri   [thu jun 28 14:47:59 2007]
- * updated       enguerrand raymond   [sat may  2 12:32:32 2009]
+ * updated       enguerrand raymond   [wed may 13 08:42:55 2009]
  */
 
 #ifndef FIRMWARE_LIBC_H

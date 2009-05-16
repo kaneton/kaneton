@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/enguerrand/.../boot/bootloader/qemu-mips.mips64/cons.h
+ * file          /home/enguerrand/kaneton/boot/loader/qemu-mips.mips64/cons.h
  *
  * created       julien quintard   [wed jun  6 15:53:35 2007]
- * updated       enguerrand raymond   [wed apr 22 08:50:43 2009]
+ * updated       enguerrand raymond   [wed may 13 08:38:58 2009]
  */
 
 /*
@@ -17,7 +17,7 @@
  */
 
 #ifndef BOOTLOADER_CONS_H
-#define BOOTLOADER_CONS_H		1
+#define BOOTLOADER_CONS_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
