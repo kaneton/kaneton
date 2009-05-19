@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/implementation.tex
 %
 % created       julien quintard   [mon dec 17 12:05:06 2007]
-% updated       julien quintard   [mon may  4 20:31:52 2009]
+% updated       julien quintard   [thu may 14 16:34:18 2009]
 %
 
 %
@@ -33,9 +33,9 @@ the kaneton implementation without any difficulty.
 
 \section{Interface}
 
-As explained earlier, the kaneton microkernel is subdivided into multiple
+As explained earlier, the kaneton microkernel is subdivided into several
 managers. Each manager provides an interface to manipulate the kaneton object
-it is responsible for or something the manager abstracts.
+it is in charge of or something the manager provides an abstraction for.
 
 The naming scheme used for these provided functions is normalised and
 detailed below.
@@ -44,10 +44,10 @@ detailed below.
 
 \subsection*{Manager}
 
-Every manager must provide functions for being initialised and cleaned.
+Every manager must provide functions for initialisation and cleanup.
 
 Therefore, the \code{initialize()} function initialises a manager given
-parameters though these parameters are, most of the time, absent.
+parameters though, most of the time, the manager does not take any parameter.
 
 The \code{clean()} function, cleans the manager from anything so that it
 can return to a stable and clean state.

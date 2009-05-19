@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/design.tex
 %
 % created       julien quintard   [mon dec 17 12:26:46 2007]
-% updated       julien quintard   [mon may 19 23:09:20 2008]
+% updated       julien quintard   [thu may 14 15:06:10 2009]
 %
 
 %
@@ -38,7 +38,7 @@ parts. This subdivision was introduced to make the whole microkernel clearer
 and more understandable.
 
 The kaneton microkernel is thus divided into \term{managers}. These
-managers are generally responsible for a \term{kaneton object} type but there
+managers are generally responsible for a kaneton \term{object} type but there
 exist managers which manage something else or just create an abstraction over
 other kaneton managers. A kaneton object represents a logical and fundamental
 kernel entity. These objects are described later in this section.
@@ -67,7 +67,8 @@ kaneton people believe kernels are composed of data structures and processing,
 each of these should be very clearly dissociated. Thus, the \term{set}
 manager was introduced so that the other kaneton managers use it for storing
 data without taking care of how it is technically done. The result of such
-a concept is that the kaneton core source code looks as clear as pseudo code.
+a concept is that the kaneton core source code looks crystal clear very much
+like pseudo code.
 
 \reference{Figure \ref{figure:sets-organisation}} depicts the set manager
 composed of a set container which holds descriptor of the actual data
@@ -184,8 +185,8 @@ manager.
 The kaneton microkernel was designed to be ported on many different - existing
 or not - architectures. Therefore, the microkernel is divided into two
 major components: the \term{core} and the \term{machine}. The core
-represents the kaneton source code that is independent from the underlying
-computer. On the contrary, the machine component contains the source code
+represents the kaneton code that is independent from the underlying
+computer. On the contrary, the machine component contains the code
 related to the underlying specific hardware.
 
 Since a microprocessor architecture can be used on different mother boards
@@ -200,6 +201,15 @@ on the \name{platform}/\name{architecture} coupling. Therefore, the
 
 For more information on the portability system, please refer to
 \reference{Chapter \ref{chapter:portability}}.
+
+The \term{library} component provides basic functions required by the kernel
+very much like the \textit{C Library} provides basic functionalities to the
+userland applications.
+
+The \term{modules} component was introduced to attach specific, sometimes
+machine-dependent, functionalities to the kernel such as a
+\name{GDB - GNU Debugger} server, a console or even a \name{test} server. Those
+modules are conditionally and statically linked to the kernel.
 
 \begin{figure}[h]
   \begin{center}
