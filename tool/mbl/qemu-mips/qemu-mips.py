@@ -8,7 +8,7 @@
 # file          /home/enguerrand/kaneton/tool/mbl/qemu-mips/qemu-mips.py
 #
 # created       enguerrand raymond   [mon nov 24 23:15:02 2008]
-# updated       enguerrand raymond   [wed may 13 09:03:35 2009]
+# updated       enguerrand raymond   [mon may 18 03:49:44 2009]
 #
 
 #
@@ -174,17 +174,18 @@ def			install():
 
   mod_list = env._COMPONENTS_.split()
 
-  image = ((len(mod_list) + 2) * 24) + int(env._QEMU_MIPS_START_ADDRESS_, 16) + os.path.getsize(g_firmware_bin) + 8
+  image = int(env._QEMU_MIPS_START_ADDRESS_, 16) + ((len(mod_list) -1) * 24) + os.path.getsize(g_firmware_bin) + 8
 
   # open the header file to write header information
   header_file = open(g_header_file, "ab");
 
   # write the number of module : min 2 (bootloader and kernel)
-  header_file.write(struct.pack("<l", len(mod_list)))  
+  header_file.write(struct.pack("<l", len(mod_list) - 1))  
 
   for mod in mod_list:
-    image = header_write(mod, mod.split("/")[len(mod.split("/")) - 1], image, header_file, g_components_file)
-    env.concat_file(mod, g_components_file)
+    if mod.split("/")[len(mod.split("/")) - 1] != "firmware":
+      image = header_write(mod, mod.split("/")[len(mod.split("/")) - 1], image, header_file, g_components_file)
+      env.concat_file(mod, g_components_file)
 
   header_file.close()
 
@@ -220,7 +221,7 @@ def			build():
   header_file.close()
 
   # display some stuff.
-  env.display(env.HEADER_OK, "header file and mipsel_bios.bin file created",
+  env.display(env.HEADER_OK, "header, components and mipsel_bios.bin files created",
               env.OPTION_NONE)
 
 

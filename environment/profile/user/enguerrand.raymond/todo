@@ -1,6 +1,5 @@
 # Rewrite the MBL script with new variables
-# Redefinition of variable names in the platform mips64.conf
-# Rewrite the libc.h macro functions
+# Revwrite the concat_file function in mips64 specific python functions
 # Check inclusion system in firmware and bootloader
 # Write MIPS64 book about firmware, memory mapping and bootloader
 # Rewrite multiboot because type modification for 64 bits are note legal

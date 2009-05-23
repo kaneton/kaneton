@@ -8,7 +8,7 @@
  * file          /home/enguerrand/...ool/firmware/qemu-mips.mips64/firmware.c
  *
  * created       enguerrand raymond   [fri apr 10 13:11:23 2009]
- * updated       enguerrand raymond   [mon apr 27 13:23:36 2009]
+ * updated       enguerrand raymond   [sun may 17 15:57:06 2009]
  */
 
 /*
@@ -110,7 +110,7 @@ void			firmware(void)
    * 4)
    */
 
-  if (mbi->mods_count < 2)
+  if (mbi->mods_count < 1)
     firmware_error();
 
   /*
