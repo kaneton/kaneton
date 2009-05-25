@@ -82,8 +82,79 @@
 
 \section{Premi\`ere Partie}
 {\hfill{} \scriptsize{4 points/30 minutes}}
+\subsection{Boot} (1 point)
 
-XXX[Francois]
+D\'ecrivez rapidement les \'etapes principales effectu\'ees par un bootloader.
+
+\begin{correction}
+
+Un bootloader commence par localiser l'image du noyau du syst\`eme
+d'exploitation qu'il doit d\`emarrer. Cette image peut \^etre stock\'ee sous
+diff\'erentes formes (fichier dans un filesystem, donn\'ees brutes sur un
+p\'eriph\'erique de stockage, image t\'el\'echargable par le r\'eseau, \ldots.
+Une fois l'image localis\'ee, il doit la charger en m\'emoire. Le format de
+l'image peut \^etre tr\`es vari\'e, il peut s'agir d'un binaire ELF, d'un
+ex\'ecutable PE, d'un dump brut de la m\'emoire, \ldots.
+Une fois le noyau charg\'e en m\'emoire, le bootloader transf\`ere
+l'ex\'ecution sur le point d'entr\'ee du noyau.
+
+\end{correction}
+
+\subsection{M\'emoire virtuelle} (1 point)
+
+D\'ecrivez succintement en quoi consiste la notion de m\'emoire virtuelle, et
+quels sont les avantages d'utiliser ce m\'ecanisme.
+
+\begin{correction}
+
+La m\'emoire virtuelle consiste \`a s\'eparer les adresses manipul\'ees par les
+programmes des adresses physiques. Cela permet entre autres :
+\begin{itemize}
+\item D'ex\'ecuter plusieurs t\^aches sur une m\^eme machine sans que les
+t\^aches ne doivent \^etre compil\'ees (link\'ees) sp\'ecifiquement, en
+fonction des autres t\^aches.
+\item De prot\'eger les t\^aches s'ex\'ecutant au sein de la machine, chaque
+t\^ache ayant son propre espace d'adressage, et ne pouvant donc en aucun cas
+acc\'eder aux emplacements m\'emoire des autres t\^aches.
+\item D'\'etendre virtuellement la m\'emoire physique gr\^ace aux
+p\'eriph\'eriques de stockage, gr\^ace au m\'ecanisme de swap.
+\end{itemize}
+
+\end{correction}
+
+\subsection{Segmentation et Pagination} (2 points)
+
+Pour chacun des deux principaux m\'ecanismes de m\'emoire virtuelle
+(segmentation et pagination), d\'ecrivez brievement son fonctionnement
+g\'en\'eral (attention \`a ne pas d\'ecrire des choses propres \`a
+l'architecture ia32, seul le concept g\'en\'eral est demand\'e ici)
+
+\begin{correction}
+
+La segmentation consiste \`a diviser la m\'emoire physique en segments. Un
+segment est d\'efini par une adresse de base et une taille. Le syst\`eme
+d'exploitation maintient une liste de segments. Lorsque le processeur manipule
+une adresse virtuelle, il va chercher dans un registre sp\'ecial, le segment
+selector, quel segment utiliser. Il va ensuite additionner l'adresse virtuelle
+avec l'adresse de base du segment, et v\'erifier que l'adresse virtuelle est
+inf\'erieure \`a la taille du segment. Le r\'esultat de l'addition d\'etermine
+l'adresse physique.\\
+
+La pagination consiste \`a diviser la m\'emoire physique en un grand nombre de
+zones de taille identique, appel\'ees pages. Une adresse virtuelle sera
+d\'ecoup\'ee en 2 parties, la premi\`ere servant \`a identifier la page, et la
+deuxi\`eme servant d'offset au sein de la page. Le syst\`eme d'exploitation
+maintient une structure qui fait la correspondance entre une adresse virtuelle
+de base d'une page, et son adresse en m\'emoire physique. Lors d'un acc\`es
+m\'emoire, la MMU interroge son cache, par l'interm\'ediaire des TLB. Si la
+correspondance n'est pas trouv\'ee au sein des TLB, la MMU g\'en\`ere une
+exception pour que le syst\`eme d'exploitation puisse r\'esoudre la
+correspondance et remplir le cache correctement, afin que la MMU puisse,
+apr\`es que l'OS ait r\'esum\'e, r\'ealiser l'acc\`es en m\'emoire physique.
+
+\end{correction}
+
+
 
 %
 % deuxieme partie
