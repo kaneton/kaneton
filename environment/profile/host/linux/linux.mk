@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [tue may  5 12:08:34 2009]
+# updated       julien quintard   [thu may 28 12:37:21 2009]
 #
 
 #
@@ -460,6 +460,7 @@ endef
 #
 
 define env_document
+  $(call env_remove,$(_DEPENDENCY_TEX_),)				&& \
   if [ -n "$(2)" ] ; then						\
     if [ $$(( $(2) & $(ENV_OPTION_PRIVATE) )) -ne 0 ] ; then		\
       $(_ECHO_) '\def\mode{private}' > $(_DEPENDENCY_TEX_)		; \
