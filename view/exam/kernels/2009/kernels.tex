@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/exam/kernels/2009/kernels.tex
 %
 % created       julien quintard   [mon may 14 21:56:41 2007]
-% updated       julien quintard   [thu may 28 12:54:39 2009]
+% updated       julien quintard   [mon jun  8 22:38:59 2009]
 %
 
 %
@@ -78,16 +78,14 @@
 %
 
 %
-% premiere partie
+% boot
 %
 
-\section{Premi\`ere Partie
-         {\hfill{} \normalfont{\scriptsize{30 minutes}}}}
+\section{Boot
+         {\hfill{} \normalfont{\scriptsize{1 point}}}}
 
-\subsection{Boot
-            {\hfill{} \normalfont{\scriptsize{1 point}}}}
-
-D\'ecrivez rapidement les \'etapes principales effectu\'ees par un bootloader.
+D\'ecrivez rapidement les \'etapes principales effectu\'ees par un
+\name{bootloader}.
 
 \begin{correction}
 
@@ -103,11 +101,15 @@ l'ex\'ecution sur le point d'entr\'ee du noyau.
 
 \end{correction}
 
-\subsection{M\'emoire virtuelle
-            \normalfont{{\hfill{} \scriptsize{1 point}}}}
+%
+% memoire virtuelle
+%
+
+\section{M\'emoire virtuelle
+         \normalfont{{\hfill{} \scriptsize{2 point}}}}
 
 D\'ecrivez succintement en quoi consiste la notion de m\'emoire virtuelle, et
-quels sont les avantages d'utiliser ce m\'ecanisme.
+quels sont les avantages de ce m\'ecanisme.
 
 \begin{correction}
 
@@ -126,13 +128,19 @@ p\'eriph\'eriques de stockage, gr\^ace au m\'ecanisme de swap.
 
 \end{correction}
 
-\subsection{Segmentation et Pagination
-            \normalfont{{\hfill{} \scriptsize{2 points}}}}
+%
+% segmentation et pagination
+%
 
-Pour chacun des deux principaux m\'ecanismes de m\'emoire virtuelle
-(segmentation et pagination), d\'ecrivez brievement son fonctionnement
-g\'en\'eral (attention \`a ne pas d\'ecrire des choses propres \`a
-l'architecture ia32, seul le concept g\'en\'eral est demand\'e ici)
+\section{Segmentation et Pagination
+         \normalfont{{\hfill{} \scriptsize{3 points}}}}
+
+Pour chacun des deux principaux m\'ecanismes de m\'emoire virtuelle,
+d\'ecrivez bri\`evement son fonctionnement g\'en\'eral.
+
+Vous ferez attention \`a ne pas d\'ecrire des choses propres \`a
+l'architecture \name{ia32}, seul le concept g\'en\'eral est
+demand\'e.
 
 \begin{correction}
 
@@ -160,39 +168,17 @@ apr\`es que l'OS ait r\'esum\'e, r\'ealiser l'acc\`es en m\'emoire physique.
 \end{correction}
 
 %
-% deuxieme partie
+% peripheriques
 %
 
-\section{Deuxi\`eme Partie
-         \normalfont{{\hfill{} \scriptsize{50 minutes}}}}
+\subsection{P\'eriph\'eriques
+            \normalfont{{\hfill{} \scriptsize{4 points}}}}
 
-XXX[Benoit :: 6 points]
+La platforme---processeur et chipset---met \`a disposition plusieurs
+m\'ecanismes pour communiquer avec les p\'eriph\'eriques.
 
-%
-% troisieme partie
-%
-
-\section{Troisi\`eme Partie
-         \normalfont{{\hfill{} \scriptsize{45 minutes}}}}
-
-\subsection{Pr\'eriph\'erique
-            \normalfont{{\hfill{} \scriptsize{3 points}}}}
-
-La platforme (processeur et chipset) met a notre disposition plusieurs
-m\'ecanismes pour communiquer avec les p\'eriph\'eriques. Decrivez ces
-m\'ecanismes puis par la suite donnez des exemple d'utilisation de
-chaqu'un d\'entre eux.
-
-\begin{correction}
-
-XXX
-
-\end{correction}
-
-\subsection{Virtualisation
-            \normalfont{{\hfill{} \scriptsize{2 points}}}}
-
-Quelle est la diff\'erences entre un hyperviseur type 1 et type 2 ?
+D\'ecrivez ces m\'ecanismes puis donnez des exemples d'utilisation de
+chacun d\'entre eux.
 
 \begin{correction}
 
@@ -201,17 +187,27 @@ XXX
 \end{correction}
 
 %
-% quatrieme partie
+% virtualisation
 %
 
-\section{Quatri\`eme Partie
-         \normalfont{{\hfill{} \scriptsize{45 minutes}}}}
+\section{Virtualisation
+         \normalfont{{\hfill{} \scriptsize{2 points}}}}
 
-%
+Quelle est la diff\'erence entre un \name{hyperviseur}
+type 1 et type 2 ?
+
+\begin{correction}
+
+XXX
+
+\end{correction}
+
+% 
 % securite
 %
-\subsection{S\'ecurit\'e
-            \normalfont{{\hfill{} \scriptsize{2.5 points}}}}
+
+\section{S\'ecurit\'e
+         \normalfont{{\hfill{} \scriptsize{4 points}}}}
 
 Un service d\'esire fournir \`a certains clients la possibilit\'e
 d'effectuer des op\'erations via l'utilisation de \name{capabilities}.
@@ -246,8 +242,9 @@ champ \name{Check} contenu dans la \name{capability}. Si ils sont
 %
 % windows nt
 %
-\subsection{Windows NT
-            \normalfont{{\hfill{} \scriptsize{2.5 points}}}}
+
+\section{Windows NT
+         \normalfont{{\hfill{} \scriptsize{4 points}}}}
 
 Dans un texte structur\'e, d\'ecrivez les principes fondamentaux autour
 desquels le noyau \name{NT} a \'et\'e con\c{c}u. En particulier, vous
