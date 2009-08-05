@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/library/include/stdarg.h
+ * file          /home/mycure/kaneton/kaneton/library/include/stdarg.h
  *
  * created       julien quintard   [sun jun 10 18:04:06 2007]
- * updated       matthieu bucchianeri   [sat sep  1 13:35:36 2007]
+ * updated       julien quintard   [wed aug  5 20:43:41 2009]
  */
 
 #ifndef LIBC_LIBSYS_STDARD_H
@@ -31,7 +31,7 @@ typedef __builtin_va_list va_list;
  * ---------- macro-functions -------------------------------------------------
  */
 
-#define va_start(v,l)   __builtin_stdarg_start((v),l)
+#define va_start(v,l)   __builtin_va_start((v),l)
 #define va_copy(d,s)    __builtin_va_copy((d),(s))
 
 #endif
