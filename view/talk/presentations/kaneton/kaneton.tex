@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...w/talk/presentations/kaneton/kaneton.tex
 %
 % created       julien quintard   [mon may 14 21:02:29 2007]
-% updated       julien quintard   [sun feb  8 08:48:07 2009]
+% updated       julien quintard   [thu jan 14 20:18:09 2010]
 %
 
 %
@@ -75,12 +75,6 @@
 
   \term{kaneton} is an educational project intended for students to undertake
   in order to learn about operating system internals.
-
-  \-
-
-  Note that a research project is also tied to the educational one. Indeed,
-  people work in order to improve the microkernel and build a useable
-  distributed operating system on top of it.
 \end{frame}
 
 % 2)
@@ -115,7 +109,6 @@
       by putting two students on the development of the \name{kaneton}
       research implementation. \name{Matthieu Bucchianeri} and \name{Renaud
       Voltz} thus joined the project.
-  \end{itemize}
 \end{frame}
 
 % 3)
@@ -148,8 +141,8 @@
     \item[2009]
       \name{EPITA} alumni were contacted and joined the educational project
       including \name{Francois Goudal}, \name{Benoit Marcot},
-      \name{Jean Guyader} but also \name{Fabien Le-Mentec}, an
-      \name{EPITECH} alumnus.
+      \name{Enguerrand Raymond}, \name{Jean Guyader} but also
+      \name{Fabien Le-Mentec}, an \name{EPITECH} alumnus.
   \end{itemize}
 \end{frame}
 
@@ -170,13 +163,13 @@
 
   Indeed, in \name{kaneton}, students are asked to implement a feature, say,
   providing memory management. Thus, students are free, in a certain way,
-  to implement such a feature the way they want.
+  to implement such a feature as they wish.
 
   \-
 
   Since the testing usually consists in verifying that the kernel is able
   to provide the functionality, students should be, most of the time, able
-  to implement whatever algorithms \etc{} we wish.
+  to implement whatever algorithms \etc{} they wish.
 \end{frame}
 
 % 5)
@@ -192,6 +185,8 @@
       \name{Francois Goudal};
     \item
       \name{Benoit Marcot};
+    \item
+      \name{Enguerrand Raymond};
     \item
       \name{Jean Guyader};
     \item
@@ -218,27 +213,6 @@
 
   As such, the other assignments imposed by the specializations in this
   period have been reduced so that students can focus on \name{kaneton}.
-\end{frame}
-
-% 7)
-
-\begin{frame}
-  \frametitle{opaak}
-
-  The kaneton project is part of the opaak trilogy which consists
-  of \term{kastor}, \term{kaneton} and \term{kayou}.
-
-  \-
-
-  While kayou is a distributed operating system built upon the kaneton
-  microkernel; kastor is a standalone project that you may have heard of
-  or even undertook.
-
-  \-
-
-  Note however that also some concepts studied through kastor will be
-  discussed in kaneton, the kaneton educational project is far more
-  complicated as it goes deeper into hardware and software problematics.
 \end{frame}
 
 %
@@ -367,41 +341,26 @@
 \begin{frame}
   \frametitle{k3}
 
-  In \term{k3}, students will have to implement a device drivers, being
-  a disk driver or a network driver.
+  In \term{k3}, students will have to implement servers on top of their freshly
+  developed microkernel.
 
   \-
 
-  Lectures discussing virtualization, devices, communication \etc{} will
-  be taught during this stage.
+  These developments will include device drivers as well as services.
 
   \-
 
-  \name{Jean Guyader} will be in charge of this stage which will last for
-  two weeks.
+  Lectures discussing virtualization, devices, communication, file systems,
+  security as well as advanced research kernels will be taught during this
+  stage.
+
+  \-
+
+  \name{Julien Quintard \& Jean Guyader} will be in charge of this stage
+  which will last for three weeks.
 \end{frame}
 
 % 5)
-
-\begin{frame}
-  \frametitle{k4}
-
-  For \term{k4}, students will have to design and develop a file system
-  if they chose to implement a disk driver or a network stack if they chose
-  to implement a network driver.
-
-  \-
-
-  During this stage, lectures will focus on security, file systems but also
-  the \name{Windows NT} kernel.
-
-  \-
-
-  \name{Julien Quintard} will be in charge of this stage which will last for
-  three weeks.
-\end{frame}
-
-% 6)
 
 \begin{frame}
   \frametitle{Evaluation}
@@ -414,6 +373,12 @@
 
   Besides, at the end of each stage, after submission, the kaneton test system
   will run the test suite and issue a mark according to the test results.
+
+  \-
+
+  Note however that, every test suite run decreases your maximum mark by
+  one point. Therefore, a student or group of students, relying on the test
+  suite six times will, at best, achieve a 14/14 mark.
 
   \-
 
@@ -553,13 +518,13 @@
   \frametitle{Groups}
 
   Except for \name{k0} which is an individual project, the other projects
-  from \name{k1} to \name{k4} are done in groups of \term{two} students.
+  from \name{k1} to \name{k3} are done in groups of \term{two} students.
 
   \-
 
   Every group is expected to send an email to
   \name{Julien Quintard}\footnote{\location{julien.quintard@cl.cam.ac.uk}}
-  before the $11$th of February with the group composition.
+  before the $18$th of February with the group composition.
 
   \-
 
@@ -572,7 +537,8 @@
 \begin{frame}
   \frametitle{Reliance}
 
-  As for \name{Tiger}, every stage depends on the previous one.
+  As for \name{Tiger}, every stage depends on the previous one, except
+  for \name{k0}.
 
   \-
 
@@ -666,8 +632,8 @@
 
   \-
 
-  In conclusion, keep in mind that the project exist only because of people
-  willing to pass their knowledge and please respect their effort.
+  In conclusion, keep in mind that the project exists only because of people
+  willing to transfer their knowledge and please respect their effort.
 \end{frame}
 
 % 4)
@@ -711,6 +677,9 @@
     \item
       Watch closely the \name{Wiki} at \location{http://wiki.opaak.org} by
       subscribing the \name{RSS} feed for example.
+    \item
+      Feel free to edit and add content to the \name{Wiki}, this is
+      \textbf{your} system-related zone.
   \end{itemize}
 \end{frame}
 
