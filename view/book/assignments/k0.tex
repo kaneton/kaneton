@@ -51,6 +51,95 @@ load a kernel.
 
 \clearpage
 
+\section{Tarball}
+
+What we expect is a .tar.bz2 tarball which contains the following structure :
+\begin{verbatim}
+        ex1/ex1.S
+        ex2/ex2.S
+        ex3/ex3.S
+        ex4/ex4.S
+        ex5/ex5.S
+        ex6/ex6.S
+\end{verbatim}
+
+The tarball should contain these files and nothing more. Please be careful with
+the extension of the source files. the S is uppercase !
+
+Each file should contain the labels (functions) that are expected, and should
+end with the bootsector signature.
+
+Here is a sample of what a file should look like :
+
+\begin{verbatim}
+.code16
+
+requested_function_1:
+	mov $0x42, %ah
+	mov %bl, %bl
+local_label:
+	int $0x10
+	xor %dh, %dh
+        jmp local_label
+	ret
+
+signature:
+	.org 510, 0
+	.short 0xaa55
+
+\end{verbatim}
+
+\section{Testing}
+
+You will need to test your own code. Since you are using gcc to build, your
+source file is going through the CPP preprocessor. This means you can use
+the \#include directives in your files.
+
+We suggest you to write separate test files which include your source file.
+For example, to write a test file for exercise 1, you can write this :
+
+\begin{verbatim}
+
+.globl _start
+_start:
+        mov 0x42, %al
+        call print_char
+loop:
+        jmp loop
+
+#include "ex1.S"
+
+\end{verbatim}
+
+This way, your code file will never contain test code, so you don't risk giving
+us your test code in your source file.
+
+
+Your code will be tested automatically by our test suite. We are going to link
+your code with our test code. The whole thing has to fit in 512 bytes once assembled. This means that you have to write your code efficiently, to prevent generating too much binary code, which would make it impossible for it to fit together with our test code in 512 bytes.
+To prevent that, each exercise indicated the maximum size our test code will take, in bytes.
+For each exercise, you have to run a test to make sure your code will fit with our test code during the tests.
+To do that, you need to make a simple test file which just contains, for exercise 1, for instance :
+
+\begin{verbatim}
+
+.space 175,0
+
+#include "ex1.S"
+
+\end{verbatim}
+
+The value 175 has to be replaced by the value indicated for each exercice.
+
+Then you need to try to run gcc on that file. If gcc returns without error, it means that your code is small enough to be linked with our test code, otherwise, you will get this kind of error message :
+
+\begin{verbatim}
+ex1.S: Assembler messages:
+ex1.S:12: Error: attempt to move .org backwards
+\end{verbatim}
+
+This means you have to optimize your code until it fits, otherwise you will fail some tests on this exercise.
+
 %
 % String display
 %
@@ -74,6 +163,9 @@ a string.
 \begin{itemize}
   \item \location{ex1/ex1.S}
 \end{itemize}
+
+\subsubsection*{Free space required}
+175 bytes
 
 \subsubsection*{Interface}
 \command{print\_char}
@@ -114,6 +206,9 @@ a function which will dump the values stored in some registers.
   \item \location{ex2/ex2.S}
 \end{itemize}
 
+\subsubsection*{Free space required}
+155 bytes
+
 \subsubsection*{Interface}
 \command{malloc}
 {
@@ -129,7 +224,8 @@ a function which will dump the values stored in some registers.
   representation and store in \argument{\%si} the address of the string.
   The format must follow the regular expression 0x[0-9a-f]\{4\}.
   42 must for instance be printed as 0x002a. You could use this function
-  to check your malloc.
+  to check your malloc, since the buffer where you will store the result
+  string has to be allocated somewhere in memory.
 }
 
 \command{dump\_registers}
@@ -149,12 +245,26 @@ a function which will dump the values stored in some registers.
 
 \command{}
 {
+  {\em Important:}
+
+  You have to handle the end of the screen. When you are on the last line of
+  the screen, going to the next line means going back to the first line.
+  You can know if the cursor is at the last line by reading its position
+  with the appropriate BIOS call.
+
   {\em Warning:}
 
-  Start output at current cursor position. To simulate a line return, just move
+  Start output at current cursor position, even if it is not at the beginning
+  of a line. To simulate a line return, just move
   the cursor to the first column of the line under. Even though it could be
   ugly, don't move the cursor before printing and don't erase the characters
   printed by \textbf{qemu}!
+
+  Also, Qemu will have already displayed some stuff before you run this
+  function. It means the output will probably be ugly (mixed up with qemu BIOS
+  messages), but it's important that you don't try to make it look nice, or
+  you won't pass the tests. So your output will be mixed up in qemu BIOS stuff
+  and will probably have some fancy colors too, but it's not a problem.
 }
 
 %
@@ -178,6 +288,9 @@ buffer, and then, use this function to print entered text on the screen.
   \item \location{ex3/ex3.S}
 \end{itemize}
 
+\subsubsection*{Free space required}
+155 bytes
+
 \subsubsection*{Interface}
 \command{get\_key}
 {
@@ -186,10 +299,12 @@ buffer, and then, use this function to print entered text on the screen.
 
 \command{getln}
 {
-  This function prints entered strings. Pressing ENTER will result in a
-  newline.
+  This function prints characters typed on the keyboard until the ENTER key
+  is pressed. Pressing ENTER will result in a newline being printed and the
+  function will return.
   The modifiers like SHIFT, ALT, CTRL or caps lock won't be tested. Advanced
   typing using the arrows, BACKSPACE and DELETE is not required either.
+  You don't have to handle the end of line special case, it won't be tested.
 }
 
 %
@@ -218,6 +333,9 @@ Be careful, sectors are actually numbered starting from 1, and not 0.
   \item \location{ex4/ex4.S}
 \end{itemize}
 
+\subsubsection*{Free space required}
+155 bytes
+
 \subsubsection*{Interface}
 \command{floppy\_init}
 {
@@ -226,7 +344,8 @@ Be careful, sectors are actually numbered starting from 1, and not 0.
 
 \command{is\_bootsector}
 {
-  Load the second sector of the floppy and check whether it is a valid
+  Initializes the floppy drive, load the second sector of the floppy and
+  check whether it is a valid
   bootsector. It must print the following output at current cursor
   position for the following cases - respectively valid, and invalid $0x0042$
   signatures:
@@ -241,6 +360,14 @@ Be careful, sectors are actually numbered starting from 1, and not 0.
 \begin{verbatim}
         wrong magic: 0x0042
 \end{verbatim}
+
+\command{}
+{
+  The magic number which should be printed is the one that has been read in
+  the sector which has been loaded.
+  This function has to initialize the floppy drive, you can call your previous
+  function to do that.
+}
 
 %
 % Operating mode switching
@@ -270,17 +397,31 @@ mode, see \emph{VGA text Framebuffer} on the Wiki to know how to do.
   \item \location{ex5/ex5.S}
 \end{itemize}
 
+\subsubsection*{Free space required}
+225 bytes
+
 \subsubsection*{Interface}
 \command{pmode\_switch}
 {
   Switch from real mode to protected mode.
+  Note that when calling this function, the CPU will push the return address
+  as a 16-bit address, but when returning from it, the CPU will pop a 32 bit
+  return address since it will have switched from real (16-bit) to protected
+  (32-bit) mode. Consider that you don't have to do anything special to get
+  this to work : the caller of this function will have to push the 16-bit zero
+  value on the stack before calling, so that the instruction pointer does get
+  a valid 32-bit return address.
+
+  Don't forget to push zero before calling it for your tests too.
 }
 
 \command{print\_string32}
 {
   Print the string \argument{\%esi} on the screen at row \argument{\%ecx}
-  and column \argument{\%edx}. We don't care about colors, you can change them
-  or not.
+  and column \argument{\%edx}. The rows and columns are starting at index 0.
+  So the upper left corner has coordinates (0,0).
+  We don't care about colors, you can change them or not.
+  You don't have to handle the end of line, this will not be tested.
 }
 
 %
@@ -321,6 +462,9 @@ memory locations. The segment list of the executable file is described by the
   \item \location{ex6/ex6.S}
 \end{itemize}
 
+\subsubsection*{Free space required}
+145 bytes
+
 \subsubsection*{Interface}
 
 \command{kernel\_preload}
@@ -331,9 +475,14 @@ memory locations. The segment list of the executable file is described by the
 
   The function must switch to protected mode, and return into \argument{\%eax}
   the address of the memory area where sectors are loaded.
+
+  You have to handle the case of a kernel which resides on more than a single
+  track, which requires several calls to the appropriate BIOS call.
 }
 
 \command{elf\_load}
 {
   Load and execute the elf file located at address \argument{\%esi}.
+  Consider that the caller has called \command{kernel\_preload} before calling
+  this function, so this function doesn't need to call it.
 }
