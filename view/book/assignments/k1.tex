@@ -258,6 +258,14 @@ Kaneton is a portable kernel, so each module has been designed to have an indepe
   This function takes the physical address of a page directory in \argument{pd}.
   It will map this page directory in the kernel address space, and return
   the virtual address by erasing the content of \argument{pd}.
+  The type of the argument is a physical address, not a virtual address, but
+  since they are both 32-bit values, you can just cast your virtual address
+  to put it in the value pointed by \argument{pd}.
+  In other words, when the function is called, it takes a physical address of
+  a page directory in the memory space pointed by \argument{pd}, the function
+  should then map this page directory, and the virtual address which has been
+  assigned for this mapping should be put in the memory space pointed by
+  \argument{pd} even though its type doesn't represent a virtual address.
 }
 
 \function{t\_error}{ia32\_map\_pt}{\type{t\_ia32\_table*} \argument{pt}}
