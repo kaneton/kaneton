@@ -511,6 +511,13 @@
 
       Therefore, every student should subscribe to this mailing-list by sending
       an email to \location{students+subscribe@kaneton.opaak.org}.
+
+      \-
+
+      It is not allowed to post code on the mailing list, or give pointers to
+      code in the snapshot that would provide obvious solution to somebody's
+      question.
+
   \end{enumerate}
 \end{frame}
 
@@ -570,6 +577,20 @@
   emulator such a \name{QEmu} or \name{Bochs} as they will enable you to
   test your kernel very quickly but they will also let you develop on
   a non-\name{IBM-PC}/\name{IA-32} machine such as a \name{Mac} for example.
+
+  \-
+
+  Our own automatic test suite doesn't test your tarballs on a real physical
+  machine, because we needed to be able to run tests automatically and in
+  parallel, so you can get your traces fast enough.
+  We use hardware virtualization for that, based on Xen HVM, which is the
+  closest way of testing without using a real machine (better than Qemu).
+  If you have the possibility to run Xen HVMs on your computer, or in your lab
+  we strongly suggest that you try your kernel on it too, before uploading.
+  Note that you will always need Qemu to develop, since Xen HVM doesn't provide
+  a good way to debug. So you should only try it on a Xen HVM when it works on
+  Qemu, just to make sure.
+
 \end{frame}
 
 % 5)
@@ -647,20 +668,6 @@
 \end{frame}
 
 % 5)
-
-\begin{frame}
-  \frametitle{Ap\'eritif}
-
-  Do not forget to come along to the evening ap\'eritif so that you can
-  talk to the teachers, know more precisely what they are doing and
-  exchange.
-
-  \-
-
-  Who knows, perhaps you will end up in the same company as one of them...
-\end{frame}
-
-% 6)
 
 \begin{frame}
   \frametitle{Reminder}
