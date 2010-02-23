@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu may 28 12:37:21 2009]
+# updated       julien quintard   [tue feb 23 20:57:42 2010]
 #
 
 #
@@ -19,6 +19,15 @@
 # indeed the major generic part of the interface is already provided by the
 # host profile.
 #
+
+#
+# ---------- lang -------------------------------------------------------------
+#
+# incorrect locales may prevent the system from compiling properly.
+#
+# the following forces the LANG environment variable to US.
+#
+export LANG=US
 
 #
 # ---------- python path ------------------------------------------------------

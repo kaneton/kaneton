@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [tue may  5 12:10:22 2009]
+# updated       julien quintard   [tue feb 23 20:58:20 2010]
 #
 
 #
@@ -21,6 +21,15 @@
 #
 # in addition, the host profile already imports some packages.
 #
+
+#
+# ---------- lang -------------------------------------------------------------
+#
+# incorrect locales may prevent the system from compiling properly.
+#
+# the following forces the LANG environment variable to US.
+#
+os.putenv("LANG", "US")
 
 #
 # ---------- python path ------------------------------------------------------

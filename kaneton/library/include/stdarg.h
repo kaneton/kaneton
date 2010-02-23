@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/library/include/stdarg.h
+ * file          /home/mycure/kaneton/kaneton/include/library/stdarg.h
  *
  * created       julien quintard   [sun jun 10 18:04:06 2007]
- * updated       julien quintard   [wed aug  5 20:43:41 2009]
+ * updated       julien quintard   [tue feb 23 18:34:25 2010]
  */
 
 #ifndef LIBC_LIBSYS_STDARD_H
