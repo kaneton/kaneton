@@ -106,7 +106,7 @@
                 \item 70s - Unix - Servers operating system 
                 \item 80s - Microsoft  - Personal computer (PC)
                 \item 90s - Linux / Minix / GNU - Open source
-                \item 2000 - VMware / Goggle - Virtualisation / Distribution 
+                \item 2000 - VMware / Goggle - Virtualisation / Clouds / Distributed 
         \end{itemize}
 
 \end{frame}
@@ -181,6 +181,7 @@ Kernel came from massively multi-user to mono-user and then end up begin a mix w
 
 % -)
 
+
 \begin{frame}
   \frametitle{Kernel-space \& User-land}
 
@@ -201,8 +202,84 @@ Kernel came from massively multi-user to mono-user and then end up begin a mix w
 % kernel choices 
 %
 
-\section{Kernel choices}
+\section{Kernels}
 
+\subsection{A dummy kernel}
+\begin{frame}
+        \frametitle{A dummy kernel}
+        \begin{block}{Feature}
+        \begin{itemize}
+                \item Single user
+                \item Single process
+                \item Flat memory system 
+        \end{itemize}
+        \end{block}
+
+        \begin{block}{Problems}
+                \begin{itemize}
+                        \item Cannot have more than one process
+                        \item If you had more that one process, they could kill eath other
+                \end{itemize}
+        \end{block}
+\end{frame}
+
+\subsection{Segmentation}
+\begin{frame}
+        \frametitle{Segmentation}
+        
+        \begin{block}{Segmentation}
+        Segmentation is to create portion of memory with a base and a limit.
+        Inside this region all the addresses get resolved, with v@ = @ + base.
+        If @ is bigger than the limit it will generate a fault (segmentation fault).
+        \end{block}
+
+        Segmentation fixes some problems: 
+        \begin{itemize}
+                \item Separation between processes 
+                \item Separate the code from the data inside a process
+        \end{itemize}
+        
+        But generate other problems:
+        \begin{itemize}
+                \item Memory fragmentation: cannot allocate a big region even if overall you have enought space.
+                \item No proper separation between physical address and virtual address (only base + limit).
+                \item Multiple instance of the same process cannot share the common parts.
+        \end{itemize}
+\end{frame}
+
+\subsection{Pagination}
+\begin{frame}
+        \frametitle{Pagination}
+        
+        \begin{block}{Pagination}
+        Pagination introduction a mapping table between physical address and virtual address.
+        This mapping table is called paged table, and it represent an Address Space (AS).
+        The granularity of the mapping is called a page and it's generaly 4K.
+
+
+        Everytime is process does a table lookup to resolv an address, this mapping is put
+        in a table (TLB) to cache the mapping.
+        \end{block}
+        
+        It solves most of the problems:
+        \begin{itemize}
+                \item Sharring is possible just by having the same mapping in different AS.
+                \item No more memory fragmentation
+        \end{itemize}
+
+        But some problems remains:
+        \begin{itemize}
+                \item The mapping table can consome a lot of space on system with a lot of memory.
+                \item Cannot map range, only possible to map a page at the time, which is 4K.
+                \item Access time is not easily predictible depend of the state of the state of the TLBs.
+        \end{itemize}
+
+        Overall this is a best system that exists for managing the memory on your system.
+        All the modern operation system are using.
+
+\end{frame}
+
+\section{Kernel choises}
 \subsection{Mono/Multi user}
 \begin{frame}
   \frametitle{Mono/Multi user/task}
@@ -230,7 +307,6 @@ Kernel came from massively multi-user to mono-user and then end up begin a mix w
   \end{itemize}
 \end{frame}
 
-\subsection{Scheduling Offline/Online}
 \begin{frame}
   \frametitle{Scheduling: Offline/Online}
         Online:
@@ -378,13 +454,6 @@ Kernel came from massively multi-user to mono-user and then end up begin a mix w
         \item Concept of recursive address space, $\sigma{}_0$ 
         \item IPC communication: Chiefs and clans.
   \end{itemize}
-\end{frame}
-\begin{frame}
-  \frametitle{L4 IPCs: Chiefs and clans}
-  \begin{center}
-  \pgfuseimage{l4ipc} \\
-  Chiefs and Clans in L4. \\ Example of communication between to sub entities.
-  \end{center}
 \end{frame}
 
 \begin{frame}
