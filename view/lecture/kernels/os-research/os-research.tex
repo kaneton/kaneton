@@ -1,0 +1,361 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...ecture/kernels/windows-nt/windows-nt.tex
+%
+% created       fabien le mentec
+% updated       julien quintard   [wed apr 22 11:29:29 2009]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Operating Systems Research}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% Introduction
+%
+
+\section{Introduction}
+
+\begin{frame}
+ \frametitle{About}
+
+ \begin{itemize}
+   \item
+     A course on practical operating systems issues
+   \item
+     Pointers on ongoing research, recent projects
+   \item
+     What you may want to work on, advices on how to do it
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Plan}
+
+ \begin{itemize}
+   \item
+     computing landscape
+     \begin{itemize}
+       \item hardware issues
+       \item software issues
+     \end{itemize}
+   \item
+     kernel and OS mechanisms addressing those issues
+     \begin{itemize}
+       \item singularity
+       \item helios
+       \item barrelfish
+     \end{itemize}
+   \item
+     approach when doing practical OS related research
+     \begin{itemize}
+       \item summary
+       \item perspectives
+     \end{itemize}
+   \item
+     references
+     \begin{itemize}
+       \item research groups
+       \item projects
+       \item conferences
+       \item jobs, internships
+     \end{itemize}
+ \end{itemize}
+\end{frame}
+
+
+%
+% Computing landscape
+%
+
+%
+% Kernel and OS mechanisms addressing those issues
+%
+
+\section{Kernel and OS mechanisms}
+
+% singularity
+
+\begin{frame}
+  \frametitle{Singularity - 0}
+
+  Kernel of a full operating system research framework from Microsoft.
+
+  \begin{itemize}
+    \item answers the following question: "what would a software plateform look like if it was designed from scratch, with the primaty goal of improved depenability and trustwothiness"
+    \item ie. without the legacy of the 70's
+    \item aims to rethink the software stack to avoid unexpected interactions between applications
+    \item unexpected interactions lead to software vulnerabilities and lack of robustness
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Singularity - 1}
+  3 key architectureal features
+  \begin{itemize}
+    \item support for execution
+      \begin{itemize} \item software isolated processes (SIPs) \end{itemize}
+    \item support for communication
+      \begin{itemize} \item contract based channels \end{itemize}
+    \item support for system verification
+      \begin{itemize} \item manifest based programs \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Singularity - 2}
+  SIPs
+  \begin{itemize}
+    \item single AS, multithreaded software isolated processes
+    \item all communication done via message passing
+      \begin{itemize} \item ie. no CreateRemoteXxx() \end{itemize}
+    \item lightweight creation costs, management
+      \begin{itemize}
+	\item part of the work is done statically
+	\item no TLB/cache flush as context is switched
+	\item costs: \textasciitilde 0.5 fork() on Linux
+      \end{itemize}
+    \item no code modification
+      \begin{itemize}
+	\item plugins run in a separated process with its own security descriptor
+	\item thus there is no need for a conccurent security model (ie. think about active x...)
+	\item memory accesses are checked statically
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Singularity - 3}
+  Contract based channels
+  \begin{itemize}
+    \item every communication between SIPs occur through channels
+    \item 2 endpoints typed message queue
+      \begin{itemize} \item // todo: channel example \end{itemize}
+    \item declarative, implemented in Sing\#
+      \begin{itemize}
+        \item declarative means less prone to programmer's error, thus improved security
+        \item implied documentation
+      \end{itemize}
+    \item described as a state automata
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Singularity - 4}
+  Manifest based programs
+  \begin{itemize}
+    \item a manifest describes a program and its interactions with the system
+    \begin{itemize}
+      \item which resources it needs, which restrictions it has over the system
+      \item drives the SIPs code placement // todo: show the code
+      \item channels interconnections
+    \end{itemize}
+    \item it describes an expected behavior
+    \item the kernel itself has a manifest // todo: show the code
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Singularity - 5}
+  Singularity kernel
+ 
+ \begin{itemize}
+   \item single address space microkernel, SIPs execute outside the kernel
+     \begin{itemize} \item but 192 ABI functions \end{itemize}
+   \item 90\% implemented in Sing\#
+     \begin{itemize} \item garbage collection, introspection... \end{itemize}
+   \item rigorous ABI, no ioctl like calls
+   \item follow the least priviledge principle
+   \begin{itemize}
+     \item initially, a process can only manipulate its own state, and create child SIPs
+     \item according to its manifest, it can be created with existing endpoints
+     \item it can receive endpoints via a channel
+     \begin{itemize}
+       \item this last point allows for statically checked use of a resource
+       \item for instance, notepad.exe using a Winsock socket...
+     \end{itemize}
+   \end{itemize}
+  \item the ABI is versionned, allowing to handle backward compatibility
+    \begin{itemize} \item no need for awful versionned structures, thus improved security \end{itemize}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Singularity - 6}
+  The exchange heap
+ 
+ \begin{itemize}
+   \item the only area where data can be exchanged between SIPs
+   \item ownership of a block is transfered via a channel, then released to the destination SIP
+   \item a heap block is accessible by a single thread at a time
+   \item questions
+     \begin{itemize}
+       \item how to implement broadcast like message, data duplication? (since only one dest)
+       \item what if 2 thread want to communicate data to 2 different endpoints
+       \item for instance network and fs: the paper says there is only one heap block per SIP at a time
+     \end{itemize}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Singularity - 7}
+  Protection domains
+ 
+  \begin{itemize}
+    \item even if SIPs are isolated in software, the Singularity framework allows for hardware protection, ie. address spaces
+    \item called augmented SIPs
+    \item "in case software based verification fails" :)
+    \item protection domains can be selected at will, allowing for different favors of separation schemes to be used (ie. microkernel, monolithic...)
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Singularity - 8}
+  Singularity framework
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Singularity - 9}
+  Conclusion
+\end{frame}
+
+
+%
+% Approach
+%
+
+\section{Approach}
+
+\begin{frame}
+  \frametitle{Approach - 0}
+  Operating systems research is very large, difficult to have a clear view
+
+  \begin{itemize}
+    \item
+      many heterogeneous topics
+    \item
+      lot of research groups, rarely working together
+    \item
+      even in the same lab, it is possible teams do not collaborate (esp. true if not in same country)
+    \item
+      lot of unused (useless?) and redundant work
+    \item
+      emphasis on producing papers
+    \item
+      but there still exists labs working on real things
+      \begin{itemize}
+	\item
+	  http://qnx.com
+	\item
+          http://www.ok-labs.com
+        \item
+	  http://ertos.nicta.com.au
+        \item
+	  http://www.xtreemos.eu
+	\item
+	  \textit{check their opportunities page if interested}
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Approach - 1}
+  From this course point of view, research must be practical.
+  There should at least be a prototype. Some advices:
+  \begin{itemize}
+    \item
+      generally, targeting an existing software is better than reimplementing from scratch
+    \item
+      do something useful for NT, it is likely someone form MS will get in touch with you
+    \item
+      for instance: http://dokan-dev.net/en/
+    \item
+      main reason: it is nearly impossible to get ride of backward compatibility(existing user base) and very difficult to cope with legacy (badly designed APIs...)
+    \item
+      the real challenge: implementing new ideas that are backward compatible
+      with previous software (esp. challenging in proprietary software)
+    \item
+      common point between Qemu, VMWare, NaCL: they preserve what already exists
+    \item
+      not to say that working on something new is a bad idea
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Approach - 2}
+  To illustrate, here is a system project example
+  \begin{itemize}
+  \item
+    automatically (ie. not by hand) monitors PCI bus requests on a NT system
+    \begin{itemize} \item you have which what register is hit, the access mode... at a given time T \end{itemize}
+  \item
+    automatically monitor application behavior
+    \begin{itemize} \item you have the function called by an application at T \end{itemize}
+  \item
+    correlate the events together
+    \begin{itemize} \item you have an automated way to tell what a PCI register is used for \end{itemize}
+  \item
+    usage
+    \begin{itemize}
+      \item automated PCI driver specifications (couple it with a DSL: http://code.google.com/p/rathaxes/)
+      \item propietary driver reverse engineering
+      \item virtualisation: add missing functions, correct bugs...
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\end{document}
