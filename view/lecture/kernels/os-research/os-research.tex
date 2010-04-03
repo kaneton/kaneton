@@ -89,9 +89,10 @@
    \item
      kernel and OS mechanisms addressing those issues
      \begin{itemize}
-       \item singularity
-       \item helios
-       \item barrelfish
+       \item Singularity
+       \item Helios
+       \item Barrelfish
+       \item coping with existing software
      \end{itemize}
    \item
      approach when doing practical OS related research
@@ -271,6 +272,104 @@
 \begin{frame}
   \frametitle{Singularity - 9}
   Conclusion
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Singularity - 10}
+  References
+  \begin{itemize}
+    \item http://research.microsoft.com/en-us/projects/singularity/
+  \end{itemize}
+\end{frame}
+
+
+% Coping with existing software
+
+\section{Coping with existing software}
+
+\begin{frame}
+  \frametitle{Coping with existing software}
+  Sometimes not possible to start from scratch to resolve an issue and have to cope with
+  existing software. In this section we see research projects dealing with such issues.
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{shadowdrivers - 0}
+  \begin{itemize}
+    \item addresses the application state recovery problem
+    \begin{itemize} \item if an error occurs, restore the application last valid state \end{itemize}
+    \item shadowdrivers is a way to improve operating system stability by hiding to the userland application a driver has crashed
+    \item it adds a transparent local redudancy
+    \item similar to fault tolerance schemes used in distributed systems, but assumes non malicious drivers
+    \item however, the shadow driver is not a full replica, implements only the needed services
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{shadowdrivers - 1}
+  Discussion
+  \begin{itemize}
+    \item assume it is possible to detect driver crashes
+    \item either not possible, or too late (ie. kernel has already crashed)
+    \item a well written application has to handle errors. the problem should not be solved at the driver level
+    \item anoter approach: the operating system provides a snapshot/recovery API for the userland applications to snapshot and recover their states in case of crash
+      \begin{itemize} \item but not transparent, and this is the goal of such a project \end{itemize}
+    \item this approach would be well suited for a stackable model like the NT one
+    \item works even between drivers, since drivers can be seen as clients of one another
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{nooks}
+ nooks is another project aiming at improving device driver reliability
+
+ \begin{itemize}
+   \item defines an interposition layer between drivers (ie. kernel extension) and kernel (linux)
+   \item the framework implements the following layers:
+
+   \begin{itemize}
+
+     \item isolation
+     \begin{itemize}
+       \item memory management is modified so that the kernel is mapped read only in the extensions
+       \item extension procedure calls (XPC) to transfer control flow from extensions to kernel
+     \end{itemize}
+
+     \item interposition
+     \begin{itemize}
+       \item kernel and extension wrappers (ie. indirect calls as modules are loaded)
+       \item some wrapper create a shadow copy of the params, which is then synchronized as the XPC returns
+     \end{itemize}
+
+     \item object tracking
+     \begin{itemize}
+       \item instrument kernel functions allocating objects to keep track of all the objects
+       \item different scheme used to stay performant
+       \item object garbage collection
+     \end{itemize}
+
+     \item recovery
+     \begin{itemize}
+       \item detects potential bugs: invalid parameters detection, deadlocks, invalid memory deallocation...
+       \item on bug, reload the extension without the application knowing it
+     \end{itemize}
+
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{References}
+  \begin{itemize}
+    \item http://www.cs.washington.edu/homes/levy/shadowdrivers.pdf
+    \item http://www.cs.washington.edu/homes/levy/, for more work about OS reliability
+    \item http://nooks.cs.washington.edu/
+  \end{itemize}
 \end{frame}
 
 
