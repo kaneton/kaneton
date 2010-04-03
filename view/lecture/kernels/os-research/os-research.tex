@@ -284,6 +284,48 @@
 \end{frame}
 
 
+% Helios
+
+\begin{frame}
+\frametitle{Helios - 0}
+Sattellite kernels
+\begin{itemize}
+ \item a sattellite kernel is instanciated for each processor: cpu, programmable device...
+ \item implemented as a process. each has its own scheduler. coordinator kernel boots.
+ \item requierments: timer, interrupt controller, exception handling.
+ \item each kernel contains: scheduler, memory manager.
+ \item the coordinator contains the namespace manager (queryable via remote message passing)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Helios - 1}
+Affinity model // TODO
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Helios - }
+Implementation
+  \begin{itemize}
+    \item modification of the singularity os (singularity rdk). written in Sing\#
+    \item Application first compiled into the CIL bytecode, then into the ISA of the particular processor
+    \item if vendor refuses to ship the cil bytecode, it can provide fat binaries
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Helios - }
+References
+  \begin{itemize}
+    \item www.sigops.org/sosp/sosp09/papers/nightingale-sosp09.pdf
+    \item research.microsoft.com/en-us/groups/os/singularity/
+  \end{itemize}
+\end{frame}
+
+
 % Coping with existing software
 
 \section{Coping with existing software}
