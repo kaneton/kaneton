@@ -265,7 +265,12 @@
 
 \begin{frame}
   \frametitle{Singularity - 8}
-  Singularity framework
+  Singularity framework / Research Development Kit
+  \begin{itemize}
+    \item the whole framework is open source and documented
+    \item http://singularity.codeplex.com/
+    \item asplos2008\_singularity\_rdk\_tutorial.pdf
+  \end{itemize}
 \end{frame}
 
 
@@ -288,10 +293,21 @@
 
 \begin{frame}
 \frametitle{Helios - 0}
+Issue addressed by Helios
+\begin{itemize}
+ \item more and more tasks offloaded to heterogeneous processing units
+ \item programmable hardware (FPGAs), DPSs, GPUs...
+ \item Helios places an application on the unit it is the more affine with
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Helios - 1}
 Sattellite kernels
 \begin{itemize}
  \item a sattellite kernel is instanciated for each processor: cpu, programmable device...
- \item implemented as a process. each has its own scheduler. coordinator kernel boots.
+ \item implemented as a process, each with its own scheduler.
  \item requierments: timer, interrupt controller, exception handling.
  \item each kernel contains: scheduler, memory manager.
  \item the coordinator contains the namespace manager (queryable via remote message passing)
@@ -300,13 +316,18 @@ Sattellite kernels
 
 
 \begin{frame}
-\frametitle{Helios - 1}
-Affinity model // TODO
+\frametitle{Helios - 2}
+Affinity model
+  \begin{itemize}
+    \item processes can specify processes they are bound to
+    \item for instance, network stack bound to network interface 
+    \item affinity is used to choose a kernel the process will run on
+  \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Helios - }
+\frametitle{Helios - 3}
 Implementation
   \begin{itemize}
     \item modification of the singularity os (singularity rdk). written in Sing\#
@@ -317,12 +338,46 @@ Implementation
 
 
 \begin{frame}
-\frametitle{Helios - }
+\frametitle{Helios - 4}
+Discussion
+  \begin{itemize}
+    \item no automated way is proposed to decide about the affinity
+    \begin{itemize}
+      \item 2 processors, 1 with a FPU
+      \item 2 applications, 1 using the FPU
+      \item how to choose the more affine unit
+    \end{itemize}
+    \item requirements to be considered as a processing unit are too strong
+    \begin{itemize}
+      \item GPUs have no programmable timers
+      \item Cryptographic coprocessors are blackboxes
+    \end{itemize}
+    \item application must be redesigned in term of processes
+    \begin{itemize} \item break the multithread programming model \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Helios - 5}
 References
   \begin{itemize}
     \item www.sigops.org/sosp/sosp09/papers/nightingale-sosp09.pdf
     \item research.microsoft.com/en-us/groups/os/singularity/
   \end{itemize}
+\end{frame}
+
+
+% Barrelfish
+
+\begin{frame}
+\frametitle{References}
+\begin{itemize}
+  \item http://www.barrelfish.org/barrelfish\_sosp09.pdf
+  \item http://www.barrelfish.org/
+  \item http://research.microsoft.com/en-us/groups/camsys/default.aspx
+  \item http://www.systems.ethz.ch/
+\end{itemize}
 \end{frame}
 
 
