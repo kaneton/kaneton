@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...ew/lecture/kernels/security/security.tex
 %
 % created       julien quintard   [fri oct 24 17:31:58 2008]
-% updated       julien quintard   [tue mar 16 15:50:51 2010]
+% updated       julien quintard   [mon may 17 16:38:54 2010]
 %
 
 %
@@ -762,11 +762,6 @@
   Therefore, with \name{MAC}, the user does not have control over her own
   documents. The system mandates who can read and write everything with the
   objective to limit the dissemination of information.
-
-  \-
-
-  Finally, to demote information from secret to classified, for instance,
-  special privileges are required.
 \end{frame}
 
 % 3)
@@ -1157,13 +1152,14 @@
 
   \-
 
-  When an object is created, the server picks a random \name{Check} field and
-  stores it both in the new capability and inside its own table. Besides,
-  all the \name{Rights} bits are initially on, and it is this \name{owner
-  capability} that is returned to the client.
+  When an object is created, the server picks a random \name{Seed} and
+  computes the \name{Check} field but also stores it both in the new
+  capability and inside its own table. Besides, all the \name{Rights} bits
+  are initially on, and it is this \name{owner capability} that is returned
+  to the client.
 
   \-
-  
+
   Then, when the capability is sent back to the server in a request to perform
   an operation, the \name{Check} field is verified as detailed next.
 \end{frame}
@@ -1178,7 +1174,7 @@
 
   \-
 
-  The server takes the original---randomly picked---\name{Check} field from
+  The server takes the original---randomly picked---\name{Seed} from
   its table and \textit{EXCLUSIVE OR}s it with the new rights and finally
   runs the result through a one-way function.
 
@@ -1199,8 +1195,8 @@
 
   \-
 
-  The verification process consists in retreiving the original \name{Check}
-  field, \textit{EXCLUSIVE OR}ing it with the \name{Rights} field, then
+  The verification process consists in retreiving the original \name{Seed},
+  \textit{EXCLUSIVE OR}ing it with the \name{Rights} field, then
   through the one-way function and checking if it produces the capability's
   \name{Check} field.
 \end{frame}

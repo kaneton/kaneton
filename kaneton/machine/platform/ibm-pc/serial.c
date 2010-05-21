@@ -66,9 +66,9 @@ void			ibmpc_serial_write(t_uint32		com_port,
  * this function initializes the serial port.
  */
 
-t_error			ibmpc_serial_init(t_uint32			com_port,
-				    t_uint8			baud_rate,
-				    t_uint8			bit_type)
+t_error			ibmpc_serial_init(t_uint32		com_port,
+					  t_uint8		baud_rate,
+					  t_uint8		bit_type)
 {
   OUTB(com_port + 1, 0x00);
   OUTB(com_port + 3, 0x80);

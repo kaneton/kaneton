@@ -63,9 +63,9 @@ void			ibmpc_serial_write(t_uint32		com_port,
 					   t_uint8*		data,
 					   t_uint32		size);
 
-t_error			ibmpc_serial_init(t_uint32			com_port,
-				    t_uint8			baud_rate,
-				    t_uint8			bit_type);
+t_error			ibmpc_serial_init(t_uint32		com_port,
+					  t_uint8		baud_rate,
+					  t_uint8		bit_type);
 
 
 /*

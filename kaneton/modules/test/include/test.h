@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/include/test.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [sat may  2 00:49:25 2009]
+ * updated       julien quintard   [mon may 17 12:24:23 2010]
  */
 
 #ifndef MODULES_TEST_TEST_H

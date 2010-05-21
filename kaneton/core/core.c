@@ -63,7 +63,7 @@ i_segment		system;
  * steps:
  *
  * 1) sets the init variable from the bootloader argument.
- * 2) initializes the console manager.
+ * 2) initializes some fundamental modules.
  * 3) displays the current kaneton version.
  * 4) initializes the fine grained allocator.
  * 5) initializes the kernel manager.
@@ -102,14 +102,13 @@ void			kaneton(t_init*				bootloader)
    */
 
   module_call(console, console_initialize);
+  module_call(forward, forward_initialize);
 
   /*
    * 3)
    */
 
-  printf("\n");
   module_call(console, console_message, '+', "%s\n", version);
-  printf("\n");
 
   /*
    * 4)

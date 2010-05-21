@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/modules.h
  *
  * created       julien quintard   [fri may  1 12:58:24 2009]
- * updated       julien quintard   [fri may  1 19:26:17 2009]
+ * updated       julien quintard   [mon may 17 12:36:55 2010]
  */
 
 #ifndef MODULES_MODULES_H
@@ -39,10 +39,21 @@
  */
 #ifdef MODULE_console
 # include <modules/console/include/console.h>
-# define module_call_console(_function_, _arguments_...)			\
+# define module_call_console(_function_, _arguments_...)		\
   module_dispatch(_function_, ##_arguments_)
 #else
 # define module_call_console(_function_, _arguments_...)
+#endif
+
+/*
+ * forward
+ */
+#ifdef MODULE_forward
+# include <modules/forward/include/forward.h>
+# define module_call_forward(_function_, _arguments_...)		\
+  module_dispatch(_function_, ##_arguments_)
+#else
+# define module_call_forward(_function_, _arguments_...)
 #endif
 
 /*

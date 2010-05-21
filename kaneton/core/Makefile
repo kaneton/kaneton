@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/Makefile
 #
 # created       julien quintard   [tue jun 26 15:39:11 2007]
-# updated       julien quintard   [fri may  1 23:55:59 2009]
+# updated       julien quintard   [tue may 11 19:33:44 2010]
 #
 
 #
@@ -70,7 +70,7 @@ KANETON_LO		:=		$(_AS_LO_)			\
 					$(_SET_LO_)			\
 					$(_TASK_LO_)			\
 					$(_THREAD_LO_)			\
-					$(_TIME_LO_)
+					$(_TIME_LO_)			
 
 # core component
 

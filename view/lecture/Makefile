@@ -35,7 +35,8 @@ SUBDIRS			:=		architecture			\
 					inline-assembly			\
 					kernels				\
 					linking				\
-					prerequisites			
+					prerequisites			\
+					philosophy			
 
 #
 # ---------- rules ------------------------------------------------------------

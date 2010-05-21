@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/book/assignments/future-k2/k2.tex
+% file          /home/mycure/kaneton/view/book/assignments/k2.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [wed mar 18 11:19:03 2009]
+% updated       julien quintard   [mon may 17 15:30:43 2010]
 %
 
 %
@@ -195,3 +195,10 @@ Since this is not tested, the output format is up to you.
   of threads that are registered in the scheduler, their states, and the
   currently running thread.
 }
+
+\subsection*{Important}
+
+It is strongly advise that you test every class of task as the context
+switch between two kernel tasks for instance does not involve the whole
+process. Take care to test your context switch between multiple threads
+belonging to tasks of different classes.

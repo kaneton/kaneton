@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sat may  2 11:10:44 2009]
+ * updated       julien quintard   [mon may 17 12:23:40 2010]
  */
 
 /*
@@ -201,7 +201,7 @@ int			test_write(char				c)
 
   if ((test.size >= (sizeof(test.buffer) - 1)) ||
       (c == '\n'))
-      test_flush();
+    test_flush();
 
   return (1);
 }
@@ -270,7 +270,9 @@ t_error			test_run(void)
   /*
    * 1)
    */
-  ibmpc_serial_init(IBMPC_SERIAL_PRIMARY, IBMPC_SERIAL_BR57600, IBMPC_SERIAL_8N1);
+  ibmpc_serial_init(IBMPC_SERIAL_PRIMARY,
+		    IBMPC_SERIAL_BR57600,
+		    IBMPC_SERIAL_8N1);
 
   /*
    * 2)
