@@ -1,0 +1,203 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/exam/kernels/2010/kernels.tex
+%
+% created       julien quintard   [mon may 14 21:56:41 2007]
+% updated       julien quintard   [sun jun 13 01:40:39 2010]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../..}
+
+%
+% template
+%
+
+\input{\path/template/exam.tex}
+
+%
+% title
+%
+
+\title{Noyaux et Syst\`emes d'Exploitation}
+
+%
+% header
+%
+
+\lhead{\scriptsize{EPITA\_ING2 - 2010\_S4 - NSE}}
+\rhead{}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% identation
+%
+
+\indentation{}
+
+%
+% --------- information -------------------------------------------------------
+%
+
+\begin{center}
+
+\textbf{Documents Interdits}
+
+\textbf{Dur\'ee 3 heures}
+
+\scriptsize{Une copie bien pr\'esent\'ee sera toujours mieux not\'ee
+            qu'une autre.}
+
+\end{center}
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+%
+% XXX
+%
+
+\section{XXX
+         {\hfill{} \normalfont{\scriptsize{XXX points}}}}
+
+XXX [Francois] total de 5 points sur les parties boot et memoire etc.
+
+\begin{correction}
+
+XXX
+
+\end{correction}
+
+%
+% XXX
+%
+
+\section{XXX
+         {\hfill{} \normalfont{\scriptsize{XXX points}}}}
+
+XXX [Benoit] total de 5 points sur les parties ordonnancement, synchronisation
+             etc.
+
+\begin{correction}
+
+XXX
+
+\end{correction}
+
+%
+% XXX
+%
+
+\section{XXX
+         \normalfont{{\hfill{} \scriptsize{XXX points}}}}
+
+XXX [Jean] total de 4 points sur les parties peripheriques, generalites,
+           virtualization etc.
+
+\begin{correction}
+
+XXX
+
+\end{correction}
+
+% 
+% securite
+%
+
+\section{S\'ecurit\'e
+         \normalfont{{\hfill{} \scriptsize{3 points}}}}
+
+\begin{enumerate}
+  \item
+    Quels sont les principes de s\'ecurit\'e fondamentaux \`a respecter
+    de mani\`ere \`a concevoir un syst\`eme s\'ecuris\'e?
+  \item
+    Quelles sont les diff\'erences entre les syst\`emes de contr\^ole d'acc\`es
+    de type \textit{MAC} et \textit{DAC}?
+  \item
+    Qu'est ce qu'une \textit{capability}? Quel probl\`eme ce type d'objet
+    permet-il de r\'esoudre? Quelle diff\'erences existe-il entre une
+    \textit{capability} et un \textit{authorization certificat}?
+\end{enumerate}
+
+\begin{correction}
+
+\begin{enumerate}
+  \item
+    Les principes fondamentaux sont:
+
+    \begin{itemize}
+      \item
+        Security Through Transparency;
+      \item
+        Security Through Design;
+      \item
+        Principle of Least Privilege.
+    \end{itemize}
+  \item
+    Dans un syst\`eme de type \textit{MAC}, les acc\`es sont contr\^ol\'es
+    par une unique entit\'e administrative. De tels syst\`emes ont \'et\'es
+    con\c{c}us par et pour des organisations militiaires via l'utilisation
+    de niveau de s\'ecurit\'e attribu\'es aux documents et aux personnes.
+
+    \`A l'inverse, dans un syst\`eme \textit{DAC}, le contr\^ole d'acc\`es
+    est assur\'e par le propri\'etaire de l'objet.
+  \item
+    Une \textit{capability} est un jeton communicable et non-forgeable qui
+    repr\'esente un \`a la fois l'objet mais \'egalement les permissions
+    que le d\'etenteur du jeton a sur l'objet.
+
+    Ce type d'outil permet de respecter le principe de moindres privil\`eges.
+
+    Un \textit{authorization certificate} fournit les m\^eme possibilit\'es
+    qu'une \textit{capability}. En revanche, les techniques cryptographiques
+    utilis\'ees par les \textit{capabilities} sont moins lourdes et donc mieux
+    adapt\'ees aux syst\`emes d'exploitation. En revanche, les serveurs doivent
+    garder un certain nombres d'informations alors que ce n'est pas le cas
+    via l'utilisation de \textit{authorization certificates} puisque le
+    processus de v\'erification ne fait intervenir que la clef priv\'ee du
+    serveur.
+\end{enumerate}
+
+\end{correction}
+
+%
+% XXX
+%
+
+\section{XXX
+         \normalfont{{\hfill{} \scriptsize{XXX points}}}}
+
+XXX [Fabien] total de 3 points sur les kernels avances, Windows NT etc.
+
+\begin{correction}
+
+XXX
+
+\end{correction}
+
+\end{document}
