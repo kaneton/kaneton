@@ -186,17 +186,45 @@ XXX
 \end{correction}
 
 %
-% XXX
+% Noyau Windows NT, Noyaux Avances
 %
 
-\section{XXX
+\section{Noyau Windows NT, Noyaux Avances
          \normalfont{{\hfill{} \scriptsize{XXX points}}}}
 
-XXX [Fabien] total de 3 points sur les kernels avances, Windows NT etc.
+\begin{enumerate}
+  \item
+	Citez les principes du design de Windows NT. Si presente, une explication
+	correcte rapportera des points. (2 points)
+  \item
+	Quel a ete l impact de Spring sur les noyaux qui l ont succede? (1 point)
+\end{enumerate}
 
 \begin{correction}
 
-XXX
+\begin{enumerate}
+  \item
+	Les points fondamentaux:
+	\begin{itemize}
+	  \item noyau monolithique, dit hybride: un seul espace d adressage mais
+	  communication par message (IRP)
+	  \item message passing (IRP)
+          \item modele d io asynchrone
+	  \item multithreade
+	  \item oriente objet: toute resource est implementee par un objet
+	  \item object manager
+	  \item modele de driver en stack
+	\end{itemize}
+  \item
+	Impacts de Spring (cf slides)
+	\begin{itemize}
+	  \item service de nommage (Windows NT)
+	  \item travaux sur les IPCs (L4)
+	  \item IDL (Corba)
+	  \item Doors (SunOS)
+	  \item RPC, LPC (SunOS, Windows NT)
+	\end{itemize}
+\end{enumerate}
 
 \end{correction}
 
