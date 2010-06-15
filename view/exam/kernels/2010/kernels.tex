@@ -81,14 +81,41 @@
 % XXX
 %
 
-\section{XXX
-         {\hfill{} \normalfont{\scriptsize{XXX points}}}}
+\section{Boot \& M\'emoire
+         {\hfill{} \normalfont{\scriptsize{5 points}}}}
 
-XXX [Francois] total de 5 points sur les parties boot et memoire etc.
+Pour les 5 questions suivantes, vous r\'epondrez par Vrai ou Faux. Dans le cas ou une r\'eponse est fausse, vous r\'edigerez un paragraphe justifiant votre r\'eponse et corrigeant l'affirmation (un ``Faux'' non justifi\'e ou incorrectement justifi\'e ne donne aucun point).
+
+\begin{enumerate}
+
+\item L'interface entre un bootloader et un noyau de syst\`eme d'exploitation est standard et commune \`a toutes les architectures mat\'erielles.
+
+\item La segmentation permet de d\'efinir un espace d'adressage virtuel dans lequel des zones de taille variable appell\'ees segments sont mapp\'es \`a des zones en m\'emoire physique. Un segment \'etant d\'efini par l'adresse de base en m\'emoire physique qui correspondra a l'adresse virtuelle 0 (zero) au sein de ce segment, et par la taille du segment.
+
+\item Dans le cas d'une m\'emoire virtuelle utilisant la pagination, les TLB contenus dans la m\'emoire cache permettent de stocker le contenu de la m\'emoire afin d'\'eviter de devoir faire un acc\`es a la RAM dans le cas de donn\'ees ayant d\'ej\`a \'et\'e lues r\'ecemment
+
+\item La technique de swap permet d'acc\'el\'erer la copie de pages m\'emoire en mappant en lecture seule la m\^eme page en m\'emoire physique sur plusieurs adresses virtuelles.
+
+\item Il est impossible de garantir une isolation des donn\'ees de diff\'erents processus au sein d'un syst\`eme qui ne dispose pas de m\'ecanisme mat\'eriel permettant d'impl\'ementer une m\'emoire virtuelle (MMU).
+
+\end{enumerate}
+
 
 \begin{correction}
 
-XXX
+\begin{enumerate}
+
+\item FAUX : Les architectures des processeurs etant differents, le passage d'informations entre le bootloader et le kernel peut et doit donc se faire de differentes manieres (structure en ram, registres, \ldots). Les services mis en place par le firmware ne sont pas forcement accessibles de la meme maniere selon le firmware (via pointeur vers un handler, via une interruption logicielle, \ldots).
+
+\item VRAI
+
+\item FAUX : Les TLB ne stockent pas le contenu de la memoire, mais la correspondance entre adresse virtuelle et adresse physique.
+
+\item FAUX : Le swap permet d'economiser la memoire physique en deplacant les donnees des pages rarement utilisees vers un autre stockage tel qu'un disque dur et en les rapatriant lorsque ces donnees ont besoin d'etre accedees. Le fait de mapper en lecture seule la meme page en memoire physique sur plusieurs adresses virtuelles est utilise dans une autre technique nommee Copy-on-write.
+
+\item VRAI
+
+\end{enumerate}
 
 \end{correction}
 
