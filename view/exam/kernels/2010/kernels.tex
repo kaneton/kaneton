@@ -139,15 +139,39 @@ XXX
 % XXX
 %
 
-\section{XXX
-         \normalfont{{\hfill{} \scriptsize{XXX points}}}}
+\section{P\'eriph\'erique et virtualisation
+         \normalfont{{\hfill{} \scriptsize{4 points}}}}
 
-XXX [Jean] total de 4 points sur les parties peripheriques, generalites,
-           virtualization etc.
+\begin{enumerate}
+  \item
+        Expliquez le concept de paravirtualisation aussi bien pour le kernel
+        que pour les drivers.
+  \item 
+        Identifiez les differentes \'etapes \`a prendre en concid\'erantion
+        lorsque l'on souhaite exposer un ph\'eriph\'erique PCI apartenant \`a la machine
+        physique (host) dans une machine virtuelle.
+\end{enumerate}
 
 \begin{correction}
 
-XXX
+\begin{enumerate}
+  \item
+        La paravirtualisation est une technique qui revient a modifier du code
+        machine (driver, kernel) pour qu'il ne se repose plus sur le hardware
+        mais sur l'API d'un hypervieur/VMM (virtual machine monitor).
+
+        Il est possible d'installer des drivers specifique a l'hyperviseur sur
+        un noyau non paravirtualis\'e on parle alors de PV driver (driver
+        paravirtualis\'e). Cela a pour but d'am\'eliorer conciderablement les
+        performances surtout au niveau des drivers d'entrer/sortie.
+  \item
+       \begin{enumerate}
+       \item Exposer le pr\'eriph\'erique physique sur le bus pci emul\'e
+       \item Exposer l'espace de configuration pci (pci config space)
+       \item Mapper les ioports, mmio, dans la virtual machine
+       \item Rediriger les requettes DMA gr\^ace a une IOMMU
+       \end{enumerate}
+\end{enumerate}
 
 \end{correction}
 
