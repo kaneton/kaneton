@@ -1,0 +1,10 @@
+qemu:
+  ibm-pc.ia32:
+    k1: {quota: inf, requests: 0}
+    k2: {quota: inf, requests: 0}
+    k3: {quota: inf, requests: 0}
+xen:
+  ibm-pc.ia32:
+    k1: {quota: inf, requests: 0}
+    k2: {quota: inf, requests: 0}
+    k3: {quota: inf, requests: 0}

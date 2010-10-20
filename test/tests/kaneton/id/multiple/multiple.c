@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...est/tests/kaneton/id/multiple/multiple.c
  *
  * created       julien quintard   [wed apr 15 05:27:55 2009]
- * updated       julien quintard   [wed apr 15 07:54:44 2009]
+ * updated       julien quintard   [mon oct 18 09:41:15 2010]
  */
 
 /*
@@ -23,27 +23,23 @@
  * ---------- test ------------------------------------------------------------
  */
 
-/*
- * many ids.
- */
-
-void		test_id_multiple(void)
+void			test_id_multiple(void)
 {
-  o_id		id;
-  t_id		i[1024];
-  int		j;
-  int		k;
+  o_id			id;
+  t_id			i[1024];
+  int			j;
+  int			k;
 
-  TESTS_ENTER();
+  TEST_ENTER();
 
   if (id_build(&id) != ERROR_NONE)
-    printf("error id_build\n");
+    printf("[id_build] error\n");
   else
     {
       for (j = 0; j < 1024; j++)
 	{
 	  if (id_reserve(&id, &i[j]) != ERROR_NONE)
-	    printf("error id_reserve\n");
+	    printf("[id_reserve] error\n");
 
 	  if (!(i[j] >= 0 && i[j] <= (t_id)-1))
 	    printf("invalid id\n");
@@ -57,12 +53,12 @@ void		test_id_multiple(void)
       for (j = 0; j < 1024; j++)
 	{
 	  if (id_release(&id, i[j]) != ERROR_NONE)
-	    printf("error id_release\n");
+	    printf("[id_release] error\n");
 	}
 
       if (id_destroy(&id) != ERROR_NONE)
-	printf("error id_destroy\n");
+	printf("[id_destroy] error\n");
     }
 
-  TESTS_LEAVE();
+  TEST_LEAVE();
 }

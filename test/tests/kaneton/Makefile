@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/tests/kaneton/Makefile
+# file          /home/mycure/kaneton.STABLE/test/tests/kaneton/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [fri may  1 20:57:07 2009]
+# updated       julien quintard   [mon oct 18 16:41:38 2010]
 #
 
 #
@@ -27,15 +27,13 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ENGINE_DIR		:=		.engine
-ENGINE_LO		:=		$(ENGINE_DIR)/engine.lo
+UNITS			:=		id				\
+					segment				
 
-UNITS			:=		id				
-
-SUBDIRS			:=		$(ENGINE_DIR)			\
+SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
 					$(UNITS)
 
-MODULES			:=		$(ENGINE_LO)			\
+MODULES			:=		$(_TEST_ENGINE_LO_)		\
 					$(foreach s,$(UNITS),${s}/${s}.lo)
 
 INVENTORY_C		:=		inventory.c

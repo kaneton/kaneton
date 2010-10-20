@@ -1,0 +1,72 @@
+#
+# ---------- overview ---------------------------------------------------------
+#
+
+The security of the test system is ensured though the use of cryptographic
+techniques.
+
+The nomenclature is as below:
+
+  key: a RSA key pair
+  certificate: a X509 certificate
+  code: a random string
+  capability: a HMAC-protected collection of items
+
+The opaak certification authority provides a certificate for the domain
+test.opaak.org with the email address admin@opaak.org. This ultime authority
+is used to generate sub-certificates.
+
+The first sub-certificate to be issued is for the server to run the test
+system. This certificate is therefore sealed by the opaak CA. Note that the
+certificates are used to identify valid test servers. The users are
+authentified through capabilities as explained next.
+
+The capabilities provides their owner the possibility to trigger test suites
+on the test server. Every capability is secured by a HMAC performed with a
+randomly generated server-specific code.
+
+Every time a test is requested on the server, the provided capability is
+verified before proceeding. Once run, the server increments the number of
+tests requested from the user by updating the user's personal database.
+
+A database is a file containing, for every test environment i.e machine
+provided by the server, a set of test suites the user is allowed to trigger.
+For every test suite is recorded the number of tests requested along with
+the maximum number of tests the user is allowed to perform, after which every
+request will be denied.
+
+#
+# ---------- scripts ----------------------------------------------------------
+#
+
+This directory contains scripts for generating the access tokens required
+for testing the kaneton microkernel.
+
+First, the authority certificate must be generated so that it can be
+used to sign the users' capabilities. Note that a certificate for the
+server is also generated.
+
+  $> make certificate
+
+Then, a random code is generated so that capabilities cannot be forged.
+
+  $> make code
+
+The students' and contributor's capabilities are generated for a specific
+school and year, through the following command line.
+
+  $> make capability-school@epita::2011
+  $> make capability-student@epita::2011:group8
+  $> make capability-contributor
+
+Finally, the databases containing the current state of the tests as well
+as the limit for every stage are generated according to the configurations
+found in test/configuration/
+
+  $> make database-school@epita::2009
+  $> make database-student@epita::2009:group2
+  $> make database-contributor
+
+Note that the inventory.py script is used elsewhere in the tests/ directory
+in order to generate an array containing the addresses of the tests. This
+array is then included in the source code and linked with the kernel.

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/util/certificate.py
+# file          /home/mycure/kaneton.STABLE/test/util/certificate.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon apr 20 03:29:09 2009]
+# updated       julien quintard   [tue oct 19 13:36:10 2010]
 #
 
 #
@@ -51,7 +51,7 @@ def                     ca():
   certificate = ktc.Certificate(request,
                                 (request, key),
                                 0,
-                                (0, 60 * 60 * 24 * 365 * 5))
+                                (0, 60 * 60 * 24 * 365 * 10))
 
   # display
   env.display(env.HEADER_OK,

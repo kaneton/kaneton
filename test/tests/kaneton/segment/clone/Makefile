@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/tests/kaneton/.engine/Makefile
+# file          /home/mycure/kane...est/tests/kaneton/segment/clone/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [fri may  1 20:50:46 2009]
+# updated       julien quintard   [wed oct 20 12:29:37 2010]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,39 +27,39 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ENGINE_C		:=		engine.c
-ENGINE_O		:=		$(ENGINE_C:.c=.o)
+TEST_C			:=		clone.c
+TEST_O			:=		$(TEST_C:.c=.o)
 
-ENGINE_H		:=		$(directory)/$(ENGINE_C:.c=.h)
+TEST_H			:=		$(directory)/$(TEST_C:.c=.h)
 
-ENGINE_LO		:=		$(ENGINE_O:.o=.lo)
+TEST_LO			:=		$(TEST_O:.o=.lo)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(ENGINE_LO)
+main:			$(TEST_LO)
 
-$(ENGINE_LO):		$(ENGINE_O)
-	$(call env_remove,$(ENGINE_LO),)
+$(TEST_LO):		$(TEST_O)
+	$(call env_remove,$(TEST_LO),)
 
-	$(call env_archive,$(ENGINE_LO),$(ENGINE_O),)
+	$(call env_archive,$(TEST_LO),$(TEST_O),)
 
 clear:
-	$(call env_remove,$(ENGINE_O),)
+	$(call env_remove,$(TEST_O),)
 
-	$(call env_remove,$(ENGINE_LO),)
+	$(call env_remove,$(TEST_LO),)
 
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,$(ENGINE_H),)
+	$(call env_prototypes,$(TEST_H),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(ENGINE_C),)
+	$(call env_headers,$(TEST_C),)
 
 endif
 #

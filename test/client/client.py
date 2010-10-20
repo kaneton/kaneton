@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/client/client.py
+# file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [tue may 12 13:48:21 2009]
+# updated       julien quintard   [wed oct 20 12:27:57 2010]
 #
 
 #
@@ -27,6 +27,8 @@
 import sys
 import os
 import re
+import time
+import yaml
 
 import xmlrpclib
 
@@ -39,8 +41,9 @@ import env
 
 g_host = None
 g_capability = None
-g_suite = None
 g_machine = None
+g_platform = None
+g_architecture = None
 
 #
 # ---------- functions --------------------------------------------------------
@@ -52,7 +55,8 @@ g_machine = None
 def			Usage():
   command = None
 
-  env.display(env.HEADER_ERROR, "usage: client.py [command]", env.OPTION_NONE)
+  env.display(env.HEADER_ERROR, "usage: client.py [command]",
+              env.OPTION_NONE)
 
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
@@ -76,10 +80,13 @@ def                     Warning():
               "  capability:             " + g_capability + ".cap",
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "  suite:                  " + g_suite,
+              "  machine:                " + str(g_machine),
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "  machine:                " + str(g_machine),
+              "  platform:               " + str(g_platform),
+              env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  architecture:           " + str(g_architecture),
               env.OPTION_NONE)
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
@@ -87,64 +94,92 @@ def                     Warning():
 # this function walk through the unit and sub-units and if every test
 # was successful, return True.
 #
-def                     Status(unit):
-  tests = 0
+def                     Status(tests):
   success = 0
-  t = None
-  s = None
+  total = 0
 
   # explore the tests.
-  if "tests" in unit:
-    for test in unit["tests"]:
-      if test["status"] == True:
-        success += 1
+  for test in tests:
+    if tests[test]["status"] == True:
+      success += 1
 
-      tests += 1
+    total += 1
 
-  # explore the sub-units.
-  if "units" in unit:
-    for u in unit["units"]:
-      (s, t) = Status(u)
-
-      success += s
-      tests += t
-
-  return (success, tests)
+  return (success, total)
 
 #
 # this function displays a brief summary of the tests
 #
-def                     Summary(unit, margin):
+OPTION_NONE = 0
+OPTION_DETAIL = 1
+def                     Summary(unit, tests, margin, options):
   success = None
-  tests = None
-  colour = None
+  total = None
+  header = None
   status = None
-  u = None
+  result = None
+  length = None
+  count = None
+  test = None
+  color = None
 
   # compute the status of all the tests and sub-units' tests.
-  (success, tests) = Status(unit)
+  (success, total) = Status(tests)
 
-  # set the color according to the status.
-  if success == tests:
-    colour = env.COLOR_GREEN
-
-    status = ""
+  # set the colour according to the status.
+  if success == total:
+    result = "ok"
+    color = env.COLOR_GREEN
   else:
-    colour = env.COLOR_RED
+    result = "ko"
+    color = env.COLOR_RED
 
-    status = " (" + str(success) + "/" + str(tests) + ")"
+  count = " [" + str(success) + "/" + str(total) + "]"
+  length = 79 - len(unit) - len(margin) - 4 - len(result) - len(count)
+
+  status = length * " " +                                               \
+           env.colorize(result, color, env.OPTION_BOLD) +               \
+           count
 
   # display the unit name.
-  env.display(env.HEADER_NONE,
-              margin + env.colorize(unit["component"] + status,
-                                    colour,
-                                    env.OPTION_NONE),
+  env.display(env.HEADER_OK,
+              margin + unit + status,
               env.OPTION_NONE)
 
-  # explore the sub-units.
-  if "units" in unit:
-    for u in unit["units"]:
-      Summary(u, margin + "  ")
+  # dump the tests' details if requested.
+  if options & OPTION_DETAIL:
+    for test in tests:
+      # select color.
+      if tests[test]["status"] == True:
+        color = env.COLOR_GREEN
+      else:
+        color = env.COLOR_RED
+
+      # display status.
+      env.display(env.HEADER_OK,
+                  margin + "  status: " +
+                  env.colorize(str(tests[test]["status"]),
+                               color,
+                               env.OPTION_NONE),
+                  env.OPTION_NONE)
+
+      # display description.
+      env.display(env.HEADER_OK,
+                  margin + "  description: " +
+                  tests[test]["description"],
+                  env.OPTION_NONE)
+
+      # display duration.
+      env.display(env.HEADER_OK,
+                  margin + "  duration: " +
+                  str(tests[test]["duration"]),
+                  env.OPTION_NONE)
+
+      # display output.
+      env.display(env.HEADER_OK,
+                  margin + "  output: " +
+                  tests[test]["output"],
+                  env.OPTION_NONE)
 
 #
 # this function display any Python dictionary in a
@@ -165,7 +200,12 @@ def                     Display(data, margin):
       length = len(margin) + 2 + len(str(key)) + 1
 
       env.display(env.HEADER_OK,
-                  margin + "  " + str(key) + ":" + (40 - length) * " " + str(data[key]),
+                  margin +
+                  "  " +
+                  str(key)
+                  + ":" +
+                  (26 - length) * " " +
+                  str(data[key]),
                   env.OPTION_NONE)
 
 #
@@ -174,9 +214,17 @@ def                     Display(data, margin):
 #
 # these information are then displayed.
 #
-def                     Information(server, capability):
+def                     Information(server, capability, arguments):
   information = None
   item = None
+
+  # check the arguments
+  if len(arguments) != 1:
+    Usage()
+    sys.exit(42)
+
+  # warning
+  Warning()
 
   # retrieve the information.
   information = ktc.Call(server.Information(capability))
@@ -191,29 +239,110 @@ def                     Information(server, capability):
 #
 # this function launches a test.
 #
-def                     Launch(server, capability):
+def                     Launch(server, capability, arguments):
   snapshot = None
 
+  # warning
+  Warning()
+
+  # check the arguments
+  if len(arguments) != 2:
+    Usage()
+    sys.exit(42)
+
+  # retrieve the suite.
+  suite = arguments[1]
+
   # read the snapshot.
-  snapshot = env.pull("/home/mycure/kaneton/test/kaneton-snapshot.tar.bz2", env.OPTION_NONE)
+  snapshot = env.pull("/home/mycure/kaneton-submission.tar.bz2",
+                      env.OPTION_NONE)
 
   # launch a test.
   report = ktc.Call(server.Launch(capability,
                                   xmlrpclib.Binary(snapshot),
-                                  g_suite,
-                                  g_machine))
-
-  print report
-  return
-# XXX
+                                  g_machine,
+                                  g_platform,
+                                  g_architecture,
+                                  suite))
 
   # display the received report.
   env.display(env.HEADER_OK,
               "report",
               env.OPTION_NONE)
 
+  # store the report in a trace file.
+  yaml.dump({ "meta":
+                { "time": time.strftime("%Y-%m-%d %H:%M:%S"),
+                  "suite": suite,
+                  "machine": g_machine,
+                  "platform": g_platform,
+                  "architecture": g_architecture },
+              "data":
+                report },
+            file(env._TEST_STORE_TRACES_DIR_ +
+                 "/" +
+                 time.strftime("%Y%m%d-%H%M%S") +
+                 ".trc", 'w'))
+
+  # display a summary
   for unit in report:
-    Summary(unit, "      ")
+    Summary(unit, report[unit], "  ", OPTION_NONE)
+
+#
+# this function dumps a trace.
+#
+def                     Dump(server, capability, arguments):
+  trace = None
+  unit = None
+
+  # check the arguments
+  if len(arguments) != 2:
+    Usage()
+    sys.exit(42)
+
+  # retrieve the trace.
+  trace = yaml.load(file(env._TEST_STORE_TRACES_DIR_ +                  \
+                           "/" + arguments[1] + ".trc", 'r'))
+
+  # dump the trace.
+  env.display(env.HEADER_OK,
+              "trace:",
+              env.OPTION_NONE)
+
+  # dump the meta section.
+  env.display(env.HEADER_OK,
+              "  meta:",
+              env.OPTION_NONE)
+  Display(trace["meta"], "  ")
+
+  # dump the data section
+  for unit in trace["data"]:
+    Summary(unit, trace["data"][unit], "  ", OPTION_DETAIL)
+
+#
+# this function lists the traces.
+#
+def                     List(server, capability, arguments):
+  traces = None
+  trace = None
+
+  # check the arguments
+  if len(arguments) != 1:
+    Usage()
+    sys.exit(42)
+
+  # retrieve the list of traces.
+  traces = env.list(env._TEST_STORE_TRACES_DIR_, env.OPTION_FILE)
+
+  env.display(env.HEADER_OK,
+              "traces:",
+              env.OPTION_NONE)
+
+  # dump the trace names.
+  for trace in traces:
+    env.display(env.HEADER_OK,
+                "  " + trace.rstrip(".trc"),
+                env.OPTION_NONE)
 
 #
 # this is the main function.
@@ -221,30 +350,29 @@ def                     Launch(server, capability):
 def                     Main():
   global g_host
   global g_capability
-  global g_suite
   global g_machine
+  global g_platform
+  global g_architecture
 
   server = None
   capability = None
-  command = None
+  arguments = None
 
   # retrieve the command.
   if len(sys.argv) != 2:
     Usage()
     sys.exit(42)
 
-  # set the command.
-  command = sys.argv[1]
+  # set the arguments.
+  arguments = sys.argv[1].split(":")
 
   # set the variables.
   g_host = env._TEST_HOST_
   g_capability = env._TEST_CAPABILITY_
-  g_suite = env._TEST_SUITE_
-  g_machine = env._TEST_MACHINE_.strip(" \t\n")
+  g_machine = env._TEST_MACHINE_
+  g_platform = env._TEST_PLATFORM_
+  g_architecture = env._TEST_ARCHITECTURE_
 
-  # warning
-  Warning()
-  
   # connect to the server.
   server = xmlrpclib.Server(g_host,
                             allow_none = True)
@@ -254,13 +382,13 @@ def                     Main():
 
   # trigger the appropriate command.
   for name in c_commands:
-    if command == name:
-      c_commands[name](server, capability)
+    if arguments[0] == name.split(" ")[0]:
+      c_commands[name](server, capability, arguments)
       sys.exit(0)
 
   # wrong command.
   env.display(env.HEADER_ERROR,
-              "unknown command '" + command + "'",
+              "unknown command '" + arguments[0] + "'",
               env.OPTION_NONE)
 
   # display usage.
@@ -272,7 +400,9 @@ def                     Main():
 
 c_commands = {
   "information": Information,
-  "launch": Launch
+  "launch [environment] [machine] [suite]": Launch,
+  "list": List,
+  "dump [trace]": Dump
 }
 
 #
@@ -285,9 +415,6 @@ if __name__ == '__main__':
 # XXX
 #
 # o verifier que le certificat recu est le meme que celui en local
-#
-# o passer egalement la platform/architecture utilisee pour que le serveur
-#   lance les tests sur le bon systeme (QEMU dans le cas de mips par exemple)
 #
 # o cote serveur, il ne faudrait pas inclure les tests dans la compile car
 #   un etudiant pourrait les afficher sur la sortie et faire peter la compile
@@ -307,14 +434,8 @@ if __name__ == '__main__':
 #   compiler les tests mais il faudrait egalement que la tarball etudiante
 #   ait un Makefile dans kaneton/core/test modifie pour utilise tests.lo
 #   directement.
-# o changer le pass root
-# o passer le serveur en threade (enfin tester d'abord)
 # o changer le nom de la vm 'svm' en 'svm-linux:ia32'
 # o creer/detruire un user a chaque compile
-# o a chaque compile, si on veut que ca se fasse en parallele, il faut copier
-#   l'image VM sinon on va avoir des problemes de FS
-# o il faut generer le compile.sh pour qu'il prenne en compte platform/arch
-#   car ca differe entre contributor et student
 # o matter ce flag: IA32_KERNEL_MAPPED, est-il necessaire pour les tests?
 # o les scripts compile/run a mettre dans des rep k0/ k1/ etc.
 # o rajouter un try/catch autour de compile/run et clean si ca foire

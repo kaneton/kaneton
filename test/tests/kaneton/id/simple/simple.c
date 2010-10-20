@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/test/tests/kaneton/id/simple/simple.c
+ * file          /home/mycure/kane...LE/test/tests/kaneton/id/simple/simple.c
  *
  * created       julien quintard   [wed apr 15 05:29:49 2009]
- * updated       julien quintard   [wed apr 15 07:55:15 2009]
+ * updated       julien quintard   [mon oct 18 09:40:29 2010]
  */
 
 /*
@@ -23,33 +23,29 @@
  * ---------- test ------------------------------------------------------------
  */
 
-/*
- * basic tests
- */
-
-void		test_id_simple(void)
+void			test_id_simple(void)
 {
-  o_id		id;
-  t_id		i;
+  o_id			id;
+  t_id			i;
 
-  TESTS_ENTER();
+  TEST_ENTER();
 
   if (id_build(&id) != ERROR_NONE)
-    printf("error id_build\n");
+    printf("[id_build] error\n");
   else
     {
       if (id_reserve(&id, &i) != ERROR_NONE)
-	printf("error id_reserve\n");
+	printf("[id_reserve] error\n");
 
       if (!(i >= 0 && i <= (t_id)-1))
 	printf("invalid id\n");
 
       if (id_release(&id, i) != ERROR_NONE)
-	printf("error id_release\n");
+	printf("[id_release] error\n");
 
       if (id_destroy(&id) != ERROR_NONE)
-	printf("error id_destroy\n");
+	printf("[id_destroy] error\n");
     }
 
-  TESTS_LEAVE();
+  TEST_LEAVE();
 }

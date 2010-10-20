@@ -44,7 +44,10 @@ SUBDIRS			:=		bibliography			\
 
 main:		build
 
-view:
+view view-:
+	$(call env_launch,$(_VIEW_SCRIPT_),$*,)
+
+view-%:
 	$(call env_launch,$(_VIEW_SCRIPT_),$*,)
 
 build:

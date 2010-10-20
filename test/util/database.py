@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/util/database.py
+# file          /home/mycure/kaneton.STABLE/test/util/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon may 11 14:19:59 2009]
+# updated       julien quintard   [wed oct 20 13:52:45 2010]
 #
 
 #
@@ -33,8 +33,8 @@ import copy
 # ---------- globals ----------------------------------------------------------
 #
 
-g_school = None
-g_year = None
+g_component = None
+g_path = None
 
 #
 # ---------- functions --------------------------------------------------------
@@ -51,95 +51,91 @@ def			usage():
               env.OPTION_NONE)
 
 #
-# extract()
+# student()
 #
-# this function takes the path to a history directory and
-# extract the names, emails and id of every group.
+# this function generates a database for the given student.
 #
-# finally, the function returns the information in a data
-# structure.
-#
-def                     extract(path):
-  students = []
-  groups = None
-  group = None
-  members = None
-  member = None
-  name = None
-  email = None
+def                     student():
+  school = None
+  array = None
+  id = None
 
   # display.
   env.display(env.HEADER_OK,
-              "extracting the students from the history '" + path + "'",
+              "generating database for the student",
               env.OPTION_NONE)
 
-  # retrieve the list of groups.
-  groups = env.list(env._HISTORY_DIR_ + "/" + path,
-                    env.OPTION_DIRECTORY)
+  # compute the id.
+  id = g_path.replace("/", "::")
 
-  # for each group, extract the information from the
-  # 'people' file.
-  for group in groups:
-    # read the 'people' file.
-    people = env.pull(env._HISTORY_DIR_ + "/" + path + "/" +
-                      group + "/people", env.OPTION_NONE)
+  # compute the school.
+  array = g_path.split("/")
+  school = "::".join(array[:len(array) - 1])
 
-    # extract every line
-    members = people.strip("\n").split("\n")
+  # load the configuration.
+  configuration = yaml.load(file(env._TEST_CONFIGURATION_DIR_ +         \
+                                   "/" + school + ".conf", 'r'))
 
-    # for every member, extract name and email.
-    for member in members:
-      # apply a regexp to locate the elements.
-      match = re.match("^(.+) <(.+)>$", member)
-
-      if not match:
-        env.display(env.HEADER_ERROR,
-                    "  unable to extract the name and email from the group '" +
-                    group + "'",
-                    env.OPTION_NONE)
-
-      # extract name and email.
-      name = match.group(1)
-      email = match.group(2)
-
-      # add the member to the data structure.
-      students += [ { "group": group,
-                      "name": name,
-                      "email": email } ]
+  # store the database in the file.
+  yaml.dump("{environments: " + configuration + ", traces: None }",
+            file(env._TEST_STORE_DATABASE_DIR_ + "/" + id + ".db", 'w'))
 
   # display.
   env.display(env.HEADER_OK,
-              "students information retrieved",
+              "  " +
+              id,
               env.OPTION_NONE)
 
-  return students
+  # display message.
+  env.display(env.HEADER_OK,
+              "student's database generated and stored",
+              env.OPTION_NONE)
 
 #
-# generate()
+# school()
 #
-# this function takes a data structure and generate
-# the database by initialising the number of tests
-# a student will be allowed to launch per stage.
+# this function generates a database for all the students of the given school
+# and according to the configuration file located in test/configuration/.
 #
-def                     generate(students, name):
+def                     school():
+  students = None
   student = None
-  suites = None
+  id = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating the students records",
+              "generating databases for the students",
               env.OPTION_NONE)
 
-  # load the suites information.
-  suites = yaml.load(file(env._TEST_CONFIGURATION_DIR_ + "/" + g_school + "::" + g_year + ".conf", 'r'))
+  # retrieve the list of students.
+  students = env.list(env._HISTORY_DIR_ + "/" + g_path,
+                      env.OPTION_DIRECTORY)
 
-  # for every student, generate a capability and store it.
+  # for each student.
   for student in students:
     # compute the id.
-    id = student["name"].replace(" ", ".").lower()
+    id = g_path.replace("/", "::")
+
+    # load the configuration.
+    configuration = yaml.load(file(env._TEST_CONFIGURATION_DIR_ +       \
+                                     "/" + id + ".conf", 'r'))
 
     # store the database in the file.
-    yaml.dump(suites, file(env._TEST_STORE_DATABASE_DIR_ + "/" + id + ".db", 'w'))
+    yaml.dump("{environments: " + configuration + ", traces: None }",
+              file(env._TEST_STORE_DATABASE_DIR_ + "/" + id + "::" +    \
+                     student + ".db", 'w'))
+
+    # display.
+    env.display(env.HEADER_OK,
+                "  " +
+                id + "::" + student,
+                env.OPTION_NONE)
+
+  # display message.
+  env.display(env.HEADER_OK,
+              "students' database generated and stored",
+              env.OPTION_NONE)
+
 
 #
 # contributor()
@@ -147,14 +143,25 @@ def                     generate(students, name):
 # this function creates a database for the contributors.
 #
 def                     contributor():
-  record = None
-  suites = None
-  
-  # load the suites information.
-  suites = yaml.load(file(env._TEST_CONFIGURATION_DIR_ + "/contributor.conf", 'r'))
+  configuration = None
+
+  # display message.
+  env.display(env.HEADER_OK,
+              "generating database from contributor's configuration",
+              env.OPTION_NONE)
+
+  # load the configuration.
+  configuration = yaml.load(file(env._TEST_CONFIGURATION_DIR_ +         \
+                            "/contributor.conf", 'r'))
 
   # store the database in the file.
-  yaml.dump(suites, file(env._TEST_STORE_DATABASE_DIR_ + "/contributor.db", 'w'))
+  yaml.dump("{environments: " + configuration + ", traces: None }",
+            file(env._TEST_STORE_DATABASE_DIR_ + "/contributor.db", 'w'))
+
+  # display message.
+  env.display(env.HEADER_OK,
+              "contributor's database generated and stored",
+              env.OPTION_NONE)
 
 #
 # main()
@@ -162,53 +169,45 @@ def                     contributor():
 # this is the main function.
 #
 def                     main():
-  global g_school
-  global g_year
+  global g_component
+  global g_path
 
-  file = None
-  code = None
-  students = None
-  args = None
-  path = None
+  component = None
 
   # check the number of arguments.
   if len(sys.argv) != 2:
     usage()
     sys.exit(42)
 
-  # retrive the actual arguments.
-  args = sys.argv[1].split("::")
+  # retrieve the arguments.
+  g_component = sys.argv[1].split("@")[0]
 
-  # check the number of arguments.
-  if len(args) != 2:
-    usage()
-    sys.exit(42)
+  if len(sys.argv[1].split("@")) > 1:
+    g_path = sys.argv[1].split("@")[1].replace("::", "/")
 
-  # set the global variables.
-  g_school = args[0]
-  g_year = args[1]
+  # trigger the appropriate function.
+  for component in c_components:
+    if g_component == component.split("@")[0]:
+      c_components[component]()
+      sys.exit(0)
 
-  # build the path.
-  path = g_school + "/" + g_year
-
-  # display.
-  env.display(env.HEADER_OK,
-              "generating database",
+  # wrong component.
+  env.display(env.HEADER_ERROR,
+              "unknown component '" + g_component + "'",
               env.OPTION_NONE)
 
-  # read the file and extract the students information.
-  students = extract(path)
+  # display usage.
+  Usage()
 
-  # generate the database.
-  generate(students, sys.argv[1])
+#
+# ---------- constants --------------------------------------------------------
+#
 
-  # create a database for the contributors.
-  contributor()
-
-  # display.
-  env.display(env.HEADER_OK,
-              "databases generated successfully",
-              env.OPTION_NONE)
+c_components = {
+  "contributor": contributor,
+  "school@school::year": school,
+  "student@school::year::name": student
+}
 
 #
 # ---------- entry point ------------------------------------------------------

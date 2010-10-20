@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repositories/kaneton/test/package/ktc.py
+# file          /home/mycure/kaneton.STABLE/test/package/ktc.py
 #
 # created       julien quintard   [sun mar 22 13:54:03 2009]
-# updated       julien quintard   [thu apr 16 16:13:15 2009]
+# updated       julien quintard   [tue oct 19 16:22:31 2010]
 #
 
 #
@@ -116,14 +116,16 @@ def                     Certificate(request,
 #
 def                     Put(name,
                             key):
-  open(name + ".key", 'w').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, key))
+  open(name + ".key",
+       'w').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, key))
 
 #
 # this function saves the given certificate on the file system.
 #
 def                     Save(name,
                              certificate):
-  open(name + ".crt", 'w').write(crypto.dump_certificate(crypto.FILETYPE_PEM, certificate))
+  open(name + ".crt",
+       'w').write(crypto.dump_certificate(crypto.FILETYPE_PEM, certificate))
 
 #
 # this function generates a random code.
@@ -138,19 +140,16 @@ def                     Code():
 #
 # this function builds a capability.
 #
-def                     Capability(key,
-                                   id,
-                                   school,
-                                   year,
-                                   group,
+def                     Capability(code,
                                    name,
+                                   community,
                                    email):
-  h = hmac.new(key, pickle.dumps( (id, school, year, group, name, email) ))
+  h = hmac.new(code, pickle.dumps( (name, community, email) ))
   token = h.hexdigest()
 
-  capability = pickle.dumps( { "id": id,
-                               "school": school, "year": year,
-                               "group": group, "name": name, "email": email,
+  capability = pickle.dumps( { "name": name,
+                               "community": community,
+                               "email": email,
                                "token": token } )
 
   return capability
@@ -159,14 +158,14 @@ def                     Capability(key,
 # this function validates the capability according to the given
 # key that has been used for issuing this capability.
 #
-def                     Validate(key,
+def                     Validate(code,
                                  capability):
   object = Extract(capability)
 
-  h = hmac.new(key,
-               pickle.dumps( (object["id"],
-                              object["school"], object["year"],
-                              object["group"], object["name"], object["email"] )))
+  h = hmac.new(code,
+               pickle.dumps( (object["name"],
+                              object["community"],
+                              object["email"] )))
   token = h.hexdigest()
 
   if token != object["token"]:

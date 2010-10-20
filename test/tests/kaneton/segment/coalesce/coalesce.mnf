@@ -1,0 +1,5 @@
+description: This test creates a task, reserves an address space, allocates adjacent segments before coalescing them. Note that the last part of the test tries to coalesce segment with different permissions.
+symbol: test_segment_coalesce
+output: |
+  [test] test_segment_coalesce
+  [/test] test_segment_coalesce

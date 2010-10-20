@@ -1,0 +1,5 @@
+name: k2
+description: XXX
+components:
+  id: kaneton/id
+  segment: kaneton/segment

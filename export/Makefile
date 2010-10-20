@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...ies/kaneton/export/.svn/tmp/tempfile.tmp
+# file          /home/mycure/kaneton.STABLE/export/Makefile
 #
 # created       julien quintard   [sun jun 10 14:53:00 2007]
-# updated       julien quintard   [wed apr 22 11:32:09 2009]
+# updated       julien quintard   [wed oct 20 13:00:10 2010]
 #
 
 #
@@ -21,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main export clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -34,6 +34,12 @@ SUBDIRS			:=		modules
 #
 
 main:
+
+export:
+	$(call env_launch,$(_EXPORT_SCRIPT_),$*,)
+
+export-%:
+	$(call env_launch,$(_EXPORT_SCRIPT_),$*,)
 
 clear:
 	for d in $(SUBDIRS) ; do					\

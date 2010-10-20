@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/util/Makefile
+# file          /home/mycure/kaneton.STABLE/test/util/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [wed apr 15 11:29:04 2009]
+# updated       julien quintard   [tue oct 19 22:21:45 2010]
 #
 
 #
@@ -42,19 +42,19 @@ certificate:
 code:
 	$(call env_launch,$(_TEST_CODE_SCRIPT_),,)
 
-capability:
+capability capability-:
 	$(call env_launch,$(_TEST_CAPABILITY_SCRIPT_),,)
 
 capability-%:
 	$(call env_launch,$(_TEST_CAPABILITY_SCRIPT_),$*,)
 
-database:
+database database-:
 	$(call env_launch,$(_TEST_DATABASE_SCRIPT_),,)
 
 database-%:
 	$(call env_launch,$(_TEST_DATABASE_SCRIPT_),$*,)
 
-inventory:
+inventory inventory-:
 	$(call env_launch,$(_TEST_INVENTORY_SCRIPT_),$*,)
 
 inventory-%:

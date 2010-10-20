@@ -1,4 +1,3 @@
----
 -
   operation: localexport
 
@@ -10,5 +9,9 @@
   pattern: .*\.svn
 
 -
+  operation: import
+  filename: templates/student
+
+-
   operation: tarball
-  filename: chicheteton
+  filename: test

@@ -26,6 +26,9 @@ TEST_C			:=		register.c
 
 TEST_O			:=		$(TEST_C:.c=.o)
 
+# XXX
+_TESTSUITE_ := ../../../check/test.yml
+
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -36,7 +39,6 @@ build:			$(TEST_LO)
 
 register.c: $(_TESTSUITE_) gen_register.sh
 	./gen_register.sh $(_TESTSUITE_) > register.c
-	
 
 $(TEST_LO):		$(TEST_O)
 	$(call env_remove,$(TEST_LO),)

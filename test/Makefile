@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/Makefile
+# file          /home/mycure/kaneton.STABLE/test/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [fri may  1 20:11:19 2009]
+# updated       julien quintard   [tue oct 19 13:10:24 2010]
 #
 
 #
@@ -31,6 +31,7 @@ SUBDIRS			:=		client				\
 					package				\
 					tests				\
 					util				\
+					engine				
 
 #
 # ---------- rules ------------------------------------------------------------

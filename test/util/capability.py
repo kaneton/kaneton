@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/util/capability.py
+# file          /home/mycure/kaneton.STABLE/test/util/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon may 11 22:10:00 2009]
+# updated       julien quintard   [wed oct 20 12:25:32 2010]
 #
 
 #
@@ -31,8 +31,8 @@ import re
 # ---------- globals ----------------------------------------------------------
 #
 
-g_school = None
-g_year = None
+g_component = None
+g_path = None
 
 #
 # ---------- functions --------------------------------------------------------
@@ -44,26 +44,33 @@ g_year = None
 # this function displays the usage.
 #
 def			usage():
+  component = None
+
   env.display(env.HEADER_ERROR,
-              "usage: capability.py [school::year]",
+              "usage: capability.py [component]",
               env.OPTION_NONE)
+
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+
+  env.display(env.HEADER_ERROR, "components:", env.OPTION_NONE)
+
+  for component in c_components:
+    env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
 
 #
 # extract()
 #
 # this function takes the path to a history directory and
-# extract the names, emails and id of every group.
+# extract the names, emails and id of every student.
 #
 # finally, the function returns the information in a data
 # structure.
 #
 def                     extract(path):
-  students = []
-  groups = None
-  group = None
+  container = {}
+  students = None
   members = None
   member = None
-  name = None
   email = None
 
   # display.
@@ -71,39 +78,38 @@ def                     extract(path):
               "extracting the students from the history '" + path + "'",
               env.OPTION_NONE)
 
-  # retrieve the list of groups.
-  groups = env.list(env._HISTORY_DIR_ + "/" + path,
-                    env.OPTION_DIRECTORY)
+  # retrieve the list of students.
+  students = env.list(env._HISTORY_DIR_ + "/" + path,
+                      env.OPTION_DIRECTORY)
 
-  # for each group, extract the information from the
+  # for each student, extract the information from the
   # 'people' file.
-  for group in groups:
+  for student in students:
     # read the 'people' file.
     people = env.pull(env._HISTORY_DIR_ + "/" + path + "/" +
-                      group + "/people", env.OPTION_NONE)
+                      student + "/people", env.OPTION_NONE)
 
     # extract every line
     members = people.strip("\n").split("\n")
 
-    # for every member, extract name and email.
+    # for every member, extract the first email email.
     for member in members:
       # apply a regexp to locate the elements.
       match = re.match("^(.+) <(.+)>$", member)
 
       if not match:
         env.display(env.HEADER_ERROR,
-                    "  unable to extract the name and email from the group '" +
-                    group + "'",
+                    "  unable to extract the name and email from the "
+                    "student '" + student + "'",
                     env.OPTION_NONE)
 
-      # extract name and email.
-      name = match.group(1)
+      # extract email.
       email = match.group(2)
 
-      # add the member to the data structure.
-      students += [ { "group": group,
-                      "name": name,
-                      "email": email } ]
+      break
+
+    # add the student.
+    container[student] = email
 
   # display.
   env.display(env.HEADER_OK,
@@ -121,54 +127,27 @@ def                     extract(path):
 def                     generate(code,
                                  students):
   student = None
-  id = None
+  name = None
   file = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating the students' capabilities",
+              "generating the students' capabilities:",
               env.OPTION_NONE)
 
   # for every student, generate a capability and store it.
   for student in students:
-    # compute the id.
-    id = student["name"].replace(" ", ".").lower()
+    # compute the name.
+    name = g_path.replace("/", "::") + "::" + student
 
     # compute the file name.
-    file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + id
-
-    #
-    # if a capability already exists.
-    #
-    if env.path(file + ".cap", env.OPTION_EXIST):
-      # load it.
-      capability = ktc.Load(file)
-
-      # extract the object.
-      object = ktc.Extract(capability)
-
-      # if the information are the same, do not re-generate
-      # a capability.
-      if (object["id"] == id) and                                       \
-         (object["school"] == g_school) and                             \
-         (object["year"] == g_year) and                                 \
-         (object["group"] == student["group"]) and                      \
-         (object["name"] == student["name"]) and                        \
-         (object["email"] == student["email"]):
-        continue
-
-    #
-    # otherwise, generate a capability and store it.
-    #
+    file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
 
     # create the capability.
     capability = ktc.Capability(code,
-                                id,
-                                g_school,
-                                g_year,
-                                student["group"],
-                                student["name"],
-                                student["email"])
+                                name,
+                                "students",
+                                students[student])
 
     # store it.
     ktc.Dump(file,
@@ -177,13 +156,104 @@ def                     generate(code,
     # display.
     env.display(env.HEADER_OK,
                 "  " +
-                id + " :: " +
-                g_school + " :: " +
-                g_year + " :: " +
-                student["group"] + " :: " +
-                student["name"] + " :: " +
-                student["email"],
+                name + " :: " +
+                students[student],
                 env.OPTION_NONE)
+
+#
+# student()
+#
+# this function generates a capability for a specific user.
+#
+def                     student():
+  name = None
+  email = None
+  file = None
+
+  # display.
+  env.display(env.HEADER_OK,
+              "generating the student's capability:",
+              env.OPTION_NONE)
+
+  # compute the name.
+  name = g_path.strip("/").replace("/", "::")
+
+  # read the 'people' file.
+  people = env.pull(env._HISTORY_DIR_ + "/" + g_path + "/people",
+                    env.OPTION_NONE)
+
+  # extract every line
+  members = people.strip("\n").split("\n")
+
+  # for every member, extract name and email.
+  for member in members:
+    # apply a regexp to locate the elements.
+    match = re.match("^(.+) <(.+)>$", member)
+
+    if not match:
+      env.display(env.HEADER_ERROR,
+                  "  unable to extract the name and email from the student '" +
+                  g_path + "'",
+                  env.OPTION_NONE)
+
+    # extract name email.
+    email = match.group(2)
+
+    break
+
+  # compute the file name.
+  file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
+
+  # retrieve the server's code.
+  code = ktc.Read(env._TEST_STORE_CODE_DIR_ + "/server")
+
+  # create the capability.
+  capability = ktc.Capability(code,
+                              name,
+                              "students",
+                              email)
+
+  # store it.
+  ktc.Dump(file,
+           capability)
+
+  # display.
+  env.display(env.HEADER_OK,
+              "  " +
+              name + " :: " +
+              email,
+              env.OPTION_NONE)
+
+  # display.
+  env.display(env.HEADER_OK,
+              "student's capability generated and stored",
+              env.OPTION_NONE)
+
+#
+# school()
+#
+# this function generates a capability for a set of students identified
+# by their school and year.
+#
+def                     school():
+  # display.
+  env.display(env.HEADER_OK,
+              "generating students' capabilities",
+              env.OPTION_NONE)
+
+  # retrieve the server's code.
+  code = ktc.Read(env._TEST_STORE_CODE_DIR_ + "/server")
+
+  # read the file and extract the students information.
+  students = extract(g_path)
+
+  # generate the capabilities.
+  generate(code, students)
+
+  # display.
+  env.display(env.HEADER_OK,
+              "students' capabilities generated and stored",
+              env.OPTION_NONE)
 
 #
 # contributor()
@@ -191,38 +261,27 @@ def                     generate(code,
 # this function generates a capability for the contributor to
 # test the research implementation as many times as they wish.
 #
-def                     contributor(code):
-  id = None
+def                     contributor():
+  name = None
 
   # display.
   env.display(env.HEADER_OK,
               "generating the contributor's capability",
               env.OPTION_NONE)
 
-  # compute the id.
-  id = "contributor"
+  # retrieve the server's code.
+  code = ktc.Read(env._TEST_STORE_CODE_DIR_ + "/server")
+
+  # compute the name.
+  name = "contributor"
 
   # compute the file name.
-  file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + id
-
-  #
-  # if a capability already exists.
-  #
-  if env.path(file + ".cap", env.OPTION_EXIST):
-    # ignore this step and return.
-    return
-
-  #
-  # otherwise, generate a capability and store it.
-  #
+  file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
 
   # create the capability.
   capability = ktc.Capability(code,
-                              id,
-                              "research",
-                              42,
+                              name,
                               "contributors",
-                              "contributor",
                               "admin@opaak.org")
 
   # store it.
@@ -240,56 +299,45 @@ def                     contributor(code):
 # this is the main function.
 #
 def                     main():
-  global g_school
-  global g_year
+  global g_component
+  global g_path
 
-  file = None
-  code = None
-  students = None
-  args = None
-  path = None
+  component = None
 
   # check the number of arguments.
   if len(sys.argv) != 2:
     usage()
     sys.exit(42)
 
-  # retrive the actual arguments.
-  args = sys.argv[1].split("::")
+  # retrieve the arguments.
+  g_component = sys.argv[1].split("@")[0]
 
-  # check the number of arguments.
-  if len(args) != 2:
-    usage()
-    sys.exit(42)
+  if len(sys.argv[1].split("@")) > 1:
+    g_path = sys.argv[1].split("@")[1].replace("::", "/")
 
-  # set the global variables.
-  g_school = args[0]
-  g_year = args[1]
+  # trigger the appropriate function.
+  for component in c_components:
+    if g_component == component.split("@")[0]:
+      c_components[component]()
+      sys.exit(0)
 
-  # build the path.
-  path = g_school + "/" + g_year
-
-  # display.
-  env.display(env.HEADER_OK,
-              "generating capabilities",
+  # wrong component.
+  env.display(env.HEADER_ERROR,
+              "unknown component '" + g_component + "'",
               env.OPTION_NONE)
 
-  # retrieve the server's code.
-  code = ktc.Read(env._TEST_STORE_CODE_DIR_ + "/server")
+  # display usage.
+  Usage()
 
-  # read the file and extract the students information.
-  students = extract(path)
+#
+# ---------- constants --------------------------------------------------------
+#
 
-  # generate the capabilities.
-  generate(code, students)
-
-  # create a capability for the contributors.
-  contributor(code)
-
-  # display.
-  env.display(env.HEADER_OK,
-              "capabilities generated and stored",
-              env.OPTION_NONE)
+c_components = {
+  "contributor": contributor,
+  "school@school::year": school,
+  "student@school::year::name": student
+}
 
 #
 # ---------- entry point ------------------------------------------------------

@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/server/server.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [tue apr 14 06:46:12 2009]
+# updated       julien quintard   [tue oct 19 12:30:42 2010]
 #
 
 #
@@ -21,6 +21,9 @@ import yaml
 import os
 import tempfile
 import re
+import traceback
+
+import xmlrpclib
 
 import SocketServer
 import BaseHTTPServer
@@ -37,17 +40,19 @@ import ktc
 
 # XXX[wrong paths :: to fix]
 
-CACertificate = "../store/certificate/ca.crt"
+CACertificate = "store/certificate/ca.crt"
 
 ServerHost = "test.opaak.org"
 ServerPort = 8421
-ServerCertificate = "../store/certificate/server.crt"
-ServerKey = "../store/key/server.key"
-ServerCode = "../store/code/server"
-ServerDatabaseDirectory = "../store/database"
+ServerCertificate = "store/certificate/server.crt"
+ServerKey = "store/key/server.key"
+ServerCode = "store/code/server"
 
-ScriptCompile = "scripts/compile.py"
-ScriptTest = "scripts/test.py"
+DirectoryDatabase = "store/database"
+DirectoryHooks = "hooks"
+
+HookPrepare = "prepare.py"
+HookRun = "run.py"
 
 #
 # ---------- SSLXMLRPCServer --------------------------------------------------
@@ -55,9 +60,9 @@ ScriptTest = "scripts/test.py"
 
 class SSLXMLRPCServer(BaseHTTPServer.HTTPServer,
                       SimpleXMLRPCServer.SimpleXMLRPCDispatcher):
-  def __init__(self,
-               address,
-               handler):
+  def           __init__(self,
+                         address,
+                         handler):
     # deactivate log.
     self.logRequests = False
 
@@ -91,13 +96,13 @@ class SSLXMLRPCServer(BaseHTTPServer.HTTPServer,
 #
 
 class SSLXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
-  def setup(self):
+  def           setup(self):
     self.connection = self.request
 
     self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
     self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
 
-  def do_POST(self):
+  def           do_POST(self):
     try:
       # get arguments
       data = self.rfile.read(int(self.headers["content-length"]))
@@ -133,71 +138,77 @@ class TestServer:
   #
   # this method test a given snapshot against a given tests suite.
   #
-  def Launch(self,
-             capability,
-             snapshot,
-             suite):
-    object = None
-    directory = None
-    file = None
+  def           Launch(self,
+                       capability,
+                       snapshot,
+                       machine,
+                       platform,
+                       architecture,
+                       suite):
+    context = {}
 
-    # verify the given capability.
-    if Test.Verify(capability) != True:
-      return (ktc.StatusError, "invalid capability")
+    try:
+      # verify the given capability.
+      if Test.Verify(capability) != True:
+        return (ktc.StatusError, "invalid capability")
 
-    # retrieve the object.
-    object = ktc.Extract(capability)
+      # retrieve the object.
+      context["profile"] = ktc.Extract(capability)
 
-    # retrieve the user profile.
-    profile = Test.Load(object["id"])
+      # retrieve the user profile.
+      context["database"] = Test.Load(context["profile"]["id"])
 
-    if profile:
-      if profile[suite] <= 0:
+      # verify the rights.
+      if (not context["database"]) or                                    \
+         (not suite in context["database"]) or                           \
+         (context["database"][suite] == 0):
         return (ktc.StatusError, "no tests left")
 
-    # create a temporary directory and file.
-    directory = Test.Temporary(Test.OptionDirectory)
-    file = Test.Temporary(Test.OptionFile)
+      # create a temporary directory and file.
+      context["snapshot"] = Test.Temporary(Test.OptionFile)
+      context["image"] = Test.Temporary(Test.OptionFile)
 
-    # save the snapshot in the temporary file.
-    Test.Push(file, str(snapshot))
+      # create a unique name fo the test context.
+      context["name"] = os.path.basename(context["image"])
 
-    # launch the compile script that will compile the snapshot, producing
-    # a bootable floppy image.
-#    Test.launch(ScriptCompile, object["id"] + " " + directory + " " + file)
+      # set other context variables.
+      context["capability"] = capability
+      context["suite"] = suite
+      context["machine"] = machine
+      context["platform"] = platform
+      context["architecture"] = architecture
 
-    # launch the test script that will run the test suite in a virtual machine.
-# XXX    Test.Launch(ScriptTest, file)
+      # save the snapshot in the temporary file.
+      Test.Push(context["snapshot"], str(snapshot))
 
-# XXX
-#    ./compile directory file
-#    ./test file result
+      # launch the prepare script that generates a bootable image
+      # referenced by context["image"].
+      output = Test.Launch(DirectoryHooks + "/" + context["machine"] + "/" + HookPrepare, context)
 
-# 0) sauver le snapshot dans un fichier
-# 1) extraire le snapshot dans un rep temporaire
-# 2) extraire les tests lies a la suite donnee (pas necessaire, il suffit
-#    de les avoir quelques part genre ServerSuitesDirectory)
-# 3) lancer une vm de compilation
-# 4) lancer la compilation et creation d'une image dans la vm compil
-# 5) recuperer l'image generee dans la vm compil
-# 6) lancer une vm de test avec l'image generee au stade precedent
-# 7) lancer la test suite qui communique via le port Serie
-# 9) recuperer les resultats
-# 10) generer une une trace python i.e convertible en YAML
-# 11) mettre a jour le profile etudiant en decrementant le nombre de tests
-#     restants
+      if len(output):
+        return (ktc.StatusError, xmlrpclib.Binary("an error occured during the compiling process:\n---\n" + output.strip(" \n") + "\n---"))
 
-    # remove the temporary file and directory.
-    Test.Remove(file)
-    Test.Remove(directory)
+      # launch the run script that will run the test suite in a virtual machine.
+      output = Test.Launch(DirectoryHooks + "/" + context["machine"] + "/" + HookRun, context)
 
-    return (ktc.StatusOk, None)
+      if len(output):
+        return (ktc.StatusError, xmlrpclib.Binary("an error occured while running the test suites:\n---\n" + output.strip(" \n") + "\n---"))
+
+      # remove the temporary file and directory.
+      Test.Remove(context["snapshot"])
+      Test.Remove(context["image"])
+
+      # XXX[save the report somewhere, remove a test from the database by increasing state]
+    except Exception, exception:
+      return (ktc.StatusError, Test.Trace())
+      
+    return (ktc.StatusOk, context["report"])
 
   #
   # this method returns information regarding the user capabilities.
   #
-  def Information(self,
-                  capability):
+  def           Information(self,
+                            capability):
     information = None
     stream = None
     object = None
@@ -216,8 +227,8 @@ class TestServer:
     # build the information.
     information = object
 
-    if profile:
-      information["profile"] = profile
+    # add the profile.
+    information["profile"] = profile
 
     return (ktc.StatusOk, information)
 
@@ -236,14 +247,14 @@ class Test:
   #
   # this method initializes the Test static class.
   #
-  def Initialize():
+  def           Initialize():
     # read the server code.
     Test.code = ktc.Read(ServerCode)
 
   #
   # this method verifies the given capability.
   #
-  def Verify(capability):
+  def           Verify(capability):
     # extract and validate the given capability.
     try:
       ktc.Validate(Test.code, capability)
@@ -254,48 +265,43 @@ class Test:
     return True
 
   #
-  # this function return a user profile given its id.
+  # this function returns a user profile given its id.
   #
-  def Load(id):
+  def           Load(id):
     path = None
 
     # compute the path.
-    path = ServerDatabaseDirectory + "/" + id + ".db"
+    path = DirectoryDatabase + "/" + id + ".db"
 
     if not os.path.exists(path):
       return None
 
     # load the database.
-    database = yaml.load(file(ServerDatabaseDirectory + "/" + id, 'r'))
+    database = yaml.load(file(path, 'r'))
 
     return database
 
   #
   # this function stores the new profile of a given user.
   #
-  def Store(id, profile):
-    path = None
-
-    # compute the path.
-    path = ServerDatabaseDirectory + "/" + id + ".db"
-
+  def           Store(id, profile):
     # load the database.
-    database = yaml.dump(profile,
-                         file(ServerDatabaseDirectory + "/" + id, 'w'))
+    yaml.dump(profile,
+              file(DirectoryDatabase + "/" + id, 'w'))
 
   #
   # this function creates a temporary file or directory.
   #
-  def Temporary(options):
+  def           Temporary(options):
     location = None
 
-    if options == OptionFile:
+    if options == Test.OptionFile:
       tuple = tempfile.mkstemp()
 
       os.close(tuple[0])
 
       location = tuple[1]
-    elif options == OptionDirectory:
+    elif options == Test.OptionDirectory:
       location = tempfile.mkdtemp()
 
     return location
@@ -303,7 +309,7 @@ class Test:
   #
   # this function writes a file.
   #
-  def Push(file, content):
+  def           Push(file, content):
     handle = None
 
     handle = open(file, "w")
@@ -315,7 +321,7 @@ class Test:
   #
   # this function reads a file.
   #
-  def Pull(file):
+  def           Pull(file):
     handle = None
     line = None
 
@@ -338,43 +344,63 @@ class Test:
   #
   # this function executes something.
   #
-  def Launch(file, arguments, options = OptionNone):
+  def           Launch(path, context, options = OptionNone):
     directory = None
     info = None
-    status = 0
+    output = None
     wd = None
+    temporary = None
 
-    if options & OptionQuiet:
+    # generate a temporary file for the context.
+    temporary = Test.Temporary(Test.OptionFile)
+
+    # serialize the context.
+    yaml.dump(context, file(temporary, 'w'))
+
+    # handle options.
+    if options & Test.OptionQuiet:
       output = " >/dev/null 2>&1"
     else:
       output = ""
 
-    info = os.path.split(file)
+    # retrive file information.
+    info = os.path.split(path)
 
     directory = info[0]
-    file = info[1]
+    path = info[1]
 
+    # change directory if required.
     if directory:
       wd = os.getcwd()
       os.chdir(directory)
 
-    if re.match("^.*\.py$", file):
-      status = os.system("python " + file + " " + arguments + output)
+    # launch the script.
+    if re.match("^.*\.py$", path):
+      output = os.popen("python " + path + " " + temporary + output).read()
     else:
       if directory:
-        file = "./" + file
+        path = "./" + path
 
-      status = os.system(file + " " + arguments + output)
+      output = os.popen(path + " " + arguments + output).read()
 
+    # come back to the original directory if necessary.
     if directory:
       os.chdir(wd)
 
-    return status
+    # extract the potentially modified context by first
+    # deleting the previous content and updating it.
+    context.clear()
+    context.update(yaml.load(file(temporary, 'r')))
+
+    # delete the temporary file.
+    os.unlink(temporary)
+
+    return output
 
   #
   # this function removes the target.
   #
-  def Remove(target):
+  def           Remove(target):
     entries = None
     entry = None
 
@@ -385,9 +411,31 @@ class Test:
       entries = os.listdir(target)
 
       for entry in entries:
-        Remove(target + "/" + entry)
+        Test.Remove(target + "/" + entry)
 
       os.rmdir(target)
+
+  #
+  # this function returns the current errors trace.
+  #
+  def           Trace():
+    temporary = None
+    trace = None
+
+    # create a temporary file.
+    temporary = Test.Temporary(Test.OptionFile)
+
+    # put the trace in the temporary file.
+    traceback.print_exc(None, file(temporary, 'w'))
+
+    # read the file.
+    trace = Test.Pull(temporary)
+
+    # remove the temporary file.
+    Test.Remove(temporary)
+
+    # return the trace.
+    return trace
 
   #
   # static methods
@@ -399,7 +447,9 @@ class Test:
   Temporary = staticmethod(Temporary)
   Push = staticmethod(Push)
   Pull = staticmethod(Pull)
+  Launch = staticmethod(Launch)
   Remove = staticmethod(Remove)
+  Trace = staticmethod(Trace)
 
 #
 # ---------- entry point ------------------------------------------------------
@@ -422,9 +472,3 @@ if __name__ == '__main__':
 
   # loop endlessly waiting for requests.
   server.serve_forever()
-
-# XXX
-#
-# o passer le serveur en threade
-#
-# /XXX

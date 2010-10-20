@@ -1,3 +1,4 @@
-description:
-tests:
-- kaneton/id/id
+name: kaneton
+description: XXX
+components:
+  - id: kaneton/id

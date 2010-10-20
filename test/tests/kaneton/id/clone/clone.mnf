@@ -1,4 +1,4 @@
-description:
+description: This test reserves, clones and releases identifiers.
 symbol: test_id_clone
 output: |
   [test] test_id_clone
