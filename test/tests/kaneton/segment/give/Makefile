@@ -5,53 +5,46 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/kaneton/modules/test/Makefile
+# file          /home/mycure/kane...test/tests/kaneton/segment/give/Makefile
 #
-# created       julien quintard   [wed apr 15 07:00:50 2009]
-# updated       julien quintard   [thu oct 21 20:33:57 2010]
+# created       julien quintard   [wed apr 15 04:30:04 2009]
+# updated       julien quintard   [wed oct 20 14:27:32 2010]
 #
-
-#
-# ---------- component --------------------------------------------------------
-#
-
-component		:=		kaneton/core/test
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../environment/env.mk
+include			../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers dependencies
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		test.lo
-
-TEST_C			:=		test.c
-
+TEST_C			:=		give.c
 TEST_O			:=		$(TEST_C:.c=.o)
 
-TEST_INCLUDE		:=		$(directory)/include/test.h
+TEST_H			:=		$(directory)/$(TEST_C:.c=.h)
+
+TEST_LO			:=		$(TEST_O:.o=.lo)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies $(TEST_LO)
+main:			$(TEST_LO)
 
-$(TEST_LO):		$(TEST_O) $(_TEST_STORE_BUNDLES_TESTS_LO_)
+$(TEST_LO):		$(TEST_O)
 	$(call env_remove,$(TEST_LO),)
 
-	$(call env_archive,$(TEST_LO),$(TEST_O) $(_TEST_STORE_BUNDLES_TESTS_LO_),)
+	$(call env_archive,$(TEST_LO),$(TEST_O),)
 
 clear:
 	$(call env_remove,$(TEST_O),)
@@ -61,15 +54,12 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,$(TEST_INCLUDE),)
+	$(call env_prototypes,$(TEST_H),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(TEST_C),)
-
-dependencies:
-
 
 endif
 #

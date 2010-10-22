@@ -1,0 +1,5 @@
+description: This test creates a task, reserves segments and finally flushes all the segments.
+symbol: test_segment_flush
+output: |
+  [test] test_segment_flush
+  [/test] test_segment_flush

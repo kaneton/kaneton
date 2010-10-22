@@ -1,0 +1,5 @@
+description: This test creates a task, an address space and allocates and build a segment through malloc() before injecting it into the task's address space.
+symbol: test_segment_inject
+output: |
+  [test] test_segment_inject
+  [/test] test_segment_inject

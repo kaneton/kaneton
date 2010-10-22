@@ -1,0 +1,5 @@
+description: This test creates a task and address space before reserving several segments.
+symbol: test_segment_multiple_03
+output: |
+  [test] test_segment_multiple_03
+  [/test] test_segment_multiple_03

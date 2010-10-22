@@ -1,0 +1,5 @@
+description: This test creates two tasks and address spaces, reserves a segment in the first address space and gives it to the second.
+symbol: test_segment_give
+output: |
+  [test] test_segment_give
+  [/test] test_segment_give

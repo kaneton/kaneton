@@ -1,0 +1,8 @@
+This directory contains the whole test system which is composed
+of a server, a client, some script as well as test suites composed
+of several tests.
+
+Note that a kaneton microkernel compiled with the test module
+requires a tests collection to be present:
+
+  test/tests.lo

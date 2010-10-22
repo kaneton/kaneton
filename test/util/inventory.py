@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/util/inventory.py
+# file          /home/mycure/kaneton.STABLE/test/util/inventory.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [sat may  2 00:49:01 2009]
+# updated       julien quintard   [fri oct 22 09:45:12 2010]
 #
 
 #
@@ -132,9 +132,6 @@ def                     main():
 
   # set the global variables.
   directory = sys.argv[1]
-
-# XXX
-  directory = env._TEST_TESTS_DIR_ + "/kaneton"
 
   # display.
   env.display(env.HEADER_OK,

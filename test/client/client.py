@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [wed oct 20 12:27:57 2010]
+# updated       julien quintard   [thu oct 21 21:17:46 2010]
 #
 
 #
@@ -39,9 +39,9 @@ import env
 # ---------- globals ----------------------------------------------------------
 #
 
+g_server = None
 g_host = None
 g_capability = None
-g_machine = None
 g_platform = None
 g_architecture = None
 
@@ -69,18 +69,16 @@ def			Usage():
 # this function simply displays the current configuration.
 #
 def                     Warning():
-  machine = None
-
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
   env.display(env.HEADER_OK, "configuration:", env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  server:                 " + g_server,
+              env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  host:                   " + g_host,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  capability:             " + g_capability + ".cap",
-              env.OPTION_NONE)
-  env.display(env.HEADER_OK,
-              "  machine:                " + str(g_machine),
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  platform:               " + str(g_platform),
@@ -241,17 +239,20 @@ def                     Information(server, capability, arguments):
 #
 def                     Launch(server, capability, arguments):
   snapshot = None
+  suite = None
+  environment = None
 
   # warning
   Warning()
 
   # check the arguments
-  if len(arguments) != 2:
+  if len(arguments) != 3:
     Usage()
     sys.exit(42)
 
-  # retrieve the suite.
-  suite = arguments[1]
+  # retrieve the arguments.
+  environment = arguments[1]
+  suite = arguments[2]
 
   # read the snapshot.
   snapshot = env.pull("/home/mycure/kaneton-submission.tar.bz2",
@@ -260,9 +261,10 @@ def                     Launch(server, capability, arguments):
   # launch a test.
   report = ktc.Call(server.Launch(capability,
                                   xmlrpclib.Binary(snapshot),
-                                  g_machine,
+                                  g_host,
                                   g_platform,
                                   g_architecture,
+                                  environment,
                                   suite))
 
   # display the received report.
@@ -273,10 +275,10 @@ def                     Launch(server, capability, arguments):
   # store the report in a trace file.
   yaml.dump({ "meta":
                 { "time": time.strftime("%Y-%m-%d %H:%M:%S"),
-                  "suite": suite,
-                  "machine": g_machine,
                   "platform": g_platform,
-                  "architecture": g_architecture },
+                  "architecture": g_architecture,
+                  "environment": environment,
+                  "suite": suite },
               "data":
                 report },
             file(env._TEST_STORE_TRACES_DIR_ +
@@ -348,9 +350,9 @@ def                     List(server, capability, arguments):
 # this is the main function.
 #
 def                     Main():
+  global g_server
   global g_host
   global g_capability
-  global g_machine
   global g_platform
   global g_architecture
 
@@ -364,17 +366,17 @@ def                     Main():
     sys.exit(42)
 
   # set the arguments.
-  arguments = sys.argv[1].split(":")
+  arguments = sys.argv[1].split("::")
 
   # set the variables.
+  g_server = env._TEST_SERVER_
   g_host = env._TEST_HOST_
   g_capability = env._TEST_CAPABILITY_
-  g_machine = env._TEST_MACHINE_
   g_platform = env._TEST_PLATFORM_
   g_architecture = env._TEST_ARCHITECTURE_
 
   # connect to the server.
-  server = xmlrpclib.Server(g_host,
+  server = xmlrpclib.Server(g_server,
                             allow_none = True)
 
   # load the student capability.
@@ -400,7 +402,7 @@ def                     Main():
 
 c_commands = {
   "information": Information,
-  "launch [environment] [machine] [suite]": Launch,
+  "launch [environment] [suite]": Launch,
   "list": List,
   "dump [trace]": Dump
 }
@@ -414,36 +416,13 @@ if __name__ == '__main__':
 
 # XXX
 #
-# o verifier que le certificat recu est le meme que celui en local
+# o verifier que le certificat recu est le meme que celui en local. faire des
+#   tests avec des autority ou serv-cert foireux.
 #
-# o cote serveur, il ne faudrait pas inclure les tests dans la compile car
-#   un etudiant pourrait les afficher sur la sortie et faire peter la compile
-#   pour recuperer tous les tests.
-#   il faudrait donc les compiler a cote en ayant une tarball speciale
-#   qui ne contient pas le code du kernel (-kaneton/) mais juste les tests
-#   et l'environnement de dev. a la sortie, on recuperer tests.lo et on le
-#   passe au truc qui compile le kernel.
-#   -> bon finalement, si ils veulent et peu importe ce que l'on fait, ils
-#   pourront recuperer le tests.lo soit en le dumpant pendant la compile
-#   soit en dumpant le code lorsque les tests tournent. c'est pas vraiment
-#   un probleme car bon c'est bcp d'efforts pour se faire chier ensuite a
-#   capter les tests en asm. ce qu'il faut surtout eviter c'est qu'ils aient
-#   acces aux sources des tests. donc la solution la moins couteuse c'est
-#   de les compiler a cote.
-#   => via l'outil d'export il faudrait que ca genere une tarball pour
-#   compiler les tests mais il faudrait egalement que la tarball etudiante
-#   ait un Makefile dans kaneton/core/test modifie pour utilise tests.lo
-#   directement.
-# o changer le nom de la vm 'svm' en 'svm-linux:ia32'
-# o creer/detruire un user a chaque compile
+# o faire que ca compile avec le bundle tests.lo
+#
 # o matter ce flag: IA32_KERNEL_MAPPED, est-il necessaire pour les tests?
-# o les scripts compile/run a mettre dans des rep k0/ k1/ etc.
-# o rajouter un try/catch autour de compile/run et clean si ca foire
 # o rajouter le check de .svn env.mk env.py .dependency.mk etc. pour savoir
 #   si la tarball est clean: .o et .lo egalement.
-# o lock le fichier de database pour etre sur que le meme user ne lance
-#   pas deux fois le truc.
-# o rajouter des try/catch dans/autour des scripts prepare/run qui Clean
-#   et afficher traceback
 #
 # XXX

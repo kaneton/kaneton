@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ABLE/test/tests/kaneton/segment/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [wed oct 20 12:56:49 2010]
+# updated       julien quintard   [wed oct 20 16:36:16 2010]
 #
 
 #
@@ -29,13 +29,13 @@ include			../../../../environment/env.mk
 
 SUBDIRS			:=		catch				\
 					clone				\
-					coalesce			
-#					copy				\
-#					flush				\
-#					give				\
-#					inject				\
-#					multiple			\
-#					permissions			\
+					coalesce			\
+					copy				\
+					flush				\
+					give				\
+					inject				\
+					multiple			\
+					permissions			
 #					read-write			\
 #					resize				\
 #					simple				\
