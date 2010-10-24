@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/export/Makefile
 #
 # created       julien quintard   [sun jun 10 14:53:00 2007]
-# updated       julien quintard   [wed oct 20 13:00:10 2010]
+# updated       julien quintard   [fri oct 22 09:54:24 2010]
 #
 
 #
@@ -21,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main export clear prototypes headers
+.PHONY:		main export- export clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -35,7 +35,7 @@ SUBDIRS			:=		modules
 
 main:
 
-export:
+export- export:
 	$(call env_launch,$(_EXPORT_SCRIPT_),$*,)
 
 export-%:

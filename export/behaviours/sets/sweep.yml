@@ -1,0 +1,33 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operation removes all the versioning-system-specific information.
+#
+
+#
+# subversion
+#
+-
+  operation: fremovepattern
+  pattern: \.svn
+
+#
+# cvs
+#
+-
+  operation: fremovepattern
+  pattern: CVS
+
+#
+# git
+#
+-
+  operation: fremovepattern
+  pattern: \.git
+
+#
+# mercurial
+#
+-
+  operation: fremovepattern
+  pattern: \.hg

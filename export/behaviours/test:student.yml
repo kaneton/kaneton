@@ -1,0 +1,32 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this behaviour is used in order to create a kaneton snapshot students
+# to invoke the test system.
+#
+
+-
+  operation: localexport
+
+-
+  operation: initenv
+
+-
+  operation: import
+  filename: sets/sweep
+
+-
+  operation: import
+  filename: sets/chop
+
+-
+  operation: import
+  filename: sets/ibm-pc.ia32
+
+-
+  operation: import
+  filename: sets/user:test
+
+-
+  operation: tarball
+  filename: test:student

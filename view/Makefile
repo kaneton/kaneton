@@ -21,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main view build clear prototypes headers
+.PHONY:		main view- view build clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -44,7 +44,7 @@ SUBDIRS			:=		bibliography			\
 
 main:		build
 
-view view-:
+view- view:
 	$(call env_launch,$(_VIEW_SCRIPT_),$*,)
 
 view-%:

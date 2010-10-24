@@ -1,6 +1,6 @@
-.global bootloader_entry
+.global loader_entry
 
-bootloader_entry:
+loader_entry:
 	push %ebx
 	push %eax
 	call bootloader

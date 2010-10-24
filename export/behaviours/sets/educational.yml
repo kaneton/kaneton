@@ -1,10 +1,18 @@
--
-  operation: fremove
-  path: boot/bootloader/ibm-pc.ia32/optimised
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operation relocates files and directories in order to create
+# a clean machine ibm-pc.ia32 environment avoid of the multiple educational/,
+# optimised/ etc. specialisations.
+#
 
 -
   operation: fremove
-  path: boot/bootloader/ibm-pc.ia32/test
+  path: boot/loader/ibm-pc.ia32/optimised
+
+-
+  operation: fremove
+  path: boot/loader/ibm-pc.ia32/test
 
 -
   operation: fremove
@@ -28,112 +36,112 @@
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/bootloader.c
-  dst: boot/bootloader/ibm-pc.ia32/bootloader.c
+  src: boot/loader/ibm-pc.ia32/educational/loader.c
+  dst: boot/loader/ibm-pc.ia32/loader.c
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/cons.c
-  dst: boot/bootloader/ibm-pc.ia32/cons.c
+  src: boot/loader/ibm-pc.ia32/educational/cons.c
+  dst: boot/loader/ibm-pc.ia32/cons.c
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/early.c
-  dst: boot/bootloader/ibm-pc.ia32/early.c
+  src: boot/loader/ibm-pc.ia32/educational/early.c
+  dst: boot/loader/ibm-pc.ia32/early.c
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/entry.S
-  dst: boot/bootloader/ibm-pc.ia32/entry.S
+  src: boot/loader/ibm-pc.ia32/educational/entry.S
+  dst: boot/loader/ibm-pc.ia32/entry.S
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/init.h
-  dst: boot/bootloader/ibm-pc.ia32/init.h
+  src: boot/loader/ibm-pc.ia32/educational/init.h
+  dst: boot/loader/ibm-pc.ia32/init.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/layout
-  dst: boot/bootloader/ibm-pc.ia32/layout
+  src: boot/loader/ibm-pc.ia32/educational/layout
+  dst: boot/loader/ibm-pc.ia32/layout
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/libc.h
-  dst: boot/bootloader/ibm-pc.ia32/libc.h
+  src: boot/loader/ibm-pc.ia32/educational/libc.h
+  dst: boot/loader/ibm-pc.ia32/libc.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/libia32.h
-  dst: boot/bootloader/ibm-pc.ia32/libia32.h
+  src: boot/loader/ibm-pc.ia32/educational/libia32.h
+  dst: boot/loader/ibm-pc.ia32/libia32.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/multiboot.h
-  dst: boot/bootloader/ibm-pc.ia32/multiboot.h
+  src: boot/loader/ibm-pc.ia32/educational/multiboot.h
+  dst: boot/loader/ibm-pc.ia32/multiboot.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/paging.c
-  dst: boot/bootloader/ibm-pc.ia32/paging.c
+  src: boot/loader/ibm-pc.ia32/educational/paging.c
+  dst: boot/loader/ibm-pc.ia32/paging.c
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/types.h
-  dst: boot/bootloader/ibm-pc.ia32/types.h
+  src: boot/loader/ibm-pc.ia32/educational/types.h
+  dst: boot/loader/ibm-pc.ia32/types.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/bootloader.h
-  dst: boot/bootloader/ibm-pc.ia32/bootloader.h
+  src: boot/loader/ibm-pc.ia32/educational/loader.h
+  dst: boot/loader/ibm-pc.ia32/loader.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/cons.h
-  dst: boot/bootloader/ibm-pc.ia32/cons.h
+  src: boot/loader/ibm-pc.ia32/educational/cons.h
+  dst: boot/loader/ibm-pc.ia32/cons.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/elf.h
-  dst: boot/bootloader/ibm-pc.ia32/elf.h
+  src: boot/loader/ibm-pc.ia32/educational/elf.h
+  dst: boot/loader/ibm-pc.ia32/elf.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/init.c
-  dst: boot/bootloader/ibm-pc.ia32/init.c
+  src: boot/loader/ibm-pc.ia32/educational/init.c
+  dst: boot/loader/ibm-pc.ia32/init.c
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/isa.h
-  dst: boot/bootloader/ibm-pc.ia32/isa.h
+  src: boot/loader/ibm-pc.ia32/educational/isa.h
+  dst: boot/loader/ibm-pc.ia32/isa.h
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/libc.c
-  dst: boot/bootloader/ibm-pc.ia32/libc.c
+  src: boot/loader/ibm-pc.ia32/educational/libc.c
+  dst: boot/loader/ibm-pc.ia32/libc.c
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/libia32.c
-  dst: boot/bootloader/ibm-pc.ia32/libia32.c
+  src: boot/loader/ibm-pc.ia32/educational/libia32.c
+  dst: boot/loader/ibm-pc.ia32/libia32.c
 
 -
   operation: fmove
-  src: export/data/boot_bootloader_ibm-pc.ia32_Makefile
-  dst: boot/bootloader/ibm-pc.ia32/Makefile
+  src: export/data/boot_loader_ibm-pc.ia32_Makefile
+  dst: boot/loader/ibm-pc.ia32/Makefile
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/multiboot.S
-  dst: boot/bootloader/ibm-pc.ia32/multiboot.S
+  src: boot/loader/ibm-pc.ia32/educational/multiboot.S
+  dst: boot/loader/ibm-pc.ia32/multiboot.S
 
 -
   operation: fmove
-  src: boot/bootloader/ibm-pc.ia32/educational/pmode.c
-  dst: boot/bootloader/ibm-pc.ia32/pmode.c
+  src: boot/loader/ibm-pc.ia32/educational/pmode.c
+  dst: boot/loader/ibm-pc.ia32/pmode.c
 
 -
   operation: fremove
-  path: boot/bootloader/ibm-pc.ia32/educational
+  path: boot/loader/ibm-pc.ia32/educational
 
 -
   operation: fremove

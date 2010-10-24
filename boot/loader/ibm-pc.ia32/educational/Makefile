@@ -8,14 +8,14 @@
 # file          /home/mycure/kane.../loader/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       julien quintard   [sat may  2 00:03:28 2009]
+# updated       julien quintard   [fri oct 22 10:12:59 2010]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		bootloader
+component		:=		loader
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,7 +33,7 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-BOOTLOADER_C		:=		bootloader.c			\
+BOOTLOADER_C		:=		loader.c			\
 					cons.c				\
 					init.c				\
 					paging.c			\
@@ -48,7 +48,7 @@ BOOTLOADER_S		:=		multiboot.S			\
 BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
 					$(BOOTLOADER_S:.S=.o)
 
-BOOTLOADER_INCLUDE	:=		$(_LOADER_DIR_)/bootloader.h 	\
+BOOTLOADER_INCLUDE	:=		$(_LOADER_DIR_)/loader.h 	\
 					$(_LOADER_DIR_)/cons.h		\
 					$(_LOADER_DIR_)/libia32.h	\
 					$(_LOADER_DIR_)/libc.h
@@ -63,7 +63,7 @@ main:			$(_LOADER_)
 $(_LOADER_):		$(BOOTLOADER_O)
 	$(call env_executable,$(_LOADER_),				\
 			      $(BOOTLOADER_O),				\
-			      $(_LOADER_DIR_)/layout/bootloader.lyt,\
+			      $(_LOADER_DIR_)/layout/loader.lyt,	\
 			      $(ENV_OPTION_NO_STANDARD))
 
 clear:

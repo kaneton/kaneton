@@ -1,3 +1,10 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operations removes parts of the source code in order for
+# students to undertake the k1 project.
+#
+
 -
   operation: bremove
   id: kaneton/core/region/region.c::show::comment

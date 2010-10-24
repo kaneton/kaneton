@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/mycure/kaneton/export/data/Makefile
+# file          /home/mycure/kaneton.STABLE/export/output/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [tue may  5 12:21:08 2009]
+# updated       julien quintard   [fri oct 22 13:46:39 2010]
 #
 
 #
@@ -39,7 +39,7 @@ _MAKE_			?=		$(MAKE)
 
 ifeq ($(_SIGNATURE_),kaneton)
 
-PATHS			=		$(dir $(_INPUTS_))
+PATHS			=		$(dir $(_COMPONENTS_))
 
   main:
 	for path in $(PATHS) ; do					\
@@ -85,7 +85,12 @@ clean:
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		environment \
+SUBDIRS			:=		boot				\
+					environment			\
+					kaneton				\
+					license				\
+					sample				\
+					tool				\
 					$(PATHS)
 
 #

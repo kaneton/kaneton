@@ -5,17 +5,17 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...loader/ibm-pc.ia32/educational/libia32.c
+ * file          /home/mycure/kane...loader/ibm-pc.ia32/educational/libia32.c
  *
  * created       matthieu bucchianeri   [mon jun 25 22:52:22 2007]
- * updated       matthieu bucchianeri   [thu jun 28 14:57:01 2007]
+ * updated       julien quintard   [fri oct 22 10:14:29 2010]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include "bootloader.h"
+#include "loader.h"
 
 /*
  * ---------- globals ---------------------------------------------------------

@@ -1,0 +1,91 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operation removes all the unecessary components such as the
+# cheat/, test/, history/ etc. directories.
+#
+# note that the root Makefile is also replaced in order to consier the
+# new environment.
+#
+
+#
+# Makefile
+#
+-
+  operation: freplace
+  src: export/data/Makefile
+  dst: Makefile
+
+#
+# directories
+#
+-
+  operation: fremove
+  path: TODO
+
+-
+  operation: fremove
+  path: README
+
+-
+  operation: fremove
+  path: cheat
+
+-
+  operation: fremove
+  path: check
+
+-
+  operation: fremove
+  path: configure
+
+-
+  operation: fremove
+  path: export
+
+-
+  operation: fremove
+  path: history
+
+-
+  operation: fremove
+  path: test
+
+-
+  operation: fremove
+  path: transcript
+
+-
+  operation: fremove
+  path: view
+
+#
+# tools
+#
+-
+  operation: fremove
+  path: tool/ctc
+
+-
+  operation: fremove
+  path: tool/forest
+
+-
+  operation: fremove
+  path: tool/interface
+
+-
+  operation: fremove
+  path: tool/mbl/octaneload
+
+-
+  operation: fremove
+  path: tool/mbl/qemu-mips
+
+-
+  operation: fremove
+  path: tool/script
+
+-
+  operation: fremove
+  path: tool/view

@@ -48,7 +48,7 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      bootloader.c
+ *      loader.c
  *      cons.c
  *      init.c
  *      paging.c
@@ -56,7 +56,7 @@
  */
 
 /*
- * bootloader.c
+ * loader.c
  */
 
 void			bootloader_error(void);

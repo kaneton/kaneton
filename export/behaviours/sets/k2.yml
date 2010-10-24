@@ -1,3 +1,10 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operations removes parts of the source code in order for
+# students to undertake the k2 project.
+#
+
 -
   operation: bremove
   id: kaneton/core/scheduler/scheduler.c::dump::comment

@@ -1,0 +1,41 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this behaviour is used in order to create a kaneton snapshot for students
+# of EPITA'11.
+#
+
+-
+  operation: svnexport
+
+-
+  operation: import
+  filename: sets/sweep
+
+-
+  operation: import
+  filename: sets/k1
+
+-
+  operation: import
+  filename: sets/k2
+
+-
+  operation: import
+  filename: sets/chop
+
+-
+  operation: import
+  filename: sets/ibm-pc.ia32
+
+-
+  operation: import
+  filename: sets/user:sample.yml
+
+-
+  operation: import
+  filename: sets/educational
+
+-
+  operation: tarball
+  filename: 2011

@@ -1,0 +1,78 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operation removes every profile so that only the ibm-pc.ia32
+# machine remains.
+#
+
+-
+  operation: fremove
+  path: boot/loader/null.null
+
+-
+  operation: fremove
+  path: boot/loader/octane.mips64
+
+-
+  operation: fremove
+  path: boot/loader/qemu-mips.mips64
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/architecture/mips64
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/architecture/null
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/platform/null
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/platform/octane
+
+-
+  operation: fremove
+  path: environment/profile/kaneton/platform/qemu-mips
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/mips64
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/null
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ultrasparc
+
+-
+  operation: fremove
+  path: kaneton/machine/glue/null.null
+
+-
+  operation: fremove
+  path: kaneton/machine/glue/octane.mips64
+
+-
+  operation: fremove
+  path: kaneton/machine/glue/qemu-mips.mips64
+
+-
+  operation: fremove
+  path: kaneton/machine/platform/null
+
+-
+  operation: fremove
+  path: kaneton/machine/platform/octane
+
+-
+  operation: fremove
+  path: kaneton/machine/platform/qemu-mips
+
+-
+  operation: fremove
+  path: kaneton/machine/platform/sun4u

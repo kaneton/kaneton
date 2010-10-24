@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [thu oct 21 21:17:46 2010]
+# updated       julien quintard   [sun oct 24 12:12:01 2010]
 #
 
 #
@@ -30,7 +30,7 @@ import re
 import time
 import yaml
 
-import xmlrpclib
+import xmlrpc
 
 import ktc
 import env
@@ -254,13 +254,18 @@ def                     Launch(server, capability, arguments):
   environment = arguments[1]
   suite = arguments[2]
 
+  # XXX
+  # 1) make export-student:contributor
+  # 2) export/output/test:contributor.tar.bz2
+  # XXX
+
   # read the snapshot.
-  snapshot = env.pull("/home/mycure/kaneton-submission.tar.bz2",
+  snapshot = env.pull("/home/mycure/kaneton.STABLE/export/output/test:contributor.tar.bz2",
                       env.OPTION_NONE)
 
   # launch a test.
   report = ktc.Call(server.Launch(capability,
-                                  xmlrpclib.Binary(snapshot),
+                                  xmlrpc.Binary(snapshot),
                                   g_host,
                                   g_platform,
                                   g_architecture,
@@ -356,6 +361,10 @@ def                     Main():
   global g_platform
   global g_architecture
 
+  x = str(42)
+  print "[error] " + x
+  sys.exit(42)
+
   server = None
   capability = None
   arguments = None
@@ -376,8 +385,8 @@ def                     Main():
   g_architecture = env._TEST_ARCHITECTURE_
 
   # connect to the server.
-  server = xmlrpclib.Server(g_server,
-                            allow_none = True)
+  server = xmlrpc.Server(g_server,
+                         allow_none = True)
 
   # load the student capability.
   capability = ktc.Load(g_capability)
@@ -419,10 +428,6 @@ if __name__ == '__main__':
 # o verifier que le certificat recu est le meme que celui en local. faire des
 #   tests avec des autority ou serv-cert foireux.
 #
-# o faire que ca compile avec le bundle tests.lo
-#
 # o matter ce flag: IA32_KERNEL_MAPPED, est-il necessaire pour les tests?
-# o rajouter le check de .svn env.mk env.py .dependency.mk etc. pour savoir
-#   si la tarball est clean: .o et .lo egalement.
 #
 # XXX

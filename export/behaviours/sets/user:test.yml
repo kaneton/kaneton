@@ -1,0 +1,33 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operation removes the unecessary users so that only 'test'
+# remains.
+#
+
+#
+# users
+#
+-
+  operation: fremove
+  path: environment/profile/user/enguerrand.raymond
+
+-
+  operation: fremove
+  path: environment/profile/user/francois.goudal
+
+-
+  operation: fremove
+  path: environment/profile/user/jean.guyader
+
+-
+  operation: fremove
+  path: environment/profile/user/julien.quintard
+
+-
+  operation: fremove
+  path: environment/profile/user/matthieu.bucchianeri
+
+-
+  operation: fremove
+  path: environment/profile/user/sample

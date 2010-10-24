@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/package/ktc.py
 #
 # created       julien quintard   [sun mar 22 13:54:03 2009]
-# updated       julien quintard   [tue oct 19 16:22:31 2010]
+# updated       julien quintard   [sun oct 24 12:08:27 2010]
 #
 
 #
@@ -30,7 +30,7 @@ import hmac
 import pickle
 import sys
 
-import xmlrpclib
+import xmlrpc
 
 #
 # ---------- definitions ------------------------------------------------------
@@ -50,7 +50,7 @@ def                     Call(value):
   type = value[0]
   data = value[1]
 
-  if isinstance(data, xmlrpclib.Binary) == True:
+  if isinstance(data, xmlrpc.Binary) == True:
     data = str(value[1])
 
   if type == StatusError:
