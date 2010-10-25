@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/util/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [wed oct 20 12:25:32 2010]
+# updated       julien quintard   [mon oct 25 20:19:56 2010]
 #
 
 #
@@ -21,11 +21,11 @@
 # ---------- packages ---------------------------------------------------------
 #
 
-import env
-import ktc
-
 import sys
 import re
+
+import env
+import ktp
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -144,14 +144,14 @@ def                     generate(code,
     file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
 
     # create the capability.
-    capability = ktc.Capability(code,
-                                name,
-                                "students",
-                                students[student])
+    capability = ktp.capability.Create(code,
+                                       name,
+                                       "students",
+                                       students[student])
 
     # store it.
-    ktc.Dump(file,
-             capability)
+    ktp.capability.Store(file,
+                         capability)
 
     # display.
     env.display(env.HEADER_OK,
@@ -205,17 +205,17 @@ def                     student():
   file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
 
   # retrieve the server's code.
-  code = ktc.Read(env._TEST_STORE_CODE_DIR_ + "/server")
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server")
 
   # create the capability.
-  capability = ktc.Capability(code,
-                              name,
-                              "students",
-                              email)
+  capability = ktp.capability.Create(code,
+                                     name,
+                                     "students",
+                                     email)
 
   # store it.
-  ktc.Dump(file,
-           capability)
+  ktp.capability.Store(file,
+                       capability)
 
   # display.
   env.display(env.HEADER_OK,
@@ -242,7 +242,7 @@ def                     school():
               env.OPTION_NONE)
 
   # retrieve the server's code.
-  code = ktc.Read(env._TEST_STORE_CODE_DIR_ + "/server")
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server")
 
   # read the file and extract the students information.
   students = extract(g_path)
@@ -270,7 +270,7 @@ def                     contributor():
               env.OPTION_NONE)
 
   # retrieve the server's code.
-  code = ktc.Read(env._TEST_STORE_CODE_DIR_ + "/server")
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server")
 
   # compute the name.
   name = "contributor"
@@ -279,14 +279,14 @@ def                     contributor():
   file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
 
   # create the capability.
-  capability = ktc.Capability(code,
-                              name,
-                              "contributors",
-                              "admin@opaak.org")
+  capability = ktp.capability.Create(code,
+                                     name,
+                                     "contributors",
+                                     "admin@opaak.org")
 
   # store it.
-  ktc.Dump(file,
-           capability)
+  ktp.capability.Store(file,
+                       capability)
 
   # display.
   env.display(env.HEADER_OK,

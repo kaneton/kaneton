@@ -34,31 +34,31 @@ void			test_segment_permissions_01(void)
 
   if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAV_INTERACTIVE,
 		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
-    printf("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error\n");
 
   if (as_reserve(task, &as) != ERROR_NONE)
-    printf("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error\n");
 
   if (segment_reserve(as, PAGESZ, PERM_READ | PERM_EXEC, &seg) != ERROR_NONE)
-    printf("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error\n");
 
   if (segment_get(seg, &o) != ERROR_NONE)
-    printf("[segment_get] error\n");
+    TEST_ERROR("[segment_get] error\n");
 
   if (o->perms != (PERM_READ | PERM_EXEC))
-    printf("invalid segment's permissions\n");
+    TEST_ERROR("invalid segment's permissions\n");
 
   if (segment_perms(seg, PERM_READ | PERM_WRITE) != ERROR_NONE)
-    printf("[segment_perms] error\n");
+    TEST_ERROR("[segment_perms] error\n");
 
   if (o->perms != (PERM_READ | PERM_WRITE))
-    printf("invalid segment's permissions\n");
+    TEST_ERROR("invalid segment's permissions\n");
 
   if (as_release(as) != ERROR_NONE)
-    printf("[as_release] error\n");
+    TEST_ERROR("[as_release] error\n");
 
   if (task_release(task) != ERROR_NONE)
-    printf("[task_release] error\n");
+    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/util/code.py
+# file          /home/mycure/kaneton.STABLE/test/util/code.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon apr 20 03:28:48 2009]
+# updated       julien quintard   [mon oct 25 20:17:46 2010]
 #
 
 #
@@ -22,7 +22,7 @@
 #
 
 import env
-import ktc
+import ktp
 
 #
 # ---------- functions --------------------------------------------------------
@@ -42,11 +42,11 @@ def                     main():
               env.OPTION_NONE)
 
   # generate a code.
-  code = ktc.Code()
+  code = ktp.code.Generate()
 
   # store the code.
-  ktc.Store(env._TEST_STORE_CODE_DIR_ + "/server",
-            code)
+  ktp.code.Store(env._TEST_STORE_CODE_DIR_ + "/server",
+                 code)
 
   # display.
   env.display(env.HEADER_OK,

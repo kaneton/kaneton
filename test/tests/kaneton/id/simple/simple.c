@@ -31,20 +31,20 @@ void			test_id_simple(void)
   TEST_ENTER();
 
   if (id_build(&id) != ERROR_NONE)
-    printf("[id_build] error\n");
+    TEST_ERROR("[id_build] error\n");
   else
     {
       if (id_reserve(&id, &i) != ERROR_NONE)
-	printf("[id_reserve] error\n");
+	TEST_ERROR("[id_reserve] error\n");
 
       if (!(i >= 0 && i <= (t_id)-1))
-	printf("invalid id\n");
+	TEST_ERROR("invalid id\n");
 
       if (id_release(&id, i) != ERROR_NONE)
-	printf("[id_release] error\n");
+	TEST_ERROR("[id_release] error\n");
 
       if (id_destroy(&id) != ERROR_NONE)
-	printf("[id_destroy] error\n");
+	TEST_ERROR("[id_destroy] error\n");
     }
 
   TEST_LEAVE();

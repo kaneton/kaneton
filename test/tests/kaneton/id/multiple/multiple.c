@@ -33,31 +33,31 @@ void			test_id_multiple(void)
   TEST_ENTER();
 
   if (id_build(&id) != ERROR_NONE)
-    printf("[id_build] error\n");
+    TEST_ERROR("[id_build] error\n");
   else
     {
       for (j = 0; j < 1024; j++)
 	{
 	  if (id_reserve(&id, &i[j]) != ERROR_NONE)
-	    printf("[id_reserve] error\n");
+	    TEST_ERROR("[id_reserve] error\n");
 
 	  if (!(i[j] >= 0 && i[j] <= (t_id)-1))
-	    printf("invalid id\n");
+	    TEST_ERROR("invalid id\n");
 	}
 
       for (j = 0; j < 1024; j++)
 	for (k = 0; k < 1024; k++)
 	  if (j != k && i[j] == i[k])
-	    printf("collision\n");
+	    TEST_ERROR("collision\n");
 
       for (j = 0; j < 1024; j++)
 	{
 	  if (id_release(&id, i[j]) != ERROR_NONE)
-	    printf("[id_release] error\n");
+	    TEST_ERROR("[id_release] error\n");
 	}
 
       if (id_destroy(&id) != ERROR_NONE)
-	printf("[id_destroy] error\n");
+	TEST_ERROR("[id_destroy] error\n");
     }
 
   TEST_LEAVE();

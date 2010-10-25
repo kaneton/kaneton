@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [sun oct 24 12:12:01 2010]
+# updated       julien quintard   [mon oct 25 19:56:58 2010]
 #
 
 #
@@ -30,10 +30,8 @@ import re
 import time
 import yaml
 
-import xmlrpc
-
-import ktc
 import env
+import ktp
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -75,10 +73,10 @@ def                     Warning():
               "  server:                 " + g_server,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "  host:                   " + g_host,
+              "  capability:             " + g_capability + ".cap",
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "  capability:             " + g_capability + ".cap",
+              "  host:                   " + g_host,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  platform:               " + str(g_platform),
@@ -265,7 +263,7 @@ def                     Launch(server, capability, arguments):
 
   # launch a test.
   report = ktc.Call(server.Launch(capability,
-                                  xmlrpc.Binary(snapshot),
+                                  ktp.miscellaneous.Binary(snapshot),
                                   g_host,
                                   g_platform,
                                   g_architecture,
@@ -286,10 +284,11 @@ def                     Launch(server, capability, arguments):
                   "suite": suite },
               "data":
                 report },
-            file(env._TEST_STORE_TRACES_DIR_ +
-                 "/" +
-                 time.strftime("%Y%m%d-%H%M%S") +
-                 ".trc", 'w'))
+            file(env._TEST_STORE_TRACES_DIR_ + "/" +                    \
+                   environment + "/" +                                  \
+                   g_platform + "." + g_architecture + "/" +            \
+                   suite + "/" +                                        \
+                   time.strftime("%Y%m%d-%H%M%S") + ".trc", 'w'))
 
   # display a summary
   for unit in report:
@@ -361,10 +360,6 @@ def                     Main():
   global g_platform
   global g_architecture
 
-  x = str(42)
-  print "[error] " + x
-  sys.exit(42)
-
   server = None
   capability = None
   arguments = None
@@ -385,8 +380,7 @@ def                     Main():
   g_architecture = env._TEST_ARCHITECTURE_
 
   # connect to the server.
-  server = xmlrpc.Server(g_server,
-                         allow_none = True)
+  server = ktp.xmlrpc.Connect(g_server)
 
   # load the student capability.
   capability = ktc.Load(g_capability)
@@ -413,7 +407,7 @@ c_commands = {
   "information": Information,
   "launch [environment] [suite]": Launch,
   "list": List,
-  "dump [trace]": Dump
+  "dump [environment] [suite] [identifier]": Dump
 }
 
 #
@@ -429,5 +423,8 @@ if __name__ == '__main__':
 #   tests avec des autority ou serv-cert foireux.
 #
 # o matter ce flag: IA32_KERNEL_MAPPED, est-il necessaire pour les tests?
+#
+# o creer les repertoires de traces/ proprement.
+# o de meme pour les traces a dumper, ne regarder que dans ce repertoire
 #
 # XXX

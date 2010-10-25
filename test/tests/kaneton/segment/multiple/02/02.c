@@ -33,10 +33,10 @@ void			test_segment_multiple_02(void)
 
   if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAV_INTERACTIVE,
 		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
-    printf("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error\n");
 
   if (as_reserve(task, &as) != ERROR_NONE)
-    printf("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error\n");
 
   MULTIPLE_ALLOCATE(as, 1, seg);
   MULTIPLE_ALLOCATE(as, 9, seg + 1);
@@ -46,10 +46,10 @@ void			test_segment_multiple_02(void)
   MULTIPLE_ALLOCATE(as, 2, seg + 3);
 
   if (as_release(as) != ERROR_NONE)
-    printf("[as_release] error\n");
+    TEST_ERROR("[as_release] error\n");
 
   if (task_release(task) != ERROR_NONE)
-    printf("[task_release] error\n");
+    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

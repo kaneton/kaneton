@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/engine/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [mon oct 18 09:38:10 2010]
+# updated       julien quintard   [mon oct 25 15:25:04 2010]
 #
 
 #
@@ -27,12 +27,8 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ENGINE_C			:=		leak.c			\
-						task.c			\
-						thread.c		\
-						time.c			\
-						engine.c		\
-						cell.c			
+ENGINE_C			:=		task.c			\
+						thread.c		
 
 ENGINE_O			:=		$(ENGINE_C:.c=.o)
 

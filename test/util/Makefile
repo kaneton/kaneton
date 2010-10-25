@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/util/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [tue oct 19 22:21:45 2010]
+# updated       julien quintard   [mon oct 25 18:23:55 2010]
 #
 
 #
@@ -22,13 +22,6 @@ include			../../environment/env.mk
 #
 
 .PHONY:		main build run clear prototypes headers
-
-#
-# ---------- variables --------------------------------------------------------
-#
-
-# XXX[should be put in the previous directory]
-PYTHONPATH		:=		${PYTHONPATH}:${_TEST_PACKAGE_DIR_}
 
 #
 # ---------- rules ------------------------------------------------------------

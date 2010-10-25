@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/util/certificate.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [tue oct 19 13:36:10 2010]
+# updated       julien quintard   [mon oct 25 20:15:58 2010]
 #
 
 #
@@ -23,7 +23,7 @@
 #
 
 import env
-import ktc
+import ktp
 
 #
 # ---------- functions --------------------------------------------------------
@@ -40,18 +40,18 @@ def                     ca():
   certificate = None
 
   # generate a cryptographic key.
-  key = ktc.Key()
+  key = ktp.key.Generate()
 
   # generate a certificate request.
-  request = ktc.Request(key,
-                        CN = "test.opaak.org",
-                        emailAddress = "admin@opaak.org")
+  request = ktp.certificate.Request(key,
+                                    CN = "test.opaak.org",
+                                    emailAddress = "admin@opaak.org")
 
   # finally, build a valid, self-certified certificate
-  certificate = ktc.Certificate(request,
-                                (request, key),
-                                0,
-                                (0, 60 * 60 * 24 * 365 * 10))
+  certificate = ktp.certificate.Create(request,
+                                       (request, key),
+                                       0,
+                                       (0, 60 * 60 * 24 * 365 * 10))
 
   # display
   env.display(env.HEADER_OK,
@@ -72,18 +72,18 @@ def                     server(ca_key, ca_certificate):
   certificate = None
 
   # generate a cryptographic key.
-  key = ktc.Key()
+  key = ktp.key.Generate()
 
   # generate a certificate request.
-  request = ktc.Request(key,
-                        CN = "test.opaak.org",
-                        emailAddress = "admin@opaak.org")
+  request = ktp.certificate.Request(key,
+                                    CN = "test.opaak.org",
+                                    emailAddress = "admin@opaak.org")
 
   # finally, build a valid, self-certified certificate
-  certificate = ktc.Certificate(request,
-                                (ca_certificate, ca_key),
-                                0,
-                                (0, 60 * 60 * 24 * 365 * 5))
+  certificate = ktp.certificate.Create(request,
+                                       (ca_certificate, ca_key),
+                                       0,
+                                       (0, 60 * 60 * 24 * 365 * 5))
 
   # display
   env.display(env.HEADER_OK,
@@ -115,18 +115,18 @@ def                     main():
   (server_key, server_certificate) = server(ca_key, ca_certificate)
 
   # save the ca key and certificate
-  ktc.Put(env._TEST_STORE_KEY_DIR_ + "/ca",
-          ca_key)
+  ktp.key.Store(env._TEST_STORE_KEY_DIR_ + "/ca",
+                ca_key)
 
-  ktc.Save(env._TEST_STORE_CERTIFICATE_DIR_ + "/ca",
-           ca_certificate)
+  ktp.certificate.Store(env._TEST_STORE_CERTIFICATE_DIR_ + "/ca",
+                        ca_certificate)
 
   # save the server key and certificate
-  ktc.Put(env._TEST_STORE_KEY_DIR_ + "/server",
-          server_key)
+  ktp.key.Store(env._TEST_STORE_KEY_DIR_ + "/server",
+                server_key)
 
-  ktc.Save(env._TEST_STORE_CERTIFICATE_DIR_ + "/server",
-           server_certificate)
+  ktp.certificate.Store(env._TEST_STORE_CERTIFICATE_DIR_ + "/server",
+                        server_certificate)
 
   # display.
   env.display(env.HEADER_OK,

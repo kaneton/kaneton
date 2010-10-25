@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/util/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [wed oct 20 13:52:45 2010]
+# updated       julien quintard   [mon oct 25 20:28:08 2010]
 #
 
 #
@@ -21,13 +21,13 @@
 # ---------- packages ---------------------------------------------------------
 #
 
-import env
-import ktc
-
 import sys
 import re
 import yaml
 import copy
+
+import env
+import ktp
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -73,12 +73,12 @@ def                     student():
   school = "::".join(array[:len(array) - 1])
 
   # load the configuration.
-  configuration = yaml.load(file(env._TEST_CONFIGURATION_DIR_ +         \
-                                   "/" + school + ".conf", 'r'))
+  configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
+                                           "/" + school)
 
-  # store the database in the file.
-  yaml.dump("{environments: " + configuration + ", traces: None }",
-            file(env._TEST_STORE_DATABASE_DIR_ + "/" + id + ".db", 'w'))
+  # generate the database.
+  ktp.database.Generate(configuration,
+                        env._TEST_STORE_DATABASE_DIR_ + "/" + id)
 
   # display.
   env.display(env.HEADER_OK,
@@ -117,13 +117,12 @@ def                     school():
     id = g_path.replace("/", "::")
 
     # load the configuration.
-    configuration = yaml.load(file(env._TEST_CONFIGURATION_DIR_ +       \
-                                     "/" + id + ".conf", 'r'))
+    configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
+                                           "/" + id)
 
-    # store the database in the file.
-    yaml.dump("{environments: " + configuration + ", traces: None }",
-              file(env._TEST_STORE_DATABASE_DIR_ + "/" + id + "::" +    \
-                     student + ".db", 'w'))
+    # generate the database.
+    ktp.database.Generate(configuration,
+                          env._TEST_STORE_DATABASE_DIR_ + "/" + id)
 
     # display.
     env.display(env.HEADER_OK,
@@ -151,12 +150,12 @@ def                     contributor():
               env.OPTION_NONE)
 
   # load the configuration.
-  configuration = yaml.load(file(env._TEST_CONFIGURATION_DIR_ +         \
-                            "/contributor.conf", 'r'))
+  configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
+                                         "/contributor")
 
-  # store the database in the file.
-  yaml.dump("{environments: " + configuration + ", traces: None }",
-            file(env._TEST_STORE_DATABASE_DIR_ + "/contributor.db", 'w'))
+  # generate the database.
+  ktp.database.Generate(configuration,
+                        env._TEST_STORE_DATABASE_DIR_ + "/contributor")
 
   # display message.
   env.display(env.HEADER_OK,

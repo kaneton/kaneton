@@ -35,10 +35,10 @@ void			test_segment_inject(void)
 
   if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAV_INTERACTIVE,
 		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
-    printf("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error\n");
 
   if (as_reserve(task, &as) != ERROR_NONE)
-    printf("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error\n");
 
   new_seg = malloc(sizeof (o_segment));
   new_seg->address = 0x50000000;
@@ -47,37 +47,37 @@ void			test_segment_inject(void)
   new_seg->type = SEGMENT_TYPE_MEMORY;
 
   if (segment_inject(as, new_seg, &seg) != ERROR_NONE)
-    printf("[segment_inject] error\n");
+    TEST_ERROR("[segment_inject] error\n");
 
   if ((t_paddr)seg != 0x50000000)
-    printf("invalid segment's identifier after inject\n");
+    TEST_ERROR("invalid segment's identifier after inject\n");
 
   if (segment_get(seg, &o) != ERROR_NONE)
-    printf("[segment_get] error\n");
+    TEST_ERROR("[segment_get] error\n");
 
   if (o->segid != seg)
-    printf("invalid segment's identifier after injection\n");
+    TEST_ERROR("invalid segment's identifier after injection\n");
 
   if (o->asid != as)
-    printf("invalid segment's address space identifier after injection\n");
+    TEST_ERROR("invalid segment's address space identifier after injection\n");
 
   if (o->address != (t_uint32)seg)
-    printf("invalid segment's address after injection\n");
+    TEST_ERROR("invalid segment's address after injection\n");
 
   if (o->size != 2 * PAGESZ)
-    printf("invalid segment's size after injection\n");
+    TEST_ERROR("invalid segment's size after injection\n");
 
   if (o->perms != (PERM_READ | PERM_EXEC))
-    printf("invalid segment's permissions after injection\n");
+    TEST_ERROR("invalid segment's permissions after injection\n");
 
   if (segment_release(seg) != ERROR_NONE)
-    printf("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error\n");
 
   if (as_release(as) != ERROR_NONE)
-    printf("[as_release] error\n");
+    TEST_ERROR("[as_release] error\n");
 
   if (task_release(task) != ERROR_NONE)
-    printf("[task_release] error\n");
+    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

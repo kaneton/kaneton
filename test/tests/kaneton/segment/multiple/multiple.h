@@ -27,25 +27,25 @@
 			  (_pages_) * PAGESZ,				\
 			  PERM_READ,					\
 			  (_segment_)) != ERROR_NONE)			\
-	printf("[segment_reserve] error\n");				\
+	TEST_ERROR("[segment_reserve] error\n");				\
 									\
       if (segment_get(*(_segment_), &o) != ERROR_NONE)			\
-	printf("[segment_get] error\n");				\
+	TEST_ERROR("[segment_get] error\n");				\
 									\
       if (o->segid != *(_segment_))					\
-	printf("invalid segment's identifier\n");			\
+	TEST_ERROR("invalid segment's identifier\n");			\
 									\
       if (o->asid != (_as_))						\
-	printf("invalid segment's address space identifier\n");		\
+	TEST_ERROR("invalid segment's address space identifier\n");		\
 									\
       if (o->address != (t_uint32)(*(_segment_)))			\
-	printf("invalid segment's address\n");				\
+	TEST_ERROR("invalid segment's address\n");				\
 									\
       if (o->size != (_pages_) * PAGESZ)				\
-	printf("invalid segment's size\n");				\
+	TEST_ERROR("invalid segment's size\n");				\
 									\
       if (o->perms != PERM_READ)					\
-	printf("invalid segment's permissions\n");			\
+	TEST_ERROR("invalid segment's permissions\n");			\
     } while (0)
 
 #endif

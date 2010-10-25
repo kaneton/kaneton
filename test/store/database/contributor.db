@@ -1,10 +1,22 @@
-qemu:
-  ibm-pc.ia32:
-    k1: {quota: inf, requests: 0}
-    k2: {quota: inf, requests: 0}
-    k3: {quota: inf, requests: 0}
-xen:
-  ibm-pc.ia32:
-    k1: {quota: inf, requests: 0}
-    k2: {quota: inf, requests: 0}
-    k3: {quota: inf, requests: 0}
+reports:
+  qemu:
+    ibm-pc.ia32/educational:
+      k1: []
+      k2: []
+      k3: []
+  xen:
+    ibm-pc.ia32/educational:
+      k1: []
+      k2: []
+      k3: []
+settings:
+  qemu:
+    ibm-pc.ia32/educational:
+      k1: {quota: -1, requests: 0}
+      k2: {quota: -1, requests: 0}
+      k3: {quota: -1, requests: 0}
+  xen:
+    ibm-pc.ia32/educational:
+      k1: {quota: -1, requests: 0}
+      k2: {quota: -1, requests: 0}
+      k3: {quota: -1, requests: 0}
