@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [mon oct 25 18:23:42 2010]
+# updated       julien quintard   [tue oct 26 11:57:07 2010]
 #
 
 #
@@ -30,7 +30,7 @@ include			../environment/env.mk
 SUBDIRS			:=		client				\
 					packages			\
 					tests				\
-					util				\
+					utilities			\
 					engine				
 
 #

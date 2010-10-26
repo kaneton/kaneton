@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/util/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon oct 25 20:28:08 2010]
+# updated       julien quintard   [mon oct 25 20:39:36 2010]
 #
 
 #
@@ -59,6 +59,7 @@ def                     student():
   school = None
   array = None
   id = None
+  database = None
 
   # display.
   env.display(env.HEADER_OK,
@@ -77,8 +78,10 @@ def                     student():
                                            "/" + school)
 
   # generate the database.
-  ktp.database.Generate(configuration,
-                        env._TEST_STORE_DATABASE_DIR_ + "/" + id)
+  database = ktp.database.Generate(configuration)
+
+  # store the database.
+  ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" + id)
 
   # display.
   env.display(env.HEADER_OK,
@@ -101,6 +104,7 @@ def                     school():
   students = None
   student = None
   id = None
+  database = None
 
   # display.
   env.display(env.HEADER_OK,
@@ -121,8 +125,10 @@ def                     school():
                                            "/" + id)
 
     # generate the database.
-    ktp.database.Generate(configuration,
-                          env._TEST_STORE_DATABASE_DIR_ + "/" + id)
+    database = ktp.database.Generate(configuration)
+
+    # store the database.
+    ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" + id)
 
     # display.
     env.display(env.HEADER_OK,
@@ -143,6 +149,7 @@ def                     school():
 #
 def                     contributor():
   configuration = None
+  database = None
 
   # display message.
   env.display(env.HEADER_OK,
@@ -154,8 +161,10 @@ def                     contributor():
                                          "/contributor")
 
   # generate the database.
-  ktp.database.Generate(configuration,
-                        env._TEST_STORE_DATABASE_DIR_ + "/contributor")
+  database = ktp.database.Generate(configuration)
+
+  # store the database.
+  ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/contributor")
 
   # display message.
   env.display(env.HEADER_OK,

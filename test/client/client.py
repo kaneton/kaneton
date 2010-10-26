@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/client/client.py
+# file          /data/mycure/repo...ies/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [mon oct 25 19:56:58 2010]
+# updated       julien quintard   [tue oct 26 11:55:44 2010]
 #
 
 #
@@ -16,8 +16,8 @@
 #
 # this script connects to the test server and triggers operations.
 #
-# note that this script depends on the ktc package which relies on
-# the pyopenssl package.
+# note that this script depends on the ktp package which relies on
+# the pyopenssl, yaml and other packages.
 #
 
 #
@@ -38,7 +38,6 @@ import ktp
 #
 
 g_server = None
-g_host = None
 g_capability = None
 g_platform = None
 g_architecture = None
@@ -76,9 +75,6 @@ def                     Warning():
               "  capability:             " + g_capability + ".cap",
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "  host:                   " + g_host,
-              env.OPTION_NONE)
-  env.display(env.HEADER_OK,
               "  platform:               " + str(g_platform),
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
@@ -87,10 +83,10 @@ def                     Warning():
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
 #
-# this function walk through the unit and sub-units and if every test
-# was successful, return True.
+# this function walk through the unit and counts the number of successful
+# tests.
 #
-def                     Status(tests):
+def                     Count(tests):
   success = 0
   total = 0
 
@@ -104,46 +100,92 @@ def                     Status(tests):
   return (success, total)
 
 #
-# this function displays a brief summary of the tests
+# this function displays a brief summary of the given report.
 #
-OPTION_NONE = 0
-OPTION_DETAIL = 1
-def                     Summary(unit, tests, margin, options):
+def                     Summarize(report, margin = ""):
   success = None
   total = None
-  header = None
+
   status = None
-  result = None
   length = None
   count = None
-  test = None
+
   color = None
 
-  # compute the status of all the tests and sub-units' tests.
-  (success, total) = Status(tests)
+  unit = None
+  tests = None
 
-  # set the colour according to the status.
-  if success == total:
-    result = "ok"
-    color = env.COLOR_GREEN
-  else:
-    result = "ko"
-    color = env.COLOR_RED
+  # for the units of the report.
+  for unit in report["data"]:
+    # retrieve the tests.
+    tests = report["data"][unit]
 
-  count = " [" + str(success) + "/" + str(total) + "]"
-  length = 79 - len(unit) - len(margin) - 4 - len(result) - len(count)
+    # compute the status of all the tests of the given unit.
+    (success, total) = Count(tests)
 
-  status = length * " " +                                               \
-           env.colorize(result, color, env.OPTION_BOLD) +               \
-           count
+    # set the colour according to the status.
+    if success == total:
+      color = env.COLOR_GREEN
+    else:
+      color = env.COLOR_RED
 
-  # display the unit name.
-  env.display(env.HEADER_OK,
-              margin + unit + status,
-              env.OPTION_NONE)
+    # generate the count.
+    count = " [" + str(success) + "/" + str(total) + "]"
 
-  # dump the tests' details if requested.
-  if options & OPTION_DETAIL:
+    # generate the unit's status.
+    length = 79 - len(unit) - len(margin) - 4 - len(count)
+    status = length * " " +                                               \
+             env.colorize(count, color, env.OPTION_BOLD)
+
+    # display the unit name.
+    env.display(env.HEADER_OK,
+                margin + unit + status,
+                env.OPTION_NONE)
+
+#
+# this function displays a detailed version of the given report.
+#
+def                     Detail(report, margin = ""):
+  success = None
+  total = None
+
+  status = None
+  length = None
+  count = None
+
+  color = None
+
+  unit = None
+  tests = None
+  test = None
+
+  # for the units of the report.
+  for unit in report["data"]:
+    # retrieve the tests.
+    tests = report["data"][unit]
+
+    # compute the status of all the tests of the given unit.
+    (success, total) = Count(tests)
+
+    # set the colour according to the status.
+    if success == total:
+      color = env.COLOR_GREEN
+    else:
+      color = env.COLOR_RED
+
+    # generate the count.
+    count = " [" + str(success) + "/" + str(total) + "]"
+
+    # generate the unit's status.
+    length = 79 - len(unit) - len(margin) - 4 - len(count) - 1
+    status = length * " " +                                               \
+             env.colorize(count, color, env.OPTION_BOLD)
+
+    # display the unit name.
+    env.display(env.HEADER_OK,
+                margin + unit + ":" + status,
+                env.OPTION_NONE)
+
     for test in tests:
       # select color.
       if tests[test]["status"] == True:
@@ -151,9 +193,14 @@ def                     Summary(unit, tests, margin, options):
       else:
         color = env.COLOR_RED
 
+      # display name.
+      env.display(env.HEADER_OK,
+                  margin + "  " + test + ":",
+                  env.OPTION_NONE)
+
       # display status.
       env.display(env.HEADER_OK,
-                  margin + "  status: " +
+                  margin + "    status: " +
                   env.colorize(str(tests[test]["status"]),
                                color,
                                env.OPTION_NONE),
@@ -161,27 +208,26 @@ def                     Summary(unit, tests, margin, options):
 
       # display description.
       env.display(env.HEADER_OK,
-                  margin + "  description: " +
+                  margin + "    description: " +
                   tests[test]["description"],
                   env.OPTION_NONE)
 
       # display duration.
       env.display(env.HEADER_OK,
-                  margin + "  duration: " +
+                  margin + "    duration: " +
                   str(tests[test]["duration"]),
                   env.OPTION_NONE)
 
       # display output.
       env.display(env.HEADER_OK,
-                  margin + "  output: " +
+                  margin + "    output: " +
                   tests[test]["output"],
                   env.OPTION_NONE)
 
 #
-# this function display any Python dictionary in a
-# hierarchical way.
+# this function dumps any Python dictionary in a hierarchical way.
 #
-def                     Display(data, margin):
+def                     Dump(data, margin = ""):
   key = None
   length = None
 
@@ -191,7 +237,7 @@ def                     Display(data, margin):
                   margin + "  " + str(key) + ":",
                   env.OPTION_NONE)
 
-      Display(data[key], margin + "  ")
+      Dump(data[key], margin + "  ")
     else:
       length = len(margin) + 2 + len(str(key)) + 1
 
@@ -223,14 +269,15 @@ def                     Information(server, capability, arguments):
   Warning()
 
   # retrieve the information.
-  information = ktc.Call(server.Information(capability))
+  information = ktp.xmlrpc.Call(server.Information(capability))
 
   # display the information by exploring the tree.
   env.display(env.HEADER_OK,
               "information:",
               env.OPTION_NONE)
 
-  Display(information, "")
+  # dump the information dictionary.
+  Dump(information)
 
 #
 # this function launches a test.
@@ -262,20 +309,19 @@ def                     Launch(server, capability, arguments):
                       env.OPTION_NONE)
 
   # launch a test.
-  report = ktc.Call(server.Launch(capability,
-                                  ktp.miscellaneous.Binary(snapshot),
-                                  g_host,
-                                  g_platform,
-                                  g_architecture,
-                                  environment,
-                                  suite))
+  report = ktp.xmlrpc.Call(server.Launch(capability,
+                                         ktp.miscellaneous.Binary(snapshot),
+                                         g_platform,
+                                         g_architecture,
+                                         environment,
+                                         suite))
 
   # display the received report.
   env.display(env.HEADER_OK,
               "report",
               env.OPTION_NONE)
 
-  # store the report in a trace file.
+  # store the report.
   yaml.dump({ "meta":
                 { "time": time.strftime("%Y-%m-%d %H:%M:%S"),
                   "platform": g_platform,
@@ -284,21 +330,22 @@ def                     Launch(server, capability, arguments):
                   "suite": suite },
               "data":
                 report },
-            file(env._TEST_STORE_TRACES_DIR_ + "/" +                    \
+            file(env._TEST_STORE_REPORT_DIR_ + "/" +                    \
                    environment + "/" +                                  \
                    g_platform + "." + g_architecture + "/" +            \
                    suite + "/" +                                        \
-                   time.strftime("%Y%m%d-%H%M%S") + ".trc", 'w'))
+                   time.strftime("%Y%m%d-%H%M%S") + ".rpt", 'w'))
 
   # display a summary
   for unit in report:
     Summary(unit, report[unit], "  ", OPTION_NONE)
 
 #
-# this function dumps a trace.
+# this function displays a report.
 #
-def                     Dump(server, capability, arguments):
-  trace = None
+def                     Display(server, capability, arguments):
+  report = None
+  identifier = None
   unit = None
 
   # check the arguments
@@ -306,48 +353,55 @@ def                     Dump(server, capability, arguments):
     Usage()
     sys.exit(42)
 
-  # retrieve the trace.
-  trace = yaml.load(file(env._TEST_STORE_TRACES_DIR_ +                  \
-                           "/" + arguments[1] + ".trc", 'r'))
+  identifier = arguments[1]
 
-  # dump the trace.
+  # retrieve the report.
+  report = ktp.report.Load(env._TEST_STORE_REPORT_DIR_ + "/" +          \
+                             identifier)
+
+  # dump the report.
   env.display(env.HEADER_OK,
-              "trace:",
+              "report:",
               env.OPTION_NONE)
 
   # dump the meta section.
   env.display(env.HEADER_OK,
               "  meta:",
               env.OPTION_NONE)
-  Display(trace["meta"], "  ")
+  Dump(report["meta"], "  ")
 
   # dump the data section
-  for unit in trace["data"]:
-    Summary(unit, trace["data"][unit], "  ", OPTION_DETAIL)
+  env.display(env.HEADER_OK,
+              "  data:",
+              env.OPTION_NONE)
+
+  Detail(report, "    ")
 
 #
-# this function lists the traces.
+# this function lists the reports.
 #
 def                     List(server, capability, arguments):
-  traces = None
-  trace = None
+  reports = None
+  report = None
 
   # check the arguments
   if len(arguments) != 1:
     Usage()
     sys.exit(42)
 
-  # retrieve the list of traces.
-  traces = env.list(env._TEST_STORE_TRACES_DIR_, env.OPTION_FILE)
-
+  # display a message
   env.display(env.HEADER_OK,
-              "traces:",
+              "reports:",
               env.OPTION_NONE)
 
-  # dump the trace names.
-  for trace in traces:
+  # retrieve the list of report identifiers.
+  reports = ktp.report.List(env._TEST_STORE_REPORT_DIR_)
+
+  # display the identifiers.
+  for report in reports:
+    # display report's identifier.
     env.display(env.HEADER_OK,
-                "  " + trace.rstrip(".trc"),
+                "  " + report,
                 env.OPTION_NONE)
 
 #
@@ -355,7 +409,6 @@ def                     List(server, capability, arguments):
 #
 def                     Main():
   global g_server
-  global g_host
   global g_capability
   global g_platform
   global g_architecture
@@ -374,7 +427,6 @@ def                     Main():
 
   # set the variables.
   g_server = env._TEST_SERVER_
-  g_host = env._TEST_HOST_
   g_capability = env._TEST_CAPABILITY_
   g_platform = env._TEST_PLATFORM_
   g_architecture = env._TEST_ARCHITECTURE_
@@ -383,7 +435,7 @@ def                     Main():
   server = ktp.xmlrpc.Connect(g_server)
 
   # load the student capability.
-  capability = ktc.Load(g_capability)
+  capability = ktp.capability.Load(g_capability)
 
   # trigger the appropriate command.
   for name in c_commands:
@@ -405,9 +457,9 @@ def                     Main():
 
 c_commands = {
   "information": Information,
-  "launch [environment] [suite]": Launch,
   "list": List,
-  "dump [environment] [suite] [identifier]": Dump
+  "display [identifier]": Display,
+  "launch [environment] [suite]": Launch
 }
 
 #
@@ -426,5 +478,7 @@ if __name__ == '__main__':
 #
 # o creer les repertoires de traces/ proprement.
 # o de meme pour les traces a dumper, ne regarder que dans ce repertoire
+#
+# o le serveur devrait renvoye un report qui contient deja meta + data
 #
 # XXX
