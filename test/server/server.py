@@ -6,24 +6,29 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/server.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [tue oct 19 12:30:42 2010]
+# updated       julien quintard   [tue oct 26 22:44:01 2010]
 #
 
 #
-# ---------- imports ----------------------------------------------------------
+# ---------- requirement ------------------------------------------------------
+#
+
+import os
+import sys
+
+TestDirectory = os.path.abspath("../")
+
+sys.path.append(TestDirectory + "/packages")
+
+#
+# ---------- packages ---------------------------------------------------------
 #
 
 import socket
-import yaml
-import os
-import tempfile
-import re
-import traceback
-
-import xmlrpclib
+import time
 
 import SocketServer
 import BaseHTTPServer
@@ -32,27 +37,44 @@ import SimpleXMLRPCServer
 
 from OpenSSL import SSL, crypto
 
-import ktc
+import ktp
 
 #
 # ---------- constants --------------------------------------------------------
 #
 
-# XXX[wrong paths :: to fix]
+HooksDirectory = TestDirectory + "/hooks"
+ScriptsDirectory = TestDirectory + "/scripts"
+ServerDirectory = TestDirectory + "/server"
+StoreDirectory = TestDirectory + "/store"
+SuitesDirectory = TestDirectory + "/suites"
+TestsDirectory = TestDirectory + "/tests"
 
-CACertificate = "store/certificate/ca.crt"
+DatabaseStore = StoreDirectory + "/database"
+KeyStore = StoreDirectory + "/key"
+CodeStore = StoreDirectory + "/code"
+CertificateStore = StoreDirectory + "/certificate"
+BundleStore = StoreDirectory + "/bundle"
+ReportStore = StoreDirectory + "/report"
+
+CACertificate = CertificateStore + "/ca"
 
 ServerHost = "test.opaak.org"
 ServerPort = 8421
-ServerCertificate = "store/certificate/server.crt"
-ServerKey = "store/key/server.key"
-ServerCode = "store/code/server"
+ServerCertificate = CertificateStore + "/server"
+ServerKey = KeyStore + "/server"
+ServerCode = CodeStore + "/server"
 
-DirectoryDatabase = "store/database"
-DirectoryHooks = "hooks"
+ConstructHook = "construct.py"
+StressHook = "stress.py"
 
-HookPrepare = "prepare.py"
-HookRun = "run.py"
+MaintenanceLock = TestDirectory + "/.maintenance"
+
+#
+# ---------- globals ----------------------------------------------------------
+#
+
+g_code = None
 
 #
 # ---------- SSLXMLRPCServer --------------------------------------------------
@@ -60,9 +82,9 @@ HookRun = "run.py"
 
 class SSLXMLRPCServer(BaseHTTPServer.HTTPServer,
                       SimpleXMLRPCServer.SimpleXMLRPCDispatcher):
-  def           __init__(self,
-                         address,
-                         handler):
+  def                   __init__(self,
+                                 address,
+                                 handler):
     # deactivate log.
     self.logRequests = False
 
@@ -76,11 +98,11 @@ class SSLXMLRPCServer(BaseHTTPServer.HTTPServer,
     context = SSL.Context(SSL.SSLv23_METHOD)
 
     # load the key and certificate.
-    context.use_privatekey_file(ServerKey)
-    context.use_certificate_file(ServerCertificate)
+    context.use_privatekey_file(ServerKey + ".key")
+    context.use_certificate_file(ServerCertificate + ".crt")
 
     # load the certification authority.
-    context.load_verify_locations(CACertificate)
+    context.load_verify_locations(CACertificate + ".crt")
 
     # build the SSL connection.
     self.socket = SSL.Connection(context,
@@ -96,13 +118,13 @@ class SSLXMLRPCServer(BaseHTTPServer.HTTPServer,
 #
 
 class SSLXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
-  def           setup(self):
+  def                   setup(self):
     self.connection = self.request
 
     self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
     self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
 
-  def           do_POST(self):
+  def                   do_POST(self):
     try:
       # get arguments
       data = self.rfile.read(int(self.headers["content-length"]))
@@ -131,325 +153,171 @@ class SSLXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
       self.connection.shutdown()
 
 #
-# ---------- TestServer -------------------------------------------------------
+# ---------- functions --------------------------------------------------------
 #
 
-class TestServer:
-  #
-  # this method test a given snapshot against a given tests suite.
-  #
-  def           Launch(self,
-                       capability,
-                       snapshot,
-                       machine,
-                       platform,
-                       architecture,
-                       suite):
-    context = {}
+#
+# this function initializes the test system.
+#
+def                     Initialize():
+  global g_code
 
-    try:
-      # verify the given capability.
-      if Test.Verify(capability) != True:
-        return (ktc.StatusError, "invalid capability")
+  g_code = ktp.code.Load(ServerCode)
 
-      # retrieve the object.
-      context["profile"] = ktc.Extract(capability)
+#
+# this function cleans the test system.
+#
+def                     Clean():
+  pass
 
-      # retrieve the user profile.
-      context["database"] = Test.Load(context["profile"]["id"])
+#
+# ---------- routines ---------------------------------------------------------
+#
 
-      # verify the rights.
-      if (not context["database"]) or                                    \
-         (not suite in context["database"]) or                           \
-         (context["database"][suite] == 0):
-        return (ktc.StatusError, "no tests left")
+#
+# this routine returns information regarding the user's test profile.
+#
+def                     Information(capability):
+  information = None
+  stream = None
+  profile = None
+  database = None
 
-      # create a temporary directory and file.
-      context["snapshot"] = Test.Temporary(Test.OptionFile)
-      context["image"] = Test.Temporary(Test.OptionFile)
-
-      # create a unique name fo the test context.
-      context["name"] = os.path.basename(context["image"])
-
-      # set other context variables.
-      context["capability"] = capability
-      context["suite"] = suite
-      context["machine"] = machine
-      context["platform"] = platform
-      context["architecture"] = architecture
-
-      # save the snapshot in the temporary file.
-      Test.Push(context["snapshot"], str(snapshot))
-
-      # launch the prepare script that generates a bootable image
-      # referenced by context["image"].
-      output = Test.Launch(DirectoryHooks + "/" + context["machine"] + "/" + HookPrepare, context)
-
-      if len(output):
-        return (ktc.StatusError, xmlrpclib.Binary("an error occured during the compiling process:\n---\n" + output.strip(" \n") + "\n---"))
-
-      # launch the run script that will run the test suite in a virtual machine.
-      output = Test.Launch(DirectoryHooks + "/" + context["machine"] + "/" + HookRun, context)
-
-      if len(output):
-        return (ktc.StatusError, xmlrpclib.Binary("an error occured while running the test suites:\n---\n" + output.strip(" \n") + "\n---"))
-
-      # remove the temporary file and directory.
-      Test.Remove(context["snapshot"])
-      Test.Remove(context["image"])
-
-      # XXX[save the report somewhere, remove a test from the database by increasing state]
-    except Exception, exception:
-      return (ktc.StatusError, Test.Trace())
-      
-    return (ktc.StatusOk, context["report"])
-
-  #
-  # this method returns information regarding the user capabilities.
-  #
-  def           Information(self,
-                            capability):
-    information = None
-    stream = None
-    object = None
-    profile = None
+  try:
+    # verify that the maintenance mode has not been activated.
+    if os.path.exists(MaintenanceLock) == True:
+      return (ktp.StatusError, "the system is currently under maintenance ... please try again later")
 
     # verify the given capability.
-    if Test.Verify(capability) != True:
-      return (ktc.StatusError, "invalid capability")
+    if ktp.capability.Validate(g_code, capability) != True:
+      return (ktp.StatusError, "invalid capability")
 
-    # retrieve the object.
-    object = ktc.Extract(capability)
+    # retrieve the profile inside the capability.
+    profile = ktp.capability.Extract(capability)
 
-    # extract the user profile.
-    profile = Test.Load(object["id"])
+    # extract the user's database.
+    database = ktp.database.Load(DatabaseStore + "/" + profile["name"])
 
     # build the information.
-    information = object
+    information = {}
 
     # add the profile.
     information["profile"] = profile
 
-    return (ktc.StatusOk, information)
+    # add the database.
+    information["database"] = database
+  except Exception, exception:
+    return (ktp.StatusError, ktp.trace.Generate())
+
+  return (ktp.StatusOk, information)
 
 #
-# ---------- test -------------------------------------------------------------
+# this method triggers a test suite for the given snapshot.
 #
+def                     Trigger(capability,
+                                content,
+                                platform,
+                                architecture,
+                                environment,
+                                suite):
+  context = {}
+  profile = None
+  machine = None
+  database = None
+  identifier = None
+  snapshot = None
+  image = None
+  report = None
+  stream = None
+  status = None
+  text = None
 
-class Test:
-  OptionNone = 0
-  OptionFile = 1
-  OptionDirectory = 2
-  OptionQuiet = 1
+  try:
+    # verify that the maintenance mode has not been activated.
+    if os.path.exists(MaintenanceLock) == True:
+      return (ktp.StatusError, "the system is currently under maintenance ... please try again later")
 
-  code = None
+    # verify the given capability.
+    if ktp.capability.Validate(g_code, capability) != True:
+      return (ktp.StatusError, "invalid capability")
 
-  #
-  # this method initializes the Test static class.
-  #
-  def           Initialize():
-    # read the server code.
-    Test.code = ktc.Read(ServerCode)
+    # retrieve the profile inside the capability.
+    profile = ktp.capability.Extract(capability)
 
-  #
-  # this method verifies the given capability.
-  #
-  def           Verify(capability):
-    # extract and validate the given capability.
-    try:
-      ktc.Validate(Test.code, capability)
-    except:
-      return False
+    # compute the machine.
+    machine = platform + "." + architecture
 
-    # return True if the capability is valid.
-    return True
+    # retrieve the user's database.
+    database = ktp.database.Load(DatabaseStore + "/" + profile["name"])
 
-  #
-  # this function returns a user profile given its id.
-  #
-  def           Load(id):
-    path = None
+    # verify the database consistency along with the tests quota for this
+    # environment/suite couple.
+    if (not "settings" in                                                     \
+         database) or                                                         \
+       (not environment in                                                    \
+         database["settings"]) or                                             \
+       (not machine in                                                        \
+         database["settings"][environment]) or                                \
+       (not suite in                                                          \
+         database["settings"][environment][machine]) or                       \
+       (database["settings"][environment][machine][suite]["requests"] ==      \
+         database["settings"][environment][machine][suite]["quota"]):
+      return (ktp.StatusError, "the tests quota seems to have been reached")
 
-    # compute the path.
-    path = DirectoryDatabase + "/" + id + ".db"
+    # create a unique identifier for the test context.
+    identifier = time.strftime("%Y%m%d-%H%M%S")
 
-    if not os.path.exists(path):
-      return None
+    # create a temporary files for the received snapshot, the about-to-be
+    # generated image and the future report.
+    snapshot = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+    image = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+    report = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
-    # load the database.
-    database = yaml.load(file(path, 'r'))
+    # store the snapshot in the temporary file.
+    ktp.miscellaneous.Push(str(content), snapshot)
 
-    return database
+    # update the user's database by incrementing the number of requests.
+    database["settings"][environment][machine][suite]["requests"] += 1
 
-  #
-  # this function stores the new profile of a given user.
-  #
-  def           Store(id, profile):
-    # load the database.
-    yaml.dump(profile,
-              file(DirectoryDatabase + "/" + id, 'w'))
+    # launch the build hook which generates a bootable image.
+    (status, text) = ktp.process.Invoke(HooksDirectory + "/" +                  \
+                                          environment + "/" +                   \
+                                          machine + "/" +                       \
+                                          suite + "/" +                         \
+                                          ConstructHook,
+                                        [ "--name", identifier,
+                                          "--snapshot", snapshot,
+                                          "--image", image,
+                                          "--environment", environment,
+                                          "--platform", platform,
+                                          "--architecture", architecture,
+                                          "--suite", suite ],
+                                        stream = stream,
+                                        option = ktp.process.OptionNone)
 
-  #
-  # this function creates a temporary file or directory.
-  #
-  def           Temporary(options):
-    location = None
+    # test the success of the construct hook invocation.
+    if status == ktp.StatusError:
+      return (ktp.StatusError, ktp.miscellaneous.Binary(text))
 
-    if options == Test.OptionFile:
-      tuple = tempfile.mkstemp()
+  except Exception, exception:
+    return (ktp.StatusError, ktp.trace.Generate())
+  finally:
+    # store the database.
+    if database:
+      ktp.database.Store(database, DatabaseStore + "/" + profile["name"])
 
-      os.close(tuple[0])
+    # remove the temporary files.
+    if report:
+      ktp.miscellaneous.Remove(report)
+    if image:
+      ktp.miscellaneous.Remove(image)
+    if snapshot:
+      ktp.miscellaneous.Remove(snapshot)
+    if stream:
+      ktp.miscellaneous.Remove(stream)
 
-      location = tuple[1]
-    elif options == Test.OptionDirectory:
-      location = tempfile.mkdtemp()
-
-    return location
-
-  #
-  # this function writes a file.
-  #
-  def           Push(file, content):
-    handle = None
-
-    handle = open(file, "w")
-
-    handle.write(content)
-
-    handle.close()
-
-  #
-  # this function reads a file.
-  #
-  def           Pull(file):
-    handle = None
-    line = None
-
-    if not os.path.exists(file):
-      return None
-
-    try:
-      handle = open(file, "r")
-    except IOError:
-      return None
-
-    content = ""
-    for line in handle.readlines():
-      content += line
-
-    handle.close()
-
-    return content
-
-  #
-  # this function executes something.
-  #
-  def           Launch(path, context, options = OptionNone):
-    directory = None
-    info = None
-    output = None
-    wd = None
-    temporary = None
-
-    # generate a temporary file for the context.
-    temporary = Test.Temporary(Test.OptionFile)
-
-    # serialize the context.
-    yaml.dump(context, file(temporary, 'w'))
-
-    # handle options.
-    if options & Test.OptionQuiet:
-      output = " >/dev/null 2>&1"
-    else:
-      output = ""
-
-    # retrive file information.
-    info = os.path.split(path)
-
-    directory = info[0]
-    path = info[1]
-
-    # change directory if required.
-    if directory:
-      wd = os.getcwd()
-      os.chdir(directory)
-
-    # launch the script.
-    if re.match("^.*\.py$", path):
-      output = os.popen("python " + path + " " + temporary + output).read()
-    else:
-      if directory:
-        path = "./" + path
-
-      output = os.popen(path + " " + arguments + output).read()
-
-    # come back to the original directory if necessary.
-    if directory:
-      os.chdir(wd)
-
-    # extract the potentially modified context by first
-    # deleting the previous content and updating it.
-    context.clear()
-    context.update(yaml.load(file(temporary, 'r')))
-
-    # delete the temporary file.
-    os.unlink(temporary)
-
-    return output
-
-  #
-  # this function removes the target.
-  #
-  def           Remove(target):
-    entries = None
-    entry = None
-
-    if os.path.isfile(target) or os.path.islink(target):
-      os.unlink(target)
-
-    if os.path.isdir(target):
-      entries = os.listdir(target)
-
-      for entry in entries:
-        Test.Remove(target + "/" + entry)
-
-      os.rmdir(target)
-
-  #
-  # this function returns the current errors trace.
-  #
-  def           Trace():
-    temporary = None
-    trace = None
-
-    # create a temporary file.
-    temporary = Test.Temporary(Test.OptionFile)
-
-    # put the trace in the temporary file.
-    traceback.print_exc(None, file(temporary, 'w'))
-
-    # read the file.
-    trace = Test.Pull(temporary)
-
-    # remove the temporary file.
-    Test.Remove(temporary)
-
-    # return the trace.
-    return trace
-
-  #
-  # static methods
-  #
-  Initialize = staticmethod(Initialize)
-  Verify = staticmethod(Verify)
-  Load = staticmethod(Load)
-  Store = staticmethod(Store)
-  Temporary = staticmethod(Temporary)
-  Push = staticmethod(Push)
-  Pull = staticmethod(Pull)
-  Launch = staticmethod(Launch)
-  Remove = staticmethod(Remove)
-  Trace = staticmethod(Trace)
+  return (ktp.StatusOk, report)
 
 #
 # ---------- entry point ------------------------------------------------------
@@ -460,15 +328,19 @@ if __name__ == '__main__':
   server = SSLXMLRPCServer((ServerHost, ServerPort),
                            SSLXMLRPCRequestHandler)
 
-  # register the remote methods.
-  server.register_instance(TestServer())
+  # register the routines.
+  server.register_function(Information)
+  server.register_function(Trigger)
 
   # print information
   information = server.socket.getsockname()
-  print "[information] serving on " + information[0] + ":" + str(information[1])
+  print("[information] serving on " + information[0] + ":" + str(information[1]))
 
-  # initialize the test class.
-  Test.Initialize()
+  # initialize the system.
+  Initialize()
 
   # loop endlessly waiting for requests.
   server.serve_forever()
+
+  # clean the system.
+  Clean()
