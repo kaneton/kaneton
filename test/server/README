@@ -1,0 +1,9 @@
+All you have to copy on the system are the following directories:
+
+  server/
+  tests/
+  suites/
+  store/ [clean everything inside especially snapshots and reports]
+  suites/
+  hooks/
+

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/cheat/cheat.py
+# file          /home/mycure/kaneton.STABLE/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [mon may 11 20:43:15 2009]
+# updated       julien quintard   [sun oct 24 14:42:41 2010]
 #
 
 #
@@ -849,7 +849,7 @@ def                     label():
   i = None
 
   # generate a random string.
-  alphabet = string.letters + string.digits
+  alphabet = string.ascii_lowercase + string.digits
 
   for i in range(RANDOM_LENGTH):
     if not label:

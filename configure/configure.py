@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/configure/configure.py
+# file          /home/mycure/kaneton.STABLE/configure/configure.py
 #
 # created       julien quintard   [wed may 23 10:17:59 2007]
-# updated       julien quintard   [fri may  1 22:22:54 2009]
+# updated       julien quintard   [sun oct 24 14:52:05 2010]
 #
 
 #
@@ -129,7 +129,7 @@ def			load(path):
 
         # build the list and current value for each variable type.
         if entry.variable.type == environment.TYPE_SET:
-          for key, value in entry.variable.values.iteritems():
+          for key, value in entry.variable.values.items():
             if entry.variable.assignment == value:
               entry.current = key
 

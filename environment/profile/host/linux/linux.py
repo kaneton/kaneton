@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
+# file          /home/mycure/kane.../environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [tue feb 23 20:58:20 2010]
+# updated       julien quintard   [mon oct 25 18:49:57 2010]
 #
 
 #
@@ -35,11 +35,12 @@ os.putenv("LANG", "US")
 # ---------- python path ------------------------------------------------------
 #
 
-pythonpath = os.getenv("PYTHONPATH")
-if not pythonpath:
-  pythonpath = ""
+_pythonpath_ = os.getenv("PYTHONPATH")
 
-os.putenv("PYTHONPATH", pythonpath + ":" + _PYTHON_INCLUDE_DIR_)
+if not _pythonpath_:
+  os.putenv("PYTHONPATH", _PYTHON_INCLUDE_DIR_)
+else:
+  os.putenv("PYTHONPATH", _pythonpath_ + ":" + _PYTHON_INCLUDE_DIR_)
 
 #
 # ---------- functions --------------------------------------------------------

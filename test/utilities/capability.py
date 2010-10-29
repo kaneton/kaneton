@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/util/capability.py
+# file          /data/mycure/repo...eton.STABLE/test/utilities/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon oct 25 20:19:56 2010]
+# updated       julien quintard   [wed oct 27 13:25:56 2010]
 #
 
 #
@@ -141,7 +141,8 @@ def                     generate(code,
     name = g_path.replace("/", "::") + "::" + student
 
     # compute the file name.
-    file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
+    file = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                      \
+        name + ktp.capability.Extension
 
     # create the capability.
     capability = ktp.capability.Create(code,
@@ -202,10 +203,12 @@ def                     student():
     break
 
   # compute the file name.
-  file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
+  file = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                        \
+      name + ktp.capability.Extension
 
   # retrieve the server's code.
-  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server")
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server" +          \
+                         ktp.code.Extension)
 
   # create the capability.
   capability = ktp.capability.Create(code,
@@ -242,7 +245,8 @@ def                     school():
               env.OPTION_NONE)
 
   # retrieve the server's code.
-  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server")
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server" +          \
+                         ktp.code.Extension)
 
   # read the file and extract the students information.
   students = extract(g_path)
@@ -270,13 +274,15 @@ def                     contributor():
               env.OPTION_NONE)
 
   # retrieve the server's code.
-  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server")
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server" +          \
+                         ktp.code.Extension)
 
   # compute the name.
   name = "contributor"
 
   # compute the file name.
-  file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name
+  file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name +                 \
+      ktp.capability.Extension
 
   # create the capability.
   capability = ktp.capability.Create(code,

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/host/host.py
+# file          /home/mycure/kaneton.STABLE/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [tue may  5 12:06:53 2009]
+# updated       julien quintard   [sun oct 24 14:56:30 2010]
 #
 
 #
@@ -32,6 +32,7 @@ import sys
 import tempfile
 import shutil
 import time
+import readline
 
 #
 # ---------- options ----------------------------------------------------------
@@ -187,7 +188,7 @@ def			cwd(options):
 # this function waits for an input.
 #
 def			input(options):
-  return raw_input()
+  return input()
 
 
 

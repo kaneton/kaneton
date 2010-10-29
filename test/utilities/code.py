@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/util/code.py
+# file          /data/mycure/repo...es/kaneton.STABLE/test/utilities/code.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon oct 25 20:17:46 2010]
+# updated       julien quintard   [wed oct 27 13:28:53 2010]
 #
 
 #
@@ -45,7 +45,7 @@ def                     main():
   code = ktp.code.Generate()
 
   # store the code.
-  ktp.code.Store(env._TEST_STORE_CODE_DIR_ + "/server",
+  ktp.code.Store(env._TEST_STORE_CODE_DIR_ + "/server" + ktp.code.Extension,
                  code)
 
   # display.

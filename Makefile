@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/mycure/kaneton.STABLE/Makefile
+# file          /data/mycure/repositories/kaneton.STABLE/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [tue oct 19 12:06:43 2010]
+# updated       julien quintard   [wed oct 27 15:33:06 2010]
 #
 
 #
@@ -139,13 +139,6 @@ build:
 
 install:		main
 	$(call env_launch,$(_MBL_SCRIPT_),install,)
-
-#
-# ---------- test -------------------------------------------------------------
-#
-
-test:
-	@echo "XXX[todo]"
 
 #
 # ---------- view -------------------------------------------------------------

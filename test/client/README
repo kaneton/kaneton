@@ -1,0 +1,126 @@
+The client script provides the user the possibility to request actions
+from the test server.
+
+#
+# ---------- information ------------------------------------------------------
+#
+
+The 'information' command returns information on the user account including
+the number of tests consumed, the number of tests left etc.
+
+The example below illustrates this command.
+
+  $> make information
+  [+] information:
+  [+]   profile:
+  [+]     token:                7e1de5eb823f73235b7d4791cec7364b
+  [+]     name:                 contributor
+  [+]     community:            contributors
+  [+]     email:                admin@opaak.org
+  [+]   database:
+  [+]     reports:
+  [+]       xen:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:             []
+  [+]           k2:             ['20101027-141903', '20101027-142207', '20101027-142253', '20101027-143342', '20101027-143529']
+  [+]           k1:             []
+  [+]       qemu:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:             []
+  [+]           k2:             []
+  [+]           k1:             []
+  [+]     settings:
+  [+]       xen:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]           k2:
+  [+]             requests:     8
+  [+]             quota:        -1
+  [+]           k1:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]       qemu:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]           k2:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]           k1:
+  [+]             requests:     0
+  [+]             quota:        -1
+
+#
+# ---------- list -------------------------------------------------------------
+#
+
+The 'list' command returns a list of the report identifiers of previously
+triggered test suites.
+
+Note that every report identifier comes with the meta data attributes so
+that the user can quickly locate the report of interest.
+
+  $> make list
+  [+] reports:
+  [+]   20101027-152111:
+  [+]     xen :: ibm-pc :: ia32/educational :: k2 :: 2010/10/27 15:21:11
+  [+]   20101027-143529:
+  [+]     xen :: ibm-pc :: ia32/educational :: k2 :: 2010/10/27 14:35:29
+
+#
+# ---------- display ----------------------------------------------------------
+#
+
+The 'display' command displays in detail the report identifier by the given
+name, as shown below.
+
+The syntax for this command is display::[identifier].
+
+  $> make display::20101027-143529
+  [+] report:
+  [+]   meta:
+  [+]     environment:          xen
+  [+]     platform:             ibm-pc
+  [+]     architecture:         ia32/educational
+  [+]     date:                 2010/10/27 14:35:29
+  [+]     suite:                k2
+  [+]     identifier:           20101027-143529
+  [+]   data:
+  [+]     id:                                                             [3/3]
+  [+]       simple:
+  [+]         status: True
+  [+]         description: This test reserves a single identifier.
+  [+]         duration: 0.005
+  [+]         output: 
+  [+]       clone:
+  [+]         status: True
+  [+]         description: This test reserves, clones and releases identifiers.
+  [+]         duration: 0.095
+  [+]         output: 
+  [+]       multiple:
+  [+]         status: True
+  [+]         description: This test reserves thousands of identifiers, checking that no collisions occured.
+  [+]         duration: 0.011
+  [+]         output: 
+
+#
+# ---------- trigger ----------------------------------------------------------
+#
+
+Finally, the 'trigger' command issues a request for a test suite to be run
+in the given environment so that to stress the current kaneton implementation.
+
+Note that this command displays a summary of the report once the test suite
+performed.
+
+The syntax for this command is trigger::[environment]::[suite] where [suite]
+can be any of the 'k0', 'k1', 'k2', 'k3' etc. stages while [environment] can
+be 'xen' or 'qemu'.
+
+  $> make trigger::xen::k2
+  [+] report
+  [+]   id                                                               [3/3]
+  [+]   segment                                                          [5/8]

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/util/database.py
+# file          /data/mycure/repo...aneton.STABLE/test/utilities/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon oct 25 20:39:36 2010]
+# updated       julien quintard   [wed oct 27 13:31:39 2010]
 #
 
 #
@@ -75,13 +75,15 @@ def                     student():
 
   # load the configuration.
   configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
-                                           "/" + school)
+                                           "/" + school +               \
+                                           ktp.configuration.Extension)
 
   # generate the database.
   database = ktp.database.Generate(configuration)
 
   # store the database.
-  ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" + id)
+  ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" +    \
+                       id + ktp.database.Extension)
 
   # display.
   env.display(env.HEADER_OK,
@@ -122,13 +124,15 @@ def                     school():
 
     # load the configuration.
     configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
-                                           "/" + id)
+                                             "/" + id +                   \
+                                             ktp.configuration.Extension)
 
     # generate the database.
     database = ktp.database.Generate(configuration)
 
     # store the database.
-    ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" + id)
+    ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" +  \
+                         id + ktp.database.Extension)
 
     # display.
     env.display(env.HEADER_OK,
@@ -158,13 +162,16 @@ def                     contributor():
 
   # load the configuration.
   configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
-                                         "/contributor")
+                                           "/contributor" +             \
+                                           ktp.configuration.Extension)
 
   # generate the database.
   database = ktp.database.Generate(configuration)
 
   # store the database.
-  ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/contributor")
+  ktp.database.Store(database,
+                     env._TEST_STORE_DATABASE_DIR_ + "/contributor" +   \
+                       ktp.database.Extension)
 
   # display message.
   env.display(env.HEADER_OK,

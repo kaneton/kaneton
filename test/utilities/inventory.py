@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/util/inventory.py
+# file          /data/mycure/repo...neton.STABLE/test/utilities/inventory.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [fri oct 22 09:45:12 2010]
+# updated       julien quintard   [wed oct 27 13:32:49 2010]
 #
 
 #
@@ -26,6 +26,8 @@ import env
 import sys
 import re
 import yaml
+
+import ktp
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -70,7 +72,7 @@ def                     locate(directory):
   # load the manifests.
   for manifest in manifests:
     # read the file.
-    stream = yaml.load(file(manifest))
+    stream = ktp.manifest.Load(manifest)
 
     # record the function symbol.
     functions += [ stream["symbol"] ]

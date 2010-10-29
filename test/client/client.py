@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...ies/kaneton.STABLE/test/client/client.py
+# file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [tue oct 26 11:55:44 2010]
+# updated       julien quintard   [fri oct 29 20:08:56 2010]
 #
 
 #
@@ -280,9 +280,9 @@ def                     Information(server, capability, arguments):
   Dump(information)
 
 #
-# this function launches a test.
+# this function triggers a test.
 #
-def                     Launch(server, capability, arguments):
+def                     Trigger(server, capability, arguments):
   snapshot = None
   suite = None
   environment = None
@@ -308,37 +308,27 @@ def                     Launch(server, capability, arguments):
   snapshot = env.pull("/home/mycure/kaneton.STABLE/export/output/test:contributor.tar.bz2",
                       env.OPTION_NONE)
 
-  # launch a test.
-  report = ktp.xmlrpc.Call(server.Launch(capability,
-                                         ktp.miscellaneous.Binary(snapshot),
-                                         g_platform,
-                                         g_architecture,
-                                         environment,
-                                         suite))
+  # trigger a test.
+  report = ktp.xmlrpc.Call(server.Trigger(capability,
+                                          ktp.miscellaneous.Binary(snapshot),
+                                          g_platform,
+                                          g_architecture,
+                                          environment,
+                                          suite))
+
+  # store the report.
+  ktp.report.Store(report,
+                   env._TEST_STORE_REPORT_DIR_ + "/" +                  \
+                     report["meta"]["identifier"] +                     \
+                     ktp.report.Extension)
 
   # display the received report.
   env.display(env.HEADER_OK,
-              "report",
+              "report: " + report["meta"]["identifier"],
               env.OPTION_NONE)
 
-  # store the report.
-  yaml.dump({ "meta":
-                { "time": time.strftime("%Y-%m-%d %H:%M:%S"),
-                  "platform": g_platform,
-                  "architecture": g_architecture,
-                  "environment": environment,
-                  "suite": suite },
-              "data":
-                report },
-            file(env._TEST_STORE_REPORT_DIR_ + "/" +                    \
-                   environment + "/" +                                  \
-                   g_platform + "." + g_architecture + "/" +            \
-                   suite + "/" +                                        \
-                   time.strftime("%Y%m%d-%H%M%S") + ".rpt", 'w'))
-
   # display a summary
-  for unit in report:
-    Summary(unit, report[unit], "  ", OPTION_NONE)
+  Summarize(report, "  ")
 
 #
 # this function displays a report.
@@ -357,7 +347,7 @@ def                     Display(server, capability, arguments):
 
   # retrieve the report.
   report = ktp.report.Load(env._TEST_STORE_REPORT_DIR_ + "/" +          \
-                             identifier)
+                             identifier + ktp.report.Extension)
 
   # dump the report.
   env.display(env.HEADER_OK,
@@ -381,7 +371,8 @@ def                     Display(server, capability, arguments):
 # this function lists the reports.
 #
 def                     List(server, capability, arguments):
-  reports = None
+  identifiers = None
+  identifier = None
   report = None
 
   # check the arguments
@@ -395,13 +386,26 @@ def                     List(server, capability, arguments):
               env.OPTION_NONE)
 
   # retrieve the list of report identifiers.
-  reports = ktp.report.List(env._TEST_STORE_REPORT_DIR_)
+  identifiers = ktp.report.List(env._TEST_STORE_REPORT_DIR_)
 
   # display the identifiers.
-  for report in reports:
+  for identifier in identifiers:
+    # load the report.
+    report = ktp.report.Load(env._TEST_STORE_REPORT_DIR_ + "/" +        \
+                               identifier + ktp.report.Extension)
+
     # display report's identifier.
     env.display(env.HEADER_OK,
-                "  " + report,
+                "  " + report["meta"]["identifier"] + ":",
+                env.OPTION_NONE)
+
+    # display the report's meta.
+    env.display(env.HEADER_OK,
+                "    " + report["meta"]["environment"] + " :: " +       \
+                  report["meta"]["platform"] + " :: " +                 \
+                  report["meta"]["architecture"] + " :: " +             \
+                  report["meta"]["suite"] + " :: " +                    \
+                  report["meta"]["date"],
                 env.OPTION_NONE)
 
 #
@@ -459,7 +463,7 @@ c_commands = {
   "information": Information,
   "list": List,
   "display [identifier]": Display,
-  "launch [environment] [suite]": Launch
+  "trigger [environment] [suite]": Trigger
 }
 
 #
@@ -468,17 +472,3 @@ c_commands = {
 
 if __name__ == '__main__':
   Main()
-
-# XXX
-#
-# o verifier que le certificat recu est le meme que celui en local. faire des
-#   tests avec des autority ou serv-cert foireux.
-#
-# o matter ce flag: IA32_KERNEL_MAPPED, est-il necessaire pour les tests?
-#
-# o creer les repertoires de traces/ proprement.
-# o de meme pour les traces a dumper, ne regarder que dans ce repertoire
-#
-# o le serveur devrait renvoye un report qui contient deja meta + data
-#
-# XXX

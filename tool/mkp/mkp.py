@@ -77,7 +77,7 @@ def fn_error(string, code):
   """Throw an Error
   Print an error and exit the program with the corresponding code
   """
-  print sys.argv[0], ':', string
+  print(sys.argv[0] + ':' + string)
   sys.exit(code)
 
 ##
@@ -89,7 +89,7 @@ def fn_readprotosfiles(fp, functions):
   """
   filelist = []
   line = fp.readline()
-  while line <> '' and not re.match(' \* -+ prototypes -+', line):
+  while line != '' and not re.match(' \* -+ prototypes -+', line):
     functions.beginning.append(line)
     line = fp.readline()
   if line == '':
@@ -99,20 +99,20 @@ def fn_readprotosfiles(fp, functions):
   filere = re.compile('\s*\*+\s+[./_a-zA-Z0-9]+')
   filenamere = re.compile('[-./_a-zA-Z0-9]+')
   eopre = re.compile('\s*\*+\s+eop')
-  while line <> '' and not endre.match(line):
+  while line != '' and not endre.match(line):
     functions.beginning.append(line)
     if filere.match(line):
       line = filenamere.search(line).group()
       filelist.append(line)
     line = fp.readline()
   functions.beginning.append(line)
-  while line <> '' and not eopre.match(line):
+  while line != '' and not eopre.match(line):
     line = fp.readline()
-  while line <> '' and not endre.match(line):
+  while line != '' and not endre.match(line):
     line = fp.readline()
   if line == '':
     fn_error("no eop in" + fp.filename, 3)
-  while line <> '':
+  while line != '':
     line = fp.readline()
     functions.ending.append(line)
   del filere

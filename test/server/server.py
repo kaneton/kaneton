@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [tue oct 26 22:44:01 2010]
+# updated       julien quintard   [fri oct 29 20:29:06 2010]
 #
 
 #
@@ -19,7 +19,7 @@
 import os
 import sys
 
-TestDirectory = os.path.abspath("../")
+TestDirectory = os.path.abspath(os.path.dirname(os.path.realpath(sys.argv[0])) + "/..")
 
 sys.path.append(TestDirectory + "/packages")
 
@@ -43,6 +43,7 @@ import ktp
 # ---------- constants --------------------------------------------------------
 #
 
+# directories
 HooksDirectory = TestDirectory + "/hooks"
 ScriptsDirectory = TestDirectory + "/scripts"
 ServerDirectory = TestDirectory + "/server"
@@ -50,30 +51,38 @@ StoreDirectory = TestDirectory + "/store"
 SuitesDirectory = TestDirectory + "/suites"
 TestsDirectory = TestDirectory + "/tests"
 
+# stores
 DatabaseStore = StoreDirectory + "/database"
 KeyStore = StoreDirectory + "/key"
 CodeStore = StoreDirectory + "/code"
 CertificateStore = StoreDirectory + "/certificate"
 BundleStore = StoreDirectory + "/bundle"
 ReportStore = StoreDirectory + "/report"
+SnapshotStore = StoreDirectory + "/snapshot"
 
-CACertificate = CertificateStore + "/ca"
+# ca
+CACertificate = CertificateStore + "/ca" + ktp.certificate.Extension
 
+# server
 ServerHost = "test.opaak.org"
 ServerPort = 8421
-ServerCertificate = CertificateStore + "/server"
-ServerKey = KeyStore + "/server"
-ServerCode = CodeStore + "/server"
+ServerCertificate = CertificateStore + "/server" + ktp.certificate.Extension
+ServerKey = KeyStore + "/server" + ktp.key.Extension
+ServerCode = CodeStore + "/server" + ktp.code.Extension
 
+# hooks
 ConstructHook = "construct.py"
 StressHook = "stress.py"
 
+# maintenance
 MaintenanceLock = TestDirectory + "/.maintenance"
 
 #
 # ---------- globals ----------------------------------------------------------
 #
 
+# this variable contains the server's actual code used for validating
+# received capabilities.
 g_code = None
 
 #
@@ -98,11 +107,11 @@ class SSLXMLRPCServer(BaseHTTPServer.HTTPServer,
     context = SSL.Context(SSL.SSLv23_METHOD)
 
     # load the key and certificate.
-    context.use_privatekey_file(ServerKey + ".key")
-    context.use_certificate_file(ServerCertificate + ".crt")
+    context.use_privatekey_file(ServerKey)
+    context.use_certificate_file(ServerCertificate)
 
     # load the certification authority.
-    context.load_verify_locations(CACertificate + ".crt")
+    context.load_verify_locations(CACertificate)
 
     # build the SSL connection.
     self.socket = SSL.Connection(context,
@@ -196,7 +205,7 @@ def                     Information(capability):
     profile = ktp.capability.Extract(capability)
 
     # extract the user's database.
-    database = ktp.database.Load(DatabaseStore + "/" + profile["name"])
+    database = ktp.database.Load(DatabaseStore + "/" + profile["name"] + ktp.database.Extension)
 
     # build the information.
     information = {}
@@ -225,12 +234,16 @@ def                     Trigger(capability,
   machine = None
   database = None
   identifier = None
+  date = None
   snapshot = None
   image = None
+  bulletin = None
   report = None
   stream = None
   status = None
   text = None
+  start = None
+  end = None
 
   try:
     # verify that the maintenance mode has not been activated.
@@ -248,7 +261,7 @@ def                     Trigger(capability,
     machine = platform + "." + architecture
 
     # retrieve the user's database.
-    database = ktp.database.Load(DatabaseStore + "/" + profile["name"])
+    database = ktp.database.Load(DatabaseStore + "/" + profile["name"] + ktp.database.Extension)
 
     # verify the database consistency along with the tests quota for this
     # environment/suite couple.
@@ -266,12 +279,13 @@ def                     Trigger(capability,
 
     # create a unique identifier for the test context.
     identifier = time.strftime("%Y%m%d-%H%M%S")
+    date = time.strftime("%Y/%m/%d %H:%M:%S")
 
     # create a temporary files for the received snapshot, the about-to-be
-    # generated image and the future report.
+    # generated image etc.
     snapshot = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
     image = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-    report = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+    bulletin = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
     stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
     # store the snapshot in the temporary file.
@@ -280,7 +294,12 @@ def                     Trigger(capability,
     # update the user's database by incrementing the number of requests.
     database["settings"][environment][machine][suite]["requests"] += 1
 
+    # retrieve the current time.
+    start = time.time()
+
     # launch the build hook which generates a bootable image.
+    # note that for this process, the xen environment is chosen not
+    # matter what what testing environment is provided by the user.
     (status, text) = ktp.process.Invoke(HooksDirectory + "/" +                  \
                                           environment + "/" +                   \
                                           machine + "/" +                       \
@@ -289,10 +308,9 @@ def                     Trigger(capability,
                                         [ "--name", identifier,
                                           "--snapshot", snapshot,
                                           "--image", image,
-                                          "--environment", environment,
+                                          "--environment", "xen",
                                           "--platform", platform,
-                                          "--architecture", architecture,
-                                          "--suite", suite ],
+                                          "--architecture", architecture ],
                                         stream = stream,
                                         option = ktp.process.OptionNone)
 
@@ -300,22 +318,65 @@ def                     Trigger(capability,
     if status == ktp.StatusError:
       return (ktp.StatusError, ktp.miscellaneous.Binary(text))
 
+    # launch the build hook which generates a bootable image.
+    (status, text) = ktp.process.Invoke(HooksDirectory + "/" +                  \
+                                          environment + "/" +                   \
+                                          machine + "/" +                       \
+                                          suite + "/" +                         \
+                                          StressHook,
+                                        [ "--name", identifier,
+                                          "--image", image,
+                                          "--environment", environment,
+                                          "--suite", suite,
+                                          "--bulletin", bulletin ],
+                                        stream = stream,
+                                        option = ktp.process.OptionNone)
+
+    # test the success of the construct hook invocation.
+    if status == ktp.StatusError:
+      return (ktp.StatusError, ktp.miscellaneous.Binary(text))
+
+    # retrieve the current time.
+    end = time.time()
+
+    # build the report based on the bulletin.
+    report = { "meta":
+                 { "identifier": identifier,
+                   "date": date,
+                   "environment": environment,
+                   "platform": platform,
+                   "architecture": architecture,
+                   "suite": suite,
+                   "duration": "%.3f" % (end - start) },
+               "data":
+                 ktp.bulletin.Load(bulletin) }
+
+    # store the report.
+    ktp.report.Store(report,
+                     ReportStore + "/" + identifier + ktp.report.Extension)
+
+    # store the snapshot.
+    ktp.miscellaneous.Copy(snapshot,
+                           SnapshotStore + "/" + identifier + ktp.snapshot.Extension)
+
+    # update the database.
+    database["reports"][environment][machine][suite] += [ identifier ]
   except Exception, exception:
     return (ktp.StatusError, ktp.trace.Generate())
   finally:
     # store the database.
     if database:
-      ktp.database.Store(database, DatabaseStore + "/" + profile["name"])
+      ktp.database.Store(database, DatabaseStore + "/" + profile["name"] + ktp.database.Extension)
 
     # remove the temporary files.
-    if report:
-      ktp.miscellaneous.Remove(report)
+    if stream:
+      ktp.miscellaneous.Remove(stream)
+    if bulletin:
+      ktp.miscellaneous.Remove(bulletin)
     if image:
       ktp.miscellaneous.Remove(image)
     if snapshot:
       ktp.miscellaneous.Remove(snapshot)
-    if stream:
-      ktp.miscellaneous.Remove(stream)
 
   return (ktp.StatusOk, report)
 

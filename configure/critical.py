@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/configure/critical.py
+# file          /home/mycure/kaneton.STABLE/configure/critical.py
 #
 # created       julien quintard   [wed may 23 10:31:42 2007]
-# updated       julien quintard   [tue may  5 11:03:21 2009]
+# updated       julien quintard   [sun oct 24 14:53:16 2010]
 #
 
 #
@@ -89,41 +89,43 @@ def			list(directory, options):
 # then, the function explains the user what to do to next.
 #
 def			build():
-  print "[+] your profile is about the be created at:"
-  print "[+]   " + g_directory + "/environment/profile/user/" + g_user
-  print ""
+  print("[+] your profile is about the be created at:")
+  print("[+]   " + g_directory + "/environment/profile/user/" + g_user)
+  print("")
 
-  print "[+] are you sure you want to build the '" + g_user + "' user profile:"
-  print "[+]   [y]",
+  print("[+] are you sure you want to build the '" +                    \
+          g_user +                                                      \
+          "' user profile:")
+  print("[+]   [y] ", end="")
 
-  key = raw_input()
+  key = input()
 
   if not key:
     key = "y"
 
   if key != "y":
-    print "[!] aborting..."
+    print("[!] aborting...")
     sys.exit(42)
 
-  print ""
+  print("")
 
   if os.path.isdir(g_directory + "/environment/profile/user/" + g_user):
-    print "[!] the user profile '" + g_user + "' already exists"
+    print("[!] the user profile '" + g_user + "' already exists")
     sys.exit(42)
 
   os.mkdir(g_directory + "/environment/profile/user/" + g_user)
 
-  print "[+] the user profile was created sucessfully"
-  print ""
+  print("[+] the user profile was created sucessfully")
+  print("")
 
-  print "[+] you now need to modify your shell configuration with the"
-  print "[+] following lines:"
-  print "[+]"
-  print "[+]   export KANETON_USER              '" + g_user + "'"
-  print "[+]   export KANETON_HOST              '" + g_host + "'"
-  print "[+]   export KANETON_PYTHON            '" + g_python + "'"
-  print "[+]   export KANETON_PLATFORM          '" + g_platform + "'"
-  print "[+]   export KANETON_ARCHITECTURE      '" + g_architecture + "'"
+  print("[+] you now need to modify your shell configuration with the")
+  print("[+] following lines:")
+  print("[+]")
+  print("[+]   export KANETON_USER              '" + g_user + "'")
+  print("[+]   export KANETON_HOST              '" + g_host + "'")
+  print("[+]   export KANETON_PYTHON            '" + g_python + "'")
+  print("[+]   export KANETON_PLATFORM          '" + g_platform + "'")
+  print("[+]   export KANETON_ARCHITECTURE      '" + g_architecture + "'")
 
 
 
@@ -145,21 +147,21 @@ def			python():
       python = p + "/python"
 
   # ask the user the location of the python binary program.
-  print "[?] please specify the path of the python binary program:"
-  print "[?]   [" + python + "]",
+  print("[?] please specify the path of the python binary program:")
+  print("[?]   [" + python + "] ", end="")
 
   # read the user input.
-  g_python = raw_input()
+  g_python = input()
 
   if not g_python:
     g_python = python
 
   if not g_python or not os.path.isfile(g_python):
-    print "[!] the provided python path is incorrect"
-    print "[!] aborting..."
+    print("[!] the provided python path is incorrect")
+    print("[!] aborting...")
     sys.exit(0)
 
-  print ""
+  print("")
 
 
 
@@ -191,27 +193,27 @@ def			architecture():
       architectures.append(p + "/" + i)
 
   # display a message and list the architectures actually available.
-  print "[+] the target architecture represents the microprocessor"
-  print "[+] which the kaneton microkernel will be built for."
-  print ""
-  print "[+] available target architectures:"
+  print("[+] the target architecture represents the microprocessor")
+  print("[+] which the kaneton microkernel will be built for.")
+  print("")
+  print("[+] available target architectures:")
   for a in architectures:
-    print "[+]   o " + a
-  print ""
+    print("[+]   o " + a)
+  print("")
 
   # ask the user which architecture to use.
-  print "[?] please specify the targeted architecture:"
-  print "[?]   []",
+  print("[?] please specify the targeted architecture:")
+  print("[?]   [] ", end="")
 
   # read the user input.
-  g_architecture = raw_input()
+  g_architecture = input()
 
   if not g_architecture in architectures:
-    print "[!] unknown target architecture"
-    print "[!] aborting..."
+    print("[!] unknown target architecture")
+    print("[!] aborting...")
     sys.exit(42)
 
-  print ""
+  print("")
 
 
 
@@ -226,32 +228,33 @@ def			platform():
   p = None
 
   # get the platform entries.
-  platforms = list(g_directory + "/environment/profile/kaneton/machine/platform",
+  platforms = list(g_directory +                                        \
+                     "/environment/profile/kaneton/machine/platform",
                    OPTION_DIRECTORY | OPTION_SKIP)
 
   # display a message and list the platforms actually available.
-  print "[+] the target platform represents the hardware board supporting"
-  print "[+] the devices: microprocessor, memory, peripherals etc."
-  print ""
-  print "[+] available target platforms:"
+  print("[+] the target platform represents the hardware board supporting")
+  print("[+] the devices: microprocessor, memory, peripherals etc.")
+  print("")
+  print("[+] available target platforms:")
   for p in platforms:
-    print "[+]   o " + p
+    print("[+]   o " + p)
 
-  print ""
+  print("")
 
   # ask the user which platform to use.
-  print "[?] please specify the targeted platform:"
-  print "[?]   []",
+  print("[?] please specify the targeted platform:")
+  print("[?]   [] ", end="")
 
   # read the user input.
-  g_platform = raw_input()
+  g_platform = input()
 
   if not g_platform in platforms:
-    print "[!] unknown target platform"
-    print "[!] aborting..."
+    print("[!] unknown target platform")
+    print("[!] aborting...")
     sys.exit(42)
 
-  print ""
+  print("")
 
 
 
@@ -283,32 +286,32 @@ def			host():
       hosts[s + "/" + p.split(".")[0]] = None
 
   # display a message and list the hosts actually available.
-  print "[+] the host profile represents the host you are currently using"
-  print "[+] for developing kaneton."
-  print ""
-  print "[+] a host profile is composed of an operating system and"
-  print "[+] a microprocessor, on which the operating system is running."
-  print ""
+  print("[+] the host profile represents the host you are currently using")
+  print("[+] for developing kaneton.")
+  print("")
+  print("[+] a host profile is composed of an operating system and")
+  print("[+] a microprocessor, on which the operating system is running.")
+  print("")
 
-  print "[+] available host profiles:"
+  print("[+] available host profiles:")
   for h in hosts:
-    print "[+]   o " + h
+    print("[+]   o " + h)
 
-  print ""
+  print("")
 
   # ask the user which host profile to use.
-  print "[?] please specify the host profile you want to use:"
-  print "[?]   []",
+  print("[?] please specify the host profile you want to use:")
+  print("[?]   [] ", end="")
 
   # read the user input.
-  g_host = raw_input()
+  g_host = input()
 
   if not g_host in hosts:
-    print "[!] unknown host profile"
-    print "[!] aborting..."
+    print("[!] unknown host profile")
+    print("[!] aborting...")
     sys.exit(42)
 
-  print ""
+  print("")
 
 
 
@@ -323,33 +326,33 @@ def			user():
   lastname = None
 
   # ask the user to specify its firstname.
-  print "[?] please specify your firstname without spaces in lowercase:"
-  print "[?]   []",
+  print("[?] please specify your firstname without spaces in lowercase:")
+  print("[?]   [] ", end="")
 
-  firstname = raw_input().lower()
+  firstname = input().lower()
 
-  print ""
+  print("")
 
   # ask the user to specify its lastname.
-  print "[?] please specify your lastname without spaces and in lowercase:"
-  print "[?]   []",
+  print("[?] please specify your lastname without spaces and in lowercase:")
+  print("[?]   [] ", end="")
 
-  lastname = raw_input().lower()
+  lastname = input().lower()
 
-  print ""
+  print("")
 
   # if one is missing, abort.
   if not firstname or not lastname:
-    print "[!] the firstname and/or the lastname is missing"
-    print "[!] aborting..."
+    print("[!] the firstname and/or the lastname is missing")
+    print("[!] aborting...")
     sys.exit(42)
 
   # set the global variable: g_user
   g_user = firstname + "." + lastname
 
   # display a little message.
-  print "[+] your user profile name will be '" + g_user + "'"
-  print ""
+  print("[+] your user profile name will be '" + g_user + "'")
+  print("")
 
 
 
@@ -371,22 +374,22 @@ def			system():
   os.chdir(scwd)
 
   # ask the user to enter the kaneton root directory.
-  print "[?] please enter the absolute path to the kaneton root directory:"
-  print "[?]   [" + cwd + "]",
+  print("[?] please enter the absolute path to the kaneton root directory:")
+  print("[?]   [" + cwd + "] ", end="")
 
   # read the user's input.
-  g_directory = raw_input()
+  g_directory = input()
 
   if not g_directory:
     g_directory = cwd
 
   # if the path entered is not correct, quit.
   if not os.path.isdir(g_directory):
-    print "[!] the entered path is not a directory"
-    print "[!] aborting..."
+    print("[!] the entered path is not a directory")
+    print("[!] aborting...")
     sys.exit(42)
 
-  print ""
+  print("")
 
 
 
@@ -400,25 +403,25 @@ def			warning():
   key = None
 
   # display a stating message.
-  print "[+] it looks like you are a new kaneton user"
-  print ""
+  print("[+] it looks like you are a new kaneton user")
+  print("")
 
   # ask the user to continue.
-  print "[?] do you want to continue in order to create a new user profile?"
-  print "[?]   [y]",
+  print("[?] do you want to continue in order to create a new user profile?")
+  print("[?]   [y] ", end="")
 
   # read the user's input and check if it is correct
-  key = raw_input().lower()
+  key = input().lower()
 
   if not key:
     key = "y"
 
   # if not, display a message and quit.
   if key != "y":
-    print "[!] aborting..."
+    print("[!] aborting...")
     sys.exit(42)
 
-  print ""
+  print("")
 
 
 
@@ -445,7 +448,7 @@ def			main():
 
   # check the presence of the shell environment variables.
   if u != None and h != None and y != None and p != None and a != None:
-    print "[+] it looks like you already set up your environment variables"
+    print("[+] it looks like you already set up your environment variables")
     return
 
   # ask the user to continue.
@@ -473,7 +476,7 @@ def			main():
   build()
 
   # a message.
-  print "[+] thank you! you can relaunch the configure script"
+  print("[+] thank you! you can relaunch the configure script")
 
   sys.exit(0)
 

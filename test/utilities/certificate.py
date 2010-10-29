@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/util/certificate.py
+# file          /data/mycure/repo...ton.STABLE/test/utilities/certificate.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [mon oct 25 20:15:58 2010]
+# updated       julien quintard   [wed oct 27 13:27:30 2010]
 #
 
 #
@@ -115,17 +115,19 @@ def                     main():
   (server_key, server_certificate) = server(ca_key, ca_certificate)
 
   # save the ca key and certificate
-  ktp.key.Store(env._TEST_STORE_KEY_DIR_ + "/ca",
+  ktp.key.Store(env._TEST_STORE_KEY_DIR_ + "/ca" + ktp.key.Extension,
                 ca_key)
 
-  ktp.certificate.Store(env._TEST_STORE_CERTIFICATE_DIR_ + "/ca",
+  ktp.certificate.Store(env._TEST_STORE_CERTIFICATE_DIR_ + "/ca" +      \
+                          ktp.certificate.Extension,
                         ca_certificate)
 
   # save the server key and certificate
-  ktp.key.Store(env._TEST_STORE_KEY_DIR_ + "/server",
+  ktp.key.Store(env._TEST_STORE_KEY_DIR_ + "/server" + ktp.key.Extension,
                 server_key)
 
-  ktp.certificate.Store(env._TEST_STORE_CERTIFICATE_DIR_ + "/server",
+  ktp.certificate.Store(env._TEST_STORE_CERTIFICATE_DIR_ + "/server" +  \
+                          ktp.certificate.Extension,
                         server_certificate)
 
   # display.
