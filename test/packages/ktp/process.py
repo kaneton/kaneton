@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/process.py
 #
 # created       julien quintard   [mon oct 25 20:54:05 2010]
-# updated       julien quintard   [fri oct 29 19:48:17 2010]
+# updated       julien quintard   [mon nov  1 13:13:02 2010]
 #
 
 #
@@ -37,7 +37,8 @@ OptionBackground = 1
 # (status, text) or a monitor if the invocation has been performed
 # in background.
 #
-def                     Invoke(command, arguments,
+def                     Invoke(command,
+                               arguments,
                                stream = None,
                                option = OptionNone):
   info = None

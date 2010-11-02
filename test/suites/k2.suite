@@ -1,5 +1,18 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/suites/k2.suite
+#
+# created       julien quintard   [tue nov  2 07:33:43 2010]
+# updated       julien quintard   [tue nov  2 07:33:44 2010]
+#
+
 name: k2
 description: XXX
 components:
   id: kaneton/id
-  segment: kaneton/segment
+  segment: kaneton/segment/permissions/01

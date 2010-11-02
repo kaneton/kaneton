@@ -1,4 +1,3 @@
-
 #
 # ---------- header -----------------------------------------------------------
 #
@@ -9,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/capability.py
 #
 # created       julien quintard   [mon oct 25 19:58:10 2010]
-# updated       julien quintard   [wed oct 27 13:09:41 2010]
+# updated       julien quintard   [sun oct 31 13:45:54 2010]
 #
 
 #
@@ -18,8 +17,10 @@
 
 from OpenSSL import crypto
 
+import os
 import hmac
 import pickle
+import re
 
 #
 # ---------- definitions ------------------------------------------------------
@@ -32,19 +33,38 @@ Extension = ".cap"
 #
 
 #
+# this function returns a list of capability identifiers.
+#
+def                     List(directory):
+  capabilities = []
+  entries = None
+  entry = None
+  path = None
+
+  entries = os.listdir(directory)
+
+  for entry in entries:
+    path = directory + "/" + entry
+
+    if os.path.isfile(path) and re.search("^.*" + Extension + "$", path):
+      capabilities += [ entry[:-len(Extension)] ]
+
+  return capabilities
+
+#
 # this function creates a capability.
 #
 def                     Create(code,
-                               name,
+                               identifier,
                                community,
-                               email):
-  h = hmac.new(code, pickle.dumps( (name, community, email) ))
+                               members):
+  h = hmac.new(code, pickle.dumps( (identifier, community, members) ))
   token = h.hexdigest()
 
-  capability = pickle.dumps( { "name": name,
-                               "community": community,
-                               "email": email,
-                               "token": token } )
+  capability = { "identifier": identifier,
+                 "community": community,
+                 "members": members,
+                 "token": token }
 
   return capability
 
@@ -54,38 +74,28 @@ def                     Create(code,
 #
 def                     Validate(code,
                                  capability):
-  object = Extract(capability)
-
   h = hmac.new(code,
-               pickle.dumps( (object["name"],
-                              object["community"],
-                              object["email"] )))
+               pickle.dumps( (capability["identifier"],
+                              capability["community"],
+                              capability["members"] )))
   token = h.hexdigest()
 
-  if token != object["token"]:
+  if token != capability["token"]:
     return False
 
   return True
-
-#
-# this function takes a capability and returns the original data structure.
-#
-def                     Extract(capability):
-  object = pickle.loads(capability)
-
-  return object
 
 #
 # this function stores a capability on the file system.
 #
 def                     Store(path,
                               capability):
-  open(path, 'w').write(capability)
+  open(path, 'w').write(pickle.dumps(capability))
 
 #
 # this function loads a capability from the file system.
 #
 def                     Load(path):
-  capability = open(path, 'r').read()
+  capability = pickle.loads(open(path, 'r').read())
 
   return capability

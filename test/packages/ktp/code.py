@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/code.py
+# file          /home/mycure/kaneton.STABLE/test/packages/ktp/code.py
 #
 # created       julien quintard   [mon oct 25 20:03:52 2010]
-# updated       julien quintard   [wed oct 27 13:11:07 2010]
+# updated       julien quintard   [sat oct 30 11:17:56 2010]
 #
 
 #
@@ -34,7 +34,8 @@ Extension = ".code"
 def                     Generate():
   random.seed()
 
-  code = "".join([ random.choice(string.ascii_lowercase) for x in range(128) ])
+  code = "".join([ random.choice(string.ascii_letters + string.punctuation)
+                   for x in range(128) ])
 
   return code
 

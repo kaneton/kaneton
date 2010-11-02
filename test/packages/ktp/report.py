@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/report.py
 #
 # created       julien quintard   [tue oct 26 11:12:10 2010]
-# updated       julien quintard   [wed oct 27 14:50:58 2010]
+# updated       julien quintard   [sun oct 31 13:46:11 2010]
 #
 
 #
@@ -17,6 +17,7 @@
 
 import yaml
 import os
+import re
 
 import miscellaneous
 
@@ -31,7 +32,7 @@ Extension = ".rpt"
 #
 
 #
-# this function returns a list of paths to locally stored reports.
+# this function returns a list of report identifiers.
 #
 def                     List(directory):
   reports = []
@@ -44,7 +45,7 @@ def                     List(directory):
   for entry in entries:
     path = directory + "/" + entry
 
-    if os.path.isfile(path):
+    if os.path.isfile(path) and re.search("^.*" + Extension + "$", path):
       reports += [ entry[:-len(Extension)] ]
 
   return reports

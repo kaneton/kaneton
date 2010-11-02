@@ -1,5 +1,28 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/client/README
+#
+# created       julien quintard   [tue nov  2 05:48:57 2010]
+# updated       julien quintard   [tue nov  2 05:49:43 2010]
+#
+
 The client script provides the user the possibility to request actions
 from the test server.
+
+  $> make
+  [!] usage: client.py [command]
+
+  [!] commands:
+  [!]   information
+  [!]   submit [stage]
+  [!]   test [environment] [suite]
+  [!]   list
+  [!]   display [identifier]
 
 #
 # ---------- information ------------------------------------------------------
@@ -107,20 +130,33 @@ The syntax for this command is display::[identifier].
   [+]         output: 
 
 #
-# ---------- trigger ----------------------------------------------------------
+# ---------- test -------------------------------------------------------------
 #
 
-Finally, the 'trigger' command issues a request for a test suite to be run
-in the given environment so that to stress the current kaneton implementation.
+The 'test' command issues a request for a test suite to be run in the given
+environment so that to stress the current kaneton implementation.
 
 Note that this command displays a summary of the report once the test suite
 performed.
 
-The syntax for this command is trigger::[environment]::[suite] where [suite]
+The syntax for this command is test::[environment]::[suite] where [suite]
 can be any of the 'k0', 'k1', 'k2', 'k3' etc. stages while [environment] can
 be 'xen' or 'qemu'.
 
-  $> make trigger::xen::k2
-  [+] report
+  $> make test::xen::k2
+  [+] report(20101029-231656)
   [+]   id                                                               [3/3]
   [+]   segment                                                          [5/8]
+
+#
+# ---------- submit -----------------------------------------------------------
+#
+
+Finally, the 'submit' command enables students to definitely submit a
+kaneton implementation so that their work gets evaluated afterwards according
+to a specific stage.
+
+The syntax for this command is submit::[stage].
+
+  $> make submit::k3
+  [+] the snapshot has been submitted successfully

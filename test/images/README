@@ -1,0 +1,33 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/images/README
+#
+# created       julien quintard   [tue nov  2 06:39:32 2010]
+# updated       julien quintard   [tue nov  2 06:45:05 2010]
+#
+
+This directory contains everything for generating a Debian Live system.
+
+The 'debian.sh' script must be run on a Debian system and generated a
+_debian.iso_ file containing the necessary for a kaneton snapshot to be
+compiled.
+
+Note that the Debian Live system expects a disk to be provided through the
+/dev/hdb device.
+
+For more information, one can have a look at the data/ directory which contains
+the files that will be included in the generated Debian Live system.
+
+The etc::init.d::kaneton.sh script is triggered at the bootup. This script
+mounts and copies a few files from the /dev/hdb device before launching
+a sub-script, the home::user:compile.sh, under the identity of a specific
+unprivileged user.
+
+Note that the etc::init.d::live-initramfs.patch contains the necessary to
+make sure the Debian Live system halts automatically without the need for
+a user to hit a key.

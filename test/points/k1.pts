@@ -1,0 +1,24 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/points/k1.pts
+#
+# created       julien quintard   [tue nov  2 06:46:01 2010]
+# updated       julien quintard   [tue nov  2 07:15:41 2010]
+#
+
+#
+# id
+#
+id/clone: 1
+id/simple: 1
+id/multiple: 1
+
+#
+# segment
+#
+segment/permissions/01: 1

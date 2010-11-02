@@ -1,0 +1,83 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/scripts/README
+#
+# created       julien quintard   [mon nov  1 21:45:10 2010]
+# updated       julien quintard   [mon nov  1 21:45:14 2010]
+#
+
+This directory contains standalone scripts for performing various
+tasks.
+
+#
+# ---------- construct --------------------------------------------------------
+#
+
+The construct.py script basically takes a kaneton snapshot and generated
+an image according to the environment specified, being QEMU, Xen etc.
+
+Note that this script is being used by the test system such that, whenever
+receiving a snapshot for testing against a given test suite, the test
+system starts by generating an image based on the snapshot.
+
+Example:
+
+  $> ./construct.py --snapshot kaneton.tar.bz2 --image kaneton.img	\
+                    --environment qemu --architecture "ia32/educational"
+
+#
+# ---------- stress -----------------------------------------------------------
+#
+
+The stress.py script takes an image, launches it in a virtual environment---
+being QEMU or Xen---and then triggers the test belonging to the given test
+suite.
+
+The script displays the test results but can also generate a bulletin file
+summarizing the results including the output, duration and status of every
+test.
+
+Example:
+
+ $> ./stress.py --i kaneton.img --environment xen --suite k2
+
+#
+# ---------- distribute -------------------------------------------------------
+#
+
+The distribute standalone script takes a set of capabilities and emails them
+to their recipient.
+
+Example:
+
+  $> ./distribute --pattern "^epita::2011.*$"
+
+#
+# ---------- evaluate ---------------------------------------------------------
+#
+
+The evaluate script takes the student capabilities, retrieve the snapshots
+from their databases according to the given stage.
+
+These snapshots are then tested against a set of test suites before evaluating
+the results based on a set of points.
+
+The script then issues a statement containing the students' grades.
+
+Example:
+
+  $> ./evaluate --stage k1 --pattern "^epita::.*$"
+
+#
+# ---------- dump -------------------------------------------------------------
+#
+
+The dump script takes any YAML-based file such as databases, statements,
+reports etc. and displays its inner data fields in a hierarchised way.
+
+  $> ./ dump --path ../store/statement/20101101-181637.db

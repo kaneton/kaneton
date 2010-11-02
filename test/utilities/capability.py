@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...eton.STABLE/test/utilities/capability.py
+# file          /home/mycure/kaneton.STABLE/test/utilities/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [wed oct 27 13:25:56 2010]
+# updated       julien quintard   [sat oct 30 14:04:34 2010]
 #
 
 #
@@ -71,7 +71,7 @@ def                     extract(path):
   students = None
   members = None
   member = None
-  email = None
+  people = None
 
   # display.
   env.display(env.HEADER_OK,
@@ -92,6 +92,9 @@ def                     extract(path):
     # extract every line
     members = people.strip("\n").split("\n")
 
+    # initialize the people list.
+    people = []
+
     # for every member, extract the first email email.
     for member in members:
       # apply a regexp to locate the elements.
@@ -103,20 +106,19 @@ def                     extract(path):
                     "student '" + student + "'",
                     env.OPTION_NONE)
 
-      # extract email.
-      email = match.group(2)
-
-      break
+      # register the member.
+      people += [ { "name": match.group(1),
+                    "email": match.group(2) } ]
 
     # add the student.
-    container[student] = email
+    container[student] = people
 
   # display.
   env.display(env.HEADER_OK,
               "students information retrieved",
               env.OPTION_NONE)
 
-  return students
+  return container
 
 #
 # generate()
@@ -156,9 +158,7 @@ def                     generate(code,
 
     # display.
     env.display(env.HEADER_OK,
-                "  " +
-                name + " :: " +
-                students[student],
+                "  " + name,
                 env.OPTION_NONE)
 
 #
@@ -170,6 +170,7 @@ def                     student():
   name = None
   email = None
   file = None
+  people = []
 
   # display.
   env.display(env.HEADER_OK,
@@ -197,10 +198,9 @@ def                     student():
                   g_path + "'",
                   env.OPTION_NONE)
 
-    # extract name email.
-    email = match.group(2)
-
-    break
+      # register the member.
+      people += [ { "name": match.group(1),
+                    "email": match.group(2) } ]
 
   # compute the file name.
   file = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                        \
@@ -214,7 +214,7 @@ def                     student():
   capability = ktp.capability.Create(code,
                                      name,
                                      "students",
-                                     email)
+                                     people)
 
   # store it.
   ktp.capability.Store(file,
@@ -222,9 +222,7 @@ def                     student():
 
   # display.
   env.display(env.HEADER_OK,
-              "  " +
-              name + " :: " +
-              email,
+              "  " + name.
               env.OPTION_NONE)
 
   # display.
@@ -288,7 +286,8 @@ def                     contributor():
   capability = ktp.capability.Create(code,
                                      name,
                                      "contributors",
-                                     "admin@opaak.org")
+                                     [ { "name": "admin",
+                                         "email": "admin@opaak.org" } ])
 
   # store it.
   ktp.capability.Store(file,

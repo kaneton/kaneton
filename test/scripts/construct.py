@@ -6,10 +6,33 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/construct.py
+# file          /home/mycure/kaneton.STABLE/test/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri oct 29 20:24:20 2010]
+# updated       julien quintard   [tue nov  2 05:18:35 2010]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+# this script takes a kaneton snapshot, starts a Debian Live system in an
+# emulated environment in order to compile the snapshot into a bootable image.
+#
+# first, a disk is created in order to receive: (i) the kaneton snapshot,
+# (ii) the kaneton bundle i.e the set of pre-compiled tests to include to
+# the kernel compilation and (iii) a set of environment variables required
+# by the compilation process: the kaneton environment variables.
+#
+# the emulator is then launched, taking care to set a timer so that the
+# process stops should the emulator crash or hang.
+#
+# finally, the script mounts the disk image which should, theoretically,
+# contain the generated kaneton image. should the process have failed, the
+# disk image should contain the reason of this failure through the .log and
+# .error files.
+#
+# for more information about the Debian Live system, please refer to the
+# images/ directory.
 #
 
 #
@@ -19,7 +42,8 @@
 import os
 import sys
 
-TestDirectory = os.path.abspath(os.path.dirname(os.path.realpath(sys.argv[0])) + "/..")
+TestDirectory = os.path.abspath(os.path.dirname(                        \
+                  os.path.realpath(sys.argv[0])) + "/..")
 
 sys.path.append(TestDirectory + "/packages")
 
@@ -117,17 +141,17 @@ def                     Disk(namespace):
 
   # copy the kaneton tests bundle.
   ktp.miscellaneous.Copy(BundleStore + "/" +                            \
-                           namespace.platform + "." +                 \
+                           namespace.platform + "." +                   \
                            namespace.architecture + "/kaneton.lo",
                          directory)
 
   # generate the environment.
-  environment = """
+  environment = """\
 export KANETON_USER='test'
 export KANETON_HOST='%(host)s'
 export KANETON_PYTHON='/usr/bin/python'
 export KANETON_PLATFORM='%(platform)s'
-export KANETON_ARCHITECTURE='%(architecture)s'
+export KANETON_ARCHITECTURE='%(architecture)s'\
 """ % { "host": namespace.host,
         "platform": namespace.platform,
         "architecture": namespace.architecture }
@@ -171,7 +195,8 @@ def                     QEMU(namespace):
                                  [ "-nographic",
                                    "-serial", "null",
                                    "-monitor", "null",
-                                   "-cdrom", TestDirectory + "/images/debian.iso",
+                                   "-cdrom",
+                                     TestDirectory + "/images/debian.iso",
                                    "-hdb", namespace.disk,
                                    "-name", namespace.name],
                                  stream = stream,
@@ -220,10 +245,11 @@ def                     Xen(namespace):
   log = None
 
   # create a temporary file.
-  namespace.configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+  namespace.configuration =                                             \
+    ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
   # configuration.
-  configuration = """
+  configuration = """\
 device_model = "/usr/lib/xen/bin/qemu-dm"
 kernel = "/usr/lib/xen/boot/hvmloader"
 builder = "hvm"
@@ -231,7 +257,7 @@ memory = 256
 name = "%(name)s"
 pae = 1
 disk = ["tap:aio:%(root)s/images/debian.iso,hdc:cdrom,r", "tap:aio:%(disk)s,hdb,w"]
-boot = 'd'
+boot = 'd'\
 """ % { "root": TestDirectory,
         "name": namespace.name,
         "disk": namespace.disk }
@@ -370,11 +396,13 @@ def                     Clean(namespace):
 #
 # this is the main function
 #
-def             Main():
+def                     Main():
   global g_parser
 
   # create a new parser.
-  g_parser = argparse.ArgumentParser(description="This script builds a bootable image from the given kaneton snapshot.")
+  g_parser = argparse.ArgumentParser(description="This script builds "  \
+                                       "a bootable image from the "     \
+                                       "given kaneton snapshot.")
 
   # set up the authorised arguments.
   g_parser.add_argument("--name", '-n',
@@ -386,24 +414,30 @@ def             Main():
                         help = "the path to the kaneton snapshost",
                         dest = "snapshot")
   g_parser.add_argument("--image", '-i',
-                        default = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile),
+                        default =
+                          ktp.miscellaneous.Temporary(                  \
+                            ktp.miscellaneous.OptionFile),
                         help = "the path to the generated kaneton image",
                         dest = "image")
   g_parser.add_argument("--environment", '-e',
                         required = True,
-                        help = "the environment in which the image is to be generated",
+                        help = "the environment in which the image is " \
+                          "to be generated",
                         dest = "environment")
   g_parser.add_argument("--host", '-o',
                         default = "linux/ia32",
-                        help = "the host in which the image is to be generated",
+                        help = "the host in which the image is to be "  \
+                          "generated",
                         dest = "host")
   g_parser.add_argument("--platform", '-p',
                         default = "ibm-pc",
-                        help = "the platform on which the image is to be generated",
+                        help = "the platform on which the image is to " \
+                          "be generated",
                         dest = "platform")
   g_parser.add_argument("--architecture", '-a',
                         default = "ia32",
-                        help = "the architecture on which the image is to be generated",
+                        help = "the architecture on which the image "   \
+                          "is to be generated",
                         dest = "architecture")
 
   # parse the arguments.
@@ -431,7 +465,7 @@ def             Main():
   Clean(namespace)
 
   # display a message.
-  print("[+] The kaneton image has been constructed: " + namespace.image)
+  print("the kaneton image has been constructed in '" + namespace.image + "'")
 
 #
 # ---------- entry point ------------------------------------------------------

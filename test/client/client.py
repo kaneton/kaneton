@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [fri oct 29 20:08:56 2010]
+# updated       julien quintard   [tue nov  2 05:50:25 2010]
 #
 
 #
@@ -25,10 +25,6 @@
 #
 
 import sys
-import os
-import re
-import time
-import yaml
 
 import env
 import ktp
@@ -225,30 +221,40 @@ def                     Detail(report, margin = ""):
                   env.OPTION_NONE)
 
 #
-# this function dumps any Python dictionary in a hierarchical way.
+# this function dumps any Python data structure in a hierarchical way.
 #
-def                     Dump(data, margin = ""):
+def                     Dump(data, margin = "", alignment = 26):
   key = None
   length = None
+  element = None
 
-  for key in data:
-    if isinstance(data[key], dict):
-      env.display(env.HEADER_OK,
-                  margin + "  " + str(key) + ":",
-                  env.OPTION_NONE)
+  if isinstance(data, dict):
+    for key in data:
+      if not isinstance(data[key], dict) and not isinstance(data[key], list):
+        length = len(margin) + len(str(key)) + 1
 
-      Dump(data[key], margin + "  ")
-    else:
-      length = len(margin) + 2 + len(str(key)) + 1
+        env.display(env.HEADER_OK,
+                    margin + str(key) + ":" +
+                    (alignment - length) * " " +
+                    str(data[key]),
+                    env.OPTION_NONE)
+      else:
+        env.display(env.HEADER_OK,
+                    margin + str(key) + ":",
+                    env.OPTION_NONE)
 
-      env.display(env.HEADER_OK,
-                  margin +
-                  "  " +
-                  str(key)
-                  + ":" +
-                  (26 - length) * " " +
-                  str(data[key]),
-                  env.OPTION_NONE)
+        Dump(data[key], margin + "  ")
+  elif isinstance(data, list):
+    for element in data:
+      Dump(element, margin)
+  else:
+    length = len(margin)
+
+    env.display(env.HEADER_OK,
+                margin +
+                (alignment - length) * " " +
+                str(data),
+                env.OPTION_NONE)
 
 #
 # this function asks the server for information related to
@@ -277,12 +283,12 @@ def                     Information(server, capability, arguments):
               env.OPTION_NONE)
 
   # dump the information dictionary.
-  Dump(information)
+  Dump(information, "  ")
 
 #
 # this function triggers a test.
 #
-def                     Trigger(server, capability, arguments):
+def                     Test(server, capability, arguments):
   snapshot = None
   suite = None
   environment = None
@@ -309,12 +315,12 @@ def                     Trigger(server, capability, arguments):
                       env.OPTION_NONE)
 
   # trigger a test.
-  report = ktp.xmlrpc.Call(server.Trigger(capability,
-                                          ktp.miscellaneous.Binary(snapshot),
-                                          g_platform,
-                                          g_architecture,
-                                          environment,
-                                          suite))
+  report = ktp.xmlrpc.Call(server.Test(capability,
+                                       ktp.miscellaneous.Binary(snapshot),
+                                       g_platform,
+                                       g_architecture,
+                                       environment,
+                                       suite))
 
   # store the report.
   ktp.report.Store(report,
@@ -324,11 +330,48 @@ def                     Trigger(server, capability, arguments):
 
   # display the received report.
   env.display(env.HEADER_OK,
-              "report: " + report["meta"]["identifier"],
+              "report(" + report["meta"]["identifier"] + ")",
               env.OPTION_NONE)
 
   # display a summary
   Summarize(report, "  ")
+
+#
+# this function submits a snapshot.
+#
+def                     Submit(server, capability, arguments):
+  snapshot = None
+  stage = None
+
+  # warning
+  Warning()
+
+  # check the arguments
+  if len(arguments) != 2:
+    Usage()
+    sys.exit(42)
+
+  # retrieve the arguments.
+  stage = arguments[1]
+
+  # XXX
+  # 1) make export-student:contributor
+  # 2) export/output/test:contributor.tar.bz2
+  # XXX
+
+  # read the snapshot.
+  snapshot = env.pull("/home/mycure/kaneton.STABLE/export/output/test:contributor.tar.bz2",
+                      env.OPTION_NONE)
+
+  # submit the snapshot.
+  ktp.xmlrpc.Call(server.Submit(capability,
+                                ktp.miscellaneous.Binary(snapshot),
+                                stage))
+
+  # display a message.
+  env.display(env.HEADER_OK,
+              "the snapshot has been submitted successfully",
+              env.OPTION_NONE)
 
 #
 # this function displays a report.
@@ -463,7 +506,8 @@ c_commands = {
   "information": Information,
   "list": List,
   "display [identifier]": Display,
-  "trigger [environment] [suite]": Trigger
+  "test [environment] [suite]": Test,
+  "submit [stage]": Submit
 }
 
 #

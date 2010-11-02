@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...es/kaneton.STABLE/test/utilities/code.py
+# file          /home/mycure/kaneton.STABLE/test/utilities/code.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [wed oct 27 13:28:53 2010]
+# updated       julien quintard   [sat oct 30 11:18:05 2010]
 #
 
 #

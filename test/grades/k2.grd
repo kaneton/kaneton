@@ -1,0 +1,33 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/grades/k2.grd
+#
+# created       julien quintard   [tue nov  2 06:01:29 2010]
+# updated       julien quintard   [tue nov  2 07:14:04 2010]
+#
+
+configurations:
+  - name: QEMU
+    platform: ibm-pc
+    architecture: ia32/educational
+    environments:
+      construct: xen
+      stress: qemu
+    suite: k2
+    weight: 0.2
+  - name: Xen
+    platform: ibm-pc
+    architecture: ia32/educational
+    environments:
+      construct: xen
+      stress: xen
+    suite: k2
+    weight: 0.8
+tests:
+  - points/k1.pts
+  - points/k2.pts

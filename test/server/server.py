@@ -6,10 +6,37 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/server/server.py
+# file          /home/mycure/kaneton.STABLE/test/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [fri oct 29 20:29:06 2010]
+# updated       julien quintard   [tue nov  2 07:33:12 2010]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+# this script must be run on the server-side. the server waits for XML RPCs
+# which trigger one of the following actions: information, test or submit.
+#
+# for every action, the requesting client provides a user capability. this
+# capability is first verified. then, the user's database is loaded.
+#
+# the information command returns information on the requesting user's profile
+# by inspecting the user's database. In addition, this command returns the
+# available suites, stages and environments.
+#
+# the test command takes a snapshot, an environment and a suite to run. first,
+# the construct script is called in order to turn the snapshot into a
+# bootable image. then, the stress script is called in order to trigger
+# the tests belonging to the given test suite. finally, a report is build
+# and saved but also sent back to the client.
+#
+# the submit command takes a snapshot and saves it as the final work of the
+# student. later on, the administrator will be able to use scripts/evaluate.py
+# in order to generate the students' grades for a specific stage.
+#
+# for more information about the scripts called from the server, please refer
+# to the scripts/ directory.
 #
 
 #
@@ -19,7 +46,8 @@
 import os
 import sys
 
-TestDirectory = os.path.abspath(os.path.dirname(os.path.realpath(sys.argv[0])) + "/..")
+TestDirectory = os.path.abspath(os.path.dirname(                        \
+                  os.path.realpath(sys.argv[0])) + "/..")
 
 sys.path.append(TestDirectory + "/packages")
 
@@ -50,6 +78,7 @@ ServerDirectory = TestDirectory + "/server"
 StoreDirectory = TestDirectory + "/store"
 SuitesDirectory = TestDirectory + "/suites"
 TestsDirectory = TestDirectory + "/tests"
+GradesDirectory = TestDirectory + "/grades"
 
 # stores
 DatabaseStore = StoreDirectory + "/database"
@@ -76,6 +105,12 @@ StressHook = "stress.py"
 
 # maintenance
 MaintenanceLock = TestDirectory + "/.maintenance"
+
+# environments.
+Environments = [ "qemu", "xen" ]
+
+# test construct environment
+TestConstructEnvironment = "xen"
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -144,7 +179,9 @@ class SSLXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
       # check to see if a subclass implements _dispatch and dispatch
       # using that method if present.
       response = self.server._marshaled_dispatch(data,
-                                                 getattr(self, '_dispatch', None))
+                                                 getattr(self,
+                                                         '_dispatch',
+                                                         None))
     except: # this should only happen if the module is buggy
             # internal error, report as HTTP server error.
       self.send_response(500)
@@ -171,6 +208,8 @@ class SSLXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
 def                     Initialize():
   global g_code
 
+  # load the server's code which is used in order to validate the
+  # students' capabilities.
   g_code = ktp.code.Load(ServerCode)
 
 #
@@ -195,17 +234,20 @@ def                     Information(capability):
   try:
     # verify that the maintenance mode has not been activated.
     if os.path.exists(MaintenanceLock) == True:
-      return (ktp.StatusError, "the system is currently under maintenance ... please try again later")
+      return (ktp.StatusError, "the system is currently under "         \
+                "maintenance ... please try again later")
 
     # verify the given capability.
     if ktp.capability.Validate(g_code, capability) != True:
       return (ktp.StatusError, "invalid capability")
 
     # retrieve the profile inside the capability.
-    profile = ktp.capability.Extract(capability)
+    profile = capability
 
     # extract the user's database.
-    database = ktp.database.Load(DatabaseStore + "/" + profile["name"] + ktp.database.Extension)
+    database = ktp.database.Load(DatabaseStore + "/" +                  \
+                                   profile["identifier"] +              \
+                                   ktp.database.Extension)
 
     # build the information.
     information = {}
@@ -215,6 +257,15 @@ def                     Information(capability):
 
     # add the database.
     information["database"] = database
+
+    # add the set of of suites.
+    information["suites"] = ktp.suite.List(SuitesDirectory)
+
+    # add the set of stages.
+    information["stages"] = ktp.grade.List(GradesDirectory)
+
+    # add the set of environments.
+    information["environments"] = Environments
   except Exception, exception:
     return (ktp.StatusError, ktp.trace.Generate())
 
@@ -223,13 +274,12 @@ def                     Information(capability):
 #
 # this method triggers a test suite for the given snapshot.
 #
-def                     Trigger(capability,
-                                content,
-                                platform,
-                                architecture,
-                                environment,
-                                suite):
-  context = {}
+def                     Test(capability,
+                             content,
+                             platform,
+                             architecture,
+                             environment,
+                             suite):
   profile = None
   machine = None
   database = None
@@ -248,37 +298,45 @@ def                     Trigger(capability,
   try:
     # verify that the maintenance mode has not been activated.
     if os.path.exists(MaintenanceLock) == True:
-      return (ktp.StatusError, "the system is currently under maintenance ... please try again later")
+      return (ktp.StatusError, "the system is currently under "         \
+                "maintenance ... please try again later")
 
     # verify the given capability.
     if ktp.capability.Validate(g_code, capability) != True:
       return (ktp.StatusError, "invalid capability")
 
     # retrieve the profile inside the capability.
-    profile = ktp.capability.Extract(capability)
+    profile = capability
 
     # compute the machine.
     machine = platform + "." + architecture
 
     # retrieve the user's database.
-    database = ktp.database.Load(DatabaseStore + "/" + profile["name"] + ktp.database.Extension)
+    database = ktp.database.Load(DatabaseStore + "/" +                  \
+                                   profile["identifier"] +              \
+                                   ktp.database.Extension)
 
-    # verify the database consistency along with the tests quota for this
-    # environment/suite couple.
-    if (not "settings" in                                                     \
-         database) or                                                         \
-       (not environment in                                                    \
-         database["settings"]) or                                             \
-       (not machine in                                                        \
-         database["settings"][environment]) or                                \
-       (not suite in                                                          \
-         database["settings"][environment][machine]) or                       \
-       (database["settings"][environment][machine][suite]["requests"] ==      \
-         database["settings"][environment][machine][suite]["quota"]):
+    # verify the database consistency.
+    if (not "settings" in                                               \
+          database) or                                                  \
+       (not environment in                                              \
+         database["settings"]) or                                       \
+         (not machine in                                                \
+         database["settings"][environment]) or                          \
+       (not suite in                                                    \
+         database["settings"][environment][machine]):
+      return (ktp.StatusError, "the action does not seem to be "        \
+                "allowed for your profile")
+ 
+    # check that the quota has not been reached.
+    if (database["settings"][environment][machine][suite]["requests"] ==\
+          database["settings"][environment][machine][suite]["quota"]):
       return (ktp.StatusError, "the tests quota seems to have been reached")
 
     # create a unique identifier for the test context.
     identifier = time.strftime("%Y%m%d-%H%M%S")
+
+    # retrieve the current data.
     date = time.strftime("%Y/%m/%d %H:%M:%S")
 
     # create a temporary files for the received snapshot, the about-to-be
@@ -298,39 +356,47 @@ def                     Trigger(capability,
     start = time.time()
 
     # launch the build hook which generates a bootable image.
-    # note that for this process, the xen environment is chosen not
-    # matter what what testing environment is provided by the user.
-    (status, text) = ktp.process.Invoke(HooksDirectory + "/" +                  \
-                                          environment + "/" +                   \
-                                          machine + "/" +                       \
-                                          suite + "/" +                         \
-                                          ConstructHook,
-                                        [ "--name", identifier,
-                                          "--snapshot", snapshot,
-                                          "--image", image,
-                                          "--environment", "xen",
-                                          "--platform", platform,
-                                          "--architecture", architecture ],
-                                        stream = stream,
-                                        option = ktp.process.OptionNone)
+    (status, text) =                                                    \
+      ktp.process.Invoke(HooksDirectory +                               \
+                           "/" +                                        \
+                           TestConstructEnvironment +                   \
+                           "/" +                                        \
+                           machine +                                    \
+                           "/" +                                        \
+                           suite +                                      \
+                           "/" +                                        \
+                           ConstructHook,
+                         [ "--name", identifier,
+                           "--snapshot", snapshot,
+                           "--image", image,
+                           "--environment", TestConstructEnvironment,
+                           "--platform", platform,
+                           "--architecture", architecture ],
+                         stream = stream,
+                         option = ktp.process.OptionNone)
 
     # test the success of the construct hook invocation.
     if status == ktp.StatusError:
       return (ktp.StatusError, ktp.miscellaneous.Binary(text))
 
     # launch the build hook which generates a bootable image.
-    (status, text) = ktp.process.Invoke(HooksDirectory + "/" +                  \
-                                          environment + "/" +                   \
-                                          machine + "/" +                       \
-                                          suite + "/" +                         \
-                                          StressHook,
-                                        [ "--name", identifier,
-                                          "--image", image,
-                                          "--environment", environment,
-                                          "--suite", suite,
-                                          "--bulletin", bulletin ],
-                                        stream = stream,
-                                        option = ktp.process.OptionNone)
+    (status, text) =                                                    \
+      ktp.process.Invoke(HooksDirectory +                               \
+                           "/" +                                        \
+                           environment +                                \
+                           "/" +                                        \
+                           machine +                                    \
+                           "/" +                                        \
+                           suite +                                      \
+                           "/" +                                        \
+                           StressHook,
+                         [ "--name", identifier,
+                           "--image", image,
+                           "--environment", environment,
+                           "--suite", suite,
+                           "--bulletin", bulletin ],
+                         stream = stream,
+                         option = ktp.process.OptionNone)
 
     # test the success of the construct hook invocation.
     if status == ktp.StatusError:
@@ -343,7 +409,9 @@ def                     Trigger(capability,
     report = { "meta":
                  { "identifier": identifier,
                    "date": date,
-                   "environment": environment,
+                   "environments":
+                     { "construct": TestConstructEnvironment,
+                       "stress": environment },
                    "platform": platform,
                    "architecture": architecture,
                    "suite": suite,
@@ -355,10 +423,6 @@ def                     Trigger(capability,
     ktp.report.Store(report,
                      ReportStore + "/" + identifier + ktp.report.Extension)
 
-    # store the snapshot.
-    ktp.miscellaneous.Copy(snapshot,
-                           SnapshotStore + "/" + identifier + ktp.snapshot.Extension)
-
     # update the database.
     database["reports"][environment][machine][suite] += [ identifier ]
   except Exception, exception:
@@ -366,7 +430,8 @@ def                     Trigger(capability,
   finally:
     # store the database.
     if database:
-      ktp.database.Store(database, DatabaseStore + "/" + profile["name"] + ktp.database.Extension)
+      ktp.database.Store(database, DatabaseStore + "/" +                \
+                           profile["identifier"] + ktp.database.Extension)
 
     # remove the temporary files.
     if stream:
@@ -381,6 +446,72 @@ def                     Trigger(capability,
   return (ktp.StatusOk, report)
 
 #
+# this method submits a snapshot.
+#
+def                     Submit(capability,
+                               content,
+                               stage):
+  profile = None
+  database = None
+  identifier = None
+  date = None
+
+  try:
+    # verify that the maintenance mode has not been activated.
+    if os.path.exists(MaintenanceLock) == True:
+      return (ktp.StatusError, "the system is currently under "         \
+                "maintenance ... please try again later")
+
+    # verify the given capability.
+    if ktp.capability.Validate(g_code, capability) != True:
+      return (ktp.StatusError, "invalid capability")
+
+    # retrieve the profile inside the capability.
+    profile = capability
+
+    # retrieve the user's database.
+    database = ktp.database.Load(DatabaseStore + "/" +                  \
+                                   profile["identifier"] +              \
+                                   ktp.database.Extension)
+
+    # verify the database consistency.
+    if (not "deliveries" in                                             \
+         database) or                                                   \
+       (not stage in                                                    \
+         database["deliveries"]):
+      return (ktp.StatusError, "the action does not seem to be "        \
+                "allowed for your profile")
+
+    # check that no snapshot has been submitted already.
+    if database["deliveries"][stage] != None:
+      return (ktp.StatusError, "a snapshot seems to have already "      \
+                "been submitted")
+
+    # create a unique identifier for the submission.
+    identifier = time.strftime("%Y%m%d-%H%M%S")
+
+    # retrieve the current date.
+    date = time.strftime("%Y/%m/%d %H:%M:%S")
+
+    # store the snapshot in the temporary file.
+    ktp.miscellaneous.Push(str(content),
+                           SnapshotStore + "/" + identifier +           \
+                             ktp.snapshot.Extension)
+
+    # set the snapshot identifier in the database.
+    database["deliveries"][stage] = { "snapshot": identifier,
+                                      "date": date }
+  except Exception, exception:
+    return (ktp.StatusError, ktp.trace.Generate())
+  finally:
+    # store the database.
+    if database:
+      ktp.database.Store(database, DatabaseStore + "/" +                \
+                           profile["identifier"] + ktp.database.Extension)
+
+  return (ktp.StatusOk, None)
+
+#
 # ---------- entry point ------------------------------------------------------
 #
 
@@ -391,11 +522,13 @@ if __name__ == '__main__':
 
   # register the routines.
   server.register_function(Information)
-  server.register_function(Trigger)
+  server.register_function(Test)
+  server.register_function(Submit)
 
   # print information
   information = server.socket.getsockname()
-  print("[information] serving on " + information[0] + ":" + str(information[1]))
+  print("[information] serving on " +                                   \
+          information[0] + ":" + str(information[1]))
 
   # initialize the system.
   Initialize()

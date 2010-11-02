@@ -1,3 +1,16 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       
+#
+# file          /home/mycure/kaneton.STABLE/test/suites/kaneton.suite
+#
+# created       julien quintard   [tue nov  2 07:34:08 2010]
+# updated       julien quintard   [tue nov  2 07:34:11 2010]
+#
+
 name: kaneton
 description: XXX
 components:

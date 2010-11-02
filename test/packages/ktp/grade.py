@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/database.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/grade.py
 #
 # created       julien quintard   [mon oct 25 20:23:05 2010]
-# updated       julien quintard   [mon nov  1 18:55:35 2010]
+# updated       julien quintard   [mon nov  1 17:51:45 2010]
 #
 
 #
@@ -23,17 +23,17 @@ import re
 # ---------- definitions ------------------------------------------------------
 #
 
-Extension = ".db"
+Extension = ".grd"
 
 #
 # ---------- functions --------------------------------------------------------
 #
 
 #
-# this function returns a list of database identifiers.
+# this function returns a list of grade identifiers.
 #
 def                     List(directory):
-  databases = []
+  grades = []
   entries = None
   entry = None
   path = None
@@ -44,25 +44,19 @@ def                     List(directory):
     path = directory + "/" + entry
 
     if os.path.isfile(path) and re.search("^.*" + Extension + "$", path):
-      databases += [ entry[:-len(Extension)] ]
+      grades += [ entry[:-len(Extension)] ]
 
-  return databases
-
-#
-# this function generates a database based on the given configuration.
-#
-def                     Generate(configuration):
-  return configuration
+  return grades
 
 #
-# this function stores a database.
+# this function stores a grade.
 #
-def                     Store(database, path):
-  yaml.dump(database,
+def                     Store(grade, path):
+  yaml.dump(grade,
             file(path, 'w'))
 
 #
-# this function loads a database.
+# this function loads a grade.
 #
 def                     Load(path):
   return yaml.load(file(path, 'r'))

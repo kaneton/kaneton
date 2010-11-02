@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...aneton.STABLE/test/utilities/database.py
+# file          /home/mycure/kaneton.STABLE/test/utilities/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [wed oct 27 13:31:39 2010]
+# updated       julien quintard   [sat oct 30 10:27:13 2010]
 #
 
 #
@@ -46,9 +46,18 @@ g_path = None
 # this function displays the usage.
 #
 def			usage():
+  component = None
+
   env.display(env.HEADER_ERROR,
-              "usage: database.py [school::year]",
+              "usage: database.py [component]",
               env.OPTION_NONE)
+
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+
+  env.display(env.HEADER_ERROR, "components:", env.OPTION_NONE)
+
+  for component in c_components:
+    env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
 
 #
 # student()
@@ -106,7 +115,9 @@ def                     school():
   students = None
   student = None
   id = None
+  configuration = None
   database = None
+  name = None
 
   # display.
   env.display(env.HEADER_OK,
@@ -119,8 +130,11 @@ def                     school():
 
   # for each student.
   for student in students:
-    # compute the id.
+    # compute the school id.
     id = g_path.replace("/", "::")
+
+    # compute the student name.
+    name = id + "::" + student
 
     # load the configuration.
     configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
@@ -132,12 +146,12 @@ def                     school():
 
     # store the database.
     ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" +  \
-                         id + ktp.database.Extension)
+                         name + ktp.database.Extension)
 
     # display.
     env.display(env.HEADER_OK,
                 "  " +
-                id + "::" + student,
+                name,
                 env.OPTION_NONE)
 
   # display message.

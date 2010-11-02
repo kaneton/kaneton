@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [sun oct 24 14:56:30 2010]
+# updated       julien quintard   [sun oct 31 13:04:24 2010]
 #
 
 #
@@ -99,12 +99,15 @@ def			display(header, text, options):
     sys.stdout.write(colorize(text, COLOR_NONE, OPTION_NONE))
   elif header == HEADER_INTERACTIVE:
     sys.stdout.write(colorize("[", COLOR_BLUE, OPTION_BOLD))
-    sys.stdout.write(colorize("?", COLOR_YELLOW, OPTION_FLICKERING | OPTION_BOLD))
+    sys.stdout.write(colorize("?",
+                              COLOR_YELLOW,
+                              OPTION_FLICKERING | OPTION_BOLD))
     sys.stdout.write(colorize("]", COLOR_BLUE, OPTION_BOLD))
     sys.stdout.write(" ")
     sys.stdout.write(colorize(text, COLOR_NONE, OPTION_NONE))
 
-  sys.stdout.write("\n")
+  if not options & OPTION_NO_NEWLINE:
+    sys.stdout.write("\n")
 
 
 

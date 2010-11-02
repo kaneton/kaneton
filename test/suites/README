@@ -1,0 +1,16 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/suites/README
+#
+# created       julien quintard   [tue nov  2 07:34:33 2010]
+# updated       julien quintard   [tue nov  2 07:37:49 2010]
+#
+
+The suites/ directory contains test suite files. Every test suite is composed
+of a set of tuples: a component name and a test path refering to the tests/
+directory.

@@ -20,3 +20,5 @@ settings:
       k1: {quota: -1, requests: 0}
       k2: {quota: -1, requests: 0}
       k3: {quota: -1, requests: 0}
+snapshots:
+  ibm-pc.ia32/educational: {k1: null, k2: null, k3: null}

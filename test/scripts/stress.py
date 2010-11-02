@@ -6,10 +6,25 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/stress.py
+# file          /home/mycure/kaneton.STABLE/test/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri oct 29 20:28:04 2010]
+# updated       julien quintard   [tue nov  2 05:48:32 2010]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+# this script takes a bootable kaneton image and launches it in an emulated
+# environment.
+#
+# the script then establishes a connection with the emulated environment
+# through a serial port. this connection is used to both trigger tests
+# and retrieving the output of those tests.
+#
+# upon completion, a list of results is gathered containing the output, status
+# and duration of the test. these results are finally saved in a bulletin
+# file.
 #
 
 #
@@ -19,7 +34,8 @@
 import os
 import sys
 
-TestDirectory = os.path.abspath(os.path.dirname(os.path.realpath(sys.argv[0])) + "/..")
+TestDirectory = os.path.abspath(os.path.dirname(                        \
+                  os.path.realpath(sys.argv[0])) + "/..")
 
 sys.path.append(TestDirectory + "/packages")
 
@@ -228,6 +244,7 @@ def                     Manifests(namespace):
   stream = None
   component = None
   test = None
+  name = None
 
   # read the file.
   stream = ktp.suite.Load(SuitesDirectory + "/" + namespace.suite + ktp.suite.Extension)
@@ -239,19 +256,29 @@ def                     Manifests(namespace):
   if "components" in stream:
     for component in stream["components"]:
       # search for manifest files.
-      manifests = ktp.miscellaneous.Search(TestsDirectory + "/" + stream["components"][component],
+      manifests = ktp.miscellaneous.Search(TestsDirectory + "/" +       \
+                                             stream["components"][component],
                                            "^.*\.mnf$",
-                                           ktp.miscellaneous.OptionFile | ktp.miscellaneous.OptionRecursive)
+                                           ktp.miscellaneous.OptionFile |
+                                           ktp.miscellaneous.OptionRecursive)
 
       # initialize the data structure.
       namespace.manifests[component] = {}
 
       for manifest in manifests:
-        # compute a unique name for the test in this component.
-        test = os.path.dirname(manifest[len(TestsDirectory + "/" + stream["components"][component] + "/"):])
-
         # load the manifest.
-        namespace.manifests[component][test] = ktp.manifest.Load(manifest)
+        test = ktp.manifest.Load(manifest)
+
+        # compute the proper name according to the defined component:
+        # for instance, given the "segment" component, the test name
+        # segment/permissions/01 will be transformed into permissions/01
+        if component == test["name"][:len(component)]:
+          name = test["name"][len(component) + 1:]
+        else:
+          name = test["name"]
+
+        # set the test.
+        namespace.manifests[component][name] = test
 
 #
 # this function initializes the results according to the manifests.
@@ -267,6 +294,7 @@ def                     Results(namespace):
   for component in namespace.manifests:
     namespace.results[component] = {}
 
+    # for every test.
     for test in namespace.manifests[component]:
       namespace.results[component][test] = { "duration": None,
                                              "output": None,
@@ -301,18 +329,26 @@ def                     Suite(namespace,
 
   # launch the tests.
   for component in namespace.manifests:
-    print("[+] " + component)
+    # verbose messaging.
+    if namespace.verbose:
+      print(component)
 
     for test in namespace.manifests[component]:
-      # XXX[change for python 2.7 ... 3 with python("[+]  " + test, end="")]
-      print "[+]   " + test,
+      # verbose.
+      if namespace.verbose:
+        # XXX[change for python 2.7 ... 3 with python("  " + test, end="")]
+        print "  " + test,
 
       (namespace.results[component][test]["status"],
        namespace.results[component][test]["duration"],
-       namespace.results[component][test]["output"]) = Call(line,
-                                                            namespace.manifests[component][test]["symbol"])
+       namespace.results[component][test]["output"]) =                  \
+         Call(line,
+              namespace.manifests[component][test]["symbol"])
 
-      print(":: " + str(namespace.results[component][test]["status"]).lower())
+      # verbose messaging.
+      if namespace.verbose:
+        print(":: " +                                                   \
+                str(namespace.results[component][test]["status"]).lower())
 
 #
 # this is the alarm handler.
@@ -455,7 +491,8 @@ serial = "pty"
     time.sleep(3)
 
     # read the status file.
-    content = ktp.miscellaneous.Pull("/var/log/xen/qemu-dm-" + namespace.name + ".log")
+    content = ktp.miscellaneous.Pull("/var/log/xen/qemu-dm-" +          \
+                                       namespace.name + ".log")
 
     # check if this operation has been successful.
     if not content:
@@ -526,7 +563,9 @@ def                     Main():
   global g_parser
 
   # create a new parser.
-  g_parser = argparse.ArgumentParser(description="This script builds a bootable image from the given kaneton snapshot.")
+  g_parser = argparse.ArgumentParser(description="This script runs "    \
+                                       "tests against the given "       \
+                                       "kaneton image.")
 
   # set up the authorised arguments.
   g_parser.add_argument("--name", '-n',
@@ -539,16 +578,24 @@ def                     Main():
                         dest = "image")
   g_parser.add_argument("--environment", '-e',
                         required = True,
-                        help = "the environment in which the image is to be tested",
+                        help = "the environment in which the image "    \
+                          "is to be tested",
                         dest = "environment")
   g_parser.add_argument("--bulletin", '-b',
                         default = None,
-                        help = "specify the path to the bulletin file to generate",
+                        help = "specify the path to the bulletin "      \
+                          "file to generate",
                         dest = "bulletin")
   g_parser.add_argument("--suite", '-s',
                         required = True,
-                        help = "the test suite to be used to stress the kaneton implementation",
+                        help = "the test suite to be used to stress "   \
+                          "the kaneton implementation",
                         dest = "suite")
+  g_parser.add_argument("--verbose", '-v',
+                        default = False,
+                        action = "store_true",
+                        help = "activate the verbose messaging",
+                        dest = "verbose")
 
   # parse the arguments.
   namespace = g_parser.parse_args()
