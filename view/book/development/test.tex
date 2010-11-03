@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/book/development/test.tex
+% file          /home/mycure/kaneton.STABLE/view/book/development/test.tex
 %
 % created       julien quintard   [thu may 24 12:18:23 2007]
-% updated       julien quintard   [thu may 31 06:24:34 2007]
+% updated       julien quintard   [wed nov  3 15:59:51 2010]
 %
 
 %
@@ -18,4 +18,608 @@
 \subsection{Test}
 \label{section:test}
 
-XXX
+The \name{test} tool enables students to test their kaneton implementation
+against a set of tests that have been designed by the contributors. Below
+is briefly described the terminology used by this tool in order to give
+the reader an overview of the general scenario involving students, the
+administrator and the server running the test system.
+
+\begin{itemize}
+  \item
+    A \name{certificate} is used to make sure clients can authenticate the
+    test server;
+  \item
+    Every certificate is sealed by a cryptographic \name{key};
+  \item
+    Each user is provided with a \name{capability} in order to identify
+    herself to the server;
+  \item
+    These capabilities are sealed by a \name{code} which the server uses
+    in order to detect illegally forged capabilities;
+  \item
+    A \name{configuration} specifies the number of tests a user is allowed
+    to requests the server;
+  \item
+    The user's \name{database} is generated based on a configuration and
+    maintains the current user's state on the server including the number
+    of tests performed so far, the kaneton implementations submitted for
+    evaluation \etc{}
+  \item
+    A \name{snapshot} is a kaneton implementation in its shipping form;
+  \item
+    The \name{machine} represents the target
+    \name{platform}/\name{architecture} couple on which a snapshot is
+    supposed to be tested or evaluated for instance;
+  \item
+    An \name{image} represents a kaneton snapshot compiled in a bootable
+    form;
+  \item
+    A \name{test} is a function included in the kernel which performs a
+    specific set of operations and possibly prints information to the console;
+  \item
+    The tests are often gathered together in a \name{suite} which represents
+    the testing unit students are offered to trigger for their kaneton
+    implementation;
+  \item
+    Once a snapshot is received by the server in order to be tested,
+    the system compiles it into an image. The server also takes care to
+    include the tests in the compilation process so that they can be triggered.
+    These pre-compiled tests are referred to as the \name{bundle};
+  \item
+    The image can then be tested by triggering the tests of the suite. The
+    image is therefore booted in an emulated \name{environment}. This
+    environment can sometimes be chosen and offers a trade-off between
+    simplicity and realism. The most common environments are \name{QEMU}
+    and \name{Xen};
+  \item
+    Depending on the success of the tests, a set of results is generated
+    and compiled in a \name{bulletin} file;
+  \item
+    Finally, the server retrieves this bulletin, adds some meta information
+    such as the date of the test, the environment and machine used \etc{}
+    and stores everything in a \name{report}. Note that this report is
+    also sent back to the user so she can consult it;
+  \item
+    Students can also decide to submit their kaneton implementation for
+    a specific \name{stage} for future evaluation. Note that suites and
+    stages are completely different though they often bear the same names:
+    \name{k0}, \name{k1}, \name{k2} etc{};
+  \item
+    The administrator can decide to evaluate the snapshots which have been
+    submitted for a stage by invoking a script which will attribute grade
+    points to tests according to a \name{point} file;
+  \item
+    These grade points are then compiled into a final grade which is
+    normalised according to a \name{reference} maximal grade, $20$ for
+    instance;
+  \item
+    Finally, a \name{statement} is produced containing the grades of every
+    student for a given stage.
+\end{itemize}
+
+The following describes the \name{test} tool according to the user's role
+regarding the system: either the administrator who sets up the system or
+a student who uses it in order to improve and/or evaluate his implementation.
+
+%
+% administrator
+%
+\subsubsection{Administrator}
+
+The administrator is reponsible for setting up the system but also maintaining
+it on a daily basis.
+
+% requirements
+\subsubsubsection{Requirements}
+
+The \name{test} tool must be installed on a publicly accessible server since
+the server script will be waiting for incoming requests. Note that by default,
+the clients assume the test server to be accessible at the address:
+\location{https://test.opaak.org:8421}.
+
+Besides, since the purpose of the \name{test} tool is to run the students'
+kaneton implementation in emulated environments, both \name{QEMU} and
+\name{Xen} should be available though one might want to configure the tool
+for supporting a single environment, \name{QEMU} for instance.
+
+Note that the test system has been developed with \name{Python 2.6} and
+may be out of date by the time the administrator sets it up. In addition,
+the system depends on a variety of \name{Python} packages including
+\name{argparse}, \name{yaml}, \name{pyopenssl}, \name{hmac}, \name{pickle},
+\name{xmlrpc}, \name{subprocess} among others.
+
+% set up
+\subsubsubsection{Set Up}
+
+The first step for an administrator consists in generating the necessary
+files, especially the certificates, code and capabilities required for
+securing the test system.
+
+The \location{test/utilities/} directory contains the scripts that perform
+such operations. Note that all the generated files are stored in the
+\location{test/store/} directory.
+
+First the \name{CA - Certification Authority}'s and server's certificates
+must be generated. The first is used to issue certificates while the latter
+is used for clients to identify the server with absolute certainty.
+
+\begin{verbatim}
+  $> make certificate
+  [+] generating the CA and server's key/certificate pair
+  [+] CA key/certificate generated
+  [+] server key/certificate generated
+  [+] CA and server's key/certificate pair generated and stored
+  $> 
+\end{verbatim}
+
+The next step consists in generating a code for the administrator to
+issue capabilities but also for the server to verify that the received
+capabilities have not been illegally forged.
+
+\begin{verbatim}
+  $> make code
+  [+] generating the server's code
+  [+] server code successfuly generated and stored
+  $> 
+\end{verbatim}
+
+With a server code, the students' and contributor's capabilities can be
+built, hence granting them the right the contact the server.
+
+The following generates the contributor's capability. This capability is
+special in the way that contributors can perform any operation in a completely
+contrain-free manner.
+
+\begin{verbatim}
+  $> make capability-contributor
+  [+] generating the contributor's capability
+  [+] contributor's capability generated and stored
+  $> 
+\end{verbatim}
+
+In contrast, the following command generates a set of capabilities for the
+students belonging to the school referred to as \name{``epita::2010''}. Note
+that the script requires the \location{history/epita/2010/} to be populated
+with the groups and their \location{people} file.
+
+\begin{verbatim}
+  $> make capability-school@epita::2010
+  [+] generating students' capabilities
+  [+] extracting the students from the history 'epita/2010'
+  [+] students information retrieved
+  [+] generating the students' capabilities:
+  [+]   epita::2010::group11
+  [+]   epita::2010::group10
+  [+]   epita::2010::group13
+  [+]   epita::2010::group12
+  [+]   epita::2010::group33
+  [+]   epita::2010::group32
+  [+]   epita::2010::group17
+  [+]   epita::2010::group30
+  [+]   epita::2010::group19
+  [+]   epita::2010::group18
+  [+]   epita::2010::group5
+  [+]   epita::2010::group4
+  [+]   epita::2010::group7
+  [+]   epita::2010::group6
+  [+]   epita::2010::group1
+  [+]   epita::2010::group3
+  [+]   epita::2010::group2
+  [+]   epita::2010::group15
+  [+]   epita::2010::group9
+  [+]   epita::2010::group8
+  [+]   epita::2010::group14
+  [+]   epita::2010::group31
+  [+]   epita::2010::group16
+  [+]   epita::2010::group24
+  [+]   epita::2010::group25
+  [+]   epita::2010::group26
+  [+]   epita::2010::group27
+  [+]   epita::2010::group20
+  [+]   epita::2010::group21
+  [+]   epita::2010::group22
+  [+]   epita::2010::group23
+  [+]   epita::2010::group28
+  [+]   epita::2010::group29
+  [+]   epita::2010::group34
+  [+] students' capabilities generated and stored
+  $> 
+\end{verbatim}
+
+In addition, the administrator could decide to generate or re-generate
+a capability for a specific student of a school. The following shows an
+example for such an action.
+
+\begin{verbatim}
+  $> make capability-student@epita::2010::group8
+  [+] generating the student's capability:
+  [+]   epita::2010::group8
+  [+] student's capability generated and stored
+  $> 
+\end{verbatim}
+
+The next step consists in the databases generation. A database contains the
+state of a user profile including the number of test requests, the quota for
+such tests, the submitted snapshots and so forth. The database files are
+absolutely fundamental to the server since such databases are updated after
+each client's request.
+
+The syntax for generating databases follows the one for capabilities, as
+shown next for the contributor.
+
+\begin{verbatim}
+  $> make database-contributor
+  [+] generating database from contributor's configuration
+  [+] contributor's database generated and stored
+  $> 
+\end{verbatim}
+
+Once the certificates, code, capabilities and databases generated, the
+administrator can move on to the deployment process.
+
+% deployment
+\subsubsubsection{Deployment}
+
+The deployment basically consists in copying the \location{test/} environment
+to the test server though one might want to copy the whole kaneton environment
+or the smallest subset of the \location{test/} directory which should, in this
+case, include the following absolutely necessary items:
+
+\begin{itemize}
+  \item
+    The \location{test/grades/} directory which contains the files requirement
+    for evaluating the students' snapshots;
+  \item
+    The \location{test/hooks/} directory which contains the scripts for
+    constructing and stressing kaneton snapshots;
+  \item
+    The \location{test/images/} directory which contains a script for
+    automatically generating a \name{Debian Live} system which is used
+    for compiling a kaneton snapshot into a bootable image;
+  \item
+    The \location{test/packages/} directory which contains the \name{ktp -
+    Kaneton Test Package} required by the server-side standalone scripts
+    for manipulating files such as databases, capabilities \etc{} but also
+    to perform cryptographic operations and send/receive \name{XMLRPC}
+    requests;
+  \item
+    The \location{test/points/} directory which contains files specifying
+    the number of points associated with every test. These files are necessary
+    to the evaluation process;
+  \item
+    The \location{test/scripts/} directory which contains the fundamental
+    scripts for building bootable images, distributing the capabilities to
+    the students through emails, evaluating the submitted snapshots and so on;
+  \item
+    The \location{test/server/} directory which contains the server script
+    for handling the clients' requests;
+  \item
+    The \location{test/store/} directory which contains the generated files
+    such as the users' databases, the server's code and certificate; and
+  \item
+    The \location{test/suites/} directory which contains the files describing
+    the tests to be including in a given tests suite.
+\end{itemize}
+
+Once copied, the administrator only needs to launch the server script located
+in the \location{test/server/} directory, as shown below:
+
+\begin{verbatim}
+  $> ./server.py
+  [information] serving on 88.191.84.128:8421
+\end{verbatim}
+
+Note that a few additional steps may be required depending on the current state
+of the kaneton development.
+
+The first of these steps may consist in generating a \name{Debian Live} system
+since this is absolutely required for the test system to work. For more
+information regarding the generation of such an image, please refer to the
+\location{test/images/} directory.
+
+The second step should consist for the administrator in building the kaneton
+tests bundle. The bundle represents a pre-compiled set of tests that is
+included in the students' snapshot compilation process. The tests are
+pre-compiled in order to prevent leaking information since students could
+very well dump the content of those tests and force the compilation to fail,
+hence retrieving the source code in the compilation process' error log.
+
+In order to generate such a bundle, the administrator must first activate
+the \name{test} module in his environment profile and then move to the
+\location{test/tests/} and launch a compilation process through the following
+command:
+
+\begin{verbatim}
+  $> make
+\end{verbatim}
+
+Finally, for more information on the server script, please refer to the
+\location{test/server/} directory.
+
+% scripts
+\subsubsubsection{Scripts}
+
+Although the deployment process is pretty straightforward, the administrator
+is required to manage the test system through several scripts.
+
+First, the \name{distribute} script must be used by the administrator to send
+the capabilities to the respective owners so that the students can use
+the test system. Note that this script relies on the \name{Mutt} mailing
+system for sending the emails containing the attached capabilities.
+
+\begin{verbatim}
+  $> ./distribute.py
+  recipients:
+    contributor
+  $>
+\end{verbatim}
+
+While the \name{construct} script enables the administrator to build a
+bootable image from a kaneton snapshot, the \name{stress} script takes
+a bootable image and triggers the tests belonging to the given test
+suite. Note that both scripts are directly used by the server script for
+building and testing the received kaneton snapshots.
+
+\begin{verbatim}
+  $> ./construct.py --snapshot kaneton.tar.bz2                          \
+                    --image kaneton.img                                 \
+                    --environment xen                                   \
+                    --architecture `ia32/educational'
+  the kaneton image has been constructed in 'kaneton.img'
+  $> ./stress.py --image kaneton.img                                    \
+                 --suite k2                                             \
+                 --environment xen                                      \
+                 --verbose
+  segment
+    permissions/01 :: true
+  id
+    simple :: true
+    clone :: true
+    multiple :: true
+  $> 
+\end{verbatim}
+
+Note that the administrator could also test a kaneton image manually,
+especially through the following command:
+
+\begin{verbatim}
+  $> qemu -fda kaneton.img -curses
+\end{verbatim}
+
+The \name{evaluate} script can be used by the administrator in order
+to assign grades to the snapshots submitted by the students. The script
+generates a statement containing the results of this evaluation process.
+
+\begin{verbatim}
+  $> ./evaluate.py --stage k2                                           \
+                   --pattern "^epita::2010::.*$"
+  the statement has been saved in '../store/statement/20101102-223645.db'
+  $> 
+\end{verbatim}
+
+Finally, the \name{dump} script takes any \name{YAML}-based file and
+displays its inner structure in a hierarchical manner.
+
+\begin{verbatim}
+  $> ./dump.py --path ../store/statement/20101102-223848.db
+  meta:
+    reference:              20.0
+    stage:                  k2
+  data:
+    epita::2010::group7:
+      date:                 2010/11/02 20:46:44
+      grade:                16.0
+      snapshot:             20101102-204644
+      members:
+        email:              admin@opaak.org
+        name:               admin
+      configurations:
+        Xen:
+          report:           20101102-224213
+          notch:            4
+          score:            4
+        QEMU:
+          report:           20101102-223848
+          notch:            4
+          score:            0
+\end{verbatim}
+
+%
+% student
+%
+\subsubsection{Student}
+
+The student has the possibility to request actions from the test server
+through the client script located in \location{test/client/}.
+
+% requirements
+\subsubsubsection{Requirements}
+
+Although the client script is integrated in the kaneton environment, it also
+makes use of the \name{ktp}. Therefore, as for the server, the client depends
+on a variety of \name{Python} packages including \name{yaml}, \name{pyopenssl},
+\name{hmac}, \name{pickle}, \name{xmlrpc}, \name{subprocess} among others.
+
+% use
+\subsubsubsection{Use}
+
+The client script enables the user to request one of the five operations
+described below.
+
+\begin{verbatim}
+  $> make
+  [!] usage: client.py [command]
+
+  [!] commands:
+  [!]   information
+  [!]   submit [stage]
+  [!]   test [environment] [suite]
+  [!]   list
+  [!]   display [identifier]
+  $>
+\end{verbatim}
+
+The \name{information} operation requests the server to return information
+on the current state of the user's profile. The information returned range
+from the number of tests performed, the quota for every test suite to the
+available stages or the snapshots having been previously submitted.
+
+\begin{verbatim}
+  $> make information
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] information:
+  [+]   profile:
+  [+]     identifier:           contributor
+  [+]     community:            contributors
+  [+]     members:
+  [+]       name:               admin
+  [+]       email:              admin@opaak.org
+  [+]   suites:
+  [+]                           k1
+  [+]                           k3
+  [+]                           k2
+  [+]                           kaneton
+  [+]   stages:
+  [+]                           k1
+  [+]                           k2
+  [+]                           k3
+  [+]   environments:
+  [+]                           qemu
+  [+]                           xen
+  [+]   database:
+  [+]     reports:
+  [+]       xen:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:
+  [+]           k2:
+  [+]           k1:
+  [+]       qemu:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:
+  [+]           k2:
+  [+]           k1:
+  [+]     settings:
+  [+]       xen:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]           k2:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]           k1:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]       qemu:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]           k2:
+  [+]             requests:     0
+  [+]             quota:        -1
+  [+]           k1:
+  [+]             requests:     0
+  [+]             quota:        -1
+  $> 
+\end{verbatim}
+
+The \name{test} command enables the user to trigger a test suite for the
+current kaneton implementation on the specified environment such as \name{QEMU}
+or \textit{Xen} for instance.
+
+The server then returns the resulted report which the client stores locally
+in \location{test/store/report/}. In addition, the client displays a quick
+summary of the report in order for the user to know whether things went
+as expected.
+
+\begin{verbatim}
+  $> make test::xen::k2
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] report(20101103-140601):
+  [+]   segment                                                           [1/1]
+  [+]   id                                                                [3/3]
+  $> 
+\end{verbatim}
+
+Note that should the kernel crash or hang, the whole test suite whould be
+considered as having completely failed. Students should therefore be extremely
+careful to test and submit snapshots that have been thoroughly tested manually
+beforehand.
+
+The \name{list} command enables the user to display the identifiers of the
+reports in the local store.
+
+\begin{verbatim}
+  $> make list
+  [+] reports:
+  [+]   20101103-140601:
+  [+]     xen :: ibm-pc :: ia32/educational :: k2 :: 2010/11/03 14:06:01
+\end{verbatim}
+
+The \name{display} command gives the user the possibility to dump a locally
+stored report in a very detailed way.
+
+\begin{verbatim}
+  $> make display::20101103-140601
+  [+] report:
+  [+]   meta:
+  [+]     platform:               ibm-pc
+  [+]     date:                   2010/11/03 14:06:01
+  [+]     architecture:           ia32/educational
+  [+]     duration:               63.499
+  [+]     suite:                  k2
+  [+]     identifier:             20101103-140601
+  [+]     environments:
+  [+]       stress:               xen
+  [+]       construct:            xen
+  [+]   data:
+  [+]     segment:                                                        [1/1]
+  [+]       permissions/01:
+  [+]         status: True
+  [+]         description: This test creates a task and address space before reserving a segment and changing its permissions.
+  [+]         duration: 0.010
+  [+]         output: 
+  [+]     id:                                                             [3/3]
+  [+]       simple:
+  [+]         status: True
+  [+]         description: This test reserves a single identifier.
+  [+]         duration: 0.004
+  [+]         output: 
+  [+]       clone:
+  [+]         status: True
+  [+]         description: This test reserves, clones and releases identifiers.
+  [+]         duration: 0.005
+  [+]         output: 
+  [+]       multiple:
+  [+]         status: True
+  [+]         description: This test reserves thousands of identifiers, checking that no collisions occured.
+  [+]         duration: 0.040
+  [+]         output: 
+  $> 
+\end{verbatim}
+
+Finally, the \name{submit} command sends the user's snapshot to the server
+so as to be evaluated for the given stage.
+
+\begin{verbatim}
+  $> make submit::k1
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] the snapshot has been submitted successfully
+  $> 
+\end{verbatim}

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/grades/k3.grd
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [tue nov  2 07:14:09 2010]
+# updated       julien quintard   [tue nov  2 22:23:36 2010]
 #
 
 configurations:
@@ -28,7 +28,7 @@ configurations:
       stress: xen
     suite: k2
     weight: 0.8
-tests:
-  - points/k1.pts
-  - points/k2.pts
-  - points/k3.pts
+points:
+  - k1
+  - k2
+  - k3

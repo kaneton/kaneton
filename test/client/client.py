@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [tue nov  2 05:50:25 2010]
+# updated       julien quintard   [wed nov  3 15:38:19 2010]
 #
 
 #
@@ -68,7 +68,7 @@ def                     Warning():
               "  server:                 " + g_server,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "  capability:             " + g_capability + ".cap",
+              "  capability:             " + g_capability,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  platform:               " + str(g_platform),
@@ -330,7 +330,7 @@ def                     Test(server, capability, arguments):
 
   # display the received report.
   env.display(env.HEADER_OK,
-              "report(" + report["meta"]["identifier"] + ")",
+              "report(" + report["meta"]["identifier"] + "):",
               env.OPTION_NONE)
 
   # display a summary
@@ -401,7 +401,7 @@ def                     Display(server, capability, arguments):
   env.display(env.HEADER_OK,
               "  meta:",
               env.OPTION_NONE)
-  Dump(report["meta"], "  ")
+  Dump(report["meta"], "    ")
 
   # dump the data section
   env.display(env.HEADER_OK,
@@ -444,7 +444,8 @@ def                     List(server, capability, arguments):
 
     # display the report's meta.
     env.display(env.HEADER_OK,
-                "    " + report["meta"]["environment"] + " :: " +       \
+                "    " + report["meta"]["environments"]["stress"] +     \
+                  " :: " +                                              \
                   report["meta"]["platform"] + " :: " +                 \
                   report["meta"]["architecture"] + " :: " +             \
                   report["meta"]["suite"] + " :: " +                    \

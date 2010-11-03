@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/server/server.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/test/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [tue nov  2 07:33:12 2010]
+# updated       julien quintard   [wed nov  3 13:54:58 2010]
 #
 
 #
@@ -253,7 +253,9 @@ def                     Information(capability):
     information = {}
 
     # add the profile.
-    information["profile"] = profile
+    information["profile"] = { "identifier": profile["identifier"],
+                               "community": profile["community"],
+                               "members": profile["members"] }
 
     # add the database.
     information["database"] = database

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/README
 #
 # created       julien quintard   [tue nov  2 05:48:57 2010]
-# updated       julien quintard   [tue nov  2 05:49:43 2010]
+# updated       julien quintard   [wed nov  3 15:52:37 2010]
 #
 
 The client script provides the user the possibility to request actions
@@ -36,7 +36,6 @@ The example below illustrates this command.
   $> make information
   [+] information:
   [+]   profile:
-  [+]     token:                7e1de5eb823f73235b7d4791cec7364b
   [+]     name:                 contributor
   [+]     community:            contributors
   [+]     email:                admin@opaak.org

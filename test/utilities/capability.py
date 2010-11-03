@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/utilities/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [sat oct 30 14:04:34 2010]
+# updated       julien quintard   [tue nov  2 16:28:13 2010]
 #
 
 #
@@ -222,7 +222,7 @@ def                     student():
 
   # display.
   env.display(env.HEADER_OK,
-              "  " + name.
+              "  " + name,
               env.OPTION_NONE)
 
   # display.

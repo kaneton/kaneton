@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANE...EST-SYSTEM/packages/ktp/miscellaneous.py
+# file          /home/mycure/KANE...YSTEM/test/packages/ktp/miscellaneous.py
 #
 # created       julien quintard   [mon oct 25 19:51:49 2010]
-# updated       julien quintard   [wed oct 27 14:41:22 2010]
+# updated       julien quintard   [tue nov  2 22:36:14 2010]
 #
 
 #
@@ -146,3 +146,22 @@ def                     Search(directory, pattern, options):
         elements += Search(directory + "/" + entry, pattern, options)
 
   return elements
+
+#
+# this function creates the directories up to the destination path.
+#
+def                     Dig(target):
+  path = None
+  steps = None
+  step = None
+
+  steps = os.path.dirname(target).strip("/").split("/")
+
+  for step in steps:
+    if not path:
+      path = "/" + step
+    else:
+      path = path + "/" + step
+
+    if not os.path.exists(path):
+      os.mkdir(path)

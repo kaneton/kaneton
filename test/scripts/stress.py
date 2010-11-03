@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton.STABLE/test/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue nov  2 05:48:32 2010]
+# updated       julien quintard   [tue nov  2 20:00:14 2010]
 #
 
 #
@@ -268,6 +268,11 @@ def                     Manifests(namespace):
       for manifest in manifests:
         # load the manifest.
         test = ktp.manifest.Load(manifest)
+
+        # test the validity of the manifest.
+        if not "name" in test:
+          Error(namespace,
+                "the manifest '" + manifest + "' does not include a name")
 
         # compute the proper name according to the defined component:
         # for instance, given the "segment" component, the test name

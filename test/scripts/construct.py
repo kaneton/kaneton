@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton.STABLE/test/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue nov  2 05:18:35 2010]
+# updated       julien quintard   [tue nov  2 19:59:09 2010]
 #
 
 #

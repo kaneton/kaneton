@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/scripts/evaluate.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/evaluate.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue nov  2 05:42:22 2010]
+# updated       julien quintard   [wed nov  3 13:11:58 2010]
 #
 
 #
@@ -290,6 +290,9 @@ def                     Evaluate(namespace, statement):
   points = None
   point = None
   symbol = None
+  path = None
+  submission = None
+  deadline = None
 
   # load the grade file.
   namespace.grade = ktp.grade.Load(GradesDirectory + "/" +              \
@@ -297,6 +300,9 @@ def                     Evaluate(namespace, statement):
 
   # initialize the points.
   namespace.points = {}
+
+  # retrieve the deadline.
+  deadline = time.strptime(namespace.deadline, "%Y/%m/%d %H:%M:%S")
 
   # load the points associated with this grading system.
   for point in namespace.grade["points"]:
@@ -337,46 +343,75 @@ def                     Evaluate(namespace, statement):
           "configurations": {},
           "grade": 0.0 }
 
+    # retrieve the submission date.
+    submission = time.strptime(database["deliveries"][namespace.stage]["date"],
+                               "%Y/%m/%d %H:%M:%S")
+
     # verbose messaging.
     if namespace.verbose:
       print(capability["identifier"] + ":")
 
-    # for every grade configuration, test the snapshot.
-    for configuration in namespace.grade["configurations"]:
+    # if the deadline has been reached, consider the submission has null,
+    # otherwise, treat it.
+    if submission < deadline:
+      # store the snapshot in the history, if required.
+      if namespace.history:
+        # compute the destination path.
+        path = os.path.abspath(namespace.history) + "/" +               \
+                 name.replace("::", "/") + "/" +                        \
+                 "sources/" +                                           \
+                 namespace.stage + ".tar.bz2"
+
+        # create the directories to the destination path.
+        ktp.miscellaneous.Dig(path)
+
+        # copy the snapshot.
+        ktp.miscellaneous.Copy(                                         \
+          SnapshotStore + "/" +                                         \
+            database["deliveries"][namespace.stage]["snapshot"] +       \
+            ktp.snapshot.Extension,
+          path)
+
+      # for every grade configuration, test the snapshot.
+      for configuration in namespace.grade["configurations"]:
+        # verbose messaging.
+        if namespace.verbose:
+          print("  " + configuration["name"])
+
+        # initialize this configuration.
+        statement[capability["identifier"]]["configurations"][          \
+          configuration["name"]] = { "report": None,
+                                     "score": None,
+                                     "notch": None }
+
+        # launch the test.
+        report = Test(namespace,
+                      database["deliveries"][namespace.stage]["snapshot"],
+                      configuration)
+
+        # set the report in the statement.
+        statement[capability["identifier"]]["configurations"][          \
+          configuration["name"]]["report"] = report["meta"]["identifier"]
+
+        # compute the score.
+        (statement[capability["identifier"]]["configurations"][         \
+           configuration["name"]]["score"],
+         statement[capability["identifier"]]["configurations"][         \
+           configuration["name"]]["notch"]) =                           \
+             Rate(namespace, configuration, report)
+
+        # add some points to the grade according to the weight
+        # of the configuration.
+        statement[capability["identifier"]]["grade"] +=                 \
+          statement[capability["identifier"]]["configurations"][        \
+            configuration["name"]]["score"] *                           \
+          (namespace.reference * configuration["weight"]) /             \
+           statement[capability["identifier"]]["configurations"][       \
+             configuration["name"]]["notch"]
+    else:
       # verbose messaging.
       if namespace.verbose:
-        print("  " + configuration["name"])
-
-      # initialize this configuration.
-      statement[capability["identifier"]]["configurations"][            \
-        configuration["name"]] = { "report": None,
-                                   "score": None,
-                                   "notch": None }
-
-      # launch the test.
-      report = Test(namespace,
-                    database["deliveries"][namespace.stage]["snapshot"],
-                    configuration)
-
-      # set the report in the statement.
-      statement[capability["identifier"]]["configurations"][            \
-        configuration["name"]]["report"] = report["meta"]["identifier"]
-
-      # compute the score.
-      (statement[capability["identifier"]]["configurations"][           \
-         configuration["name"]]["score"],
-       statement[capability["identifier"]]["configurations"][           \
-         configuration["name"]]["notch"]) =                             \
-           Rate(namespace, configuration, report)
-
-      # add some points to the grade according to the weight
-      # of the configuration.
-      statement[capability["identifier"]]["grade"] +=                   \
-        statement[capability["identifier"]]["configurations"][          \
-          configuration["name"]]["score"] *                             \
-        (namespace.reference * configuration["weight"]) /               \
-         statement[capability["identifier"]]["configurations"][         \
-           configuration["name"]]["notch"]
+        print("  (deadline)")
 
 #
 # this is the main function
@@ -419,6 +454,16 @@ def                     Main():
                         type = float,
                         help = "the grading reference",
                         dest = "reference")
+  g_parser.add_argument("--history", '-y',
+                        default = None,
+                        help = "the path to a history directory "       \
+                          "receiving the saved snapshots",
+                        dest = "history")
+  g_parser.add_argument("--deadline", '-d',
+                        default = None,
+                        help = "the deadline for which to consider "    \
+                          "students' snapshots",
+                        dest = "deadline")
 
   # parse the arguments.
   namespace = g_parser.parse_args()
@@ -429,9 +474,11 @@ def                     Main():
   # store the generated statement.
   ktp.statement.Store({ "meta":
                           { "stage": namespace.stage,
-                            "reference": namespace.reference },
+                            "reference": namespace.reference,
+                            "deadline": namespace.deadline },
                         "data":
-                          statement }, namespace.statement)
+                          statement },
+                      namespace.statement)
 
   # display a message.
   print("the statement has been saved in '" + namespace.statement + "'")
