@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/evaluate.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [wed nov  3 13:11:58 2010]
+# updated       julien quintard   [thu nov  4 11:09:07 2010]
 #
 
 #
@@ -33,6 +33,10 @@
 #
 # upon completion, the student's final grade is computed by adding the
 # multiple weighted points of the test configurations.
+#
+# finally, noteworthy is that the --deadline option can be used in order to
+# exclude---and assign a grade of zero---to any snapshot having been submitted
+# after the given deadline date.
 #
 
 #
@@ -103,7 +107,7 @@ def                     Test(namespace,
   image = None
   bulletin = None
   status = None
-  text = None
+  output = None
   report = None
 
   try:
@@ -137,7 +141,7 @@ def                     Test(namespace,
     start = time.time()
 
     # launch the build hook which generates a bootable image.
-    (status, text) =                                                    \
+    status =                                                            \
       ktp.process.Invoke(HooksDirectory +                               \
                            "/" +                                        \
                            configuration["environments"]["construct"] + \
@@ -160,12 +164,15 @@ def                     Test(namespace,
                          stream = stream,
                          option = ktp.process.OptionNone)
 
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
     # test the success of the construct hook invocation.
     if status == ktp.StatusError:
-      raise Exception(text)
+      raise Exception(output)
 
     # launch the build hook which generates a bootable image.
-    (status, text) =                                                    \
+    status =                                                            \
       ktp.process.Invoke(HooksDirectory +                               \
                            "/" +                                        \
                            configuration["environments"]["stress"] +    \
@@ -186,9 +193,12 @@ def                     Test(namespace,
                          stream = stream,
                          option = ktp.process.OptionNone)
 
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
     # test the success of the construct hook invocation.
     if status == ktp.StatusError:
-      raise Exception(text)
+      raise Exception(output)
 
     # retrieve the current time.
     end = time.time()

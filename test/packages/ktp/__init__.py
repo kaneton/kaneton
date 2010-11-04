@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/__init__.py
+# file          /home/mycure/KANE...EST-SYSTEM/test/packages/ktp/__init__.py
 #
 # created       julien quintard   [mon oct 25 19:43:41 2010]
-# updated       julien quintard   [mon nov  1 17:50:25 2010]
+# updated       julien quintard   [thu nov  4 12:03:40 2010]
 #
 
 #
@@ -29,6 +29,7 @@
 
 StatusOk = True
 StatusError = False
+StatusUnknown = -666
 
 #
 # ---------- modules ----------------------------------------------------------

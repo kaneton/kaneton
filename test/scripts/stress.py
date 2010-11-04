@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/scripts/stress.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue nov  2 20:00:14 2010]
+# updated       julien quintard   [thu nov  4 11:55:17 2010]
 #
 
 #
@@ -67,7 +67,7 @@ XenEnvironment = "xen"
 QEMUEnvironment = "qemu"
 
 # timeout in seconds.
-XenTimeout = 150 # XXX 900
+XenTimeout = 150 # XXX
 QEMUTimeout = 150 # XXX
 
 # magic number for serial communications.
@@ -211,8 +211,12 @@ def                     Call(line, symbol):
 # exiting.
 #
 def                     Error(namespace, message):
+  # display the script name.
+  print "[stress]"
+
   # print the message.
-  print(message)
+  if message:
+    print(message)
 
   # clean the script.
   Clean(namespace)
@@ -268,11 +272,6 @@ def                     Manifests(namespace):
       for manifest in manifests:
         # load the manifest.
         test = ktp.manifest.Load(manifest)
-
-        # test the validity of the manifest.
-        if not "name" in test:
-          Error(namespace,
-                "the manifest '" + manifest + "' does not include a name")
 
         # compute the proper name according to the defined component:
         # for instance, given the "segment" component, the test name
@@ -367,7 +366,7 @@ def                     Handler(signum, frame):
 def                     QEMU(namespace):
   stream = None
   monitor = None
-  log = None
+  output = None
   content = None
   match = None
   port = None
@@ -417,6 +416,9 @@ def                     QEMU(namespace):
 
     # wait for the process to terminate.
     ktp.process.Wait(monitor)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
   except Exception, exception:
     # destroy the virtual machine by terminating
     # the process.
@@ -427,17 +429,17 @@ def                     QEMU(namespace):
 
 # XXX[not possible with Python 2.5 since subprocess does not provide this functionality]
 #    [when ready remove: os.kill, Wait and Pull]
-#    log = ktp.process.Terminate(monitor)
+#    output = ktp.process.Terminate(monitor)
 
-    # retrieve the log.
-    log = ktp.miscellaneous.Pull(stream)
-
-    # display the log.
-    if log:
-      print(log)
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
 
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
+
+    # display the output.
+    if output:
+      print(output)
 
     # stop the script.
     Error(namespace,
@@ -454,7 +456,7 @@ def                     Xen(namespace):
   configuration = None
   stream = None
   monitor = None
-  log = None
+  output = None
   content = None
   match = None
   port = None
@@ -520,21 +522,24 @@ serial = "pty"
     ktp.process.Invoke("xm",
                        [ "destroy",
                          namespace.name ])
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
   except Exception, exception:
     # destroy the virtual machine instance.
     ktp.process.Invoke("xm",
                        [ "destroy",
                          namespace.name ])
 
-    # retrieve the log.
-    log = ktp.miscellaneous.Pull(stream)
-
-    # display the log.
-    if log:
-      print(log)
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
 
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
+
+    # display the output.
+    if output:
+      print(output)
 
     # stop the script.
     Error(namespace,

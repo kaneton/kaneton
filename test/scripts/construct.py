@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/scripts/construct.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue nov  2 19:59:09 2010]
+# updated       julien quintard   [thu nov  4 14:31:08 2010]
 #
 
 #
@@ -41,6 +41,7 @@
 
 import os
 import sys
+import re
 
 TestDirectory = os.path.abspath(os.path.dirname(                        \
                   os.path.realpath(sys.argv[0])) + "/..")
@@ -72,8 +73,8 @@ XenEnvironment = "xen"
 QEMUEnvironment = "qemu"
 
 # timeout in seconds.
-XenTimeout = 70
-QEMUTimeout = 500
+XenTimeout = 100
+QEMUTimeout = 1000
 
 # disk size in mega bytes.
 DiskSize = 5
@@ -94,8 +95,12 @@ g_parser = None
 # exiting.
 #
 def                     Error(namespace, message):
+  # display the script name.
+  print "[construct]"
+
   # print the message.
-  print(message)
+  if message:
+    print(message)
 
   # clean the script.
   Clean(namespace)
@@ -178,11 +183,18 @@ def                     Handler(number, frame):
 #
 def                     QEMU(namespace):
   stream = None
-  log = None
   monitor = None
+  output = None
+  content = None
+  match = None
+  port = None
+  redirect = None
 
   # create a stream file.
   stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+  # create a redirection file.
+  redirect = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
   # set the alarm signal
   signal.signal(signal.SIGALRM, Handler)
@@ -193,7 +205,7 @@ def                     QEMU(namespace):
     # the process handle.
     monitor = ktp.process.Invoke("qemu",
                                  [ "-nographic",
-                                   "-serial", "null",
+                                   "-serial", "pty",
                                    "-monitor", "null",
                                    "-cdrom",
                                      TestDirectory + "/images/debian.iso",
@@ -202,29 +214,75 @@ def                     QEMU(namespace):
                                  stream = stream,
                                  option = ktp.process.OptionBackground)
 
-    # wait for the process to terminate.
-    ktp.process.Wait(monitor)
+    # wait a few seconds to be sure QEMU has started.
+    time.sleep(3)
+
+    # read the status file.
+    content = ktp.miscellaneous.Pull(stream)
+
+    # check if this operation has been successful.
+    if not content:
+      raise Exception("[error] unable to retrieve QEMU's log file")
+
+    # retrieve the serial port.
+    match = re.search("char device redirected to (.*)$", content, re.MULTILINE)
+
+    # check if it was successful.
+    if not match:
+      raise Exception("[error] unable to retrieve the serial port")
+
+    # set the port.
+    port = match.group(1)
+
+    # wait for the virtual machine to terminate.
+    while True:
+      # probe the virtual machine.
+      status = ktp.process.Probe(monitor)
+
+      # check if the machine is still running.
+      if status != ktp.StatusUnknown:
+        break
+
+      # transfer the output content on a regular basis.
+      ktp.miscellaneous.Transfer(port, redirect)
+
+    # retrieve the output.
+    namespace.output = ktp.miscellaneous.Pull(redirect)
+
+    # remove the files.
+    ktp.miscellaneous.Remove(redirect)
+    ktp.miscellaneous.Remove(stream)
   except Exception, exception:
     # destroy the virtual machine by terminating
     # the process.
-    os.kill(monitor[0].pid, signal.SIGKILL)
+    try:
+      os.kill(monitor[0].pid, signal.SIGKILL)
+    except:
+      pass
 
     # wait for the process to terminate.
     ktp.process.Wait(monitor)
 
 # XXX[not possible with Python 2.5 since subprocess does not provide this functionality]
 #    [when ready remove: os.kill, Wait and Pull]
-#    log = ktp.process.Terminate(monitor)
+#    output = ktp.process.Terminate(monitor)
 
-    # retrieve the log.
-    log = ktp.miscellaneous.Pull(stream)
+    # reset the alarm.
+    signal.alarm(0)
 
-    # display the log.
-    if log:
-      print(log)
+    # wait for a bit.
+    time.sleep(3)
 
-    # remove the stream file.
+    # retrieve the output.
+    namespace.output = ktp.miscellaneous.Pull(redirect)
+
+    # remove the files.
+    ktp.miscellaneous.Remove(redirect)
     ktp.miscellaneous.Remove(stream)
+
+    # display the output.
+    if namespace.output:
+      print(namespace.output)
 
     # stop the script.
     Error(namespace,
@@ -240,9 +298,10 @@ def                     QEMU(namespace):
 def                     Xen(namespace):
   configuration = None
   status = None
-  output = None
+  content = None
+  match = None
+  port = None
   stream = None
-  log = None
 
   # create a temporary file.
   namespace.configuration =                                             \
@@ -257,7 +316,8 @@ memory = 256
 name = "%(name)s"
 pae = 1
 disk = ["tap:aio:%(root)s/images/debian.iso,hdc:cdrom,r", "tap:aio:%(disk)s,hdb,w"]
-boot = 'd'\
+boot = 'd'
+serial = "pty"\
 """ % { "root": TestDirectory,
         "name": namespace.name,
         "disk": namespace.disk }
@@ -273,42 +333,72 @@ boot = 'd'\
   signal.alarm(XenTimeout)
 
   try:
-    # launch the xen virtual machine with active logging.
+    # launch the xen virtual machine.
+    #
+    # note that the 'xm' binary automatically sets the system
+    # in background so there is no choice here but to rely
+    # on the 'xm list' command to know if the process has
+    # finished.
     ktp.process.Invoke("xm",
                        [ "create",
-                         namespace.configuration ],
-                       stream = stream,
-                       option = ktp.process.OptionNone)
+                         namespace.configuration ])
+
+    # wait a few seconds to be sure Xen has started.
+    time.sleep(3)
+
+    # read the status file.
+    content = ktp.miscellaneous.Pull("/var/log/xen/qemu-dm-" +          \
+                                       namespace.name + ".log")
+
+    # check if this operation has been successful.
+    if not content:
+      raise Exception("[error] unable to retrieve QEMU's log file")
+
+    # retrieve the serial port.
+    match = re.search("char device redirected to (.*)$", content, re.MULTILINE)
+
+    # check if it was successful.
+    if not match:
+      raise Exception("[error] unable to retrieve the serial port")
+
+    # set the port.
+    port = match.group(1)
 
     # wait for the virtual machine to terminate.
     while True:
-      (status, output) = ktp.process.Invoke("xm",
-                                            [ "list",
-                                              namespace.name ],
-                                            option = ktp.process.OptionNone)
+      # check if the machine exists in the list of active VMs.
+      status = ktp.process.Invoke("xm",
+                                  [ "list",
+                                    namespace.name ])
 
       # if the virtual machine does not appear in the list, it means
       # that it has terminated.
       if status == ktp.StatusError:
         break
 
-      # sleep for a bit.
-      time.sleep(5)
+      # transfer the output content on a regular basis.
+      ktp.miscellaneous.Transfer(port, stream)
+
+    # read the serial file.
+    namespace.output = ktp.miscellaneous.Pull(stream)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
   except Exception, exception:
     # destroy the virtual machine
     ktp.process.Invoke("xm",
                        [ "destroy",
                          namespace.name ])
 
-    # retrieve the log.
-    log = ktp.miscellaneous.Pull(stream)
-
-    # display the log.
-    if log:
-      print(log)
+    # read the serial file.
+    namespace.output = ktp.miscellaneous.Pull(stream)
 
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
+
+    # display the output.
+    if namespace.output:
+      print(namespace.output)
 
     # stop the script.
     Error(namespace,
@@ -322,8 +412,6 @@ boot = 'd'\
 #
 def                     Retrieve(namespace):
   directory = None
-  error = None
-  log = None
 
   # create a temporary directory.
   directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
@@ -337,15 +425,24 @@ def                     Retrieve(namespace):
   # check if an error occured. if so, print the log followed
   # by the error message before existing.
   if os.path.exists(directory + "/.error"):
-    error = ktp.miscellaneous.Pull(directory + "/.error")
-    if not error:
-      error = ""
+    # print the output.
+    if namespace.output:
+      print(namespace.output)
 
-    # retrieve the log.
+    # retrieve the error file.
+    error = ktp.miscellaneous.Pull(directory + "/.error")
+
+    # print the error.
+    if error:
+      print(error)
+
+    # retrieve and print the log.
     if os.path.exists(directory + "/.log"):
+      # read the log file.
       log = ktp.miscellaneous.Pull(directory + "/.log")
-    if not log:
-      log = ""
+
+      # print the log.
+      print(log)
 
     # umount the snapshot.
     ktp.process.Invoke("umount",
@@ -356,7 +453,7 @@ def                     Retrieve(namespace):
 
     # stop the script.
     Error(namespace,
-          log + "\n" + error)
+          None)
   else:
     # otherwise, no error occured. therefore, copy the image.
     if not os.path.exists(directory + "/kaneton.img"):

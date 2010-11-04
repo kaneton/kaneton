@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/test/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [wed nov  3 13:54:58 2010]
+# updated       julien quintard   [thu nov  4 11:08:24 2010]
 #
 
 #
@@ -293,9 +293,9 @@ def                     Test(capability,
   report = None
   stream = None
   status = None
-  text = None
   start = None
   end = None
+  output = None
 
   try:
     # verify that the maintenance mode has not been activated.
@@ -358,7 +358,7 @@ def                     Test(capability,
     start = time.time()
 
     # launch the build hook which generates a bootable image.
-    (status, text) =                                                    \
+    status =                                                            \
       ktp.process.Invoke(HooksDirectory +                               \
                            "/" +                                        \
                            TestConstructEnvironment +                   \
@@ -377,12 +377,18 @@ def                     Test(capability,
                          stream = stream,
                          option = ktp.process.OptionNone)
 
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
+
     # test the success of the construct hook invocation.
     if status == ktp.StatusError:
-      return (ktp.StatusError, ktp.miscellaneous.Binary(text))
+      return (ktp.StatusError, ktp.miscellaneous.Binary(output))
 
     # launch the build hook which generates a bootable image.
-    (status, text) =                                                    \
+    status =                                                            \
       ktp.process.Invoke(HooksDirectory +                               \
                            "/" +                                        \
                            environment +                                \
@@ -396,13 +402,20 @@ def                     Test(capability,
                            "--image", image,
                            "--environment", environment,
                            "--suite", suite,
-                           "--bulletin", bulletin ],
+                           "--bulletin", bulletin,
+                           "--verbose" ],
                          stream = stream,
                          option = ktp.process.OptionNone)
 
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
+
     # test the success of the construct hook invocation.
     if status == ktp.StatusError:
-      return (ktp.StatusError, ktp.miscellaneous.Binary(text))
+      return (ktp.StatusError, ktp.miscellaneous.Binary(output))
 
     # retrieve the current time.
     end = time.time()

@@ -8,7 +8,7 @@
 # file          /home/mycure/KANE...YSTEM/test/packages/ktp/miscellaneous.py
 #
 # created       julien quintard   [mon oct 25 19:51:49 2010]
-# updated       julien quintard   [tue nov  2 22:36:14 2010]
+# updated       julien quintard   [thu nov  4 11:29:52 2010]
 #
 
 #
@@ -165,3 +165,23 @@ def                     Dig(target):
 
     if not os.path.exists(path):
       os.mkdir(path)
+
+#
+# this function transfers the content from one file to the other.
+#
+def                     Transfer(source, destination):
+  input = None
+  output = None
+  line = None
+
+  try:
+    input = open(source, "r")
+    output = open(destination, "a")
+  except IOError:
+    return None
+
+  line = input.read(256)
+  output.write(line)
+
+  output.close()
+  input.close()

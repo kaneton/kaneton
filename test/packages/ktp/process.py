@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/process.py
+# file          /home/mycure/KANE...TEST-SYSTEM/test/packages/ktp/process.py
 #
 # created       julien quintard   [mon oct 25 20:54:05 2010]
-# updated       julien quintard   [mon nov  1 13:13:02 2010]
+# updated       julien quintard   [thu nov  4 14:40:44 2010]
 #
 
 #
@@ -33,9 +33,8 @@ OptionBackground = 1
 #
 
 #
-# this function invokes a sub-process and returns either a tuple
-# (status, text) or a monitor if the invocation has been performed
-# in background.
+# this function invokes a sub-process and returns either the status or a
+# monitor if the invocation has been performed in background.
 #
 def                     Invoke(command,
                                arguments,
@@ -46,7 +45,6 @@ def                     Invoke(command,
   file = None
   handle = None
   descriptor = None
-  text = None
   status = None
   output = None
   error = None
@@ -99,18 +97,10 @@ def                     Invoke(command,
     if descriptor:
       os.close(descriptor)
 
-    # retrieve the text and remove the file, if necessary.
-    if stream:
-      # retrieve the text.
-      text = miscellaneous.Pull(stream)
-
-      # remove the stream file.
-      miscellaneous.Remove(stream)
-
     if status != 0:
-      return (ktp.StatusError, text)
+      return (ktp.StatusError)
     else:
-      return (ktp.StatusOk, text)
+      return (ktp.StatusOk)
 
 #
 # this function waits for a process to terminate and return the status.
@@ -120,7 +110,6 @@ def                     Wait(monitor):
   stream = None
   descriptor = None
   status = None
-  text = None
 
   # retrieve the information.
   (handle, stream, descriptor) = monitor
@@ -132,18 +121,37 @@ def                     Wait(monitor):
   if descriptor:
     os.close(descriptor)
 
-  # retrieve the text and remove the file, if necessary.
-  if stream:
-    # retrieve the text.
-    text = miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    miscellaneous.Remove(stream)
-
   if status != 0:
-    return (ktp.StatusError, text)
+    return (ktp.StatusError)
   else:
-    return (ktp.StatusOk, text)
+    return (ktp.StatusOk)
+
+#
+# this function probes a process.
+#
+def                     Probe(monitor):
+  handle = None
+  stream = None
+  descriptor = None
+  status = None
+
+  # retrieve the information.
+  (handle, stream, descriptor) = monitor
+
+  # probe the process.
+  status = handle.poll()
+
+  if isinstance(status, int):
+    # close the descriptor.
+    if descriptor:
+      os.close(descriptor)
+
+    if status != 0:
+      return (ktp.StatusError)
+    else:
+      return (ktp.StatusOk)
+  else:
+    return (ktp.StatusUnknown)
 
 #
 # this function terminates a process by killing it.
@@ -153,7 +161,6 @@ def                     Terminate(monitor):
   stream = None
   descriptor = None
   status = None
-  text = None
 
   # retrieve the information.
   (handle, stream, descriptor) = monitor
@@ -164,13 +171,3 @@ def                     Terminate(monitor):
   # close the descriptor.
   if descriptor:
     os.close(descriptor)
-
-  # retrieve the text and remove the file, if necessary.
-  if stream:
-    # retrieve the text.
-    text = miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    miscellaneous.Remove(stream)
-
-  return text

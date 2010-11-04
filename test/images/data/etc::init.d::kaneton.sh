@@ -1,7 +1,7 @@
 #! /bin/bash
 
 DEVICE="/dev/hdb"
-USER="test"
+USER="user"
 
 error()
 {

@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/images/debian.sh
+# file          /home/mycure/KANETON-TEST-SYSTEM/test/images/debian.sh
 #
 # created       julien quintard   [fri oct 29 13:12:53 2010]
-# updated       julien quintard   [fri oct 29 13:16:37 2010]
+# updated       julien quintard   [thu nov  4 00:34:27 2010]
 #
 
 #
@@ -30,7 +30,7 @@ DIRECTORY="${ROOT}/.debian"
 IMAGE="${ROOT}/debian.iso"
 
 PACKAGES="bzip2 patch make gcc mtools python"
-USER="test"
+USER="user"
 
 #
 # ---------- script -----------------------------------------------------------
@@ -67,8 +67,8 @@ cp ${DATA}/etc::init.d::live-initramfs.patch ${DIRECTORY}/config/chroot_local-in
 
 # generate a hook in order to specify the live system to take the
 # 'kaneton.sh' init script into account.
-cat <<END > ${DIRECTORY}/config/chroot_local-hooks/99-kaneton
-#!/bin/sh
+cat <<END >${DIRECTORY}/config/chroot_local-hooks/99-kaneton
+#! /bin/sh
 
 # add the kaneton.sh init script
 update-rc.d kaneton.sh defaults
@@ -82,6 +82,25 @@ END
 
 # give the execution permission to this script so that it gets executed.
 chmod +x ${DIRECTORY}/config/chroot_local-hooks/99-kaneton
+
+# generate a book in order to replace the isolinux.cfg file.
+cat <<EOF >${DIRECTORY}/config/binary_local-hooks/00-kaneton
+#! /bin/sh
+
+cat <<FOE >binary/isolinux/isolinux.cfg
+serial 0 9600
+timeout 0
+default live
+
+LABEL live
+  MENU LABEL Start Debian Live
+  kernel /live/vmlinuz1
+  append initrd=/live/initrd1.img boot=live live-getty union=aufs console=tty0 console=ttyS0,9600n8
+FOE
+EOF
+
+# give the execution permission to this script so that it gets executed.
+chmod +x ${DIRECTORY}/config/binary_local-hooks/00-kaneton
 
 # finally, launch the build process.
 lh_build

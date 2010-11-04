@@ -1,6 +1,6 @@
 #! /bin/bash
 
-USER="test"
+USER="user"
 
 error()
 {

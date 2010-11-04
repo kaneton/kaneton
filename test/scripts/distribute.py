@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/scripts/distribute.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/distribute.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue nov  2 05:25:45 2010]
+# updated       julien quintard   [thu nov  4 00:22:17 2010]
 #
 
 #
@@ -77,6 +77,7 @@ def                     Distribute(namespace):
   content = None
   configuration = None
   message = None
+  stream = None
 
   # create a temporary file.
   configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
@@ -134,19 +135,29 @@ directory, at the location:
     for member in capability["members"]:
       emails += [ member["email"] ]
 
+    # create a stream file.
+    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
     # email the capability to the supposed recipient.
-    (status, output) = ktp.process.Invoke("mutt",
-                                          [ "-F", configuration,
-                                            "-s", "'kaneton capability'",
-                                            "-a", CapabilityStore + "/" + \
-                                              name + ktp.capability.Extension,
-                                            " ".join(emails),
-                                            "<" + message ])
+    status = ktp.process.Invoke("mutt",
+                                [ "-F", configuration,
+                                  "-s", "'kaneton capability'",
+                                  "-a", CapabilityStore + "/" + \
+                                    name + ktp.capability.Extension,
+                                  " ".join(emails),
+                                  "<" + message ])
+
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
 
     # check the status.
     if status == ktp.StatusError:
       # display the output.
-      print(output)
+      if output:
+        print(output)
 
       # display the error message.
       print("an error occured while sending the email to '" +           \
