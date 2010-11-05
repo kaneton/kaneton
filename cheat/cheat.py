@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [sun oct 24 14:42:41 2010]
+# updated       julien quintard   [fri nov  5 16:17:49 2010]
 #
 
 #

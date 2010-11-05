@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [wed nov  3 15:38:19 2010]
+# updated       julien quintard   [fri nov  5 20:53:39 2010]
 #
 
 #
@@ -305,14 +305,30 @@ def                     Test(server, capability, arguments):
   environment = arguments[1]
   suite = arguments[2]
 
-  # XXX
-  # 1) make export-student:contributor
-  # 2) export/output/test:contributor.tar.bz2
-  # XXX
+  # display the information by exploring the tree.
+  env.display(env.HEADER_OK,
+              "generating the kaneton snapshot",
+              env.OPTION_NONE)
+
+  # export the current kaneton implementation.
+  env.launch(env._EXPORT_SCRIPT_,
+             "test:" + capability["identifier"],
+             env.OPTION_QUIET)
+
+  # display the information by exploring the tree.
+  env.display(env.HEADER_OK,
+              "loading the kaneton snapshot",
+              env.OPTION_NONE)
 
   # read the snapshot.
-  snapshot = env.pull("/home/mycure/kaneton.STABLE/export/output/test:contributor.tar.bz2",
+  snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                   \
+                        "test:" + capability["identifier"] + ".tar.bz2",
                       env.OPTION_NONE)
+
+  # display the information by exploring the tree.
+  env.display(env.HEADER_OK,
+              "requesting the server",
+              env.OPTION_NONE)
 
   # trigger a test.
   report = ktp.xmlrpc.Call(server.Test(capability,
@@ -354,10 +370,15 @@ def                     Submit(server, capability, arguments):
   # retrieve the arguments.
   stage = arguments[1]
 
-  # XXX
-  # 1) make export-student:contributor
-  # 2) export/output/test:contributor.tar.bz2
-  # XXX
+  # export the current kaneton implementation.
+  env.launch(env._EXPORT_SCRIPT_,
+             "test:" + capability["identifier"],
+             env.OPTION_QUIET)
+
+  # read the snapshot.
+  snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                   \
+                        "test:" + capability["identifier"] + ".tar.bz2",
+                      env.OPTION_NONE)
 
   # read the snapshot.
   snapshot = env.pull("/home/mycure/kaneton.STABLE/export/output/test:contributor.tar.bz2",

@@ -22,8 +22,8 @@ source environment.sh || error "unable to source the environment file"
 
 tar xjf kaneton.tar.bz2 >>/home/${USER}/.log 2>&1 || error "unable to extract the kaneton snapshot"
 
-mkdir -p kaneton/test/store/bundles/${KANETON_PLATFORM}.${KANETON_ARCHITECTURE}/ >>/home/${USER}/.log 2>&1 || error "unable to create the bundles directory"
-cp kaneton.lo kaneton/test/store/bundles/${KANETON_PLATFORM}.${KANETON_ARCHITECTURE}/ >>/home/${USER}/.log 2>&1 || error "unable to move the kaneton tests bundle"
+mkdir -p kaneton/test/store/bundle/${KANETON_PLATFORM}.${KANETON_ARCHITECTURE}/ >>/home/${USER}/.log 2>&1 || error "unable to create the bundles directory"
+cp kaneton.lo kaneton/test/store/bundle/${KANETON_PLATFORM}.${KANETON_ARCHITECTURE}/ >>/home/${USER}/.log 2>&1 || error "unable to move the kaneton tests bundle"
 
 cd kaneton >>/home/${USER}/.log 2>&1 || error "unable to enter the kaneton/ root directory"
 

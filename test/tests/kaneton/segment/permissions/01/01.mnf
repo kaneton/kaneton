@@ -1,3 +1,4 @@
+name: segment/permissions/01
 description: This test creates a task and address space before reserving a segment and changing its permissions.
 symbol: test_segment_permissions_01
 output: |

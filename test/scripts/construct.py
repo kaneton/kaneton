@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/construct.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [thu nov  4 14:31:08 2010]
+# updated       julien quintard   [fri nov  5 21:21:01 2010]
 #
 
 #
@@ -120,29 +120,47 @@ def                     Disk(namespace):
   namespace.disk = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
   # initialize the size of the file.
-  ktp.process.Invoke("dd",
-                     [ "if=/dev/zero",
-                       "of=" + namespace.disk,
-                       "bs=1M",
-                       "count=" + str(DiskSize) ])
+  if ktp.process.Invoke("dd",
+                        [ "if=/dev/zero",
+                          "of=" + namespace.disk,
+                          "bs=1M",
+                          "count=" + str(DiskSize) ]) == ktp.StatusError:
+    Error(namespace,
+          "unable to create a temporary disk image")
 
   # create an ext2 file system for this file.
-  ktp.process.Invoke("mkfs.ext2",
-                     [ "-F",
-                       "-b 1024",
-                       namespace.disk ])
+  if ktp.process.Invoke("mkfs.ext2",
+                        [ "-F",
+                          "-b 1024",
+                          namespace.disk ]) == ktp.StatusError:
+    Error(namespace,
+          "unable to create a file system on the temporary disk image")
 
   # build a temporary directory.
   directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
 
   # mount the disk into the temporary directory.
-  ktp.process.Invoke("mount",
-                     [ "-o", "loop",
-                       namespace.disk,
-                       directory ])
+  if ktp.process.Invoke("mount",
+                        [ "-o", "loop",
+                          namespace.disk,
+                          directory ]) == ktp.StatusError:
+    Error(namespace,
+          "unable to mount the temporary disk image")
+
+  # check if the snapshot exists.
+  if not os.path.exists(namespace.snapshot):
+    Error(namespace,
+          "the snapshot does not seem to exist")
 
   # copy the snapshot into the mounted directory.
   ktp.miscellaneous.Copy(namespace.snapshot, directory + "/kaneton.tar.bz2")
+
+  # check if the bundle exists.
+  if not os.path.exists(BundleStore + "/" +                             \
+                           namespace.platform + "." +                   \
+                           namespace.architecture + "/kaneton.lo"):
+    Error(namespace,
+          "the kaneton bundle does not seem to be present")
 
   # copy the kaneton tests bundle.
   ktp.miscellaneous.Copy(BundleStore + "/" +                            \
@@ -165,8 +183,10 @@ export KANETON_ARCHITECTURE='%(architecture)s'\
   ktp.miscellaneous.Push(environment, directory + "/environment.sh")
 
   # umount the temporary directory
-  ktp.process.Invoke("umount",
-                     [ directory ])
+  if ktp.process.Invoke("umount",
+                        [ directory ]) == ktp.StatusError:
+    Error(namespace,
+          "unable to unmount the temporary disk image")
 
   # remove the directory.
   ktp.miscellaneous.Remove(directory)
@@ -417,10 +437,12 @@ def                     Retrieve(namespace):
   directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
 
   # mount the disk.
-  ktp.process.Invoke("mount",
-                     [ "-o" "loop",
-                       namespace.disk,
-                       directory ])
+  if ktp.process.Invoke("mount",
+                        [ "-o" "loop",
+                          namespace.disk,
+                          directory ]) == ktp.StatusError:
+    Error(namespace,
+          "unable to mount the temporary disk image")
 
   # check if an error occured. if so, print the log followed
   # by the error message before existing.
@@ -445,8 +467,10 @@ def                     Retrieve(namespace):
       print(log)
 
     # umount the snapshot.
-    ktp.process.Invoke("umount",
-                       [ directory ])
+    if ktp.process.Invoke("umount",
+                          [ directory ]) == ktp.StatusError:
+      Error(namespace,
+            "unable to unmount the temporary disk image")
 
     # remove the temporary directory.
     ktp.miscellaneous.Remove(directory)
@@ -464,8 +488,10 @@ def                     Retrieve(namespace):
     ktp.miscellaneous.Copy(directory + "/kaneton.img", namespace.image)
 
     # umount the snapshot.
-    ktp.process.Invoke("umount",
-                       [ directory ])
+    if ktp.process.Invoke("umount",
+                          [ directory ]) == ktp.StatusError:
+      Error(namespace,
+            "unable to unmount the temporary disk image")
 
     # remove the temporary directory.
     ktp.miscellaneous.Remove(directory)

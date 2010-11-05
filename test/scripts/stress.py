@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/stress.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [thu nov  4 11:55:17 2010]
+# updated       julien quintard   [fri nov  5 22:08:34 2010]
 #
 
 #
@@ -233,12 +233,14 @@ def                     ISO(namespace):
   namespace.iso = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
   # create an ISO file.
-  ktp.process.Invoke("mkisofs",
-                     [ "-pad",
-                       "-b", os.path.basename(namespace.image),
-                       "-R",
-                       "-o", namespace.iso,
-                       namespace.image ] )
+  if ktp.process.Invoke("mkisofs",
+                        [ "-pad",
+                          "-b", os.path.basename(namespace.image),
+                          "-R",
+                          "-o", namespace.iso,
+                          namespace.image ] ) == ktp.StatusError:
+    Error(namespace,
+          "unable to create the ISO file system")
 
 #
 # this function loads the manifests and initialize the
@@ -412,7 +414,10 @@ def                     QEMU(namespace):
     Suite(namespace, port)
 
     # destroy the virtual machine instance.
-    os.kill(monitor[0].pid, signal.SIGKILL)
+    try:
+      os.kill(monitor[0].pid, signal.SIGKILL)
+    except:
+      pass
 
     # wait for the process to terminate.
     ktp.process.Wait(monitor)

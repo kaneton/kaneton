@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/export/export.py
+# file          /home/mycure/kaneton.STABLE/export/export.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
-# updated       julien quintard   [sun apr 12 15:45:57 2009]
+# updated       julien quintard   [fri nov  5 16:25:20 2010]
 #
 
 #
@@ -110,7 +110,7 @@ def main():
     env.display(env.HEADER_ERROR, "behaviours:",
                 env.OPTION_NONE)
     for i in env.list(env._EXPORT_DIR_ + "/behaviours", env.OPTION_FILE):
-      env.display(env.HEADER_ERROR, "  " + i, env.OPTION_NONE)
+      env.display(env.HEADER_ERROR, "  " + i[:-4], env.OPTION_NONE)
     return 1
 
   modules_load()
