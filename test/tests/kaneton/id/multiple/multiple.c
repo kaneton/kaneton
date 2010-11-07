@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...est/tests/kaneton/id/multiple/multiple.c
  *
  * created       julien quintard   [wed apr 15 05:27:55 2009]
- * updated       julien quintard   [mon oct 18 09:41:15 2010]
+ * updated       julien quintard   [sat nov  6 14:23:16 2010]
  */
 
 /*
@@ -34,31 +34,29 @@ void			test_id_multiple(void)
 
   if (id_build(&id) != ERROR_NONE)
     TEST_ERROR("[id_build] error\n");
-  else
+
+  for (j = 0; j < 1024; j++)
     {
-      for (j = 0; j < 1024; j++)
-	{
-	  if (id_reserve(&id, &i[j]) != ERROR_NONE)
-	    TEST_ERROR("[id_reserve] error\n");
+      if (id_reserve(&id, &i[j]) != ERROR_NONE)
+	TEST_ERROR("[id_reserve] error\n");
 
-	  if (!(i[j] >= 0 && i[j] <= (t_id)-1))
-	    TEST_ERROR("invalid id\n");
-	}
-
-      for (j = 0; j < 1024; j++)
-	for (k = 0; k < 1024; k++)
-	  if (j != k && i[j] == i[k])
-	    TEST_ERROR("collision\n");
-
-      for (j = 0; j < 1024; j++)
-	{
-	  if (id_release(&id, i[j]) != ERROR_NONE)
-	    TEST_ERROR("[id_release] error\n");
-	}
-
-      if (id_destroy(&id) != ERROR_NONE)
-	TEST_ERROR("[id_destroy] error\n");
+      if (!(i[j] >= 0 && i[j] <= (t_id)-1))
+	TEST_ERROR("invalid id\n");
     }
+
+  for (j = 0; j < 1024; j++)
+    for (k = 0; k < 1024; k++)
+      if (j != k && i[j] == i[k])
+	TEST_ERROR("id collision\n");
+
+  for (j = 0; j < 1024; j++)
+    {
+      if (id_release(&id, i[j]) != ERROR_NONE)
+	TEST_ERROR("[id_release] error\n");
+    }
+
+  if (id_destroy(&id) != ERROR_NONE)
+    TEST_ERROR("[id_destroy] error\n");
 
   TEST_LEAVE();
 }

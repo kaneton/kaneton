@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/segment/permissions/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed oct 20 17:07:22 2010]
+ * updated       julien quintard   [sat nov  6 17:51:55 2010]
  */
 
 /*
@@ -53,6 +53,9 @@ void			test_segment_permissions_01(void)
 
   if (o->perms != (PERM_READ | PERM_WRITE))
     TEST_ERROR("invalid segment's permissions\n");
+
+  if (segment_release(seg) != ERROR_NONE)
+    TEST_ERROR("[segment_release] error\n");
 
   if (as_release(as) != ERROR_NONE)
     TEST_ERROR("[as_release] error\n");

@@ -1,0 +1,4 @@
+name: as/map
+description: This test reserves an address space and allocates several maps before checking that the segments and regions have been properly reserved.
+symbol: test_as_map
+output:

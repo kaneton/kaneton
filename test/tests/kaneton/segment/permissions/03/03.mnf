@@ -1,5 +1,4 @@
+name: segment/permissions/03
 description: This test creates a task and address space before reserving a segment and changing its permissions. Note that this test tries to set invalid permissions.
 symbol: test_segment_permissions_03
-output: |
-  [test] test_segment_permissions_03
-  [/test] test_segment_permissions_03
+output:

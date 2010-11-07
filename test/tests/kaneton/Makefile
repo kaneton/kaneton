@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/tests/kaneton/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [fri oct 22 09:43:08 2010]
+# updated       julien quintard   [sun nov  7 17:05:52 2010]
 #
 
 #
@@ -28,7 +28,8 @@ include			../../../environment/env.mk
 #
 
 UNITS			:=		id				\
-					segment				
+					segment				\
+					as				
 
 SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
 					$(UNITS)
@@ -45,13 +46,13 @@ INVENTORY_O		:=		$(INVENTORY_C:.c=.o)
 ifeq ($(behaviour),default)
 
 main:			dependencies
-	$(call env_remove,$(_TEST_STORE_BUNDLES_KANETON_LO_),)
+	$(call env_remove,$(_TEST_STORE_BUNDLE_KANETON_LO_),)
 
 	$(call env_remove,$(INVENTORY_C) $(INVENTORY_O),)
 	$(call env_launch,$(_TEST_INVENTORY_SCRIPT_),$(_TEST_TESTS_KANETON_DIR_),)
 	$(call env_compile-c,$(INVENTORY_O),$(INVENTORY_C),)
 
-	$(call env_archive,$(_TEST_STORE_BUNDLES_KANETON_LO_),$(MODULES) $(INVENTORY_O),)
+	$(call env_archive,$(_TEST_STORE_BUNDLE_KANETON_LO_),$(MODULES) $(INVENTORY_O),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\

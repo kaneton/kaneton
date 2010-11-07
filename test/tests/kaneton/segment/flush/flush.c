@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/segment/flush/flush.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed oct 20 15:07:56 2010]
+ * updated       julien quintard   [sat nov  6 15:28:04 2010]
  */
 
 /*
@@ -66,9 +66,6 @@ void			test_segment_flush(void)
 
       if (s->asid != as)
 	TEST_ERROR("invalid segment's address space identifier\n");
-
-      if (s->address != (t_uint32)(seg))
-	TEST_ERROR("invalid segment's address\n");
 
       if (s->size != n * PAGESZ)
 	TEST_ERROR("invalid segment's size\n");

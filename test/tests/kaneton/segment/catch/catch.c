@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/segment/catch/catch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon oct 18 10:12:07 2010]
+ * updated       julien quintard   [sat nov  6 13:13:38 2010]
  */
 
 /*
@@ -72,6 +72,9 @@ void			test_segment_catch(void)
 
   if (o->type != SEGMENT_TYPE_MEMORY)
     TEST_ERROR("invalid type field after catch\n");
+
+  if (segment_release(seg) != ERROR_NONE)
+    TEST_ERROR("[segment_release] error\n");
 
   if (as_release(as1) != ERROR_NONE)
     TEST_ERROR("[as_release] error\n");

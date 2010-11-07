@@ -1,0 +1,4 @@
+name: as/give
+description: This test creates two tasks, an address space and gives it to the second task.
+symbol: test_as_give
+output:

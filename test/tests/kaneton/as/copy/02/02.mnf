@@ -1,0 +1,4 @@
+name: as/copy/02
+description: This test creates two tasks, every one with its address space. Several non-adjacent segments are first allocated and then adjacently mapped. Then, data is written to the first task's address space, copied to the other address space---with some offsets---before being read and verified.
+symbol: test_as_copy_02
+output:

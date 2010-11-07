@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/test/engine/engine.h
  *
  * created       julien quintard   [sun oct 17 15:43:58 2010]
- * updated       julien quintard   [mon oct 25 15:24:14 2010]
+ * updated       julien quintard   [sun nov  7 17:04:28 2010]
  */
 
 #ifndef TEST_ENGINE_ENGINE_H
@@ -26,10 +26,10 @@
 
 #define TEST_ENTER()							\
 
-#define TEST_ERROR(_message_)						\
+#define TEST_ERROR(_format_, _arguments_...)				\
   do									\
     {									\
-      printf("%s", (_message_));					\
+      printf(_format_, ##_arguments_);					\
 									\
       TEST_LEAVE();							\
     } while (0)

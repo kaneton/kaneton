@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...st/tests/kaneton/segment/inject/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [wed oct 20 14:44:43 2010]
+# updated       julien quintard   [sat nov  6 17:10:42 2010]
 #
 
 #

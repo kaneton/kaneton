@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/segment/multiple/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed oct 20 16:34:34 2010]
+ * updated       julien quintard   [sat nov  6 15:42:15 2010]
  */
 
 /*

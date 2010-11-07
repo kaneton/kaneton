@@ -1,0 +1,4 @@
+name: as/clone/02
+description: This test creates two tasks and reserves an address space with a segment which is mapped in the first. Then, the address space is cloned in the second task. Finally, the various segments and regions populating the address spaces are verified since supposed to be identical.
+symbol: test_as_clone_02
+output:

@@ -1,0 +1,4 @@
+name: segment/split
+description: This test reserves a segment, splits it in two and verifies that the segments are valid.
+symbol: test_segment_split
+output:

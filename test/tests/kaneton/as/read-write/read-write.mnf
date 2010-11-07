@@ -1,0 +1,4 @@
+name: as/readwrite
+description: This test creates a task and address space, allocates several non-adjacent segments, maps it in a continuous form, writes data through a single call and finally reads and verify that the address space contains the correct data.
+symbol: test_as_readwrite
+output:

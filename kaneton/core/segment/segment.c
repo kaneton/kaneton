@@ -89,9 +89,10 @@ t_error			segment_show(i_segment			segid)
   if (segment_get(segid, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  module_call(console, console_message, '#', "  segment %qd in address space %qd:\n",
-	   segid,
-	   o->asid);
+  module_call(console, console_message,
+	      '#', "  segment %qd in address space %qd:\n",
+	      segid,
+	      o->asid);
 
   /*
    * 2)
@@ -133,12 +134,13 @@ t_error			segment_show(i_segment			segid)
    * 4)
    */
 
-  module_call(console, console_message, '#', "    [%s] 0x%08x - 0x%08x %s (%u bytes)\n",
-	   type,
-	   o->address,
-	   o->address + o->size,
-	   perms,
-	   o->size);
+  module_call(console, console_message,
+	      '#', "    [%s] 0x%08x - 0x%08x %s (%u bytes)\n",
+	      type,
+	      o->address,
+	      o->address + o->size,
+	      perms,
+	      o->size);
 
   /*
    * 5)

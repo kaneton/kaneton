@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...E/test/tests/kaneton/segment/copy/copy.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed oct 20 15:07:42 2010]
+ * updated       julien quintard   [sat nov  6 19:12:19 2010]
  */
 
 /*
@@ -78,6 +78,12 @@ void			test_segment_copy(void)
       if (buff[i] != (i * 4 - 1) % 256)
 	TEST_ERROR("invalid data in the segment\n");
     }
+
+  if (segment_release(seg) != ERROR_NONE)
+    TEST_ERROR("[segment_release] error\n");
+
+  if (segment_release(seg_ref) != ERROR_NONE)
+    TEST_ERROR("[segment_release] error\n");
 
   if (as_release(as) != ERROR_NONE)
     TEST_ERROR("[as_release] error\n");

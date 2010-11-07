@@ -1,0 +1,4 @@
+name: as/region
+description: This test allocates several segments and regions in a new address space.
+symbol: test_as_region
+output:

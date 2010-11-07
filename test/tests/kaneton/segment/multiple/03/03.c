@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/segment/multiple/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed oct 20 16:34:50 2010]
+ * updated       julien quintard   [sat nov  6 17:07:54 2010]
  */
 
 /*
@@ -46,10 +46,7 @@ void			test_segment_multiple_03(void)
 
       for (j = 0; j < 64; j++)
 	if (i != j && seg[i] == seg[j])
-	  {
-	    TEST_ERROR("some segments seem to overlap");
-	    TEST_LEAVE();
-	  }
+	  TEST_ERROR("some segments seem to overlap");
     }
 
   MULTIPLE_ALLOCATE(as, 3, seg);

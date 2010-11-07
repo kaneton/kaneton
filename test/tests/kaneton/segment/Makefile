@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ABLE/test/tests/kaneton/segment/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [wed oct 20 16:36:16 2010]
+# updated       julien quintard   [sun nov  7 11:16:16 2010]
 #
 
 #
@@ -35,12 +35,12 @@ SUBDIRS			:=		catch				\
 					give				\
 					inject				\
 					multiple			\
-					permissions			
-#					read-write			\
-#					resize				\
-#					simple				\
-#					split				\
-#					type				
+					permissions			\
+					read-write			\
+					resize				\
+					simple				\
+					split				\
+					type				
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 

@@ -1,6 +1,4 @@
 name: id/multiple
 description: This test reserves thousands of identifiers, checking that no collisions occured.
 symbol: test_id_multiple
-output: |
-  [test] test_id_multiple
-  [/test] test_id_multiple
+output:

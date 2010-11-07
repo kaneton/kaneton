@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/region.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       matthieu bucchianeri   [sun jul 22 12:11:45 2007]
+ * updated       julien quintard   [sun nov  7 20:22:05 2010]
  */
 
 #ifndef CORE_REGION_H

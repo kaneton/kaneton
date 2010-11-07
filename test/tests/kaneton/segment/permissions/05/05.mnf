@@ -1,5 +1,4 @@
+name: segment/permissions/05
 description: This test creates a task and address space. Then the test reserves segments, writes and copies data before releasing everything.
 symbol: test_segment_permissions_05
-output: |
-  [test] test_segment_permissions_05
-  [/test] test_segment_permissions_05
+output:

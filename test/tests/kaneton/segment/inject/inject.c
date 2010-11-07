@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...st/tests/kaneton/segment/inject/inject.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed oct 20 15:05:18 2010]
+ * updated       julien quintard   [sat nov  6 19:37:46 2010]
  */
 
 /*
@@ -49,9 +49,6 @@ void			test_segment_inject(void)
   if (segment_inject(as, new_seg, &seg) != ERROR_NONE)
     TEST_ERROR("[segment_inject] error\n");
 
-  if ((t_paddr)seg != 0x50000000)
-    TEST_ERROR("invalid segment's identifier after inject\n");
-
   if (segment_get(seg, &o) != ERROR_NONE)
     TEST_ERROR("[segment_get] error\n");
 
@@ -61,7 +58,7 @@ void			test_segment_inject(void)
   if (o->asid != as)
     TEST_ERROR("invalid segment's address space identifier after injection\n");
 
-  if (o->address != (t_uint32)seg)
+  if (o->address != new_seg->address)
     TEST_ERROR("invalid segment's address after injection\n");
 
   if (o->size != 2 * PAGESZ)

@@ -1,5 +1,4 @@
+name: segment/permissions/04
 description: This test creates a task and address space before reserving a segment and trying to write into it.
 symbol: test_segment_permissions_04
-output: |
-  [test] test_segment_permissions_04
-  [/test] test_segment_permissions_04
+output:

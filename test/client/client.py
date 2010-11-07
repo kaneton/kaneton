@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [fri nov  5 20:53:39 2010]
+# updated       julien quintard   [sat nov  6 09:33:27 2010]
 #
 
 #
@@ -311,9 +311,9 @@ def                     Test(server, capability, arguments):
               env.OPTION_NONE)
 
   # export the current kaneton implementation.
-  env.launch(env._EXPORT_SCRIPT_,
-             "test:" + capability["identifier"],
-             env.OPTION_QUIET)
+#  env.launch(env._EXPORT_SCRIPT_,
+#             "test:" + capability["identifier"],
+#             env.OPTION_QUIET)
 
   # display the information by exploring the tree.
   env.display(env.HEADER_OK,

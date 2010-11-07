@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...E/test/tests/kaneton/segment/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon oct 25 15:29:10 2010]
+ * updated       julien quintard   [sat nov  6 22:41:14 2010]
  */
 
 /*
@@ -70,9 +70,9 @@ void			test_segment_give(void)
     TEST_ERROR("invalid segment's address space after give\n");
 
   if (as_get(as1, &oas) != ERROR_NONE)
-    TEST_ERROR("[segment_get] error\n");
+    TEST_ERROR("[as_get] error\n");
 
-  if (set_get(oas->segments, seg, &chiche) != ERROR_NONE)
+  if (set_get(oas->segments, seg, &chiche) == ERROR_NONE)
     TEST_ERROR("[set_get] error: the segment has not been removed from "
 	       "the first address space during the give process\n");
 
@@ -82,6 +82,9 @@ void			test_segment_give(void)
   if (set_get(oas->segments, seg, &chiche) != ERROR_NONE)
     TEST_ERROR("[set_get] error: the segment does not seem to have been added "
 	       "to destination address space during the give process\n");
+
+  if (segment_release(seg) != ERROR_NONE)
+    TEST_ERROR("[segment_release] error\n");
 
   if (as_release(as1) != ERROR_NONE)
     TEST_ERROR("[as_release] error\n");

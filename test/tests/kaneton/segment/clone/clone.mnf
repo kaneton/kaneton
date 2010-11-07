@@ -1,5 +1,4 @@
+name: segment/clone
 description: This test creates tasks, reserves a segment, write data to this segment before cloning it and checking that everything went well.
 symbol: test_segment_clone
-output: |
-  [test] test_segment_clone
-  [/test] test_segment_clone
+output:

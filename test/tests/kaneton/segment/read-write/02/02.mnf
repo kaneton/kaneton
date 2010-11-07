@@ -1,0 +1,4 @@
+name: segment/read-write/02
+description: This test creates a task, an address space and a segment. Then, a serie of invalid calls are performed in order to stress the segment manager implementation.
+symbol: test_segment_readwrite_02
+output:

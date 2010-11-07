@@ -1,5 +1,4 @@
+name: segment/copy
 description: This test creates tasks, reserves two segments, write data to the first one, copies the data from the first to the second segment and verifies that the data is correct.
 symbol: test_segment_copy
-output: |
-  [test] test_segment_copy
-  [/test] test_segment_copy
+output:

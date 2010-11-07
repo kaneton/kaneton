@@ -1,0 +1,4 @@
+name: segment/type
+description: This test reserves a segment, changes its permissions and type.
+symbol: test_segment_type
+output:
