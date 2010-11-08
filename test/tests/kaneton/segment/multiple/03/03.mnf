@@ -1,4 +1,0 @@
-name: segment/multiple/03
-description: This test creates a task and address space before reserving several segments.
-symbol: test_segment_multiple_03
-output:
