@@ -1,4 +1,0 @@
-name: id/simple
-description: This test reserves a single identifier.
-symbol: test_id_simple
-output:

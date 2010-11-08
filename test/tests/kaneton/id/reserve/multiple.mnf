@@ -1,4 +1,0 @@
-name: id/multiple
-description: This test reserves thousands of identifiers, checking that no collisions occured.
-symbol: test_id_multiple
-output:
