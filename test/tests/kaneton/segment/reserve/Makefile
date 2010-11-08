@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ABLE/test/tests/kaneton/segment/Makefile
+# file          /home/mycure/kane...t/tests/kaneton/segment/reserve/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [mon nov  8 09:36:28 2010]
+# updated       julien quintard   [mon nov  8 09:37:27 2010]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,42 +27,36 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		catch				\
-					clone				\
-					coalesce			\
-					copy				\
-					flush				\
-					give				\
-					inject				\
-					permissions			\
-					read-write			\
-					reserve				\
-					resize				\
-					split				\
-					type				
+SUBDIRS			:=		01				\
+					02				\
+					03				\
+					04				\
+					05				\
+					06				\
+					07				
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 
-SEGMENT_LO		:=		segment.lo
+SIMPLE_LO		:=		simple.lo
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies $(SEGMENT_LO)
+main:			dependencies $(SIMPLE_LO)
 
-$(SEGMENT_LO):		$(MODULES)
-	$(call env_remove,$(SEGMENT_LO),)
+$(SIMPLE_LO):		$(MODULES)
+	$(call env_remove,$(SIMPLE_LO),)
 
-	$(call env_archive,$(SEGMENT_LO),$(MODULES),)
+	$(call env_archive,$(SIMPLE_LO),$(MODULES),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
-	$(call env_remove,$(SEGMENT_LO),)
+	$(call env_remove,$(SIMPLE_LO),)
 
 	$(call env_purge,)
 

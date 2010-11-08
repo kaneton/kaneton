@@ -1,0 +1,4 @@
+name: segment/reserve/02
+description: This test reserves a segment in a task's address space.
+symbol: test_segment_reserve_02
+output:
