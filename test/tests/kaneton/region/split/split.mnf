@@ -1,0 +1,4 @@
+name: region/split
+description: The test starts by allocating a segment and a region mapping it. The region is then split. The split regions are retrieved and verified. Finally, the regions are merged into a single one.
+symbol: test_region_split
+output:

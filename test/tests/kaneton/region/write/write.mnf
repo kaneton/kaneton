@@ -1,0 +1,4 @@
+name: region/write
+description: This test reserves a segment, mapped through a region. The test then write data.
+symbol: test_region_write
+output:

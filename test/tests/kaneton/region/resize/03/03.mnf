@@ -1,0 +1,4 @@
+name: region/resize/03
+description: This test allocates a segment, a region, and resizes the region in an incorrect manner.
+symbol: test_region_resize_03
+output:

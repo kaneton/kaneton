@@ -1,0 +1,4 @@
+name: region/flush/01
+description: This test reserves a segment and region in a new task's address space before flushing the regions.
+symbol: test_region_flush_01
+output:

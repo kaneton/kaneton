@@ -1,0 +1,4 @@
+name: region/reserve/02
+description: This test reserves a segment which is mapped at a precise location with a region.
+symbol: test_region_reserve_02
+output:

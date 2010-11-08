@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/tests/kaneton/Makefile
+# file          /home/mycure/kane...est/tests/kaneton/region/resize/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [mon nov  8 12:15:51 2010]
+# updated       julien quintard   [mon nov  8 12:19:13 2010]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../environment/env.mk
+include			../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,41 +27,32 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-UNITS			:=		as				\
-					id				\
-					map				\
-					region				\
-					segment				
+SUBDIRS			:=		01				\
+					02				\
+					03				
 
-SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
-					$(UNITS)
+MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 
-MODULES			:=		$(_TEST_ENGINE_LO_)		\
-					$(foreach s,$(UNITS),${s}/${s}.lo)
-
-INVENTORY_C		:=		inventory.c
-INVENTORY_O		:=		$(INVENTORY_C:.c=.o)
+RESIZE_LO		:=		resize.lo
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies
-	$(call env_remove,$(_TEST_STORE_BUNDLE_KANETON_LO_),)
+main:			dependencies $(RESIZE_LO)
 
-	$(call env_remove,$(INVENTORY_C) $(INVENTORY_O),)
-	$(call env_launch,$(_TEST_INVENTORY_SCRIPT_),$(_TEST_TESTS_KANETON_DIR_),)
-	$(call env_compile-c,$(INVENTORY_O),$(INVENTORY_C),)
+$(RESIZE_LO):		$(MODULES)
+	$(call env_remove,$(RESIZE_LO),)
 
-	$(call env_archive,$(_TEST_STORE_BUNDLE_KANETON_LO_),$(MODULES) $(INVENTORY_O),)
+	$(call env_archive,$(RESIZE_LO),$(MODULES),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
-	$(call env_remove,$(INVENTORY_O) $(INVENTORY_C),)
+	$(call env_remove,$(RESIZE_LO),)
 
 	$(call env_purge,)
 

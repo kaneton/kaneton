@@ -1,0 +1,4 @@
+name: region/resize/02
+description: This test reserves a segment and a region. The region is resized and verified, then resized and checked again. Finally, data is written and checked.
+symbol: test_region_resize_02
+output:
