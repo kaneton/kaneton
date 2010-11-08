@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/as/translation/translation.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 21:18:44 2010]
+ * updated       julien quintard   [mon nov  8 09:33:44 2010]
  */
 
 /*

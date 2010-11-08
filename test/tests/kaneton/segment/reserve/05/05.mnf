@@ -1,0 +1,4 @@
+name: segment/reserve/05
+description: This test creates a task and address space before reserving several segments.
+symbol: test_segment_reserve_05
+output:

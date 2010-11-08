@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ests/kaneton/segment/reserve/05/Makefile
+# file          /home/mycure/kane...ests/kaneton/segment/reserve/06/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [mon nov  8 09:45:02 2010]
+# updated       julien quintard   [mon nov  8 09:46:28 2010]
 #
 
 #
@@ -27,7 +27,7 @@ include			../../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_C			:=		05.c
+TEST_C			:=		06.c
 TEST_O			:=		$(TEST_C:.c=.o)
 
 TEST_H			:=		$(directory)/$(TEST_C:.c=.h)

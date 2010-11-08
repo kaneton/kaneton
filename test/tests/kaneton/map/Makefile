@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...t/tests/kaneton/segment/reserve/Makefile
+# file          /home/mycure/kaneton.STABLE/test/tests/kaneton/map/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [mon nov  8 09:49:03 2010]
+# updated       julien quintard   [mon nov  8 09:55:24 2010]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../../environment/env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,36 +27,30 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		01				\
-					02				\
-					03				\
-					04				\
-					05				\
-					06				\
-					07				
+SUBDIRS			:=		reserve				\
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 
-RESERVE_LO		:=		reserve.lo
+MAP_LO			:=		map.lo
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies $(RESERVE_LO)
+main:			dependencies $(MAP_LO)
 
-$(RESERVE_LO):		$(MODULES)
-	$(call env_remove,$(RESERVE_LO),)
+$(MAP_LO):		$(MODULES)
+	$(call env_remove,$(MAP_LO),)
 
-	$(call env_archive,$(RESERVE_LO),$(MODULES),)
+	$(call env_archive,$(MAP_LO),$(MODULES),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
-	$(call env_remove,$(RESERVE_LO),)
+	$(call env_remove,$(MAP_LO),)
 
 	$(call env_purge,)
 

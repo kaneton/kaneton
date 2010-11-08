@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...t/tests/kaneton/segment/reserve/Makefile
+# file          /home/mycure/kane.../test/tests/kaneton/map/reserve/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [mon nov  8 09:49:03 2010]
+# updated       julien quintard   [mon nov  8 09:53:20 2010]
 #
 
 #
@@ -29,11 +29,7 @@ include			../../../../../environment/env.mk
 
 SUBDIRS			:=		01				\
 					02				\
-					03				\
-					04				\
-					05				\
-					06				\
-					07				
+					03				
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 

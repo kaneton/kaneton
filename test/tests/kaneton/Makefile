@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/tests/kaneton/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [sun nov  7 17:05:52 2010]
+# updated       julien quintard   [mon nov  8 08:05:29 2010]
 #
 
 #
@@ -27,9 +27,10 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-UNITS			:=		id				\
-					segment				\
-					as				
+UNITS			:=		as				\
+					id				\
+					map				\
+					segment				
 
 SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
 					$(UNITS)

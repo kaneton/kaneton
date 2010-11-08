@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...t/tests/kaneton/segment/multiple/04/04.c
+ * file          /home/mycure/kane...st/tests/kaneton/segment/reserve/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed oct 20 16:35:00 2010]
+ * updated       julien quintard   [mon nov  8 09:48:37 2010]
  */
 
 /*
@@ -17,13 +17,13 @@
 
 #include <kaneton.h>
 
-#include "04.h"
+#include "07.h"
 
 /*
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_multiple_04(void)
+void			test_segment_reserve_07(void)
 {
   i_task		task;
   i_as			as;
@@ -38,20 +38,20 @@ void			test_segment_multiple_04(void)
   if (as_reserve(task, &as) != ERROR_NONE)
     TEST_ERROR("[as_reserve] error\n");
 
-  MULTIPLE_ALLOCATE(as, 2, seg);
-  MULTIPLE_ALLOCATE(as, 8, seg + 1);
-  MULTIPLE_ALLOCATE(as, 2, seg + 2);
+  TEST_ALLOCATE(as, 2, seg);
+  TEST_ALLOCATE(as, 8, seg + 1);
+  TEST_ALLOCATE(as, 2, seg + 2);
 
   if (segment_release(seg[1]) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
 
-  MULTIPLE_ALLOCATE(as, 5, seg + 1);
+  TEST_ALLOCATE(as, 5, seg + 1);
 
   if (segment_release(seg[0]) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
 
-  MULTIPLE_ALLOCATE(as, 8, seg);
-  MULTIPLE_ALLOCATE(as, 4, seg + 3);
+  TEST_ALLOCATE(as, 8, seg);
+  TEST_ALLOCATE(as, 4, seg + 3);
 
   if (segment_release(seg[0]) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
