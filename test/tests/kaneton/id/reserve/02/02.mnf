@@ -1,0 +1,4 @@
+name: id/reserve/02
+description: This test reserves a single identifier.
+symbol: test_id_reserve_02
+output:
