@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/region/resize/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [mon nov  8 12:15:29 2010]
+ * updated       julien quintard   [sun nov 14 02:27:07 2010]
  */
 
 /*
