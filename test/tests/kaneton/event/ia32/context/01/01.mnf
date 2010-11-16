@@ -1,0 +1,4 @@
+name: event/ia32/context/01
+description: This test reserves an event slot and manually triggers this event. Then, the test verifies that the registers have been restored to their original state.
+symbol: test_event_ia32_context_01
+output:

@@ -1,0 +1,4 @@
+name: event/ia32/irq
+description: XXX
+symbol: test_event_ia32_irq
+output:

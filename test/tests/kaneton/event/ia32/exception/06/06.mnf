@@ -1,0 +1,4 @@
+name: event/ia32/exception/06
+description: This test reserves an event and manually triggers it through a general protection fault. The interrupt service routine verifies the error code.
+symbol: test_event_ia32_exception_06
+output:

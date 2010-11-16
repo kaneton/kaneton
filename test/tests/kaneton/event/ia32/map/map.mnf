@@ -1,0 +1,4 @@
+name: event/ia32/map
+description: This test creates several tasks with address spaces, retrieves the location in physical memory of the IDT structure and checks that every address space maps it.
+symbol: test_event_ia32_map
+output:

@@ -1,0 +1,4 @@
+name: event/ia32/exception/01
+description: This test reserves an event and manually triggers it.
+symbol: test_event_ia32_exception_01
+output:

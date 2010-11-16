@@ -1,0 +1,4 @@
+name: event/ia32/message
+description: This test reserves a message-based event and manually triggers it.
+symbol: test_event_ia32_message
+output:
