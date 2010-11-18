@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/segment/clone/clone.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat nov  6 13:13:43 2010]
+ * updated       julien quintard   [wed nov 17 14:21:22 2010]
  */
 
 /*
@@ -20,29 +20,26 @@
 #include "clone.h"
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern i_as		kasid;
+
+/*
  * ---------- test ------------------------------------------------------------
  */
 
 void			test_segment_clone(void)
 {
-  i_task		task;
-  i_as			as;
   i_segment		seg;
   i_segment		seg2;
   t_uint32		i;
   o_segment*		o;
-  static t_uint8	buff[PAGESZ];
+  t_uint8		buff[PAGESZ];
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
-    TEST_ERROR("[task_reserve] error\n");
-
-  if (as_reserve(task, &as) != ERROR_NONE)
-    TEST_ERROR("[as_reserve] error\n");
-
-  if (segment_reserve(as,
+  if (segment_reserve(kasid,
 		      PAGESZ,
 		      PERM_READ | PERM_WRITE,
 		      &seg) != ERROR_NONE)
@@ -56,13 +53,13 @@ void			test_segment_clone(void)
   if (segment_write(seg, 0, buff, PAGESZ) != ERROR_NONE)
     TEST_ERROR("[segment_write] error\n");
 
-  if (segment_clone(as, seg, &seg2) != ERROR_NONE)
+  if (segment_clone(kasid, seg, &seg2) != ERROR_NONE)
     TEST_ERROR("[segment_clone] error\n");
 
   if (segment_get(seg2, &o) != ERROR_NONE)
     TEST_ERROR("[segment_get] error\n");
 
-  if (o->asid != as)
+  if (o->asid != kasid)
     TEST_ERROR("invalid segment's address space identfiier after cloning\n");
 
   if (o->perms != (PERM_READ | PERM_WRITE))
@@ -90,12 +87,6 @@ void			test_segment_clone(void)
 
   if (segment_release(seg2) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

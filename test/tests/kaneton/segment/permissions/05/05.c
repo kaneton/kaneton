@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/segment/permissions/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat nov  6 14:48:38 2010]
+ * updated       julien quintard   [wed nov 17 15:38:52 2010]
  */
 
 /*
@@ -20,13 +20,17 @@
 #include "05.h"
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern i_as		kasid;
+
+/*
  * ---------- test ------------------------------------------------------------
  */
 
 void			test_segment_permissions_05(void)
 {
-  i_task		task;
-  i_as			as;
   i_segment		seg;
   i_segment		seg_ref;
   t_uint32		i;
@@ -34,20 +38,13 @@ void			test_segment_permissions_05(void)
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
-    TEST_ERROR("[task_reserve] error\n");
-
-  if (as_reserve(task, &as) != ERROR_NONE)
-    TEST_ERROR("[as_reserve] error\n");
-
-  if (segment_reserve(as,
+  if (segment_reserve(kasid,
 		      PAGESZ,
 		      PERM_READ | PERM_WRITE,
 		      &seg_ref) != ERROR_NONE)
     TEST_ERROR("[segment_reserve] error\n");
 
-  if (segment_reserve(as,
+  if (segment_reserve(kasid,
 		      PAGESZ,
 		      PERM_READ,
 		      &seg) != ERROR_NONE)
@@ -69,12 +66,6 @@ void			test_segment_permissions_05(void)
 
   if (segment_release(seg_ref) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

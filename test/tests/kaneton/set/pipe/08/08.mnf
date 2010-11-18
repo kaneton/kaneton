@@ -1,0 +1,4 @@
+name: set/pipe/08
+description: This test reserves a set, pushes many objects and verifies that the objects are ordered according to the type of set and options.
+symbol: test_set_pipe_08
+output: "80 elements: \n"

@@ -1,4 +1,4 @@
 name: region/reserve/01
-description: This test reserves a segment and three regions which maps portions of the segment. The test writes data to the segments through the regions before releasing everything.
+description: This test simply reserves a segment which is mapped with a region.
 symbol: test_region_reserve_01
 output:

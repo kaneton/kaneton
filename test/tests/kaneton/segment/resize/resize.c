@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...st/tests/kaneton/segment/resize/resize.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat nov  6 18:35:08 2010]
+ * updated       julien quintard   [wed nov 17 15:32:12 2010]
  */
 
 /*
@@ -20,13 +20,17 @@
 #include "resize.h"
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern i_as		kasid;
+
+/*
  * ---------- test ------------------------------------------------------------
  */
 
 void			test_segment_resize(void)
 {
-  i_task		task;
-  i_as			as;
   i_segment		seg;
   i_segment		seg2;
   i_segment		seg3;
@@ -35,16 +39,7 @@ void			test_segment_resize(void)
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task) != ERROR_NONE)
-    TEST_ERROR("[task_reserve] error\n");
-
-  if (as_reserve(task, &as) != ERROR_NONE)
-    TEST_ERROR("[as_reserve] error\n");
-
-  if (segment_reserve(as,
+  if (segment_reserve(kasid,
 		      3 * PAGESZ,
 		      PERM_READ,
 		      &seg) != ERROR_NONE)
@@ -59,7 +54,7 @@ void			test_segment_resize(void)
   if (o->segid != seg)
     TEST_ERROR("invalid segment identifier after resize\n");
 
-  if (o->asid != as)
+  if (o->asid != kasid)
     TEST_ERROR("invalid segment's address space identifier after resize\n");
 
   if (o->type != SEGMENT_TYPE_MEMORY)
@@ -77,7 +72,7 @@ void			test_segment_resize(void)
       o_segment*	o1;
       o_segment*	o2;
 
-      if (segment_reserve(as,
+      if (segment_reserve(kasid,
 			  PAGESZ,
 			  PERM_READ,
 			  &seg2) != ERROR_NONE)
@@ -121,7 +116,7 @@ void			test_segment_resize(void)
   if (o->segid != seg)
     TEST_ERROR("invalid segment's identifier resize\n");
 
-  if (o->asid != as)
+  if (o->asid != kasid)
     TEST_ERROR("invalid segment's address space identifier after resize\n");
 
   if (o->type != SEGMENT_TYPE_MEMORY)
@@ -135,12 +130,6 @@ void			test_segment_resize(void)
 
   if (segment_release(seg) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("failed to release task\n");
 
   TEST_LEAVE();
 }

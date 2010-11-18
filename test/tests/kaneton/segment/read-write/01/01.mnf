@@ -1,4 +1,4 @@
 name: segment/read-write/01
-description: This test creates a task and address space before reserving a segment. The test then writes data to the segment, reads it and compares with the initial data.
+description: This test reserves a segment. The test then writes data to the segment, reads it and compares with the initial data. Finally, the segment is released.
 symbol: test_segment_readwrite_01
 output:

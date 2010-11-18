@@ -1,0 +1,4 @@
+name: set/stack/06
+description: This test reserves a set, pushes several objects, flushes the set, reserves another set with different options, pushes objects, flushes, releases etc.
+symbol: test_set_stack_06
+output: "0 elements: \n0 elements: \n0 elements: \n"

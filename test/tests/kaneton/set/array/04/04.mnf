@@ -1,0 +1,4 @@
+name: set/array/04
+description: This test reserves a set, adds objects, removes some, adds more, display the set contents etc. before releasing the set.
+symbol: test_set_array_04
+output: "5 elements: 80 98654 122 45 64\n8 elements: 98654 122 45 64 987 2 123 123\n"

@@ -1,4 +1,4 @@
 name: segment/reserve/05
-description: This test creates a task and address space before reserving several segments.
+description: This test reserves several segments and verifies them.
 symbol: test_segment_reserve_05
 output:

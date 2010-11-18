@@ -1,0 +1,4 @@
+name: set/array/11
+description: This test reserves a set, adds many objects and display the content.
+symbol: test_set_array_11
+output: "130 elements: \n"

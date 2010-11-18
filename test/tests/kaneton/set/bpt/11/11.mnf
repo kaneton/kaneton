@@ -1,0 +1,4 @@
+name: set/bpt/11
+description: This test reserves a set, adds many objects and display the content.
+symbol: test_set_bpt_11
+output: "130 elements: \n"

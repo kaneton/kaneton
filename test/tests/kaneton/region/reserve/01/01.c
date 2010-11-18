@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...est/tests/kaneton/region/reserve/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov  8 12:14:46 2010]
+ * updated       julien quintard   [wed nov 17 07:30:36 2010]
  */
 
 /*
@@ -32,69 +32,40 @@ extern i_as		kasid;
 void			test_region_reserve_01(void)
 {
   i_segment		seg;
-  i_region		reg1;
-  i_region		reg2;
-  i_region		reg3;
-  t_uint8*		p;
+  i_region		reg;
+  o_region*		o;
 
   TEST_ENTER();
 
   if (segment_reserve(kasid,
-                      10 * PAGESZ,
-                      PERM_READ | PERM_WRITE,
-                      &seg) != ERROR_NONE)
+		      2 * PAGESZ,
+		      PERM_READ,
+		      &seg) != ERROR_NONE)
     TEST_ERROR("[segment_reserve] error\n");
 
   if (region_reserve(kasid,
-                     seg,
-                     0,
-                     REGION_OPT_NONE,
-                     0,
-                     2 * PAGESZ,
-                     &reg1) != ERROR_NONE)
+		     seg,
+		     0,
+		     REGION_OPT_NONE,
+		     0,
+		     2 * PAGESZ,
+		     &reg) != ERROR_NONE)
     TEST_ERROR("[region_reserve] error\n");
 
-  if (region_reserve(kasid,
-                     seg,
-                     3 * PAGESZ,
-                     REGION_OPT_NONE,
-                     0,
-                     2 * PAGESZ,
-                     &reg2) != ERROR_NONE)
-    TEST_ERROR("[region_reserve] error\n");
+  if (region_get(kasid, reg, &o) != ERROR_NONE)
+    TEST_ERROR("[region_get] error\n");
 
-  if (region_reserve(kasid,
-                     seg,
-                     6 * PAGESZ,
-                     REGION_OPT_NONE,
-                     0,
-                     4 * PAGESZ,
-                     &reg3) != ERROR_NONE)
-    TEST_ERROR("[region_reserve] error\n");
+  if (o->regid != reg)
+    TEST_ERROR("invalid region's identifier\n");
 
-  p = (t_uint8*)(t_vaddr)reg1;
-  for (; p < (t_uint8*)(t_vaddr)reg1 + 2 * PAGESZ; p++)
-    *p = 0xaa;
+  if (o->segid != seg)
+    TEST_ERROR("invalid region's segment identifier\n");
 
-  p = (t_uint8*)(t_vaddr)reg2;
-  for (; p < (t_uint8*)(t_vaddr)reg2 + 2 * PAGESZ; p++)
-    *p = 0x55;
+  if (o->offset != 0)
+    TEST_ERROR("invalid region's offset\n");
 
-  p = (t_uint8*)(t_vaddr)reg3;
-  for (; p < (t_uint8*)(t_vaddr)reg3 + 4 * PAGESZ; p++)
-    *p = 0x0;
-
-  if (region_release(kasid, reg1) != ERROR_NONE)
-    TEST_ERROR("[region_release] error\n");
-
-  if (region_release(kasid, reg2) != ERROR_NONE)
-    TEST_ERROR("[region_release] error\n");
-
-  if (region_release(kasid, reg3) != ERROR_NONE)
-    TEST_ERROR("[region_release] error\n");
-
-  if (segment_release(seg) != ERROR_NONE)
-    TEST_ERROR("[segment_release] error\n");
+  if (o->size != 2 * PAGESZ)
+    TEST_ERROR("invalid region's size\n");
 
   TEST_LEAVE();
 }

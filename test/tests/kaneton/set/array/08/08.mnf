@@ -1,0 +1,4 @@
+name: set/array/08
+description: This test reserves a set, adds many objects, flushes the set etc.
+symbol: test_set_array_08
+output: "0 elements: \n0 elements: \n0 elements: \n"

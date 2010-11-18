@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...est/tests/kaneton/event/ia32/pic/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [tue nov 16 20:34:09 2010]
+ * updated       julien quintard   [wed nov 17 08:19:21 2010]
  */
 
 /*
@@ -45,9 +45,6 @@ void			test_event_ia32_pic_03(void)
 		    0) != ERROR_NONE)
     TEST_ERROR("[event_reserve] error\n");
 
-  if (event_release(32 + 3) != ERROR_NONE)
-    TEST_ERROR("[event_release] error\n");
-
   INB(MASTER_PORT_B, mask);
 
   if ((mask & (1 << 3)) == 0)
@@ -57,6 +54,9 @@ void			test_event_ia32_pic_03(void)
 
   if (mask != 0xff)
     TEST_ERROR("invalid PIC mask\n");
+
+  if (event_release(32 + 3) != ERROR_NONE)
+    TEST_ERROR("[event_release] error\n");
 
   TEST_LEAVE();
 }

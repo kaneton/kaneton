@@ -1,0 +1,4 @@
+name: set/stack/01
+description: This test reserves a basic set, releases it and then reserves other sets with advanced though invalid options.
+symbol: test_set_stack_01
+output:

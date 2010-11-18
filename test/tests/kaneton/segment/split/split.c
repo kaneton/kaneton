@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/segment/split/split.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 00:03:20 2010]
+ * updated       julien quintard   [wed nov 17 15:35:29 2010]
  */
 
 /*
@@ -20,13 +20,17 @@
 #include "split.h"
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern i_as		kasid;
+
+/*
  * ---------- test ------------------------------------------------------------
  */
 
 void			test_segment_split(void)
 {
-  i_task		task;
-  i_as			as;
   i_segment		seg;
   i_segment		seg2;
   o_segment*		o1;
@@ -34,16 +38,7 @@ void			test_segment_split(void)
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task) != ERROR_NONE)
-    TEST_ERROR("[task_reserve] error\n");
-
-  if (as_reserve(task, &as) != ERROR_NONE)
-    TEST_ERROR("[as_reserve] error\n");
-
-  if (segment_reserve(as,
+  if (segment_reserve(kasid,
 		      3 * PAGESZ,
 		      PERM_READ,
 		      &seg) != ERROR_NONE)
@@ -64,7 +59,7 @@ void			test_segment_split(void)
   if (o1->segid != seg)
     TEST_ERROR("invalid segment's identifier after split\n");
 
-  if (o1->asid != as)
+  if (o1->asid != kasid)
     TEST_ERROR("invalid segment's address space identifier after split\n");
 
   if (o1->type != SEGMENT_TYPE_MEMORY)
@@ -79,7 +74,7 @@ void			test_segment_split(void)
   if (o2->segid != seg2)
     TEST_ERROR("invalid segment's identifier after split\n");
 
-  if (o2->asid != as)
+  if (o2->asid != kasid)
     TEST_ERROR("invalid segment's address space identifier after split\n");
 
   if (o2->type != SEGMENT_TYPE_MEMORY)
@@ -96,12 +91,6 @@ void			test_segment_split(void)
 
   if (segment_release(seg2) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

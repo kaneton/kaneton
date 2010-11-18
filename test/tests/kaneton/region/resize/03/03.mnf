@@ -1,4 +1,4 @@
 name: region/resize/03
-description: This test allocates a segment, a region, and resizes the region in an incorrect manner.
+description: This test reserves a segment and a region. The region is resized and verified, then resized and checked again. Finally, data is written and checked.
 symbol: test_region_resize_03
 output:

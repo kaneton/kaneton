@@ -1,4 +1,4 @@
 name: as/region
-description: This test allocates several segments and regions in a new address space.
+description: This test allocates several segments and regions in a new task's address space. Finally, the task and its address space are released.
 symbol: test_as_region
 output:

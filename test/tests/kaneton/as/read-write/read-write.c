@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/as/read-write/read-write.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 17:09:25 2010]
+ * updated       julien quintard   [wed nov 17 07:58:12 2010]
  */
 
 /*
@@ -149,12 +149,6 @@ void			test_as_readwrite(void)
   for (i = 10; i < 4 * PAGESZ - 12; i++)
     if (buff[i] != (i * 2 + 4) % 256)
       TEST_ERROR("the data read differs from the one written\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

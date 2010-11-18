@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...STABLE/test/tests/kaneton/id/XXX/02/02.c
+ * file          /home/mycure/kane...LE/test/tests/kaneton/id/reserve/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [mon nov  8 10:01:15 2010]
+ * updated       julien quintard   [wed nov 17 08:26:47 2010]
  */
 
 /*
@@ -26,21 +26,34 @@
 void			test_id_reserve_02(void)
 {
   o_id			id;
-  t_id			i;
+  t_id			i[1024];
+  int			j;
+  int			k;
 
   TEST_ENTER();
 
   if (id_build(&id) != ERROR_NONE)
     TEST_ERROR("[id_build] error\n");
 
-  if (id_reserve(&id, &i) != ERROR_NONE)
-    TEST_ERROR("[id_reserve] error\n");
+  for (j = 0; j < 1024; j++)
+    {
+      if (id_reserve(&id, &i[j]) != ERROR_NONE)
+        TEST_ERROR("[id_reserve] error\n");
 
-  if (!(i >= 0 && i <= (t_id)-1))
-    TEST_ERROR("invalid id\n");
+      if (!(i[j] >= 0 && i[j] <= (t_id)-1))
+        TEST_ERROR("invalid id\n");
+    }
 
-  if (id_release(&id, i) != ERROR_NONE)
-    TEST_ERROR("[id_release] error\n");
+  for (j = 0; j < 1024; j++)
+    for (k = 0; k < 1024; k++)
+      if (j != k && i[j] == i[k])
+        TEST_ERROR("id collision\n");
+
+  for (j = 0; j < 1024; j++)
+    {
+      if (id_release(&id, i[j]) != ERROR_NONE)
+        TEST_ERROR("[id_release] error\n");
+    }
 
   if (id_destroy(&id) != ERROR_NONE)
     TEST_ERROR("[id_destroy] error\n");

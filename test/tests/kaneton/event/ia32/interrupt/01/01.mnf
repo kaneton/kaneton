@@ -1,4 +1,4 @@
 name: event/ia32/interrupt/01
-description: This test reserves a software interrupt event and triggers it.
+description: This test reserves a software interrupt event and triggers it. The event is then released.
 symbol: test_event_ia32_interrupt_01
 output:

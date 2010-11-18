@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...STABLE/test/tests/kaneton/as/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 15:44:02 2010]
+ * updated       julien quintard   [wed nov 17 07:53:38 2010]
  */
 
 /*
@@ -55,15 +55,6 @@ void			test_as_give(void)
 
   if (o->tskid != task2)
     TEST_ERROR("the address space's task identifier is invalid\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task1) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
-
-  if (task_release(task2) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

@@ -1,0 +1,4 @@
+name: set/pipe/07
+description: This test reserves a set and tries to pop and iterate through an empty set.
+symbol: test_set_pipe_07
+output: "1 elements: 42\n"

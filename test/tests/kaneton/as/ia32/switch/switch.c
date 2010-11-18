@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...st/tests/kaneton/as/ia32/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 14:37:07 2010]
+ * updated       julien quintard   [wed nov 17 07:55:10 2010]
  */
 
 /*
@@ -125,12 +125,6 @@ void			test_as_ia32_switch(void)
   if (j != 0x40414243)
     TEST_ERROR("the data written through the kernel address space is invalid "
 	       "in the task's\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

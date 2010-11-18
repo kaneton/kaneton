@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...st/tests/kaneton/segment/inject/inject.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat nov  6 19:37:46 2010]
+ * updated       julien quintard   [wed nov 17 15:38:27 2010]
  */
 
 /*
@@ -26,9 +26,9 @@
 void			test_segment_inject(void)
 {
   i_task		task;
+  i_as			as;
   o_segment*		o;
   o_segment*		new_seg;
-  i_as			as;
   i_segment		seg;
 
   TEST_ENTER();

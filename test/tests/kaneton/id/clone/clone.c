@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ABLE/test/tests/kaneton/id/clone/clone.c
  *
  * created       julien quintard   [wed apr 15 04:42:02 2009]
- * updated       julien quintard   [sat nov  6 14:21:25 2010]
+ * updated       julien quintard   [wed nov 17 08:20:49 2010]
  */
 
 /*
@@ -30,8 +30,6 @@ void			test_id_clone(void)
   t_id			j;
 
   TEST_ENTER();
-
-  // XXX reverifier qu'on clean tout!
 
   if (id_build(&id) != ERROR_NONE)
     TEST_ERROR("[id_build] error\n");

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...TABLE/test/tests/kaneton/as/copy/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 18:49:21 2010]
+ * updated       julien quintard   [wed nov 17 07:52:24 2010]
  */
 
 /*
@@ -205,18 +205,6 @@ void			test_as_copy_01(void)
     if (buff[i] != (i * 2 + 4) % 256)
       TEST_ERROR("the data appears invalid once read from the "
 		 "address space\n");
-
-  if (as_release(as1) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task1) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
-
-  if (as_release(as2) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task2) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

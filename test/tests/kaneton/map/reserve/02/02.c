@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...E/test/tests/kaneton/map/reserve/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [mon nov  8 09:52:30 2010]
+ * updated       julien quintard   [wed nov 17 09:12:39 2010]
  */
 
 /*
@@ -38,7 +38,7 @@ void			test_map_reserve_02(void)
 
   TEST_ENTER();
 
-  for (i = 0; i < 200; i++)
+  for (i = 0; i < 10; i++)
     {
       if (map_reserve(kasid,
 		      MAP_OPT_NONE,

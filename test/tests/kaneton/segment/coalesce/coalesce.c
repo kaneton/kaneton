@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/segment/coalesce/coalesce.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat nov  6 22:41:47 2010]
+ * updated       julien quintard   [wed nov 17 14:22:51 2010]
  */
 
 /*
@@ -20,13 +20,17 @@
 #include "coalesce.h"
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern i_as		kasid;
+
+/*
  * ---------- test ------------------------------------------------------------
  */
 
 void			test_segment_coalesce(void)
 {
-  i_task		task;
-  i_as			as;
   i_segment		seg;
   i_segment		seg2;
   t_uint32		try;
@@ -34,16 +38,7 @@ void			test_segment_coalesce(void)
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task) != ERROR_NONE)
-    TEST_ERROR("[task_reserve] error\n");
-
-  if (as_reserve(task, &as) != ERROR_NONE)
-    TEST_ERROR("[as_reserve] error\n");
-
-  if (segment_reserve(as,
+  if (segment_reserve(kasid,
 		      PAGESZ,
 		      PERM_READ,
 		      &seg) != ERROR_NONE)
@@ -55,7 +50,7 @@ void			test_segment_coalesce(void)
       o_segment*	o1;
       o_segment*	o2;
 
-      if (segment_reserve(as,
+      if (segment_reserve(kasid,
 			  PAGESZ,
 			  PERM_READ,
 			  &seg2) != ERROR_NONE)
@@ -91,7 +86,7 @@ void			test_segment_coalesce(void)
   if (o->segid != seg)
     TEST_ERROR("invalid segment's identifier after coalesce\n");
 
-  if (o->asid != as)
+  if (o->asid != kasid)
     TEST_ERROR("invalid segment's address space identifier after coalesce\n");
 
   if (o->type != SEGMENT_TYPE_MEMORY)
@@ -110,7 +105,7 @@ void			test_segment_coalesce(void)
   if (segment_release(seg) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
 
-  if (segment_reserve(as,
+  if (segment_reserve(kasid,
 		      PAGESZ,
 		      PERM_READ,
 		      &seg) != ERROR_NONE)
@@ -122,7 +117,7 @@ void			test_segment_coalesce(void)
       o_segment*	o1;
       o_segment*	o2;
 
-      if (segment_reserve(as,
+      if (segment_reserve(kasid,
 			  PAGESZ,
 			  PERM_READ,
 			  &seg2) != ERROR_NONE)
@@ -161,12 +156,6 @@ void			test_segment_coalesce(void)
 
   if (segment_release(seg2) != ERROR_NONE)
     TEST_ERROR("[segment_release] error\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("failed to release task\n");
 
   TEST_LEAVE();
 }

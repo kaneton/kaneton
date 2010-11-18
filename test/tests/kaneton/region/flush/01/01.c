@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../test/tests/kaneton/region/flush/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov  8 12:35:00 2010]
+ * updated       julien quintard   [wed nov 17 13:16:31 2010]
  */
 
 /*
@@ -70,12 +70,6 @@ void			test_region_flush_01(void)
 
   if (sz != 0)
     TEST_ERROR("there should not be regions left after a flush\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

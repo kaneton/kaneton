@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/event/ia32/interrupt/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [tue nov 16 20:53:56 2010]
+ * updated       julien quintard   [wed nov 17 08:14:41 2010]
  */
 
 /*
@@ -85,6 +85,15 @@ void			test_event_ia32_interrupt_02(void)
 
   if (thrown != 3)
     TEST_ERROR("some interrupt events have not been caught\n");
+
+  if (event_release(56) != ERROR_NONE)
+    TEST_ERROR("[event_release] error\n");
+
+  if (event_release(57) != ERROR_NONE)
+    TEST_ERROR("[event_release] error\n");
+
+  if (event_release(58) != ERROR_NONE)
+    TEST_ERROR("[event_release] error\n");
 
   TEST_LEAVE();
 }

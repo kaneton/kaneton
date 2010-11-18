@@ -1,4 +1,4 @@
 name: segment/permissions/02
-description: This test creates a task and address space before reserving a segment and changing its permissions.
+description: This test reserves a segment and changes its permissions before releasing it.
 symbol: test_segment_permissions_02
 output:

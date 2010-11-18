@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...est/tests/kaneton/region/reserve/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [mon nov  8 11:40:51 2010]
+ * updated       julien quintard   [wed nov 17 13:25:26 2010]
  */
 
 /*

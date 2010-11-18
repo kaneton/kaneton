@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/region/resize/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [mon nov  8 12:15:32 2010]
+ * updated       julien quintard   [wed nov 17 13:29:13 2010]
  */
 
 /*
@@ -53,8 +53,50 @@ void			test_region_resize_03(void)
 		     &reg) != ERROR_NONE)
     TEST_ERROR("[region_reserve] error\n");
 
-  if (region_resize(kasid, reg, 20 * PAGESZ, &reg) == ERROR_NONE)
-    TEST_ERROR("[region_resize] error: out of bound\n");
+  if (region_resize(kasid, reg, PAGESZ, &reg) != ERROR_NONE)
+    TEST_ERROR("[region_resize] error\n");
+
+  if (region_get(kasid, reg, &o) != ERROR_NONE)
+    TEST_ERROR("[region_get] error\n");
+
+  if (o->regid != reg)
+    TEST_ERROR("invalid region's identifier after resize\n");
+
+  if (o->segid != seg)
+    TEST_ERROR("invalid region's segment identifier after resize\n");
+
+  if (o->offset != PAGESZ)
+    TEST_ERROR("invalid region's offset after resize\n");
+
+  if (o->size != PAGESZ)
+    TEST_ERROR("invalid region's size after resize\n");
+
+  if (region_resize(kasid, reg, 3 * PAGESZ, &reg) != ERROR_NONE)
+    TEST_ERROR("[region_resize] error\n");
+
+  if (region_get(kasid, reg, &o) != ERROR_NONE)
+    TEST_ERROR("[region_get] error\n");
+
+  if (o->regid != reg)
+    TEST_ERROR("invalid region's identifier after resize\n");
+
+  if (o->segid != seg)
+    TEST_ERROR("invalid region's segment identifier after resize\n");
+
+  if (o->offset != PAGESZ)
+    TEST_ERROR("invalid region's offset after resize\n");
+
+  if (o->size != 3 * PAGESZ)
+    TEST_ERROR("invalid region's size after resize\n");
+
+  p = (t_uint8*)(t_vaddr)reg;
+  for (; p < (t_uint8*)(t_vaddr)reg + 3 * PAGESZ; p++)
+    {
+      *p = 0x0d;
+
+      if (*p != 0x0d)
+	TEST_ERROR("the data read differs from the one written\n");
+    }
 
   if (region_release(kasid, reg) != ERROR_NONE)
     TEST_ERROR("[region_release] error\n");

@@ -1,4 +1,4 @@
 name: map/reserve/01
-description: This test reserves several maps. For every map, the test writes data into the region and checks that the data has been properly written. Finally, every map is released.
+description: This test reserves a single map, writes data and verifies it.
 symbol: test_map_reserve_01
 output:

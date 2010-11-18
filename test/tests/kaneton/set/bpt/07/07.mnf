@@ -1,0 +1,4 @@
+name: set/bpt/07
+description: This test reserves a set, adds many objects and display the set.
+symbol: test_set_bpt_07
+output: "0 elements: \n3 elements: 2 4 16\n"

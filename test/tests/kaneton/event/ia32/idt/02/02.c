@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...est/tests/kaneton/event/ia32/idt/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [mon nov 15 10:44:10 2010]
+ * updated       julien quintard   [wed nov 17 08:13:12 2010]
  */
 
 /*
@@ -18,12 +18,6 @@
 #include <kaneton.h>
 
 #include "02.h"
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-extern i_task		ktask;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -36,18 +30,43 @@ void			test_event_ia32_idt_02_handler(t_id		id)
 void			test_event_ia32_idt_02(void)
 {
   t_ia32_idtr		idtr;
+  t_ia32_idte*		idte;
+  int			i;
+  t_uint16		cs;
 
-  TEST_ENTER();
+  if (ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_CS,
+			      ia32_prvl_supervisor,
+			      &cs) != ERROR_NONE)
+    TEST_ERROR("[ia32_gdt_build_selector] error\n");
+
+  if (event_reserve(3,
+		    EVENT_FUNCTION,
+		    EVENT_HANDLER(test_event_ia32_idt_02_handler),
+		    0) != ERROR_NONE)
+    TEST_ERROR("[event_reserve] error\n");
 
   memset(&idtr, 0, sizeof (idtr));
 
   SIDT(idtr);
 
-  if (idtr.size != 2048)
-    TEST_ERROR("the IDT is not 256 entries wide\n");
+  idte = (void*)idtr.address;
 
-  if ((idtr.address % 8) != 0)
-    TEST_ERROR("the IDT is not aligned on a 8-byte address\n");
+  for (i = 0; i < idtr.size / 8; i++)
+    {
+      if (!(idte[i].type & IA32_DESC_TYPE_PRESENT))
+        continue;
+
+      if (!(idte[i].type & ((1 << 3) | (1 << 2) | (1 << 1))))
+        TEST_ERROR("IDT entry %u is neither an interrupt nor a trap gate\n",
+		   i);
+
+      if (idte[i].segsel != cs)
+        TEST_ERROR("IDT entry %u references an invalidt segment selector\n",
+		   i);
+    }
+
+  if (event_release(3) != ERROR_NONE)
+    TEST_ERROR("[event_release] error\n");
 
   TEST_LEAVE();
 }

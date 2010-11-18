@@ -1,4 +1,4 @@
 name: segment/clone
-description: This test creates tasks, reserves a segment, write data to this segment before cloning it and checking that everything went well.
+description: This test reserves a segment, write data to this segment before cloning it and checking that everything went well. The test finishes by releasing the allocated and cloned segments.
 symbol: test_segment_clone
 output:

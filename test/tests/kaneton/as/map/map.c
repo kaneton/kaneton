@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/test/tests/kaneton/as/map/map.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 17:13:18 2010]
+ * updated       julien quintard   [wed nov 17 07:57:07 2010]
  */
 
 /*

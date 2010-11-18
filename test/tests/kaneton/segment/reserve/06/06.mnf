@@ -1,4 +1,4 @@
 name: segment/reserve/06
-description: This test creates a task and address space before reserving several segments.
+description: This test creates a task and address space before reserving several segments. For every reserved segment, the test verifies that they do not overlap.
 symbol: test_segment_reserve_06
 output:

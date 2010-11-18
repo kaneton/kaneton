@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ABLE/test/tests/kaneton/as/clone/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 14:21:14 2010]
+ * updated       julien quintard   [wed nov 17 07:47:04 2010]
  */
 
 /*
@@ -106,18 +106,6 @@ void			test_as_clone_01(void)
 
   if (oreg->segid != oseg->segid)
     TEST_ERROR("invalid region's segment identifier\n");
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
-
-  if (as_release(cloned) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(forked) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

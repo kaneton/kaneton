@@ -1,4 +1,4 @@
 name: segment/reserve/01
-description: This test reserves a single segment in a new task's address space.
+description: This test reserves a single segment and verifies its validity.
 symbol: test_segment_reserve_01
 output:

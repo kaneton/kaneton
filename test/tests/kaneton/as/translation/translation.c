@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/as/translation/translation.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov  8 09:33:44 2010]
+ * updated       julien quintard   [wed nov 17 08:02:49 2010]
  */
 
 /*
@@ -20,35 +20,30 @@
 #include "translation.h"
 
 /*
+ * ---------- extern ----------------------------------------------------------
+ */
+
+extern i_as		kasid;
+
+/*
  * ---------- test ------------------------------------------------------------
  */
 
 void			test_as_translation(void)
 {
-  i_task		task;
-  i_as			as;
   i_segment		seg;
   i_region		reg;
   t_uint32		i;
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task) != ERROR_NONE)
-    TEST_ERROR("[task_reserve] error\n");
-
-  if (as_reserve(task, &as) != ERROR_NONE)
-    TEST_ERROR("[as_reserve] error\n");
-
-  if (segment_reserve(as,
+  if (segment_reserve(kasid,
 		      2048 * PAGESZ,
 		      PERM_READ,
 		      &seg) != ERROR_NONE)
     TEST_ERROR("[segment_reserve] error\n");
 
-  if (region_reserve(as,
+  if (region_reserve(kasid,
 		     seg,
 		     4 * PAGESZ,
 		     REGION_OPT_NONE,
@@ -89,12 +84,6 @@ void			test_as_translation(void)
   for (i = 0; i < 8 * PAGESZ; i++)
     VIRTUAL((t_paddr)seg + 4 * PAGESZ + i,
 	    (t_vaddr)reg + i);
-
-  if (as_release(as) != ERROR_NONE)
-    TEST_ERROR("[as_release] error\n");
-
-  if (task_release(task) != ERROR_NONE)
-    TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();
 }

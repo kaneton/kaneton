@@ -1,4 +1,4 @@
 name: segment/resize
-description: This test allocates a segment, resizes it and verifies everything went as normal. The same segment is resized another time forcing it to be moved somewhere else in memory.
+description: This test allocates a segment, resizes it and verifies that everything went as normal. The same segment is resized another time forcing it to be moved somewhere else in memory. Finally, the segment is released.
 symbol: test_segment_resize
 output:

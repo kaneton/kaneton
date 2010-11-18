@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/region/resize/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov  8 12:15:04 2010]
+ * updated       julien quintard   [wed nov 17 13:27:56 2010]
  */
 
 /*
@@ -79,12 +79,6 @@ void			test_region_resize_01(void)
       if (*p != 0x0d)
 	TEST_ERROR("the data read differs from the one written\n");
     }
-
-  if (region_release(kasid, reg) != ERROR_NONE)
-    TEST_ERROR("[region_release] error\n");
-
-  if (segment_release(seg) != ERROR_NONE)
-    TEST_ERROR("[segment_release] error\n");
 
   TEST_LEAVE();
 }

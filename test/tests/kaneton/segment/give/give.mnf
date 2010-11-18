@@ -1,4 +1,4 @@
 name: segment/give
-description: This test creates two tasks and address spaces, reserves a segment in the first address space and gives it to the second.
+description: This test creates two tasks and address spaces, reserves a segment in the first address space and gives it to the second. To finish, all the allocated resources are released.
 symbol: test_segment_give
 output:

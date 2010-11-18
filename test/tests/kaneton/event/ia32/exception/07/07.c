@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/event/ia32/exception/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2070]
- * updated       julien quintard   [wed nov 17 00:03:10 2010]
+ * updated       julien quintard   [wed nov 17 08:09:55 2010]
  */
 
 /*
@@ -118,6 +118,9 @@ void			test_event_ia32_exception_07(void)
 
   if (thrown != 1)
     TEST_ERROR("the exception has not been caught\n");
+
+  if (event_release(14) != ERROR_NONE)
+    TEST_ERROR("[event_release] error\n");
 
   TEST_LEAVE();
 }
