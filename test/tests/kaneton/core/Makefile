@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/tests/kaneton/core/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu nov 18 16:06:07 2010]
+# updated       julien quintard   [thu nov 18 16:09:45 2010]
 #
 
 #
@@ -28,7 +28,6 @@ include			../../../../environment/env.mk
 #
 
 UNITS			:=		as				\
-					event				\
 					id				\
 					map				\
 					region				\
