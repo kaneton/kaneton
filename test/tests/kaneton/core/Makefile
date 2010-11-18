@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/tests/kaneton/Makefile
+# file          /home/mycure/kaneton.STABLE/test/tests/kaneton/core/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu nov 18 15:06:09 2010]
+# updated       julien quintard   [thu nov 18 15:39:54 2010]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../environment/env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -26,6 +26,8 @@ include			../../../environment/env.mk
 #
 # ---------- variables --------------------------------------------------------
 #
+
+NAME			:=		core
 
 UNITS			:=		as				\
 					event				\
@@ -42,8 +44,7 @@ SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
 MODULES			:=		$(_TEST_ENGINE_LO_)		\
 					$(foreach s,$(UNITS),${s}/${s}.lo)
 
-INVENTORY_C		:=		inventory.c
-INVENTORY_O		:=		$(INVENTORY_C:.c=.o)
+COMPONENT		:=		$(NAME:=.lo)
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -51,20 +52,14 @@ INVENTORY_O		:=		$(INVENTORY_C:.c=.o)
 ifeq ($(behaviour),default)
 
 main:			dependencies
-	$(call env_remove,$(_TEST_STORE_BUNDLE_KANETON_LO_),)
+	$(call env_remove,$(COMPONENT),)
 
-	$(call env_remove,$(INVENTORY_C) $(INVENTORY_O),)
-	$(call env_launch,$(_TEST_INVENTORY_SCRIPT_),$(_TEST_TESTS_KANETON_DIR_),)
-	$(call env_compile-c,$(INVENTORY_O),$(INVENTORY_C),)
-
-	$(call env_archive,$(_TEST_STORE_BUNDLE_KANETON_LO_),$(MODULES) $(INVENTORY_O),)
+	$(call env_archive,$(COMPONENT),$(MODULES),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
-
-	$(call env_remove,$(INVENTORY_O) $(INVENTORY_C),)
 
 	$(call env_purge,)
 

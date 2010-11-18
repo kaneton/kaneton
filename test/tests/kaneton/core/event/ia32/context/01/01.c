@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...tests/kaneton/event/ia32/context/01/01.c
+ * file          /home/mycure/kane.../kaneton/core/event/ia32/context/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [tue nov 16 18:21:22 2010]
+ * updated       julien quintard   [thu nov 18 15:33:18 2010]
  */
 
 /*
@@ -81,7 +81,7 @@ void			test_event_ia32_context_01(void)
   if (thrown != 1)
     TEST_ERROR("the triggered exception has not been caught\n");
 
-  if (esp != ctx1)
+  if (esp != (t_uint32)ctx1)
     TEST_ERROR("the ESP register is different from before the exception\n");
 
   if (ctx1->eax != ctx2->eax)

@@ -41,15 +41,7 @@
 
 -
   operation: fremove
-  path: export
-
--
-  operation: fremove
   path: history
-
--
-  operation: fremove
-  path: test
 
 -
   operation: fremove
@@ -58,6 +50,82 @@
 -
   operation: fremove
   path: view
+
+#
+# test
+#
+
+-
+  operation: fremove
+  path: test/configuration
+
+-
+  operation: fremove
+  path: test/engine
+
+-
+  operation: fremove
+  path: test/grades
+
+-
+  operation: fremove
+  path: test/hooks
+
+-
+  operation: fremove
+  path: test/images
+
+-
+  operation: fremove
+  path: test/points
+
+-
+  operation: fremove
+  path: test/scripts
+
+-
+  operation: fremove
+  path: test/server
+
+-
+  operation: fremove
+  path: test/suites
+
+-
+  operation: fremove
+  path: test/tests
+
+-
+  operation: fremove
+  path: test/utilities
+
+-
+  operation: fremove
+  path: test/store/bundle
+
+-
+  operation: fremove
+  path: test/store/certificate
+
+-
+  operation: fremove
+  path: test/store/code
+
+-
+  operation: fremove
+  path: test/store/database
+
+-
+  operation: fremove
+  path: test/store/key
+
+-
+  operation: fremove
+  path: test/store/statement
+
+-
+  operation: fremove
+  path: test/store/snapshot
 
 #
 # tools

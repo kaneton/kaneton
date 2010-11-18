@@ -5,7 +5,7 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...test/tests/kaneton/set/ll/11/Makefile
+# file          /home/mycure/kane...test/tests/kaneton/s../../../../Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2011]
 # updated       julien quintard   [wed nov 17 21:07:51 2010]
@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../../../environment/env.mk
+include			../../../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------

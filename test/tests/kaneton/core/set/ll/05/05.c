@@ -5,7 +5,7 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...STABLE/test/tests/kaneton/set/ll/05/05.c
+ * file          /home/mycure/kane...STABLE/test/tests/kaneton/s../../../../05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2050]
  * updated       julien quintard   [thu nov 18 06:20:50 2010]

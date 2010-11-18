@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../test/tests/kaneton/as/segment/segment.c
+ * file          /home/mycure/kane.../tests/kaneton/core/as/segment/segment.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun nov  7 13:53:30 2010]
+ * updated       julien quintard   [thu nov 18 15:32:08 2010]
  */
 
 /*
@@ -29,7 +29,6 @@ void			test_as_segment(void)
   i_as			as;
   int			i;
   i_segment		seg;
-  i_region		reg;
   t_setsz		sz_before;
   t_setsz		sz_after;
   o_as*			o;

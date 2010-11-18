@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/modules/test/test.c
+ * file          /home/mycure/kane...STABLE/kaneton/modules/console/console.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sat may  2 11:10:44 2009]
+ * updated       julien quintard   [sat nov 13 00:46:20 2010]
  */
 
 /*

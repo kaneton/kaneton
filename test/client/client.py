@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [sat nov  6 09:33:27 2010]
+# updated       julien quintard   [wed nov 17 13:58:46 2010]
 #
 
 #
@@ -179,7 +179,9 @@ def                     Detail(report, margin = ""):
 
     # display the unit name.
     env.display(env.HEADER_OK,
-                margin + unit + ":" + status,
+                margin + env.colorize(unit,
+                                      env.COLOR_NONE,
+                                      env.OPTION_BOLD) + ":" + status,
                 env.OPTION_NONE)
 
     for test in tests:

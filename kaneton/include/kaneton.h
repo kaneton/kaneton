@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/kaneton.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/include/kaneton.h
  *
  * created       julien quintard   [thu jun  7 12:44:42 2007]
- * updated       julien quintard   [fri may  1 01:41:22 2009]
+ * updated       julien quintard   [sun nov 14 02:27:11 2010]
  */
 
 #ifndef KANETON_H
