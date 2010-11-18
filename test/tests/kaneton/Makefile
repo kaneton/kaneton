@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/tests/kaneton/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [wed nov 17 20:36:26 2010]
+# updated       julien quintard   [thu nov 18 15:06:09 2010]
 #
 
 #
@@ -34,6 +34,7 @@ UNITS			:=		as				\
 					region				\
 					segment				\
 					set				
+
 
 SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
 					$(UNITS)
