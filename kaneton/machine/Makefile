@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/machine/Makefile
+# file          /home/mycure/kaneton.STABLE/kaneton/machine/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [fri jun 29 08:37:54 2007]
+# updated       julien quintard   [thu nov 18 15:53:28 2010]
 #
 
 #
@@ -33,9 +33,9 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		architecture			\
-					glue				\
-					platform			
+SUBDIRS			:=		$(_ARCHITECTURE_DIR_)		\
+					$(_GLUE_DIR_)			\
+					$(_PLATFORM_DIR_)		
 
 #
 # ---------- rules ------------------------------------------------------------
