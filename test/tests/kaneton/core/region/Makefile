@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...TABLE/test/tests/kaneton/region/Makefile
+# file          /home/mycure/kane.../test/tests/kaneton/core/region/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [mon nov  8 12:13:06 2010]
+# updated       julien quintard   [thu nov 18 16:08:53 2010]
 #
 
 #
@@ -29,7 +29,6 @@ include			../../../../../environment/env.mk
 
 SUBDIRS			:=		flush				\
 					get				\
-					ia32				\
 					reserve				\
 					resize				\
 					split				\

@@ -1,4 +1,0 @@
-name: event/ia32/exception/03
-description: This test reserves and event and triggers it manually several times.
-symbol: test_event_ia32_exception_03
-output:

@@ -1,4 +1,0 @@
-name: event/ia32/exception/02
-description: This test reserves and manually triggers an event. The event handler checks that the received event identifier is valid.
-symbol: test_event_ia32_exception_02
-output:

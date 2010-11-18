@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...STABLE/test/tests/kaneton/event/Makefile
+# file          /home/mycure/kane...E/test/tests/kaneton/core/event/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [sun nov 14 21:19:00 2010]
+# updated       julien quintard   [thu nov 18 16:09:00 2010]
 #
 
 #
@@ -27,7 +27,7 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		ia32				
+SUBDIRS			:=		
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 

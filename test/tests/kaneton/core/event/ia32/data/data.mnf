@@ -1,4 +1,0 @@
-name: event/data
-description: This test reserves an event, taking care to provide a data address. The event is then triggered and verified.
-symbol: test_event_data
-output:

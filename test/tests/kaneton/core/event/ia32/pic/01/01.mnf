@@ -1,4 +1,0 @@
-name: event/ia32/pic/01
-description: This test reserves and releases an event and checks the PIC's mask to verify that it is consistent with the reserved event.
-symbol: test_event_ia32_pic_01
-output:

@@ -1,4 +1,0 @@
-name: as/ia32/mapping
-description: This test takes all the regions of all the existing address spaces and verifies that the ia32 mappings are correct.
-symbol: test_as_ia32_mapping
-output:

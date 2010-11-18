@@ -1,4 +1,0 @@
-name: event/ia32/flags
-description: This test creates a thread, reserves an event and manually triggers it. Then, the eflags are checked both inside the interrupt service routine and outisde.
-symbol: test_event_ia32_flags
-output: "[isr] eflags: disabled\n[content] eflags: enabled\n"

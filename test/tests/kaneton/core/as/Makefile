@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/tests/kaneton/as/Makefile
+# file          /home/mycure/kane...ABLE/test/tests/kaneton/core/as/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [sun nov  7 17:00:45 2010]
+# updated       julien quintard   [thu nov 18 16:08:46 2010]
 #
 
 #
@@ -30,7 +30,6 @@ include			../../../../../environment/env.mk
 SUBDIRS			:=		clone				\
 					copy				\
 					give				\
-					ia32				\
 					map				\
 					read-write			\
 					region				\

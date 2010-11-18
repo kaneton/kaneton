@@ -1,4 +1,0 @@
-name: event/ia32/idt/01
-description: This test retrieves the IDT register and verifies its consistency.
-symbol: test_event_ia32_idt_01
-output:
