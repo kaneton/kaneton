@@ -1,0 +1,4 @@
+name: machine/glue/ibm-pc.ia32/time/repeat/02
+description: XXX
+symbol: test_ibmpc_ia32_time_repeat_02
+output:

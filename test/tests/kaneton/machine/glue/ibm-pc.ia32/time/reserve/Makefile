@@ -1,0 +1,76 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kane...e/glue/ibm-pc.ia32/time/reserve/Makefile
+#
+# created       julien quintard   [wed apr 15 04:29:58 2009]
+# updated       julien quintard   [sat nov 20 23:45:42 2010]
+#
+
+#
+# ---------- dependencies -----------------------------------------------------
+#
+
+include			../../../../../../../../environment/env.mk
+
+#
+# ---------- directives -------------------------------------------------------
+#
+
+.PHONY:		main clear prototypes headers dependencies
+
+#
+# ---------- variables --------------------------------------------------------
+#
+
+SUBDIRS			:=		01				\
+					02				\
+					03				
+
+MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
+
+RESERVE_LO		:=		reserve.lo
+
+#
+# ---------- rules ------------------------------------------------------------
+#
+ifeq ($(behaviour),default)
+
+main:			dependencies $(RESERVE_LO)
+
+$(RESERVE_LO):		$(MODULES)
+	$(call env_remove,$(RESERVE_LO),)
+
+	$(call env_archive,$(RESERVE_LO),$(MODULES),)
+
+clear:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
+
+	$(call env_remove,$(RESERVE_LO),)
+
+	$(call env_purge,)
+
+prototypes:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
+	done
+
+headers:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,headers,)			; \
+	done
+
+	$(call env_remove,$(_DEPENDENCY_MK_),)
+
+dependencies:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
+	done
+
+endif
