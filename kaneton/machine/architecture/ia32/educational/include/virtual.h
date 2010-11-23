@@ -24,11 +24,11 @@
  * ../virtual.c
  */
 
-t_error			ia32_kernel_as_init(i_as	asid);
+t_error			ia32_kernel_as_initialize(i_as		asid);
 
 t_error			ia32_kernel_as_finalize(void);
 
-t_error			ia32_task_as_init(i_as		asid);
+t_error			ia32_task_as_initialize(i_as		asid);
 
 t_error			ia32_segmentation_init(void);
 

@@ -18,7 +18,6 @@
 #ifndef ARCHITECTURE_CONTEXT_H
 #define ARCHITECTURE_CONTEXT_H	1
 
-
 /*
  * ---------- macro functions -------------------------------------------------
  */
@@ -101,7 +100,6 @@
 #define IA32_CONTEXT_CS		(1 << 10)
 #define IA32_CONTEXT_DS		(1 << 11)
 #define IA32_CONTEXT_SS		(1 << 12)
-
 
 #define IA32_CONTEXT_FULL	0x1fff
 
