@@ -1,0 +1,4 @@
+name: machine/architecture/ia32/event/interrupt/02
+description: This test reserves three software interrupt events and triggers them. The event are finally released.
+symbol: test_ia32_event_interrupt_02
+output:

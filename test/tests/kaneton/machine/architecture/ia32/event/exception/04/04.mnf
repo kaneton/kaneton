@@ -1,0 +1,4 @@
+name: machine/architecture/ia32/event/exception/04
+description: This test reserves the division-by-zero event and triggers it. The event is then released.
+symbol: test_ia32_event_exception_04
+output:

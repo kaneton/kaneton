@@ -1,0 +1,4 @@
+name: machine/architecture/ia32/event/context/02
+description: This test reserves an event slot and manually triggers this event. Then, the test verifies that the registers have been restored to their original state. Note that this test considers segment registers. Besides, this test creates a special IA32 user segment on which the event handler switches.
+symbol: test_ia32_event_context_02
+output:

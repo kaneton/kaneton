@@ -1,0 +1,4 @@
+name: machine/architecture/ia32/event/irq
+description: XXX
+symbol: test_ia32_event_irq
+output:
