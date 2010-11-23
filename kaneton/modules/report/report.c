@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/modules/report/report.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/modules/report/report.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [tue nov 23 14:56:45 2010]
+ * updated       julien quintard   [tue nov 23 22:16:39 2010]
  */
 
 /*
@@ -81,6 +81,8 @@ void			report_dump(void)
 int			report_character(char			c)
 {
   _report.buffer[_report.offset++] = c;
+
+  return (1);
 }
 
 /*
