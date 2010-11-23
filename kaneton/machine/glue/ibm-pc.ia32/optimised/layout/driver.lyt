@@ -1,0 +1,30 @@
+OUTPUT_FORMAT("elf32-i386")
+OUTPUT_ARCH("i386")
+ENTRY(_start)
+
+PHDRS
+{
+        global PT_LOAD;
+}
+
+SECTIONS
+{
+	. = 0x60000000 + SIZEOF_HEADERS;
+
+	.text ALIGN(0x1000):
+	{
+		*(.text*)
+	} : global
+
+	.rodata ALIGN(0x1000):
+	{
+		*(.rodata*)
+	} : global
+
+	.data ALIGN(0x1000):
+	{
+		*(.data*) *(.bss) *(COMMON)
+	} : global
+
+	_end = .;
+}
