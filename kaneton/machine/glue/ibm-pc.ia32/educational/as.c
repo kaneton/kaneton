@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/as.c
+ * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       matthieu bucchianeri   [sat dec  8 20:20:59 2007]
+ * updated       julien quintard   [mon nov 22 22:05:29 2010]
  */
 
 /*
@@ -32,8 +32,17 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_as*		as;
-extern i_task		ktask;
+/*
+ * the kernel manager.
+ */
+
+extern m_kernel*	_kernel;
+
+/*
+ * the as manager.
+ */
+
+extern m_as*		_as;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -67,18 +76,18 @@ d_as				as_dispatch =
 t_error			glue_as_reserve(i_task			tskid,
 					i_as*			asid)
 {
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
-  if (tskid == ktask)
+  if (tskid == _kernel->task)
     {
-      if (ia32_kernel_as_init(*asid) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (ia32_kernel_as_initialize(*asid) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
     }
   else
     {
-      if (ia32_task_as_init(*asid) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (ia32_task_as_initialize(*asid) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
     }
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }

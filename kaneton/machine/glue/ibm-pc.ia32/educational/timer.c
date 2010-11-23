@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ine/glue/ibm-pc.ia32/educational/timer.c
+ * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/timer.c
  *
  * created       julien quintard   [mon jun 11 05:41:14 2007]
- * updated       matthieu bucchianeri   [wed jan  9 12:02:54 2008]
+ * updated       julien quintard   [mon nov 22 22:31:56 2010]
  */
 
 /*
@@ -32,7 +32,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_timer*		timer;
+extern m_timer*		_timer;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -66,15 +66,15 @@ d_timer				timer_dispatch =
 
 t_error			glue_timer_initialize(void)
 {
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
-  if (ibmpc_timer_init() != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (ibmpc_timer_init() != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   if (event_reserve(32, EVENT_FUNCTION, EVENT_HANDLER(timer_handler),
-		    0) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+		    0) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 

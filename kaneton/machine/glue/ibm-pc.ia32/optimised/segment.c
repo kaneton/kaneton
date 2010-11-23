@@ -1,1 +1,0 @@
-../educational/segment.c

@@ -24,7 +24,7 @@
 #define		machine_call_message(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_error	_r_ = ERROR_OK;					\
 									\
       if (message_dispatch._function_ != NULL)				\
         _r_ = message_dispatch._function_(_args_);			\

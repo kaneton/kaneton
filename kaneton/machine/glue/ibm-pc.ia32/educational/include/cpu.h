@@ -24,7 +24,7 @@
 #define		machine_call_cpu(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_error	_r_ = ERROR_OK;					\
 									\
       if (cpu_dispatch._function_ != NULL)				\
         _r_ = cpu_dispatch._function_(_args_);				\

@@ -30,7 +30,7 @@
 #define		machine_call_task(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_error	_r_ = ERROR_OK;					\
 									\
       if (task_dispatch._function_ != NULL)				\
         _r_ = task_dispatch._function_(_args_);				\
@@ -61,10 +61,10 @@
 t_error			glue_task_clone(i_task			old,
 					i_task*			new);
 
-t_error			glue_task_reserve(t_class			class,
-					  t_behav			behav,
-					  t_prior			prior,
-					  i_task*			id);
+t_error			glue_task_reserve(t_class		class,
+					  t_behaviour		behav,
+					  t_priority		prior,
+					  i_task*		id);
 
 t_error			glue_task_initialize(void);
 

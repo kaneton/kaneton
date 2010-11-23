@@ -24,7 +24,7 @@
 #define		machine_call_event(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_error	_r_ = ERROR_OK;					\
 									\
       if (event_dispatch._function_ != NULL)				\
         _r_ = event_dispatch._function_(_args_);			\
@@ -59,6 +59,10 @@ t_error			glue_event_reserve(i_event		id,
 					   t_vaddr		data);
 
 t_error			glue_event_release(i_event		id);
+
+void			pf_handler(t_id				id,
+				   t_vaddr			data,
+				   t_uint32			error_code);
 
 t_error			glue_event_initialize(void);
 

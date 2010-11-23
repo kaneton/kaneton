@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...-pc.ia32/educational/include/scheduler.h
+ * file          /home/mycure/kane...-pc.ia32/educational/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       matthieu bucchianeri   [wed jan  9 12:07:11 2008]
+ * updated       julien quintard   [sat nov 20 16:30:25 2010]
  */
 
 #ifndef GLUE_SCHEDULER_H
@@ -30,7 +30,7 @@
 #define		machine_call_scheduler(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_error	_r_ = ERROR_OK;					\
 									\
       if (scheduler_dispatch._function_ != NULL)			\
         _r_ = scheduler_dispatch._function_(_args_);			\
@@ -61,15 +61,19 @@
  * ../scheduler.c
  */
 
+t_error			glue_scheduler_state(t_state		state);
+
+void			glue_scheduler_switch_handler(void);
+
 t_error			glue_scheduler_quantum(t_quantum	quantum);
+
+t_error			glue_scheduler_yield(void);
 
 t_error			glue_scheduler_initialize(void);
 
 t_error			glue_scheduler_clean(void);
 
 void			glue_scheduler_switch_extended(i_event	id);
-
-t_error			glue_scheduler_switch(i_thread		elected);
 
 
 /*

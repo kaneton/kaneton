@@ -24,7 +24,7 @@
 #define		machine_call_as(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_error	_r_ = ERROR_OK;					\
 									\
       if (as_dispatch._function_ != NULL)				\
         _r_ = as_dispatch._function_(_args_);				\

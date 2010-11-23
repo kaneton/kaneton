@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       julien quintard   [fri may  1 00:53:36 2009]
+# updated       julien quintard   [fri nov  5 16:37:09 2010]
 #
 
 #

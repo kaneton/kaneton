@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/lec_l/kanet...ne/glue/ibm-pc.ia32/educational/region.c
+ * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       laurent lec   [sat mar 29 11:56:52 2008]
+ * updated       julien quintard   [mon nov 22 22:31:01 2010]
  */
 
 /*
@@ -30,11 +30,14 @@
 #include <platform/platform.h>
 
 /*
- * ---------- extern ----------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
-extern m_region*	region;
-extern i_as		kasid;
+/*
+ * the region manager.
+ */
+
+extern m_region*	_region;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -69,6 +72,8 @@ d_region		region_dispatch =
 
 /*
  * this function resizes a region.
+ *
+ * this is an extremely simple implementation...
  */
 
 t_error			glue_region_resize(i_as			as,
@@ -76,8 +81,24 @@ t_error			glue_region_resize(i_as			as,
 					   t_vsize		size,
 					   i_region*		new)
 {
-  // XXX
-  return (ERROR_NONE);
+  o_region*		reg;
+  o_as*			o;
+
+  if (region_get(as, old, &reg) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
+
+  if (ia32_unmap_region(as, reg->address, reg->size) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
+
+  if (ia32_map_region(as,
+		      reg->segment,
+		      reg->offset,
+		      reg->options,
+		      reg->address,
+		      size) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
+
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -88,17 +109,22 @@ t_error			glue_region_resize(i_as			as,
 t_error			glue_region_reserve(i_as		asid,
 					    i_segment		segid,
 					    t_paddr		offset,
-					    t_opts		opts,
+					    t_options		options,
 					    t_vaddr		address,
 					    t_vsize		size,
 					    i_region*		regid)
 {
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
-  if (ia32_map_region(asid, segid, offset, opts, address, size) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (ia32_map_region(asid,
+		      segid,
+		      offset,
+		      options,
+		      address,
+		      size) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -111,15 +137,15 @@ t_error			glue_region_release(i_as		asid,
 {
   o_region*		reg;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
-  if (region_get(asid, regid, &reg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (region_get(asid, regid, &reg) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  if (ia32_unmap_region(asid, reg->address, reg->size) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (ia32_unmap_region(asid, reg->address, reg->size) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -130,12 +156,12 @@ t_error			glue_region_release(i_as		asid,
 t_error			glue_region_initialize(t_vaddr		start,
 					       t_vsize		size)
 {
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
-  if (ia32_paging_init() != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (ia32_paging_init() != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -145,12 +171,12 @@ t_error			glue_region_initialize(t_vaddr		start,
 
 t_error			glue_region_clean(void)
 {
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
-  if (ia32_paging_clean() != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (ia32_paging_clean() != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*						       [endblock::functions] */

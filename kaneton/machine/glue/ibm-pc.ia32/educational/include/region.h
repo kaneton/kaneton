@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/region.h
+ * file          /home/mycure/kane...ibm-pc.ia32/educational/include/region.h
  *
  * created       julien quintard   [wed jun  6 16:22:05 2007]
- * updated       matthieu bucchianeri   [fri jun 15 09:52:34 2007]
+ * updated       julien quintard   [mon nov 22 22:18:45 2010]
  */
 
 /*
@@ -30,7 +30,7 @@
 #define		machine_call_region(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_error	_r_ = ERROR_OK;					\
 									\
       if (region_dispatch._function_ != NULL)				\
         _r_ = region_dispatch._function_(_args_);			\
@@ -47,7 +47,8 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define REGION_VMEM_MIN		PAGESZ
+// XXX a renommer (kernel.c utilise ca)
+#define REGION_VMEM_MIN		PAGESZ // XXX a changer en 0
 #define REGION_VMEM_MAX		0xffffffffU
 
 /*
@@ -68,7 +69,7 @@ t_error			glue_region_resize(i_as			as,
 t_error			glue_region_reserve(i_as		asid,
 					    i_segment		segid,
 					    t_paddr		offset,
-					    t_opts		opts,
+					    t_options		options,
 					    t_vaddr		address,
 					    t_vsize		size,
 					    i_region*		regid);

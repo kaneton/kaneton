@@ -1,1 +1,0 @@
-../educational/message.c

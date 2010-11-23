@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...e/glue/ibm-pc.ia32/educational/segment.c
+ * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed jan  9 11:59:43 2008]
+ * updated       julien quintard   [mon nov 22 22:29:20 2010]
  */
 
 
@@ -33,7 +33,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_segment*	segment;
+extern m_segment*	_segment;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -79,12 +79,12 @@ t_error			glue_segment_read(i_segment		segid,
 					  void*			buff,
 					  t_psize		sz)
 {
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
-  if (ia32_segment_read(segid, offs, buff, sz) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_segment_read(segid, offs, buff, sz) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -97,12 +97,12 @@ t_error			glue_segment_write(i_segment		segid,
 					   const void*		buff,
 					   t_psize		sz)
 {
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
-  if (ia32_segment_write(segid, offs, buff, sz) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_segment_write(segid, offs, buff, sz) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -116,12 +116,12 @@ t_error			glue_segment_copy(i_segment		dst,
 					  t_paddr		offss,
 					  t_psize		sz)
 {
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
-  if (ia32_segment_copy(dst, offsd, src, offss, sz) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_segment_copy(dst, offsd, src, offss, sz) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -130,15 +130,15 @@ t_error			glue_segment_copy(i_segment		dst,
 
 t_error			glue_segment_initialize(void)
 {
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
-  if (ia32_pmode_init() != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_pmode_init() != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  if (ia32_segmentation_init() != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_segmentation_init() != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -147,10 +147,10 @@ t_error			glue_segment_initialize(void)
 
 t_error			glue_segment_clean(void)
 {
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
-  if (ia32_pmode_clean() != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_pmode_clean() != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }

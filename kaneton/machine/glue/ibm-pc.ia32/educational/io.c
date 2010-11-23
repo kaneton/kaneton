@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...achine/glue/ibm-pc.ia32/educational/io.c
+ * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       matthieu bucchianeri   [wed jan  9 13:11:18 2008]
+ * updated       julien quintard   [mon nov 22 22:30:54 2010]
  */
 
 /*
@@ -33,10 +33,10 @@
 #include <kaneton.h>
 
 /*
- * ---------- extern ----------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
-extern m_io*	io;
+extern m_io*		_io;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -68,50 +68,47 @@ d_io		io_dispatch =
 
 /*
  * this function allow I/O to a port.
- *
  */
 
 t_error			glue_io_grant(i_port			id,
 				      i_task			task,
 				      t_uint8			width)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
-  if (ia32_set_io_bitmap(task, id, width, 1) != ERROR_NONE)
-    IO_LEAVE(io, ERROR_UNKNOWN);
+  if (ia32_set_io_bitmap(task, id, width, 1) != ERROR_OK)
+    IO_LEAVE(_io, ERROR_KO);
 
-  IO_LEAVE(io, ERROR_NONE);
+  IO_LEAVE(_io, ERROR_OK);
 }
 
 /*
  * this function deny I/O to a port.
- *
  */
 
 t_error			glue_io_deny(i_port			id,
 				     i_task			task,
 				     t_uint8			width)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
-  if (ia32_set_io_bitmap(task, id, width, 0) != ERROR_NONE)
-    IO_LEAVE(io, ERROR_UNKNOWN);
+  if (ia32_set_io_bitmap(task, id, width, 0) != ERROR_OK)
+    IO_LEAVE(_io, ERROR_KO);
 
-  IO_LEAVE(io, ERROR_NONE);
+  IO_LEAVE(_io, ERROR_OK);
 }
 
 
 /*
  * this function initialize the I/O manager.
- *
  */
 
 t_error			glue_io_initialize(void)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
-  if (ia32_reset_iopl() != ERROR_NONE)
-    IO_LEAVE(io, ERROR_UNKNOWN);
+  if (ia32_reset_iopl() != ERROR_OK)
+    IO_LEAVE(_io, ERROR_KO);
 
-  IO_LEAVE(io, ERROR_NONE);
+  IO_LEAVE(_io, ERROR_OK);
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ne/glue/ibm-pc.ia32/educational/thread.c
+ * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [wed jan  9 13:07:50 2008]
+ * updated       julien quintard   [mon nov 22 22:31:28 2010]
  */
 
 /*
@@ -26,20 +26,14 @@
 #include <architecture/architecture.h>
 
 /*
- * ---------- extern ----------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
 /*
  * the thread manager.
  */
 
-extern m_thread*	thread;
-
-/*
- * we'll use the kernel address space identifier.
- */
-
-extern i_as		kasid;
+extern m_thread*	_thread;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -82,15 +76,15 @@ t_error			glue_thread_clone(i_task		taskid,
 {
   o_task*		o;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (ia32_duplicate_context(old, *new) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_duplicate_context(old, *new) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  if (task_get(taskid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (task_get(taskid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -101,12 +95,12 @@ t_error			glue_thread_clone(i_task		taskid,
 t_error			glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (ia32_init_context(taskid, *threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_init_context(taskid, *threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -118,12 +112,12 @@ t_error			glue_thread_reserve(i_task		taskid,
 t_error			glue_thread_load(i_thread		threadid,
 					 t_thread_context	context)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (ia32_setup_context(threadid, context.pc, context.sp) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_setup_context(threadid, context.pc, context.sp) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -135,12 +129,12 @@ t_error			glue_thread_load(i_thread		threadid,
 t_error			glue_thread_store(i_thread		threadid,
 					  t_thread_context*	context)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -152,12 +146,12 @@ t_error			glue_thread_args(i_thread		threadid,
 					 const void*	       	args,
 					 t_vsize		size)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (ia32_push_args(threadid, args, size) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_push_args(threadid, args, size) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -167,10 +161,10 @@ t_error			glue_thread_args(i_thread		threadid,
 
 t_error			glue_thread_initialize(void)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (ia32_init_switcher() != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_init_switcher() != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }

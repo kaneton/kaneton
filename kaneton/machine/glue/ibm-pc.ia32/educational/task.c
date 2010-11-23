@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [wed apr 15 07:24:08 2009]
+ * updated       julien quintard   [mon nov 22 22:30:13 2010]
  */
 
 /*
@@ -29,12 +29,14 @@
 #include <platform/platform.h>
 
 /*
- * ---------- extern ----------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
-extern m_task*		task;
-extern i_as		kasid;
-extern t_init*		init;
+/*
+ * the task manager.
+ */
+
+extern m_task*		_task;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -69,12 +71,12 @@ d_task			task_dispatch =
 t_error			glue_task_clone(i_task			old,
 					i_task*			new)
 {
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
-  if (ia32_duplicate_io_bitmap(old, *new) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ia32_duplicate_io_bitmap(old, *new) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -82,24 +84,24 @@ t_error			glue_task_clone(i_task			old,
  *
  */
 
-t_error			glue_task_reserve(t_class			class,
-					  t_behav			behav,
-					  t_prior			prior,
-					  i_task*			id)
+t_error			glue_task_reserve(t_class		class,
+					  t_behaviour		behav,
+					  t_priority		prior,
+					  i_task*		id)
 {
   o_task*		o;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
-  if (ia32_clear_io_bitmap(*id) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ia32_clear_io_bitmap(*id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  if (task_get(*id, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_get(*id, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   o->machine.ioflush = 0;
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -109,13 +111,13 @@ t_error			glue_task_reserve(t_class			class,
 
 t_error			glue_task_initialize(void)
 {
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
-  if (ia32_extended_context_init() != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ia32_extended_context_init() != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  if (ia32_kernel_as_finalize() != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ia32_kernel_as_finalize() != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }

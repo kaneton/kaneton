@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ine/glue/ibm-pc.ia32/educational/event.c
+ * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [wed jan  9 11:49:03 2008]
+ * updated       julien quintard   [mon nov 22 22:24:11 2010]
  */
 
 /*
@@ -29,7 +29,15 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_event*		event;
+/*
+ * the event manager.
+ */
+
+extern m_event*		_event;
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * the event manager dispatch.
@@ -54,30 +62,31 @@ t_error			glue_event_reserve(i_event		id,
 					   u_event_handler	handler,
 					   t_vaddr		data)
 {
-  EVENT_ENTER(event);
+  EVENT_ENTER(_event);
 
   if (id >= IA32_HANDLER_NR)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
+    EVENT_LEAVE(_event, ERROR_KO);
 
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
-    if (ibmpc_enable_irq(id - IA32_IDT_IRQ_BASE) != ERROR_NONE)
-      EVENT_LEAVE(event, ERROR_UNKNOWN);
+    if (ibmpc_irq_enable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+      EVENT_LEAVE(_event, ERROR_KO);
 
-  EVENT_LEAVE(event, ERROR_NONE);
+  EVENT_LEAVE(_event, ERROR_OK);
 }
 
 t_error			glue_event_release(i_event		id)
 {
-  EVENT_ENTER(event);
+  EVENT_ENTER(_event);
 
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
-    if (ibmpc_disable_irq(id - IA32_IDT_IRQ_BASE) != ERROR_NONE)
-      EVENT_LEAVE(event, ERROR_UNKNOWN);
+    if (ibmpc_irq_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+      EVENT_LEAVE(_event, ERROR_KO);
 
-  EVENT_LEAVE(event, ERROR_NONE);
+  EVENT_LEAVE(_event, ERROR_OK);
 }
 
-static void		pf_handler(t_id				id,
+// XXX a renommer
+void			pf_handler(t_id				id,
 				   t_vaddr			data,
 				   t_uint32			error_code)
 {
@@ -85,9 +94,9 @@ static void		pf_handler(t_id				id,
   t_uint32              addr;
   t_ia32_context	ctx;
 
-  assert(scheduler_current(&th) == ERROR_NONE);
+  assert(scheduler_current(&th) == ERROR_OK);
 
-  assert(ia32_get_context(th, &ctx) == ERROR_NONE);
+  assert(ia32_get_context(th, &ctx) == ERROR_OK);
 
   SCR2(addr);
 
@@ -106,26 +115,24 @@ static void		pf_handler(t_id				id,
 
 t_error			glue_event_initialize(void)
 {
-  EVENT_ENTER(event);
+  EVENT_ENTER(_event);
 
-  if (ia32_interrupt_vector_init() != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
+  if (ia32_interrupt_vector_init() != ERROR_OK)
+    EVENT_LEAVE(_event, ERROR_KO);
 
-  if (ibmpc_irq_init() != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
+  if (ibmpc_irq_init() != ERROR_OK)
+    EVENT_LEAVE(_event, ERROR_KO);
 
   if (event_reserve(14, EVENT_FUNCTION,
-		    EVENT_HANDLER(pf_handler), 0) != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
+		    EVENT_HANDLER(pf_handler), 0) != ERROR_OK)
+    EVENT_LEAVE(_event, ERROR_KO);
 
-  EVENT_LEAVE(event, ERROR_NONE);
+  EVENT_LEAVE(_event, ERROR_OK);
 }
 
 t_error			glue_event_clean(void)
 {
-  EVENT_ENTER(event);
+  EVENT_ENTER(_event);
 
-  CLI();
-
-  EVENT_LEAVE(event, ERROR_NONE);
+  EVENT_LEAVE(_event, ERROR_OK);
 }

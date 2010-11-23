@@ -24,7 +24,7 @@
 #define		machine_call_segment(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_error	_r_ = ERROR_OK;					\
 									\
       if (segment_dispatch._function_ != NULL)				\
         _r_ = segment_dispatch._function_(_args_);			\

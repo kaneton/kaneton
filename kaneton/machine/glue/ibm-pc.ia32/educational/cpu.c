@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/cpu.c
+ * file          /home/mycure/kane...chine/glue/ibm-pc.ia32/educational/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       matthieu bucchianeri   [sun jun 17 16:47:22 2007]
+ * updated       julien quintard   [mon nov 22 22:30:46 2010]
  */
 
 /*
@@ -24,11 +24,20 @@
 #include <kaneton.h>
 
 /*
- * ---------- extern ----------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
-extern m_cpu*	cpu;
-extern t_init*	init;
+/*
+ * the cpu manager.
+ */
+
+extern m_cpu*		_cpu;
+
+/*
+ * the init structure.
+ */
+
+extern t_init*		_init;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -52,15 +61,15 @@ d_cpu		cpu_dispatch =
  */
 
 /*
- * identifies the  current cpu. since  non-mp, the current cpu  is the
+ * identifies the  current cpu. for  non-mp, the current cpu  is the
  * boot processor.
  */
 
 t_error			glue_cpu_current(i_cpu*			cpuid)
 {
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
-  *cpuid = init->bsp;
+  *cpuid = _init->bsp;
 
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
