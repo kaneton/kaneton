@@ -30,7 +30,11 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as	kasid;
+/*
+ * the kernel manager.
+ */
+
+extern m_kernel*	_kernel;
 
 /*
  * ---------- non-generated prototypes ----------------------------------------
@@ -125,7 +129,15 @@ static t_ia32_interrupt_prehandler		prehandlers[IA32_HANDLER_NR] =
     prehandler_syscall6,
     prehandler_syscall7,
     prehandler_syscall8,
-    prehandler_syscall9
+    prehandler_syscall9 
+    /*
+    prehandler_syscall10,
+    prehandler_syscall11,
+    prehandler_syscall12,
+    prehandler_syscall13,
+    prehandler_syscall14,
+    prehandler_syscall15
+    */
   };
 
 /*
@@ -138,7 +150,7 @@ static t_ia32_interrupt_prehandler		prehandlers[IA32_HANDLER_NR] =
  */
 
 static t_error		interrupt_add(t_uint32			nr,
-				      t_ia32_prvl	       	privilege,
+				      t_ia32_privilege	       	privilege,
 				      t_ia32_interrupt_prehandler prehandler)
 {
   t_ia32_gate		gate;
@@ -148,14 +160,14 @@ static t_error		interrupt_add(t_uint32			nr,
    */
 
   if (nr >= IA32_HANDLER_NR)
-    return ERROR_UNKNOWN;
+    return ERROR_KO;
 
   /*
    * 2)
    */
 
   gate.offset = (t_uint32)prehandler;
-  gate.segsel = IA32_PMODE_GDT_CORE_CS << 3;
+  gate.segsel = IA32_PMODE_GDT_KANETON_CS << 3;
   gate.privilege = privilege;
   gate.type = ia32_type_gate_interrupt;
 
@@ -187,16 +199,23 @@ t_error			ia32_interrupt_vector_init(void)
    * 1)
    */
 
-  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
-		      &seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_reserve(_kernel->as,
+		      PAGESZ,
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &seg) != ERROR_OK)
+    return (ERROR_KO);
 
-  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
+    return (ERROR_KO);
 
-  if (region_reserve(kasid, seg, 0, REGION_OPT_GLOBAL | REGION_OPT_PRIVILEGED,
-		     0, PAGESZ, &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_reserve(_kernel->as,
+		     seg,
+		     0,
+		     REGION_OPTION_GLOBAL | REGION_OPTION_PRIVILEGED,
+		     0,
+		     PAGESZ,
+		     &reg) != ERROR_OK)
+    return (ERROR_KO);
 
   vaddr = reg;
 
@@ -204,11 +223,11 @@ t_error			ia32_interrupt_vector_init(void)
    * 2)
    */
 
-  if (ia32_idt_build(IA32_IDT_MAX_ENTRIES, vaddr, 1, &new_idt) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ia32_idt_build(IA32_IDT_MAX_ENTRIES, vaddr, 1, &new_idt) != ERROR_OK)
+    return ERROR_KO;
 
-  if (ia32_idt_activate(&new_idt) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ia32_idt_activate(&new_idt) != ERROR_OK)
+    return ERROR_KO;
 
   /*
    * 3)
@@ -217,8 +236,8 @@ t_error			ia32_interrupt_vector_init(void)
   for (i = IA32_IDT_EXCEPTION_BASE;
        i < IA32_IDT_EXCEPTION_BASE + IA32_EXCEPTION_NR;
        i++)
-    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_OK)
+      return ERROR_KO;
 
   /*
    * 4)
@@ -227,8 +246,8 @@ t_error			ia32_interrupt_vector_init(void)
   for (i = IA32_IDT_IRQ_BASE;
        i < IA32_IDT_IRQ_BASE + IA32_IRQ_NR;
        i++)
-    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_OK)
+      return ERROR_KO;
 
   /*
    * 5)
@@ -237,8 +256,8 @@ t_error			ia32_interrupt_vector_init(void)
   for (i = IA32_IDT_IPI_BASE;
        i < IA32_IDT_IPI_BASE + IA32_IPI_NR;
        i++)
-    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_OK)
+      return ERROR_KO;
 
   /*
    * 6)
@@ -247,10 +266,10 @@ t_error			ia32_interrupt_vector_init(void)
   for (i = IA32_IDT_SYSCALL_BASE;
        i < IA32_IDT_SYSCALL_BASE + IA32_SYSCALL_NR;
        i++)
-    if (interrupt_add(i, 3, prehandlers[i]) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+    if (interrupt_add(i, 3, prehandlers[i]) != ERROR_OK)
+      return ERROR_KO;
 
-  return ERROR_NONE;
+  return ERROR_OK;
 }
 
 /*
@@ -265,10 +284,10 @@ static void		spurious_interrupt(i_event			id)
   o_task*		o;
   t_ia32_context	ctx;
 
-  assert(ia32_context_ring0_stack() == ERROR_NONE);
+  assert(ia32_context_ring0_stack() == ERROR_OK);
 
-  if (scheduler_current(&th) != ERROR_NONE ||
-      ia32_get_context(th, &ctx) != ERROR_NONE)
+  if (scheduler_current(&th) != ERROR_OK ||
+      ia32_get_context(th, &ctx) != ERROR_OK)
     {
       printf("Unhandled exception %qu\n", id);
       return;
@@ -282,9 +301,9 @@ static void		spurious_interrupt(i_event			id)
   printf("%%esi=%08x\t%%edi=%08x\n", ctx.esi, ctx.edi);
   printf("%%esp=%08x\t%%ebp=%08x\n", ctx.esp, ctx.ebp);
 
-  if (task_current(&tsk) == ERROR_NONE &&
-      task_get(tsk, &o) == ERROR_NONE &&
-      as_read(o->asid, ctx.esp, 32, stack) == ERROR_NONE)
+  if (task_current(&tsk) == ERROR_OK &&
+      task_get(tsk, &o) == ERROR_OK &&
+      as_read(o->as, ctx.esp, 32, stack) == ERROR_OK)
     {
       printf("%08x %08x %08x %08x\n", stack[0], stack[1], stack[2], stack[3]);
       printf("%08x %08x %08x %08x\n", stack[4], stack[5], stack[6], stack[7]);
@@ -306,9 +325,9 @@ void			ia32_handler_exception(t_uint32			nr,
   i_event		id = nr;
   i_thread		current;
 
-  assert(ia32_context_ring0_stack() == ERROR_NONE);
+  assert(ia32_context_ring0_stack() == ERROR_OK);
 
-  if (event_get(id, &o) == ERROR_NONE)
+  if (event_get(id, &o) == ERROR_OK)
     {
       if (o->type == EVENT_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data, code);
@@ -320,7 +339,7 @@ void			ia32_handler_exception(t_uint32			nr,
       spurious_interrupt(id);
     }
 
-  assert(scheduler_current(&current) == ERROR_NONE);
+  assert(scheduler_current(&current) == ERROR_OK);
 }
 
 /*
@@ -334,9 +353,9 @@ void			ia32_handler_irq(t_uint32			nr)
   i_event		id = IA32_IDT_IRQ_BASE + nr;
   i_thread		current;
 
-  assert(ia32_context_ring0_stack() == ERROR_NONE);
+  assert(ia32_context_ring0_stack() == ERROR_OK);
 
-  if (event_get(id, &o) == ERROR_NONE)
+  if (event_get(id, &o) == ERROR_OK)
     {
       if (o->type == EVENT_FUNCTION)
 	{
@@ -352,7 +371,7 @@ void			ia32_handler_irq(t_uint32			nr)
       spurious_interrupt(id);
     }
 
-  assert(scheduler_current(&current) == ERROR_NONE);
+  assert(scheduler_current(&current) == ERROR_OK);
 }
 
 /*
@@ -366,11 +385,11 @@ void			ia32_handler_ipi(t_uint32			nr)
   i_event		id = IA32_IDT_IPI_BASE + nr;
   i_thread		current;
 
-  assert(ia32_context_ring0_stack() == ERROR_NONE);
+  assert(ia32_context_ring0_stack() == ERROR_OK);
 
   ia32_ipi_acknowledge();
 
-  if (event_get(id, &o) == ERROR_NONE)
+  if (event_get(id, &o) == ERROR_OK)
     {
       if (o->type == EVENT_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data);
@@ -382,7 +401,7 @@ void			ia32_handler_ipi(t_uint32			nr)
       spurious_interrupt(id);
     }
 
-  assert(scheduler_current(&current) == ERROR_NONE);
+  assert(scheduler_current(&current) == ERROR_OK);
 }
 
 /*
@@ -396,9 +415,9 @@ void			ia32_handler_syscall(t_uint32			nr)
   i_event		id = IA32_IDT_SYSCALL_BASE + nr;
   i_thread		current;
 
-  assert(ia32_context_ring0_stack() == ERROR_NONE);
+  assert(ia32_context_ring0_stack() == ERROR_OK);
 
-  if (event_get(id, &o) == ERROR_NONE)
+  if (event_get(id, &o) == ERROR_OK)
     {
       if (o->type == EVENT_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data);
@@ -410,7 +429,7 @@ void			ia32_handler_syscall(t_uint32			nr)
       spurious_interrupt(id);
     }
 
-  assert(scheduler_current(&current) == ERROR_NONE);
+  assert(scheduler_current(&current) == ERROR_OK);
 }
 
 /*
@@ -498,4 +517,3 @@ IA32_SYSCALL_PREHANDLER(6);
 IA32_SYSCALL_PREHANDLER(7);
 IA32_SYSCALL_PREHANDLER(8);
 IA32_SYSCALL_PREHANDLER(9);
-

@@ -65,8 +65,8 @@ void			ia32_syshandler_register(void)
   t_vsize		size;
   t_ia32_context	ctx;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_OK);
+  assert(task_current(&task) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -95,8 +95,8 @@ void			ia32_syshandler_size(void)
   t_vsize		size;
   t_ia32_context	ctx;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_OK);
+  assert(task_current(&task) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -129,8 +129,8 @@ void			ia32_syshandler_send(void)
     t_uint32		reg[4];
   }			u;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_OK);
+  assert(task_current(&task) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -168,8 +168,8 @@ void			ia32_syshandler_transmit(void)
     t_uint32		reg[4];
   }			u;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_OK);
+  assert(task_current(&task) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -207,8 +207,8 @@ void			ia32_syshandler_receive(void)
     t_uint32		reg[4];
   }			u;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_OK);
+  assert(task_current(&task) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -250,8 +250,8 @@ void			ia32_syshandler_poll(void)
     t_uint32		reg[4];
   }			u;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == ERROR_OK);
+  assert(task_current(&task) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -284,8 +284,8 @@ t_error			ia32_syscall_set_code(i_thread		thread,
 {
   t_ia32_context	ctx;
 
-  if (ia32_get_context(thread, &ctx) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_get_context(thread, &ctx) != ERROR_OK)
+    return (ERROR_KO);
 
   ctx.eax = error;
 
@@ -309,8 +309,8 @@ t_error			ia32_syscall_set_info(i_thread		thread,
     t_uint32		reg[4];
   }			u;
 
-  if (ia32_get_context(thread, &ctx) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_get_context(thread, &ctx) != ERROR_OK)
+    return (ERROR_KO);
 
   u.node = sender;
 
@@ -335,37 +335,37 @@ t_error			ia32_syscall_set_info(i_thread		thread,
 t_error			ia32_syscalls_init(void)
 {
   if (event_reserve(56, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_register), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_register), 0) != ERROR_OK)
+    return (ERROR_KO);
 
   if (event_reserve(57, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_send), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_send), 0) != ERROR_OK)
+    return (ERROR_KO);
 
   if (event_reserve(58, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_transmit), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_transmit), 0) != ERROR_OK)
+    return (ERROR_KO);
 
   /* XXX 59 */
 
   if (event_reserve(60, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_receive), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_receive), 0) != ERROR_OK)
+    return (ERROR_KO);
 
   /* XXX 61 */
 
   if (event_reserve(62, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_poll), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_poll), 0) != ERROR_OK)
+    return (ERROR_KO);
 
   /* XXX 63 */
   /* XXX 64 */
 
   if (event_reserve(65, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_size), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_size), 0) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -374,18 +374,18 @@ t_error			ia32_syscalls_init(void)
 
 t_error			ia32_syscalls_clean(void)
 {
-  if (event_release(56) != ERROR_NONE ||
-      event_release(57) != ERROR_NONE ||
-      event_release(58) != ERROR_NONE ||
-      event_release(59) != ERROR_NONE ||
-      event_release(60) != ERROR_NONE ||
-      event_release(61) != ERROR_NONE ||
-      event_release(62) != ERROR_NONE ||
-      event_release(63) != ERROR_NONE ||
-      event_release(64) != ERROR_NONE ||
-      event_release(65) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (event_release(56) != ERROR_OK ||
+      event_release(57) != ERROR_OK ||
+      event_release(58) != ERROR_OK ||
+      event_release(59) != ERROR_OK ||
+      event_release(60) != ERROR_OK ||
+      event_release(61) != ERROR_OK ||
+      event_release(62) != ERROR_OK ||
+      event_release(63) != ERROR_OK ||
+      event_release(64) != ERROR_OK ||
+      event_release(65) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
