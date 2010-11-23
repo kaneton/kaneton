@@ -18,6 +18,7 @@
 #ifndef ARCHITECTURE_CONTEXT_H
 #define ARCHITECTURE_CONTEXT_H	1
 
+#include <architecture/local.h>
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -282,8 +283,6 @@ t_error			ia32_get_context(i_thread		thread,
 t_error			ia32_set_context(i_thread		thread,
 					 t_ia32_context*	context,
 					 t_uint32		mask);
-
-t_error                 ia32_print_context(i_thread             thread);
 
 
 /*
