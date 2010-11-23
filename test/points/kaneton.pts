@@ -1,0 +1,254 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/KANETON-TEST-SYSTEM/points/kaneton.pts
+#
+# created       julien quintard   [tue nov  2 06:46:01 2010]
+# updated       julien quintard   [sat nov 20 23:46:32 2010]
+#
+
+#
+# ---------- as ---------------------------------------------------------------
+#
+
+core/as/clone/01: 3
+core/as/clone/02: 4
+
+core/as/copy/01: 3
+core/as/copy/02: 4
+
+core/as/give: 2
+
+core/as/ia32/mapping: 2
+core/as/ia32/switch: 3
+
+core/as/map: 2
+
+core/as/read-write: 3
+
+core/as/region: 2
+
+core/as/segment: 2
+
+core/as/translation: 3
+
+#
+# ---------- event ------------------------------------------------------------
+#
+
+#machine/glue/ibm-pc.ia32/clock: XXX
+
+#machine/architecture/ia32/context/01: XXX
+#machine/architecture/ia32/context/02: XXX
+
+machine/architecture/ia32/data: 1
+
+machine/architecture/ia32/exception/01: 1
+machine/architecture/ia32/exception/02: 1
+machine/architecture/ia32/exception/03: 1
+machine/architecture/ia32/exception/04: 2
+machine/architecture/ia32/exception/05: 2
+machine/architecture/ia32/exception/06: 2
+machine/architecture/ia32/exception/07: 3
+
+#machine/architecture/ia32/flags: XXX
+
+machine/architecture/ia32/idt/01: 1
+machine/architecture/ia32/idt/02: 2
+
+machine/architecture/ia32/interrupt/01: 1
+machine/architecture/ia32/interrupt/02: 2
+
+#machine/architecture/ia32/irq: XXX
+
+machine/architecture/ia32/map: 2
+
+machine/architecture/ia32/message: 2
+
+machine/architecture/ia32/pic/01: 1
+machine/architecture/ia32/pic/02: 1
+machine/architecture/ia32/pic/03: 2
+
+#
+# ---------- id ---------------------------------------------------------------
+#
+
+core/id/clone: 2
+
+core/id/reserve/01: 1
+core/id/reserve/02: 2
+
+#
+# ---------- map --------------------------------------------------------------
+#
+
+core/map/reserve/01: 1
+core/map/reserve/02: 2
+core/map/reserve/03: 3
+
+#
+# ---------- message ----------------------------------------------------------
+#
+
+# XXX
+
+#
+# ---------- region -----------------------------------------------------------
+#
+
+core/region/flush/01: 1
+core/region/flush/02: 2
+
+core/region/get: 1
+
+core/region/ia32/inject: 3
+
+core/region/reserve/01: 1
+core/region/reserve/02: 2
+core/region/reserve/03: 3
+
+core/region/resize/01: 1
+core/region/resize/02: 2
+core/region/resize/03: 3
+
+core/region/split: 3
+
+core/region/write: 1
+
+#
+# ---------- scheduler --------------------------------------------------------
+#
+
+# XXX
+
+#
+# ---------- segment ----------------------------------------------------------
+#
+
+core/segment/catch: 3
+
+core/segment/clone: 2
+
+core/segment/coalesce: 3
+
+core/segment/copy: 2
+
+core/segment/flush: 4
+
+core/segment/give: 4
+
+core/segment/inject: 3
+
+core/segment/permission/01: 1
+core/segment/permission/02: 1
+core/segment/permission/03: 1
+core/segment/permission/04: 2
+core/segment/permission/05: 3
+
+core/segment/read-write/01: 2
+core/segment/read-write/02: 2
+
+core/segment/reserve/01: 1
+core/segment/reserve/02: 1
+core/segment/reserve/03: 1
+core/segment/reserve/04: 2
+core/segment/reserve/05: 2
+core/segment/reserve/06: 3
+core/segment/reserve/07: 3
+
+core/segment/resize: 3
+
+core/segment/split: 2
+
+core/segment/type: 2
+
+#
+# ---------- set --------------------------------------------------------------
+#
+
+core/set/array/01: 1
+core/set/array/02: 1
+core/set/array/03: 1
+core/set/array/04: 1
+core/set/array/05: 1
+core/set/array/06: 1
+core/set/array/07: 1
+core/set/array/08: 1
+core/set/array/09: 1
+core/set/array/10: 1
+core/set/array/11: 1
+ 
+core/set/bpt/01: 1
+core/set/bpt/02: 1
+core/set/bpt/03: 1
+core/set/bpt/04: 1
+core/set/bpt/05: 1
+core/set/bpt/06: 1
+core/set/bpt/07: 1
+core/set/bpt/08: 1
+core/set/bpt/09: 1
+core/set/bpt/10: 1
+core/set/bpt/11: 1
+ 
+core/set/ll/01: 1
+core/set/ll/02: 1
+core/set/ll/03: 1
+core/set/ll/04: 1
+core/set/ll/05: 1
+core/set/ll/06: 1
+core/set/ll/07: 1
+core/set/ll/08: 1
+core/set/ll/09: 1
+core/set/ll/10: 1
+core/set/ll/11: 1
+
+core/set/pipe/01: 1
+core/set/pipe/02: 1
+core/set/pipe/03: 1
+core/set/pipe/04: 1
+core/set/pipe/05: 1
+core/set/pipe/06: 1
+core/set/pipe/07: 1
+core/set/pipe/08: 1
+core/set/pipe/09: 1
+
+core/set/stack/01: 1
+core/set/stack/02: 1
+core/set/stack/03: 1
+core/set/stack/04: 1
+core/set/stack/05: 1
+core/set/stack/06: 1
+core/set/stack/07: 1
+core/set/stack/08: 1
+core/set/stack/09: 1
+
+#
+# ---------- task -------------------------------------------------------------
+#
+
+# XXX
+
+#
+# ---------- thread -----------------------------------------------------------
+#
+
+# XXX
+
+#
+# ---------- time -------------------------------------------------------------
+#
+
+#machine/glue/ibm-pc.ia32/time/01: XXX
+#machine/glue/ibm-pc.ia32/time/02: XXX
+#machine/glue/ibm-pc.ia32/time/03: XXX
+#machine/glue/ibm-pc.ia32/time/04: XXX
+#machine/glue/ibm-pc.ia32/time/05: XXX
+#machine/glue/ibm-pc.ia32/time/06: XXX
+#machine/glue/ibm-pc.ia32/time/07: XXX
+#machine/glue/ibm-pc.ia32/time/08: XXX
+#machine/glue/ibm-pc.ia32/time/09: XXX
+#machine/glue/ibm-pc.ia32/time/10: XXX

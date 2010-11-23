@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri nov  5 21:21:01 2010]
+# updated       julien quintard   [sat nov  6 09:37:17 2010]
 #
 
 #
@@ -558,7 +558,7 @@ def                     Main():
                           "be generated",
                         dest = "platform")
   g_parser.add_argument("--architecture", '-a',
-                        default = "ia32",
+                        default = "ia32/educational",
                         help = "the architecture on which the image "   \
                           "is to be generated",
                         dest = "architecture")

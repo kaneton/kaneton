@@ -1,0 +1,31 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/KANETON-TEST-SYSTEM/suites/bugs.suite
+#
+# created       julien quintard   [tue nov  2 07:33:43 2010]
+# updated       julien quintard   [sun nov 21 00:48:51 2010]
+#
+
+name: bugs
+description: XXX
+components:
+  bugs:
+# was named context_01
+#    - kaneton/machine/architecture/ia32/event/context/01/
+# was not present before
+#    - kaneton/machine/architecture/ia32/event/context/02/
+# was not present before
+#    - kaneton/machine/architecture/ia32/event/flags/
+# XXX[marchait a une epoque...]
+#    - kaneton/machine/architecture/ia32/event/pic/03/
+# was named irq_02
+#    - kaneton/machine/architecture/ia32/event/clock/
+# was named irq_01
+#    - kaneton/machine/architecture/ia32/event/irq/
+# time
+#    - kaneton/machine/glue/ibm-pc.ia32/time/

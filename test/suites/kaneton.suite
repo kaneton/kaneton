@@ -5,13 +5,44 @@
 #
 # license       
 #
-# file          /home/mycure/kaneton.STABLE/test/suites/kaneton.suite
+# file          /home/mycure/KANETON-TEST-SYSTEM/suites/kaneton.suite
 #
 # created       julien quintard   [tue nov  2 07:34:08 2010]
-# updated       julien quintard   [tue nov  2 07:34:11 2010]
+# updated       julien quintard   [sun nov 21 00:26:41 2010]
 #
 
 name: kaneton
-description: XXX
+description: This test suite triggers all the tests.
 components:
-  - id: kaneton/id
+  id:
+    - kaneton/core/id
+
+  set:
+    - kaneton/core/set
+
+  segment:
+    - kaneton/core/segment/
+
+  region:
+    - kaneton/core/region/
+    - kaneton/machine/architecture/ia32/region/
+
+  map:
+    - kaneton/core/map/
+
+  as:
+    - kaneton/core/as/
+    - kaneton/machine/architecture/ia32/as/
+
+  event:
+    - kaneton/machine/glue/ibm-pc.ia32/event/
+    - kaneton/machine/architecture/ia32/event/
+
+  time:
+    - kaneton/machine/glue/ibm-pc.ia32/time/
+
+  task:
+    - kaneton/machine/glue/ibm-pc.ia32/task/
+
+#  scheduler:
+#    - XXX ia32

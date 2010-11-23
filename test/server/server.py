@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/test/server/server.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [thu nov  4 11:08:24 2010]
+# updated       julien quintard   [sat nov 13 17:56:41 2010]
 #
 
 #
@@ -231,6 +231,8 @@ def                     Information(capability):
   profile = None
   database = None
 
+  print("[routine] Information()")
+
   try:
     # verify that the maintenance mode has not been activated.
     if os.path.exists(MaintenanceLock) == True:
@@ -277,7 +279,7 @@ def                     Information(capability):
 # this method triggers a test suite for the given snapshot.
 #
 def                     Test(capability,
-                             content,
+                             snapshot,
                              platform,
                              architecture,
                              environment,
@@ -287,7 +289,6 @@ def                     Test(capability,
   database = None
   identifier = None
   date = None
-  snapshot = None
   image = None
   bulletin = None
   report = None
@@ -296,6 +297,8 @@ def                     Test(capability,
   start = None
   end = None
   output = None
+
+  print("[routine] Test()")
 
   try:
     # verify that the maintenance mode has not been activated.
@@ -343,16 +346,20 @@ def                     Test(capability,
 
     # create a temporary files for the received snapshot, the about-to-be
     # generated image etc.
-    snapshot = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
     image = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
     bulletin = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
     stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
-    # store the snapshot in the temporary file.
-    ktp.miscellaneous.Push(str(content), snapshot)
-
     # update the user's database by incrementing the number of requests.
     database["settings"][environment][machine][suite]["requests"] += 1
+
+    # update the database by setting the test identifier.
+    database["reports"][environment][machine][suite] += [ identifier ]
+
+    # store the snapshot.
+    ktp.miscellaneous.Push(str(snapshot),
+                           SnapshotStore + "/" + identifier +           \
+                             ktp.snapshot.Extension)
 
     # retrieve the current time.
     start = time.time()
@@ -369,7 +376,8 @@ def                     Test(capability,
                            "/" +                                        \
                            ConstructHook,
                          [ "--name", identifier,
-                           "--snapshot", snapshot,
+                           "--snapshot", SnapshotStore + "/" +          \
+                             identifier + ktp.snapshot.Extension,
                            "--image", image,
                            "--environment", TestConstructEnvironment,
                            "--platform", platform,
@@ -437,9 +445,6 @@ def                     Test(capability,
     # store the report.
     ktp.report.Store(report,
                      ReportStore + "/" + identifier + ktp.report.Extension)
-
-    # update the database.
-    database["reports"][environment][machine][suite] += [ identifier ]
   except Exception, exception:
     return (ktp.StatusError, ktp.trace.Generate())
   finally:
@@ -455,8 +460,6 @@ def                     Test(capability,
       ktp.miscellaneous.Remove(bulletin)
     if image:
       ktp.miscellaneous.Remove(image)
-    if snapshot:
-      ktp.miscellaneous.Remove(snapshot)
 
   return (ktp.StatusOk, report)
 
@@ -464,12 +467,14 @@ def                     Test(capability,
 # this method submits a snapshot.
 #
 def                     Submit(capability,
-                               content,
+                               snapshot,
                                stage):
   profile = None
   database = None
   identifier = None
   date = None
+
+  print("[routine] Submit()")
 
   try:
     # verify that the maintenance mode has not been activated.
@@ -508,8 +513,8 @@ def                     Submit(capability,
     # retrieve the current date.
     date = time.strftime("%Y/%m/%d %H:%M:%S")
 
-    # store the snapshot in the temporary file.
-    ktp.miscellaneous.Push(str(content),
+    # store the snapshot.
+    ktp.miscellaneous.Push(str(snapshott),
                            SnapshotStore + "/" + identifier +           \
                              ktp.snapshot.Extension)
 
@@ -542,7 +547,7 @@ if __name__ == '__main__':
 
   # print information
   information = server.socket.getsockname()
-  print("[information] serving on " +                                   \
+  print("[meta] serving on " +                                          \
           information[0] + ":" + str(information[1]))
 
   # initialize the system.

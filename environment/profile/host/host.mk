@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/host/host.mk
+# file          /home/mycure/kaneton.NEW/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [fri may  1 19:04:55 2009]
+# updated       julien quintard   [tue nov 23 10:42:18 2010]
 #
 
 #
@@ -71,21 +71,27 @@ ENV_DEPENDENCIES := $(wildcard						\
 		$(_PROFILE_DIR_)/kaneton/*.conf				\
 		$(_PROFILE_DIR_)/kaneton/*.py				\
 		$(_PROFILE_DIR_)/kaneton/*.mk				\
-		$(_PROFILE_DIR_)/kaneton/core/*.conf			\
-		$(_PROFILE_DIR_)/kaneton/core/*.mk			\
-		$(_PROFILE_DIR_)/kaneton/core/*.py			\
-		$(_PROFILE_DIR_)/kaneton/platform/*.conf		\
-		$(_PROFILE_DIR_)/kaneton/platform/*.mk			\
-		$(_PROFILE_DIR_)/kaneton/platform/*.py			\
+		$(_PROFILE_LIBRARY_DIR_)/*.conf				\
+		$(_PROFILE_LIBRARY_DIR_)/*.mk				\
+		$(_PROFILE_LIBRARY_DIR_)/*.py				\
+		$(_PROFILE_MODULES_DIR_)/*.conf				\
+		$(_PROFILE_MODULES_DIR_)/*.mk				\
+		$(_PROFILE_MODULES_DIR_)/*.py				\
+		$(_PROFILE_MACHINE_DIR_)/*.conf				\
+		$(_PROFILE_MACHINE_DIR_)/*.mk				\
+		$(_PROFILE_MACHINE_DIR_)/*.py				\
 		$(_PROFILE_PLATFORM_DIR_)/*.conf			\
 		$(_PROFILE_PLATFORM_DIR_)/*.mk				\
 		$(_PROFILE_PLATFORM_DIR_)/*.py				\
-		$(_PROFILE_DIR_)/kaneton/architecture/*.conf		\
-		$(_PROFILE_DIR_)/kaneton/architecture/*.mk		\
-		$(_PROFILE_DIR_)/kaneton/architecture/*.py		\
 		$(_PROFILE_ARCHITECTURE_DIR_)/*.conf			\
 		$(_PROFILE_ARCHITECTURE_DIR_)/*.mk			\
 		$(_PROFILE_ARCHITECTURE_DIR_)/*.py			\
+		$(_PROFILE_GLUE_DIR_)/*.conf				\
+		$(_PROFILE_GLUE_DIR_)/*.mk				\
+		$(_PROFILE_GLUE_DIR_)/*.py				\
+		$(_PROFILE_CORE_DIR_)/*.conf				\
+		$(_PROFILE_CORE_DIR_)/*.mk				\
+		$(_PROFILE_CORE_DIR_)/*.py				\
 		$(_PROFILE_DIR_)/user/*.conf				\
 		$(_PROFILE_DIR_)/user/*.mk				\
 		$(_PROFILE_DIR_)/user/*.py				\

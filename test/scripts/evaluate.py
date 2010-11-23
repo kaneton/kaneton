@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/evaluate.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/evaluate.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [thu nov  4 11:09:07 2010]
+# updated       julien quintard   [thu nov 18 18:25:53 2010]
 #
 
 #
@@ -252,27 +252,28 @@ def                     Rate(namespace, configuration, report):
   # load the manifests.
   if "components" in stream:
     for component in stream["components"]:
-      # search for manifest files.
-      manifests = ktp.miscellaneous.Search(TestsDirectory + "/" +       \
-                                             stream["components"][component],
-                                           "^.*\.mnf$",
-                                           ktp.miscellaneous.OptionFile |
-                                           ktp.miscellaneous.OptionRecursive)
+      for path in stream["components"][component]:
+        # search for manifest files.
+        manifests = ktp.miscellaneous.Search(TestsDirectory + "/" +       \
+                                               path,
+                                             "^.*\.mnf$",
+                                             ktp.miscellaneous.OptionFile |
+                                             ktp.miscellaneous.OptionRecursive)
 
-      for manifest in manifests:
-        # load the manifest.
-        test = ktp.manifest.Load(manifest)
+        for manifest in manifests:
+          # load the manifest.
+          test = ktp.manifest.Load(manifest)
 
-        # compute the proper name according to the defined component:
-        # for instance, given the "segment" component, the test name
-        # segment/permissions/01 will be transformed into permissions/01
-        if component == test["name"][:len(component)]:
-          name = test["name"][len(component) + 1:]
-        else:
-          name = test["name"]
+          # compute the proper name according to the defined component:
+          # for instance, given the "segment" component, the test name
+          # segment/permissions/01 will be transformed into permissions/01
+          if component == test["name"][:len(component)]:
+            name = test["name"][len(component) + 1:]
+          else:
+            name = test["name"]
 
-        # add the points related to this test.
-        notch += namespace.points[component + "/" + name]
+          # add the points related to this test.
+          notch += namespace.points[component + "/" + name]
 
   # return zero points should the test have failed.
   if not report["data"]:

@@ -5,14 +5,25 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/suites/k2.suite
+# file          /home/mycure/KANETON-TEST-SYSTEM/suites/k2.suite
 #
 # created       julien quintard   [tue nov  2 07:33:43 2010]
-# updated       julien quintard   [tue nov  2 07:33:44 2010]
+# updated       julien quintard   [sun nov 21 00:18:26 2010]
 #
 
 name: k2
-description: XXX
+description: This test suite focuses on the memory management.
 components:
-  id: kaneton/id
-  segment: kaneton/segment/permissions/01
+  segment:
+    - kaneton/core/segment/
+
+  region:
+    - kaneton/core/region/
+    - kaneton/machine/architecture/ia32/region/
+
+  map:
+    - kaneton/core/map/
+
+  as:
+    - kaneton/core/as/
+    - kaneton/machine/architecture/ia32/as/

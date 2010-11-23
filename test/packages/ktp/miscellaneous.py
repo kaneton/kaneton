@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANE...YSTEM/test/packages/ktp/miscellaneous.py
+# file          /home/mycure/KANE...EST-SYSTEM/packages/ktp/miscellaneous.py
 #
 # created       julien quintard   [mon oct 25 19:51:49 2010]
-# updated       julien quintard   [thu nov  4 11:29:52 2010]
+# updated       julien quintard   [sat nov  6 15:23:36 2010]
 #
 
 #

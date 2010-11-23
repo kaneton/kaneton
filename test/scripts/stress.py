@@ -6,25 +6,29 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/stress.py
+# file          /home/mycure/kaneton.STABLE/test/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri nov  5 22:08:34 2010]
+# updated       julien quintard   [tue nov 23 17:50:20 2010]
 #
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script takes a bootable kaneton image and launches it in an emulated
-# environment.
+# this script takes a bootable kaneton image and launches every test in an
+# emulated environment.
 #
 # the script then establishes a connection with the emulated environment
-# through a serial port. this connection is used to both trigger tests
-# and retrieving the output of those tests.
+# through a serial port. this connection is used to both trigger the test
+# and retrieve the output.
 #
 # upon completion, a list of results is gathered containing the output, status
 # and duration of the test. these results are finally saved in a bulletin
 # file.
+#
+# note that every test is triggered in a separate emulated environment in order
+# to ensure that previous tests did not alter the kernel state, hence the
+# outcome of other tests.
 #
 
 #
@@ -67,8 +71,8 @@ XenEnvironment = "xen"
 QEMUEnvironment = "qemu"
 
 # timeout in seconds.
-XenTimeout = 150 # XXX
-QEMUTimeout = 150 # XXX
+XenTimeout = 60
+QEMUTimeout = 60
 
 # magic number for serial communications.
 Magic = 0xF4859632
@@ -173,36 +177,6 @@ def                     Handshake(line):
   return (StatusOk, None)
 
 #
-# this function calls a test and return the output.
-#
-def                     Call(line, symbol):
-  output = None
-  start = None
-  end = None
-
-  Emit(line, CallToken + " " + symbol)
-
-  start = time.time()
-  while True:
-    (status, (type, message)) = Receive(line)
-
-    if status != StatusOk:
-      return (StatusError, None, message)
-
-    if (type == TypeCommand) and (message == EnterToken):
-      output = str()
-      continue
-
-    if (type == TypeCommand) and (message == LeaveToken):
-      break
-
-    if isinstance(output, str) == True:
-      output += message
-  end = time.time()
-
-  return (StatusOk, "%.3f" % (end - start), output)
-
-#
 # ---------- functions --------------------------------------------------------
 #
 
@@ -212,7 +186,7 @@ def                     Call(line, symbol):
 #
 def                     Error(namespace, message):
   # display the script name.
-  print "[stress]"
+  print("[stress]")
 
   # print the message.
   if message:
@@ -223,6 +197,52 @@ def                     Error(namespace, message):
 
   # exit with an error code.
   sys.exit(42)
+
+#
+# this function calls a test and return the result.
+#
+def                     Call(namespace,
+                             line,
+                             symbol):
+  start = None
+  end = None
+
+  # send the command.
+  Emit(line, CallToken + " " + symbol)
+
+  # start the timer.
+  start = time.time()
+
+  # read the result.
+  while True:
+    # wait for the response.
+    (status, (type, message)) = Receive(line)
+
+    # if an error occured, signal it.
+    if status != StatusOk:
+      return (StatusError, "%.3f" % (end - start))
+
+    # handle the enter command.
+    if (type == TypeCommand) and (message == EnterToken):
+      namespace.test = str()
+      continue
+
+    # handle the leave command.
+    if (type == TypeCommand) and (message == LeaveToken):
+      break
+
+    # treat the test content.
+    if isinstance(namespace.test, str) == True:
+      namespace.test += message
+
+  # stop the timer.
+  end = time.time()
+
+  # transform the content accordingly.
+  if not namespace.test:
+    namespace.test = str()
+
+  return (StatusOk, "%.3f" % (end - start))
 
 #
 # this function creates a bootable cdrom image from the
@@ -253,7 +273,8 @@ def                     Manifests(namespace):
   name = None
 
   # read the file.
-  stream = ktp.suite.Load(SuitesDirectory + "/" + namespace.suite + ktp.suite.Extension)
+  stream = ktp.suite.Load(SuitesDirectory + "/" +                       \
+                            namespace.suite + ktp.suite.Extension)
 
   # initialize the manifests and tests.
   namespace.manifests = {}
@@ -261,30 +282,41 @@ def                     Manifests(namespace):
   # load the manifests.
   if "components" in stream:
     for component in stream["components"]:
-      # search for manifest files.
-      manifests = ktp.miscellaneous.Search(TestsDirectory + "/" +       \
-                                             stream["components"][component],
-                                           "^.*\.mnf$",
-                                           ktp.miscellaneous.OptionFile |
-                                           ktp.miscellaneous.OptionRecursive)
-
       # initialize the data structure.
       namespace.manifests[component] = {}
 
-      for manifest in manifests:
-        # load the manifest.
-        test = ktp.manifest.Load(manifest)
+      for path in stream["components"][component]:
+        # search for manifest files.
+        manifests = ktp.miscellaneous.Search(TestsDirectory + "/" +     \
+                                               path,
+                                             "^.*\.mnf$",
+                                             ktp.miscellaneous.OptionFile |
+                                             ktp.miscellaneous.OptionRecursive)
 
-        # compute the proper name according to the defined component:
-        # for instance, given the "segment" component, the test name
-        # segment/permissions/01 will be transformed into permissions/01
-        if component == test["name"][:len(component)]:
-          name = test["name"][len(component) + 1:]
-        else:
-          name = test["name"]
+        for manifest in manifests:
+          # load the manifest.
+          test = ktp.manifest.Load(manifest)
 
-        # set the test.
-        namespace.manifests[component][name] = test
+          # check if the test includes a name.
+          if not "name" in test:
+            raise Exception("the manifest '" +                          \
+                              manifest +                                \
+                              "' does not embed a test name")
+
+          # compute the proper name according to the defined component:
+          # for instance, given the "segment" component, the test name
+          # segment/permissions/01 will be transformed into permissions/01
+          if component == test["name"][:len(component)]:
+            name = test["name"][len(component) + 1:]
+          else:
+            name = test["name"]
+
+          # transform the output accordingly.
+          if not test["output"]:
+            test["output"] = str()
+
+          # set the test.
+          namespace.manifests[component][name] = test
 
 #
 # this function initializes the results according to the manifests.
@@ -308,55 +340,6 @@ def                     Results(namespace):
                                              "description": namespace.manifests[component][test]["description"] }
 
 #
-# this function stresses the microkernel with the tests suite.
-#
-def                     Suite(namespace,
-                              port):
-  line = None
-  status = None
-  message = None
-  component = None
-  test = None
-
-  # load the manifests.
-  Manifests(namespace)
-
-  # initialize the results.
-  Results(namespace)
-
-  # initialize the serial line.
-  line = serial.Serial(port, 57600)
-
-  # perform the handshake.
-  (status, message) = Handshake(line)
-
-  if status == StatusError:
-    raise Exception("[error] handshake failed '" + message + "'")
-
-  # launch the tests.
-  for component in namespace.manifests:
-    # verbose messaging.
-    if namespace.verbose:
-      print(component)
-
-    for test in namespace.manifests[component]:
-      # verbose.
-      if namespace.verbose:
-        # XXX[change for python 2.7 ... 3 with python("  " + test, end="")]
-        print "  " + test,
-
-      (namespace.results[component][test]["status"],
-       namespace.results[component][test]["duration"],
-       namespace.results[component][test]["output"]) =                  \
-         Call(line,
-              namespace.manifests[component][test]["symbol"])
-
-      # verbose messaging.
-      if namespace.verbose:
-        print(":: " +                                                   \
-                str(namespace.results[component][test]["status"]).lower())
-
-#
 # this is the alarm handler.
 #
 def                     Handler(signum, frame):
@@ -365,13 +348,19 @@ def                     Handler(signum, frame):
 #
 # this function runs QEMU.
 #
-def                     QEMU(namespace):
+def                     QEMU(namespace,
+                             symbol):
   stream = None
   monitor = None
   output = None
   content = None
   match = None
   port = None
+  line = None
+  status = None
+  message = None
+  port = None
+  duration = None
 
   # build a stream file.
   stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
@@ -390,8 +379,8 @@ def                     QEMU(namespace):
                                  stream = stream,
                                  option = ktp.process.OptionBackground)
 
-    # wait a few seconds to be sure Xen has started.
-    time.sleep(3)
+    # wait a few seconds to be sure QEMU has started.
+    time.sleep(1)
 
     # read the status file.
     content = ktp.miscellaneous.Pull(stream)
@@ -410,8 +399,21 @@ def                     QEMU(namespace):
     # set the port.
     port = match.group(1)
 
-    # launch the test suite.
-    Suite(namespace, port)
+    # initialize the serial line.
+    line = serial.Serial(port, 57600)
+
+    # perform the handshake.
+    (status, message) = Handshake(line)
+
+    if status == StatusError:
+      raise Exception("[error] handshake failed '" + message + "'")
+
+    # trigger the test.
+    (status, duration) =                                                \
+       Call(namespace, line, symbol)
+
+    # set the output
+    output = namespace.test
 
     # destroy the virtual machine instance.
     try:
@@ -427,7 +429,10 @@ def                     QEMU(namespace):
   except Exception, exception:
     # destroy the virtual machine by terminating
     # the process.
-    os.kill(monitor[0].pid, signal.SIGKILL)
+    try:
+      os.kill(monitor[0].pid, signal.SIGKILL)
+    except:
+      pass
 
     # wait for the process to terminate.
     ktp.process.Wait(monitor)
@@ -436,35 +441,43 @@ def                     QEMU(namespace):
 #    [when ready remove: os.kill, Wait and Pull]
 #    output = ktp.process.Terminate(monitor)
 
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
+    # set the status.
+    status = ktp.StatusError
+
+    # retrieve the emulator's output.
+    output = """
+%(emulator)s
+%(test)s
+%(exception)s
+""" % { "emulator": ktp.miscellaneous.Pull(stream),
+        "test": namespace.test,
+        "exception": str(exception) }
 
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
 
-    # display the output.
-    if output:
-      print(output)
-
-    # stop the script.
-    Error(namespace,
-          str(exception))
-
   # reset the alarm.
   signal.alarm(0)
+
+  return (status, duration, output)
 
 #
 # this function generates a Xen configuration file for
 # the run virtual machine and runs it.
 #
-def                     Xen(namespace):
+def                     Xen(namespace,
+                            symbol):
   configuration = None
   stream = None
   monitor = None
   output = None
   content = None
   match = None
+  line = None
+  status = None
+  message = None
   port = None
+  duration = None
 
   # create a temporary file.
   namespace.configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
@@ -500,7 +513,7 @@ serial = "pty"
                                  option = ktp.process.OptionBackground)
 
     # wait a few seconds to be sure Xen has started.
-    time.sleep(3)
+    time.sleep(1)
 
     # read the status file.
     content = ktp.miscellaneous.Pull("/var/log/xen/qemu-dm-" +          \
@@ -520,8 +533,21 @@ serial = "pty"
     # set the port.
     port = match.group(1)
 
-    # launch the test suite.
-    Suite(namespace, port)
+    # initialize the serial line.
+    line = serial.Serial(port, 57600)
+
+    # perform the handshake.
+    (status, message) = Handshake(line)
+
+    if status == StatusError:
+      raise Exception("[error] handshake failed '" + message + "'")
+
+    # trigger the test.
+    (status, duration) =                                                \
+       Call(namespace, line, symbol)
+
+    # set the output
+    output = namespace.test
 
     # destroy the virtual machine instance.
     ktp.process.Invoke("xm",
@@ -536,22 +562,81 @@ serial = "pty"
                        [ "destroy",
                          namespace.name ])
 
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
+    # set the status.
+    status = ktp.StatusError
+
+    # retrieve the emulator's output.
+    output = """
+%(emulator)s
+%(test)s
+%(exception)s
+""" % { "emulator": ktp.miscellaneous.Pull(stream),
+        "test": namespace.test,
+        "exception": str(exception) }
 
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
 
-    # display the output.
-    if output:
-      print(output)
-
-    # stop the script.
-    Error(namespace,
-          str(exception))
-
   # reset the alarm.
   signal.alarm(0)
+
+  return (status, duration, output)
+
+#
+# this function stresses the microkernel with the tests suite.
+#
+def                     Suite(namespace):
+  status = None
+  component = None
+  test = None
+  duration = None
+  output = None
+
+  # load the manifests.
+  Manifests(namespace)
+
+  # initialize the results.
+  Results(namespace)
+
+  # launch the tests.
+  for component in namespace.manifests:
+    # verbose messaging.
+    if namespace.verbose:
+      print(component)
+
+    for test in namespace.manifests[component]:
+      # verbose.
+      if namespace.verbose:
+        # XXX[change for python 2.7 ... 3 with python("  " + test, end="")]
+        print "  " + test,
+
+      # launch the testing process according to the environment.
+      if namespace.environment == XenEnvironment:
+        (status, duration, output) =                                    \
+            Xen(namespace,
+                namespace.manifests[component][test]["symbol"])
+      elif namespace.environment == QEMUEnvironment:
+        (status, duration, output) =                                    \
+            QEMU(namespace,
+                 namespace.manifests[component][test]["symbol"])
+      else:
+        Error(namespace,
+              "unknown environment '" + namespace.environment + "'")
+
+      # fill the results.
+      if (status == StatusError) or                                     \
+         (output != namespace.manifests[component][test]["output"]):
+        namespace.results[component][test]["status"] = False
+      else:
+        namespace.results[component][test]["status"] = True
+
+      namespace.results[component][test]["duration"] = duration
+      namespace.results[component][test]["output"] = output
+
+      # verbose messaging.
+      if namespace.verbose:
+        print(":: " +                                                   \
+                str(namespace.results[component][test]["status"]))
 
 #
 # this function initializes the script.
@@ -560,6 +645,7 @@ def                     Initialize(namespace):
   # initialize the local variables.
   namespace.iso = None
   namespace.configuration = None
+  namespace.test = None
 
 #
 # this function cleans what has been created by this script.
@@ -621,14 +707,8 @@ def                     Main():
   # create a bootable disk image.
   ISO(namespace)
 
-  # launch the testing process according to the environment.
-  if namespace.environment == XenEnvironment:
-    Xen(namespace)
-  elif namespace.environment == QEMUEnvironment:
-    QEMU(namespace)
-  else:
-    Error(namespace,
-          "unknown environment '" + namespace.environment + "'")
+  # launch the test suite.
+  Suite(namespace)
 
   # clean the temporary stuff.
   Clean(namespace)
