@@ -1,4 +1,4 @@
-name: set/bpt/01
+name: core/set/bpt/01
 description: This test reserves a basic set, releases it and then reserves other sets with advanced though invalid options.
-symbol: test_set_bpt_01
+symbol: test_core_set_bpt_01
 output:

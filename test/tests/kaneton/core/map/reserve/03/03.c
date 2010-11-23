@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...E/test/tests/kaneton/map/reserve/03/03.c
+ * file          /home/mycure/kane...t/tests/kaneton/core/map/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 09:12:42 2010]
+ * updated       julien quintard   [thu nov 18 16:18:21 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_map_reserve_03(void)
+void			test_core_map_reserve_03(void)
 {
   t_vaddr		addr;
   t_uint32		i;

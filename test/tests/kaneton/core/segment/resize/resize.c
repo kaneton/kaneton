@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...st/tests/kaneton/segment/resize/resize.c
+ * file          /home/mycure/kane...sts/kaneton/core/segment/resize/resize.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 15:32:12 2010]
+ * updated       julien quintard   [thu nov 18 16:32:32 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_resize(void)
+void			test_core_segment_resize(void)
 {
   i_segment		seg;
   i_segment		seg2;

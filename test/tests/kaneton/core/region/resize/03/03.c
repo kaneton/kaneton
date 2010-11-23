@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...test/tests/kaneton/region/resize/03/03.c
+ * file          /home/mycure/kane...tests/kaneton/core/region/resize/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [wed nov 17 13:29:13 2010]
+ * updated       julien quintard   [thu nov 18 16:22:25 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_region_resize_03(void)
+void			test_core_region_resize_03(void)
 {
   i_segment		seg;
   i_region		reg;

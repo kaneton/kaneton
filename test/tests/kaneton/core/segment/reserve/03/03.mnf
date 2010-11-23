@@ -1,4 +1,4 @@
-name: segment/reserve/03
+name: core/segment/reserve/03
 description: This test reserves a large segment and releases it.
-symbol: test_segment_reserve_03
+symbol: test_core_segment_reserve_03
 output:

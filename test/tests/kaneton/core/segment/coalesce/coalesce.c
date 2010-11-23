@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ests/kaneton/segment/coalesce/coalesce.c
+ * file          /home/mycure/kane...kaneton/core/segment/coalesce/coalesce.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 14:22:51 2010]
+ * updated       julien quintard   [thu nov 18 16:24:24 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_coalesce(void)
+void			test_core_segment_coalesce(void)
 {
   i_segment		seg;
   i_segment		seg2;

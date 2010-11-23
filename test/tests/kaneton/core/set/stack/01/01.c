@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_set_stack_01(void)
+void			test_core_set_stack_01(void)
 {
   i_set			id;
 

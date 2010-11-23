@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/repo...ABLE/test/tests/kaneton/id/clone/clone.h
+ * file          /home/mycure/kane...test/tests/kaneton/core/id/clone/clone.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [sun oct 17 16:19:01 2010]
+ * updated       julien quintard   [thu nov 18 16:15:41 2010]
  */
 
-#ifndef TESTS_KANETON_ID_CLONE_CLONE_H
-#define TESTS_KANETON_ID_CLONE_CLONE_H
+#ifndef TESTS_KANETON_CORE_ID_CLONE_CLONE_H
+#define TESTS_KANETON_CORE_ID_CLONE_CLONE_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * clone.c
  */
 
-void			test_id_clone(void);
+void			test_core_id_clone(void);
 
 
 /*

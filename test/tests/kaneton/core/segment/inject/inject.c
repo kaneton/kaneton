@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...st/tests/kaneton/segment/inject/inject.c
+ * file          /home/mycure/kane...sts/kaneton/core/segment/inject/inject.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 15:38:27 2010]
+ * updated       julien quintard   [thu nov 18 16:26:18 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_inject(void)
+void			test_core_segment_inject(void)
 {
   i_task		task;
   i_as			as;

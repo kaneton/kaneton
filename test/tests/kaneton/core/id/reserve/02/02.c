@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...LE/test/tests/kaneton/id/reserve/02/02.c
+ * file          /home/mycure/kane...st/tests/kaneton/core/id/reserve/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [wed nov 17 08:26:47 2010]
+ * updated       julien quintard   [thu nov 18 16:16:59 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_id_reserve_02(void)
+void			test_core_id_reserve_02(void)
 {
   o_id			id;
   t_id			i[1024];

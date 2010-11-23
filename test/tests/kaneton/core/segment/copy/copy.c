@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...E/test/tests/kaneton/segment/copy/copy.c
+ * file          /home/mycure/kane...t/tests/kaneton/core/segment/copy/copy.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 14:26:53 2010]
+ * updated       julien quintard   [thu nov 18 16:25:24 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_copy(void)
+void			test_core_segment_copy(void)
 {
   i_segment		seg;
   i_segment		seg_ref;

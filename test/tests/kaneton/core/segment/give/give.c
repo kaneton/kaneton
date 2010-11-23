@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...E/test/tests/kaneton/segment/give/give.c
+ * file          /home/mycure/kane...t/tests/kaneton/core/segment/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat nov  6 22:41:14 2010]
+ * updated       julien quintard   [thu nov 18 16:26:00 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_give(void)
+void			test_core_segment_give(void)
 {
   i_task		task1;
   i_task		task2;

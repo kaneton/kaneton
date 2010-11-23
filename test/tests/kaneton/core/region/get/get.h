@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/test/tests/kaneton/region/get/get.h
+ * file          /home/mycure/kane...test/tests/kaneton/core/region/get/get.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [mon nov  8 11:52:03 2010]
+ * updated       julien quintard   [thu nov 18 16:19:33 2010]
  */
 
-#ifndef TESTS_KANETON_REGION_GET_GET_H
-#define TESTS_KANETON_REGION_GET_GET_H
+#ifndef TESTS_KANETON_CORE_REGION_GET_GET_H
+#define TESTS_KANETON_CORE_REGION_GET_GET_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * get.c
  */
 
-void			test_region_get(void);
+void			test_core_region_get(void);
 
 
 /*

@@ -1,4 +1,4 @@
-name: set/ll/04
+name: core/set/ll/04
 description: This test reserves a set, adds objects, removes some, adds more, display the set contents etc. before releasing the set.
-symbol: test_set_ll_04
+symbol: test_core_set_ll_04
 output: "5 elements: 64 45 122 98654 80\n8 elements: 123 123 2 987 64 45 122 98654\n"

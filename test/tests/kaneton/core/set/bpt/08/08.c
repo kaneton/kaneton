@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_set_bpt_08(void)
+void			test_core_set_bpt_08(void)
 {
   t_id			objs[10];
   i_set			id;

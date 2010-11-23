@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...test/tests/kaneton/segment/split/split.h
+ * file          /home/mycure/kane...tests/kaneton/core/segment/split/split.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [sat nov  6 18:47:34 2010]
+ * updated       julien quintard   [thu nov 18 16:32:54 2010]
  */
 
-#ifndef TESTS_KANETON_SEGMENT_SPLIT_SPLIT_H
-#define TESTS_KANETON_SEGMENT_SPLIT_SPLIT_H
+#ifndef TESTS_KANETON_CORE_SEGMENT_SPLIT_SPLIT_H
+#define TESTS_KANETON_CORE_SEGMENT_SPLIT_SPLIT_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * split.c
  */
 
-void			test_segment_split(void);
+void			test_core_segment_split(void);
 
 
 /*

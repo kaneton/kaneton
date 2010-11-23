@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...st/tests/kaneton/segment/reserve/07/07.c
+ * file          /home/mycure/kane...sts/kaneton/core/segment/reserve/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov  8 09:48:37 2010]
+ * updated       julien quintard   [thu nov 18 16:32:08 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_reserve_07(void)
+void			test_core_segment_reserve_07(void)
 {
   i_task		task;
   i_as			as;

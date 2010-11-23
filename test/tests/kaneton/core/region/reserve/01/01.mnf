@@ -1,4 +1,4 @@
-name: region/reserve/01
+name: core/region/reserve/01
 description: This test simply reserves a segment which is mapped with a region.
-symbol: test_region_reserve_01
+symbol: test_core_region_reserve_01
 output:

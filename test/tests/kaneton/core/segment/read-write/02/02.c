@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...tests/kaneton/segment/read-write/02/02.c
+ * file          /home/mycure/kane.../kaneton/core/segment/read-write/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 14:42:38 2010]
+ * updated       julien quintard   [thu nov 18 16:28:54 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_readwrite_02(void)
+void			test_core_segment_readwrite_02(void)
 {
   i_segment		seg;
   char			buff[2 * PAGESZ];

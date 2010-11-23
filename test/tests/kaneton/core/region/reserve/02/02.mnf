@@ -1,4 +1,4 @@
-name: region/reserve/02
+name: core/region/reserve/02
 description: This test reserves a segment which is mapped in a new task's address space at a precise location. Finally, every resource is released including the task and address space.
-symbol: test_region_reserve_02
+symbol: test_core_region_reserve_02
 output:

@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...test/tests/kaneton/region/resize/02/02.h
+ * file          /home/mycure/kane...tests/kaneton/core/region/resize/02/02.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [mon nov  8 11:32:21 2010]
+ * updated       julien quintard   [thu nov 18 16:21:51 2010]
  */
 
-#ifndef TESTS_KANETON_REGION_RESIZE_02_02_H
-#define TESTS_KANETON_REGION_RESIZE_02_02_H
+#ifndef TESTS_KANETON_CORE_REGION_RESIZE_02_02_H
+#define TESTS_KANETON_CORE_REGION_RESIZE_02_02_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * 02.c
  */
 
-void			test_region_resize_02(void);
+void			test_core_region_resize_02(void);
 
 
 /*

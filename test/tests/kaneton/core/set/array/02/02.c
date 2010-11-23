@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_set_array_02(void)
+void			test_core_set_array_02(void)
 {
   i_set			id;
   t_id			objs[64];

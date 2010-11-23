@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...st/tests/kaneton/segment/inject/inject.h
+ * file          /home/mycure/kane...sts/kaneton/core/segment/inject/inject.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [sat nov  6 17:11:09 2010]
+ * updated       julien quintard   [thu nov 18 16:26:13 2010]
  */
 
-#ifndef TESTS_KANETON_SEGMENT_INJECT_INJECT_H
-#define TESTS_KANETON_SEGMENT_INJECT_INJECT_H
+#ifndef TESTS_KANETON_CORE_SEGMENT_INJECT_INJECT_H
+#define TESTS_KANETON_CORE_SEGMENT_INJECT_INJECT_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * inject.c
  */
 
-void			test_segment_inject(void);
+void			test_core_segment_inject(void);
 
 
 /*

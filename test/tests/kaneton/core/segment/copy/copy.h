@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...E/test/tests/kaneton/segment/copy/copy.h
+ * file          /home/mycure/kane...t/tests/kaneton/core/segment/copy/copy.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [wed oct 20 14:06:13 2010]
+ * updated       julien quintard   [thu nov 18 16:25:13 2010]
  */
 
-#ifndef TESTS_KANETON_SEGMENT_COPY_COPY_H
-#define TESTS_KANETON_SEGMENT_COPY_COPY_H
+#ifndef TESTS_KANETON_CORE_SEGMENT_COPY_COPY_H
+#define TESTS_KANETON_CORE_SEGMENT_COPY_COPY_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * copy.c
  */
 
-void			test_segment_copy(void);
+void			test_core_segment_copy(void);
 
 
 /*

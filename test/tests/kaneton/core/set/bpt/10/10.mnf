@@ -1,4 +1,4 @@
-name: set/bpt/10
+name: core/set/bpt/10
 description: This test reserves a set, tries to locate and remove non-existent items and finishes by adding an object and dumping the set content.
-symbol: test_set_bpt_10
+symbol: test_core_set_bpt_10
 output: "1 elements: 42\n"

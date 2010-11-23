@@ -1,4 +1,4 @@
-name: as/translation
+name: core/as/translation
 description: This test reserves a segment/region couple and verifies that the inner virtual/physical address translations are correct.
-symbol: test_as_translation
+symbol: test_core_as_translation
 output:

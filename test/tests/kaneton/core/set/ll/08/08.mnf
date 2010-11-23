@@ -1,4 +1,4 @@
-name: set/ll/08
+name: core/set/ll/08
 description: This test reserves a set, adds many objects, flushes the set etc.
-symbol: test_set_ll_08
+symbol: test_core_set_ll_08
 output: "0 elements: \n0 elements: \n0 elements: \n"

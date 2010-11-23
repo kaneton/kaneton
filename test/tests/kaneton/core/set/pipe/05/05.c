@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_set_pipe_05(void)
+void			test_core_set_pipe_05(void)
 {
   i_set			id;
   t_iterator		it;

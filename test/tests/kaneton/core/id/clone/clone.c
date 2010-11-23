@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/test/tests/kaneton/id/clone/clone.c
+ * file          /home/mycure/kane...test/tests/kaneton/core/id/clone/clone.c
  *
  * created       julien quintard   [wed apr 15 04:42:02 2009]
- * updated       julien quintard   [wed nov 17 08:20:49 2010]
+ * updated       julien quintard   [thu nov 18 16:15:27 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_id_clone(void)
+void			test_core_id_clone(void)
 {
   o_id			id;
   t_id			i;

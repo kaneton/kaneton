@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...STABLE/test/tests/kaneton/as/give/give.c
+ * file          /home/mycure/kane...E/test/tests/kaneton/core/as/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 07:53:38 2010]
+ * updated       julien quintard   [thu nov 18 16:13:10 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_as_give(void)
+void			test_core_as_give(void)
 {
   i_task		task1;
   i_task		task2;

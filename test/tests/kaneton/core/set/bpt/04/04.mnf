@@ -1,4 +1,4 @@
-name: set/bpt/04
+name: core/set/bpt/04
 description: This test reserves a set, adds objects, removes some, adds more, display the set contents etc. before releasing the set.
-symbol: test_set_bpt_04
+symbol: test_core_set_bpt_04
 output: "5 elements: 45 64 80 122 98654\n8 elements: 2 45 64 122 123 123 987 98654\n"

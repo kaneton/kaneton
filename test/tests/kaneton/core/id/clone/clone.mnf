@@ -1,4 +1,4 @@
-name: id/clone
+name: core/id/clone
 description: This test reserves, clones and releases identifiers.
-symbol: test_id_clone
+symbol: test_core_id_clone
 output:

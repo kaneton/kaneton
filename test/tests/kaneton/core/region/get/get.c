@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/test/tests/kaneton/region/get/get.c
+ * file          /home/mycure/kane...test/tests/kaneton/core/region/get/get.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov  8 11:57:53 2010]
+ * updated       julien quintard   [thu nov 18 16:19:39 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_region_get(void)
+void			test_core_region_get(void)
 {
   i_segment		seg;
   i_region		reg;

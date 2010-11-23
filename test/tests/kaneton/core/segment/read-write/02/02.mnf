@@ -1,4 +1,4 @@
-name: segment/read-write/02
+name: core/segment/read-write/02
 description: This test reserves a segment. A serie of invalid calls are performed in order to stress the segment manager implementation regarding readings and writings. Finally, the segment is released.
-symbol: test_segment_readwrite_02
+symbol: test_core_segment_readwrite_02
 output:

@@ -11,8 +11,8 @@
  * updated       julien quintard   [wed nov 17 20:16:42 2010]
  */
 
-#ifndef TESTS_KANETON_SET_ARRAY_07_07_H
-#define TESTS_KANETON_SET_ARRAY_07_07_H
+#ifndef TESTS_KANETON_CORE_SET_ARRAY_07_07_H
+#define TESTS_KANETON_CORE_SET_ARRAY_07_07_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * 07.c
  */
 
-void			test_set_array_07(void);
+void			test_core_set_array_07(void);
 
 
 /*

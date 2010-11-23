@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/test/tests/kaneton/as/map/map.h
+ * file          /home/mycure/kane...BLE/test/tests/kaneton/core/as/map/map.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [sun nov  7 13:25:32 2010]
+ * updated       julien quintard   [thu nov 18 16:13:31 2010]
  */
 
-#ifndef TESTS_KANETON_AS_MAP_MAP_H
-#define TESTS_KANETON_AS_MAP_MAP_H
+#ifndef TESTS_KANETON_CORE_AS_MAP_MAP_H
+#define TESTS_KANETON_CORE_AS_MAP_MAP_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * map.c
  */
 
-void			test_as_map(void);
+void			test_core_as_map(void);
 
 
 /*

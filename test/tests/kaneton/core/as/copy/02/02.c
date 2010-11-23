@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...TABLE/test/tests/kaneton/as/copy/02/02.c
+ * file          /home/mycure/kane.../test/tests/kaneton/core/as/copy/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [sun nov  7 14:49:11 2010]
+ * updated       julien quintard   [thu nov 18 16:12:51 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_as_copy_02(void)
+void			test_core_as_copy_02(void)
 {
   i_task		task1;
   i_task		task2;

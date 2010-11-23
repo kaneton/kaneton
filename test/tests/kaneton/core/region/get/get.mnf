@@ -1,4 +1,4 @@
-name: region/get
+name: core/region/get
 description: This test reserves a segment and a region. Then, the region is retrieve through the get() routine before verifying its validity.
-symbol: test_region_get
+symbol: test_core_region_get
 output:

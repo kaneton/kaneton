@@ -1,4 +1,4 @@
-name: region/reserve/03
+name: core/region/reserve/03
 description: This test reserves a segment and three regions which maps portions of the segment. The test writes data to the segments through the regions before releasing everything.
-symbol: test_region_reserve_03
+symbol: test_core_region_reserve_03
 output:

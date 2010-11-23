@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...est/tests/kaneton/region/reserve/02/02.c
+ * file          /home/mycure/kane...ests/kaneton/core/region/reserve/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [wed nov 17 13:25:26 2010]
+ * updated       julien quintard   [thu nov 18 16:20:53 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_region_reserve_02(void)
+void			test_core_region_reserve_02(void)
 {
   i_task		task;
   i_as			as;

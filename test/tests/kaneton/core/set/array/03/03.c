@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_set_array_03(void)
+void			test_core_set_array_03(void)
 {
   i_set			id;
   t_setsz		i;

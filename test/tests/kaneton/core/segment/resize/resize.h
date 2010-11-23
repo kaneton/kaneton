@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...st/tests/kaneton/segment/resize/resize.h
+ * file          /home/mycure/kane...sts/kaneton/core/segment/resize/resize.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [sat nov  6 22:16:17 2010]
+ * updated       julien quintard   [thu nov 18 16:32:26 2010]
  */
 
-#ifndef TESTS_KANETON_SEGMENT_RESIZE_RESIZE_H
-#define TESTS_KANETON_SEGMENT_RESIZE_RESIZE_H
+#ifndef TESTS_KANETON_CORE_SEGMENT_RESIZE_RESIZE_H
+#define TESTS_KANETON_CORE_SEGMENT_RESIZE_RESIZE_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * resize.c
  */
 
-void			test_segment_resize(void);
+void			test_core_segment_resize(void);
 
 
 /*

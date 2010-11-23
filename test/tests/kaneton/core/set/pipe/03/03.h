@@ -11,8 +11,8 @@
  * updated       julien quintard   [wed nov 17 19:56:11 2010]
  */
 
-#ifndef TESTS_KANETON_SET_ARRAY_03_03_H
-#define TESTS_KANETON_SET_ARRAY_03_03_H
+#ifndef TESTS_KANETON_CORE_SET_ARRAY_03_03_H
+#define TESTS_KANETON_CORE_SET_ARRAY_03_03_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -40,7 +40,7 @@ typedef struct
  * 03.c
  */
 
-void			test_set_pipe_03(void);
+void			test_core_set_pipe_03(void);
 
 
 /*

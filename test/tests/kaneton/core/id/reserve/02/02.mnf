@@ -1,4 +1,4 @@
-name: id/reserve/02
+name: core/id/reserve/02
 description: This test reserves thousands of identifiers, checking that no collisions occured. The identifiers are then released.
-symbol: test_id_reserve_02
+symbol: test_core_id_reserve_02
 output:

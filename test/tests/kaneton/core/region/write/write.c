@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../test/tests/kaneton/region/write/write.c
+ * file          /home/mycure/kane.../tests/kaneton/core/region/write/write.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov  8 12:00:56 2010]
+ * updated       julien quintard   [thu nov 18 16:23:12 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_region_write(void)
+void			test_core_region_write(void)
 {
   i_segment		seg;
   i_region		reg;

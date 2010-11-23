@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../test/tests/kaneton/region/split/split.c
+ * file          /home/mycure/kane.../tests/kaneton/core/region/split/split.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 13:26:43 2010]
+ * updated       julien quintard   [thu nov 18 16:22:42 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_region_split(void)
+void			test_core_region_split(void)
 {
   i_segment		seg;
   i_region		reg;

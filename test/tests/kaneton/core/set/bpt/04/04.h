@@ -11,8 +11,8 @@
  * updated       julien quintard   [wed nov 17 17:02:58 2010]
  */
 
-#ifndef TESTS_KANETON_SET_ARRAY_04_04_H
-#define TESTS_KANETON_SET_ARRAY_04_04_H
+#ifndef TESTS_KANETON_CORE_SET_ARRAY_04_04_H
+#define TESTS_KANETON_CORE_SET_ARRAY_04_04_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * 04.c
  */
 
-void			test_set_bpt_04(void);
+void			test_core_set_bpt_04(void);
 
 
 /*

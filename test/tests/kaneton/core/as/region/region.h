@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...LE/test/tests/kaneton/as/region/region.h
+ * file          /home/mycure/kane...st/tests/kaneton/core/as/region/region.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [sun nov  7 13:43:09 2010]
+ * updated       julien quintard   [thu nov 18 16:14:22 2010]
  */
 
-#ifndef TESTS_KANETON_AS_REGION_REGION_H
-#define TESTS_KANETON_AS_REGION_REGION_H
+#ifndef TESTS_KANETON_CORE_AS_REGION_REGION_H
+#define TESTS_KANETON_CORE_AS_REGION_REGION_H
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -30,7 +30,7 @@
  * region.c
  */
 
-void			test_as_region(void);
+void			test_core_as_region(void);
 
 
 /*

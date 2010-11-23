@@ -1,4 +1,4 @@
-name: set/stack/04
+name: core/set/stack/04
 description: This test reserves a set, pushes objects, pops some, pushes more, display the set contents etc. before releasing the set.
-symbol: test_set_stack_04
+symbol: test_core_set_stack_04
 output: "0 elements: \n3 elements: 3 2 18\n"

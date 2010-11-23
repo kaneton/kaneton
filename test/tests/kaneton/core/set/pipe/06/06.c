@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_set_pipe_06(void)
+void			test_core_set_pipe_06(void)
 {
   t_id			objs[10];
   i_set			id;

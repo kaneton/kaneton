@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...test/tests/kaneton/segment/flush/flush.c
+ * file          /home/mycure/kane...tests/kaneton/core/segment/flush/flush.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat nov  6 15:28:04 2010]
+ * updated       julien quintard   [thu nov 18 16:25:37 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_flush(void)
+void			test_core_segment_flush(void)
 {
   i_task		task;
   o_as*			o;

@@ -1,4 +1,4 @@
-name: segment/permissions/04
+name: core/segment/permissions/04
 description: This test reserves a segment and tries to write into it before releasing it.
-symbol: test_segment_permissions_04
+symbol: test_core_segment_permissions_04
 output:

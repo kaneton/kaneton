@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_set_array_07(void)
+void			test_core_set_array_07(void)
 {
   i_set			id;
   t_iterator		it;

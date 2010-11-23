@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [sat nov 20 23:55:17 2010]
+ * updated       julien quintard   [tue nov 23 16:54:25 2010]
  */
 
 #ifndef TESTS_KANETON_MACHINE_ARCHITECTURE_IA32_AS_SWITCH_SWITCH_H

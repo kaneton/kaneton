@@ -1,4 +1,4 @@
-name: id/reserve/01
+name: core/id/reserve/01
 description: This test reserves a single identifier.
-symbol: test_id_reserve_01
+symbol: test_core_id_reserve_01
 output:

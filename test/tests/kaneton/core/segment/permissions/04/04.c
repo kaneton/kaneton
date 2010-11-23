@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ests/kaneton/segment/permissions/04/04.c
+ * file          /home/mycure/kane...kaneton/core/segment/permissions/04/04.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 14:39:23 2010]
+ * updated       julien quintard   [thu nov 18 16:27:47 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_permissions_04(void)
+void			test_core_segment_permissions_04(void)
 {
   i_segment		seg;
   t_uint32		i = 0x41424344;

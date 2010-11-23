@@ -1,4 +1,4 @@
-name: set/array/06
+name: core/set/array/06
 description: This test reserves a set, adds several objects, inserts a specific object, appends another and so forth before releasing the set.
-symbol: test_set_array_06
+symbol: test_core_set_array_06
 output: "14 elements: 4 454 80 456 98654 42 122 45 64 90 12346 67 90 123456\n"

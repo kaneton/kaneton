@@ -1,4 +1,4 @@
-name: segment/permissions/03
+name: core/segment/permissions/03
 description: This test reserves a segment and changes its permissions. Note that this test tries to set invalid permissions. Finally, the segment is released.
-symbol: test_segment_permissions_03
+symbol: test_core_segment_permissions_03
 output:

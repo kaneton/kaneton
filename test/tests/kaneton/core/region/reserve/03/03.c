@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...est/tests/kaneton/region/reserve/03/03.c
+ * file          /home/mycure/kane...ests/kaneton/core/region/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [wed nov 17 13:25:30 2010]
+ * updated       julien quintard   [thu nov 18 16:21:13 2010]
  */
 
 /*
@@ -30,7 +30,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_region_reserve_03(void)
+void			test_core_region_reserve_03(void)
 {
   i_segment		seg;
   i_region		reg1;

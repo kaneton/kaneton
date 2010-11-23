@@ -1,4 +1,4 @@
-name: set/pipe/06
+name: core/set/pipe/06
 description: This test reserves a set, pushes several objects, flushes the set, reserves another set with different options, pushes objects, flushes, releases etc.
-symbol: test_set_pipe_06
+symbol: test_core_set_pipe_06
 output: "0 elements: \n0 elements: \n0 elements: \n"

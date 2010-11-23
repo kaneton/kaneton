@@ -1,4 +1,4 @@
-name: segment/flush
+name: core/segment/flush
 description: This test creates a task, reserves segments and finally flushes all the segments.
-symbol: test_segment_flush
+symbol: test_core_segment_flush
 output:

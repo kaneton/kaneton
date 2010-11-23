@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../test/tests/kaneton/region/flush/01/01.c
+ * file          /home/mycure/kane.../tests/kaneton/core/region/flush/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 13:16:31 2010]
+ * updated       julien quintard   [thu nov 18 16:18:50 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_region_flush_01(void)
+void			test_core_region_flush_01(void)
 {
   i_task		task;
   i_as			as;

@@ -1,4 +1,4 @@
-name: segment/reserve/02
+name: core/segment/reserve/02
 description: This test reserves a segment and verifies it.
-symbol: test_segment_reserve_02
+symbol: test_core_segment_reserve_02
 output:

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...tests/kaneton/as/read-write/read-write.c
+ * file          /home/mycure/kane.../kaneton/core/as/read-write/read-write.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 07:58:12 2010]
+ * updated       julien quintard   [thu nov 18 16:14:09 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_as_readwrite(void)
+void			test_core_as_readwrite(void)
 {
   i_task		task;
   i_as			as;

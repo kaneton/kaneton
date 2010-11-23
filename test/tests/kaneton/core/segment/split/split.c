@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...test/tests/kaneton/segment/split/split.c
+ * file          /home/mycure/kane...tests/kaneton/core/segment/split/split.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 15:35:29 2010]
+ * updated       julien quintard   [thu nov 18 16:33:04 2010]
  */
 
 /*
@@ -29,7 +29,7 @@ extern i_as		kasid;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_segment_split(void)
+void			test_core_segment_split(void)
 {
   i_segment		seg;
   i_segment		seg2;
