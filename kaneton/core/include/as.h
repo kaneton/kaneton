@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/as.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [wed apr 15 07:21:35 2009]
+ * updated       julien quintard   [mon nov 22 10:08:18 2010]
  */
 
 #ifndef CORE_AS_H
@@ -45,9 +45,9 @@
 
 typedef struct
 {
-  i_as				asid;
+  i_as				id;
 
-  i_task			tskid;
+  i_task			task;
 
   i_set				segments;
   i_set				regions;
@@ -104,7 +104,7 @@ typedef struct
 #define AS_CHECK(_as_)							\
   {									\
     if ((_as_) == NULL)							\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*
@@ -135,47 +135,47 @@ typedef struct
  * ../../core/as/as.c
  */
 
-t_error			as_show(i_as				asid);
+t_error			as_show(i_as				id);
 
 t_error			as_dump(void);
 
-t_error			as_give(i_task			tskid,
-				i_as			asid);
+t_error			as_give(i_as				id,
+				i_task				task);
 
-t_error			as_vaddr(i_as			asid,
-				 t_paddr		physical,
-				 t_vaddr*		virtual);
+t_error			as_vaddr(i_as				id,
+				 t_paddr			physical,
+				 t_vaddr*			virtual);
 
-t_error			as_paddr(i_as		asid,
-				 t_vaddr	virtual,
-				 t_paddr*	physical);
+t_error			as_paddr(i_as				id,
+				 t_vaddr			virtual,
+				 t_paddr*			physical);
 
-t_error			as_read(i_as				asid,
-				t_vaddr				src,
+t_error			as_read(i_as				id,
+				t_vaddr				source,
 				t_vsize				size,
-				void*				dst);
+				void*				destination);
 
-t_error			as_write(i_as				asid,
-				 const void*			src,
+t_error			as_write(i_as				id,
+				 const void*			source,
 				 t_vsize			size,
-				 t_vaddr			dst);
+				 t_vaddr			destination);
 
-t_error			as_copy(i_as				src_as,
-				t_vaddr				src,
-				i_as				dst_as,
-				t_vaddr				dst,
-				t_vsize				size);
+t_error			as_copy(i_as			source_id,
+				t_vaddr			source_address,
+				i_as			destination_id,
+				t_vaddr			destination_address,
+				t_vsize			size);
 
-t_error			as_clone(i_task				tskid,
-				 i_as				old,
-				 i_as*				new);
+t_error			as_clone(i_as				id,
+				 i_task				task,
+				 i_as*				as);
 
-t_error			as_reserve(i_task			tskid,
-				   i_as*			asid);
+t_error			as_reserve(i_task			task,
+				   i_as*			id);
 
-t_error			as_release(i_as			asid);
+t_error			as_release(i_as			id);
 
-t_error			as_get(i_as				asid,
+t_error			as_get(i_as				id,
 			       o_as**				o);
 
 t_error			as_initialize(void);

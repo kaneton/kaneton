@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/modules/modules.h
+ * file          /home/mycure/kaneton.NEW/kaneton/modules/modules.h
  *
  * created       julien quintard   [fri may  1 12:58:24 2009]
- * updated       julien quintard   [mon may 17 12:36:55 2010]
+ * updated       julien quintard   [tue nov 23 10:29:14 2010]
  */
 
 #ifndef MODULES_MODULES_H
@@ -65,6 +65,17 @@
   module_dispatch(_function_, ##_arguments_)
 #else
 # define module_call_test(_function_, _arguments_...)
+#endif
+
+/*
+ * report
+ */
+#ifdef MODULE_report
+# include <modules/report/include/report.h>
+# define module_call_report(_function_, _arguments_...)			\
+  module_dispatch(_function_, ##_arguments_)
+#else
+# define module_call_report(_function_, _arguments_...)
 #endif
 
 #endif

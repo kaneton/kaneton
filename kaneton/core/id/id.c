@@ -35,7 +35,7 @@
  * the id manager structure.
  */
 
-m_id*			id = NULL;
+m_id*			_id = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -47,11 +47,12 @@ m_id*			id = NULL;
 
 t_error			id_show(o_id*				o)
 {
-  ID_ENTER(id);
+  ID_ENTER(_id);
 
-  module_call(console, console_message, '#', "    id object's state: %qu\n", o->id);
+  module_call(console, console_message,
+	      '#', "    id object's state: %qu\n", o->id);
 
-  ID_LEAVE(id, ERROR_NONE);
+  ID_LEAVE(_id, ERROR_OK);
 }
 
 /*
@@ -65,14 +66,14 @@ t_error			id_clone(o_id*				o,
 {
   t_error		r;
 
-  ID_ENTER(id);
+  ID_ENTER(_id);
 
   assert(o != NULL);
   assert(new != NULL);
 
   r = id_reserve(o, new);
 
-  ID_LEAVE(id, r);
+  ID_LEAVE(_id, r);
 }
 
 /*
@@ -82,14 +83,14 @@ t_error			id_clone(o_id*				o,
 t_error			id_reserve(o_id*			o,
 				   t_id*			i)
 {
-  ID_ENTER(id);
+  ID_ENTER(_id);
 
   assert(o != NULL);
   assert(i != NULL);
 
   *i = o->id++;
 
-  ID_LEAVE(id, ERROR_NONE);
+  ID_LEAVE(_id, ERROR_OK);
 }
 
 /*
@@ -99,11 +100,11 @@ t_error			id_reserve(o_id*			o,
 t_error			id_release(o_id*			o,
 				   t_id				i)
 {
-  ID_ENTER(id);
+  ID_ENTER(_id);
 
   assert(o != NULL);
 
-  ID_LEAVE(id, ERROR_NONE);
+  ID_LEAVE(_id, ERROR_OK);
 }
 
 /*
@@ -112,13 +113,13 @@ t_error			id_release(o_id*			o,
 
 t_error			id_build(o_id*				o)
 {
-  ID_ENTER(id);
+  ID_ENTER(_id);
 
   assert(o != NULL);
 
   memset(o, 0x0, sizeof(o_id));
 
-  ID_LEAVE(id, ERROR_NONE);
+  ID_LEAVE(_id, ERROR_OK);
 }
 
 /*
@@ -127,32 +128,31 @@ t_error			id_build(o_id*				o)
 
 t_error			id_destroy(o_id*			o)
 {
-  ID_ENTER(id);
+  ID_ENTER(_id);
 
   assert(o != NULL);
 
   memset(o, 0x0, sizeof(o_id));
 
-  ID_LEAVE(id, ERROR_NONE);
+  ID_LEAVE(_id, ERROR_OK);
 }
 
-/* [block::test2] */
 /*
  * this function must initialize the id manager.
  */
-/* [endblock::test2] */
 
 t_error			id_initialize(void)
 {
-  if ((id = malloc(sizeof(m_id))) == NULL)
+  if ((_id = malloc(sizeof(m_id))) == NULL)
     {
-      module_call(console, console_message, '!', "id: cannot allocate memory for the identifier manager "
-	       "structure\n");
+      module_call(console, console_message,
+		  '!', "id: cannot allocate memory for the identifier manager "
+		  "structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -161,7 +161,7 @@ t_error			id_initialize(void)
 
 t_error			id_clean(void)
 {
-  free(id);
+  free(_id);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

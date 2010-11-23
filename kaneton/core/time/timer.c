@@ -38,7 +38,7 @@ machine_include(timer);
  * the timer manager variable.
  */
 
-m_timer*		timer = NULL;
+m_timer*		_timer = NULL;
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -48,13 +48,7 @@ m_timer*		timer = NULL;
  * the kernel manager.
  */
 
-extern m_kernel*	kernel;
-
-/*
- * the kernel task identifier.
- */
-
-extern i_task		ktask;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -74,23 +68,24 @@ t_error			timer_show(i_timer			id)
 {
   o_timer*		o;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   /*
    * 1)
    */
 
-  if (timer_get(id, &o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_get(id, &o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "  timer %qd: delay = %u\n",
-	   o->timerid, o->delay - timer->timeref);
+  module_call(console, console_message,
+	      '#', "  timer %qd: delay = %u\n",
+	      o->id, o->delay - _timer->reference);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -110,31 +105,33 @@ t_error			timer_dump(void)
   t_setsz		size;
   t_iterator		i;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   /*
    * 1)
    */
 
-  if (set_size(timer->timers, &size) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (set_size(_timer->timers, &size) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  module_call(console, console_message, '#', "dumping %qd timer(s):\n", size);
+  module_call(console, console_message,
+	      '#', "dumping %qd timer(s):\n",
+	      size);
 
   /*
    *  2)
    */
 
-  set_foreach(SET_OPT_FORWARD, timer->timers, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _timer->timers, &i, state)
     {
-      if (set_object(timer->timers, i, (void**)&data) != ERROR_NONE)
-	TIMER_LEAVE(timer, ERROR_UNKNOWN);
+      if (set_object(_timer->timers, i, (void**)&data) != ERROR_OK)
+	TIMER_LEAVE(_timer, ERROR_KO);
 
-      if (timer_show(data->timerid) != ERROR_NONE)
-	TIMER_LEAVE(timer, ERROR_UNKNOWN);
+      if (timer_show(data->id) != ERROR_OK)
+	TIMER_LEAVE(_timer, ERROR_KO);
     }
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -154,14 +151,14 @@ t_error			timer_notify(i_timer			id)
   o_timer_message	msg;
   i_node		node;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   /*
    * 1)
    */
 
-  if (timer_get(id, &o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_get(id, &o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 2)
@@ -169,21 +166,21 @@ t_error			timer_notify(i_timer			id)
 
   msg.id = id;
   msg.data = o->data;
-  node.machine = kernel->machine;
-  node.task = o->handler.taskid;
+  node.machine = _kernel->machine;
+  node.task = o->handler.task;
 
-  if (message_send(ktask, node, MESSAGE_TYPE_TIMER, (t_vaddr)&msg,
-		   sizeof (o_timer_message)) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (message_send(_kernel->task, node, MESSAGE_TYPE_TIMER, (t_vaddr)&msg,
+		   sizeof (o_timer_message)) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (machine_call(timer, timer_notify, id) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (machine_call(timer, timer_notify, id) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -201,7 +198,7 @@ t_error			timer_insert(o_timer*			o)
   o_timer*		o_tmp;
   t_iterator		i;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   assert(o != NULL);
 
@@ -209,17 +206,17 @@ t_error			timer_insert(o_timer*			o)
    * 1)
    */
 
-  set_foreach(SET_OPT_FORWARD, timer->timers, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _timer->timers, &i, state)
     {
-      if (set_object(timer->timers, i, (void**)&o_tmp) != ERROR_NONE)
-	TIMER_LEAVE(timer, ERROR_UNKNOWN);
+      if (set_object(_timer->timers, i, (void**)&o_tmp) != ERROR_OK)
+	TIMER_LEAVE(_timer, ERROR_KO);
 
       if (o_tmp->delay >= o->delay)
 	{
-	  if (set_before(timer->timers, i, o) != ERROR_NONE)
-	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+	  if (set_before(_timer->timers, i, o) != ERROR_OK)
+	    TIMER_LEAVE(_timer, ERROR_KO);
 
-	  TIMER_LEAVE(timer, ERROR_NONE);
+	  TIMER_LEAVE(_timer, ERROR_OK);
 	}
     }
 
@@ -227,10 +224,10 @@ t_error			timer_insert(o_timer*			o)
    * 2)
    */
 
-  if (set_append(timer->timers, o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (set_append(_timer->timers, o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -254,7 +251,7 @@ t_error			timer_reserve(t_type			type,
 {
   o_timer		o;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   assert((type == EVENT_FUNCTION) || (type == EVENT_MESSAGE));
   assert(id != NULL);
@@ -263,12 +260,12 @@ t_error			timer_reserve(t_type			type,
    * 1)
    */
 
-  if (id_reserve(&timer->id, id) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (id_reserve(&_timer->id, id) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   memset(&o, 0x0, sizeof(o_timer));
 
-  o.timerid = *id;
+  o.id = *id;
   o.type = type;
   o.handler = handler;
   o.data = data;
@@ -280,24 +277,24 @@ t_error			timer_reserve(t_type			type,
   if (repeat)
     o.repeat = delay;
 
-  o.delay = timer->timeref + delay;
+  o.delay = _timer->reference + delay;
 
   /*
    * 3)
    */
 
-  if (timer_insert(&o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_insert(&o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 4)
    */
 
   if (machine_call(timer, timer_reserve, type, handler, data, delay, repeat,
-		   id) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+		   id) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -316,37 +313,37 @@ t_error			timer_release(i_timer			id)
 {
   o_timer*		o;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   /*
    * 1)
    */
 
-  if (timer_get(id, &o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_get(id, &o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (machine_call(timer, timer_release, id) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (machine_call(timer, timer_release, id) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (id_release(&timer->id, id) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (id_release(&_timer->id, id) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (set_remove(timer->timers, id) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (set_remove(_timer->timers, id) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -365,14 +362,14 @@ t_error			timer_delay(i_timer			id,
 {
   o_timer*		o;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   /*
    * 1)
    */
 
-  if (timer_get(id, &o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_get(id, &o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 2)
@@ -384,10 +381,10 @@ t_error			timer_delay(i_timer			id,
    * 3)
    */
 
-  if (machine_call(timer, timer_delay, id, delay) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (machine_call(timer, timer_delay, id, delay) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -406,14 +403,14 @@ t_error			timer_repeat(i_timer			id,
 {
   o_timer*		o;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   /*
    * 1)
    */
 
-  if (timer_get(id, &o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_get(id, &o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 2)
@@ -425,10 +422,10 @@ t_error			timer_repeat(i_timer			id,
    * 3)
    */
 
-  if (machine_call(timer, timer_repeat, id, repeat) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (machine_call(timer, timer_repeat, id, repeat) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -450,21 +447,21 @@ t_error			timer_modify(i_timer			id,
   o_timer		o;
   o_timer*		old;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   /*
    * 1)
    */
 
-  if (timer_get(id, &old) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_get(id, &old) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (machine_call(timer, timer_modify, id, delay, repeat) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (machine_call(timer, timer_modify, id, delay, repeat) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
    * 3)
@@ -475,19 +472,19 @@ t_error			timer_modify(i_timer			id,
   if (repeat)
     o.repeat = delay;
 
-  o.delay = timer->timeref + delay;
+  o.delay = _timer->reference + delay;
 
   /*
    * 4)
    */
 
-  if (timer_release(id) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_release(id) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  if (timer_insert(&o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (timer_insert(&o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 
@@ -500,14 +497,14 @@ t_error			timer_modify(i_timer			id,
 t_error			timer_get(i_timer			id,
 				  o_timer**			o)
 {
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
   assert(o != NULL);
 
-  if (set_get(timer->timers, id, (void**)o) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (set_get(_timer->timers, id, (void**)o) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
 
 /*
@@ -524,54 +521,56 @@ t_error			timer_get(i_timer			id,
 
 t_error			timer_initialize(void)
 {
-
   /*
    * 1)
    */
 
-  if ((timer = malloc(sizeof(m_timer))) == NULL)
+  if ((_timer = malloc(sizeof(m_timer))) == NULL)
     {
-      module_call(console, console_message, '!', "timer: cannot allocate memory for the timer manager "
-               "structure\n");
+      module_call(console, console_message,
+		  '!', "timer: cannot allocate memory for the timer manager "
+		  "structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(timer, 0x0, sizeof(m_timer));
+  memset(_timer, 0x0, sizeof(m_timer));
 
   /*
    * 2)
    */
 
-  if (id_build(&timer->id) != ERROR_NONE)
+  if (id_build(&_timer->id) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "timer: unable to initialize the identifier object\n");
+      module_call(console, console_message,
+		  '!', "timer: unable to initialize the identifier object\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  timer->timeref = 0;
+  _timer->reference = 100;
 
   /*
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC,
-                  sizeof(o_timer), &timer->timers) != ERROR_NONE)
+  if (set_reserve(ll, SET_OPTION_ALLOC,
+                  sizeof(o_timer), &_timer->timers) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "timer: unable to reserve the timer set\n");
+      module_call(console, console_message,
+		  '!', "timer: unable to reserve the timer set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  if (machine_call(timer, timer_initialize) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(timer, timer_initialize) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -592,38 +591,40 @@ t_error			timer_clean(void)
    * 1)
    */
 
-  if (machine_call(timer, timer_clean) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(timer, timer_clean) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_release(timer->timers) != ERROR_NONE)
+  if (set_release(_timer->timers) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "timer: unable to release the timer set\n");
+      module_call(console, console_message,
+		  '!', "timer: unable to release the timer set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (id_destroy(&timer->id) != ERROR_NONE)
+  if (id_destroy(&_timer->id) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "timer: unable to destroy the identifier object\n");
+      module_call(console, console_message,
+		  '!', "timer: unable to destroy the identifier object\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  free(timer);
+  free(_timer);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -642,23 +643,23 @@ t_error			timer_check(void)
   o_timer*		o;
   t_iterator		i;
 
-  TIMER_ENTER(timer);
+  TIMER_ENTER(_timer);
 
-  while (set_head(timer->timers, &i) == ERROR_NONE)
+  while (set_head(_timer->timers, &i) == ERROR_OK)
     {
 
       /*
        * 1)
        */
 
-      if (set_object(timer->timers, i, (void**)&o) != ERROR_NONE)
-        TIMER_LEAVE(timer, ERROR_UNKNOWN);
+      if (set_object(_timer->timers, i, (void**)&o) != ERROR_OK)
+        TIMER_LEAVE(_timer, ERROR_KO);
 
       /*
        * 2)
        */
 
-      if (timer->timeref < o->delay)
+      if (_timer->reference < o->delay)
         break;
 
       /*
@@ -667,12 +668,12 @@ t_error			timer_check(void)
 
       if (o->type == EVENT_MESSAGE)
 	{
-	  if (timer_notify(o->timerid) != ERROR_NONE)
-	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+	  if (timer_notify(o->id) != ERROR_OK)
+	    TIMER_LEAVE(_timer, ERROR_KO);
 	}
       else
 	{
-	  o->handler.function(o->timerid, o->data);
+	  o->handler.function(o->id, o->data);
 	}
 
       /*
@@ -681,31 +682,41 @@ t_error			timer_check(void)
 
       if (o->repeat)
         {
-	  if (timer_modify(o->timerid, o->repeat, TIMER_REPEAT_ENABLE)
-	      != ERROR_NONE)
-            TIMER_LEAVE(timer, ERROR_UNKNOWN);
+	  if (timer_modify(o->id, o->repeat, TIMER_REPEAT_ENABLE)
+	      != ERROR_OK)
+            TIMER_LEAVE(_timer, ERROR_KO);
         }
       else
         {
-          if (timer_release(o->timerid) != ERROR_NONE)
-            TIMER_LEAVE(timer, ERROR_UNKNOWN);
+          if (timer_release(o->id) != ERROR_OK)
+            TIMER_LEAVE(_timer, ERROR_KO);
         }
     }
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(_timer, ERROR_OK);
 }
+
+/*
+ * this is the handler triggers whenever a timer event occurs. this is
+ * used to keep track of time and trigger the registered timers.
+ *
+ * steps:
+ *
+ * 1) update the elapsed time.
+ * 2) trigger the expired timers.
+ */
 
 void			timer_handler(t_id			id)
 {
   /*
-   *
+   * 1)
    */
 
-  timer->timeref += TIMER_MS_PER_TICK;
+  _timer->reference += TIMER_MS_PER_TICK;
 
   /*
-   *
+   * 2)
    */
 
-  timer_check();
+  assert(timer_check());
 }

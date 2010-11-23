@@ -94,7 +94,7 @@ typedef struct
 #define ID_CHECK(_id_)							\
   {									\
     if ((_id_) == NULL)							\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*

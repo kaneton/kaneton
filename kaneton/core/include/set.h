@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/core/include/set.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/set.h
  *
  * created       julien quintard   [wed jun  6 11:56:46 2007]
- * updated       matthieu bucchianeri   [thu sep 13 16:49:37 2007]
+ * updated       julien quintard   [mon nov 22 12:06:52 2010]
  */
 
 #ifndef CORE_SET_H
@@ -65,14 +65,14 @@ typedef t_sint64		t_setsz;
  * options
  */
 
-#define SET_OPT_NONE		(0 << 0)
-#define SET_OPT_FORWARD		(1 << 0)
-#define SET_OPT_BACKWARD	(1 << 1)
-#define SET_OPT_CONTAINER	(1 << 2)
-#define SET_OPT_ALLOC		(1 << 3)
-#define SET_OPT_FREE		(1 << 4)
-#define SET_OPT_SORT		(1 << 5)
-#define SET_OPT_ORGANISE	(1 << 6)
+#define SET_OPTION_NONE		(0 << 0)
+#define SET_OPTION_FORWARD	(1 << 0)
+#define SET_OPTION_BACKWARD	(1 << 1)
+#define SET_OPTION_CONTAINER	(1 << 2)
+#define SET_OPTION_ALLOC	(1 << 3)
+#define SET_OPTION_FREE		(1 << 4)
+#define SET_OPTION_SORT		(1 << 5)
+#define SET_OPTION_ORGANISE	(1 << 6)
 
 /*
  * trap debug
@@ -108,12 +108,12 @@ typedef struct
 
 typedef struct
 {
-  i_set				setid;
+  i_set				id;
 
   t_setsz			size;
 
   t_type			type;
-  t_opts			opts;
+  t_options			options;
 
   t_size			datasz;
 
@@ -148,7 +148,7 @@ typedef struct
 #define SET_CHECK(_set_)						\
   {									\
     if ((_set_) == NULL)						\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*
@@ -194,12 +194,12 @@ typedef struct
 #define set_trap(_func_, _id_, _args_...)				\
   (									\
     {									\
-      t_error		_r_ = ERROR_UNKNOWN;				\
+      t_error		_r_ = ERROR_KO;				\
       o_set*		_set_;						\
 									\
       set_debug(_func_, _id_, _args_);					\
 									\
-      if (set_descriptor((_id_), &_set_) == ERROR_NONE)			\
+      if (set_descriptor((_id_), &_set_) == ERROR_OK)			\
         {								\
           switch (_set_->type)						\
             {								\
@@ -295,14 +295,14 @@ typedef struct
 #define set_foreach(_opt_, _id_, _iterator_, _state_)			\
   for ((_state_) = ITERATOR_STATE_UNUSED;				\
         (((_state_) == ITERATOR_STATE_UNUSED) ?				\
-          ((_opt_) == SET_OPT_FORWARD ?					\
-            set_head((_id_), (_iterator_)) == ERROR_NONE :		\
-            set_tail((_id_), (_iterator_)) == ERROR_NONE) :		\
-          ((_opt_) == SET_OPT_FORWARD ?					\
+          ((_opt_) == SET_OPTION_FORWARD ?				\
+            set_head((_id_), (_iterator_)) == ERROR_OK :		\
+            set_tail((_id_), (_iterator_)) == ERROR_OK) :		\
+          ((_opt_) == SET_OPTION_FORWARD ?				\
             set_next((_id_), *(_iterator_), (_iterator_)) ==		\
-              ERROR_NONE :						\
+              ERROR_OK :						\
             set_previous((_id_), *(_iterator_), (_iterator_)) ==	\
-              ERROR_NONE));						\
+              ERROR_OK));						\
 	 (_state_) = ITERATOR_STATE_USED				\
        )
 
@@ -397,7 +397,7 @@ t_error			set_object_array(i_set			setid,
 					 t_iterator		iterator,
 					 void**			data);
 
-t_error			set_reserve_array(t_opts		opts,
+t_error			set_reserve_array(t_options		options,
 					  t_setsz		initsz,
 					  t_size		datasz,
 					  i_set*		setid);
@@ -468,7 +468,7 @@ t_error			set_object_ll(i_set			setid,
 				      t_iterator		iterator,
 				      void**			data);
 
-t_error			set_reserve_ll(t_opts			opts,
+t_error			set_reserve_ll(t_options		options,
 				       t_size			datasz,
 				       i_set*			setid);
 
@@ -568,7 +568,7 @@ t_error			set_object_bpt(i_set			setid,
 				       t_iterator		iterator,
 				       void**			data);
 
-t_error			set_reserve_bpt(t_opts			opts,
+t_error			set_reserve_bpt(t_options		options,
 					t_size			datasz,
 					t_bpt_nodesz(set)	nodesz,
 					i_set*			setid);
@@ -590,7 +590,7 @@ t_error			set_pick_bpt(i_set			setid,
 
 t_error			set_type_pipe(i_set			setid);
 
-t_error			set_reserve_pipe(t_opts			opts,
+t_error			set_reserve_pipe(t_options		options,
 					 t_size			datasz,
 					 i_set*			setid);
 
@@ -660,7 +660,7 @@ t_error			set_object_pipe(i_set			setid,
 
 t_error			set_type_stack(i_set			setid);
 
-t_error			set_reserve_stack(t_opts		opts,
+t_error			set_reserve_stack(t_options		options,
 					  t_size		datasz,
 					  i_set*		setid);
 

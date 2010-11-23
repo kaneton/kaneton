@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/core/include/scheduler.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       matthieu bucchianeri   [wed jan  9 11:04:24 2008]
+ * updated       julien quintard   [tue nov 23 14:45:28 2010]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -29,13 +29,10 @@
  */
 
 /*
- * this is thread state.
+ * the scheduler state.
  */
-
-#define SCHEDULER_STATE_RUN		0
-#define SCHEDULER_STATE_STOP		1
-#define SCHEDULER_STATE_ZOMBIE		2
-#define SCHEDULER_STATE_BLOCK		3
+#define SCHEDULER_STATE_ENABLE		1
+#define SCHEDULER_STATE_DISABLE		2
 
 /*						   [block::macro::constants] */
 
@@ -57,7 +54,14 @@
 
 #define SCHEDULER_TIMESLICE_MIN		20
 #define SCHEDULER_TIMESLICE_MAX		200
-#define SCHEDULER_TIMESLICE_GRANULARITY	scheduler->quantum
+#define SCHEDULER_TIMESLICE_GRANULARITY	_scheduler->quantum
+
+/*
+ * scheduling priorities
+ */
+
+#define SCHEDULER_HPRIORITY		0
+#define SCHEDULER_LPRIORITY		SCHEDULER_N_PRIORITY_QUEUE - 1
 
 /*						[endblock::macro::constants] */
 
@@ -77,22 +81,24 @@
   ({									\
     o_thread*		oth;						\
     o_task*		otsk;						\
-    t_prior		task_prior;					\
-    t_prior		thread_prior;					\
+    t_priority		task_prior;					\
+    t_priority		thread_prior;					\
 									\
-    if (thread_get((_thread_), &oth) != ERROR_NONE)			\
-      SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);			\
+    if (thread_get((_thread_), &oth) != ERROR_OK)			\
+      SCHEDULER_ESCAPE(_scheduler,					\
+	               "unable to retrieve the thread object");		\
 									\
-    if (task_get(oth->taskid, &otsk) != ERROR_NONE)			\
-      SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);			\
+    if (task_get(oth->task, &otsk) != ERROR_OK)				\
+      SCHEDULER_ESCAPE(_scheduler,					\
+	               "unable to retrieve the task object");		\
 									\
-    task_prior = ((otsk->prior - TASK_LPRIOR_BACKGROUND) *		\
+    task_prior = ((otsk->priority - TASK_LPRIORITY_BACKGROUND) *	\
 		  SCHEDULER_N_PRIORITY_QUEUE) /				\
-      (TASK_HPRIOR_KERNEL - TASK_LPRIOR_BACKGROUND);			\
+      (TASK_HPRIORITY_KERNEL - TASK_LPRIORITY_BACKGROUND);		\
 									\
-    thread_prior = ((oth->prior - THREAD_LPRIOR) *			\
+    thread_prior = ((oth->priority - THREAD_LPRIORITY) *		\
 		    SCHEDULER_N_PRIORITY_QUEUE) /			\
-      (THREAD_HPRIOR - THREAD_LPRIOR);					\
+      (THREAD_HPRIORITY - THREAD_LPRIORITY);				\
 									\
     (task_prior * thread_prior);					\
   })
@@ -105,10 +111,12 @@
 
 #define SCHEDULER_COMPUTE_PRIORITY(_thread_)				\
   ({									\
-    t_prior		global_prior;					\
+    t_priority		global_prior;					\
 									\
     global_prior = SCHEDULER_COMPUTE_GLOBAL_PRIORITY((_thread_));	\
-    (SCHEDULER_N_PRIORITY_QUEUE - global_prior / SCHEDULER_N_PRIORITY_QUEUE);	\
+									\
+    (SCHEDULER_N_PRIORITY_QUEUE - global_prior /			\
+        SCHEDULER_N_PRIORITY_QUEUE);					\
   })
 
 /*
@@ -128,14 +136,16 @@
 
 #define SCHEDULER_COMPUTE_TIMESLICE(_thread_)				\
   ({									\
-    t_prior		global_prior;					\
+    t_priority		global_prior;					\
     t_timeslice		t;						\
 									\
     global_prior = SCHEDULER_COMPUTE_GLOBAL_PRIORITY((_thread_));	\
 									\
     t = SCHEDULER_TIMESLICE_MIN;					\
-    t += ((SCHEDULER_TIMESLICE_MAX - SCHEDULER_TIMESLICE_MIN) * global_prior) /	\
-      (SCHEDULER_N_PRIORITY_QUEUE * SCHEDULER_N_PRIORITY_QUEUE);	\
+    t += ((SCHEDULER_TIMESLICE_MAX - SCHEDULER_TIMESLICE_MIN) *		\
+            global_prior) /						\
+            (SCHEDULER_N_PRIORITY_QUEUE * SCHEDULER_N_PRIORITY_QUEUE);	\
+									\
     SCHEDULER_SCALE_TIMESLICE(t);					\
   })
 
@@ -154,8 +164,9 @@
 typedef struct
 {
   i_thread			thread;
+
   t_timeslice			timeslice;
-}				t_scheduled;
+}				o_scheduled;
 
 /*						     [endblock::t_scheduled] */
 
@@ -167,21 +178,19 @@ typedef struct
 {
   /*						     [block::o_scheduler::1] */
 
-  i_cpu				cpuid;
+  i_cpu				cpu;
 
   /*						  [endblock::o_scheduler::1] */
 
-  i_thread			current;
-
+  i_thread			thread;
   /*						     [block::o_scheduler::2] */
-
   t_timeslice			timeslice;
-  t_prior			prio;
-  t_opts			yield;
-  t_opts			dead;
+  t_priority			priority;
 
   i_set				active;
   i_set				expired;
+
+  t_state			state;
 
   /*						  [endblock::o_scheduler::2] */
 
@@ -209,12 +218,13 @@ typedef struct
 
 typedef struct
 {
+  t_error			(*scheduler_state)(t_state);
   t_error			(*scheduler_quantum)(t_quantum);
-  t_error			(*scheduler_yield)(i_cpu);
-  t_error			(*scheduler_switch)(i_thread);
+  t_error			(*scheduler_yield)(void);
   t_error			(*scheduler_add)(i_thread);
   t_error			(*scheduler_remove)(i_thread);
   t_error			(*scheduler_update)(i_thread);
+  t_error			(*scheduler_elect)(void);
   t_error			(*scheduler_initialize)(void);
   t_error			(*scheduler_clean)(void);
 }				d_scheduler;
@@ -230,7 +240,7 @@ typedef struct
 #define SCHEDULER_CHECK(_scheduler_)					\
   {									\
     if ((_scheduler_) == NULL)						\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*
@@ -239,16 +249,42 @@ typedef struct
 
 #define SCHEDULER_ENTER(_scheduler_)					\
   {									\
-    SCHEDULER_CHECK((_scheduler_));						\
+    SCHEDULER_CHECK((_scheduler_));					\
   }
 
 /*
  * leave
  */
 
-#define SCHEDULER_LEAVE(_scheduler_, _error_)				\
+#define SCHEDULER_LEAVE(_scheduler_)					\
   {									\
-    return (_error_);							\
+    return (ERROR_OK);							\
+  }
+
+/*
+ * escape
+ */
+
+#define SCHEDULER_ESCAPE(_scheduler_, _fmt_, _arguments_...)		\
+  {									\
+    module_call(report, report_record,					\
+		_fmt_ " (%s:%u)",					\
+		##_arguments_, __FUNCTION__, __LINE__);			\
+    									\
+    return (ERROR_KO);							\
+  }
+
+/*
+ * fail
+ */
+
+#define SCHEDULER_FAIL(_fmt_, _arguments_...)				\
+  {									\
+    module_call(report, report_record,					\
+		_fmt_ " (%s:%u)",					\
+		##_arguments_, __FUNCTION__, __LINE__);			\
+									\
+    return (ERROR_KO);							\
   }
 
 /*
@@ -263,17 +299,21 @@ typedef struct
 
 t_error			scheduler_dump(void);
 
-t_error			scheduler_quantum(t_quantum			quantum);
+t_error			scheduler_state(t_state			state);
 
-t_error			scheduler_yield(i_cpu			cpuid);
+t_error			scheduler_quantum(t_quantum		quantum);
+
+t_error			scheduler_yield(void);
 
 t_error			scheduler_current(i_thread*			thread);
 
-t_error			scheduler_switch(void);
+t_error			scheduler_elect(void);
 
-t_error			scheduler_add(i_thread			thread);
+t_error			scheduler_get(o_scheduler**		scheduler);
 
-t_error			scheduler_remove(i_thread			thread);
+t_error			scheduler_add(i_thread			id);
+
+t_error			scheduler_remove(i_thread		id);
 
 t_error			scheduler_update(i_thread			thread);
 

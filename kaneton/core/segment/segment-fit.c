@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...neton/kaneton/core/segment/segment-fit.c
+ * file          /home/mycure/kaneton.NEW/kaneton/core/segment/segment-fit.c
  *
  * created       julien quintard   [sun jun 10 17:17:15 2007]
- * updated       matthieu bucchianeri   [wed jan  9 13:09:08 2008]
+ * updated       julien quintard   [mon nov 22 20:37:28 2010]
  */
 
 /*
@@ -35,14 +35,14 @@
 machine_include(segment);
 
 /*
- * ---------- extern ----------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
 /*
  * the segment manager structure.
  */
 
-extern m_segment*	segment;
+extern m_segment*	_segment;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -73,71 +73,72 @@ t_error			segment_space(i_as		asid,
   t_iterator		i;
   o_as*			as;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(size != 0);
   assert(address != NULL);
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 1)
    */
 
-  if (set_head(segment->segments, &i) != ERROR_NONE)
+  if (set_head(_segment->segments, &i) != ERROR_OK)
     {
-      if (segment->size < size)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (_segment->size < size)
+	SEGMENT_LEAVE(_segment, ERROR_KO);
 
-      *address = segment->start;
+      *address = _segment->start;
 
-      SEGMENT_LEAVE(segment, ERROR_NONE);
+      SEGMENT_LEAVE(_segment, ERROR_OK);
     }
 
-  if (set_object(segment->segments, i, (void**)&head) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_object(_segment->segments, i, (void**)&head) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if ((head->address - segment->start) >= size)
+  if ((head->address - _segment->start) >= size)
     {
-      *address = segment->start;
+      *address = _segment->start;
 
-      SEGMENT_LEAVE(segment, ERROR_NONE);
+      SEGMENT_LEAVE(_segment, ERROR_OK);
     }
 
   /*
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _segment->segments, &i, state)
     {
       o_segment*	next;
       t_iterator	j;
 
-      if (set_object(segment->segments, i, (void**)&current) !=
-	  ERROR_NONE)
+      if (set_object(_segment->segments, i, (void**)&current) !=
+	  ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "segment: cannot find the segment object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "segment: cannot find the segment object "
+		      "corresponding to its identifier\n");
 
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	  SEGMENT_LEAVE(_segment, ERROR_KO);
 	}
 
-      if (set_next(segment->segments, i, &j) != ERROR_NONE)
+      if (set_next(_segment->segments, i, &j) != ERROR_OK)
 	break;
 
-      if (set_object(segment->segments, j, (void**)&next) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (set_object(_segment->segments, j, (void**)&next) != ERROR_OK)
+	SEGMENT_LEAVE(_segment, ERROR_KO);
 
       if ((next->address - (current->address + current->size)) >= size)
 	{
 	  *address = current->address + current->size;
 
-	  SEGMENT_LEAVE(segment, ERROR_NONE);
+	  SEGMENT_LEAVE(_segment, ERROR_OK);
 	}
     }
 
@@ -145,25 +146,25 @@ t_error			segment_space(i_as		asid,
    * 4)
    */
 
-  if (set_tail(segment->segments, &i) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_tail(_segment->segments, &i) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  if (set_object(segment->segments, i, (void**)&tail) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_object(_segment->segments, i, (void**)&tail) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (((segment->start + segment->size) -
+  if (((_segment->start + _segment->size) -
        (tail->address + tail->size)) >= size)
     {
       *address = tail->address + tail->size;
 
-      SEGMENT_LEAVE(segment, ERROR_NONE);
+      SEGMENT_LEAVE(_segment, ERROR_OK);
     }
 
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  SEGMENT_LEAVE(_segment, ERROR_KO);
 }
 
 #endif

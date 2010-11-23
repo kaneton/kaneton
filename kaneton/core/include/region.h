@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/region.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [sun nov  7 20:22:05 2010]
+ * updated       julien quintard   [mon nov 22 11:50:47 2010]
  */
 
 #ifndef CORE_REGION_H
@@ -32,14 +32,14 @@
  * flags
  */
 
-#define REGION_OPT_NONE		0
-#define REGION_OPT_FORCE	(1 << 0)
-#define REGION_OPT_USER		(0 << 1)
-#define REGION_OPT_PRIVILEGED	(1 << 1)
-#define REGION_OPT_LOCAL	(0 << 2)
-#define REGION_OPT_GLOBAL	(1 << 2)
+#define REGION_OPTION_NONE		0
+#define REGION_OPTION_FORCE		(1 << 0)
+#define REGION_OPTION_USER		(0 << 1)
+#define REGION_OPTION_PRIVILEGED	(1 << 1)
+#define REGION_OPTION_LOCAL		(0 << 2)
+#define REGION_OPTION_GLOBAL		(1 << 2)
 
-#define REGION_OPT_INVALID	(~((1 << 2) | (1 << 1) | (1 << 0)))
+#define REGION_OPTION_INVALID		(~((1 << 2) | (1 << 1) | (1 << 0)))
 
 /*
  * ---------- algorithms ------------------------------------------------------
@@ -62,14 +62,14 @@
 
 typedef struct
 {
-  i_region			regid;
+  i_region			id;
 
-  i_segment			segid;
+  i_segment			segment;
 
   t_vaddr			address;
   t_paddr			offset;
   t_vsize			size;
-  t_opts			opts;
+  t_options			options;
 
   machine_data(o_region);
 }				o_region;
@@ -115,7 +115,7 @@ typedef struct
   t_error			(*region_reserve)(i_as,
 						  i_segment,
 						  t_paddr,
-						  t_opts,
+						  t_options,
 						  t_vaddr,
 						  t_vsize,
 						  i_region*);
@@ -138,7 +138,7 @@ typedef struct
 #define REGION_CHECK(_region_)						\
   {									\
     if ((_region_) == NULL)						\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*
@@ -205,7 +205,7 @@ t_error			region_coalesce(i_as		asid,
 t_error			region_reserve(i_as			asid,
 				       i_segment		segid,
 				       t_paddr			offset,
-				       t_opts			opts,
+				       t_options		options,
 				       t_vaddr			address,
 				       t_vsize			size,
 				       i_region*		regid);

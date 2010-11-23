@@ -78,5 +78,5 @@ t_error			ibmpc_serial_init(t_uint32		com_port,
   OUTB(com_port + 2, IBMPC_SERIAL_FIFO_8);
   OUTB(com_port + 4, 0x08);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

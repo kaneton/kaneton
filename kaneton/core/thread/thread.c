@@ -29,6 +29,16 @@
 machine_include(thread);
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+/*
+ * the kernel manager.
+ */
+
+extern m_kernel*	_kernel;
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -36,7 +46,7 @@ machine_include(thread);
  * the thread manager variable.
  */
 
-m_thread*		thread = NULL;
+m_thread*		_thread = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -54,30 +64,50 @@ m_thread*		thread = NULL;
 
 t_error			thread_show(i_thread			threadid)
 {
+  char*			state;
   o_thread*		o;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   /*
    * 1)
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
+  switch (o->state)
+    {
+    case THREAD_STATE_RUN:
+      state = "running";
+      break;
+    case THREAD_STATE_STOP:
+      state = "stopped";
+      break;
+    case THREAD_STATE_ZOMBIE:
+      state = "zombie";
+      break;
+    case THREAD_STATE_BLOCK:
+      state = "blocked";
+      break;
+    }
+
+  module_call(console, console_message,
+	      '#', "  thread %qu from task %qu is %s with a priority of %u\n",
+	      threadid, o->task, state, o->priority);
 
   /*
    * 3)
    */
 
-  if (machine_call(thread, thread_show, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_show, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -91,36 +121,37 @@ t_error			thread_show(i_thread			threadid)
 
 t_error			thread_dump(void)
 {
-  t_state		state;
+  t_state		st;
   o_thread*		data;
   t_setsz		size;
   t_iterator		i;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   /*
    * 1)
    */
 
-  if (set_size(thread->threads, &size) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (set_size(_thread->threads, &size) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "dumping %qu thread(s):\n");
+  module_call(console, console_message,
+	      '#', "dumping %qu thread(s):\n", size);
 
-  set_foreach(SET_OPT_FORWARD, thread->threads, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _thread->threads, &i, st)
     {
-      if (set_object(thread->threads, i, (void**)&data) != ERROR_NONE)
-	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      if (set_object(_thread->threads, i, (void**)&data) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
 
-      if (thread_show(data->threadid) != ERROR_NONE)
-	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      if (thread_show(data->id) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
     }
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -145,50 +176,50 @@ t_error			thread_give(i_task			taskid,
   o_task*		src;
   o_task*		dest;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   /*
    * 1)
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (o->taskid == taskid)
-    THREAD_LEAVE(thread, ERROR_NONE);
+  if (o->task == taskid)
+    THREAD_LEAVE(_thread, ERROR_OK);
 
   /*
    * 3)
    */
 
-  if (task_get(taskid, &dest) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (task_get(taskid, &dest) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (task_get(o->taskid, &src) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (task_get(o->task, &src) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (set_remove(src->threads, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (set_remove(src->threads, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 6)
    */
 
-  o->taskid = taskid;
-  if (set_add(dest->threads, &threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  o->task = taskid;
+  if (set_add(dest->threads, &threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 7)
@@ -196,10 +227,10 @@ t_error			thread_give(i_task			taskid,
 
   // XXX update CR3 value.
 
-  if (machine_call(thread, thread_give, taskid, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_give, taskid, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -224,7 +255,7 @@ t_error			thread_clone(i_task			taskid,
   //  t_iterator	i; USED IN 4)
   i_thread		threadid;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   assert(new != NULL);
 
@@ -232,27 +263,27 @@ t_error			thread_clone(i_task			taskid,
    * 1)
    */
 
-  if (thread_get(old, &from) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_get(old, &from) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (thread_reserve(taskid, from->prior, new) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_reserve(taskid, from->priority, new) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   threadid = *new;
 
-  if (thread_get(threadid, &to) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_get(threadid, &to) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
 
   /*
    * 3)
    */
 
-  to->sched = from->sched;
+  to->state = from->state;
 
   to->stack = from->stack;
   to->stacksz = from->stacksz;
@@ -261,22 +292,22 @@ t_error			thread_clone(i_task			taskid,
    * 4)
    */
 
-  switch(to->sched)
+  switch(to->state)
     {
-      case SCHEDULER_STATE_RUN:
-	if (scheduler_add(threadid) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      case THREAD_STATE_RUN:
+	if (scheduler_add(threadid) != ERROR_OK)
+	  THREAD_LEAVE(_thread, ERROR_KO);
 	break;
-      case SCHEDULER_STATE_STOP:
-	if (scheduler_remove(threadid) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      case THREAD_STATE_STOP:
+	if (scheduler_remove(threadid) != ERROR_OK)
+	  THREAD_LEAVE(_thread, ERROR_KO);
 	break;
-      case SCHEDULER_STATE_ZOMBIE:
+      case THREAD_STATE_ZOMBIE:
 	/* XXX */
 	break;
-      case SCHEDULER_STATE_BLOCK:
-	if (scheduler_remove(threadid) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      case THREAD_STATE_BLOCK:
+	if (scheduler_remove(threadid) != ERROR_OK)
+	  THREAD_LEAVE(_thread, ERROR_KO);
 	break;
     }
 
@@ -284,30 +315,31 @@ t_error			thread_clone(i_task			taskid,
    * 4)
    */
   /*
-  set_foreach(SET_OPT_FORWARD, from->waits, &i, state)
+  set_foreach(SET_OPTION_FORWARD, from->waits, &i, st)
     {
       i_thread*		data;
 
-      if (set_object(from->waits, i, (void**)&data) != ERROR_NONE)
+      if (set_object(from->waits, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "thread: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+	              '!', "thread: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	  THREAD_LEAVE(_thread, ERROR_KO);
 	}
 
-      if (set_add(to->waits, data) != ERROR_NONE)
-	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      if (set_add(to->waits, data) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
     }
   */
   /*
    * 5)
    */
 
-  if (machine_call(thread, thread_clone, taskid, old, new) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_clone, taskid, old, new) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -324,13 +356,13 @@ t_error			thread_clone(i_task			taskid,
  */
 
 t_error			thread_reserve(i_task			taskid,
-				       t_prior			prior,
+				       t_priority		prior,
 				       i_thread*		threadid)
 {
   o_task*		task;
   o_thread		o;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   assert(threadid != NULL);
 
@@ -338,22 +370,22 @@ t_error			thread_reserve(i_task			taskid,
    * 1)
    */
 
-  if (prior < THREAD_LPRIOR || prior > THREAD_HPRIOR)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (prior < THREAD_LPRIORITY || prior > THREAD_HPRIORITY)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (task_get(taskid, &task) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (task_get(taskid, &task) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (id_reserve(&thread->id, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (id_reserve(&_thread->id, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 4)
@@ -361,40 +393,40 @@ t_error			thread_reserve(i_task			taskid,
 
   memset(&o, 0x0, sizeof(o_thread));
 
-  o.threadid = *threadid;
-  o.taskid = taskid;
-  o.prior = prior;
-  o.sched = SCHEDULER_STATE_STOP;
+  o.id = *threadid;
+  o.task = taskid;
+  o.priority = prior;
+  o.state = THREAD_STATE_STOP;
   o.waits = ID_UNUSED; // XXX
 
   /*
    * 5)
    */
 
-  if (set_add(thread->threads, &o) != ERROR_NONE)
+  if (set_add(_thread->threads, &o) != ERROR_OK)
     {
-      id_release(&thread->id, o.threadid);
+      id_release(&_thread->id, o.id);
 
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      THREAD_LEAVE(_thread, ERROR_KO);
     }
 
-  if (set_add(task->threads, &o.threadid) != ERROR_NONE)
+  if (set_add(task->threads, &o.id) != ERROR_OK)
     {
-      set_remove(thread->threads, o.threadid);
+      set_remove(_thread->threads, o.id);
 
-      id_release(&thread->id, o.threadid);
+      id_release(&_thread->id, o.id);
 
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      THREAD_LEAVE(_thread, ERROR_KO);
     }
 
   /*
    * 6)
    */
 
-  if (machine_call(thread, thread_reserve, taskid, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_reserve, taskid, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -416,28 +448,28 @@ t_error			thread_release(i_thread			threadid)
   o_task*		task;
   o_thread*		o;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   /*
    * 1)
    */
 
-  if (machine_call(thread, thread_release, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_release, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (task_get(o->taskid, &task) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (task_get(o->task, &task) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 4)
@@ -445,32 +477,32 @@ t_error			thread_release(i_thread			threadid)
 
   if (o->stack)
     {
-      if (map_release(task->asid, o->stack) != ERROR_NONE)
-	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      if (map_release(task->as, o->stack) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
     }
 
   /*
    * 5)
    */
 
-  if (id_release(&thread->id, o->threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (id_release(&_thread->id, o->id) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 6)
    */
 
-  if (set_remove(task->threads, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (set_remove(task->threads, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 7)
    */
 
-  if (set_remove(thread->threads, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (set_remove(_thread->threads, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -486,51 +518,51 @@ t_error			thread_release(i_thread			threadid)
  */
 
 t_error			thread_priority(i_thread		threadid,
-					t_prior			prior)
+					t_priority		prior)
 {
   o_thread*		o;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   /*
    * 1)
    */
 
-  if (prior < THREAD_LPRIOR || prior > THREAD_HPRIOR)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (prior < THREAD_LPRIORITY || prior > THREAD_HPRIORITY)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (o->prior == prior)
-    THREAD_LEAVE(thread, ERROR_NONE);
+  if (o->priority == prior)
+    THREAD_LEAVE(_thread, ERROR_OK);
 
-  o->prior = prior;
+  o->priority = prior;
 
   /*
    * 4)
    */
 
-  if (machine_call(thread, thread_priority, threadid, prior) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_priority, threadid, prior) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (o->sched == SCHEDULER_STATE_RUN)
-    if (scheduler_update(threadid) != ERROR_NONE)
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (o->state == THREAD_STATE_RUN)
+    if (scheduler_update(threadid) != ERROR_OK)
+      THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -547,104 +579,115 @@ t_error			thread_priority(i_thread		threadid,
  */
 
 t_error			thread_state(i_thread			threadid,
-				     t_state			sched)
+				     t_state			state)
 {
   o_thread*		o;
   //  t_iterator		i;
-  //  t_state		state;
+  //  t_state		st;
+  o_task*		task;
   t_state		wakeup;
+  t_state		current;
 
-  THREAD_ENTER(thread);
-
-  /*
-   * 1)
-   */
-
-  switch(sched)
-    {
-      case SCHEDULER_STATE_RUN:
-	wakeup = WAIT_START;
-	break;
-      case SCHEDULER_STATE_STOP:
-	wakeup = WAIT_STOP;
-	break;
-      case SCHEDULER_STATE_ZOMBIE:
-	wakeup = WAIT_DEATH;
-	break;
-      case SCHEDULER_STATE_BLOCK:
-	wakeup = 0;
-	break;
-      default:
-	THREAD_LEAVE(thread, ERROR_UNKNOWN);
-    }
+  THREAD_ENTER(_thread);
 
   /*
    * 2)
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  if (task_get(o->task, &task) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  current = o->state;
 
   /*
-   * 3)
+   * 1)
    */
 
-  if (o->sched == sched)
-    THREAD_LEAVE(thread, ERROR_NONE);
+  if (o->state == state)
+    THREAD_LEAVE(_thread, ERROR_OK);
 
-  o->sched = sched;
+  /*
+   *
+   */
+
+  switch(state)
+    {
+      case THREAD_STATE_RUN:
+	wakeup = WAIT_START;
+	break;
+      case THREAD_STATE_STOP:
+	wakeup = WAIT_STOP;
+	break;
+      case THREAD_STATE_ZOMBIE:
+	wakeup = WAIT_DEATH;
+	break;
+      case THREAD_STATE_BLOCK:
+	wakeup = 0;
+	break;
+      default:
+	THREAD_LEAVE(_thread, ERROR_KO);
+    }
+
+  /*
+   * XXX
+   */
+
+  o->state = state;
 
   /*
    * 4)
    */
 /*
-  set_foreach(SET_OPT_FORWARD, o->waits, &i, state)
+  set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
     {
       o_waitfor*	w;
 
-      if (set_object(o->waits, i, (void**)&w) != ERROR_NONE)
+      if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
 	{
 	  module_call(console, console_message, '!', "thread: cannot find the object "
 		   "corresponding to its identifier\n");
 
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	  THREAD_LEAVE(_thread, ERROR_KO);
 	}
 
-      if (w->opts & wakeup)
-	thread_state(w->u.thread, SCHEDULER_STATE_RUN);
+      if (w->options & wakeup)
+	thread_state(w->u.thread, THREAD_STATE_RUN);
     }
 */
   /*
    * 5)
    */
 
-  if (machine_call(thread, thread_state, threadid, sched) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_state, threadid, state) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 6)
    */
 
-  switch(sched)
+  // XXX n'ajouter que les threads en run qui si la task est en run aussi
+  switch (state)
     {
-      case SCHEDULER_STATE_RUN:
-	if (scheduler_add(threadid) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      case THREAD_STATE_RUN:
+	if (task->state == TASK_STATE_RUN)
+	  if (scheduler_add(threadid) != ERROR_OK)
+	    THREAD_LEAVE(_thread, ERROR_KO);
+
 	break;
-      case SCHEDULER_STATE_STOP:
-	if (scheduler_remove(threadid) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
-	break;
-      case SCHEDULER_STATE_ZOMBIE:
-	/* XXX */
-	break;
-      case SCHEDULER_STATE_BLOCK:
-	if (scheduler_remove(threadid) != ERROR_NONE)
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      case THREAD_STATE_STOP:
+      case THREAD_STATE_ZOMBIE:
+      case THREAD_STATE_BLOCK:
+	if (current == THREAD_STATE_RUN)
+	  if (scheduler_remove(threadid) != ERROR_OK)
+	    THREAD_LEAVE(_thread, ERROR_KO);
+
 	break;
     }
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -665,28 +708,28 @@ t_error			thread_stack(i_thread			threadid,
   o_thread*		o;
   o_task*		task;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   /*
    * 1)
    */
 
   if (stack.size < THREAD_MIN_STACKSZ)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (task_get(o->taskid, &task) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (task_get(o->task, &task) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 4)
@@ -694,12 +737,14 @@ t_error			thread_stack(i_thread			threadid,
 
   if (!stack.base)
     {
-      if (map_reserve(task->asid,
-		      MAP_OPT_NONE | (task->class == TASK_CLASS_KERNEL ? MAP_OPT_PRIVILEGED : MAP_OPT_USER),
+      if (map_reserve(task->as,
+		      MAP_OPTION_NONE |
+		      (task->class == TASK_CLASS_KERNEL ?
+		       MAP_OPTION_PRIVILEGED : MAP_OPTION_USER),
 		      stack.size,
-		      PERM_READ | PERM_WRITE,
-		      &(o->stack)) != ERROR_NONE)
-	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &(o->stack)) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
     }
   else
     o->stack = stack.base;
@@ -710,10 +755,10 @@ t_error			thread_stack(i_thread			threadid,
    * 5)
    */
 
-  if (machine_call(thread, thread_stack, threadid, stack) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_stack, threadid, stack) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -724,12 +769,86 @@ t_error			thread_args(i_thread			threadid,
 				    const void*			args,
 				    t_vsize			size)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (machine_call(thread, thread_args, threadid, args, size) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_args, threadid, args, size) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
+}
+
+/*
+ * XXX
+ */
+
+void			thread_sleep_handler(i_timer		timer,
+					     t_vaddr		address)
+{
+  i_thread*		data = (i_thread*)address;
+
+  /*
+   *
+   */
+
+  assert(thread_state(*data, THREAD_STATE_RUN) == ERROR_OK);
+
+  /*
+   *
+   */
+
+  free(data);
+}
+
+/*
+ * XXX
+ */
+
+t_error			thread_sleep(i_thread			id,
+				     t_uint32			milliseconds)
+{
+  i_timer		useless;
+  i_thread*		data;
+  o_thread*		o;
+
+  THREAD_ENTER(_thread);
+
+  /*
+   *
+   */
+
+  if (thread_get(id, (void**)&o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  if (o->state != THREAD_STATE_RUN)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  /*
+   *
+   */
+
+  data = malloc(sizeof(i_thread));
+  *data = id;
+
+  /*
+   *
+   */
+
+  if (timer_reserve(TIMER_FUNCTION,
+                    TIMER_HANDLER(thread_sleep_handler),
+                    (t_vaddr)data,
+                    milliseconds,
+                    TIMER_REPEAT_DISABLE,
+                    (i_timer*)&useless) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  /*
+   *
+   */
+
+  if (thread_state(id, THREAD_STATE_BLOCK) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -748,40 +867,41 @@ t_error			thread_flush(i_task			taskid)
   o_task*		task;
   t_iterator		i;
 
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   /*
    * 1)
    */
 
-  if (machine_call(thread, thread_flush, taskid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_flush, taskid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (task_get(taskid, &task) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (task_get(taskid, &task) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 3)
    */
 
-  while (set_head(task->threads, &i) == ERROR_NONE)
+  while (set_head(task->threads, &i) == ERROR_OK)
     {
-      if (set_object(task->threads, i, (void**)&data) != ERROR_NONE)
+      if (set_object(task->threads, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "thread: cannot find the object "
-		   "corresponding to ist identifier\n");
+	  module_call(console, console_message,
+		      '!', "thread: cannot find the object "
+		      "corresponding to ist identifier\n");
 
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	  THREAD_LEAVE(_thread, ERROR_KO);
 	}
-      if (thread_release(*data) != ERROR_NONE)
-	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      if (thread_release(*data) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
     }
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -791,12 +911,12 @@ t_error			thread_flush(i_task			taskid)
 t_error			thread_load(i_thread			threadid,
 				    t_thread_context		context)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (machine_call(thread, thread_load, threadid, context) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_load, threadid, context) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -806,12 +926,12 @@ t_error			thread_load(i_thread			threadid,
 t_error			thread_store(i_thread			threadid,
 				     t_thread_context*		context)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
-  if (machine_call(thread, thread_store, threadid, context) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (machine_call(thread, thread_store, threadid, context) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -821,14 +941,14 @@ t_error			thread_store(i_thread			threadid,
 t_error			thread_get(i_thread			threadid,
 				   o_thread**			o)
 {
-  THREAD_ENTER(thread);
+  THREAD_ENTER(_thread);
 
   assert(o != NULL);
 
-  if (set_get(thread->threads, threadid, (void**)o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (set_get(_thread->threads, threadid, (void**)o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(_thread, ERROR_OK);
 }
 
 /*
@@ -844,51 +964,75 @@ t_error			thread_get(i_thread			threadid,
 
 t_error			thread_initialize(void)
 {
+  o_thread*		thread;
+
   /*
    * 1)
    */
 
-  if ((thread = malloc(sizeof(m_thread))) == NULL)
+  if ((_thread = malloc(sizeof(m_thread))) == NULL)
     {
-      module_call(console, console_message, '!', "thread: cannot allocate memory "
-	       "for the thread manager structure\n");
+      module_call(console, console_message,
+		  '!', "thread: cannot allocate memory "
+		  "for the thread manager structure\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_KO);
     }
 
-  memset(thread, 0x0, sizeof(m_thread));
+  memset(_thread, 0x0, sizeof(m_thread));
 
   /*
    * 2)
    */
 
-  if (id_build(&thread->id) != ERROR_NONE)
+  if (id_build(&_thread->id) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "thread: unable to initialize the identifier object\n");
+      module_call(console, console_message,
+		  '!', "thread: unable to initialize the identifier object\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(o_thread), &thread->threads)
-      != ERROR_NONE)
+  if (set_reserve(ll, SET_OPTION_ALLOC, sizeof(o_thread), &_thread->threads)
+      != ERROR_OK)
     {
-      module_call(console, console_message, '!', "thread: unable to reserve the thread set\n\n");
+      module_call(console, console_message,
+		  '!', "thread: unable to reserve the thread set\n\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  if (machine_call(thread, thread_initialize) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  // XXX
 
-  return ERROR_NONE;
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     &_kernel->thread) != ERROR_OK)
+    return (ERROR_KO);
+
+  if (thread_get(_kernel->thread, &thread) != ERROR_OK)
+    return (ERROR_KO);
+
+  if (thread_state(_kernel->thread, THREAD_STATE_BLOCK) != ERROR_OK)
+    return (ERROR_KO);
+
+  /*
+   * 5)
+   */
+
+  // XXX
+
+  if (machine_call(thread, thread_initialize) != ERROR_OK)
+    return (ERROR_KO);
+
+  return (ERROR_OK);
 }
 
 /*
@@ -908,36 +1052,38 @@ t_error			thread_clean(void)
    * 1)
    */
 
-  if (machine_call(thread, thread_clean) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (machine_call(thread, thread_clean) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_release(thread->threads) != ERROR_NONE)
+  if (set_release(_thread->threads) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "thread: unable to release the thread set\n");
+      module_call(console, console_message,
+		  '!', "thread: unable to release the thread set\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (id_destroy(&thread->id) != ERROR_NONE)
+  if (id_destroy(&_thread->id) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "thread: unable to destroy the identifier object\n");
+      module_call(console, console_message,
+		  '!', "thread: unable to destroy the identifier object\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  free(thread);
+  free(_thread);
 
-  return ERROR_NONE;
+  return (ERROR_OK);
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/init.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [mon may  4 20:23:12 2009]
+ * updated       julien quintard   [mon nov 22 11:31:42 2010]
  */
 
 #ifndef CORE_INIT_H
@@ -55,7 +55,7 @@ typedef struct
 {
   t_paddr			address;
   t_psize			size;
-  t_perms			perms;
+  t_permissions			permissions;
 }				s_segment;
 
 /*
@@ -71,7 +71,7 @@ typedef struct
   t_vaddr			address;
   t_paddr			offset;
   t_vsize			size;
-  t_opts			opts;
+  t_options			options;
 }				s_region;
 
 /*
@@ -80,7 +80,7 @@ typedef struct
 
 typedef struct
 {
-  i_cpu				cpuid;
+  i_cpu				cpu;
 }				s_cpu;
 
 /*

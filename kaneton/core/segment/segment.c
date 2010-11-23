@@ -44,7 +44,7 @@ machine_include(segment);
  * the list of segments to mark used.
  */
 
-extern t_init*		init;
+extern t_init*		_init;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -54,7 +54,7 @@ extern t_init*		init;
  * the segment manager structure.
  */
 
-m_segment*		segment;
+m_segment*		_segment = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -80,19 +80,19 @@ t_error			segment_show(i_segment			segid)
   char*			type;
   o_segment*		o;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   /*
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   module_call(console, console_message,
 	      '#', "  segment %qd in address space %qd:\n",
 	      segid,
-	      o->asid);
+	      o->as);
 
   /*
    * 2)
@@ -121,13 +121,13 @@ t_error			segment_show(i_segment			segid)
   memset(perms, '.', 3);
   perms[3] = 0;
 
-  if (o->perms & PERM_READ)
+  if (o->permissions & PERMISSION_READ)
     perms[0] = 'r';
 
-  if (o->perms & PERM_WRITE)
+  if (o->permissions & PERMISSION_WRITE)
     perms[1] = 'w';
 
-  if (o->perms & PERM_EXEC)
+  if (o->permissions & PERMISSION_EXEC)
     perms[2] = 'x';
 
   /*
@@ -146,10 +146,10 @@ t_error			segment_show(i_segment			segid)
    * 5)
    */
 
-  if (machine_call(segment, segment_show, segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_show, segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -172,40 +172,43 @@ t_error			segment_dump(void)
   t_setsz		size;
   t_iterator		i;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   /*
    * 1)
    */
 
-  if (set_size(segment->segments, &size) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_size(_segment->segments, &size) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "dumping %qu segment(s) from the segment set:\n", size);
+  module_call(console, console_message,
+	      '#', "dumping %qu segment(s) from the segment set:\n",
+	      size);
 
   /*
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _segment->segments, &i, state)
     {
-      if (set_object(segment->segments, i, (void**)&data) != ERROR_NONE)
+      if (set_object(_segment->segments, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "segment: cannot find the segment object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "segment: cannot find the segment object "
+		      "corresponding to its identifier\n");
 
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	  SEGMENT_LEAVE(_segment, ERROR_KO);
 	}
 
-      if (segment_show(data->segid) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (segment_show(data->id) != ERROR_OK)
+	SEGMENT_LEAVE(_segment, ERROR_KO);
     }
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -226,9 +229,9 @@ t_error			segment_clone(i_as			asid,
 				      i_segment*		new)
 {
   o_segment*		from;
-  t_perms		perms;
+  t_permissions		perms;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(new != NULL);
 
@@ -236,8 +239,8 @@ t_error			segment_clone(i_as			asid,
    * 1)
    */
 
-  if (segment_get(old, &from) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(old, &from) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   assert(from->type != SEGMENT_TYPE_SYSTEM);
 
@@ -245,41 +248,41 @@ t_error			segment_clone(i_as			asid,
    * 2)
    */
 
-  if (segment_reserve(asid, from->size, PERM_WRITE, new) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_reserve(asid, from->size, PERMISSION_WRITE, new) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
-  perms = from->perms;
+  perms = from->permissions;
 
-  if (!(perms & PERM_READ))
+  if (!(perms & PERMISSION_READ))
     {
-      if (segment_perms(old, PERM_READ) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (segment_permissions(old, PERMISSION_READ) != ERROR_OK)
+	SEGMENT_LEAVE(_segment, ERROR_KO);
 
-      if (segment_copy(*new, 0, old, 0, from->size) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (segment_copy(*new, 0, old, 0, from->size) != ERROR_OK)
+	SEGMENT_LEAVE(_segment, ERROR_KO);
 
-      if (segment_perms(old, perms) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (segment_permissions(old, perms) != ERROR_OK)
+	SEGMENT_LEAVE(_segment, ERROR_KO);
     }
   else
-    if (segment_copy(*new, 0, old, 0, from->size) != ERROR_NONE)
-      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    if (segment_copy(*new, 0, old, 0, from->size) != ERROR_OK)
+      SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  if (segment_perms(*new, perms) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_permissions(*new, perms) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (machine_call(segment, segment_clone, asid, old, new) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_clone, asid, old, new) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -301,53 +304,53 @@ t_error			segment_inject(i_as		asid,
 {
   o_as*			as;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(o != NULL);
   assert(o->type == SEGMENT_TYPE_MEMORY ||
 	 o->type == SEGMENT_TYPE_CATCH ||
 	 o->type == SEGMENT_TYPE_SYSTEM);
   assert(o->size != 0);
-  assert((o->perms & PERM_INVALID) == 0);
+  assert((o->permissions & PERMISSION_INVALID) == 0);
   assert(segid != NULL);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  o->segid = (i_segment)o->address;
-  o->asid = asid;
-  *segid = o->segid;
+  o->id = (i_segment)o->address;
+  o->as = asid;
+  *segid = o->id;
 
   /*
    * 3)
    */
 
-  if (set_add(segment->segments, o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_add(_segment->segments, o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  if (set_add(as->segments, &o->segid) != ERROR_NONE)
+  if (set_add(as->segments, &o->id) != ERROR_OK)
     {
-      set_remove(segment->segments, o->segid);
+      set_remove(_segment->segments, o->id);
 
-      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      SEGMENT_LEAVE(_segment, ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  if (machine_call(segment, segment_inject, asid, o, segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_inject, asid, o, segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -370,53 +373,53 @@ t_error			segment_give(i_as		asid,
   o_as*			dest;
   o_as*			src;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   /*
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (as_get(asid, &dest) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(asid, &dest) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (as_get(o->asid, &src) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(o->as, &src) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (set_remove(src->segments, segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_remove(src->segments, segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 5)
    */
 
-  o->asid = asid;
-  if (set_add(dest->segments, &segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  o->as = asid;
+  if (set_add(dest->segments, &segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 6)
    */
 
   if (machine_call(segment, segment_give, asid, segid) !=
-      ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -444,9 +447,9 @@ t_error			segment_resize(i_segment	old,
   t_iterator		it;
   t_iterator		next;
   t_uint8		changed = 0;
-  t_perms		perms;
+  t_permissions		perms;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(size != 0);
   assert(new != NULL);
@@ -455,11 +458,11 @@ t_error			segment_resize(i_segment	old,
    * 1)
    */
 
-  if (set_locate(segment->segments, old, &it) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_locate(_segment->segments, old, &it) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  if (set_object(segment->segments, it, (void**)&o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_object(_segment->segments, it, (void**)&o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
@@ -472,11 +475,11 @@ t_error			segment_resize(i_segment	old,
        * a)
        */
 
-      if (set_next(segment->segments, it, &next) == ERROR_NONE)
+      if (set_next(_segment->segments, it, &next) == ERROR_OK)
 	{
-	  if (set_object(segment->segments, next, (void**)&onext) !=
-	      ERROR_NONE)
-	    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	  if (set_object(_segment->segments, next, (void**)&onext) !=
+	      ERROR_OK)
+	    SEGMENT_LEAVE(_segment, ERROR_KO);
 
 	  /*
 	   * b)
@@ -484,34 +487,34 @@ t_error			segment_resize(i_segment	old,
 
 	  if (o->address + size > onext->address)
 	    {
-/*	      if (opts & SEGLENT_OPT_NORELOCATE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN); XXX */
+/*	      if (options & SEGLENT_OPTION_NORELOCATE)
+		SEGMENT_LEAVE(_segment, ERROR_KO); XXX */
 
-	      perms = o->perms;
+	      perms = o->permissions;
 
-	      if (segment_reserve(o->asid, size, PERM_WRITE, new) !=
-		  ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	      if (segment_reserve(o->as, size, PERMISSION_WRITE, new) !=
+		  ERROR_OK)
+		SEGMENT_LEAVE(_segment, ERROR_KO);
 
-	      if (segment_perms(old, PERM_READ) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	      if (segment_permissions(old, PERMISSION_READ) != ERROR_OK)
+		SEGMENT_LEAVE(_segment, ERROR_KO);
 
-	      if (segment_copy(*new, 0, old, 0, o->size) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	      if (segment_copy(*new, 0, old, 0, o->size) != ERROR_OK)
+		SEGMENT_LEAVE(_segment, ERROR_KO);
 
-	      if (segment_perms(*new, perms) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	      if (segment_permissions(*new, perms) != ERROR_OK)
+		SEGMENT_LEAVE(_segment, ERROR_KO);
 
-	      if (segment_release(old) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	      if (segment_release(old) != ERROR_OK)
+		SEGMENT_LEAVE(_segment, ERROR_KO);
 
 	      changed = 1;
 	    }
 	}
       else
 	{
-	  if (o->address + size > segment->start + segment->size)
-	    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	  if (o->address + size > _segment->start + _segment->size)
+	    SEGMENT_LEAVE(_segment, ERROR_KO);
 
 	  /* XXX look for a new location ? */
 	}
@@ -531,10 +534,10 @@ t_error			segment_resize(i_segment	old,
    * 4)
    */
 
-  if (machine_call(segment, segment_resize, old, size, new) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_resize, old, size, new) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -558,7 +561,7 @@ t_error			segment_split(i_segment		segid,
   o_segment*		n;
   i_segment		useless;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(size != 0);
   assert(left != NULL);
@@ -568,21 +571,21 @@ t_error			segment_split(i_segment		segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  if (as_get(o->asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(o->as, &as) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
   if (size > o->size)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   if ((n = malloc(sizeof (o_segment))) == NULL)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   n->size = o->size - size;
   o->size = size;
@@ -592,25 +595,25 @@ t_error			segment_split(i_segment		segid,
    * 3)
    */
 
-  n->asid = o->asid;
-  n->perms = o->perms;
+  n->as = o->as;
+  n->permissions = o->permissions;
   n->address = o->address + size;
   n->type = o->type;
 
-  *right = n->segid = (i_segment)n->address;
+  *right = n->id = (i_segment)n->address;
 
-  if (segment_inject(o->asid, n, &useless) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_inject(o->as, n, &useless) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 4)
    */
 
   if (machine_call(segment, segment_split, segid, size, left, right) !=
-      ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -632,7 +635,7 @@ t_error			segment_coalesce(i_segment	left,
   o_segment*		seg1;
   o_segment*		seg2;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(left != right);
   assert(segid != NULL);
@@ -641,43 +644,46 @@ t_error			segment_coalesce(i_segment	left,
    * 1)
    */
 
-  if (segment_get(left, &seg1) != ERROR_NONE ||
-      segment_get(right, &seg2) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(left, &seg1) != ERROR_OK ||
+      segment_get(right, &seg2) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
   if (seg1->address + seg1->size != seg2->address ||
-      seg1->asid != seg2->asid ||
-      seg1->perms != seg2->perms ||
+      seg1->as != seg2->as ||
+      seg1->permissions != seg2->permissions ||
       seg1->type != seg2->type)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
   seg1->size += seg2->size;
-  *segid = seg1->segid;
+  *segid = seg1->id;
 
   /*
    * 4)
    */
 
-  if (segment_release(right) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_release(right) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (machine_call(segment, segment_coalesce, left, right, segid) !=
-      ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment,
+		   segment_coalesce,
+		   left,
+		   right,
+		   segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -699,7 +705,7 @@ t_error			segment_read(i_segment		segid,
 {
   o_segment*		o;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(sz != 0);
 
@@ -707,27 +713,27 @@ t_error			segment_read(i_segment		segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (!(o->perms & PERM_READ))
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (!(o->permissions & PERMISSION_READ))
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   if (offs + sz > o->size)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (machine_call(segment, segment_read, segid, offs, buff, sz) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_read, segid, offs, buff, sz) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -749,7 +755,7 @@ t_error			segment_write(i_segment		segid,
 {
   o_segment*		o;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(sz != 0);
 
@@ -757,28 +763,28 @@ t_error			segment_write(i_segment		segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (!(o->perms & PERM_WRITE))
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (!(o->permissions & PERMISSION_WRITE))
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   if (offs + sz > o->size)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
   if (machine_call(segment, segment_write, segid, offs, buff, sz) !=
-      ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -802,7 +808,7 @@ t_error			segment_copy(i_segment		dst,
   o_segment*		o1;
   o_segment*		o2;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(sz != 0);
 
@@ -810,34 +816,35 @@ t_error			segment_copy(i_segment		dst,
    * 1)
    */
 
-  if (segment_get(dst, &o1) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(dst, &o1) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  if (segment_get(src, &o2) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(src, &o2) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (!((o1->perms & PERM_WRITE) && (o2->perms & PERM_READ)))
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (!((o1->permissions & PERMISSION_WRITE) &&
+	(o2->permissions & PERMISSION_READ)))
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   if (offsd + sz > o1->size)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   if (offss + sz > o2->size)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
   if (machine_call(segment, segment_copy, dst, offsd, src, offss, sz) !=
-      ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -855,54 +862,54 @@ t_error			segment_copy(i_segment		dst,
 
 t_error			segment_reserve(i_as			asid,
 					t_psize			size,
-					t_perms			perms,
+					t_permissions		perms,
 					i_segment*		segid)
 {
   o_as*			as;
   o_segment*		o;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(size != 0);
-  assert((perms & PERM_INVALID) == 0);
+  assert((perms & PERMISSION_INVALID) == 0);
   assert(segid != NULL);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   if ((o = malloc(sizeof(o_segment))) == NULL)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (segment_space(asid, size, &o->address) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_space(asid, size, &o->address) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
-  o->asid = as->asid;
+  o->as = as->id;
   o->size = size;
-  o->perms = perms;
+  o->permissions = perms;
   o->type = SEGMENT_TYPE_MEMORY;
 
-  *segid = o->segid = (i_segment)o->address;
+  *segid = o->id = (i_segment)o->address;
 
-  if (set_add(segment->segments, o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_add(_segment->segments, o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  if (set_add(as->segments, &o->segid) != ERROR_NONE)
+  if (set_add(as->segments, &o->id) != ERROR_OK)
     {
-      set_remove(segment->segments, o->segid);
+      set_remove(_segment->segments, o->id);
 
-      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      SEGMENT_LEAVE(_segment, ERROR_KO);
     }
 
   /*
@@ -910,10 +917,10 @@ t_error			segment_reserve(i_as			asid,
    */
 
   if (machine_call(segment, segment_reserve, asid, size, perms, segid) !=
-      ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -935,44 +942,44 @@ t_error			segment_release(i_segment		segid)
   o_as*			as;
   o_segment*		o;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   /*
    * 1)
    */
 
-  if (machine_call(segment, segment_release, segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_release, segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (as_get(o->asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(o->as, &as) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (set_remove(as->segments, segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_remove(as->segments, segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (set_remove(segment->segments, segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_remove(_segment->segments, segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -1004,61 +1011,61 @@ t_error			segment_catch(i_as			asid,
   o_as*			old;
   o_segment*		o;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
   if (o->type != SEGMENT_TYPE_CATCH)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (o->asid != ID_UNUSED && as_get(o->asid, &old) == ERROR_NONE)
+  if (o->as != ID_UNUSED && as_get(o->as, &old) == ERROR_OK)
     {
-      if (set_remove(old->segments, o->segid) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (set_remove(old->segments, o->id) != ERROR_OK)
+	SEGMENT_LEAVE(_segment, ERROR_KO);
     }
 
   /*
    * 5)
    */
 
-  if (set_add(as->segments, &o->segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_add(as->segments, &o->id) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 6)
    */
 
   o->type = SEGMENT_TYPE_MEMORY;
-  o->asid = asid;
+  o->as = asid;
 
   /*
    * 7)
    */
 
-  if (machine_call(segment, segment_catch, asid, segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_catch, asid, segid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -1074,41 +1081,43 @@ t_error			segment_catch(i_as			asid,
  *
  */
 
-t_error			segment_perms(i_segment			segid,
-				      t_perms			perms)
+t_error			segment_permissions(i_segment		segid,
+					    t_permissions	perms)
 {
   o_segment*		o;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   /*
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (!(perms & PERM_EXEC) && !(perms & PERM_READ) && !(perms & PERM_WRITE))
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (!(perms & PERMISSION_EXEC) &&
+      !(perms & PERMISSION_READ) &&
+      !(perms & PERMISSION_WRITE))
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
-  o->perms = perms;
+  o->permissions = perms;
 
   /*
    * 4)
    */
 
-  if (machine_call(segment, segment_perms, segid, perms) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_permissions, segid, perms) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -1127,14 +1136,14 @@ t_error			segment_type(i_segment			segid,
 {
   o_segment*		o;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   /*
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
@@ -1143,7 +1152,7 @@ t_error			segment_type(i_segment			segid,
   if ((type != SEGMENT_TYPE_MEMORY) &&
       (type != SEGMENT_TYPE_CATCH) &&
       (type != SEGMENT_TYPE_SYSTEM))
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
@@ -1155,10 +1164,10 @@ t_error			segment_type(i_segment			segid,
    * 4)
    */
 
-  if (machine_call(segment, segment_type, segid, type) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_type, segid, type) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -1181,41 +1190,42 @@ t_error			segment_flush(i_as			asid)
   o_as*			as;
   t_iterator		i;
 
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   /*
    * 1)
    */
 
-  if (machine_call(segment, segment_flush, asid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (machine_call(segment, segment_flush, asid) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
   /*
    * 3)
    */
 
-  while (set_head(as->segments, &i) == ERROR_NONE)
+  while (set_head(as->segments, &i) == ERROR_OK)
     {
-      if (set_object(as->segments, i, (void**)&data) != ERROR_NONE)
+      if (set_object(as->segments, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "segment: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "segment: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	  SEGMENT_LEAVE(_segment, ERROR_KO);
 	}
 
-      if (segment_release(*data) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (segment_release(*data) != ERROR_OK)
+	SEGMENT_LEAVE(_segment, ERROR_KO);
     }
 
- SEGMENT_LEAVE(segment, ERROR_NONE);
+ SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -1226,14 +1236,14 @@ t_error			segment_flush(i_as			asid)
 t_error			segment_get(i_segment			segid,
 				    o_segment**			o)
 {
-  SEGMENT_ENTER(segment);
+  SEGMENT_ENTER(_segment);
 
   assert(o != NULL);
 
-  if (set_get(segment->segments, segid, (void**)o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (set_get(_segment->segments, segid, (void**)o) != ERROR_OK)
+    SEGMENT_LEAVE(_segment, ERROR_KO);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(_segment, ERROR_OK);
 }
 
 /*
@@ -1256,43 +1266,45 @@ t_error			segment_initialize(void)
    * 1)
    */
 
-  if ((segment = malloc(sizeof(m_segment))) == NULL)
+  if ((_segment = malloc(sizeof(m_segment))) == NULL)
     {
-      module_call(console, console_message, '!', "segment: cannot allocate memory for the segment "
-	       "manager structure\n");
+      module_call(console, console_message,
+		  '!', "segment: cannot allocate memory for the segment "
+		  "manager structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(segment, 0x0, sizeof(m_segment));
+  memset(_segment, 0x0, sizeof(m_segment));
 
   /*
    * 2)
    */
 
-  segment->start = init->mem;
-  segment->size = init->memsz;
+  _segment->start = _init->mem;
+  _segment->size = _init->memsz;
 
   /*
    * 3)
    */
 
-  if (set_reserve(bpt, SET_OPT_SORT | SET_OPT_FREE, sizeof(o_segment),
-		  SEGMENT_BPT_NODESZ, &segment->segments) != ERROR_NONE)
+  if (set_reserve(bpt, SET_OPTION_SORT | SET_OPTION_FREE, sizeof(o_segment),
+		  SEGMENT_BPT_NODESZ, &_segment->segments) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "segment: unable to reserve the segment set\n");
+      module_call(console, console_message,
+		  '!', "segment: unable to reserve the segment set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  if (machine_call(segment, segment_initialize) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(segment, segment_initialize) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -1316,39 +1328,41 @@ t_error			segment_clean(void)
    * 1)
    */
 
-  if (machine_call(segment, segment_clean) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(segment, segment_clean) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 2)
    */
 
-  while (set_head(segment->segments, &i) == ERROR_NONE)
+  while (set_head(_segment->segments, &i) == ERROR_OK)
     {
-      if (set_object(segment->segments, i, (void**)&data) != ERROR_NONE)
+      if (set_object(_segment->segments, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "segment: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "segment: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  return (ERROR_UNKNOWN);
+	  return (ERROR_KO);
 	}
 
-      if (segment_release(data->segid) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (segment_release(data->id) != ERROR_OK)
+	return (ERROR_KO);
     }
 
-  if (set_release(segment->segments) != ERROR_NONE)
+  if (set_release(_segment->segments) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "segment: unable to release the segment set\n");
+      module_call(console, console_message,
+		  '!', "segment: unable to release the segment set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  free(segment);
+  free(_segment);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

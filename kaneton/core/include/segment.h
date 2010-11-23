@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/core/include/segment.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       matthieu bucchianeri   [wed jan  9 15:31:19 2008]
+ * updated       julien quintard   [mon nov 22 12:30:04 2010]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -58,16 +58,16 @@
 
 typedef struct
 {
-  i_segment			segid;
+  i_segment			id;
 
-  i_as				asid;
+  i_as				as;
 
   t_type			type;
 
   t_paddr			address;
   t_psize			size;
 
-  t_perms			perms;
+  t_permissions			permissions;
 
   machine_data(o_segment);
 }				o_segment;
@@ -128,13 +128,13 @@ typedef struct
 						t_psize);
   t_error			(*segment_reserve)(i_as,
 						   t_psize,
-						   t_perms,
+						   t_permissions,
 						   i_segment*);
   t_error			(*segment_release)(i_segment);
   t_error			(*segment_catch)(i_as,
 						 i_segment);
-  t_error			(*segment_perms)(i_segment,
-						 t_perms);
+  t_error			(*segment_permissions)(i_segment,
+						       t_permissions);
   t_error			(*segment_type)(i_segment,
 						t_type);
   t_error			(*segment_flush)(i_as);
@@ -153,7 +153,7 @@ typedef struct
 #define SEGMENT_CHECK(_segment_)					\
   {									\
     if ((_segment_) == NULL)						\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*
@@ -239,7 +239,7 @@ t_error			segment_copy(i_segment		dst,
 
 t_error			segment_reserve(i_as			asid,
 					t_psize			size,
-					t_perms			perms,
+					t_permissions		perms,
 					i_segment*		segid);
 
 t_error			segment_release(i_segment		segid);
@@ -247,8 +247,8 @@ t_error			segment_release(i_segment		segid);
 t_error			segment_catch(i_as			asid,
 				      i_segment			segid);
 
-t_error			segment_perms(i_segment			segid,
-				      t_perms			perms);
+t_error			segment_permissions(i_segment		segid,
+					    t_permissions	perms);
 
 t_error			segment_type(i_segment			segid,
 				     t_type			type);

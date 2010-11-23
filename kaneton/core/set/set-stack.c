@@ -25,10 +25,10 @@
 #include <kaneton.h>
 
 /*
- * ---------- extern ---------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
-extern m_set*		set;
+extern m_set*		_set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -42,15 +42,15 @@ t_error			set_type_stack(i_set			setid)
 {
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   if (o->type == SET_TYPE_STACK)
-    SET_LEAVE(set, ERROR_NONE);
+    SET_LEAVE(_set, ERROR_OK);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -65,13 +65,13 @@ t_error			set_type_stack(i_set			setid)
  * 5) adds the set descriptor to the set container.
  */
 
-t_error			set_reserve_stack(t_opts		opts,
+t_error			set_reserve_stack(t_options		options,
 					  t_size		datasz,
 					  i_set*		setid)
 {
   o_set			o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(datasz >= sizeof (t_id));
   assert(setid != NULL);
@@ -86,34 +86,34 @@ t_error			set_reserve_stack(t_opts		opts,
    * 2)
    */
 
-  if (opts & SET_OPT_ORGANISE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (options & SET_OPTION_ORGANISE)
+    SET_LEAVE(_set, ERROR_KO);
 
-  if ((opts & SET_OPT_ALLOC) && (opts & SET_OPT_FREE))
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (opts & SET_OPT_CONTAINER)
+  if (options & SET_OPTION_CONTAINER)
     {
-      *setid = set->sets;
+      *setid = _set->sets;
     }
   else
     {
-      if (id_reserve(&set->id, setid) != ERROR_NONE)
-	SET_LEAVE(set, ERROR_UNKNOWN);
+      if (id_reserve(&_set->id, setid) != ERROR_OK)
+	SET_LEAVE(_set, ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  o.setid = *setid;
+  o.id = *setid;
   o.size = 0;
   o.type = SET_TYPE_STACK;
-  o.opts = opts;
+  o.options = options;
   o.datasz = datasz;
 
   o.u.ll.head = NULL;
@@ -123,15 +123,15 @@ t_error			set_reserve_stack(t_opts		opts,
    * 5)
    */
 
-  if (set_new(&o) != ERROR_NONE)
+  if (set_new(&o) != ERROR_OK)
     {
-      if (!(opts & SET_OPT_CONTAINER))
-	id_release(&set->id, o.setid);
+      if (!(options & SET_OPTION_CONTAINER))
+	id_release(&_set->id, o.id);
 
-      SET_LEAVE(set, ERROR_UNKNOWN);
+      SET_LEAVE(_set, ERROR_KO);
     }
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -143,11 +143,11 @@ t_error			set_show_stack(i_set			setid)
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_show_ll(setid);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 /*
@@ -157,11 +157,11 @@ t_error			set_release_stack(i_set			setid)
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_release_ll(setid);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 /*
@@ -172,11 +172,11 @@ t_error			set_flush_stack(i_set			setid)
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_flush_ll(setid);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 /*
@@ -188,11 +188,11 @@ t_error			set_push_stack(i_set			setid,
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_insert_ll(setid, data);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 
@@ -206,14 +206,14 @@ t_error			set_pick_stack(i_set			setid,
   t_error		retval;
   t_iterator		iterator;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  if ((retval = set_head_ll(setid, &iterator)) != ERROR_NONE)
-    SET_LEAVE(set, retval);
+  if ((retval = set_head_ll(setid, &iterator)) != ERROR_OK)
+    SET_LEAVE(_set, retval);
 
   retval = set_object_ll(setid, iterator, data);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 /*
@@ -225,14 +225,14 @@ t_error			set_pop_stack(i_set			setid)
   t_error		retval;
   t_iterator		iterator;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  if ((retval = set_head_ll(setid, &iterator)) != ERROR_NONE)
-    SET_LEAVE(set, retval);
+  if ((retval = set_head_ll(setid, &iterator)) != ERROR_OK)
+    SET_LEAVE(_set, retval);
 
   retval = set_delete_ll(setid, iterator);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 /*
@@ -246,11 +246,11 @@ t_error			set_head_stack(i_set			setid,
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_head_ll(setid, iterator);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 
@@ -264,11 +264,11 @@ t_error			set_tail_stack(i_set			setid,
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_tail_ll(setid, iterator);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 /*
@@ -283,11 +283,11 @@ t_error			set_previous_stack(i_set		setid,
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_previous_ll(setid, current, previous);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 /*
@@ -302,11 +302,11 @@ t_error			set_next_stack(i_set			setid,
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_next_ll(setid, current, next);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }
 
 /*
@@ -318,9 +318,9 @@ t_error			set_next_stack(i_set			setid,
 t_error			set_insert_stack(i_set			setid,
 					 void*			data)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -331,9 +331,9 @@ t_error			set_insert_stack(i_set			setid,
 t_error			set_append_stack(i_set			setid,
 					 void*			data)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -345,9 +345,9 @@ t_error			set_before_stack(i_set			setid,
 					 t_iterator		iterator,
 					 void*			data)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -359,9 +359,9 @@ t_error			set_after_stack(i_set			setid,
 					t_iterator		iterator,
 					void*			data)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -373,9 +373,9 @@ t_error			set_after_stack(i_set			setid,
 t_error			set_add_stack(i_set			setid,
 				      void*			data)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -387,9 +387,9 @@ t_error			set_add_stack(i_set			setid,
 t_error			set_remove_stack(i_set			setid,
 					 t_id			id)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -401,9 +401,9 @@ t_error			set_remove_stack(i_set			setid,
 t_error			set_delete_stack(i_set			setid,
 					 t_iterator		iterator)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -417,11 +417,11 @@ t_error			set_locate_stack(i_set			setid,
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_locate_ll(setid, id, iterator);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -434,9 +434,9 @@ t_error			set_object_stack(i_set			setid,
 {
   t_error		retval;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   retval = set_object_ll(setid, iterator, data);
 
-  SET_LEAVE(set, retval);
+  SET_LEAVE(_set, retval);
 }

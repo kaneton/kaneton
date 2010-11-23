@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/thread.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       matthieu bucchianeri   [mon aug 27 22:13:21 2007]
+ * updated       julien quintard   [mon nov 22 16:52:26 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -33,9 +33,9 @@
  * priorities
  */
 
-#define THREAD_PRIOR		130
-#define THREAD_HPRIOR		250
-#define THREAD_LPRIOR		10
+#define THREAD_PRIORITY		130
+#define THREAD_HPRIORITY	250
+#define THREAD_LPRIORITY	10
 
 /*
  * stack size
@@ -43,6 +43,15 @@
 
 #define THREAD_STACKSZ		4096
 #define THREAD_MIN_STACKSZ	4096
+
+/*
+ * the thread state.
+ */
+
+#define THREAD_STATE_RUN	1
+#define THREAD_STATE_STOP	2
+#define THREAD_STATE_BLOCK	3
+#define THREAD_STATE_ZOMBIE	4
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -64,13 +73,13 @@ typedef struct
 
 typedef struct
 {
-  i_thread			threadid;
+  i_thread			id;
 
-  i_task			taskid;
+  i_task			task;
 
-  t_prior			prior;
+  t_priority			priority;
 
-  t_state			sched;
+  t_state			state;
 
   i_set				waits;
   t_wait			wait;
@@ -115,7 +124,7 @@ typedef struct
 						  i_thread*);
   t_error			(*thread_release)(i_thread);
   t_error			(*thread_priority)(i_thread,
-						  t_prior);
+						  t_priority);
   t_error			(*thread_state)(i_thread,
 						t_state);
   t_error			(*thread_stack)(i_thread,
@@ -138,7 +147,7 @@ typedef struct
 #define THREAD_CHECK(_thread_)						\
   {									\
     if ((_thread_) == NULL)						\
-      return ERROR_UNKNOWN;						\
+      return ERROR_KO;						\
   }
 
 /*
@@ -181,16 +190,16 @@ t_error			thread_clone(i_task			taskid,
 				     i_thread*			new);
 
 t_error			thread_reserve(i_task			taskid,
-				       t_prior			prior,
+				       t_priority		prior,
 				       i_thread*		threadid);
 
 t_error			thread_release(i_thread			threadid);
 
 t_error			thread_priority(i_thread		threadid,
-					t_prior			prior);
+					t_priority		prior);
 
 t_error			thread_state(i_thread			threadid,
-				     t_state			sched);
+				     t_state			state);
 
 t_error			thread_stack(i_thread			threadid,
 				     t_stack			stack);
@@ -198,6 +207,12 @@ t_error			thread_stack(i_thread			threadid,
 t_error			thread_args(i_thread			threadid,
 				    const void*			args,
 				    t_vsize			size);
+
+void			thread_sleep_handler(i_timer		timer,
+					     t_vaddr		address);
+
+t_error			thread_sleep(i_thread			id,
+				     t_uint32			milliseconds);
 
 t_error			thread_flush(i_task			taskid);
 

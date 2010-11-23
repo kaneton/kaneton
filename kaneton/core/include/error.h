@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/error.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/error.h
  *
  * created       julien quintard   [wed jun  6 13:02:28 2007]
- * updated       julien quintard   [sat may  2 00:16:37 2009]
+ * updated       julien quintard   [tue nov 23 14:45:51 2010]
  */
 
 #ifndef CORE_ERROR_H
@@ -34,8 +34,8 @@ typedef t_sint32		t_error;
  * ---------- macros ----------------------------------------------------------
  */
 
-#define ERROR_NONE		(1 << 0)
-#define ERROR_UNKNOWN		(1 << 1)
+#define ERROR_OK		(1 << 0)
+#define ERROR_KO		(1 << 1)
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -44,8 +44,10 @@ typedef t_sint32		t_error;
 #define assert(_test_)							\
   if (!(_test_))							\
     {									\
-      printf("[assert] '%s' failed at %s:%d\n",				\
-             #_test_, __FILE__, __LINE__);				\
+      module_call(report, report_dump);					\
+									\
+      printf("[!] assertion failed in '%s' (%s:%u)\n",			\
+             #_test_, __FUNCTION__, __LINE__);				\
 									\
       while (1)								\
 	;								\

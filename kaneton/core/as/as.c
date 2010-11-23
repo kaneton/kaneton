@@ -35,6 +35,12 @@
 machine_include(as);
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern m_kernel*	_kernel;
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -42,13 +48,7 @@ machine_include(as);
  * the address space manager variable.
  */
 
-m_as*			as = NULL;
-
-/*
- * kernel address space.
- */
-
-i_as			kasid = ID_UNUSED;
+m_as*			_as = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -65,63 +65,68 @@ i_as			kasid = ID_UNUSED;
  * 4) call machine dependent code.
  */
 
-t_error			as_show(i_as				asid)
+t_error			as_show(i_as				id)
 {
-  t_state		state;
-  i_segment		seg;
-  i_region		reg;
+  i_segment		segment;
+  i_region		region;
+  t_state		st;
   t_iterator		i;
   o_as*			o;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(id, &o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  module_call(console, console_message, '#', "  address space %qd in task %qd:\n",
-	   asid,
-	   o->tskid);
+  module_call(console, console_message, '#',
+	      "  address space %qd in task %qd:\n",
+	      id,
+	      o->task);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "    segments %qd:\n", o->segments);
+  module_call(console, console_message,
+	      '#', "    segments %qd:\n", o->segments);
 
-  set_foreach(SET_OPT_FORWARD, o->segments, &i, state)
+  set_foreach(SET_OPTION_FORWARD, o->segments, &i, st)
     {
-      if (set_object(o->segments, i, (void**)&seg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(o->segments, i, (void**)&segment) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      module_call(console, console_message, '#', "      %qd\n", seg);
+      module_call(console, console_message,
+		  '#', "      %qd\n", segment);
     }
 
   /*
    * 3)
    */
 
-  module_call(console, console_message, '#', "    regions %qd:\n", o->regions);
+  module_call(console, console_message,
+	      '#', "    regions %qd:\n", o->regions);
 
-  set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
+  set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
     {
-      if (set_object(o->regions, i, (void**)&reg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      module_call(console, console_message, '#', "      %qd\n", reg);
+      module_call(console, console_message,
+		  '#', "      %qd\n", region);
     }
 
   /*
    * 4)
    */
 
-  if (machine_call(as, as_show, asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (machine_call(as, as_show, id) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -136,36 +141,37 @@ t_error			as_show(i_as				asid)
 
 t_error			as_dump(void)
 {
-  t_state		state;
-  o_as*			data;
   t_setsz		size;
+  o_as*			o;
+  t_state		st;
   t_iterator		i;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   /*
    * 1)
    */
 
-  if (set_size(as->ass, &size) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_size(_as->ass, &size) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "dumping %qu address space(s):\n", size);
+  module_call(console, console_message,
+	      '#', "dumping %qu address space(s):\n", size);
 
-  set_foreach(SET_OPT_FORWARD, as->ass, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _as->ass, &i, st)
     {
-      if (set_object(as->ass, i, (void**)&data) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(_as->ass, i, (void**)&o) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (as_show(data->asid) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (as_show(o->id) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
     }
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -180,73 +186,74 @@ t_error			as_dump(void)
  * 5) calls the machine-dependent code.
  */
 
-t_error			as_give(i_task			tskid,
-				i_as			asid)
+t_error			as_give(i_as				id,
+				i_task				task)
 {
   o_task*		from;
   o_task*		to;
   o_as*			o;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(id, &o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (task_get(o->tskid, &from) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (task_get(o->task, &from) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (task_get(tskid, &to) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (task_get(task, &to) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (to->asid != ID_UNUSED)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (to->as != ID_UNUSED)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 4)
    */
 
-  from->asid = ID_UNUSED;
-  to->asid = asid;
-  o->tskid = tskid;
+  from->as = ID_UNUSED;
+  to->as = id;
+
+  o->task = task;
 
   /*
    * 5)
    */
 
-  if (machine_call(as, as_give, tskid, asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (machine_call(as, as_give, id, task) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
  * this function translate a physical address to its virtual address.
  */
 
-t_error			as_vaddr(i_as			asid,
-				 t_paddr		physical,
-				 t_vaddr*		virtual)
+t_error			as_vaddr(i_as				id,
+				 t_paddr			physical,
+				 t_vaddr*			virtual)
 {
   o_as*			o;
-  o_region*		oreg;
-  o_segment*		oseg;
+  o_region*		region;
+  o_segment*		segment;
+  t_boolean		found;
+  t_state		st;
   t_iterator		i;
-  t_state		state;
-  t_uint32		found = 0;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   assert(virtual != NULL);
 
@@ -254,25 +261,28 @@ t_error			as_vaddr(i_as			asid,
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(id, &o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
+  found = BOOLEAN_FALSE;
+
+  set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
     {
-      if (set_object(o->regions, i, (void**)&oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (segment_get(oreg->segid, &oseg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (segment_get(region->segment, &segment) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (oseg->address + oreg->offset <= physical &&
-	  physical < oseg->address + oreg->offset + oreg->size)
+      if (segment->address + region->offset <= physical &&
+	  physical < segment->address + region->offset + region->size)
 	{
-	  found = 1;
+	  found = BOOLEAN_TRUE;
+
 	  break;
 	}
     }
@@ -281,24 +291,23 @@ t_error			as_vaddr(i_as			asid,
    * 3)
    */
 
-  if (!found)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (found == BOOLEAN_FALSE)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 4)
    */
 
-  *virtual = oreg->address - oreg->offset + (physical - oseg->address);
+  *virtual = region->address - region->offset + (physical - segment->address);
 
   /*
    * 5)
    */
 
-  if (machine_call(as, as_vaddr, asid, physical, virtual) !=
-      ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (machine_call(as, as_vaddr, id, physical, virtual) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -313,17 +322,18 @@ t_error			as_vaddr(i_as			asid,
  * 5) call dependent code.
  */
 
-t_error			as_paddr(i_as		asid,
-				 t_vaddr	virtual,
-				 t_paddr*	physical)
+t_error			as_paddr(i_as				id,
+				 t_vaddr			virtual,
+				 t_paddr*			physical)
 {
+  o_region*		region;
+  o_segment*		segment;
+  t_uint32		found;
   o_as*			o;
-  o_region*		oreg;
   t_iterator		i;
-  t_state		state;
-  t_uint32		found = 0;
+  t_state		st;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   assert(physical != NULL);
 
@@ -331,49 +341,56 @@ t_error			as_paddr(i_as		asid,
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(id, &o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
-    {
-      if (set_object(o->regions, i, (void**)&oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+  found = BOOLEAN_FALSE;
 
-      if (oreg->address <= virtual && virtual < oreg->address + oreg->size)
+  set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
+    {
+      if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
+
+      if (region->address <= virtual &&
+	  virtual < region->address + region->size)
 	{
-	  found = 1;
+	  found = BOOLEAN_TRUE;
+
 	  break;
 	}
-      if (oreg->address > virtual)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (region->address > virtual)
+	AS_LEAVE(_as, ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (!found)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (found == BOOLEAN_FALSE)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 4)
    */
 
-  *physical = (t_paddr)oreg->segid + oreg->offset + (virtual - oreg->address);
+  if (segment_get(region->segment, &segment) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
+
+  *physical = segment->address + region->offset + (virtual - region->address);
 
   /*
    * 5)
    */
 
-  if (machine_call(as, as_paddr, asid, virtual, physical) !=
-      ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (machine_call(as, as_paddr, id, virtual, physical) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -393,21 +410,21 @@ t_error			as_paddr(i_as		asid,
  * 9) read data from the segment.
  */
 
-t_error			as_read(i_as				asid,
-				t_vaddr				src,
+t_error			as_read(i_as				id,
+				t_vaddr				source,
 				t_vsize				size,
-				void*				dst)
+				void*				destination)
 {
-  o_as*			o;
-  o_region*		oreg;
-  o_region*		prev;
-  t_iterator		it;
+  t_uint8*		buffer = destination;
+  o_region*		region;
+  o_region*		previous;
+  t_paddr		offset;
   t_iterator		next;
-  t_paddr		offs;
   t_psize		copy;
-  t_uint8*		buff = dst;
+  o_as*			o;
+  t_iterator		i;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   assert(size != 0);
 
@@ -415,59 +432,62 @@ t_error			as_read(i_as				asid,
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(id, &o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_head(o->regions, &it) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_head(o->regions, &i) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 3)
    */
 
-  while (oreg->address + oreg->size <= src)
+  while (region->address + region->size <= source)
     {
-      if (set_next(o->regions, it, &next) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_next(o->regions, i, &next) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (set_object(o->regions, next, (void**)&oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(o->regions, next, (void**)&region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      memcpy(&it, &next, sizeof (t_iterator));
+      memcpy(&i, &next, sizeof (t_iterator));
     }
 
-  if (oreg->address > src)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (region->address > source)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 4)
    */
 
-  offs = src - oreg->address;
-  copy = oreg->size - offs;
+  offset = source - region->address;
+
+  copy = region->size - offset;
+
   if (copy > size)
     copy = size;
-  offs += oreg->offset;
+
+  offset += region->offset;
 
   /*
    * 5)
    */
 
-  if (segment_read(oreg->segid, offs, buff, copy) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (segment_read(region->segment, offset, buffer, copy) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  buff += copy;
+  buffer += copy;
   size -= copy;
 
   if (size == 0)
-    AS_LEAVE(as, ERROR_NONE);
+    AS_LEAVE(_as, ERROR_OK);
 
   /*
    * 6)
@@ -475,27 +495,29 @@ t_error			as_read(i_as				asid,
 
   for (;;)
     {
-      prev = oreg;
+      previous = region;
 
       /*
        * 7)
        */
 
-      if (set_next(o->regions, next, &it) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_next(o->regions, next, &i) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (oreg->address != prev->address + prev->size)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (region->address != previous->address + previous->size)
+	AS_LEAVE(_as, ERROR_KO);
 
       /*
        * 8)
        */
 
-      offs = oreg->offset;
-      copy = oreg->size;
+      offset = region->offset;
+
+      copy = region->size;
+
       if (copy > size)
 	copy = size;
 
@@ -503,19 +525,19 @@ t_error			as_read(i_as				asid,
        * 9)
        */
 
-      if (segment_read(oreg->segid, offs, buff, copy) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (segment_read(region->segment, offset, buffer, copy) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      buff += copy;
+      buffer += copy;
       size -= copy;
 
       if (size == 0)
 	break;
 
-      memcpy(&next, &it, sizeof (t_iterator));
+      memcpy(&next, &i, sizeof (t_iterator));
     }
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -535,21 +557,21 @@ t_error			as_read(i_as				asid,
  * 9) write data to the segment.
  */
 
-t_error			as_write(i_as				asid,
-				 const void*			src,
+t_error			as_write(i_as				id,
+				 const void*			source,
 				 t_vsize			size,
-				 t_vaddr			dst)
+				 t_vaddr			destination)
 {
-  o_as*			o;
-  o_region*		oreg;
-  o_region*		prev;
-  t_iterator		it;
+  const t_uint8*	buffer = source;
+  o_region*		region;
+  o_region*		previous;
+  t_paddr		offset;
   t_iterator		next;
-  t_paddr		offs;
   t_psize		copy;
-  const t_uint8*	buff = src;
+  o_as*			o;
+  t_iterator		i;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   assert(size != 0);
 
@@ -557,59 +579,62 @@ t_error			as_write(i_as				asid,
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(id, &o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_head(o->regions, &it) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_head(o->regions, &i) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 3)
    */
 
-  while (oreg->address + oreg->size <= dst)
+  while (region->address + region->size <= destination)
     {
-      if (set_next(o->regions, it, &next) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_next(o->regions, i, &next) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (set_object(o->regions, next, (void**)&oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(o->regions, next, (void**)&region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      memcpy(&it, &next, sizeof (t_iterator));
+      memcpy(&i, &next, sizeof (t_iterator));
     }
 
-  if (oreg->address > dst)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (region->address > destination)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 4)
    */
 
-  offs = dst - oreg->address;
-  copy = oreg->size - offs;
+  offset = destination - region->address;
+
+  copy = region->size - offset;
+
   if (copy > size)
     copy = size;
-  offs += oreg->offset;
+
+  offset += region->offset;
 
   /*
    * 5)
    */
 
-  if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (segment_write(region->segment, offset, buffer, copy) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  buff += copy;
+  buffer += copy;
   size -= copy;
 
   if (size == 0)
-    AS_LEAVE(as, ERROR_NONE);
+    AS_LEAVE(_as, ERROR_OK);
 
   /*
    * 6)
@@ -617,27 +642,29 @@ t_error			as_write(i_as				asid,
 
   for (;;)
     {
-      prev = oreg;
+      previous = region;
 
       /*
        * 7)
        */
 
-      if (set_next(o->regions, next, &it) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_next(o->regions, next, &i) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (oreg->address != prev->address + prev->size)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (region->address != previous->address + previous->size)
+	AS_LEAVE(_as, ERROR_KO);
 
       /*
        * 8)
        */
 
-      offs = oreg->offset;
-      copy = oreg->size;
+      offset = region->offset;
+
+      copy = region->size;
+
       if (copy > size)
 	copy = size;
 
@@ -645,19 +672,19 @@ t_error			as_write(i_as				asid,
        * 9)
        */
 
-      if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (segment_write(region->segment, offset, buffer, copy) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      buff += copy;
+      buffer += copy;
       size -= copy;
 
       if (size == 0)
 	break;
 
-      memcpy(&next, &it, sizeof (t_iterator));
+      memcpy(&next, &i, sizeof (t_iterator));
     }
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -675,132 +702,152 @@ t_error			as_write(i_as				asid,
  * 7) goto the next destination region if necessary.
  */
 
-t_error			as_copy(i_as				src_as,
-				t_vaddr				src,
-				i_as				dst_as,
-				t_vaddr				dst,
-				t_vsize				size)
+t_error			as_copy(i_as			source_id,
+				t_vaddr			source_address,
+				i_as			destination_id,
+				t_vaddr			destination_address,
+				t_vsize			size)
 {
-  o_as*			src_o;
-  o_region*		src_oreg;
-  o_segment*		src_oseg;
-  o_as*			dst_o;
-  o_region*		dst_oreg;
-  o_segment*		dst_oseg;
-  t_iterator		src_it;
-  t_iterator		src_next;
-  t_iterator		dst_it;
-  t_iterator		dst_next;
-  t_paddr		src_offs;
-  t_paddr		dst_offs;
+  o_as*			source_o;
+  o_region*		source_region;
+  o_segment*		source_segment;
+  o_as*			destination_o;
+  o_region*		destination_region;
+  o_segment*		destination_segment;
+  t_iterator		source_i;
+  t_iterator		source_next;
+  t_iterator		destination_i;
+  t_iterator		destination_next;
+  t_paddr		source_offset;
+  t_paddr		destination_offset;
   t_psize		copy;
-  t_psize		to_copy_src;
-  t_psize		to_copy_dst;
-  o_region*		prev;
+  t_psize		source_copy;
+  t_psize		destination_copy;
+  o_region*		previous;
   t_iterator		next;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   assert(size != 0);
-  assert(src_as != dst_as);
+  assert(source_id != destination_id);
 
   /*
    * 1)
    */
 
-  if (as_get(src_as, &src_o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(source_id, &source_o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (as_get(dst_as, &dst_o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(destination_id, &destination_o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_head(src_o->regions, &src_it) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_head(source_o->regions, &source_i) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (set_object(src_o->regions, src_it, (void**)&src_oreg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_object(source_o->regions,
+		 source_i,
+		 (void**)&source_region) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  while (src_oreg->address + src_oreg->size <= src)
+  while (source_region->address + source_region->size <= source_address)
     {
-      if (set_next(src_o->regions, src_it, &src_next) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_next(source_o->regions, source_i, &source_next) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (set_object(src_o->regions, src_next, (void**)&src_oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(source_o->regions,
+		     source_next,
+		     (void**)&source_region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      memcpy(&src_it, &src_next, sizeof (t_iterator));
+      memcpy(&source_i, &source_next, sizeof (t_iterator));
     }
 
-  if (src_oreg->address > src)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (source_region->address > source_address)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (segment_get(src_oreg->segid, &src_oseg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (segment_get(source_region->segment, &source_segment) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (set_head(dst_o->regions, &dst_it) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_head(destination_o->regions, &destination_i) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (set_object(dst_o->regions, dst_it, (void**)&dst_oreg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_object(destination_o->regions,
+		 destination_i,
+		 (void**)&destination_region) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  while (dst_oreg->address + dst_oreg->size <= dst)
+  while (destination_region->address + destination_region->size <=
+	 destination_address)
     {
-      if (set_next(dst_o->regions, dst_it, &dst_next) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_next(destination_o->regions,
+		   destination_i,
+		   &destination_next) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      if (set_object(dst_o->regions, dst_next, (void**)&dst_oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(destination_o->regions,
+		     destination_next,
+		     (void**)&destination_region) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      memcpy(&dst_it, &dst_next, sizeof (t_iterator));
+      memcpy(&destination_i, &destination_next, sizeof (t_iterator));
     }
 
-  if (dst_oreg->address > dst)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (destination_region->address > destination_address)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (segment_get(dst_oreg->segid, &dst_oseg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (segment_get(destination_region->segment,
+		  &destination_segment) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 4)
    */
 
-  to_copy_src = src_oreg->size - (src - src_oreg->address);
-  to_copy_dst = dst_oreg->size - (dst - dst_oreg->address);
-  src_offs = src_oreg->offset + (src - src_oreg->address);
-  dst_offs = dst_oreg->offset + (dst - dst_oreg->address);
+  source_copy = source_region->size -
+    (source_address - source_region->address);
+  destination_copy = destination_region->size -
+    (destination_address - destination_region->address);
+  source_offset = source_region->offset +
+    (source_address - source_region->address);
+  destination_offset = destination_region->offset +
+    (destination_address - destination_region->address);
 
   for (;;)
     {
-      if (to_copy_src < to_copy_dst)
-	copy = to_copy_src;
+      if (source_copy < destination_copy)
+	copy = source_copy;
       else
-	copy = to_copy_dst;
+	copy = destination_copy;
 
-      if(copy > size)
+      if (copy > size)
 	copy = size;
 
       /*
        * 5)
        */
 
-      if (segment_copy(dst_oreg->segid, dst_offs,
-		       src_oreg->segid, src_offs,
-		       copy) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (segment_copy(destination_region->segment,
+		       destination_offset,
+		       source_region->segment,
+		       source_offset,
+		       copy) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
-      src_offs += copy;
-      dst_offs += copy;
+      source_offset += copy;
+      destination_offset += copy;
+
       size -= copy;
-      to_copy_src -= copy;
-      to_copy_dst -= copy;
+
+      source_copy -= copy;
+      destination_copy -= copy;
 
       if (!size)
 	break;
@@ -809,26 +856,30 @@ t_error			as_copy(i_as				src_as,
        * 6)
        */
 
-      if (to_copy_src == 0)
+      if (source_copy == 0)
 	{
-	  prev = src_oreg;
+	  previous = source_region;
 
-	  if (set_next(src_o->regions, src_it, &next) != ERROR_NONE)
-	    AS_LEAVE(as, ERROR_UNKNOWN);
+	  if (set_next(source_o->regions, source_i, &next) != ERROR_OK)
+	    AS_LEAVE(_as, ERROR_KO);
 
-	  if (set_object(src_o->regions, next, (void**)&src_oreg) != ERROR_NONE)
-	    AS_LEAVE(as, ERROR_UNKNOWN);
+	  if (set_object(source_o->regions,
+			 next,
+			 (void**)&source_region) != ERROR_OK)
+	    AS_LEAVE(_as, ERROR_KO);
 
-	  if (src_oreg->address != prev->address + prev->size)
-	    AS_LEAVE(as, ERROR_UNKNOWN);
+	  if (source_region->address != previous->address + previous->size)
+	    AS_LEAVE(_as, ERROR_KO);
 
-	  memcpy(&src_it, &next, sizeof (t_iterator));
+	  memcpy(&source_i, &next, sizeof (t_iterator));
 
-	  if (segment_get(src_oreg->segid, &src_oseg) != ERROR_NONE)
-	    AS_LEAVE(as, ERROR_UNKNOWN);
+	  if (segment_get(source_region->segment,
+			  &source_segment) != ERROR_OK)
+	    AS_LEAVE(_as, ERROR_KO);
 
-	  src_offs = src_oreg->offset;
-	  to_copy_src = src_oreg->size;
+	  source_offset = source_region->offset;
+
+	  source_copy = source_region->size;
 	}
 
       /*
@@ -836,30 +887,36 @@ t_error			as_copy(i_as				src_as,
        */
 
 
-      if (to_copy_dst == 0)
+      if (destination_copy == 0)
 	{
-	  prev = dst_oreg;
+	  previous = destination_region;
 
-	  if (set_next(dst_o->regions, dst_it, &next) != ERROR_NONE)
-	    AS_LEAVE(as, ERROR_UNKNOWN);
+	  if (set_next(destination_o->regions,
+		       destination_i,
+		       &next) != ERROR_OK)
+	    AS_LEAVE(_as, ERROR_KO);
 
-	  if (set_object(dst_o->regions, next, (void**)&dst_oreg) != ERROR_NONE)
-	    AS_LEAVE(as, ERROR_UNKNOWN);
+	  if (set_object(destination_o->regions,
+			 next,
+			 (void**)&destination_region) != ERROR_OK)
+	    AS_LEAVE(_as, ERROR_KO);
 
-	  if (dst_oreg->address != prev->address + prev->size)
-	    AS_LEAVE(as, ERROR_UNKNOWN);
+	  if (destination_region->address !=
+	      previous->address + previous->size)
+	    AS_LEAVE(_as, ERROR_KO);
 
-	  memcpy(&dst_it, &next, sizeof (t_iterator));
+	  memcpy(&destination_i, &next, sizeof (t_iterator));
 
-	  if (segment_get(dst_oreg->segid, &dst_oseg) != ERROR_NONE)
-	    AS_LEAVE(as, ERROR_UNKNOWN);
+	  if (segment_get(destination_region->segment,
+			  &destination_segment) != ERROR_OK)
+	    AS_LEAVE(_as, ERROR_KO);
 
-	  dst_offs = dst_oreg->offset;
-	  to_copy_dst = dst_oreg->size;
+	  destination_offset = destination_region->offset;
+	  destination_copy = destination_region->size;
 	}
     }
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -877,134 +934,140 @@ t_error			as_copy(i_as				src_as,
  * 8) calls the machine-dependent code.
  */
 
-t_error			as_clone(i_task				tskid,
-				 i_as				old,
-				 i_as*				new)
+t_error			as_clone(i_as				id,
+				 i_task				task,
+				 i_as*				as)
 {
-  t_state		state;
-  o_task*		task;
+  i_segment		pool[2];
+  i_segment*		map = pool;
+  o_task*		target;
   o_as*			from;
   o_as*			to;
+  t_state		st;
   t_iterator		i;
-  t_setsz		nb_segments;
+  t_setsz		setsz;
   i_set			mapping;
-  i_segment		foo[2];
-  i_segment*		map = foo;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
-  assert(new != NULL);
+  assert(as != NULL);
 
   /*
    * 1)
    */
 
-  if (as_get(old, &from) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(id, &from) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (task_get(tskid, &task) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (task_get(task, &target) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (task->asid != ID_UNUSED)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (target->as != ID_UNUSED)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (as_reserve(tskid, new) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_reserve(task, as) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (as_get(*new, &to) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(*as, &to) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (set_size (from->segments, &nb_segments) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_size(from->segments, &setsz) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (set_reserve(array, SET_OPT_ALLOC, nb_segments,
-		  sizeof (foo), &mapping) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_reserve(array, SET_OPTION_ALLOC, setsz,
+		  sizeof (pool), &mapping) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 6)
    */
 
-  set_foreach(SET_OPT_FORWARD, from->segments, &i, state)
+  set_foreach(SET_OPTION_FORWARD, from->segments, &i, st)
     {
       i_segment		needless;
       i_segment*	data;
       o_segment*	o;
 
-      if (set_object(from->segments, i, (void**)&data) != ERROR_NONE)
+      if (set_object(from->segments, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "as: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "as: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  AS_LEAVE(as, ERROR_UNKNOWN);
+	  AS_LEAVE(_as, ERROR_KO);
 	}
 
-      if (segment_get(*data, &o) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (segment_get(*data, &o) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
       if (o->type == SEGMENT_TYPE_SYSTEM)
 	continue;
 
-      if (segment_clone(to->asid, *data, &needless) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (segment_clone(to->id, *data, &needless) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
 
       map[0] = *data;
       map[1] = needless;
 
-      if (set_add(mapping, map) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_add(mapping, map) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
     }
 
   /*
    * 7)
    */
 
-  set_foreach(SET_OPT_FORWARD, from->regions, &i, state)
+  set_foreach(SET_OPTION_FORWARD, from->regions, &i, st)
     {
       i_region		needless;
       o_region*		data;
 
-      if (set_object(from->regions, i, (void**)&data) != ERROR_NONE)
+      if (set_object(from->regions, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "as: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "as: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  AS_LEAVE(as, ERROR_UNKNOWN);
+	  AS_LEAVE(_as, ERROR_KO);
 	}
 
-      if (set_get(mapping, data->segid, (void**)&map) != ERROR_NONE)
+      if (set_get(mapping, data->segment, (void**)&map) != ERROR_OK)
 	continue;
 
-      if (region_reserve(to->asid, map[1], data->offset,
-			 data->opts | REGION_OPT_FORCE,
-			 data->address, data->size, &needless) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (region_reserve(to->id,
+			 map[1],
+			 data->offset,
+			 data->options | REGION_OPTION_FORCE,
+			 data->address,
+			 data->size,
+			 &needless) != ERROR_OK)
+	AS_LEAVE(_as, ERROR_KO);
     }
 
   /*
    * 8)
    */
 
-  if (machine_call(as, as_clone, tskid, old, new) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (machine_call(as, as_clone, id, task, as) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -1022,25 +1085,25 @@ t_error			as_clone(i_task				tskid,
  * 8) calls the machine-dependent code.
  */
 
-t_error			as_reserve(i_task			tskid,
-				   i_as*			asid)
+t_error			as_reserve(i_task			task,
+				   i_as*			id)
 {
-  o_task*		task;
+  o_task*		target;
   o_as			o;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
-  assert(asid != NULL);
+  assert(id != NULL);
 
   /*
    * 1)
    */
 
-  if (task_get(tskid, &task) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (task_get(task, &target) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (task->asid != ID_UNUSED)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (target->as != ID_UNUSED)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
@@ -1048,7 +1111,7 @@ t_error			as_reserve(i_task			tskid,
 
   memset(&o, 0x0, sizeof(o_as));
 
-  o.tskid = tskid;
+  o.task = task;
 
   o.segments = ID_UNUSED;
   o.regions = ID_UNUSED;
@@ -1057,65 +1120,71 @@ t_error			as_reserve(i_task			tskid,
    * 3)
    */
 
-  if (id_reserve(&as->id, asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (id_reserve(&_as->id, id) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  o.asid = *asid;
+  o.id = *id;
 
   /*
    * 4)
    */
 
-  if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_SEGMENTS_INITSZ,
-		  sizeof(i_segment), &o.segments) != ERROR_NONE)
+  if (set_reserve(array,
+		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  AS_SEGMENTS_INITSZ,
+		  sizeof(i_segment),
+		  &o.segments) != ERROR_OK)
     {
-      id_release(&as->id, o.asid);
+      id_release(&_as->id, o.id);
 
-      AS_LEAVE(as, ERROR_UNKNOWN);
+      AS_LEAVE(_as, ERROR_KO);
     }
 
   /*
    * 5)
    */
 
-  if (set_reserve(array, SET_OPT_SORT | SET_OPT_FREE,  AS_REGIONS_INITSZ,
-		  sizeof(o_region), &o.regions) != ERROR_NONE)
+  if (set_reserve(array,
+		  SET_OPTION_SORT | SET_OPTION_FREE,
+		  AS_REGIONS_INITSZ,
+		  sizeof(o_region),
+		  &o.regions) != ERROR_OK)
     {
-      id_release(&as->id, o.asid);
+      id_release(&_as->id, o.id);
 
       set_release(o.segments);
 
-      AS_LEAVE(as, ERROR_UNKNOWN);
+      AS_LEAVE(_as, ERROR_KO);
     }
 
   /*
    * 6)
    */
 
-  if (set_add(as->ass, &o) != ERROR_NONE)
+  if (set_add(_as->ass, &o) != ERROR_OK)
     {
-      id_release(&as->id, o.asid);
+      id_release(&_as->id, o.id);
 
       set_release(o.segments);
       set_release(o.regions);
 
-      AS_LEAVE(as, ERROR_UNKNOWN);
+      AS_LEAVE(_as, ERROR_KO);
     }
 
   /*
    * 7)
    */
 
-  task->asid = *asid;
+  target->as = *id;
 
   /*
    * 8)
    */
 
-  if (machine_call(as, as_reserve, tskid, asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (machine_call(as, as_reserve, task, id) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -1132,88 +1201,89 @@ t_error			as_reserve(i_task			tskid,
  * 7) removes the address space object from the address space set.
  */
 
-t_error			as_release(i_as			asid)
+t_error			as_release(i_as			id)
 {
   o_task*		task;
   o_as*			o;
 
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(id, &o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (task_get(o->tskid, &task) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (task_get(o->task, &task) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  task->asid = ID_UNUSED;
+  task->as = ID_UNUSED;
 
   /*
    * 3)
    */
 
-  if (id_release(&as->id, o->asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (id_release(&_as->id, o->id) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (region_flush(o->asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (region_flush(o->id) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (set_release(o->regions) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_release(o->regions) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (segment_flush(o->asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (segment_flush(o->id) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  if (set_release(o->segments) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_release(o->segments) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
   /*
    * 6)
    */
 
-  if (machine_call(as, as_release, asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (machine_call(as, as_release, id) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
+
   /*
    * 7)
    */
 
-  if (set_remove(as->ass, o->asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_remove(_as->ass, o->id) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
  * this function gets an address space object from the address space
- * set from its identifier.
+ * set according to its identifier.
  */
 
-t_error			as_get(i_as				asid,
+t_error			as_get(i_as				id,
 			       o_as**				o)
 {
-  AS_ENTER(as);
+  AS_ENTER(_as);
 
   assert(o != NULL);
 
-  if (set_get(as->ass, asid, (void**)o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (set_get(_as->ass, id, (void**)o) != ERROR_OK)
+    AS_LEAVE(_as, ERROR_KO);
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(_as, ERROR_OK);
 }
 
 /*
@@ -1238,47 +1308,52 @@ t_error			as_initialize(void)
    * 1)
    */
 
-  if ((as = malloc(sizeof(m_as))) == NULL)
+  if ((_as = malloc(sizeof(m_as))) == NULL)
     {
-      module_call(console, console_message, '!', "as: cannot allocate memory for the address space manager "
-	       "structure\n");
+      module_call(console, console_message,
+		  '!', "as: cannot allocate memory for the address "
+		  "space manager structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(as, 0x0, sizeof(m_as));
+  memset(_as, 0x0, sizeof(m_as));
 
   /*
    * 2)
    */
 
-  if (id_build(&as->id) != ERROR_NONE)
+  if (id_build(&_as->id) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "as: unable to initialize the identifier object\n");
+      module_call(console, console_message,
+		  '!', "as: unable to initialize the identifier object\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-		  sizeof(o_as), &as->ass) != ERROR_NONE)
+  if (set_reserve(ll,
+		  SET_OPTION_ALLOC | SET_OPTION_SORT,
+		  sizeof(o_as),
+		  &_as->ass) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "as: unable to reserve the address space set\n");
+      module_call(console, console_message,
+		  '!', "as: unable to reserve the address space set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  if (machine_call(as, as_initialize) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(as, as_initialize) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -1294,60 +1369,63 @@ t_error			as_initialize(void)
 
 t_error			as_clean(void)
 {
-  o_as*			data;
+  o_as*			o;
   t_iterator		i;
 
   /*
    * 1)
    */
 
-  if (machine_call(as, as_clean) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(as, as_clean) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 2)
    */
 
-  while (set_head(as->ass, &i) == ERROR_NONE)
+  while (set_head(_as->ass, &i) == ERROR_OK)
     {
-      if (set_object(as->ass, i, (void**)&data) != ERROR_NONE)
+      if (set_object(_as->ass, i, (void**)&o) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "as: cannot find the address space object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "as: cannot find the address space object "
+		      "corresponding to its identifier\n");
 
-	  return (ERROR_UNKNOWN);
+	  return (ERROR_KO);
 	}
 
-      if (data->asid == kasid)
-	set_remove(as->ass, data->asid);
+      if (o->id == _kernel->as)
+	set_remove(_as->ass, o->id);
       else
-	if (as_release(data->asid) != ERROR_NONE)
-	  return (ERROR_UNKNOWN);
+	if (as_release(o->id) != ERROR_OK)
+	  return (ERROR_KO);
     }
 
-  if (set_release(as->ass) != ERROR_NONE)
+  if (set_release(_as->ass) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "as: unable to release the as' set\n");
+      module_call(console, console_message,
+		  '!', "as: unable to release the as' set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (id_destroy(&as->id) != ERROR_NONE)
+  if (id_destroy(&_as->id) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "as: unable to destroy the identifier object\n");
+      module_call(console, console_message,
+		  '!', "as: unable to destroy the identifier object\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  free(as);
+  free(_as);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

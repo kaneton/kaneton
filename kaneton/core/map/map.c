@@ -34,17 +34,7 @@
  * the map manager structure.
  */
 
-m_map*		map;
-
-/*
- * ---------- extern ----------------------------------------------------------
- */
-
-/*
- * the kernal as id.
- */
-
-extern i_as	kasid;
+m_map*		_map = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -62,44 +52,49 @@ extern i_as	kasid;
  *
  */
 
-t_error			map_reserve(i_as		asid,
-				    t_opts		opts,
+t_error			map_reserve(i_as		as,
+				    t_options		options,
 				    t_vsize		size,
-				    t_perms		perms,
-				    t_vaddr*		addr)
+				    t_permissions	permissions,
+				    t_vaddr*		address)
 {
-  i_segment		segid;
-  i_region		regid;
+  i_segment		segment;
+  i_region		region;
 
-  MAP_ENTER(map);
+  MAP_ENTER(_map);
 
-  assert((opts & MAP_OPT_INVALID) == 0);
-  assert((perms & PERM_INVALID) == 0);
+  assert((options & MAP_OPTION_INVALID) == 0);
+  assert((permissions & PERMISSION_INVALID) == 0);
   assert(size != 0);
-  assert(addr != NULL);
+  assert(address != NULL);
 
   /*
    * 1)
    */
 
-  if (segment_reserve(asid, size, perms, &segid) != ERROR_NONE)
-    MAP_LEAVE(map, ERROR_UNKNOWN);
+  if (segment_reserve(as, size, permissions, &segment) != ERROR_OK)
+    MAP_LEAVE(_map, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (opts & MAP_OPT_FORCE)
+  if (options & MAP_OPTION_FORCE)
     {
       /*
        * a)
        */
 
-      if (region_reserve(asid, segid, 0,
-			 REGION_OPT_FORCE | ((opts & MAP_OPT_PRIVILEGED) ?
-					     REGION_OPT_PRIVILEGED : 0),
-			 *addr, size, &regid) != ERROR_NONE)
-	MAP_LEAVE(map, ERROR_UNKNOWN);
+      if (region_reserve(as,
+			 segment,
+			 0,
+			 REGION_OPTION_FORCE |
+			 ((options & MAP_OPTION_PRIVILEGED) ?
+			  REGION_OPTION_PRIVILEGED : 0),
+			 *address,
+			 size,
+			 &region) != ERROR_OK)
+	MAP_LEAVE(_map, ERROR_KO);
     }
   else
     {
@@ -107,16 +102,21 @@ t_error			map_reserve(i_as		asid,
        * b)
        */
 
-      if (region_reserve(asid, segid, 0,
-			 REGION_OPT_NONE | ((opts & MAP_OPT_PRIVILEGED) ?
-					    REGION_OPT_PRIVILEGED : 0),
-			 0, size, &regid) != ERROR_NONE)
-	MAP_LEAVE(map, ERROR_UNKNOWN);
+      if (region_reserve(as,
+			 segment,
+			 0,
+			 REGION_OPTION_NONE |
+			 ((options & MAP_OPTION_PRIVILEGED) ?
+			  REGION_OPTION_PRIVILEGED : 0),
+			 0,
+			 size,
+			 &region) != ERROR_OK)
+	MAP_LEAVE(_map, ERROR_KO);
 
-      *addr = regid;
+      *address = (t_vaddr)region;
     }
 
-  MAP_LEAVE(map, ERROR_NONE);
+  MAP_LEAVE(_map, ERROR_OK);
 }
 
 /*
@@ -130,41 +130,41 @@ t_error			map_reserve(i_as		asid,
  *
  */
 
-t_error			map_release(i_as		asid,
-				    t_vaddr		addr)
+t_error			map_release(i_as		as,
+				    t_vaddr		address)
 {
-  o_region*		reg;
-  i_region		regid;
-  i_segment		segid;
+  i_region		region;
+  i_segment		segment;
+  o_region*		o;
 
-  MAP_ENTER(map);
+  MAP_ENTER(_map);
 
   /*
    * 1)
    */
 
-  regid = addr;
+  region = (i_region)address;
 
-  if (region_get(asid, regid, &reg) != ERROR_NONE)
-    MAP_LEAVE(map, ERROR_UNKNOWN);
+  if (region_get(as, region, &o) != ERROR_OK)
+    MAP_LEAVE(_map, ERROR_KO);
 
-  segid = reg->segid;
+  segment = o->segment;
 
   /*
    * 2)
    */
 
-  if (region_release(asid, regid) != ERROR_NONE)
-    MAP_LEAVE(map, ERROR_UNKNOWN);
+  if (region_release(as, region) != ERROR_OK)
+    MAP_LEAVE(_map, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (segment_release(segid) != ERROR_NONE)
-    MAP_LEAVE(map, ERROR_UNKNOWN);
+  if (segment_release(segment) != ERROR_OK)
+    MAP_LEAVE(_map, ERROR_KO);
 
-  MAP_LEAVE(map, ERROR_NONE);
+  MAP_LEAVE(_map, ERROR_OK);
 }
 
 /*							     [block::resize] */
@@ -184,95 +184,98 @@ t_error			map_release(i_as		asid,
  *   2) only resize the region, shrinking or growing the mapped area.
  */
 
-t_error			map_resize(i_as			asid,
+t_error			map_resize(i_as			as,
 				   t_vaddr		old,
 				   t_vsize		size,
 				   t_vaddr*		new)
 {
-  o_region*		o;
-  i_segment		s;
-  i_region		r;
+  t_options		options;
   t_paddr		offset;
-  t_opts		opts;
+  i_segment		segment;
+  i_region		region;
+  o_region*		o;
 
-  MAP_ENTER(map);
+  MAP_ENTER(_map);
 
   assert(size != 0);
   assert(new != NULL);
 
-  if (region_get(asid, (i_region)old, &o) != ERROR_NONE)
-    MAP_LEAVE(map, ERROR_UNKNOWN);
+  if (region_get(as, (i_region)old, &o) != ERROR_OK)
+    MAP_LEAVE(_map, ERROR_KO);
 
   /*
    * 1)
    */
 
-  if (segment_resize(o->segid, size, &s) != ERROR_NONE)
-    MAP_LEAVE(map, ERROR_UNKNOWN);
+  if (segment_resize(o->segment, size, &segment) != ERROR_OK)
+    MAP_LEAVE(_map, ERROR_KO);
 
   /*
    * A)
    */
 
-  if (s != o->segid)
+  if (segment != o->segment)
     {
       offset = o->offset;
-      opts = o->opts;
+      options = o->options;
 
       /*
        * 2)
        */
 
-      if (region_release(asid, (i_region)old) != ERROR_NONE)
-	MAP_LEAVE(map, ERROR_UNKNOWN);
+      if (region_release(as, (i_region)old) != ERROR_OK)
+	MAP_LEAVE(_map, ERROR_KO);
 
       /*
        * 3)
        */
 
-      if (region_reserve(asid,
-			 s,
+      if (region_reserve(as,
+			 segment,
 			 offset,
-			 opts | REGION_OPT_FORCE,
+			 options | REGION_OPTION_FORCE,
 			 old,
 			 size,
-			 &r) != ERROR_NONE)
+			 &region) != ERROR_OK)
 	{
-	  if (opts & REGION_OPT_FORCE)
-	    MAP_LEAVE(map, ERROR_UNKNOWN);
+	  if (options & REGION_OPTION_FORCE)
+	    MAP_LEAVE(_map, ERROR_KO);
 
 	  /*
 	   * 4)
 	   */
 
-	  if (region_reserve(asid,
-			     s,
+	  if (region_reserve(as,
+			     segment,
 			     offset,
-			     opts,
+			     options,
 			     0,
 			     size,
-			     &r) != ERROR_NONE)
-	    MAP_LEAVE(map, ERROR_UNKNOWN);
+			     &region) != ERROR_OK)
+	    MAP_LEAVE(_map, ERROR_KO);
 	}
 
-      *new = r;
+      *new = (t_vaddr)region;
     }
+
   /*
    * B)
    */
+
   else
     {
+
       /*
        * 2)
        */
 
-      if (region_resize(asid, (i_region)old, size, &r) != ERROR_NONE)
-	MAP_LEAVE(map, ERROR_UNKNOWN);
+      if (region_resize(as, (i_region)old, size, &region) != ERROR_OK)
+	MAP_LEAVE(_map, ERROR_KO);
 
-      *new = r;
+      *new = (t_vaddr)region;
     }
 
-  MAP_LEAVE(map, ERROR_NONE);
+  MAP_LEAVE(_map, ERROR_OK);
 }
 
 /*							  [endblock::resize] */
@@ -291,17 +294,18 @@ t_error			map_initialize(void)
    * 1)
    */
 
-  if ((map = malloc(sizeof(m_map))) == NULL)
+  if ((_map = malloc(sizeof(m_map))) == NULL)
     {
-      module_call(console, console_message, '!', "map: cannot allocate memory for the map "
-	       "manager structure\n");
+      module_call(console, console_message,
+		  '!', "map: cannot allocate memory for the map "
+		  "manager structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(map, 0x0, sizeof(m_map));
+  memset(_map, 0x0, sizeof(m_map));
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -318,7 +322,7 @@ t_error			map_clean(void)
    * 1)
    */
 
-  free(map);
+  free(_map);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

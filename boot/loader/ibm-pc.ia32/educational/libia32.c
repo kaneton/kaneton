@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...loader/ibm-pc.ia32/educational/libia32.c
  *
  * created       matthieu bucchianeri   [mon jun 25 22:52:22 2007]
- * updated       julien quintard   [fri oct 22 10:14:29 2010]
+ * updated       julien quintard   [tue nov 23 21:50:33 2010]
  */
 
 /*

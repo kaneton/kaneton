@@ -32,7 +32,8 @@
  * the datasz argument of the set_reserve() function is meaningful only in the
  * case the allocate or free options are set.
  *
- * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
+ * options: SET_OPTION_CONTAINER, SET_OPTION_SORT, SET_OPTION_ALLOC,
+ *   SET_OPTION_FREE
  */
 
 /*
@@ -42,10 +43,10 @@
 #include <kaneton.h>
 
 /*
- * ---------- extern ---------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
-extern m_set*		set;
+extern m_set*		_set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -59,15 +60,15 @@ t_error			set_type_ll(i_set			setid)
 {
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   if (o->type == SET_TYPE_LL)
-    SET_LEAVE(set, ERROR_NONE);
+    SET_LEAVE(_set, ERROR_OK);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -85,38 +86,40 @@ t_error			set_show_ll(i_set			setid)
   o_set*		o;
   t_iterator		i;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "  %qd node(s) from the linked-list set %qd\n",
-	   o->size,
-	   setid);
+  module_call(console, console_message,
+	      '#', "  %qd node(s) from the linked-list set %qd\n",
+	      o->size,
+	      setid);
 
-  set_foreach(SET_OPT_FORWARD, setid, &i, state)
+  set_foreach(SET_OPTION_FORWARD, setid, &i, state)
     {
       t_set_ll_node*	n = i.u.ll.node;
 
-      module_call(console, console_message, '#', "    %qd <0x%x, 0x%x, 0x%x>\n",
-	       *((t_id*)n->data), n->prv, n, n->nxt);
+      module_call(console, console_message,
+		  '#', "    %qd <0x%x, 0x%x, 0x%x>\n",
+		  *((t_id*)n->data), n->previous, n, n->next);
     }
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
  * this function returns an iterator on the first node of the list.
  *
- * if there is no node in the list, the function returns ERROR_UNKNOWN.
+ * if there is no node in the list, the function returns ERROR_KO.
  */
 
 t_error			set_head_ll(i_set			setid,
@@ -124,27 +127,27 @@ t_error			set_head_ll(i_set			setid,
 {
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(iterator != NULL);
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   if (o->size == 0)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   iterator->u.ll.node = o->u.ll.head;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
  * this function returns an iterator on the last node of the list.
  *
- * if there is no node in the list, the function returns ERROR_UNKNOWN.
+ * if there is no node in the list, the function returns ERROR_KO.
  */
 
 t_error			set_tail_ll(i_set			setid,
@@ -152,21 +155,21 @@ t_error			set_tail_ll(i_set			setid,
 {
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(iterator != NULL);
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   if (o->size == 0)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   iterator->u.ll.node = o->u.ll.tail;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -180,21 +183,21 @@ t_error			set_previous_ll(i_set			setid,
   t_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(previous != NULL);
 
   memset(previous, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
-  if (c->prv == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (c->previous == NULL)
+    SET_LEAVE(_set, ERROR_KO);
 
-  previous->u.ll.node = c->prv;
+  previous->u.ll.node = c->previous;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -208,21 +211,21 @@ t_error			set_next_ll(i_set			setid,
   t_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(next != NULL);
 
   memset(next, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
-  if (c->nxt == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (c->next == NULL)
+    SET_LEAVE(_set, ERROR_KO);
 
-  next->u.ll.node = c->nxt;
+  next->u.ll.node = c->next;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -245,7 +248,7 @@ t_error			set_insert_ll(i_set			setid,
   t_set_ll_node		*n;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(data != NULL);
 
@@ -254,28 +257,28 @@ t_error			set_insert_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (o->opts & SET_OPT_SORT)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (o->options & SET_OPTION_SORT)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 4)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -283,13 +286,13 @@ t_error			set_insert_ll(i_set			setid,
    * 5)
    */
 
-  if (o->opts & SET_OPT_ALLOC)
+  if (o->options & SET_OPTION_ALLOC)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
-	  SET_LEAVE(set, ERROR_UNKNOWN);
+	  SET_LEAVE(_set, ERROR_KO);
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -303,11 +306,11 @@ t_error			set_insert_ll(i_set			setid,
    * 6)
    */
 
-  n->prv = NULL;
-  n->nxt = o->u.ll.head;
+  n->previous = NULL;
+  n->next = o->u.ll.head;
 
-  if (n->nxt != NULL)
-    n->nxt->prv = n;
+  if (n->next != NULL)
+    n->next->previous = n;
 
   o->u.ll.head = n;
 
@@ -320,7 +323,7 @@ t_error			set_insert_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -343,7 +346,7 @@ t_error			set_append_ll(i_set			setid,
   t_set_ll_node		*n;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(data != NULL);
 
@@ -352,28 +355,28 @@ t_error			set_append_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (o->opts & SET_OPT_SORT)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (o->options & SET_OPTION_SORT)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 4)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -381,13 +384,13 @@ t_error			set_append_ll(i_set			setid,
    * 5)
    */
 
-  if (o->opts & SET_OPT_ALLOC)
+  if (o->options & SET_OPTION_ALLOC)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
-	  SET_LEAVE(set, ERROR_UNKNOWN);
+	  SET_LEAVE(_set, ERROR_KO);
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -401,11 +404,11 @@ t_error			set_append_ll(i_set			setid,
    * 6)
    */
 
-  n->prv = o->u.ll.tail;
-  n->nxt = NULL;
+  n->previous = o->u.ll.tail;
+  n->next = NULL;
 
-  if (n->prv != NULL)
-    n->prv->nxt = n;
+  if (n->previous != NULL)
+    n->previous->next = n;
 
   o->u.ll.tail = n;
 
@@ -418,7 +421,7 @@ t_error			set_append_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -443,7 +446,7 @@ t_error			set_before_ll(i_set			setid,
   t_set_ll_node		*n;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(data != NULL);
 
@@ -452,28 +455,28 @@ t_error			set_before_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (o->opts & SET_OPT_SORT)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (o->options & SET_OPTION_SORT)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 4)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -481,13 +484,13 @@ t_error			set_before_ll(i_set			setid,
    * 5)
    */
 
-  if (o->opts & SET_OPT_ALLOC)
+  if (o->options & SET_OPTION_ALLOC)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
-	  SET_LEAVE(set, ERROR_UNKNOWN);
+	  SET_LEAVE(_set, ERROR_KO);
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -501,13 +504,13 @@ t_error			set_before_ll(i_set			setid,
    * 6)
    */
 
-  n->prv = i->prv;
-  n->nxt = i;
+  n->previous = i->previous;
+  n->next = i;
 
-  i->prv = n;
+  i->previous = n;
 
-  if (n->prv != NULL)
-    n->prv->nxt = n;
+  if (n->previous != NULL)
+    n->previous->next = n;
   else
     o->u.ll.head = n;
 
@@ -517,7 +520,7 @@ t_error			set_before_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -543,7 +546,7 @@ t_error			set_after_ll(i_set			setid,
   t_set_ll_node		*n;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(data != NULL);
 
@@ -552,28 +555,28 @@ t_error			set_after_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
  /*
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (o->opts & SET_OPT_SORT)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (o->options & SET_OPTION_SORT)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 4)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -581,13 +584,13 @@ t_error			set_after_ll(i_set			setid,
    * 5)
    */
 
-  if (o->opts & SET_OPT_ALLOC)
+  if (o->options & SET_OPTION_ALLOC)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
-	  SET_LEAVE(set, ERROR_UNKNOWN);
+	  SET_LEAVE(_set, ERROR_KO);
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -601,13 +604,13 @@ t_error			set_after_ll(i_set			setid,
    * 6)
    */
 
-  n->nxt = i->nxt;
-  n->prv = i;
+  n->next = i->next;
+  n->previous = i;
 
-  i->nxt = n;
+  i->next = n;
 
-  if (n->nxt != NULL)
-    n->nxt->prv = n;
+  if (n->next != NULL)
+    n->next->previous = n;
   else
     o->u.ll.tail = n;
 
@@ -617,7 +620,7 @@ t_error			set_after_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -647,7 +650,7 @@ t_error			set_add_ll(i_set			setid,
   t_set_ll_node*	n;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(data != NULL);
 
@@ -656,21 +659,21 @@ t_error			set_add_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -678,13 +681,13 @@ t_error			set_add_ll(i_set			setid,
    * 4)
    */
 
-  if (o->opts & SET_OPT_ALLOC)
+  if (o->options & SET_OPTION_ALLOC)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
-	  SET_LEAVE(set, ERROR_UNKNOWN);
+	  SET_LEAVE(_set, ERROR_KO);
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -698,7 +701,7 @@ t_error			set_add_ll(i_set			setid,
    * 5)
    */
 
-  if (o->opts & SET_OPT_SORT)
+  if (o->options & SET_OPTION_SORT)
     {
       /*
        * A)
@@ -712,7 +715,7 @@ t_error			set_add_ll(i_set			setid,
 	   * a)
 	   */
 
-	  for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->nxt)
+	  for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->next)
 	    {
 	      if (*((t_id*)n->data) == *((t_id*)tmp->data))
 		{
@@ -720,18 +723,19 @@ t_error			set_add_ll(i_set			setid,
 		   * i)
 		   */
 
-		  module_call(console, console_message, '!', "set: identifier collision detected "
-			   "in the set %qu on the object identifier %qu\n",
-			   o->setid,
-			   *((t_id*)n->data));
+		  module_call(console, console_message,
+			      '!', "set: identifier collision detected "
+			      "in the set %qu on the object identifier %qu\n",
+			      o->id,
+			      *((t_id*)n->data));
 
-		  if ((o->opts & SET_OPT_ALLOC) ||
-		      (o->opts & SET_OPT_FREE))
+		  if ((o->options & SET_OPTION_ALLOC) ||
+		      (o->options & SET_OPTION_FREE))
 		    free(n->data);
 
 		  free(n);
 
-		  SET_LEAVE(set, ERROR_UNKNOWN);
+		  SET_LEAVE(_set, ERROR_KO);
 		}
 
 	      if (*((t_id*)n->data) < *((t_id*)tmp->data))
@@ -740,16 +744,16 @@ t_error			set_add_ll(i_set			setid,
 		   * ii)
 		   */
 
-		  n->prv = tmp->prv;
-		  n->nxt = tmp;
+		  n->previous = tmp->previous;
+		  n->next = tmp;
 
-		  if (n->prv != NULL)
-		    n->prv->nxt = n;
+		  if (n->previous != NULL)
+		    n->previous->next = n;
 		  else
 		    o->u.ll.head = n;
 
-		  if (n->nxt != NULL)
-		    n->nxt->prv = n;
+		  if (n->next != NULL)
+		    n->next->previous = n;
 		  else
 		    o->u.ll.tail = n;
 
@@ -763,11 +767,11 @@ t_error			set_add_ll(i_set			setid,
 
 	  if (tmp == NULL)
 	    {
-	      n->prv = o->u.ll.tail;
-	      n->nxt = NULL;
+	      n->previous = o->u.ll.tail;
+	      n->next = NULL;
 
-	      if (n->prv != NULL)
-		n->prv->nxt = n;
+	      if (n->previous != NULL)
+		n->previous->next = n;
 	      else
 		o->u.ll.head = n;
 
@@ -780,8 +784,8 @@ t_error			set_add_ll(i_set			setid,
 	   * c)
 	   */
 
-	  n->prv = NULL;
-	  n->nxt = NULL;
+	  n->previous = NULL;
+	  n->next = NULL;
 
 	  o->u.ll.head = n;
 	  o->u.ll.tail = n;
@@ -793,11 +797,11 @@ t_error			set_add_ll(i_set			setid,
        * B)
        */
 
-      n->prv = NULL;
-      n->nxt = o->u.ll.head;
+      n->previous = NULL;
+      n->next = o->u.ll.head;
 
-      if (n->nxt != NULL)
-	n->nxt->prv = n;
+      if (n->next != NULL)
+	n->next->previous = n;
 
       o->u.ll.head = n;
 
@@ -811,7 +815,7 @@ t_error			set_add_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -834,21 +838,21 @@ t_error			set_remove_ll(i_set			setid,
   o_set*		o;
   t_iterator		i;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_locate(setid, id, &i) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_locate(setid, id, &i) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   tmp = i.u.ll.node;
 
@@ -856,22 +860,22 @@ t_error			set_remove_ll(i_set			setid,
    * 3)
    */
 
-  if (tmp->prv != NULL)
-    tmp->prv->nxt = tmp->nxt;
+  if (tmp->previous != NULL)
+    tmp->previous->next = tmp->next;
   else
-    o->u.ll.head = tmp->nxt;
+    o->u.ll.head = tmp->next;
 
-  if (tmp->nxt != NULL)
-    tmp->nxt->prv = tmp->prv;
+  if (tmp->next != NULL)
+    tmp->next->previous = tmp->previous;
   else
-    o->u.ll.tail = tmp->prv;
+    o->u.ll.tail = tmp->previous;
 
   /*
    * 4)
    */
 
-  if ((o->opts & SET_OPT_ALLOC) ||
-      (o->opts & SET_OPT_FREE))
+  if ((o->options & SET_OPTION_ALLOC) ||
+      (o->options & SET_OPTION_FREE))
     free(tmp->data);
 
   /*
@@ -886,7 +890,7 @@ t_error			set_remove_ll(i_set			setid,
 
   o->size--;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -908,14 +912,14 @@ t_error			set_delete_ll(i_set			setid,
   t_set_ll_node*	n;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
@@ -923,28 +927,28 @@ t_error			set_delete_ll(i_set			setid,
 
   n = iterator.u.ll.node;
   if (n == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (n->prv)
-    n->prv->nxt = n->nxt;
+  if (n->previous)
+    n->previous->next = n->next;
   else
-    o->u.ll.head = n->nxt;
+    o->u.ll.head = n->next;
 
-  if (n->nxt)
-    n->nxt->prv = n->prv;
+  if (n->next)
+    n->next->previous = n->previous;
   else
-    o->u.ll.tail = n->prv;
+    o->u.ll.tail = n->previous;
 
   /*
    * 4)
    */
 
-  if (o->opts & SET_OPT_FREE ||
-      o->opts & SET_OPT_ALLOC)
+  if (o->options & SET_OPTION_FREE ||
+      o->options & SET_OPTION_ALLOC)
     free(n->data);
 
   /*
@@ -959,7 +963,7 @@ t_error			set_delete_ll(i_set			setid,
 
   o->size--;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -978,14 +982,14 @@ t_error			set_flush_ll(i_set			setid)
   t_set_ll_node*	tmp;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
@@ -993,10 +997,10 @@ t_error			set_flush_ll(i_set			setid)
 
   for (tmp = o->u.ll.tail; tmp != NULL; )
     {
-      t_set_ll_node*	t = tmp->prv;
+      t_set_ll_node*	t = tmp->previous;
 
-      if ((o->opts & SET_OPT_ALLOC) ||
-	  (o->opts & SET_OPT_FREE))
+      if ((o->options & SET_OPTION_ALLOC) ||
+	  (o->options & SET_OPTION_FREE))
 	free(tmp->data);
 
       free(tmp);
@@ -1017,7 +1021,7 @@ t_error			set_flush_ll(i_set			setid)
 
   o->size = 0;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -1038,7 +1042,7 @@ t_error			set_locate_ll(i_set			setid,
   t_set_ll_node*	tmp;
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(iterator != NULL);
 
@@ -1047,30 +1051,30 @@ t_error			set_locate_ll(i_set			setid,
    */
 
   if (id == ID_UNUSED)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->nxt)
+  for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->next)
     {
       if (*((t_id*)tmp->data) == id)
 	{
 	  iterator->u.ll.node = tmp;
 
-	  SET_LEAVE(set, ERROR_NONE);
+	  SET_LEAVE(_set, ERROR_OK);
 	}
     }
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -1083,11 +1087,11 @@ t_error			set_object_ll(i_set			setid,
 {
   t_set_ll_node*	n = iterator.u.ll.node;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   *data = n->data;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -1102,13 +1106,13 @@ t_error			set_object_ll(i_set			setid,
  * 5) adds the set descriptor to the set container.
  */
 
-t_error			set_reserve_ll(t_opts			opts,
+t_error			set_reserve_ll(t_options		options,
 				       t_size			datasz,
 				       i_set*			setid)
 {
   o_set			o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(datasz >= sizeof (t_id));
   assert(setid != NULL);
@@ -1123,34 +1127,34 @@ t_error			set_reserve_ll(t_opts			opts,
    * 2)
    */
 
-  if (opts & SET_OPT_ORGANISE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (options & SET_OPTION_ORGANISE)
+    SET_LEAVE(_set, ERROR_KO);
 
-  if ((opts & SET_OPT_ALLOC) && (opts & SET_OPT_FREE))
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (opts & SET_OPT_CONTAINER)
+  if (options & SET_OPTION_CONTAINER)
     {
-      *setid = set->sets;
+      *setid = _set->sets;
     }
   else
     {
-      if (id_reserve(&set->id, setid) != ERROR_NONE)
-	SET_LEAVE(set, ERROR_UNKNOWN);
+      if (id_reserve(&_set->id, setid) != ERROR_OK)
+	SET_LEAVE(_set, ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  o.setid = *setid;
+  o.id = *setid;
   o.size = 0;
   o.type = SET_TYPE_LL;
-  o.opts = opts;
+  o.options = options;
   o.datasz = datasz;
 
   o.u.ll.head = NULL;
@@ -1160,15 +1164,15 @@ t_error			set_reserve_ll(t_opts			opts,
    * 5)
    */
 
-  if (set_new(&o) != ERROR_NONE)
+  if (set_new(&o) != ERROR_OK)
     {
-      if (!(opts & SET_OPT_CONTAINER))
-	id_release(&set->id, o.setid);
+      if (!(options & SET_OPTION_CONTAINER))
+	id_release(&_set->id, o.id);
 
-      SET_LEAVE(set, ERROR_UNKNOWN);
+      SET_LEAVE(_set, ERROR_KO);
     }
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -1186,38 +1190,38 @@ t_error			set_release_ll(i_set			setid)
 {
   o_set			*o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_flush(setid) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_flush(setid) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (id_release(&set->id, o->setid) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (id_release(&_set->id, o->id) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (!(o->opts & SET_OPT_CONTAINER))
-    if (set_destroy(o->setid) != ERROR_NONE)
-      SET_LEAVE(set, ERROR_UNKNOWN);
+  if (!(o->options & SET_OPTION_CONTAINER))
+    if (set_destroy(o->id) != ERROR_OK)
+      SET_LEAVE(_set, ERROR_KO);
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -1228,9 +1232,9 @@ t_error			set_release_ll(i_set			setid)
 t_error			set_push_ll(i_set			setid,
 				    void*			data)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -1240,9 +1244,9 @@ t_error			set_push_ll(i_set			setid,
 
 t_error			set_pop_ll(i_set			setid)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }
 
 /*
@@ -1253,7 +1257,7 @@ t_error			set_pop_ll(i_set			setid)
 t_error			set_pick_ll(i_set			setid,
 				    void**			data)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(_set, ERROR_KO);
 }

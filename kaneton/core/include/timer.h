@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/core/include/timer.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       matthieu bucchianeri   [wed jan  9 11:09:53 2008]
+ * updated       julien quintard   [mon nov 22 21:32:10 2010]
  */
 
 #ifndef CORE_TIMER_H
@@ -39,8 +39,8 @@
  * timer repeat mode.
  */
 
-#define TIMER_REPEAT_DISABLE    0
-#define TIMER_REPEAT_ENABLE     1
+#define TIMER_REPEAT_DISABLE	0
+#define TIMER_REPEAT_ENABLE	1
 
 /*
  * number of millisecond between each tick.
@@ -75,7 +75,7 @@ typedef t_error			(*t_timer_handler)(i_timer, t_vaddr);
 typedef union
 {
   t_timer_handler		function;
-  i_task			taskid;
+  i_task			task;
 }				u_timer_handler;
 
 /*
@@ -84,11 +84,11 @@ typedef union
 
 typedef struct
 {
-  i_timer			timerid;
+  i_timer			id;
 
   t_uint32			delay;
 
-  t_uint32			repeat;
+  t_options			repeat;
 
   t_type			type;
 
@@ -117,7 +117,7 @@ typedef struct
 {
   o_id				id;
 
-  t_uint32			timeref;
+  t_uint32			reference;
 
   i_set				timers;
 
@@ -161,7 +161,7 @@ typedef struct
 #define TIMER_CHECK(_timer_)						\
   {									\
     if ((_timer_) == NULL)						\
-      return ERROR_UNKNOWN;						\
+      return ERROR_KO;						\
   }
 
 /*

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/message.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       matthieu bucchianeri   [thu sep  6 00:19:29 2007]
+ * updated       julien quintard   [mon nov 22 10:12:38 2010]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -68,9 +68,9 @@ typedef struct
 
 typedef struct
 {
-  t_id			message;
+  t_id			id;
 
-  i_as			asid;
+  i_as			as;
   i_thread		blocked;
   void*			data;
   t_vsize		size;
@@ -173,7 +173,7 @@ typedef struct
 #define MESSAGE_CHECK(_message_)					\
   {									\
     if ((_message_) == NULL)						\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*

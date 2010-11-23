@@ -105,7 +105,7 @@ typedef struct
 #define CAPABILITY_CHECK(_capability_)					\
   {									\
     if ((_capability_) == NULL)						\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*

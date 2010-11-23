@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ot/loader/ibm-pc.ia32/educational/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       julien quintard   [mon may  4 20:24:31 2009]
+ * updated       julien quintard   [tue nov 23 10:22:41 2010]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -28,18 +28,7 @@
 #define INIT_SEGMENTS		14
 #define INIT_REGIONS		11
 #define INIT_KSTACKSZ		(4 * PAGESZ)
-
-/* XXX to be moved */
-
-#define PERM_READ		(1 << 0)
-#define PERM_WRITE		(1 << 1)
-#define PERM_EXEC		(1 << 2)
-#define REGION_OPT_NONE		0
-#define REGION_OPT_FORCE	(1 << 0)
-#define REGION_OPT_USER		(0 << 1)
-#define REGION_OPT_PRIVILEGED	(1 << 1)
-#define REGION_OPT_LOCAL	(0 << 2)
-#define REGION_OPT_GLOBAL	(1 << 2)
+#define INIT_ALLOCSZ		(256 * PAGESZ)
 
 /*
  * ---------- types -----------------------------------------------------------

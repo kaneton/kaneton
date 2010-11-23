@@ -28,7 +28,7 @@
 #define INTERFACE_AS_CLONE 4
 #define INTERFACE_AS_RESERVE 5
 #define INTERFACE_AS_RELEASE 6
-#define INTERFACE_AS_ATTRIBUTE_TSKID 7
+#define INTERFACE_AS_ATTRIBUTE_TASK 7
 #define INTERFACE_EVENT_RESERVE 8
 #define INTERFACE_EVENT_RELEASE 9
 #define INTERFACE_EVENT_ATTRIBUTE_TYPE 10
@@ -61,13 +61,13 @@
 #define INTERFACE_SEGMENT_RESERVE 37
 #define INTERFACE_SEGMENT_RELEASE 38
 #define INTERFACE_SEGMENT_CATCH 39
-#define INTERFACE_SEGMENT_PERMS 40
+#define INTERFACE_SEGMENT_PERMISSIONS 40
 #define INTERFACE_SEGMENT_TYPE 41
-#define INTERFACE_SEGMENT_ATTRIBUTE_ASID 42
+#define INTERFACE_SEGMENT_ATTRIBUTE_AS 42
 #define INTERFACE_SEGMENT_ATTRIBUTE_TYPE 43
 #define INTERFACE_SEGMENT_ATTRIBUTE_ADDRESS 44
 #define INTERFACE_SEGMENT_ATTRIBUTE_SIZE 45
-#define INTERFACE_SEGMENT_ATTRIBUTE_PERMS 46
+#define INTERFACE_SEGMENT_ATTRIBUTE_PERMISSIONS 46
 #define INTERFACE_TASK_CURRENT 47
 #define INTERFACE_TASK_CLONE 48
 #define INTERFACE_TASK_RESERVE 49
@@ -77,9 +77,9 @@
 #define INTERFACE_TASK_WAIT 53
 #define INTERFACE_TASK_ATTRIBUTE_PARENT 54
 #define INTERFACE_TASK_ATTRIBUTE_CLASS 55
-#define INTERFACE_TASK_ATTRIBUTE_BEHAV 56
-#define INTERFACE_TASK_ATTRIBUTE_PRIOR 57
-#define INTERFACE_TASK_ATTRIBUTE_ASID 58
+#define INTERFACE_TASK_ATTRIBUTE_BEHAVIOUS 56
+#define INTERFACE_TASK_ATTRIBUTE_PRIORITY 57
+#define INTERFACE_TASK_ATTRIBUTE_AS 58
 #define INTERFACE_TASK_ATTRIBUTE_SCHED 59
 #define INTERFACE_TASK_ATTRIBUTE_WAIT 60
 #define INTERFACE_THREAD_GIVE 61
@@ -91,9 +91,9 @@
 #define INTERFACE_THREAD_STACK 67
 #define INTERFACE_THREAD_LOAD 68
 #define INTERFACE_THREAD_STORE 69
-#define INTERFACE_THREAD_ATTRIBUTE_TASKID 70
-#define INTERFACE_THREAD_ATTRIBUTE_PRIOR 71
-#define INTERFACE_THREAD_ATTRIBUTE_SCHED 72
+#define INTERFACE_THREAD_ATTRIBUTE_TASK 70
+#define INTERFACE_THREAD_ATTRIBUTE_PRIORITY 71
+#define INTERFACE_THREAD_ATTRIBUTE_STATE 72
 #define INTERFACE_THREAD_ATTRIBUTE_WAIT 73
 #define INTERFACE_THREAD_ATTRIBUTE_STACK 74
 #define INTERFACE_THREAD_ATTRIBUTE_STACKSZ 75
@@ -128,8 +128,8 @@ typedef struct
       {
 	struct
 	{
-	  i_task	arg1;
 	  t_id	arg2;
+	  i_task	arg1;
 	}		as_give;
 	struct
 	{
@@ -165,7 +165,7 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	}		as_attribute_tskid;
+	}		as_attribute_task;
 	struct
 	{
 	  t_id	arg1;
@@ -248,9 +248,9 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_opts	arg2;
+	  t_options	arg2;
 	  t_vsize	arg3;
-	  t_perms	arg4;
+	  t_permissions	arg4;
 	}		map_reserve;
 	struct
 	{
@@ -268,7 +268,7 @@ typedef struct
 	  t_id	arg1;
 	  i_segment	arg2;
 	  t_paddr	arg3;
-	  t_opts	arg4;
+	  t_options	arg4;
 	  t_vaddr	arg5;
 	  t_vsize	arg6;
 	}		region_reserve;
@@ -319,7 +319,7 @@ typedef struct
 	{
 	  i_as	arg1;
 	  t_psize	arg2;
-	  t_perms	arg3;
+	  t_permissions	arg3;
 	}		segment_reserve;
 	struct
 	{
@@ -333,8 +333,8 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_perms	arg2;
-	}		segment_perms;
+	  t_permissions	arg2;
+	}		segment_permissions;
 	struct
 	{
 	  t_id	arg1;
@@ -343,7 +343,7 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	}		segment_attribute_asid;
+	}		segment_attribute_as;
 	struct
 	{
 	  t_id	arg1;
@@ -359,7 +359,7 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	}		segment_attribute_perms;
+	}		segment_attribute_permissions;
 	struct
 	{
 	  t_id	arg1;
@@ -367,8 +367,8 @@ typedef struct
 	struct
 	{
 	  t_class	arg1;
-	  t_behav	arg2;
-	  t_prior	arg3;
+	  t_behaviour	arg2;
+	  t_priority	arg3;
 	}		task_reserve;
 	struct
 	{
@@ -377,7 +377,7 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_prior	arg2;
+	  t_priority	arg2;
 	}		task_priority;
 	struct
 	{
@@ -387,7 +387,7 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_opts	arg2;
+	  t_options	arg2;
 	}		task_wait;
 	struct
 	{
@@ -400,15 +400,15 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	}		task_attribute_behav;
+	}		task_attribute_behaviour;
 	struct
 	{
 	  t_id	arg1;
-	}		task_attribute_prior;
+	}		task_attribute_priority;
 	struct
 	{
 	  t_id	arg1;
-	}		task_attribute_asid;
+	}		task_attribute_as;
 	struct
 	{
 	  t_id	arg1;
@@ -430,7 +430,7 @@ typedef struct
 	struct
 	{
 	  i_task	arg1;
-	  t_prior	arg2;
+	  t_priority	arg2;
 	}		thread_reserve;
 	struct
 	{
@@ -439,7 +439,7 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_prior	arg2;
+	  t_priority	arg2;
 	}		thread_priority;
 	struct
 	{
@@ -463,15 +463,15 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	}		thread_attribute_taskid;
+	}		thread_attribute_task;
 	struct
 	{
 	  t_id	arg1;
-	}		thread_attribute_prior;
+	}		thread_attribute_priority;
 	struct
 	{
 	  t_id	arg1;
-	}		thread_attribute_sched;
+	}		thread_attribute_state;
 	struct
 	{
 	  t_id	arg1;
@@ -558,7 +558,7 @@ typedef struct
 	struct
 	{
 	  i_task	result1;
-	}		as_attribute_tskid;
+	}		as_attribute_task;
 	struct
 	{
 	  t_type	result1;
@@ -614,7 +614,7 @@ typedef struct
 	struct
 	{
 	  i_as	result1;
-	}		segment_attribute_asid;
+	}		segment_attribute_as;
 	struct
 	{
 	  t_type	result1;
@@ -629,8 +629,8 @@ typedef struct
 	}		segment_attribute_size;
 	struct
 	{
-	  t_perms	result1;
-	}		segment_attribute_perms;
+	  t_permissions	result1;
+	}		segment_attribute_permissions;
 	struct
 	{
 	  i_task	result1;
@@ -657,16 +657,16 @@ typedef struct
 	}		task_attribute_class;
 	struct
 	{
-	  t_behav	result1;
-	}		task_attribute_behav;
+	  t_behaviour	result1;
+	}		task_attribute_behaviour;
 	struct
 	{
-	  t_prior	result1;
-	}		task_attribute_prior;
+	  t_priority	result1;
+	}		task_attribute_priority;
 	struct
 	{
 	  i_as	result1;
-	}		task_attribute_asid;
+	}		task_attribute_as;
 	struct
 	{
 	  t_state	result1;
@@ -690,15 +690,15 @@ typedef struct
 	struct
 	{
 	  i_task	result1;
-	}		thread_attribute_taskid;
+	}		thread_attribute_task;
 	struct
 	{
-	  t_prior	result1;
-	}		thread_attribute_prior;
+	  t_priority	result1;
+	}		thread_attribute_priority;
 	struct
 	{
 	  t_state	result1;
-	}		thread_attribute_sched;
+	}		thread_attribute_state;
 	struct
 	{
 	  t_wait	result1;
@@ -767,7 +767,7 @@ t_error		interface_as_reserve(o_syscall*	message);
 
 t_error		interface_as_release(o_syscall*	message);
 
-t_error		interface_as_attribute_tskid(o_syscall*	message);
+t_error		interface_as_attribute_task(o_syscall*	message);
 
 t_error		interface_event_reserve(o_syscall*	message);
 
@@ -833,11 +833,11 @@ t_error		interface_segment_release(o_syscall*	message);
 
 t_error		interface_segment_catch(o_syscall*	message);
 
-t_error		interface_segment_perms(o_syscall*	message);
+t_error		interface_segment_permissions(o_syscall*	message);
 
 t_error		interface_segment_type(o_syscall*	message);
 
-t_error		interface_segment_attribute_asid(o_syscall*	message);
+t_error		interface_segment_attribute_as(o_syscall*	message);
 
 t_error		interface_segment_attribute_type(o_syscall*	message);
 
@@ -845,7 +845,7 @@ t_error		interface_segment_attribute_address(o_syscall*	message);
 
 t_error		interface_segment_attribute_size(o_syscall*	message);
 
-t_error		interface_segment_attribute_perms(o_syscall*	message);
+t_error		interface_segment_attribute_permissions(o_syscall*	message);
 
 t_error		interface_task_current(o_syscall*	message);
 
@@ -865,11 +865,11 @@ t_error		interface_task_attribute_parent(o_syscall*	message);
 
 t_error		interface_task_attribute_class(o_syscall*	message);
 
-t_error		interface_task_attribute_behav(o_syscall*	message);
+t_error		interface_task_attribute_behaviour(o_syscall*	message);
 
-t_error		interface_task_attribute_prior(o_syscall*	message);
+t_error		interface_task_attribute_priority(o_syscall*	message);
 
-t_error		interface_task_attribute_asid(o_syscall*	message);
+t_error		interface_task_attribute_as(o_syscall*	message);
 
 t_error		interface_task_attribute_sched(o_syscall*	message);
 
@@ -893,11 +893,11 @@ t_error		interface_thread_load(o_syscall*	message);
 
 t_error		interface_thread_store(o_syscall*	message);
 
-t_error		interface_thread_attribute_taskid(o_syscall*	message);
+t_error		interface_thread_attribute_task(o_syscall*	message);
 
-t_error		interface_thread_attribute_prior(o_syscall*	message);
+t_error		interface_thread_attribute_priority(o_syscall*	message);
 
-t_error		interface_thread_attribute_sched(o_syscall*	message);
+t_error		interface_thread_attribute_state(o_syscall*	message);
 
 t_error		interface_thread_attribute_wait(o_syscall*	message);
 

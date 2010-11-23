@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ton/kaneton/core/capability/capability.c
+ * file          /home/mycure/kane...NEW/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       matthieu bucchianeri   [wed jan  9 10:41:06 2008]
+ * updated       julien quintard   [mon nov 22 12:14:50 2010]
  */
 
 /*
@@ -71,19 +71,13 @@
  * the capability manager variable.
  */
 
-m_capability*		capability = NULL;
+m_capability*		_capability = NULL;
 
 /*
  * the kernel manager variable.
  */
 
-extern m_kernel*	kernel;
-
-/*
- * the kernel task id.
- */
-
-extern i_task		ktask;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -97,11 +91,11 @@ static t_error		simple_checksum(char*			data,
 					t_uint32		size,
 					t_uint64*		res)
 {
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
   *res = (t_uint64)sum2((char*)&data, size);
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 /*
@@ -112,20 +106,22 @@ t_error			capability_show(t_id			id)
 {
   t_capability_descriptor*	descriptor;
 
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
-  if (set_get(capability->descriptors, id, (void**)&descriptor) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (set_get(_capability->descriptors, id, (void**)&descriptor) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  module_call(console, console_message, '#', "  [%8qd] node: %qd object: %qd operations: %024b\n",
-	   descriptor->id,
-	   descriptor->capability.node,
-	   descriptor->capability.object,
-	   descriptor->capability.operations);
+  module_call(console, console_message,
+	      '#', "  [%8qd] node: %qd object: %qd operations: %024b\n",
+	      descriptor->id,
+	      descriptor->capability.node,
+	      descriptor->capability.object,
+	      descriptor->capability.operations);
 
-  module_call(console, console_message, '#', "             check: %qd parent: %qd children:\n",
-	   descriptor->check,
-	   descriptor->parent);
+  module_call(console, console_message,
+	      '#', "             check: %qd parent: %qd children:\n",
+	      descriptor->check,
+	      descriptor->parent);
 
   if (descriptor->children != ID_UNUSED)
     {
@@ -133,21 +129,23 @@ t_error			capability_show(t_id			id)
       t_id*			data;
       t_iterator		i;
 
-      set_foreach(SET_OPT_FORWARD, descriptor->children, &i, state)
+      set_foreach(SET_OPTION_FORWARD, descriptor->children, &i, state)
 	{
-	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_NONE)
+	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_OK)
 	    {
-	      module_call(console, console_message, '!', "capability: cannot find the object "
-		       "corresponding to its identifier\n");
+	      module_call(console, console_message,
+			  '!', "capability: cannot find the object "
+			  "corresponding to its identifier\n");
 
-	      CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+	      CAPABILITY_LEAVE(_capability, ERROR_KO);
 	    }
 
-	  module_call(console, console_message, '#', "             [child] %qd\n", *data);
+	  module_call(console, console_message,
+		      '#', "             [child] %qd\n", *data);
 	}
     }
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 /*
@@ -166,41 +164,43 @@ t_error			capability_dump(void)
   t_setsz			size;
   t_iterator			i;
 
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
   /*
    * 1)
    */
 
-  if (set_size(capability->descriptors, &size) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (set_size(_capability->descriptors, &size) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "dumping %qu capability descriptor(s) from the "
-	   "capability set:\n", size);
+  module_call(console, console_message,
+	      '#', "dumping %qu capability descriptor(s) from the "
+	      "capability set:\n", size);
 
   /*
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, capability->descriptors, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _capability->descriptors, &i, state)
     {
-      if (set_object(capability->descriptors, i, (void**)&data) != ERROR_NONE)
+      if (set_object(_capability->descriptors, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "capability: cannot find the capability descriptor "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "capability: cannot find the capability descriptor "
+		      "corresponding to its identifier\n");
 
-	  CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+	  CAPABILITY_LEAVE(_capability, ERROR_KO);
 	}
 
-      if (capability_show(data->id) != ERROR_NONE)
-	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+      if (capability_show(data->id) != ERROR_OK)
+	CAPABILITY_LEAVE(_capability, ERROR_KO);
     }
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 
@@ -225,14 +225,14 @@ t_error			capability_reserve(t_id			object,
 {
   t_capability_descriptor	descriptor;
 
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
   /*
    * 1)
    */
 
-  new->node.machine = kernel->machine;
-  new->node.task = ktask;
+  new->node.machine = _kernel->machine;
+  new->node.task = _kernel->task;
   new->object = object;
   new->operations = operations;
 
@@ -247,9 +247,9 @@ t_error			capability_reserve(t_id			object,
    */
 
   descriptor.id = new->descriptor;
-  if (capability->f_checksum((char *)new, sizeof (t_capability), &descriptor.check) !=
-      ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (_capability->f_checksum((char *)new, sizeof (t_capability), &descriptor.check) !=
+      ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
   descriptor.capability = *new;
   descriptor.parent = ID_UNUSED;
   descriptor.children = ID_UNUSED;
@@ -257,10 +257,10 @@ t_error			capability_reserve(t_id			object,
   /*
    * 4)
    */
-  if (set_add(capability->descriptors, &descriptor) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (set_add(_capability->descriptors, &descriptor) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 /*
@@ -278,48 +278,49 @@ t_error			capability_release(t_id			id)
   t_id*				data;
   t_iterator			i;
 
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
   /*
    * 1)
    */
 
-  if (capability_get(id, &descriptor) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (capability_get(id, &descriptor) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   if (descriptor->parent != ID_UNUSED)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   /*
    * 2)
    */
   if (descriptor->children != ID_UNUSED)
     {
-      set_foreach(SET_OPT_FORWARD, descriptor->children, &i, state)
+      set_foreach(SET_OPTION_FORWARD, descriptor->children, &i, state)
 	{
-	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_NONE)
+	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_OK)
 	    {
-	      module_call(console, console_message, '!', "capability: cannot find the object "
-		       "corresponding to its identifier\n");
+	      module_call(console, console_message,
+			  '!', "capability: cannot find the object "
+			  "corresponding to its identifier\n");
 
-	      CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+	      CAPABILITY_LEAVE(_capability, ERROR_KO);
 	    }
 
-	  if (capability_invalidate(descriptor->id, *data) != ERROR_NONE)
-	    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+	  if (capability_invalidate(descriptor->id, *data) != ERROR_OK)
+	    CAPABILITY_LEAVE(_capability, ERROR_KO);
 	}
 
-      if (set_release(descriptor->children) != ERROR_NONE)
-	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+      if (set_release(descriptor->children) != ERROR_OK)
+	CAPABILITY_LEAVE(_capability, ERROR_KO);
     }
 
   /*
    * 3)
    */
-  if (set_remove(capability->descriptors, descriptor->id) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (set_remove(_capability->descriptors, descriptor->id) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 /*
@@ -339,20 +340,20 @@ t_error			capability_restrict(t_id		id,
   t_capability_descriptor	restricted;
   t_capability_descriptor*	parent;
 
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
   /*
    * 1)
    */
-  if (capability_get(id, &parent) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (capability_get(id, &parent) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   /*
    * 2)
    */
   if ((parent->capability.operations | operations) !=
       parent->capability.operations)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   /*
    * 3)
@@ -365,31 +366,31 @@ t_error			capability_restrict(t_id		id,
   new->descriptor = (t_uint64)sum2((char*)&new, sizeof(t_capability));
 
   restricted.id = new->descriptor;
-  if (capability->f_checksum((char *)new, sizeof (t_capability), &restricted.check) !=
-      ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (_capability->f_checksum((char *)new, sizeof (t_capability), &restricted.check) !=
+      ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
   restricted.capability = *new;
   restricted.parent = parent->id;
   restricted.children = ID_UNUSED;
 
-  if (set_add(capability->descriptors, &restricted) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (set_add(_capability->descriptors, &restricted) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
 
   /*
    * 4)
    */
   if (parent->children == ID_UNUSED)
-      if (set_reserve(array, SET_OPT_ALLOC, CAPABILITY_CHILDREN_INITSZ,
-		      sizeof(t_id), &parent->children) != ERROR_NONE)
-	  CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+      if (set_reserve(array, SET_OPTION_ALLOC, CAPABILITY_CHILDREN_INITSZ,
+		      sizeof(t_id), &parent->children) != ERROR_OK)
+	  CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  if (set_add(parent->children, &restricted.id) != ERROR_NONE)
+  if (set_add(parent->children, &restricted.id) != ERROR_OK)
     {
-      CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+      CAPABILITY_LEAVE(_capability, ERROR_KO);
     }
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 /*
@@ -405,44 +406,45 @@ t_error			capability_invalidate(t_id		p,
   t_id*				data;
   t_iterator			i;
 
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
-  if (capability_get(p, &parent) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (capability_get(p, &parent) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  if (capability_get(c, &restricted) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (capability_get(c, &restricted) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   if (restricted->parent != parent->id)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  if (set_remove(parent->children, restricted->id) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (set_remove(parent->children, restricted->id) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   if (restricted->children != ID_UNUSED)
     {
-      set_foreach(SET_OPT_FORWARD, restricted->children, &i, state)
+      set_foreach(SET_OPTION_FORWARD, restricted->children, &i, state)
 	{
-	  if (set_object(restricted->children, i, (void**)&data) != ERROR_NONE)
+	  if (set_object(restricted->children, i, (void**)&data) != ERROR_OK)
 	    {
-	      module_call(console, console_message, '!', "capability: cannot find the object "
-		       "corresponding to its identifier\n");
+	      module_call(console, console_message,
+			  '!', "capability: cannot find the object "
+			  "corresponding to its identifier\n");
 
-	      CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+	      CAPABILITY_LEAVE(_capability, ERROR_KO);
 	    }
 
-	  if (capability_invalidate(c, *data) != ERROR_NONE)
-	    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+	  if (capability_invalidate(c, *data) != ERROR_OK)
+	    CAPABILITY_LEAVE(_capability, ERROR_KO);
 	}
 
-      if (set_release(restricted->children) != ERROR_NONE)
-	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+      if (set_release(restricted->children) != ERROR_OK)
+	CAPABILITY_LEAVE(_capability, ERROR_KO);
     }
 
-  if (set_remove(capability->descriptors, restricted->id) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (set_remove(_capability->descriptors, restricted->id) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 /*
@@ -452,12 +454,12 @@ t_error			capability_invalidate(t_id		p,
 t_error			capability_get(t_id			id,
 				       t_capability_descriptor** descriptor)
 {
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
-  if (set_get(capability->descriptors, id, (void**)descriptor) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (set_get(_capability->descriptors, id, (void**)descriptor) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 
@@ -473,13 +475,13 @@ t_error			capability_give(t_id			id,
 {
   t_capability_descriptor* descriptor;
 
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
   /*
    * 1)
    */
-  if (capability_get(id, &descriptor) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (capability_get(id, &descriptor) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   /*
    * 2)
@@ -489,12 +491,12 @@ t_error			capability_give(t_id			id,
   /*
    * 3)
    */
-  if (capability->f_checksum((char *)&descriptor->capability,
+  if (_capability->f_checksum((char *)&descriptor->capability,
 			     sizeof (t_capability),
-			     &descriptor->check) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+			     &descriptor->check) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 
@@ -510,28 +512,28 @@ t_error			capability_verify(t_capability*		provided)
   t_capability_descriptor*	current;
   t_uint64			check;
 
-  CAPABILITY_ENTER(capability);
+  CAPABILITY_ENTER(_capability);
 
   /*
    * 1)
    */
-  if (capability_get((t_id)provided->descriptor, &current) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (capability_get((t_id)provided->descriptor, &current) != ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   /*
    * 2)
    */
-  if (capability->f_checksum((char *)provided, sizeof (t_capability), &check) !=
-      ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  if (_capability->f_checksum((char *)provided, sizeof (t_capability), &check) !=
+      ERROR_OK)
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
   /*
    * 3)
    */
   if (check != current->check)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+    CAPABILITY_LEAVE(_capability, ERROR_KO);
 
-  CAPABILITY_LEAVE(capability, ERROR_NONE);
+  CAPABILITY_LEAVE(_capability, ERROR_OK);
 }
 
 
@@ -545,34 +547,36 @@ t_error			capability_initialize(void)
    * 1)
    */
 
-  if ((capability = malloc(sizeof(m_capability))) == NULL)
+  if ((_capability = malloc(sizeof(m_capability))) == NULL)
     {
-      module_call(console, console_message, '!', "capability: cannot allocate memory for the capability "
-	       "manager structure\n");
+      module_call(console, console_message,
+		  '!', "capability: cannot allocate memory for the capability "
+		  "manager structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(capability, 0x0, sizeof(m_capability));
+  memset(_capability, 0x0, sizeof(m_capability));
 
   /*
    * 2)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
+  if (set_reserve(ll, SET_OPTION_ALLOC | SET_OPTION_SORT,
 		  sizeof(t_capability_descriptor),
-		  &capability->descriptors) != ERROR_NONE)
+		  &_capability->descriptors) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "capability: unable to reserve the capability "
-	       "descriptors set\n");
+      module_call(console, console_message,
+		  '!', "capability: unable to reserve the capability "
+		  "descriptors set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
-  capability->f_checksum = simple_checksum;
+  _capability->f_checksum = simple_checksum;
 
 #if (DEBUG & DEBUG_CAPABILITY)
   capability_dump();
@@ -599,7 +603,7 @@ t_error			capability_initialize(void)
   capability_verify(&r2);
 #endif
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -615,34 +619,37 @@ t_error			capability_clean(void)
    * 1)
    */
 
-  while (set_head(capability->descriptors, &i) == ERROR_NONE)
+  while (set_head(_capability->descriptors, &i) == ERROR_OK)
     {
-      if (set_object(capability->descriptors, i, (void**)&data) != ERROR_NONE)
+      if (set_object(_capability->descriptors, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "capability: cannot find the capability descriptor "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "capability: cannot find the capability descriptor "
+		      "corresponding to its identifier\n");
 
-	  return (ERROR_UNKNOWN);
+	  return (ERROR_KO);
 	}
 
-      if (capability_release(data->id) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (capability_release(data->id) != ERROR_OK)
+	return (ERROR_KO);
     }
 
-  if (set_release(capability->descriptors) != ERROR_NONE)
+  if (set_release(_capability->descriptors) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "task: unable to release the capability descriptor set\n");
+      module_call(console, console_message,
+		  '!', "task: unable to release the capability "
+		  "descriptor set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 2)
    */
 
-  free(capability);
+  free(_capability);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 // XXX si erreur, alors liberer ce qui vient d etre construit

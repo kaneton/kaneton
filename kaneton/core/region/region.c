@@ -40,7 +40,7 @@ machine_include(region);
  * the region manager structure.
  */
 
-m_region*		region;
+m_region*		_region = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -65,39 +65,41 @@ t_error			region_show(i_as			asid,
 
   o_region*		o;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   /*
    * 1)
    */
 
-  if (region_get(asid, regid, &o) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (region_get(asid, regid, &o) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  module_call(console, console_message, '#', "  region %qd in address space %qd:\n",
-	   regid,
-	   asid);
+  module_call(console, console_message,
+	      '#', "  region %qd in address space %qd:\n",
+	      regid,
+	      asid);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "    0x%08x [%qd] (%u) %c\n",
-	   o->address,
-	   o->segid,
-	   o->size,
-	   (o->opts & REGION_OPT_PRIVILEGED) ? 'S' : 'U');
+  module_call(console, console_message,
+	      '#', "    0x%08x [%qd] (%u) %c\n",
+	      o->address,
+	      o->segment,
+	      o->size,
+	      (o->options & REGION_OPTION_PRIVILEGED) ? 'S' : 'U');
 
   /*
    * 3)
    */
 
-  if (machine_call(region, region_show, asid, regid) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (machine_call(region, region_show, asid, regid) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*							    [endblock::show] */
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -122,45 +124,47 @@ t_error			region_dump(i_as		asid)
   t_setsz		size;
   t_iterator		i;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(asid, &o) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_size(o->regions, &size) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_size(o->regions, &size) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 3)
    */
 
-  module_call(console, console_message, '#', "dumping %qu regions(s) from the region set:\n", size);
+  module_call(console, console_message,
+	      '#', "dumping %qu regions(s) from the region set:\n", size);
 
-  set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
+  set_foreach(SET_OPTION_FORWARD, o->regions, &i, state)
     {
-      if (set_object(o->regions, i, (void**)&data) != ERROR_NONE)
+      if (set_object(o->regions, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "region: cannot find the region object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "region: cannot find the region object "
+		      "corresponding to its identifier\n");
 
-	  REGION_LEAVE(region, ERROR_UNKNOWN);
+	  REGION_LEAVE(_region, ERROR_KO);
 	}
 
-      if (region_show(asid, data->regid) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (region_show(asid, data->id) != ERROR_OK)
+	REGION_LEAVE(_region, ERROR_KO);
     }
 
   /*							    [endblock::dump] */
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -184,45 +188,45 @@ t_error			region_inject(i_as		asid,
 
   o_as*			as;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   assert(o != NULL);
   assert(regid != NULL);
-  assert((o->opts & REGION_OPT_INVALID) == 0);
+  assert((o->options & REGION_OPTION_INVALID) == 0);
   assert(o->size != 0);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 2)
    */
 
-  o->regid = (i_region)o->address;
-  o->opts &= REGION_OPT_FORCE;
-  *regid = o->regid;
+  o->id = (i_region)o->address;
+  o->options &= REGION_OPTION_FORCE;
+  *regid = o->id;
 
   /*
    * 3)
    */
 
-  if (set_add(as->regions, o) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_add(as->regions, o) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (machine_call(region, region_inject, asid, o, regid) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (machine_call(region, region_inject, asid, o, regid) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*							  [endblock::inject] */
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*							      [block::split] */
@@ -237,7 +241,8 @@ t_error			region_inject(i_as		asid,
  * 3) check if a valid segment exists and can be used.
  * 4) build the new region.
  * 5) adjust the old region size.
- * 6) call the dependent code.
+ * 6) set the new left and right identifiers.
+ * 7) call the dependent code.
  */
 
 t_error			region_split(i_as			asid,
@@ -250,9 +255,8 @@ t_error			region_split(i_as			asid,
   o_region*		reg;
   o_segment*		seg;
   o_region*		new;
-  t_perms		perms;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   assert(size != 0);
   assert(left != NULL);
@@ -262,48 +266,40 @@ t_error			region_split(i_as			asid,
    * 1)
    */
 
-  if (region_get(asid, regid, &reg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (region_get(asid, regid, &reg) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  if (segment_get(reg->segid, &seg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  perms = seg->perms;
+  if (segment_get(reg->segment, &seg) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 2)
    */
 
   if (reg->size <= size)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 3)
    */
-
-  if (segment_get(reg->segid + reg->offset + size, &seg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  if (seg->asid != asid || seg->size < reg->size - size ||
-      seg->perms != perms)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
   if ((new = malloc(sizeof(o_region))) == NULL)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    REGION_LEAVE(_region, ERROR_KO);
 
-  new->regid = regid + reg->size;
-  new->segid = reg->segid + reg->offset + size;
-  new->address = (t_vaddr)new->regid;
-  new->offset = 0;
-  new->opts = reg->opts;
+  new->segment = reg->segment;
+  new->offset = reg->offset + size;
+  new->address = reg->address + size;
+  new->options = reg->options;
   new->size = reg->size - size;
 
-  if (region_inject(asid, new, &useless) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  new->id = (i_region)new->address;
+
+  if (region_inject(asid, new, &useless) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 5)
@@ -312,14 +308,21 @@ t_error			region_split(i_as			asid,
   reg->size = size;
 
   /*
-   * 6)
+   * 6
+   */
+
+  *left = reg->id;
+  *right = new->id;
+
+  /*
+   * 7)
    */
 
   if (machine_call(region, region_split, asid, regid, size, left, right) !=
-      ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+      ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*							   [endblock::split] */
@@ -335,6 +338,12 @@ t_error			region_split(i_as			asid,
  * 2) check if the segment is large enough.
  * 3) the destination region is the same as the original one.
  * 4) call the machine dependent code.
+ *   a) if the region is being expanded, a temporary region is injected so
+ *      that the machine-dependent code does not reserve the expanded
+ *      part of the future region. then the machine-dependent code is
+ *      invoked and finally the temporary region is manually removed from
+ *      the set of regions.
+ *   b) otherwise, do nothing special.
  * 5) set the new size.
  */
 
@@ -352,7 +361,7 @@ t_error			region_resize(i_as			as,
   t_iterator		next;
   t_state		state;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   assert(size != 0);
   assert(new != NULL);
@@ -361,50 +370,50 @@ t_error			region_resize(i_as			as,
    * 1)
    */
 
-  if (as_get(as, &oas) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(as, &oas) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  set_foreach(SET_OPT_FORWARD, oas->regions, &i, state)
+  set_foreach(SET_OPTION_FORWARD, oas->regions, &i, state)
     {
-      if (set_object(oas->regions, i, (void**)&reg) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (set_object(oas->regions, i, (void**)&reg) != ERROR_OK)
+	REGION_LEAVE(_region, ERROR_KO);
 
-      if (reg->regid == old)
+      if (reg->id == old)
 	break;
     }
 
   if (reg == NULL)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    REGION_LEAVE(_region, ERROR_KO);
 
   if (reg->size == size)
     {
       *new = old;
-      REGION_LEAVE(region, ERROR_NONE);
+      REGION_LEAVE(_region, ERROR_OK);
     }
 
-  if (set_next(oas->regions, i, &next) == ERROR_NONE)
+  if (set_next(oas->regions, i, &next) == ERROR_OK)
     {
-      if (set_object(oas->regions, next, (void**)&next_reg) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (set_object(oas->regions, next, (void**)&next_reg) != ERROR_OK)
+	REGION_LEAVE(_region, ERROR_KO);
 
       if (reg->address + size >= next_reg->address)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+	REGION_LEAVE(_region, ERROR_KO);
     }
   else
     {
-      if (reg->address + size >= region->start + region->size)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (reg->address + size >= _region->start + _region->size)
+	REGION_LEAVE(_region, ERROR_KO);
     }
 
   /*
    * 2)
    */
 
-  if (segment_get(reg->segid, &seg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (segment_get(reg->segment, &seg) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   if (!size || size > seg->size)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 3)
@@ -416,8 +425,44 @@ t_error			region_resize(i_as			as,
    * 4)
    */
 
-  if (machine_call(region, region_resize, as, old, size, new) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (reg->size < size)
+    {
+      /*
+       * a)
+       */
+
+      o_region*		temporary;
+      i_region		id;
+
+      if ((temporary = malloc(sizeof(o_region))) == NULL)
+	return (ERROR_KO);
+
+      temporary->segment = reg->segment;
+      temporary->address = reg->address + reg->size;
+      temporary->offset = reg->offset + reg->size;
+      temporary->size = size - reg->size;
+      temporary->options = reg->options;
+
+      if (region_inject(as, temporary, &id) != ERROR_OK)
+	return (ERROR_KO);
+
+      if (machine_call(region, region_resize, as, old, size, new) !=
+	  ERROR_OK)
+	REGION_LEAVE(_region, ERROR_KO);
+
+      if (set_remove(oas->regions, id) != ERROR_OK)
+	REGION_LEAVE(_region, ERROR_KO);
+    }
+  else
+    {
+      /*
+       * b)
+       */
+
+      if (machine_call(region, region_resize, as, old, size, new) !=
+	  ERROR_OK)
+	REGION_LEAVE(_region, ERROR_KO);
+    }
 
   /*
    * 5)
@@ -425,7 +470,7 @@ t_error			region_resize(i_as			as,
 
   reg->size = size;
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*							  [endblock::resize] */
@@ -454,7 +499,7 @@ t_error			region_coalesce(i_as		asid,
   o_region*		oleft;
   o_region*		oright;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   assert(left != right);
   assert(regid != NULL);
@@ -463,29 +508,29 @@ t_error			region_coalesce(i_as		asid,
    * 1)
    */
 
-  if (region_get(asid, left, &oleft) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (region_get(asid, left, &oleft) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  if (region_get(asid, right, &oright) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (region_get(asid, right, &oright) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 2)
    */
 
   if (oleft->address + oleft->size != oright->address ||
-      oleft->segid != oright->segid ||
+      oleft->segment != oright->segment ||
       oleft->offset + oleft->size != oright->offset ||
-      (oleft->opts & REGION_OPT_PRIVILEGED) !=
-      (oright->opts & REGION_OPT_PRIVILEGED))
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+      (oleft->options & REGION_OPTION_PRIVILEGED) !=
+      (oright->options & REGION_OPTION_PRIVILEGED))
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 4)
@@ -497,20 +542,20 @@ t_error			region_coalesce(i_as		asid,
    * 5)
    */
 
-  if (set_remove(as->regions, right) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_remove(as->regions, right) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 6)
    */
 
   if (machine_call(region, region_coalesce, asid, left, right, regid) !=
-      ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+      ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   *regid = left;
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*							[endblock::coalesce] */
@@ -531,7 +576,7 @@ t_error			region_coalesce(i_as		asid,
 t_error			region_reserve(i_as			asid,
 				       i_segment		segid,
 				       t_paddr			offset,
-				       t_opts			opts,
+				       t_options		options,
 				       t_vaddr			address,
 				       t_vsize			size,
 				       i_region*		regid)
@@ -545,9 +590,9 @@ t_error			region_reserve(i_as			asid,
   t_iterator		i;
   o_region*		data;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
-  assert((opts & REGION_OPT_INVALID) == 0);
+  assert((options & REGION_OPTION_INVALID) == 0);
   assert(size != 0);
   assert(regid != NULL);
 
@@ -555,42 +600,43 @@ t_error			region_reserve(i_as			asid,
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  if (segment_get(segid, &segment) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (segment_get(segid, &segment) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   if (segment->size < size + offset)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    REGION_LEAVE(_region, ERROR_KO);
 
   if ((o = malloc(sizeof(o_region))) == NULL)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (opts & REGION_OPT_FORCE)
+  if (options & REGION_OPTION_FORCE)
     {
-      if (address < region->start || address >= region->start + region->size)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (address < _region->start ||
+	  address >= _region->start + _region->size)
+	REGION_LEAVE(_region, ERROR_KO);
 
-      set_foreach(SET_OPT_FORWARD, as->regions, &i, state)
+      set_foreach(SET_OPTION_FORWARD, as->regions, &i, state)
 	{
-	  if (set_object(as->regions, i, (void**)&data) != ERROR_NONE)
-	    REGION_LEAVE(region, ERROR_UNKNOWN);
+	  if (set_object(as->regions, i, (void**)&data) != ERROR_OK)
+	    REGION_LEAVE(_region, ERROR_KO);
 
 	  if (data->address <= address && data->address + data->size > address)
-	    REGION_LEAVE(region, ERROR_UNKNOWN);
+	    REGION_LEAVE(_region, ERROR_KO);
 	}
 
       o->address = address;
     }
   else
     {
-      if (region_space(asid, size, &o->address) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (region_space(asid, size, &o->address) != ERROR_OK)
+	REGION_LEAVE(_region, ERROR_KO);
     }
 
   /*
@@ -598,26 +644,26 @@ t_error			region_reserve(i_as			asid,
    */
 
   address = o->address;
-  *regid = o->regid = (i_region)o->address;
-  o->segid = segid;
+  *regid = o->id = (i_region)o->address;
+  o->segment = segid;
   o->size = size;
   o->offset = offset;
-  o->opts = opts;
+  o->options = options;
 
-  if (set_add(as->regions, o) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_add(as->regions, o) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 4)
    */
 
   if (machine_call(region, region_reserve, asid, segid, offset,
-		   opts, address, size, regid) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+		   options, address, size, regid) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*							 [endblock::reserve] */
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -641,32 +687,32 @@ t_error			region_release(i_as			asid,
 
   o_as*			as;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   /*
    * 1)
    */
 
-  if (machine_call(region, region_release, asid, regid) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (machine_call(region, region_release, asid, regid) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (set_remove(as->regions, regid) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_remove(as->regions, regid) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*							 [endblock::release] */
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -690,33 +736,35 @@ t_error			region_flush(i_as			asid)
   t_iterator		it;
   i_region*		obj;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 2)
    */
 
-  while (set_head(as->regions, &it) == ERROR_NONE)
+  while (set_head(as->regions, &it) == ERROR_OK)
     {
-      if (set_object(as->regions, it, (void**)&obj) != ERROR_NONE)
+      if (set_object(as->regions, it, (void**)&obj) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "region: cannot get region to release.\n");
+	  module_call(console, console_message,
+		      '!', "region: cannot get region to release.\n");
 
-	  REGION_LEAVE(region, ERROR_UNKNOWN);
+	  REGION_LEAVE(_region, ERROR_KO);
 	}
 
-      if (region_release(asid, *obj) != ERROR_NONE)
+      if (region_release(asid, *obj) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "region: cannot release a region.\n");
+	  module_call(console, console_message,
+		      '!', "region: cannot release a region.\n");
 
-	  REGION_LEAVE(region, ERROR_UNKNOWN);
+	  REGION_LEAVE(_region, ERROR_KO);
 	}
     }
 
@@ -724,12 +772,12 @@ t_error			region_flush(i_as			asid)
    * 3)
    */
 
-  if (machine_call(region, region_flush, asid) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (machine_call(region, region_flush, asid) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*							   [endblock::flush] */
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -744,19 +792,19 @@ t_error			region_get(i_as				asid,
 
   o_as*			as;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   assert(o != NULL);
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  if (set_get(as->regions, regid, (void**)o) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_get(as->regions, regid, (void**)o) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*							     [endblock::get] */
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(_region, ERROR_OK);
 }
 
 /*
@@ -784,32 +832,32 @@ t_error			region_initialize(t_vaddr		start,
 
   assert(size != 0);
 
-  if ((region = malloc(sizeof(m_region))) == NULL)
+  if ((_region = malloc(sizeof(m_region))) == NULL)
     {
-      module_call(console, console_message, '!', "region: cannot allocate memory for the region "
-	       "manager structure\n");
+      module_call(console, console_message,
+		  '!', "region: cannot allocate memory for the region "
+		  "manager structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(region, 0x0, sizeof(m_region));
+  memset(_region, 0x0, sizeof(m_region));
 
   /*
    * 2)
    */
 
-  region->start = start;
-  region->size = size;
+  _region->start = start;
+  _region->size = size;
 
   /*
    * 3)
    */
 
-  if (machine_call(region, region_initialize, start, size) !=
-      ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(region, region_initialize, start, size) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 
   /*						      [endblock::initialize] */
 
@@ -835,17 +883,17 @@ t_error			region_clean(void)
    * 1)
    */
 
-  if (machine_call(region, region_clean) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(region, region_clean) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 2)
    */
 
-  free(region);
+  free(_region);
 
 
   /*							   [endblock::clean] */
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

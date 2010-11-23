@@ -38,7 +38,7 @@ machine_include(io);
  * io manager variable.
  */
 
-m_io*			io = NULL;
+m_io*			_io = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -52,14 +52,14 @@ t_error			io_grant(i_port				id,
 				 i_task				task,
 				 t_uint8			width)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
   assert(width > 0 && width <= 8);
 
-  if (machine_call(io, io_grant, id, task, width) != ERROR_NONE)
-    IO_LEAVE(io, ERROR_UNKNOWN);
+  if (machine_call(io, io_grant, id, task, width) != ERROR_OK)
+    IO_LEAVE(_io, ERROR_KO);
 
-  IO_LEAVE(io, ERROR_NONE);
+  IO_LEAVE(_io, ERROR_OK);
 }
 
 /*
@@ -70,14 +70,14 @@ t_error			io_deny(i_port				id,
 				i_task				task,
 				t_uint8				width)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
   assert(width > 0 && width <= 8);
 
-  if (machine_call(io, io_deny, id, task, width) != ERROR_NONE)
-    IO_LEAVE(io, ERROR_UNKNOWN);
+  if (machine_call(io, io_deny, id, task, width) != ERROR_OK)
+    IO_LEAVE(_io, ERROR_KO);
 
-  IO_LEAVE(io, ERROR_NONE);
+  IO_LEAVE(_io, ERROR_OK);
 }
 
 /*
@@ -88,11 +88,11 @@ t_error			io_read_8(i_task			task,
 				  i_port			id,
 				  t_uint8*			data)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
   assert(data != NULL);
 
-  IO_LEAVE(io, machine_call(io, io_read_8, task, id, data));
+  IO_LEAVE(_io, machine_call(io, io_read_8, task, id, data));
 }
 
 /*
@@ -103,11 +103,11 @@ t_error			io_read_16(i_task			task,
 				   i_port			id,
 				   t_uint16*			data)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
   assert(data != NULL);
 
-  IO_LEAVE(io, machine_call(io, io_read_16, task, id, data));
+  IO_LEAVE(_io, machine_call(io, io_read_16, task, id, data));
 }
 
 /*
@@ -118,11 +118,11 @@ t_error			io_read_32(i_task			task,
 				   i_port			id,
 				   t_uint32*			data)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
   assert(data != NULL);
 
-  IO_LEAVE(io, machine_call(io, io_read_32, task, id, data));
+  IO_LEAVE(_io, machine_call(io, io_read_32, task, id, data));
 }
 
 /*
@@ -133,11 +133,11 @@ t_error			io_read_64(i_task			task,
 				   i_port			id,
 				   t_uint64*			data)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
   assert(data != NULL);
 
-  IO_LEAVE(io, machine_call(io, io_read_64, task, id, data));
+  IO_LEAVE(_io, machine_call(io, io_read_64, task, id, data));
 }
 
 /*
@@ -148,9 +148,9 @@ t_error			io_write_8(i_task			task,
 				   i_port			id,
 				   t_uint8			data)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
-  IO_LEAVE(io, machine_call(io, io_write_8, task, id, data));
+  IO_LEAVE(_io, machine_call(io, io_write_8, task, id, data));
 }
 
 /*
@@ -161,9 +161,9 @@ t_error			io_write_16(i_task			task,
 				    i_port			id,
 				    t_uint16			data)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
-  IO_LEAVE(io, machine_call(io, io_write_16, task, id, data));
+  IO_LEAVE(_io, machine_call(io, io_write_16, task, id, data));
 }
 
 /*
@@ -174,9 +174,9 @@ t_error			io_write_32(i_task			task,
 				    i_port			id,
 				    t_uint32			data)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
-  IO_LEAVE(io, machine_call(io, io_write_32, task, id, data));
+  IO_LEAVE(_io, machine_call(io, io_write_32, task, id, data));
 }
 
 /*
@@ -187,9 +187,9 @@ t_error			io_write_64(i_task			task,
 				    i_port			id,
 				    t_uint64			data)
 {
-  IO_ENTER(io);
+  IO_ENTER(_io);
 
-  IO_LEAVE(io, machine_call(io, io_write_64, task, id, data));
+  IO_LEAVE(_io, machine_call(io, io_write_64, task, id, data));
 }
 
 /*
@@ -207,24 +207,25 @@ t_error			io_initialize(void)
    * 1)
    */
 
-  if ((io = malloc(sizeof(m_io))) == NULL)
+  if ((_io = malloc(sizeof(m_io))) == NULL)
     {
-      module_call(console, console_message, '!', "io: cannot allocate memory for the io "
-	       "manager structure\n");
+      module_call(console, console_message,
+		  '!', "io: cannot allocate memory for the io "
+		  "manager structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(io, 0x0, sizeof(m_io));
+  memset(_io, 0x0, sizeof(m_io));
 
   /*
    * 2)
    */
 
-  if (machine_call(io, io_initialize) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(io, io_initialize) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 
 }
 
@@ -243,14 +244,14 @@ t_error			io_clean(void)
    * 1)
    */
 
-  if (machine_call(io, io_clean) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(io, io_clean) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 2)
    */
 
-  free(io);
+  free(_io);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

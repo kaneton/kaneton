@@ -21,14 +21,12 @@
  * ---------- includes --------------------------------------------------------
  */
 
-
 #include <platform/platform.h>
 #include <architecture/architecture.h>
 
 /*
  * ---------- functions -------------------------------------------------------
  */
-
 
 /*
  * initialize the pics
@@ -49,88 +47,88 @@ t_error			ibmpc_irq_init(void)
    * 1)
    */
 
-  ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_A, IBMPC_MASTER_ICW1);
-  ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_A, IBMPC_SLAVE_ICW1);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_A, IBMPC_IRQ_MASTER_ICW1);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_A, IBMPC_IRQ_SLAVE_ICW1);
 
   /*
    * 2)
    */
 
-  ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW2);
-  ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW2);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_B, IBMPC_IRQ_MASTER_ICW2);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_B, IBMPC_IRQ_SLAVE_ICW2);
 
   /*
    * 3)
    */
 
-  ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW3);
-  ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW3);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_B, IBMPC_IRQ_MASTER_ICW3);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_B, IBMPC_IRQ_SLAVE_ICW3);
 
   /*
    * 4)
    */
 
-  ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW4);
-  ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW4);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_B, IBMPC_IRQ_MASTER_ICW4);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_B, IBMPC_IRQ_SLAVE_ICW4);
 
   /*
    * 5)
    */
 
-  ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_B, 0xfb);
-  ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, 0xff);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_B, 0xfb);
+  ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_B, 0xff);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
  * turn on a given interrupt enabling its flag
  */
 
-t_error			ibmpc_enable_irq(t_uint8		irq)
+t_error			ibmpc_irq_enable(t_uint8		irq)
 {
   t_uint8		mask;
 
   if (irq > 15)
-    return (ERROR_UNKNOWN);
+    return (ERROR_KO);
 
   if (irq < 8)
     {
-      ARCHITECTURE_IN_8(IBMPC_MASTER_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_B, mask & ~(1 << irq));
+      ARCHITECTURE_IN_8(IBMPC_IRQ_MASTER_PORT_B, mask);
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_B, mask & ~(1 << irq));
     }
   else
     {
-      ARCHITECTURE_IN_8(IBMPC_SLAVE_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
+      ARCHITECTURE_IN_8(IBMPC_IRQ_SLAVE_PORT_B, mask);
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
     }
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
  * turn off a given interrupt
  */
 
-t_error			ibmpc_disable_irq(t_uint8		irq)
+t_error			ibmpc_irq_disable(t_uint8		irq)
 {
   t_uint8		mask;
 
   if (irq > 15)
-    return (ERROR_UNKNOWN);
+    return (ERROR_KO);
 
   if (irq < 8)
     {
-      ARCHITECTURE_IN_8(IBMPC_MASTER_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_B, mask | (1 << irq));
+      ARCHITECTURE_IN_8(IBMPC_IRQ_MASTER_PORT_B, mask);
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_B, mask | (1 << irq));
     }
   else
     {
-      ARCHITECTURE_IN_8(IBMPC_SLAVE_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, mask | (1 << (irq - 8)));
+      ARCHITECTURE_IN_8(IBMPC_IRQ_SLAVE_PORT_B, mask);
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_B, mask | (1 << (irq - 8)));
     }
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -151,7 +149,7 @@ t_error			ibmpc_irq_acknowledge(t_uint8		irq)
    */
 
   if (irq > 15)
-    return (ERROR_UNKNOWN);
+    return (ERROR_KO);
 
   /*
    * 2)
@@ -159,18 +157,18 @@ t_error			ibmpc_irq_acknowledge(t_uint8		irq)
 
   if (irq < 8)
     {
-      ARCHITECTURE_IN_8(IBMPC_MASTER_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_A, 0x60 + irq);
+      ARCHITECTURE_IN_8(IBMPC_IRQ_MASTER_PORT_B, mask);
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_B, mask);
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_A, 0x60 + irq);
     }
   else
     {
-      ARCHITECTURE_IN_8(IBMPC_SLAVE_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_A, 0x60 + (irq - 8));
-      ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_A, 0x60 + 2);
+      ARCHITECTURE_IN_8(IBMPC_IRQ_SLAVE_PORT_B, mask);
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_B, mask);
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_SLAVE_PORT_A, 0x60 + (irq - 8));
+      ARCHITECTURE_OUT_8(IBMPC_IRQ_MASTER_PORT_A, 0x60 + 2);
     }
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 

@@ -29,7 +29,6 @@
  * ---------- functions -------------------------------------------------------
  */
 
-
 /*
  * initialize the pit 8254.
  *
@@ -51,7 +50,7 @@ t_error			ibmpc_timer_init(void)
   latch = IBMPC_CLOCK_TICK_RATE / (1000 / TIMER_MS_PER_TICK);
 
   if (!latch || latch > 65536)
-    return (ERROR_UNKNOWN);
+    return (ERROR_KO);
 
   /*
    * 2)
@@ -68,6 +67,6 @@ t_error			ibmpc_timer_init(void)
   ARCHITECTURE_OUT_8(IBMPC_TIMER_0, latch & 0xFF);
   ARCHITECTURE_OUT_8(IBMPC_TIMER_0, (latch >> 8) & 0xFF);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 

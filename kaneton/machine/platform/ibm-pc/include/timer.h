@@ -27,16 +27,17 @@
  * pit ports
  */
 
-#define IBMPC_TIMER_0		0x40
-#define IBMPC_TIMER_1		0x41
-#define IBMPC_TIMER_2		0x42
-#define IBMPC_PIT_8254_CTRL	0x43
+#define IBMPC_TIMER_0			0x40
+#define IBMPC_TIMER_1			0x41
+#define IBMPC_TIMER_2			0x42
+
+#define IBMPC_PIT_8254_CTRL		0x43
 
 /*
  * pit oscillator frequency
  */
 
-#define IBMPC_CLOCK_TICK_RATE	1193180
+#define IBMPC_CLOCK_TICK_RATE		1193180
 
 
 /*

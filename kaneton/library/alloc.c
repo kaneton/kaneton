@@ -58,13 +58,17 @@
  * ---------- globals ---------------------------------------------------------
  */
 
-t_alloc			alloc;
+t_alloc			_alloc;
 
 /*
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+/*
+ * the kernel manager.
+ */
+
+extern m_kernel*	_kernel;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -114,7 +118,7 @@ void*			malloc(size_t				size)
    * 2)
    */
 
-  for (area = alloc.areas;
+  for (area = _alloc.areas;
        area != NULL && allocated == NULL;
        prev_area = area, area = area->next_area)
     {
@@ -190,9 +194,9 @@ void*			malloc(size_t				size)
     {
       if (stucked)
 	{
-	  addr = alloc.reserve;
+	  addr = _alloc.reserve;
 
-	  alloc.reserve = 0;
+	  _alloc.reserve = 0;
 
 	  pagesz = PAGESZ;
 	}
@@ -207,15 +211,15 @@ void*			malloc(size_t				size)
 
 	  stucked = 1;
 
-	  err = map_reserve(kasid,
-			    MAP_OPT_PRIVILEGED,
+	  err = map_reserve(_kernel->as,
+			    MAP_OPTION_PRIVILEGED,
 			    pagesz,
-			    PERM_READ | PERM_WRITE,
+			    PERMISSION_READ | PERMISSION_WRITE,
 			    &addr);
 
 	  stucked = 0;
 
-	  if (err != ERROR_NONE)
+	  if (err != ERROR_OK)
 	    {
 	      printf("FATAL ERROR: physical memory exhausted !\n");
 
@@ -223,15 +227,15 @@ void*			malloc(size_t				size)
 		;
 	    }
 
-	  if (alloc.reserve == 0)
+	  if (_alloc.reserve == 0)
 	    {
-	      err = map_reserve(kasid,
-				MAP_OPT_PRIVILEGED,
+	      err = map_reserve(_kernel->as,
+				MAP_OPTION_PRIVILEGED,
 				PAGESZ,
-				PERM_READ | PERM_WRITE,
-				&alloc.reserve);
+				PERMISSION_READ | PERMISSION_WRITE,
+				&_alloc.reserve);
 
-	      if (err != ERROR_NONE)
+	      if (err != ERROR_OK)
 		{
 		  printf("FATAL ERROR: physical memory exhausted !\n");
 
@@ -242,7 +246,7 @@ void*			malloc(size_t				size)
 	      if (prev_area != NULL)
 		prev_area = prev_area->next_area;
 	      else
-		prev_area = alloc.areas;
+		prev_area = _alloc.areas;
 	    }
 	}
 
@@ -260,7 +264,7 @@ void*			malloc(size_t				size)
       if (prev_area != NULL)
 	prev_area->next_area = area;
       else
-	alloc.areas = area;
+	_alloc.areas = area;
 
       /*
        * c)
@@ -293,17 +297,17 @@ void*			malloc(size_t				size)
    * 6)
    */
 
-  alloc.nalloc++;
+  _alloc.nalloc++;
 
   /*
    * 7)
    */
 
-  if (allocated < alloc.lowest)
-    alloc.lowest = allocated;
+  if (allocated < _alloc.lowest)
+    _alloc.lowest = allocated;
 
-  if (allocated > alloc.highest)
-    alloc.highest = allocated;
+  if (allocated > _alloc.highest)
+    _alloc.highest = allocated;
 
 #ifdef MALLOC_SIGN_ENABLE
   alloc_check_signatures();
@@ -339,7 +343,7 @@ void			free(void*				ptr)
   if (!ptr)
     return;
 
-  if (ptr < alloc.lowest)
+  if (ptr < _alloc.lowest)
     {
 #ifdef MALLOC_DEBUG
       printf("warning: junk pointer, to low to make sense.\n");
@@ -347,7 +351,7 @@ void			free(void*				ptr)
       return;
     }
 
-  if (ptr > alloc.highest)
+  if (ptr > _alloc.highest)
     {
 #ifdef MALLOC_DEBUG
       printf("warning: junk pointer, to high to make sense.\n");
@@ -410,12 +414,12 @@ void			free(void*				ptr)
    * 5)
    */
 
-  if (area != alloc.areas &&
+  if (area != _alloc.areas &&
       area->first_free_chunk->size == area->size - sizeof(t_chunk))
     {
       area->prev_area->next_area = NULL;
 
-      if (map_release(kasid, (t_vaddr)area) != ERROR_NONE)
+      if (map_release(_kernel->as, (t_vaddr)area) != ERROR_OK)
 	printf("warning: unable to release area.\n");
     }
 
@@ -423,7 +427,7 @@ void			free(void*				ptr)
    * 6)
    */
 
-  alloc.nfree++;
+  _alloc.nfree++;
 
 #ifdef MALLOC_SIGN_ENABLE
   alloc_check_signatures();
@@ -436,7 +440,7 @@ void			free(void*				ptr)
 
 u_int32_t		alloc_nalloc(void)
 {
-  return (alloc.nalloc);
+  return (_alloc.nalloc);
 }
 
 /*
@@ -445,7 +449,7 @@ u_int32_t		alloc_nalloc(void)
 
 u_int32_t		alloc_nfree(void)
 {
-  return (alloc.nfree);
+  return (_alloc.nfree);
 }
 
 /*
@@ -472,7 +476,7 @@ void			alloc_dump(void)
 
   printf("allocator dump\n");
 
-  printf("calls: %u alloc(), %u free()\n", alloc.nalloc, alloc.nfree);
+  printf("calls: %u alloc(), %u free()\n", _alloc.nalloc, _alloc.nfree);
 
   printf("dumping all chunks:\n");
 
@@ -480,7 +484,7 @@ void			alloc_dump(void)
    * 2)
    */
 
-  for (area = alloc.areas;
+  for (area = _alloc.areas;
        area != NULL;
        area = area->next_area)
     {
@@ -533,7 +537,7 @@ void			alloc_check_signatures(void)
    * 2)
    */
 
-  for (area = alloc.areas;
+  for (area = _alloc.areas;
        area != NULL;
        area = area->next_area)
     {
@@ -596,13 +600,13 @@ void			alloc_setup(void)
 {
   t_error		err;
 
-  err = map_reserve(kasid,
-		    MAP_OPT_PRIVILEGED,
+  err = map_reserve(_kernel->as,
+		    MAP_OPTION_PRIVILEGED,
 		    PAGESZ,
-		    PERM_READ | PERM_WRITE,
-		    &alloc.reserve);
+		    PERMISSION_READ | PERMISSION_WRITE,
+		    &_alloc.reserve);
 
-  if (err != ERROR_NONE)
+  if (err != ERROR_OK)
     {
       printf("FATAL ERROR: physical memory exhausted !\n");
 
@@ -636,14 +640,15 @@ int			alloc_init(vaddr_t			addr,
    * 1)
    */
 
-  memset(&alloc, 0x0, sizeof(t_alloc));
+  memset(&_alloc, 0x0, sizeof(t_alloc));
 
-  first_area = alloc.areas = (t_area*)addr;
-  alloc.nalloc = 0;
-  alloc.nfree = 0;
-  alloc.lowest = (void*)((t_vaddr)-1);
-  alloc.highest = (void*)0;
-  alloc.reserve = 0;
+  first_area = _alloc.areas = (t_area*)addr;
+
+  _alloc.nalloc = 0;
+  _alloc.nfree = 0;
+  _alloc.lowest = (void*)((t_vaddr)-1);
+  _alloc.highest = (void*)0;
+  _alloc.reserve = 0;
 
   /*
    * 2)

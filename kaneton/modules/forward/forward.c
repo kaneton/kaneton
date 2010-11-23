@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/modules/forward/forward.c
+ * file          /home/mycure/kaneton.NEW/kaneton/modules/forward/forward.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [mon may 17 13:16:08 2010]
+ * updated       julien quintard   [tue nov 23 10:34:19 2010]
  */
 
 /*
@@ -37,7 +37,7 @@
  * the module structure.
  */
 
-m_forward		forward;
+m_forward		_forward;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -50,14 +50,11 @@ m_forward		forward;
 t_error			forward_send(char*			message,
 				     t_uint32			length)
 {
-  t_uint32		magic;
-  t_uint32		crc;
-
   forward_flush();
 
   ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)message, length);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -67,19 +64,19 @@ t_error			forward_send(char*			message,
 
 t_error			forward_flush(void)
 {
-  t_uint32		size = forward.size;
+  t_uint32		size = _forward.size;
 
-  if (forward.size == 0)
-    return (ERROR_NONE);
+  if (_forward.size == 0)
+    return (ERROR_OK);
 
-  forward.size = 0;
+  _forward.size = 0;
 
-  if (forward_send(forward.buffer, size) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (forward_send(_forward.buffer, size) != ERROR_OK)
+    return (ERROR_KO);
 
-  memset(forward.buffer, 0x0, sizeof(forward.buffer));
+  memset(_forward.buffer, 0x0, sizeof(_forward.buffer));
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -93,9 +90,9 @@ t_error			forward_flush(void)
 
 int			forward_write(char				c)
 {
-  forward.buffer[forward.size++] = c;
+  _forward.buffer[_forward.size++] = c;
 
-  if ((forward.size >= (sizeof(forward.buffer) - 1)) ||
+  if ((_forward.size >= (sizeof(_forward.buffer) - 1)) ||
       (c == '\n'))
     forward_flush();
 
@@ -116,7 +113,7 @@ t_error			forward_initialize(void)
 
   printf_init(forward_write, NULL);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -125,5 +122,5 @@ t_error			forward_initialize(void)
 
 t_error			forward_clean(void)
 {
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/map.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/map.h
  *
  * created       julien quintard   [wed jun  6 13:31:27 2007]
- * updated       matthieu bucchianeri   [sun jul 22 12:07:47 2007]
+ * updated       julien quintard   [mon nov 22 10:12:08 2010]
  */
 
 #ifndef CORE_MAP_H
@@ -30,12 +30,12 @@
  * flags
  */
 
-#define MAP_OPT_NONE		0
-#define MAP_OPT_FORCE		(1 << 0)
-#define MAP_OPT_USER		(0 << 1)
-#define MAP_OPT_PRIVILEGED	(1 << 1)
+#define MAP_OPTION_NONE		0
+#define MAP_OPTION_FORCE	(1 << 0)
+#define MAP_OPTION_USER		(0 << 1)
+#define MAP_OPTION_PRIVILEGED	(1 << 1)
 
-#define MAP_OPT_INVALID		(~((1 << 1) | (1 << 0)))
+#define MAP_OPTION_INVALID	(~((1 << 1) | (1 << 0)))
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -60,7 +60,7 @@ typedef struct
 #define MAP_CHECK(_map_)						\
   {									\
     if ((_map_) == NULL)						\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*
@@ -91,16 +91,16 @@ typedef struct
  * ../../core/map/map.c
  */
 
-t_error			map_reserve(i_as		asid,
-				    t_opts		opts,
+t_error			map_reserve(i_as		as,
+				    t_options		options,
 				    t_vsize		size,
-				    t_perms		perms,
-				    t_vaddr*		addr);
+				    t_permissions	permissions,
+				    t_vaddr*		address);
 
-t_error			map_release(i_as		asid,
-				    t_vaddr		addr);
+t_error			map_release(i_as		as,
+				    t_vaddr		address);
 
-t_error			map_resize(i_as			asid,
+t_error			map_resize(i_as			as,
 				   t_vaddr		old,
 				   t_vsize		size,
 				   t_vaddr*		new);

@@ -28,28 +28,29 @@
  * pics addresses
  */
 
-#define IBMPC_MASTER_PORT_A           0x20
-#define IBMPC_MASTER_PORT_B           0x21
-#define IBMPC_SLAVE_PORT_A            0xa0
-#define IBMPC_SLAVE_PORT_B            0xa1
+#define IBMPC_IRQ_MASTER_PORT_A		0x20
+#define IBMPC_IRQ_MASTER_PORT_B		0x21
+
+#define IBMPC_IRQ_SLAVE_PORT_A		0xa0
+#define IBMPC_IRQ_SLAVE_PORT_B		0xa1
 
 /*
  * master icw's
  */
 
-#define IBMPC_MASTER_ICW1             0x11
-#define IBMPC_MASTER_ICW2             0x20
-#define IBMPC_MASTER_ICW3             0x04
-#define IBMPC_MASTER_ICW4             0x01
+#define IBMPC_IRQ_MASTER_ICW1		0x11
+#define IBMPC_IRQ_MASTER_ICW2		0x20
+#define IBMPC_IRQ_MASTER_ICW3		0x04
+#define IBMPC_IRQ_MASTER_ICW4		0x01
 
 /*
  * slave icw's
  */
 
-#define IBMPC_SLAVE_ICW1              0x11
-#define IBMPC_SLAVE_ICW2              0x28
-#define IBMPC_SLAVE_ICW3              0x02
-#define IBMPC_SLAVE_ICW4              0x01
+#define IBMPC_IRQ_SLAVE_ICW1		0x11
+#define IBMPC_IRQ_SLAVE_ICW2		0x28
+#define IBMPC_IRQ_SLAVE_ICW3		0x02
+#define IBMPC_IRQ_SLAVE_ICW4		0x01
 
 
 /*
@@ -64,9 +65,9 @@
 
 t_error			ibmpc_irq_init(void);
 
-t_error			ibmpc_enable_irq(t_uint8		irq);
+t_error			ibmpc_irq_enable(t_uint8		irq);
 
-t_error			ibmpc_disable_irq(t_uint8		irq);
+t_error			ibmpc_irq_disable(t_uint8		irq);
 
 t_error			ibmpc_irq_acknowledge(t_uint8		irq);
 

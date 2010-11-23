@@ -40,7 +40,7 @@ extern const char	version[];
  * physical memory layout etc.
  */
 
-t_init*			init;
+t_init*			_init;
 
 /*
  * this variable is filled by the task manager when it injects the
@@ -51,7 +51,7 @@ t_init*			init;
  * build a task for this very first service.
  */
 
-i_segment		system;
+i_segment		_system;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -66,36 +66,21 @@ i_segment		system;
  * 2) initializes some fundamental modules.
  * 3) displays the current kaneton version.
  * 4) initializes the fine grained allocator.
- * 5) initializes the kernel manager.
- * 6) initializes the test system.
- * 7) launches the very first service.
- * 8) cleans the kernel manager.
- * 9) shutdown the system.
+ * 5) initializes the report manager.
+ * 6) initializes the kernel manager.
+ * 7) initializes the test system.
+ * 8) launches the very first service.
+ * 9) cleans the kernel manager.
+ * 10) shutdown the system.
  */
 
 void			kaneton(t_init*				bootloader)
 {
-
-#ifdef MIPS64_DEV
-  while(1);
-#endif
-
-#ifdef O2
-  io_cons_init();
-
-  printf("\n");
-  printf("%s\n", version);
-  printf("\n");
-  mipsr10k_event_init();
-  while(1);
-#endif
-
-
   /*
    * 1)
    */
 
-  init = bootloader;
+  _init = bootloader;
 
   /*
    * 2)
@@ -108,84 +93,63 @@ void			kaneton(t_init*				bootloader)
    * 3)
    */
 
-  module_call(console, console_message, '+', "%s\n", version);
+  module_call(console, console_message,
+	      '+', "%s\n", version);
 
   /*
    * 4)
    */
 
-  module_call(console, console_message, '+', "starting malloc\n");
+  module_call(console, console_message,
+	      '+', "setting up the fine-graind memeory allocator\n");
 
-  alloc_init(init->alloc, init->allocsz);
+  alloc_init(_init->alloc, _init->allocsz);
 
   /*
    * 5)
    */
 
-  module_call(console, console_message, '+', "starting kernel manager\n");
-
-  kernel_initialize();
-
-  module_call(console, console_message, '+', "kaneton started\n");
+  module_call(report, report_initialize);
 
   /*
    * 6)
    */
 
+  module_call(console, console_message,
+	      '+', "starting the kernel\n");
+
+  kernel_initialize();
+
+  /*
+   * 7)
+   */
+
   module_call(test, test_run);
-
-  /*
-   * 7)
-   */
-
-  module_call(console, console_message, '+', "launching the initial server\n");
-
-  if (kaneton_launch() != ERROR_NONE)
-    module_call(console, console_message, '!', "failed to start the initial server\n");
-
-#ifdef IA32_DEPENDENT
-  STI();
-#endif
-
-  // XXX this should never be reached. since a least a task
-  // has been created, syscalls are made!
-  char c = '-';
-
-  while (1) /* XXX become IDLE */
-    {
-      if (c == '-')
-	c = '\\';
-      else if (c == '\\')
-	c = '|';
-      else if (c == '|')
-	c = '/';
-      else
-	c = '-';
-
-      printf("\r %c", c);
-    }
-
-#ifdef IA32_DEPENDENT
-  CLI();
-#endif
-
-  module_call(console, console_message, '#', "kaneton is stopping...\n");
-
-  /*
-   * 7)
-   */
-
-  kernel_clean();
 
   /*
    * 8)
    */
 
-  module_call(console, console_message, '+', "system shutdown\n");
+  module_call(console, console_message,
+	      '+', "spawning the 'system' server\n");
 
-#ifdef IA32_DEPENDENT
-  HLT();
-#endif
+  kaneton_spawn();
+
+  /*
+   * 9)
+   */
+
+  module_call(console, console_message,
+	      '+', "stopping the kernel\n");
+
+  kernel_clean();
+
+  /*
+   * 10)
+   */
+
+  while (1)
+    ;
 }
 
 /*
@@ -196,7 +160,7 @@ void			kaneton(t_init*				bootloader)
  * code which is a mapping of the code provided by the booloader: init->scode.
  */
 
-t_error			kaneton_launch(void)
+t_error			kaneton_spawn(void)
 {
   i_thread		thread;
   i_region		region;
@@ -207,73 +171,71 @@ t_error			kaneton_launch(void)
   o_thread*		o;
   struct
   {
-    i_task		taskid;
-    i_as		asid;
+    i_task		task;
+    i_as		as;
     int			argc;
     char*		argv;
     char*		envp;
   }			args;
 
-  if (init->scodesz == 0)
-    {
-      module_call(console, console_message, '!', "no initial server provided in the inputs\n");
-
-      return (ERROR_UNKNOWN);
-    }
+  assert(_init->scodesz != 0);
 
   if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_TIMESHARING,
-		   TASK_PRIOR_TIMESHARING,
-		   &task) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		   TASK_BEHAVIOUR_TIMESHARING,
+		   TASK_PRIORITY_TIMESHARING,
+		   &task) != ERROR_OK)
+    return (ERROR_KO);
 
-  if (as_reserve(task, &as) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  if (region_reserve(as,
-		     system, 0,
-		     REGION_OPT_FORCE,
-		     init->slocation, init->scodesz,
-		     &region) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_reserve(task, &as) != ERROR_OK)
+    return (ERROR_KO);
 
   if (region_reserve(as,
-		     (i_segment)(t_vaddr)init->inputs, 0,
-		     REGION_OPT_FORCE,
-		     (t_vaddr)init->inputs, init->inputssz,
-		     &region) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     _system,
+		     0,
+		     REGION_OPTION_FORCE,
+		     _init->slocation,
+		     _init->scodesz,
+		     &region) != ERROR_OK)
+    return (ERROR_KO);
 
-  if (thread_reserve(task, THREAD_PRIOR, &thread) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_reserve(as,
+		     (i_segment)(t_vaddr)_init->inputs,
+		     0,
+		     REGION_OPTION_FORCE,
+		     (t_vaddr)_init->inputs,
+		     _init->inputssz,
+		     &region) != ERROR_OK)
+    return (ERROR_KO);
+
+  if (thread_reserve(task, THREAD_PRIORITY, &thread) != ERROR_OK)
+    return (ERROR_KO);
 
   stack.base = 0;
   stack.size = 10 * PAGESZ;
 
-  if (thread_stack(thread, stack) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_stack(thread, stack) != ERROR_OK)
+    return (ERROR_KO);
 
-  if (thread_get(thread, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(thread, &o) != ERROR_OK)
+    return (ERROR_KO);
 
   ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = init->sentry;
+  ctx.pc = _init->sentry;
 
-  if (thread_load(thread, ctx) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_load(thread, ctx) != ERROR_OK)
+    return (ERROR_KO);
 
-  args.taskid = task;
-  args.asid = as;
+  args.task = task;
+  args.as = as;
   args.argc = 1;
-  args.argv = (char*)init->inputs;
+  args.argv = (char*)_init->inputs;
   args.envp = NULL;
 
-  if (thread_args(thread, &args, sizeof (args)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_args(thread, &args, sizeof (args)) != ERROR_OK)
+    return (ERROR_KO);
 
-  if (task_state(task, SCHEDULER_STATE_RUN) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_state(task, TASK_STATE_RUN) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
-

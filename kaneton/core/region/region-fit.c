@@ -40,7 +40,7 @@ machine_include(region);
  * the region manager structure.
  */
 
-extern m_region*       region;
+extern m_region*       _region;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -70,65 +70,66 @@ static t_error		region_first_fit(o_as*			as,
   o_region*		tail;
   t_iterator		i;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   /*
    * 1)
    */
 
-  if (set_head(as->regions, &i) != ERROR_NONE)
+  if (set_head(as->regions, &i) != ERROR_OK)
     {
-      if (region->size < size)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (_region->size < size)
+	REGION_LEAVE(_region, ERROR_KO);
 
-      *address = region->start;
+      *address = _region->start;
 
-      REGION_LEAVE(region, ERROR_NONE);
+      REGION_LEAVE(_region, ERROR_OK);
     }
 
-  if (set_object(as->regions, i, (void**)&head) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_object(as->regions, i, (void**)&head) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if ((head->address - region->start) >= size)
+  if ((head->address - _region->start) >= size)
     {
-      *address = region->start;
+      *address = _region->start;
 
-      REGION_LEAVE(region, ERROR_NONE);
+      REGION_LEAVE(_region, ERROR_OK);
     }
 
   /*
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, as->regions, &i, state)
+  set_foreach(SET_OPTION_FORWARD, as->regions, &i, state)
     {
       o_region*		next;
       t_iterator	j;
 
       if (set_object(as->regions, i, (void**)&current) !=
-	  ERROR_NONE)
+	  ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "region: cannot find the region object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "region: cannot find the region object "
+		      "corresponding to its identifier\n");
 
-	  REGION_LEAVE(region, ERROR_UNKNOWN);
+	  REGION_LEAVE(_region, ERROR_KO);
 	}
 
-      if (set_next(as->regions, i, &j) != ERROR_NONE)
+      if (set_next(as->regions, i, &j) != ERROR_OK)
 	break;
 
-      if (set_object(as->regions, j, (void**)&next) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (set_object(as->regions, j, (void**)&next) != ERROR_OK)
+	REGION_LEAVE(_region, ERROR_KO);
 
       if ((next->address - (current->address + current->size)) >= size)
 	{
 	  *address = current->address + current->size;
 
-	  REGION_LEAVE(region, ERROR_NONE);
+	  REGION_LEAVE(_region, ERROR_OK);
 	}
     }
 
@@ -136,25 +137,25 @@ static t_error		region_first_fit(o_as*			as,
    * 4)
    */
 
-  if (set_tail(as->regions, &i) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_tail(as->regions, &i) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
-  if (set_object(as->regions, i, (void**)&tail) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (set_object(as->regions, i, (void**)&tail) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (((region->start + region->size) -
+  if (((_region->start + _region->size) -
        (tail->address + tail->size)) >= size)
     {
       *address = tail->address + tail->size;
 
-      REGION_LEAVE(region, ERROR_NONE);
+      REGION_LEAVE(_region, ERROR_OK);
     }
 
-  REGION_LEAVE(region, ERROR_UNKNOWN);
+  REGION_LEAVE(_region, ERROR_KO);
 }
 
 /*
@@ -167,23 +168,23 @@ t_error			region_space(i_as		asid,
 {
   o_as*			as;
 
-  REGION_ENTER(region);
+  REGION_ENTER(_region);
 
   assert(size != 0);
   assert(address != NULL);
 
-  if (as_get(asid, &as) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (as_get(asid, &as) != ERROR_OK)
+    REGION_LEAVE(_region, ERROR_KO);
 
   switch (REGION_FIT)
     {
       case FIT_FIRST:
 	{
-	  REGION_LEAVE(region, region_first_fit(as, size, address));
+	  REGION_LEAVE(_region, region_first_fit(as, size, address));
 	  break;
 	}
       default:
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+	REGION_LEAVE(_region, ERROR_KO);
     }
 }
 

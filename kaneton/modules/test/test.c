@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/modules/test/test.c
+ * file          /home/mycure/kaneton.NEW/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [mon may 17 12:23:40 2010]
+ * updated       julien quintard   [tue nov 23 10:34:01 2010]
  */
 
 /*
@@ -46,7 +46,7 @@ extern s_test_function	test_functions[];
  * the module structure.
  */
 
-m_test			test;
+m_test			_test;
 
 /*
  * the test commands.
@@ -116,7 +116,7 @@ t_error			test_send(t_uint8			type,
   ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&crc, sizeof(t_uint32));
   ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)message, length);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -136,7 +136,7 @@ t_error			test_receive(t_uint8*			type,
     {
       module_call(console, console_message, '!', "wrong magic\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)type, sizeof(t_uint8));
@@ -149,10 +149,10 @@ t_error			test_receive(t_uint8*			type,
     {
       module_call(console, console_message, '!', "wrong CRC\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -171,19 +171,19 @@ t_error			test_issue(char*			command)
 
 t_error			test_flush(void)
 {
-  t_uint32		size = test.size;
+  t_uint32		size = _test.size;
 
-  if (test.size == 0)
-    return (ERROR_NONE);
+  if (_test.size == 0)
+    return (ERROR_OK);
 
-  test.size = 0;
+  _test.size = 0;
 
-  if (test_send(TEST_TYPE_TEXT, test.buffer, size) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (test_send(TEST_TYPE_TEXT, _test.buffer, size) != ERROR_OK)
+    return (ERROR_KO);
 
-  memset(test.buffer, 0x0, sizeof(test.buffer));
+  memset(_test.buffer, 0x0, sizeof(_test.buffer));
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -197,9 +197,9 @@ t_error			test_flush(void)
 
 int			test_write(char				c)
 {
-  test.buffer[test.size++] = c;
+  _test.buffer[_test.size++] = c;
 
-  if ((test.size >= (sizeof(test.buffer) - 1)) ||
+  if ((_test.size >= (sizeof(_test.buffer) - 1)) ||
       (c == '\n'))
     test_flush();
 
@@ -295,7 +295,7 @@ t_error			test_run(void)
 
       memset(message, 0x0, sizeof(message));
 
-      if (test_receive(&type, message) != ERROR_NONE)
+      if (test_receive(&type, message) != ERROR_OK)
 	continue;
 
       if (type != TEST_TYPE_COMMAND)
@@ -311,7 +311,7 @@ t_error			test_run(void)
 	}
     }
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /* XXX

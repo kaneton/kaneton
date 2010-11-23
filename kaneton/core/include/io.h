@@ -88,7 +88,7 @@ typedef struct
 #define IO_CHECK(_io_)							\
   {									\
     if ((_io_) == NULL)							\
-      return (ERROR_UNKNOWN);						\
+      return (ERROR_KO);						\
   }
 
 /*

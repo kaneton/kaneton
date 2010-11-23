@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kan...ootloader/ibm-pc.ia32/optimised/Makefile
+# file          /home/mycure/XYZ/...ot/loader/ibm-pc.ia32/optimised/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       matthieu bucchianeri   [mon dec 24 18:11:11 2007]
+# updated       julien quintard   [tue nov 23 20:27:38 2010]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		bootloader
+component		:=		loader
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,9 +33,9 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-BOOTLOADER		:=		bootloader
+LOADER		:=		loader
 
-BOOTLOADER_C		:=		apic.c				\
+LOADER_C		:=		apic.c				\
 					bootloader.c			\
 					cons.c				\
 					init.c				\
@@ -46,50 +46,53 @@ BOOTLOADER_C		:=		apic.c				\
 					libia32.c			\
 					libc.c
 
-BOOTLOADER_S		:=		multiboot.S			\
+LOADER_S		:=		multiboot.S			\
 					entry.S
 
-BOOTLOADER_ASM		:=		ap-boot.asm
+LOADER_ASM		:=		ap-boot.asm
 
-BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
-					$(BOOTLOADER_S:.S=.o)		\
-					$(BOOTLOADER_ASM:.asm=.o)
+LOADER_O		:=		$(LOADER_C:.c=.o)		\
+					$(LOADER_S:.S=.o)		\
+					$(LOADER_ASM:.asm=.o)
 
-BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h \
-					$(_BOOTLOADER_DIR_)/cons.h	\
-					$(_BOOTLOADER_DIR_)/libia32.h	\
-					$(_BOOTLOADER_DIR_)/libc.h
+LOADER_INCLUDE	:=		$(_LOADER_DIR_)/bootloader.h \
+					$(_LOADER_DIR_)/cons.h	\
+					$(_LOADER_DIR_)/libia32.h	\
+					$(_LOADER_DIR_)/libc.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(BOOTLOADER)
+main:			$(LOADER)
 
-$(BOOTLOADER):		$(BOOTLOADER_O)
-	$(call env_executable,$(_BOOTLOADER_),				\
-			      $(BOOTLOADER_O),				\
-			      $(_BOOTLOADER_DIR_)/layout/bootloader.lyt,\
+$(LOADER):		$(LOADER_O)
+	$(call env_executable,$(_LOADER_),				\
+			      $(LOADER_O),				\
+			      $(_LOADER_DIR_)/layout/bootloader.lyt,\
 			      $(ENV_OPTION_NO_STANDARD))
 
 clear:
-	$(call env_remove,$(BOOTLOADER_O),)
+	$(call env_remove,$(LOADER_O),)
 
-	$(call env_remove,$(BOOTLOADER),)
+	$(call env_remove,$(LOADER),)
 
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,$(BOOTLOADER_INCLUDE),)
+	$(call env_prototypes,$(LOADER_INCLUDE),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(BOOTLOADER_C),)
+	$(call env_headers,$(LOADER_C),)
 
 dependencies:
-	$(call env_launch,Makefile,.,$(BOOTLOADER),)
+	$(call env_launch,Makefile,.,$(LOADER),)
+
+%.o:	%.asm
+	nasm -f elf $< -o $@
 
 endif
 #

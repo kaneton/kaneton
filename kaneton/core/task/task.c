@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton.NEW/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [mon may  4 21:21:54 2009]
+ * updated       julien quintard   [tue nov 23 14:47:45 2010]
  */
 
 /*
@@ -32,28 +32,34 @@
 machine_include(task);
 
 /*
- * ---------- extern ----------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
+
+/*
+ * the kernel manager.
+ */
+
+extern m_kernel*	_kernel;
 
 /*
  * the init variable, filled by the bootloader, containing in this case
  * the list of segments to mark used.
  */
 
-extern t_init*		init;
+extern t_init*		_init;
 
 /*
  * the scheduler manager.
  */
 
-extern m_scheduler*	scheduler;
+extern m_scheduler*	_scheduler;
 
 /*
  * the identifier of the pre-reserved segment containing the system service
  * code.
  */
 
-extern i_segment	system;
+extern i_segment	_system;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -63,13 +69,7 @@ extern i_segment	system;
  * the task manager variable.
  */
 
-m_task*			task = NULL;
-
-/*
- * the kernel task.
- */
-
-i_task			ktask = ID_UNUSED;
+m_task*			_task = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -84,26 +84,26 @@ t_error			task_current(i_task*			tsk)
   i_thread		current;
   o_thread*		o;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   assert(tsk != NULL);
 
-  if (!scheduler)
+  if (_scheduler == NULL)
     {
-      *tsk = ktask;
+      *tsk = _kernel->task;
 
-      TASK_LEAVE(task, ERROR_NONE);
+      TASK_LEAVE(_task, ERROR_OK);
     }
 
-  if (scheduler_current(&current) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (scheduler_current(&current) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  if (thread_get(current, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (thread_get(current, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  *tsk = o->taskid;
+  *tsk = o->task;
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -115,30 +115,35 @@ t_error			task_show(i_task			id)
   o_task*		o;
   char*			state;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
-  if (task_get(id, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_get(id, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  switch (o->sched)
+  switch (o->state)
     {
-      case SCHEDULER_STATE_STOP:
+      case TASK_STATE_STOP:
 	state = "stopped";
 	break;
-      case SCHEDULER_STATE_RUN:
+      case TASK_STATE_RUN:
 	state = "running";
 	break;
-      default:
-	state = "other";
+      case TASK_STATE_ZOMBIE:
+	state = "zombie";
+	break;
+      case TASK_STATE_BLOCK:
+	state = "blocked";
 	break;
     }
 
-  module_call(console, console_message, '#', "  task %qd: %s on cpu %qd\n", id, state, o->cpuid);
+  module_call(console, console_message,
+	      '#', "  task %qu on cpu %qd is %s\n",
+	      id, o->cpu, state);
 
-  if (machine_call(task, task_show, id) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (machine_call(task, task_show, id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -157,31 +162,32 @@ t_error			task_dump(void)
   t_setsz		size;
   t_iterator		i;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   /*
    * 1)
    */
 
-  if (set_size(task->tasks, &size) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (set_size(_task->tasks, &size) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "dumping %qu task(s):\n", size);
+  module_call(console, console_message,
+	      '#', "dumping %qu task(s):\n", size);
 
-  set_foreach(SET_OPT_FORWARD, task->tasks, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _task->tasks, &i, state)
     {
-      if (set_object(task->tasks, i, (void**)&data) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (set_object(_task->tasks, i, (void**)&data) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
 
-      if (task_show(data->tskid) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (task_show(data->id) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
     }
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -209,7 +215,7 @@ t_error			task_clone(i_task			old,
   o_task*		to;
   t_iterator		i;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   assert(new != NULL);
 
@@ -217,52 +223,56 @@ t_error			task_clone(i_task			old,
    * 1)
    */
 
-  if (task_get(old, &from) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_get(old, &from) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (task_reserve(from->class, from->behav, from->prior, new) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_reserve(from->class,
+		   from->behaviour,
+		   from->priority,
+		   new) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (task_get(*new, &to) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_get(*new, &to) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (from->asid != ID_UNUSED)
+  if (from->as != ID_UNUSED)
     {
-      if (as_clone(to->tskid, from->asid, &to->asid) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (as_clone(to->id, from->as, &to->as) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
    * 5)
    */
 
-  set_foreach(SET_OPT_FORWARD, from->threads, &i, state)
+  set_foreach(SET_OPTION_FORWARD, from->threads, &i, state)
     {
       i_thread		needless;
       i_thread*		data;
 
-      if (set_object(from->threads, i, (void**)&data) != ERROR_NONE)
+      if (set_object(from->threads, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "task: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "task: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	  TASK_LEAVE(_task, ERROR_KO);
 	}
 
-      if (thread_clone(to->tskid, *data, &needless) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (thread_clone(to->id, *data, &needless) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
@@ -275,16 +285,16 @@ t_error			task_clone(i_task			old,
    * 7)
    */
 
-  to->sched = from->sched;
+  to->state = from->state;
 
   /*
    * 8)
    */
 
-  if (machine_call(task, task_clone, old, new) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (machine_call(task, task_clone, old, new) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -306,14 +316,14 @@ t_error			task_clone(i_task			old,
  */
 
 t_error			task_reserve(t_class			class,
-				     t_behav			behav,
-				     t_prior			prior,
+				     t_behaviour		behav,
+				     t_priority			prior,
 				     i_task*			id)
 {
   o_task		o;
   o_task*		parent;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   assert(id != NULL);
 
@@ -325,39 +335,44 @@ t_error			task_reserve(t_class			class,
       (class != TASK_CLASS_DRIVER) &&
       (class != TASK_CLASS_SERVICE) &&
       (class != TASK_CLASS_GUEST))
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+    TASK_LEAVE(_task, ERROR_KO);
 
-  if ((behav != TASK_BEHAV_KERNEL) &&
-      (behav != TASK_BEHAV_REALTIME) &&
-      (behav != TASK_BEHAV_INTERACTIVE) &&
-      (behav != TASK_BEHAV_TIMESHARING) &&
-      (behav != TASK_BEHAV_BACKGROUND))
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if ((behav != TASK_BEHAVIOUR_KERNEL) &&
+      (behav != TASK_BEHAVIOUR_REALTIME) &&
+      (behav != TASK_BEHAVIOUR_INTERACTIVE) &&
+      (behav != TASK_BEHAVIOUR_TIMESHARING) &&
+      (behav != TASK_BEHAVIOUR_BACKGROUND))
+    TASK_LEAVE(_task, ERROR_KO);
 
   switch (behav)
     {
-      case TASK_BEHAV_KERNEL:
-	if (prior < TASK_LPRIOR_KERNEL || prior > TASK_HPRIOR_KERNEL)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_KERNEL:
+	if (prior < TASK_LPRIORITY_KERNEL ||
+	    prior > TASK_HPRIORITY_KERNEL)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
-      case TASK_BEHAV_REALTIME:
-	if (prior < TASK_LPRIOR_REALTIME || prior > TASK_HPRIOR_REALTIME)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_REALTIME:
+	if (prior < TASK_LPRIORITY_REALTIME ||
+	    prior > TASK_HPRIORITY_REALTIME)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
-      case TASK_BEHAV_INTERACTIVE:
-	if (prior < TASK_LPRIOR_INTERACTIVE || prior > TASK_HPRIOR_INTERACTIVE)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_INTERACTIVE:
+	if (prior < TASK_LPRIORITY_INTERACTIVE ||
+	    prior > TASK_HPRIORITY_INTERACTIVE)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
-      case TASK_BEHAV_TIMESHARING:
-	if (prior < TASK_LPRIOR_TIMESHARING || prior > TASK_HPRIOR_TIMESHARING)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_TIMESHARING:
+	if (prior < TASK_LPRIORITY_TIMESHARING ||
+	    prior > TASK_HPRIORITY_TIMESHARING)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
-      case TASK_BEHAV_BACKGROUND:
-	if (prior < TASK_LPRIOR_BACKGROUND || prior > TASK_HPRIOR_BACKGROUND)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_BACKGROUND:
+	if (prior < TASK_LPRIORITY_BACKGROUND ||
+	    prior > TASK_HPRIORITY_BACKGROUND)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
       default:
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+	TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
@@ -367,121 +382,125 @@ t_error			task_reserve(t_class			class,
   memset(&o, 0x0, sizeof(o_task));
 
   o.class = class;
-  o.behav = behav;
-  o.prior = prior;
+  o.behaviour = behav;
+  o.priority = prior;
 
-  o.asid = ID_UNUSED;
+  o.as = ID_UNUSED;
   o.threads = ID_UNUSED;
   o.waits = ID_UNUSED;
 
-  if (ktask != ID_UNUSED)
+  if (_kernel->task != ID_UNUSED)
     {
-      if (cpu_select(&o.cpuid) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (cpu_select(&o.cpu) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
     }
   else
-    o.cpuid = init->bsp;
+    o.cpu = _init->bsp;
 
-  o.sched = SCHEDULER_STATE_STOP;
+  o.state = TASK_STATE_STOP;
 
   /*
    * 3)
    */
 
-  if (id_reserve(&task->id, &o.tskid) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (id_reserve(&_task->id, &o.id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (ktask != ID_UNUSED)
+  if (_kernel->task != ID_UNUSED)
     {
-      if (task_current(&o.parent) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (task_current(&o.parent) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
 
-      if (task_get(o.parent, &parent) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (task_get(o.parent, &parent) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
 
-      if (set_add(parent->children, &o) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (set_add(parent->children, &o) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
     }
   else
     o.parent = ID_UNUSED;
 
-  *id = o.tskid;
+  *id = o.id;
 
   /*
    * 5)
    */
 
-  if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, TASK_THREADS_INITSZ,
-		  sizeof (i_thread), &o.threads) != ERROR_NONE)
+  if (set_reserve(array,
+		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  TASK_THREADS_INITSZ,
+		  sizeof (i_thread),
+		  &o.threads) != ERROR_OK)
     {
-      id_release(&task->id, o.tskid);
+      id_release(&_task->id, o.id);
 
-      TASK_LEAVE(task, ERROR_UNKNOWN);
+      TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
    * 6)
    */
 
-  if (set_reserve(array, SET_OPT_ALLOC, TASK_WAITS_INITSZ,
-		  sizeof (o_waitfor), &o.waits) != ERROR_NONE)
+  if (set_reserve(array, SET_OPTION_ALLOC, TASK_WAITS_INITSZ,
+		  sizeof (o_wait), &o.waits) != ERROR_OK)
     {
-      id_release(&task->id, o.tskid);
+      id_release(&_task->id, o.id);
 
       set_release(o.threads);
 
-      TASK_LEAVE(task, ERROR_UNKNOWN);
+      TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
    * 7)
    */
 
-  if (set_reserve(ll, SET_OPT_SORT | SET_OPT_ALLOC,
-		  sizeof (i_task), &o.children) != ERROR_NONE)
+  if (set_reserve(ll, SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  sizeof (i_task), &o.children) != ERROR_OK)
     {
-      id_release(&task->id, o.tskid);
+      id_release(&_task->id, o.id);
 
       set_release(o.threads);
       set_release(o.waits);
 
-      TASK_LEAVE(task, ERROR_UNKNOWN);
+      TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
    * 8)
    */
 
-  if (set_reserve(bpt, SET_OPT_SORT | SET_OPT_ALLOC, sizeof (o_message_type),
-		  MESSAGE_BPT_NODESZ, &o.messages) != ERROR_NONE)
+  if (set_reserve(bpt, SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  sizeof (o_message_type),
+		  MESSAGE_BPT_NODESZ, &o.messages) != ERROR_OK)
   {
-      id_release(&task->id, o.tskid);
+      id_release(&_task->id, o.id);
 
       set_release(o.threads);
       set_release(o.waits);
       set_release(o.children);
 
-      TASK_LEAVE(task, ERROR_UNKNOWN);
+      TASK_LEAVE(_task, ERROR_KO);
   }
 
   /*
    * 9)
    */
 
-  if (set_add(task->tasks, &o) != ERROR_NONE)
+  if (set_add(_task->tasks, &o) != ERROR_OK)
     {
-      id_release(&task->id, o.tskid);
+      id_release(&_task->id, o.id);
 
       set_release(o.messages);
       set_release(o.threads);
       set_release(o.waits);
       set_release(o.children);
 
-      TASK_LEAVE(task, ERROR_UNKNOWN);
+      TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
@@ -489,63 +508,63 @@ t_error			task_reserve(t_class			class,
    */
 
   if (machine_call(task, task_reserve, class,
-		   behav, prior, id) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+		   behav, prior, id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 11)
    */
 
-  if (o.tskid != ktask)
+  if (o.id != _kernel->task)
     {
-      if (message_register(o.tskid, MESSAGE_TYPE_INTERFACE,
-			   sizeof (o_syscall)) != ERROR_NONE)
+      if (message_register(o.id, MESSAGE_TYPE_INTERFACE,
+			   sizeof (o_syscall)) != ERROR_OK)
 	{
-	  message_flush(o.tskid);
+	  message_flush(o.id);
 
-	  id_release(&task->id, o.tskid);
+	  id_release(&_task->id, o.id);
 
 	  set_release(o.messages);
 	  set_release(o.threads);
 	  set_release(o.waits);
 	  set_release(o.children);
 
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	  TASK_LEAVE(_task, ERROR_KO);
 	}
 
-      if (message_register(o.tskid, MESSAGE_TYPE_EVENT,
-			   sizeof (o_event_message)) != ERROR_NONE)
+      if (message_register(o.id, MESSAGE_TYPE_EVENT,
+			   sizeof (o_event_message)) != ERROR_OK)
 	{
-	  message_flush(o.tskid);
+	  message_flush(o.id);
 
-	  id_release(&task->id, o.tskid);
+	  id_release(&_task->id, o.id);
 
 	  set_release(o.messages);
 	  set_release(o.threads);
 	  set_release(o.waits);
 	  set_release(o.children);
 
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	  TASK_LEAVE(_task, ERROR_KO);
 	}
 
-      if (message_register(o.tskid, MESSAGE_TYPE_TIMER,
-			   sizeof (o_timer_message)) != ERROR_NONE)
+      if (message_register(o.id, MESSAGE_TYPE_TIMER,
+			   sizeof (o_timer_message)) != ERROR_OK)
 
 	{
-	  message_flush(o.tskid);
+	  message_flush(o.id);
 
-	  id_release(&task->id, o.tskid);
+	  id_release(&_task->id, o.id);
 
 	  set_release(o.messages);
 	  set_release(o.threads);
 	  set_release(o.waits);
 	  set_release(o.children);
 
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	  TASK_LEAVE(_task, ERROR_KO);
 	}
     }
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -566,74 +585,74 @@ t_error			task_release(i_task			id)
 {
   o_task*		o;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   /*
    * 1)
    */
 
-  if (machine_call(task, task_release, id) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (machine_call(task, task_release, id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (task_get(id, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_get(id, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (id_release(&task->id, o->tskid) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (id_release(&_task->id, o->id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (o->asid != ID_UNUSED && id != ktask)
+  if (o->as != ID_UNUSED && id != _kernel->task)
     {
-      if (as_release(o->asid) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (as_release(o->as) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
    * 5)
    */
 
-  if (thread_flush(id) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (thread_flush(id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  if (set_release(o->threads) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (set_release(o->threads) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 5)
    */
 
-  if (set_release(o->waits) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (set_release(o->waits) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 6)
    */
 
-  if (message_flush(id) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (message_flush(id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  if (set_release(o->messages) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (set_release(o->messages) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 7)
    */
 
-  if (set_remove(task->tasks, o->tskid) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (set_remove(_task->tasks, o->id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -649,85 +668,91 @@ t_error			task_release(i_task			id)
  */
 
 t_error			task_priority(i_task			id,
-				      t_prior			prior)
+				      t_priority		prior)
 {
   o_task*		o;
   t_iterator		i;
   t_state		state;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   /*
    * 1)
    */
 
-  if (task_get(id, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_get(id, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 2)
    */
 
-  switch (o->behav)
+  switch (o->behaviour)
     {
-      case TASK_BEHAV_KERNEL:
-	if (prior < TASK_LPRIOR_KERNEL || prior > TASK_HPRIOR_KERNEL)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_KERNEL:
+	if (prior < TASK_LPRIORITY_KERNEL ||
+	    prior > TASK_HPRIORITY_KERNEL)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
-      case TASK_BEHAV_REALTIME:
-	if (prior < TASK_LPRIOR_REALTIME || prior > TASK_HPRIOR_REALTIME)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_REALTIME:
+	if (prior < TASK_LPRIORITY_REALTIME ||
+	    prior > TASK_HPRIORITY_REALTIME)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
-      case TASK_BEHAV_INTERACTIVE:
-	if (prior < TASK_LPRIOR_INTERACTIVE || prior > TASK_HPRIOR_INTERACTIVE)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_INTERACTIVE:
+	if (prior < TASK_LPRIORITY_INTERACTIVE ||
+	    prior > TASK_HPRIORITY_INTERACTIVE)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
-      case TASK_BEHAV_TIMESHARING:
-	if (prior < TASK_LPRIOR_TIMESHARING || prior > TASK_HPRIOR_TIMESHARING)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_TIMESHARING:
+	if (prior < TASK_LPRIORITY_TIMESHARING ||
+	    prior > TASK_HPRIORITY_TIMESHARING)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
-      case TASK_BEHAV_BACKGROUND:
-	if (prior < TASK_LPRIOR_BACKGROUND || prior > TASK_HPRIOR_BACKGROUND)
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+      case TASK_BEHAVIOUR_BACKGROUND:
+	if (prior < TASK_LPRIORITY_BACKGROUND ||
+	    prior > TASK_HPRIORITY_BACKGROUND)
+	  TASK_LEAVE(_task, ERROR_KO);
 	break;
       default:
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+	TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  o->prior = prior;
+  o->priority = prior;
 
   /*
    * 4)
    */
 
-  if (machine_call(task, task_priority, id, prior) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (machine_call(task, task_priority, id, prior) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 5)
    */
 
-  set_foreach(SET_OPT_FORWARD, o->threads, &i, state)
+  set_foreach(SET_OPTION_FORWARD, o->threads, &i, state)
     {
       i_thread*		th;
 
-      if (set_object(o->threads, i, (void**)&th) != ERROR_NONE)
+      if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "task: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "task: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	  TASK_LEAVE(_task, ERROR_KO);
 	}
 
-      if (scheduler_update(*th) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (scheduler_update(*th) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
     }
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -743,71 +768,70 @@ t_error			task_priority(i_task			id,
  */
 
 t_error			task_state(i_task			id,
-				   t_state			sched)
+				   t_state			state)
 {
   o_task*		o;
   t_iterator		i;
-  t_state		state;
+  t_state		st;
   t_state		wakeup;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   /*
    *
    */
 
-  switch(sched)
+  switch (state)
     {
-      case SCHEDULER_STATE_RUN:
+      case TASK_STATE_RUN:
         wakeup = WAIT_START;
         break;
-      case SCHEDULER_STATE_STOP:
+      case TASK_STATE_STOP:
         wakeup = WAIT_STOP;
         break;
-      case SCHEDULER_STATE_ZOMBIE:
+      case TASK_STATE_ZOMBIE:
         wakeup = WAIT_DEATH;
         break;
-      case SCHEDULER_STATE_BLOCK:
+      case TASK_STATE_BLOCK:
 	wakeup = 0;
 	break;
       default:
-        TASK_LEAVE(task, ERROR_UNKNOWN);
+        TASK_LEAVE(_task, ERROR_KO);
     }
 
   /*
    * 1)
    */
 
-  if (task_get(id, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_get(id, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (o->sched == sched)
-    TASK_LEAVE(task, ERROR_NONE);
-
-  o->sched = sched;
+  if (o->state == state)
+    TASK_LEAVE(_task, ERROR_OK);
 
   /*
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, o->waits, &i, state)
+  set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
     {
-      o_waitfor*	w;
+      o_wait*		w;
 
-      if (set_object(o->waits, i, (void**)&w) != ERROR_NONE)
+      if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "task: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "task: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	  TASK_LEAVE(_task, ERROR_KO);
 	}
 
-      if (w->opts & wakeup)
-	task_state(w->u.task, SCHEDULER_STATE_RUN);
+      if (w->options & wakeup)
+	task_state(w->u.task, TASK_STATE_RUN);
 
       /* XXX remove */
     }
@@ -816,31 +840,42 @@ t_error			task_state(i_task			id,
    * 4)
    */
 
-  if (machine_call(task, task_state, id, sched) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (machine_call(task, task_state, id, state) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
   /*
    * 5)
    */
 
-  set_foreach(SET_OPT_FORWARD, o->threads, &i, state)
+  set_foreach(SET_OPTION_FORWARD, o->threads, &i, st)
     {
       i_thread*		th;
 
-      if (set_object(o->threads, i, (void**)&th) != ERROR_NONE)
+      if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "task: cannot find the object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "task: cannot find the object "
+		      "corresponding to its identifier\n");
 
-	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	  TASK_LEAVE(_task, ERROR_KO);
 	}
 
-      if (sched != SCHEDULER_STATE_BLOCK &&
-	  thread_state(*th, sched) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      // XXX remove toutes les threads qui run si on stoppe la task
+      // XXX meme chose si on la run, il faut ajouter les threads qui sont
+      //     en run
+
+      if (state != TASK_STATE_BLOCK &&
+	  thread_state(*th, state) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
     }
 
-  TASK_LEAVE(task, ERROR_NONE);
+  /*
+   * XXX
+   */
+
+  o->state = state;
+
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -848,13 +883,13 @@ t_error			task_state(i_task			id,
  */
 
 t_error			task_wait(i_task			id,
-				  t_opts			opts,
+				  t_options			opts,
 				  t_wait*			wait)
 {
   o_task*		o;
-  o_waitfor		w;
+  o_wait		w;
 
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   assert(wait != NULL);
 
@@ -870,21 +905,21 @@ t_error			task_wait(i_task			id,
        * a)
        */
 
-      if (task_get(id, &o) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
+      if (task_get(id, &o) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
 
       /*
        * b)
        */
 
-      if ((opts & WAIT_START) && o->sched == SCHEDULER_STATE_RUN)
-	TASK_LEAVE(task, ERROR_NONE);
+      if ((opts & WAIT_START) && o->state == TASK_STATE_RUN)
+	TASK_LEAVE(_task, ERROR_OK);
 
-      if ((opts & WAIT_STOP) && o->sched == SCHEDULER_STATE_STOP)
-	TASK_LEAVE(task, ERROR_NONE);
+      if ((opts & WAIT_STOP) && o->state == TASK_STATE_STOP)
+	TASK_LEAVE(_task, ERROR_OK);
 
-      if ((opts & WAIT_DEATH) && o->sched == SCHEDULER_STATE_ZOMBIE)
-	TASK_LEAVE(task, ERROR_NONE);
+      if ((opts & WAIT_DEATH) && o->state == TASK_STATE_ZOMBIE)
+	TASK_LEAVE(_task, ERROR_OK);
 
       /*
        * c)
@@ -896,20 +931,20 @@ t_error			task_wait(i_task			id,
 	   * d)
 	   */
 
-	  if (task_current(&w.u.task) != ERROR_NONE)
-	    TASK_LEAVE(task, ERROR_UNKNOWN);;
+	  if (task_current(&w.u.task) != ERROR_OK)
+	    TASK_LEAVE(_task, ERROR_KO);;
 
-	  w.opts = opts;
+	  w.options = opts;
 
-	  if (set_add(o->waits, &w) != ERROR_NONE)
-	    TASK_LEAVE(task, ERROR_UNKNOWN);
+	  if (set_add(o->waits, &w) != ERROR_OK)
+	    TASK_LEAVE(_task, ERROR_KO);
 
 	  /*
 	   * e)
 	   */
 
-	  if (task_state(w.u.task, SCHEDULER_STATE_STOP) != ERROR_NONE)
-	    TASK_LEAVE(task, ERROR_UNKNOWN);
+	  if (task_state(w.u.task, TASK_STATE_STOP) != ERROR_OK)
+	    TASK_LEAVE(_task, ERROR_KO);
 	}
     }
   else
@@ -934,10 +969,10 @@ t_error			task_wait(i_task			id,
    * XXX ou mettre ca !?
    */
 
-  if (machine_call(task, task_wait, id, opts, wait) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (machine_call(task, task_wait, id, opts, wait) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  TASK_LEAVE(task, ERROR_UNKNOWN);
+  TASK_LEAVE(_task, ERROR_KO);
 }
 
 /*
@@ -947,14 +982,14 @@ t_error			task_wait(i_task			id,
 t_error			task_get(i_task				id,
 				 o_task**			o)
 {
-  TASK_ENTER(task);
+  TASK_ENTER(_task);
 
   assert(o != NULL);
 
-  if (set_get(task->tasks, id, (void**)o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (set_get(_task->tasks, id, (void**)o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(_task, ERROR_OK);
 }
 
 /*
@@ -983,116 +1018,130 @@ t_error			task_initialize(void)
   i_region		useless;
   o_segment*		segment;
   o_region*		region;
-  i_as			asid;
   t_uint32		i;
 
   /*
    * 1)
    */
 
-  if ((task = malloc(sizeof(m_task))) == NULL)
+  if ((_task = malloc(sizeof(m_task))) == NULL)
     {
-      module_call(console, console_message, '!', "task: cannot allocate memory for the task manager "
-	       "structure\n");
+      module_call(console, console_message,
+		  '!', "task: cannot allocate memory for the task manager "
+		  "structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(task, 0x0, sizeof(m_task));
+  memset(_task, 0x0, sizeof(m_task));
 
   /*
    * 2)
    */
 
-  if (id_build(&task->id) != ERROR_NONE)
+  if (id_build(&_task->id) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "task: unable to initialize the identifier object\n");
+      module_call(console, console_message,
+		  '!', "task: unable to initialize the identifier object\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-		  sizeof(o_task), &task->tasks) != ERROR_NONE)
+  if (set_reserve(ll, SET_OPTION_ALLOC | SET_OPTION_SORT,
+		  sizeof(o_task), &_task->tasks) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "task: unable to reserve the task set\n");
+      module_call(console, console_message,
+		  '!', "task: unable to reserve the task set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  if (task_reserve(TASK_CLASS_KERNEL, TASK_BEHAV_KERNEL,
-		   TASK_PRIOR_KERNEL, &ktask) != ERROR_NONE)
+  if (task_reserve(TASK_CLASS_KERNEL, TASK_BEHAVIOUR_KERNEL,
+		   TASK_PRIORITY_KERNEL, &_kernel->task) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "task: unable to reserve the kernel task\n");
+      module_call(console, console_message,
+		  '!', "task: unable to reserve the kernel task\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  if (as_reserve(ktask, &asid) != ERROR_NONE)
+  if (as_reserve(_kernel->task, &_kernel->as) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "task: unable to reserve the kernel address space\n");
+      module_call(console, console_message,
+		  '!', "task: unable to reserve the kernel address space\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
+    }
+
+  if (task_state(_kernel->task, TASK_STATE_RUN) != ERROR_OK)
+    {
+      module_call(console, console_message,
+		  '!', "task: unable to set the task as running\n");
+
+      return (ERROR_KO);
     }
 
   /*
    * 5)
    */
 
-  for (i = 0; i < init->nsegments; i++)
+  for (i = 0; i < _init->nsegments; i++)
     {
       if ((segment = malloc(sizeof(o_segment))) == NULL)
-	return (ERROR_UNKNOWN);
+	return (ERROR_KO);
 
       segment->type = SEGMENT_TYPE_MEMORY;
-      segment->address = init->segments[i].address;
-      segment->size = init->segments[i].size;
-      segment->perms = init->segments[i].perms;
+      segment->address = _init->segments[i].address;
+      segment->size = _init->segments[i].size;
+      segment->permissions = _init->segments[i].permissions;
 
       assert(segment->size != 0);
 
-      if (segment_inject(asid, segment, &segments[i]) != ERROR_NONE)
+      if (segment_inject(_kernel->as, segment, &segments[i]) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "segment: cannot add a pre-reserved segment in "
-		   "the segment set\n");
+	  module_call(console, console_message,
+		      '!', "segment: cannot add a pre-reserved segment in "
+		      "the segment set\n");
 
-	  return (ERROR_UNKNOWN);
+	  return (ERROR_KO);
 	}
 
-      if (init->scode == init->segments[i].address)
-	system = segments[i];
+      if (_init->scode == _init->segments[i].address)
+	_system = segments[i];
     }
 
   /*
    * 6)
    */
 
-  for (i = 0; i < init->nregions; i++)
+  for (i = 0; i < _init->nregions; i++)
     {
       if ((region = malloc(sizeof(o_region))) == NULL)
-	return (ERROR_UNKNOWN);
+	return (ERROR_KO);
 
-      region->segid = segments[init->regions[i].segment];
-      region->address = init->regions[i].address;
-      region->offset = init->regions[i].offset;
-      region->size = init->regions[i].size;
-      region->opts = init->regions[i].opts;
+      region->segment = segments[_init->regions[i].segment];
+      region->address = _init->regions[i].address;
+      region->offset = _init->regions[i].offset;
+      region->size = _init->regions[i].size;
+      region->options = _init->regions[i].options;
 
       assert(region->size != 0);
 
-      if (region_inject(asid, region, &useless) != ERROR_NONE)
+      if (region_inject(_kernel->as, region, &useless) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "region: cannot map a region to a pre-reserved "
-		   "region\n");
+	  module_call(console, console_message,
+		      '!', "region: cannot map a region to a pre-reserved "
+		      "region\n");
 
-	  return (ERROR_UNKNOWN);
+	  return (ERROR_KO);
 	}
     }
 
@@ -1100,10 +1149,10 @@ t_error			task_initialize(void)
    * 7)
    */
 
-  if (machine_call(task, task_initialize) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(task, task_initialize) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -1126,50 +1175,53 @@ t_error			task_clean(void)
    * 1)
    */
 
-  if (machine_call(task, task_clean) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(task, task_clean) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 2)
    */
 
-  while (set_head(task->tasks, &i) == ERROR_NONE)
+  while (set_head(_task->tasks, &i) == ERROR_OK)
     {
-      if (set_object(task->tasks, i, (void**)&data) != ERROR_NONE)
+      if (set_object(_task->tasks, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "task: cannot find the task object "
-		   "corresponding to its identifier\n");
+	  module_call(console, console_message,
+		      '!', "task: cannot find the task object "
+		      "corresponding to its identifier\n");
 
-	  return (ERROR_UNKNOWN);
+	  return (ERROR_KO);
 	}
 
-      if (task_release(*data) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (task_release(*data) != ERROR_OK)
+	return (ERROR_KO);
     }
 
-  if (set_release(task->tasks) != ERROR_NONE)
+  if (set_release(_task->tasks) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "task: unable to release the task set\n");
+      module_call(console, console_message,
+		  '!', "task: unable to release the task set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (id_destroy(&task->id) != ERROR_NONE)
+  if (id_destroy(&_task->id) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "task: unable to destroy the identifier object\n");
+      module_call(console, console_message,
+		  '!', "task: unable to destroy the identifier object\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  free(task);
+  free(_task);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

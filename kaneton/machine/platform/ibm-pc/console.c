@@ -35,7 +35,7 @@
  * the console variable.
  */
 
-t_ibmpc_console		ibmpc_console;
+t_ibmpc_console		_ibmpc_console;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -51,12 +51,12 @@ void			ibmpc_console_clear(void)
 
   for (i = 0; i < IBMPC_CONSOLE_SIZE; i++)
     {
-      ibmpc_console.vga[i + 0] = 0;
-      ibmpc_console.vga[i + 1] = ibmpc_console.attribute;
+      _ibmpc_console.vga[i + 0] = 0;
+      _ibmpc_console.vga[i + 1] = _ibmpc_console.attribute;
     }
 
-  ibmpc_console.line = 0;
-  ibmpc_console.column = 0;
+  _ibmpc_console.line = 0;
+  _ibmpc_console.column = 0;
 }
 
 /*
@@ -71,19 +71,19 @@ void			ibmpc_console_scroll(t_uint16		lines)
   for (src = lines * IBMPC_CONSOLE_COLUMNS * IBMPC_CONSOLE_BPC, dst = 0;
        src < IBMPC_CONSOLE_SIZE;
        src++, dst++)
-    ibmpc_console.vga[dst] = ibmpc_console.vga[src];
+    _ibmpc_console.vga[dst] = _ibmpc_console.vga[src];
 
   for (src = (IBMPC_CONSOLE_LINES - lines) *
 	 IBMPC_CONSOLE_COLUMNS * IBMPC_CONSOLE_BPC;
        src < IBMPC_CONSOLE_SIZE;
        src += 2)
     {
-      ibmpc_console.vga[src + 0] = 0;
-      ibmpc_console.vga[src + 1] = ibmpc_console.attribute;
+      _ibmpc_console.vga[src + 0] = 0;
+      _ibmpc_console.vga[src + 1] = _ibmpc_console.attribute;
     }
 
-  ibmpc_console.line -= lines;
-  ibmpc_console.column = 0;
+  _ibmpc_console.line -= lines;
+  _ibmpc_console.column = 0;
 }
 
 /*
@@ -93,7 +93,7 @@ void			ibmpc_console_scroll(t_uint16		lines)
 
 void			ibmpc_console_attribute(t_uint8		attribute)
 {
-  ibmpc_console.attribute = attribute;
+  _ibmpc_console.attribute = attribute;
 }
 
 /*
@@ -105,47 +105,51 @@ int			ibmpc_console_print_char(char		c)
 {
   t_uint16		pos;
 
-  if (ibmpc_console.line >= IBMPC_CONSOLE_LINES)
+#ifdef MODULE_test
+  module_call(test, test_write, c);
+#else
+  if (_ibmpc_console.line >= IBMPC_CONSOLE_LINES)
     ibmpc_console_scroll(1);
   if (c == '\n')
     {
-      ibmpc_console.line++;
-      ibmpc_console.column = 0;
+      _ibmpc_console.line++;
+      _ibmpc_console.column = 0;
 
       return (1);
     }
 
   if (c == '\r')
     {
-      ibmpc_console.column = 0;
+      _ibmpc_console.column = 0;
 
       return (1);
     }
 
   if (c == '\t')
     {
-      ibmpc_console.column += 8;
-      if (ibmpc_console.column & 0x7)
-	ibmpc_console.column = ibmpc_console.column & ~0x7;
+      _ibmpc_console.column += 8;
+      if (_ibmpc_console.column & 0x7)
+	_ibmpc_console.column = _ibmpc_console.column & ~0x7;
 
       return (1);
     }
 
-  if (ibmpc_console.column >= IBMPC_CONSOLE_COLUMNS)
+  if (_ibmpc_console.column >= IBMPC_CONSOLE_COLUMNS)
     {
-      ibmpc_console.column = 0;
-      ++ibmpc_console.line;
-      if (ibmpc_console.line >= IBMPC_CONSOLE_LINES)
+      _ibmpc_console.column = 0;
+      ++_ibmpc_console.line;
+      if (_ibmpc_console.line >= IBMPC_CONSOLE_LINES)
 	ibmpc_console_scroll(1);
     }
 
-  pos = ibmpc_console.line * IBMPC_CONSOLE_COLUMNS * IBMPC_CONSOLE_BPC +
-    ibmpc_console.column * IBMPC_CONSOLE_BPC;
+  pos = _ibmpc_console.line * IBMPC_CONSOLE_COLUMNS * IBMPC_CONSOLE_BPC +
+    _ibmpc_console.column * IBMPC_CONSOLE_BPC;
 
-  ibmpc_console.vga[pos] = c;
-  ibmpc_console.vga[pos + 1] = ibmpc_console.attribute;
+  _ibmpc_console.vga[pos] = c;
+  _ibmpc_console.vga[pos + 1] = _ibmpc_console.attribute;
 
-  ibmpc_console.column++;
+  _ibmpc_console.column++;
+#endif
 
   return (1);
 }
@@ -174,35 +178,35 @@ void			ibmpc_console_message(char		indicator,
 					      char*		fmt,
 					      va_list		args)
 {
-  t_uint8		attribute = ibmpc_console.attribute;
+  t_uint8		attribute = _ibmpc_console.attribute;
 
-  ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_BLUE) |
+  _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_BLUE) |
     IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
   printf("[");
 
   switch (indicator)
     {
     case '+':
-      ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_GREEN) |
+      _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_GREEN) |
 	IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
       break;
     case '#':
-      ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_MAGENTA) |
+      _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_MAGENTA) |
 	IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
       break;
     case '!':
-      ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_RED) |
+      _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_RED) |
 	IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
       break;
     }
 
   printf("%c", indicator);
 
-  ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_BLUE) |
+  _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_BLUE) |
     IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
   printf("] ");
 
-  ibmpc_console.attribute = attribute;
+  _ibmpc_console.attribute = attribute;
 
   vprintf(fmt, args);
 }
@@ -216,15 +220,15 @@ void			ibmpc_console_message(char		indicator,
 
 t_error			ibmpc_console_initialize(void)
 {
-  ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_WHITE) |
+  _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_WHITE) |
     IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
-  ibmpc_console.vga = (char*)IBMPC_CONSOLE_ADDR;
+  _ibmpc_console.vga = (char*)IBMPC_CONSOLE_ADDR;
 
   ibmpc_console_clear();
 
   printf_init(ibmpc_console_print_char, ibmpc_console_attribute);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -235,5 +239,5 @@ t_error			ibmpc_console_initialize(void)
 
 t_error			ibmpc_console_clean(void)
 {
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/types.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/types.h
  *
  * created       julien quintard   [wed jun  6 22:38:37 2007]
- * updated       matthieu bucchianeri   [mon jul 23 11:45:26 2007]
+ * updated       julien quintard   [mon nov 22 11:50:26 2010]
  */
 
 #ifndef CORE_TYPES_H
@@ -55,14 +55,15 @@ typedef struct
  * special types
  */
 
-typedef t_uint32		t_opts;
-typedef t_uint32		t_perms;
+typedef t_uint8			t_boolean;
+typedef t_uint32		t_options;
+typedef t_uint32		t_permissions;
 typedef t_uint32		t_type;
 typedef t_uint32		t_state;
 typedef t_uint32		t_status;
 typedef t_uint32		t_class;
-typedef t_uint32		t_behav;
-typedef t_uint32		t_prior;
+typedef t_uint32		t_behaviour;
+typedef t_uint32		t_priority;
 typedef t_uint32		t_quantum;
 typedef t_uint32		t_operations;
 typedef t_uint32		t_timeslice;

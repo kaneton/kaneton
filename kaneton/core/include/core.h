@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/core.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [fri may  1 23:47:57 2009]
+ * updated       julien quintard   [mon nov 22 22:58:19 2010]
  */
 
 #ifndef CORE_CORE_H
@@ -19,14 +19,23 @@
  */
 
 /*
- * perms
+ * booleans
  */
 
-#define PERM_READ		(1 << 0)
-#define PERM_WRITE		(1 << 1)
-#define PERM_EXEC		(1 << 2)
+#define BOOLEAN_TRUE		1
+#define BOOLEAN_FALSE		0
 
-#define PERM_INVALID		(~((PERM_READ) | (PERM_WRITE) | (PERM_EXEC)))
+/*
+ * permissions
+ */
+
+#define PERMISSION_READ		(1 << 0)
+#define PERMISSION_WRITE	(1 << 1)
+#define PERMISSION_EXEC		(1 << 2)
+
+#define PERMISSION_INVALID	(~((PERMISSION_READ) |			\
+				   (PERMISSION_WRITE) |			\
+				   (PERMISSION_EXEC)))
 
 /*
  * fits
@@ -36,21 +45,6 @@
 #define FIT_BEST		(1 << 1)
 #define FIT_NEXT		(1 << 2)
 #define FIT_WORST		(1 << 3)
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-#define core_error(_fmt_...)						\
-  {									\
-    printf("[!] %s:%u: ",						\
-           __FILE__,							\
-           __LINE__);							\
-    printf(_fmt_);							\
-									\
-    while (1)								\
-      ;									\
-  }
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -94,7 +88,7 @@
 
 void			kaneton(t_init*				bootloader);
 
-t_error			kaneton_launch(void);
+t_error			kaneton_spawn(void);
 
 
 /*

@@ -101,7 +101,7 @@
  * the set manager variable.
  */
 
-m_set*			set = NULL;
+m_set*			_set = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -120,14 +120,14 @@ t_error			set_dump(void)
   o_set*		o;
   t_iterator		i;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(set->sets, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(_set->sets, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
@@ -135,25 +135,25 @@ t_error			set_dump(void)
 
   module_call(console, console_message,
 	      '#', "dumping the set container %qd with %qd node(s)\n",
-	      set->sets,
+	      _set->sets,
 	      o->size);
 
-  set_foreach(SET_OPT_FORWARD, set->sets, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _set->sets, &i, state)
     {
-      if (set_object(set->sets, i, (void**)&data) != ERROR_NONE)
+      if (set_object(_set->sets, i, (void**)&data) != ERROR_OK)
 	{
 	  module_call(console, console_message,
 		      '!', "set: cannot find the set object "
 		      "corresponding to its identifier\n");
 
-	  SET_LEAVE(set, ERROR_UNKNOWN);
+	  SET_LEAVE(_set, ERROR_KO);
 	}
 
-      if (set_show(data->setid) != ERROR_NONE)
-	SET_LEAVE(set, ERROR_UNKNOWN);
+      if (set_show(data->id) != ERROR_OK)
+	SET_LEAVE(_set, ERROR_KO);
     }
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -165,16 +165,16 @@ t_error			set_size(i_set				setid,
 {
   o_set*		o;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(size != NULL);
 
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   *size = o->size;
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -189,7 +189,7 @@ t_error			set_size(i_set				setid,
 
 t_error			set_new(o_set*				o)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(o != NULL);
 
@@ -197,30 +197,30 @@ t_error			set_new(o_set*				o)
    * 1)
    */
 
-  if (o->setid == set->sets)
+  if (o->id == _set->sets)
     {
-      if ((set->container = malloc(sizeof(o_set))) == NULL)
-	SET_LEAVE(set, ERROR_UNKNOWN);
+      if ((_set->container = malloc(sizeof(o_set))) == NULL)
+	SET_LEAVE(_set, ERROR_KO);
 
-      memcpy(set->container, o, sizeof(o_set));
+      memcpy(_set->container, o, sizeof(o_set));
 
-      SET_LEAVE(set, ERROR_NONE);
+      SET_LEAVE(_set, ERROR_OK);
     }
 
   /*
    * 2)
    */
 
-  if (set_add(set->sets, o) != ERROR_NONE)
+  if (set_add(_set->sets, o) != ERROR_OK)
     {
       module_call(console, console_message,
 		  '!', "set: unable to add this set descriptor "
 		  "to the set container\n");
 
-      SET_LEAVE(set, ERROR_UNKNOWN);
+      SET_LEAVE(_set, ERROR_KO);
     }
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -234,33 +234,33 @@ t_error			set_new(o_set*				o)
 
 t_error			set_destroy(i_set			setid)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   /*
    * 1)
    */
 
-  if (setid == set->sets)
+  if (setid == _set->sets)
     {
-      free(set->container);
+      free(_set->container);
 
-      SET_LEAVE(set, ERROR_UNKNOWN);
+      SET_LEAVE(_set, ERROR_KO);
     }
 
   /*
    * 2)
    */
 
-  if (set_remove(set->sets, setid) != ERROR_NONE)
+  if (set_remove(_set->sets, setid) != ERROR_OK)
     {
       module_call(console, console_message,
 		  '!', "set: unable to remove this descriptor "
 		  "from the set container\n");
 
-      SET_LEAVE(set, ERROR_UNKNOWN);
+      SET_LEAVE(_set, ERROR_KO);
     }
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -275,7 +275,7 @@ t_error			set_destroy(i_set			setid)
 t_error			set_descriptor(i_set			setid,
 				       o_set**			o)
 {
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(o != NULL);
 
@@ -283,21 +283,21 @@ t_error			set_descriptor(i_set			setid,
    * 1)
    */
 
-  if (setid == set->sets)
+  if (setid == _set->sets)
     {
-      *o = set->container;
+      *o = _set->container;
 
-      SET_LEAVE(set, ERROR_NONE);
+      SET_LEAVE(_set, ERROR_OK);
     }
 
   /*
    * 2)
    */
 
-  if (set_get(set->sets, setid, (void**)o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_get(_set->sets, setid, (void**)o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -316,7 +316,7 @@ t_error			set_get(i_set				setid,
 {
   t_iterator		iterator;
 
-  SET_ENTER(set);
+  SET_ENTER(_set);
 
   assert(o != NULL);
 
@@ -324,17 +324,17 @@ t_error			set_get(i_set				setid,
    * 1)
    */
 
-  if (set_locate(setid, id, &iterator) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_locate(setid, id, &iterator) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_object(setid, iterator, o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_object(setid, iterator, o) != ERROR_OK)
+    SET_LEAVE(_set, ERROR_KO);
 
-  SET_LEAVE(set, ERROR_NONE);
+  SET_LEAVE(_set, ERROR_OK);
 }
 
 /*
@@ -362,55 +362,59 @@ t_error			set_initialize(void)
    * 1)
    */
 
-  if ((set = malloc(sizeof(m_set))) == NULL)
+  if ((_set = malloc(sizeof(m_set))) == NULL)
     {
       module_call(console, console_message,
 		  '!', "set: cannot allocate memory for the set manager "
 		  "structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(set, 0x0, sizeof(m_set));
+  memset(_set, 0x0, sizeof(m_set));
 
   /*
    * 2)
    */
 
-  if (id_build(&set->id) != ERROR_NONE)
+  if (id_build(&_set->id) != ERROR_OK)
     {
       module_call(console, console_message,
 		  '!', "set: unable to initialize the identifier object\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (id_reserve(&set->id, &set->sets) != ERROR_NONE)
+  if (id_reserve(&_set->id, &_set->sets) != ERROR_OK)
     {
       module_call(console, console_message,
 		  '!', "set: unable to reserve an identifier\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  if (set_reserve(bpt, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
-		  sizeof(o_set), PAGESZ, &needless) != ERROR_NONE)
+  // XXX ???
+  if (set_reserve(bpt,
+		  SET_OPTION_CONTAINER | SET_OPTION_ALLOC | SET_OPTION_SORT,
+		  sizeof(o_set),
+		  PAGESZ,
+		  &needless) != ERROR_OK)
     {
       module_call(console, console_message,
 		  '!', "set: unable to reserve the set container\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }
 
 /*
@@ -432,26 +436,26 @@ t_error			set_clean(void)
    * 1)
    */
 
-  while (set_head(set->sets, &iterator) == ERROR_NONE)
+  while (set_head(_set->sets, &iterator) == ERROR_OK)
     {
       o_set*		o;
 
-      if (set_object(set->sets, iterator, (void**)&o) != ERROR_NONE)
+      if (set_object(_set->sets, iterator, (void**)&o) != ERROR_OK)
 	{
 	  module_call(console, console_message,
 		      '!', "set: cannot find the set object "
 		      "corresponding to its identifier\n");
 
-	  SET_LEAVE(set, ERROR_UNKNOWN);
+	  SET_LEAVE(_set, ERROR_KO);
 	}
 
-      if (set_release(o->setid) != ERROR_NONE)
+      if (set_release(o->id) != ERROR_OK)
 	{
 	  module_call(console, console_message,
 		      '!', "set: cannot releases a set object located in the "
 		      "set container\n");
 
-	  SET_LEAVE(set, ERROR_UNKNOWN);
+	  SET_LEAVE(_set, ERROR_KO);
 	}
     }
 
@@ -459,31 +463,31 @@ t_error			set_clean(void)
    * 2)
    */
 
-  if (set_release(set->sets) != ERROR_NONE)
+  if (set_release(_set->sets) != ERROR_OK)
     {
       module_call(console, console_message,
 		  '!', "set: unable to release the set container\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  if (id_destroy(&set->id) != ERROR_NONE)
+  if (id_destroy(&_set->id) != ERROR_OK)
     {
       module_call(console, console_message,
 		  '!', "set: unable to destroy the identifier object\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  free(set);
+  free(_set);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

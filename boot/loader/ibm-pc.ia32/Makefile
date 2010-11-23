@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/boot/bootloader/ibm-pc.ia32/Makefile
+# file          /home/mycure/kaneton.STABLE/boot/loader/ibm-pc.ia32/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [fri may  1 21:54:38 2009]
+# updated       julien quintard   [tue nov 23 20:52:55 2010]
 #
 
 #
@@ -28,8 +28,7 @@ include			../../../environment/env.mk
 #
 
 SUBDIRS			:=		educational			\
-					optimised			\
-					test				
+					optimised			
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/core/message/message.c
+ * file          /home/mycure/kaneton.NEW/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       matthieu bucchianeri   [wed jan  9 16:01:58 2008]
+ * updated       julien quintard   [mon nov 22 12:52:45 2010]
  */
 
 /*
@@ -42,16 +42,6 @@
 machine_include(message);
 
 /*
- * ---------- globals ---------------------------------------------------------
- */
-
-/*
- * message manager variable.
- */
-
-m_message*		message = NULL;
-
-/*
  * ---------- externs ---------------------------------------------------------
  */
 
@@ -59,13 +49,17 @@ m_message*		message = NULL;
  * kernel manager structure
  */
 
-extern m_kernel*	kernel;
+extern m_kernel*	_kernel;
 
 /*
- * kernel task id
+ * ---------- globals ---------------------------------------------------------
  */
 
-extern i_task		ktask;
+/*
+ * message manager variable.
+ */
+
+m_message*		_message = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -83,19 +77,18 @@ static t_error		message_box(i_task			task,
   t_id			typeid = type;
   o_task*		otask;
 
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   assert(o != NULL);
 
-  if (task_get(task, &otask) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (task_get(task, &otask) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  if (set_get(otask->messages, typeid, (void**)o) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (set_get(otask->messages, typeid, (void**)o) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
-
 
 /*
  * this function registers a new message type with its maximum length.
@@ -122,21 +115,21 @@ t_error			message_register(i_task			task,
   void*			needless;
   o_message_type	msgtype;
 
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   /*
    * 1)
    */
 
-  if (task_get(task, &o) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (task_get(task, &o) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_get(o->messages, typeid, (void**)&needless) == ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (set_get(o->messages, typeid, (void**)&needless) == ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 3)
@@ -146,38 +139,38 @@ t_error			message_register(i_task			task,
   msgtype.type = typeid;
   msgtype.size = size;
 
-  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof (o_message),
-		  &msgtype.queue) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof (o_message),
+		  &msgtype.queue) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof (o_message),
-		  &msgtype.waiters) != ERROR_NONE)
+  if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof (o_message),
+		  &msgtype.waiters) != ERROR_OK)
     {
       set_release(msgtype.queue);
 
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      MESSAGE_LEAVE(_message, ERROR_KO);
     }
 
   /*
    * 4)
    */
 
-  if (set_add(o->messages, &msgtype) != ERROR_NONE)
+  if (set_add(o->messages, &msgtype) != ERROR_OK)
     {
       set_release(msgtype.waiters),
       set_release(msgtype.queue);
 
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      MESSAGE_LEAVE(_message, ERROR_KO);
     }
 
   /*
    * 5)
    */
 
-  if (machine_call(message, message_register, task, type, size) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (machine_call(message, message_register, task, type, size) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -191,14 +184,14 @@ t_error			message_size(i_task			task,
 {
   o_message_type*	o;
 
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
-  if (message_box(task, type, &o) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (message_box(task, type, &o) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   *size = o->size;
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -221,46 +214,46 @@ t_error			message_flush(i_task			task)
   o_message*		omsg;
   t_iterator		it;
 
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
-  if (task_get(task, &o) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (task_get(task, &o) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 1)
    */
 
-  while (set_head(o->messages, &it) != ERROR_NONE)
+  while (set_head(o->messages, &it) != ERROR_OK)
     {
-      if (set_object(o->messages, it, (void**)&otype) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (set_object(o->messages, it, (void**)&otype) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
       /*
        * 2)
        */
 
-      while (set_pick(otype->waiters, (void**)&omsg) != ERROR_NONE)
+      while (set_pick(otype->waiters, (void**)&omsg) != ERROR_OK)
 	{
-	  if (message_return(omsg->blocked, ERROR_UNKNOWN) != ERROR_NONE)
-	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	  if (message_return(omsg->blocked, ERROR_KO) != ERROR_OK)
+	    MESSAGE_LEAVE(_message, ERROR_KO);
 
-	  if (set_pop(otype->waiters) != ERROR_NONE)
-	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	  if (set_pop(otype->waiters) != ERROR_OK)
+	    MESSAGE_LEAVE(_message, ERROR_KO);
 	}
 
       /*
        * 3)
        */
 
-      while (set_pick(otype->queue, (void**)&omsg) != ERROR_NONE)
+      while (set_pick(otype->queue, (void**)&omsg) != ERROR_OK)
 	{
-	  if (set_pop(otype->waiters) != ERROR_NONE)
-	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	  if (set_pop(otype->waiters) != ERROR_OK)
+	    MESSAGE_LEAVE(_message, ERROR_KO);
 
-	  if (omsg->asid == ID_UNUSED)
+	  if (omsg->as == ID_UNUSED)
 	    {
-	      if (message_return(omsg->blocked, ERROR_UNKNOWN) != ERROR_NONE)
-		MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	      if (message_return(omsg->blocked, ERROR_KO) != ERROR_OK)
+		MESSAGE_LEAVE(_message, ERROR_KO);
 	    }
 	  else
 	    {
@@ -273,21 +266,21 @@ t_error			message_flush(i_task			task)
        * 4)
        */
 
-      if (set_release(otype->waiters) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (set_release(otype->waiters) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      if (set_release(otype->queue) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (set_release(otype->queue) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
     }
 
   /*
    * 5)
    */
 
-  if (machine_call(message, message_flush, task) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (machine_call(message, message_flush, task) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -322,74 +315,74 @@ t_error			message_send(i_task			task,
   o_message		msg;
   t_setsz		setsz;
 
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   /*
    * 1)
    */
 
-  if (destination.machine != kernel->machine)
+  if (destination.machine != _kernel->machine)
     {
       /* XXX distr */
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      MESSAGE_LEAVE(_message, ERROR_KO);
     }
 
   /*
    * 2)
    */
 
-  if (message_box(destination.task, typeid, &o) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (message_box(destination.task, typeid, &o) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 3)
    */
 
   if (size > o->size)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (destination.task == ktask && type == 0)
+  if (destination.task == _kernel->task && type == 0)
     {
       t_error		res;
       void*		buffer;
       i_node		source;
 
-      assert(task != ktask);
+      assert(task != _kernel->task);
       assert(size != 0);
 
-      source.machine = kernel->machine;
+      source.machine = _kernel->machine;
       source.task = task;
 
-      if (task_get(task, &otsk) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (task_get(task, &otsk) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
       if ((buffer = malloc(size)) == NULL)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      if (as_read(otsk->asid, data, size, buffer) != ERROR_NONE)
+      if (as_read(otsk->as, data, size, buffer) != ERROR_OK)
 	{
 	  free(buffer);
 
-	  MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	  MESSAGE_LEAVE(_message, ERROR_KO);
 	}
 
       res = interface_notify(buffer, size, source);
 
       free(buffer);
 
-      MESSAGE_LEAVE(message, res);
+      MESSAGE_LEAVE(_message, res);
     }
 
   /*
    * 5)
    */
 
-  if (set_size(o->waiters, &setsz) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (set_size(o->waiters, &setsz) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   if (setsz != 0)
     {
@@ -397,7 +390,7 @@ t_error			message_send(i_task			task,
 
       res = message_transmit(task, destination, type, data, size);
 
-      MESSAGE_LEAVE(message, res);
+      MESSAGE_LEAVE(_message, res);
     }
 
   /*
@@ -407,14 +400,14 @@ t_error			message_send(i_task			task,
   if (size)
     {
       if ((msg.data = malloc(size)) == NULL)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	MESSAGE_LEAVE(_message, ERROR_KO);
     }
   else
     msg.data = NULL;
 
   if (size)
     {
-      if (task == ktask)
+      if (task == _kernel->task)
 	{
 	  /*
 	   * a)
@@ -428,39 +421,39 @@ t_error			message_send(i_task			task,
 	   * b)
 	   */
 
-	  if (task_get(task, &otsk) != ERROR_NONE)
+	  if (task_get(task, &otsk) != ERROR_OK)
 	    {
 	      free(msg.data);
 
-	      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	      MESSAGE_LEAVE(_message, ERROR_KO);
 	    }
 
-	  if (as_read(otsk->asid, data, size, msg.data) != ERROR_NONE)
+	  if (as_read(otsk->as, data, size, msg.data) != ERROR_OK)
 	    {
 	      free(msg.data);
 
-	      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	      MESSAGE_LEAVE(_message, ERROR_KO);
 	    }
 	}
     }
 
-  msg.asid = ID_UNUSED;
+  msg.as = ID_UNUSED;
   msg.size = size;
-  msg.sender.machine = kernel->machine;
+  msg.sender.machine = _kernel->machine;
   msg.sender.task = task;
 
   /*
    * 7)
    */
 
-  msg.message = o->id++;
+  msg.id = o->id++;
 
-  if (set_push(o->queue, &msg) != ERROR_NONE)
+  if (set_push(o->queue, &msg) != ERROR_OK)
     {
       if (msg.data != NULL)
 	free(msg.data);
 
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      MESSAGE_LEAVE(_message, ERROR_KO);
     }
 
   /*
@@ -468,10 +461,10 @@ t_error			message_send(i_task			task,
    */
 
   if (machine_call(message, message_send, task, destination, type,
-		   data, size) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+		   data, size) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -507,41 +500,41 @@ t_error			message_transmit(i_task			task,
   t_setsz		setsz;
   i_thread		thread;
 
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   /*
    * 1)
    */
 
-  if (destination.machine != kernel->machine)
+  if (destination.machine != _kernel->machine)
     {
       /* XXX distr */
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      MESSAGE_LEAVE(_message, ERROR_KO);
     }
 
   /*
    * 2)
    */
 
-  if (message_box(destination.task, typeid, &o) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (message_box(destination.task, typeid, &o) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  if (task_get(task, &otsk) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (task_get(task, &otsk) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 3)
    */
 
   if (size > o->size)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (set_size(o->waiters, &setsz) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (set_size(o->waiters, &setsz) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   if (setsz != 0)
     {
@@ -551,23 +544,23 @@ t_error			message_transmit(i_task			task,
        * a)
        */
 
-      if (set_pick(o->waiters, (void*)&pmsg) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (set_pick(o->waiters, (void*)&pmsg) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
       if (size)
-	if (as_copy(otsk->asid, data, pmsg->asid, (t_vaddr)pmsg->data,
-		    size) != ERROR_NONE)
-	  MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	if (as_copy(otsk->as, data, pmsg->as, (t_vaddr)pmsg->data,
+		    size) != ERROR_OK)
+	  MESSAGE_LEAVE(_message, ERROR_KO);
 
-      sender.machine = kernel->machine;
+      sender.machine = _kernel->machine;
       sender.task = task;
 
-      if (message_return_info(pmsg->blocked, ERROR_NONE, size,
-			      sender) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (message_return_info(pmsg->blocked, ERROR_OK, size,
+			      sender) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      if (set_pop(o->waiters) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (set_pop(o->waiters) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
     }
   else
     {
@@ -575,23 +568,23 @@ t_error			message_transmit(i_task			task,
        * b)
        */
 
-      if (scheduler_current(&thread) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (scheduler_current(&thread) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      msg.asid = otsk->asid;
+      msg.as = otsk->as;
       msg.data = (void*)data;
       msg.size = size;
-      msg.sender.machine = kernel->machine;
+      msg.sender.machine = _kernel->machine;
       msg.sender.task = task;
       msg.blocked = thread;
 
-      msg.message = o->id++;
+      msg.id = o->id++;
 
-      if (set_push(o->queue, &msg) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (set_push(o->queue, &msg) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      if (thread_state(thread, SCHEDULER_STATE_BLOCK) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (thread_state(thread, THREAD_STATE_BLOCK) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
     }
 
   /*
@@ -599,10 +592,10 @@ t_error			message_transmit(i_task			task,
    */
 
   if (machine_call(message, message_transmit, task, destination, type,
-		   data, size) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+		   data, size) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -622,15 +615,15 @@ t_error			message_throw(i_task			task,
 				      t_vsize			size,
 				      t_message_request*	request)
 {
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   assert(request != NULL);
 
-  if (cpu_multiprocessor() == ERROR_NONE)
+  if (cpu_multiprocessor() == ERROR_OK)
     {
       /* XXX smp */
 
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      MESSAGE_LEAVE(_message, ERROR_KO);
     }
   else
     {
@@ -638,13 +631,13 @@ t_error			message_throw(i_task			task,
 
       res = message_send(task, destination, type, data, size);
 
-      if (res != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (res != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
       request->completed = MESSAGE_REQUEST_COMPLETED;
     }
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -674,21 +667,21 @@ t_error			message_receive(i_task			task,
   o_message		msg;
   o_task*		otsk;
 
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   /*
    * 1)
    */
 
-  if (message_box(task, typeid, &o) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (message_box(task, typeid, &o) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (set_size(o->queue, &setsz) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (set_size(o->queue, &setsz) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   if (setsz == 0)
     {
@@ -696,22 +689,22 @@ t_error			message_receive(i_task			task,
        * a)
        */
 
-      if (task_get(task, &otsk) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (task_get(task, &otsk) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      if (scheduler_current(&thread) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (scheduler_current(&thread) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      msg.message = o->id++;
-      msg.asid = otsk->asid;
+      msg.id = o->id++;
+      msg.as = otsk->as;
       msg.data = (void*)data;
       msg.blocked = thread;
 
-      if (set_push(o->waiters, &msg) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (set_push(o->waiters, &msg) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      if (thread_state(thread, SCHEDULER_STATE_BLOCK) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (thread_state(thread, THREAD_STATE_BLOCK) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
     }
   else
     {
@@ -723,7 +716,7 @@ t_error			message_receive(i_task			task,
 
       res = message_poll(task, type, data, size, sender);
 
-      MESSAGE_LEAVE(message, res);
+      MESSAGE_LEAVE(_message, res);
     }
 
   /*
@@ -731,10 +724,10 @@ t_error			message_receive(i_task			task,
    */
 
   if (machine_call(message, message_poll, task, type, data,
-		   size, sender) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+		   size, sender) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -752,13 +745,13 @@ t_error			message_grab(i_task			task,
 				     t_vaddr			data,
 				     t_message_request*		request)
 {
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
-  if (cpu_multiprocessor() == ERROR_NONE)
+  if (cpu_multiprocessor() == ERROR_OK)
     {
       /* XXX smp */
 
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      MESSAGE_LEAVE(_message, ERROR_KO);
     }
   else
     {
@@ -768,15 +761,15 @@ t_error			message_grab(i_task			task,
 
       res = message_receive(task, type, data, &size, &sender);
 
-      if (res != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (res != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
 
       request->completed = MESSAGE_REQUEST_COMPLETED;
       /*      request->size = size;
 	      request->sender = sender;*/
     }
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -807,27 +800,27 @@ t_error			message_poll(i_task			task,
   o_task*		otsk;
   o_message*		msg;
 
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   /*
    * 1)
    */
 
-  if (message_box(task, typeid, &o) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (message_box(task, typeid, &o) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 2
    */
 
-  if (set_pick(o->queue, (void*)&msg) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (set_pick(o->queue, (void*)&msg) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (msg->asid != ID_UNUSED)
+  if (msg->as != ID_UNUSED)
     {
       /*
        * a)
@@ -835,20 +828,20 @@ t_error			message_poll(i_task			task,
 
       if (msg->size)
 	{
-	  if (task_get(task, &otsk) != ERROR_NONE)
-	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	  if (task_get(task, &otsk) != ERROR_OK)
+	    MESSAGE_LEAVE(_message, ERROR_KO);
 
-	  if (as_copy(msg->asid, (t_vaddr)msg->data, otsk->asid, data,
-		      msg->size) != ERROR_NONE)
-	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	  if (as_copy(msg->as, (t_vaddr)msg->data, otsk->as, data,
+		      msg->size) != ERROR_OK)
+	    MESSAGE_LEAVE(_message, ERROR_KO);
 	}
 
-      if (message_return(msg->blocked, ERROR_NONE) != ERROR_NONE)
-	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+      if (message_return(msg->blocked, ERROR_OK) != ERROR_OK)
+	MESSAGE_LEAVE(_message, ERROR_KO);
     }
   else
     {
-      if (task == ktask)
+      if (task == _kernel->task)
 	{
 	  /*
 	   * b)
@@ -865,12 +858,12 @@ t_error			message_poll(i_task			task,
 
 	  if (msg->size)
 	    {
-	      if (task_get(task, &otsk) != ERROR_NONE)
-		MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	      if (task_get(task, &otsk) != ERROR_OK)
+		MESSAGE_LEAVE(_message, ERROR_KO);
 
-	      if (as_write(otsk->asid, msg->data, msg->size,
-			   data) != ERROR_NONE)
-		MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	      if (as_write(otsk->as, msg->data, msg->size,
+			   data) != ERROR_OK)
+		MESSAGE_LEAVE(_message, ERROR_KO);
 	    }
 	}
 
@@ -881,18 +874,18 @@ t_error			message_poll(i_task			task,
   *size = msg->size;
   *sender = msg->sender;
 
-  if (set_pop(o->queue) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (set_pop(o->queue) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
   /*
    * 4)
    */
 
   if (machine_call(message, message_poll, task, type, data,
-		   size, sender) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+		   size, sender) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -904,11 +897,11 @@ t_error			message_poll(i_task			task,
 t_error			message_state(i_task			task,
 				      t_message_request		request)
 {
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   /* XXX smp */
 
-  MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  MESSAGE_LEAVE(_message, ERROR_KO);
 }
 
 /*
@@ -922,11 +915,11 @@ t_error			message_wait(i_task			task,
 				     t_vsize*			size,
 				     i_node*			sender)
 {
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   /* XXX smp */
 
-  MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  MESSAGE_LEAVE(_message, ERROR_KO);
 }
 
 /*
@@ -937,15 +930,15 @@ t_error			message_wait(i_task			task,
 t_error			message_return(i_thread			thread,
 				       t_error			code)
 {
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
-  if (machine_call(message, message_return, thread, code) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (machine_call(message, message_return, thread, code) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  if (thread_state(thread, SCHEDULER_STATE_RUN) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (thread_state(thread, THREAD_STATE_RUN) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -958,16 +951,16 @@ t_error			message_return_info(i_thread		thread,
 					    t_vsize		size,
 					    i_node		sender)
 {
-  MESSAGE_ENTER(message);
+  MESSAGE_ENTER(_message);
 
   if (machine_call(message, message_return_info, thread, code, size,
-		   sender) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+		   sender) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  if (thread_state(thread, SCHEDULER_STATE_RUN) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (thread_state(thread, THREAD_STATE_RUN) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 
@@ -988,40 +981,41 @@ t_error			message_initialize(void)
    * 1)
    */
 
-  if ((message = malloc(sizeof(m_message))) == NULL)
+  if ((_message = malloc(sizeof(m_message))) == NULL)
     {
-      module_call(console, console_message, '!', "message: cannot allocate memory for the message "
-	       "manager structure\n");
+      module_call(console, console_message,
+		  '!', "message: cannot allocate memory for the message "
+		  "manager structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(message, 0x0, sizeof(m_message));
+  memset(_message, 0x0, sizeof(m_message));
 
   /*
    * 2)
    */
 
-  if (message_register(ktask, MESSAGE_TYPE_INTERFACE,
-		       sizeof (o_syscall)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (message_register(_kernel->task, MESSAGE_TYPE_INTERFACE,
+		       sizeof (o_syscall)) != ERROR_OK)
+    return (ERROR_KO);
 
-  if (message_register(ktask, MESSAGE_TYPE_EVENT,
-		       sizeof (o_event_message)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (message_register(_kernel->task, MESSAGE_TYPE_EVENT,
+		       sizeof (o_event_message)) != ERROR_OK)
+    return (ERROR_KO);
 
-  if (message_register(ktask, MESSAGE_TYPE_TIMER,
-		       sizeof (o_timer_message)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (message_register(_kernel->task, MESSAGE_TYPE_TIMER,
+		       sizeof (o_timer_message)) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 3)
    */
 
-  if (machine_call(message, message_initialize) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (machine_call(message, message_initialize) != ERROR_OK)
+    MESSAGE_LEAVE(_message, ERROR_KO);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(_message, ERROR_OK);
 }
 
 /*
@@ -1041,21 +1035,21 @@ t_error			message_clean(void)
    * 1)
    */
 
-  if (machine_call(message, message_clean) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(message, message_clean) != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 2)
    */
 
-  if (message_flush(ktask)  != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (message_flush(_kernel->task)  != ERROR_OK)
+    return (ERROR_KO);
 
   /*
    * 3)
    */
 
-  free(message);
+  free(_message);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

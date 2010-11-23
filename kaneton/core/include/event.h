@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/event.h
+ * file          /home/mycure/kaneton.NEW/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       matthieu bucchianeri   [sun aug 26 23:45:32 2007]
+ * updated       julien quintard   [mon nov 22 10:09:52 2010]
  */
 
 #ifndef CORE_EVENT_H
@@ -62,7 +62,7 @@ typedef void			(*t_event_handler)(i_event, t_vaddr);
 typedef union
 {
   t_event_handler		function;
-  i_task			taskid;
+  i_task			task;
 }				u_event_handler;
 
 /*
@@ -71,7 +71,7 @@ typedef union
 
 typedef struct
 {
-  i_event			eventid;
+  i_event			id;
 
   t_type			type;
 
@@ -133,7 +133,7 @@ typedef struct
 #define EVENT_CHECK(_event_)						\
   {									\
     if ((_event_) == NULL)						\
-      return ERROR_UNKNOWN;						\
+      return ERROR_KO;						\
   }
 
 /*

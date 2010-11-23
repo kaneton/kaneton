@@ -38,6 +38,12 @@
 machine_include(cpu);
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern t_init*		_init;
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -45,13 +51,7 @@ machine_include(cpu);
  * cpu manager variable.
  */
 
-m_cpu*			cpu = NULL;
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-extern t_init*		init;
+m_cpu*			_cpu = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -65,18 +65,19 @@ t_error			cpu_show(i_cpu				id)
 {
   o_cpu*		o;
 
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
-  if (cpu_get(id, &o) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (cpu_get(id, &o) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
-  module_call(console, console_message, '#', "  cpu %qd: execution time %qd ms\n", id,
-	   o->efficiency);
+  module_call(console, console_message,
+	      '#', "  cpu %qd: execution time %qd ms\n", id,
+	      o->efficiency);
 
-  if (machine_call(cpu, cpu_show, id) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (machine_call(cpu, cpu_show, id) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
 
 /*
@@ -85,50 +86,51 @@ t_error			cpu_show(i_cpu				id)
 
 t_error			cpu_dump(void)
 {
-  t_state		state;
+  t_state		st;
   o_cpu*		data;
   t_setsz		size;
   t_iterator		i;
 
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
   /*
    * 1)
    */
 
-  if (set_size(cpu->cpus, &size) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (set_size(_cpu->cpus, &size) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
   /*
    * 2)
    */
 
-  module_call(console, console_message, '#', "dumping %qu cpu(s):\n", size);
+  module_call(console, console_message,
+	      '#', "dumping %qu cpu(s):\n", size);
 
-  set_foreach(SET_OPT_FORWARD, cpu->cpus, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _cpu->cpus, &i, st)
     {
-      if (set_object(cpu->cpus, i, (void**)&data) != ERROR_NONE)
-	CPU_LEAVE(cpu, ERROR_UNKNOWN);
+      if (set_object(_cpu->cpus, i, (void**)&data) != ERROR_OK)
+	CPU_LEAVE(_cpu, ERROR_KO);
 
-      if (cpu_show(data->cpuid) != ERROR_NONE)
-	CPU_LEAVE(cpu, ERROR_UNKNOWN);
+      if (cpu_show(data->id) != ERROR_OK)
+	CPU_LEAVE(_cpu, ERROR_KO);
     }
 
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
 
 /*
  * this function get the current cpu id.
  */
 
-t_error			cpu_current(i_cpu*			cpuid)
+t_error			cpu_current(i_cpu*			id)
 {
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
-  if (machine_call(cpu, cpu_current, cpuid) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(cpu, cpu_current, id) != ERROR_OK)
+    return (ERROR_KO);
 
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
 
 /*
@@ -137,7 +139,7 @@ t_error			cpu_current(i_cpu*			cpuid)
 
 t_error			cpu_multiprocessor(void)
 {
-  return ((cpu->ncpus == 1) ? ERROR_UNKNOWN : ERROR_NONE);
+  return ((_cpu->ncpus == 1) ? ERROR_KO : ERROR_OK);
 }
 
 /*
@@ -145,26 +147,21 @@ t_error			cpu_multiprocessor(void)
  *
  */
 
-t_error			cpu_select(i_cpu*			cpuid)
+t_error			cpu_select(i_cpu*			id)
 {
-  static i_cpu		cur = 0;
+  static i_cpu		current = 0;
   t_setsz		size;
 
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
-  if (set_size(cpu->cpus, &size) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (set_size(_cpu->cpus, &size) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
-  *cpuid = cur % size;
-  cur++;
+  *id = current % size;
 
-  *cpuid = 0;
+  current++;
 
-  /*
-   * XXX select the cpu with lowest charge.
-   */
-
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
 
 /*
@@ -172,23 +169,19 @@ t_error			cpu_select(i_cpu*			cpuid)
  *
  */
 
-t_error			cpu_stats(i_cpu				cpuid,
-				  t_timeslice			time)
+t_error			cpu_statistics(i_cpu			id,
+				       t_timeslice		time)
 {
   o_cpu*		o;
 
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
-  if (cpu_get(cpuid, &o) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (cpu_get(id, &o) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
   o->efficiency += time;
 
-  /*
-   * XXX we must take account number of context switch and complete schedule
-   */
-
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
 
 /*
@@ -198,11 +191,11 @@ t_error			cpu_stats(i_cpu				cpuid,
 
 t_error			cpu_balance(void)
 {
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
   /* XXX */
 
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
 
 /*
@@ -217,49 +210,50 @@ t_error			cpu_balance(void)
  *
  */
 
-t_error			cpu_migrate(i_task			tskid,
-				    i_cpu			destination)
+t_error			cpu_migrate(i_task			task,
+				    i_cpu			cpu)
 {
   o_task*		o;
-  t_state		old_state;
+  t_state		state;
 
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
-  if (task_get(tskid, &o) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (task_get(task, &o) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
   /*
    * 1)
    */
 
-  old_state = o->sched;
-  if (o->sched == SCHEDULER_STATE_RUN)
-    if (task_state(tskid, SCHEDULER_STATE_STOP) != ERROR_NONE)
-      CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  state = o->state;
+
+  if (o->state == TASK_STATE_RUN)
+    if (task_state(task, TASK_STATE_STOP) != ERROR_OK)
+      CPU_LEAVE(_cpu, ERROR_KO);
 
   /*
    * 2)
    */
 
 
-  o->cpuid = destination;
+  o->cpu = cpu;
 
   /*
    * 3)
    */
 
-  if (machine_call(cpu, cpu_migrate, tskid, destination) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (machine_call(cpu, cpu_migrate, task, cpu) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
   /*
    * 4)
    */
 
-  if (old_state == SCHEDULER_STATE_RUN)
-    if (task_state(tskid, SCHEDULER_STATE_RUN) != ERROR_NONE)
-      CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (state == TASK_STATE_RUN)
+    if (task_state(task, TASK_STATE_RUN) != ERROR_OK)
+      CPU_LEAVE(_cpu, ERROR_KO);
 
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
 
 /*
@@ -269,12 +263,12 @@ t_error			cpu_migrate(i_task			tskid,
 t_error			cpu_get(i_cpu				id,
 				o_cpu**				o)
 {
-  CPU_ENTER(cpu);
+  CPU_ENTER(_cpu);
 
-  if (set_get(cpu->cpus, id, (void**)o) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (set_get(_cpu->cpus, id, (void**)o) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(_cpu, ERROR_OK);
 }
 
 /*
@@ -296,57 +290,62 @@ t_error			cpu_initialize(void)
    * 1)
    */
 
-  if ((cpu = malloc(sizeof(m_cpu))) == NULL)
+  if ((_cpu = malloc(sizeof(m_cpu))) == NULL)
     {
-      module_call(console, console_message, '!', "cpu: cannot allocate memory for the cpu "
-	       "manager structure\n");
+      module_call(console, console_message,
+		  '!', "cpu: cannot allocate memory for the cpu "
+		  "manager structure\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
-  memset(cpu, 0x0, sizeof(m_cpu));
+  memset(_cpu, 0x0, sizeof(m_cpu));
 
   /*
    * 2)
    */
 
-  if (set_reserve(array, SET_OPT_ALLOC, init->ncpus,
-		  sizeof(o_cpu), &cpu->cpus) != ERROR_NONE)
+  if (set_reserve(array, SET_OPTION_ALLOC, _init->ncpus,
+		  sizeof(o_cpu), &_cpu->cpus) != ERROR_OK)
     {
-      module_call(console, console_message, '!', "cpu: unable to reserve the cpu set\n");
+      module_call(console, console_message,
+		  '!', "cpu: unable to reserve the cpu set\n");
 
-      return (ERROR_UNKNOWN);
+      return (ERROR_KO);
     }
 
   /*
    * 3)
    */
 
-  for (i = 0; i < init->ncpus; i++)
+  for (i = 0; i < _init->ncpus; i++)
     {
-      if (set_append(cpu->cpus, &init->cpus[i]) != ERROR_NONE)
+      if (set_append(_cpu->cpus, &_init->cpus[i]) != ERROR_OK)
 	{
-	  module_call(console, console_message, '!', "cpu: cannot add a cpu to the cpu set\n");
+	  module_call(console, console_message,
+		      '!', "cpu: cannot add a cpu to the cpu set\n");
 
-	  return (ERROR_UNKNOWN);
+	  return (ERROR_KO);
 	}
 
-      cpu->ncpus++;
+      _cpu->ncpus++;
     }
 
-  if (init->ncpus == 1)
-    module_call(console, console_message, '#', " system is running in mono-processor mode.\n");
+  if (_cpu->ncpus == 1)
+    module_call(console, console_message,
+		'#', " system is running in mono-processor mode.\n");
   else
-    module_call(console, console_message, '#', " system is running in multi-processor mode.\n");
+    module_call(console, console_message, '#',
+		" system is running in multi-processor mode.\n");
 
   /*
    * 4)
    */
 
-  if (machine_call(cpu, cpu_initialize) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (machine_call(cpu, cpu_initialize) != ERROR_OK)
+    return (ERROR_KO);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 
 }
 
@@ -365,14 +364,14 @@ t_error			cpu_clean(void)
    * 1)
    */
 
-  if (machine_call(cpu, cpu_clean) != ERROR_NONE)
-    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+  if (machine_call(cpu, cpu_clean) != ERROR_OK)
+    CPU_LEAVE(_cpu, ERROR_KO);
 
   /*
    * 2)
    */
 
-  free(cpu);
+  free(_cpu);
 
-  return (ERROR_NONE);
+  return (ERROR_OK);
 }

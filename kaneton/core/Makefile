@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/kaneton/core/Makefile
+# file          /home/mycure/kaneton/kaneton/core/Makefile
 #
 # created       julien quintard   [tue jun 26 15:39:11 2007]
-# updated       julien quintard   [thu nov 18 14:59:17 2010]
+# updated       julien quintard   [tue may 11 19:33:44 2010]
 #
 
 #
