@@ -31,44 +31,44 @@ void			test_core_segment_reserve_07(void)
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
+  if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE, &task) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
+  if (as_reserve(task, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
   TEST_ALLOCATE(as, 2, seg);
   TEST_ALLOCATE(as, 8, seg + 1);
   TEST_ALLOCATE(as, 2, seg + 2);
 
-  if (segment_release(seg[1]) != ERROR_NONE)
+  if (segment_release(seg[1]) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
   TEST_ALLOCATE(as, 5, seg + 1);
 
-  if (segment_release(seg[0]) != ERROR_NONE)
+  if (segment_release(seg[0]) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
   TEST_ALLOCATE(as, 8, seg);
   TEST_ALLOCATE(as, 4, seg + 3);
 
-  if (segment_release(seg[0]) != ERROR_NONE)
+  if (segment_release(seg[0]) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
-  if (segment_release(seg[1]) != ERROR_NONE)
+  if (segment_release(seg[1]) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
-  if (segment_release(seg[2]) != ERROR_NONE)
+  if (segment_release(seg[2]) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
-  if (segment_release(seg[3]) != ERROR_NONE)
+  if (segment_release(seg[3]) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
-  if (as_release(as) != ERROR_NONE)
+  if (as_release(as) != ERROR_OK)
     TEST_ERROR("[as_release] error\n");
 
-  if (task_release(task) != ERROR_NONE)
+  if (task_release(task) != ERROR_OK)
     TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/region.h
  *
  * created       julien quintard   [wed jun  6 16:22:05 2007]
- * updated       julien quintard   [mon nov 22 22:18:45 2010]
+ * updated       julien quintard   [wed nov 24 14:17:36 2010]
  */
 
 /*
@@ -25,15 +25,15 @@
  */
 
 #define		machine_include_region()				\
-  extern d_region		region_dispatch
+  extern d_region	glue_region_dispatch
 
 #define		machine_call_region(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;					\
+      t_error	_r_ = ERROR_OK;						\
 									\
-      if (region_dispatch._function_ != NULL)				\
-        _r_ = region_dispatch._function_(_args_);			\
+      if (glue_region_dispatch._function_ != NULL)			\
+        _r_ = glue_region_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\
@@ -47,9 +47,8 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-// XXX a renommer (kernel.c utilise ca)
-#define REGION_VMEM_MIN		PAGESZ // XXX a changer en 0
-#define REGION_VMEM_MAX		0xffffffffU
+#define GLUE_REGION_BASE	PAGESZ // XXX a changer en 0 peut etre?
+#define GLUE_REGION_SIZE	0xffffffffU - GLUE_REGION_BASE
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -77,7 +76,7 @@ t_error			glue_region_reserve(i_as		asid,
 t_error			glue_region_release(i_as		asid,
 					    i_region		regid);
 
-t_error			glue_region_initialize(t_vaddr		start,
+t_error			glue_region_initialize(t_vaddr		base,
 					       t_vsize		size);
 
 t_error			glue_region_clean(void);

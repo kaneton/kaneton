@@ -24,17 +24,17 @@
  * ../console.c
  */
 
-void			console_clear(void);
+void			module_console_clear(void);
 
-void			console_scroll(t_uint16			lines);
+void			module_console_scroll(t_uint16		lines);
 
-void			console_message(char			indicator,
-					char*			fmt,
-					...);
+void			module_console_message(char		indicator,
+					       char*		fmt,
+					       ...);
 
-t_error			console_initialize(void);
+t_error			module_console_initialize(void);
 
-t_error			console_clean(void);
+t_error			module_console_clean(void);
 
 
 /*

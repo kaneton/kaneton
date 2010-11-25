@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [mon nov 22 22:30:13 2010]
+ * updated       julien quintard   [thu nov 25 11:36:45 2010]
  */
 
 /*
@@ -46,11 +46,14 @@ extern m_task*		_task;
  * the task manager dispatch.
  */
 
-d_task			task_dispatch =
+d_task			glue_task_dispatch =
   {
     NULL,
     glue_task_clone,
     glue_task_reserve,
+    NULL,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL,

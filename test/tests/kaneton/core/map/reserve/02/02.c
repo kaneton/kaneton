@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/map/reserve/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [thu nov 18 16:18:02 2010]
+ * updated       julien quintard   [wed nov 24 09:30:55 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -40,11 +40,11 @@ void			test_core_map_reserve_02(void)
 
   for (i = 0; i < 10; i++)
     {
-      if (map_reserve(kasid,
-		      MAP_OPT_NONE,
+      if (map_reserve(_kernel->as,
+		      MAP_OPTION_NONE,
 		      ((i % 100) + 1) * PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &addr) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &addr) != ERROR_OK)
 	TEST_ERROR("[map_reserve] error\n");
 
       for (j = 0, p = (t_uint8*)addr;
@@ -57,7 +57,7 @@ void			test_core_map_reserve_02(void)
 	    TEST_ERROR("the data read is different from the one written\n");
         }
 
-      if (map_release(kasid, addr) != ERROR_NONE)
+      if (map_release(_kernel->as, addr) != ERROR_OK)
 	TEST_ERROR("[map_release] error\n");
     }
 

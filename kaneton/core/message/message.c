@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/message/message.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       julien quintard   [mon nov 22 12:52:45 2010]
+ * updated       julien quintard   [thu nov 25 12:10:42 2010]
  */
 
 /*
@@ -583,7 +583,7 @@ t_error			message_transmit(i_task			task,
       if (set_push(o->queue, &msg) != ERROR_OK)
 	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      if (thread_state(thread, THREAD_STATE_BLOCK) != ERROR_OK)
+      if (thread_block(thread) != ERROR_OK)
 	MESSAGE_LEAVE(_message, ERROR_KO);
     }
 
@@ -703,7 +703,7 @@ t_error			message_receive(i_task			task,
       if (set_push(o->waiters, &msg) != ERROR_OK)
 	MESSAGE_LEAVE(_message, ERROR_KO);
 
-      if (thread_state(thread, THREAD_STATE_BLOCK) != ERROR_OK)
+      if (thread_block(thread) != ERROR_OK)
 	MESSAGE_LEAVE(_message, ERROR_KO);
     }
   else
@@ -935,7 +935,7 @@ t_error			message_return(i_thread			thread,
   if (machine_call(message, message_return, thread, code) != ERROR_OK)
     MESSAGE_LEAVE(_message, ERROR_KO);
 
-  if (thread_state(thread, THREAD_STATE_RUN) != ERROR_OK)
+  if (thread_run(thread) != ERROR_OK)
     MESSAGE_LEAVE(_message, ERROR_KO);
 
   MESSAGE_LEAVE(_message, ERROR_OK);
@@ -957,7 +957,7 @@ t_error			message_return_info(i_thread		thread,
 		   sender) != ERROR_OK)
     MESSAGE_LEAVE(_message, ERROR_KO);
 
-  if (thread_state(thread, THREAD_STATE_RUN) != ERROR_OK)
+  if (thread_run(thread) != ERROR_OK)
     MESSAGE_LEAVE(_message, ERROR_KO);
 
   MESSAGE_LEAVE(_message, ERROR_OK);

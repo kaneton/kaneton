@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       julien quintard   [mon nov 22 22:30:54 2010]
+ * updated       julien quintard   [wed nov 24 14:20:32 2010]
  */
 
 /*
@@ -46,7 +46,7 @@ extern m_io*		_io;
  * the io manager dispatch.
  */
 
-d_io		io_dispatch =
+d_io			glue_io_dispatch =
   {
     glue_io_grant,
     glue_io_deny,

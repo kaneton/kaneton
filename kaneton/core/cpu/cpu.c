@@ -228,7 +228,7 @@ t_error			cpu_migrate(i_task			task,
   state = o->state;
 
   if (o->state == TASK_STATE_RUN)
-    if (task_state(task, TASK_STATE_STOP) != ERROR_OK)
+    if (task_stop(task) != ERROR_OK)
       CPU_LEAVE(_cpu, ERROR_KO);
 
   /*
@@ -250,7 +250,7 @@ t_error			cpu_migrate(i_task			task,
    */
 
   if (state == TASK_STATE_RUN)
-    if (task_state(task, TASK_STATE_RUN) != ERROR_OK)
+    if (task_run(task) != ERROR_OK)
       CPU_LEAVE(_cpu, ERROR_KO);
 
   CPU_LEAVE(_cpu, ERROR_OK);

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [mon nov 22 22:31:28 2010]
+ * updated       julien quintard   [thu nov 25 11:56:11 2010]
  */
 
 /*
@@ -43,7 +43,7 @@ extern m_thread*	_thread;
  * the thread manager dispatch.
  */
 
-d_thread			thread_dispatch =
+d_thread		glue_thread_dispatch =
   {
     NULL,
     NULL,
@@ -52,6 +52,9 @@ d_thread			thread_dispatch =
     glue_thread_load,
     glue_thread_store,
     glue_thread_reserve,
+    NULL,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL,

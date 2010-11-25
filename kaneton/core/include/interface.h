@@ -73,7 +73,6 @@
 #define INTERFACE_TASK_RESERVE 49
 #define INTERFACE_TASK_RELEASE 50
 #define INTERFACE_TASK_PRIORITY 51
-#define INTERFACE_TASK_STATE 52
 #define INTERFACE_TASK_WAIT 53
 #define INTERFACE_TASK_ATTRIBUTE_PARENT 54
 #define INTERFACE_TASK_ATTRIBUTE_CLASS 55
@@ -87,7 +86,6 @@
 #define INTERFACE_THREAD_RESERVE 63
 #define INTERFACE_THREAD_RELEASE 64
 #define INTERFACE_THREAD_PRIORITY 65
-#define INTERFACE_THREAD_STATE 66
 #define INTERFACE_THREAD_STACK 67
 #define INTERFACE_THREAD_LOAD 68
 #define INTERFACE_THREAD_STORE 69
@@ -382,11 +380,6 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_state	arg2;
-	}		task_state;
-	struct
-	{
-	  t_id	arg1;
 	  t_options	arg2;
 	}		task_wait;
 	struct
@@ -441,11 +434,6 @@ typedef struct
 	  t_id	arg1;
 	  t_priority	arg2;
 	}		thread_priority;
-	struct
-	{
-	  t_id	arg1;
-	  t_state	arg2;
-	}		thread_state;
 	struct
 	{
 	  t_id	arg1;
@@ -857,8 +845,6 @@ t_error		interface_task_release(o_syscall*	message);
 
 t_error		interface_task_priority(o_syscall*	message);
 
-t_error		interface_task_state(o_syscall*	message);
-
 t_error		interface_task_wait(o_syscall*	message);
 
 t_error		interface_task_attribute_parent(o_syscall*	message);
@@ -884,8 +870,6 @@ t_error		interface_thread_reserve(o_syscall*	message);
 t_error		interface_thread_release(o_syscall*	message);
 
 t_error		interface_thread_priority(o_syscall*	message);
-
-t_error		interface_thread_state(o_syscall*	message);
 
 t_error		interface_thread_stack(o_syscall*	message);
 

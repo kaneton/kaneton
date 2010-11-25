@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/cpu.h
+ * file          /home/mycure/kane...ue/ibm-pc.ia32/educational/include/cpu.h
  *
  * created       julien quintard   [mon jun  4 01:05:31 2007]
- * updated       matthieu bucchianeri   [fri jun 15 09:42:38 2007]
+ * updated       julien quintard   [wed nov 24 14:15:57 2010]
  */
 
 #ifndef GLUE_CPU_H
@@ -19,15 +19,15 @@
  */
 
 #define		machine_include_cpu()					\
-  extern d_cpu		cpu_dispatch
+  extern d_cpu		glue_cpu_dispatch
 
 #define		machine_call_cpu(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;					\
+      t_error	_r_ = ERROR_OK;						\
 									\
-      if (cpu_dispatch._function_ != NULL)				\
-        _r_ = cpu_dispatch._function_(_args_);				\
+      if (glue_cpu_dispatch._function_ != NULL)				\
+        _r_ = glue_cpu_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\

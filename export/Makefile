@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/export/Makefile
 #
 # created       julien quintard   [sun jun 10 14:53:00 2007]
-# updated       julien quintard   [fri oct 22 09:54:24 2010]
+# updated       julien quintard   [tue nov 23 22:28:16 2010]
 #
 
 #

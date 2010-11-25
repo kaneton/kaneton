@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/task.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [mon nov 22 11:54:25 2010]
+ * updated       julien quintard   [thu nov 25 11:59:26 2010]
  */
 
 #ifndef CORE_TASK_H
@@ -166,8 +166,10 @@ typedef struct
   t_error			(*task_release)(i_task);
   t_error			(*task_priority)(i_task,
 						 t_priority);
-  t_error			(*task_state)(i_task,
-					      t_state);
+  t_error			(*task_run)(i_task);
+  t_error			(*task_stop)(i_task);
+  t_error			(*task_block)(i_task);
+  t_error			(*task_die)(i_task);
   t_error			(*task_wait)(i_task,
 					     t_options,
 					     t_wait*);
@@ -236,8 +238,13 @@ t_error			task_release(i_task			id);
 t_error			task_priority(i_task			id,
 				      t_priority		prior);
 
-t_error			task_state(i_task			id,
-				   t_state			state);
+t_error			task_run(i_task				id);
+
+t_error			task_stop(i_task			id);
+
+t_error			task_block(i_task			id);
+
+t_error			task_die(i_task				id);
 
 t_error			task_wait(i_task			id,
 				  t_options			opts,

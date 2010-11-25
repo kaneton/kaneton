@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/server/server.py
+# file          /home/mycure/kaneton.STABLE/test/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [sat nov 13 17:56:41 2010]
+# updated       julien quintard   [tue nov 23 23:02:37 2010]
 #
 
 #
@@ -339,7 +339,7 @@ def                     Test(capability,
       return (ktp.StatusError, "the tests quota seems to have been reached")
 
     # create a unique identifier for the test context.
-    identifier = time.strftime("%Y%m%d-%H%M%S")
+    identifier = time.strftime("%Y%m%d:%H%M%S")
 
     # retrieve the current data.
     date = time.strftime("%Y/%m/%d %H:%M:%S")
@@ -508,7 +508,7 @@ def                     Submit(capability,
                 "been submitted")
 
     # create a unique identifier for the submission.
-    identifier = time.strftime("%Y%m%d-%H%M%S")
+    identifier = time.strftime("%Y%m%d:%H%M%S")
 
     # retrieve the current date.
     date = time.strftime("%Y/%m/%d %H:%M:%S")

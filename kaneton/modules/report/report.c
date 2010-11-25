@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/kaneton/modules/report/report.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [tue nov 23 22:16:39 2010]
+ * updated       julien quintard   [thu nov 25 11:19:24 2010]
  */
 
 /*
@@ -39,7 +39,7 @@ extern t_printf_attr_fn		printf_attr;
  * the module structure.
  */
 
-m_report			_report;
+m_module_report		_module_report;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -49,28 +49,28 @@ m_report			_report;
  * this function dumps the report.
  */
 
-void			report_dump(void)
+void			module_report_dump(void)
 {
   t_sint32		i;
   t_sint32		j;
 
-  if (_report.offset == 0)
+  if (_module_report.offset == 0)
     return;
 
   printf("[!] report:\n");
 
-  for (i = _report.offset - 1, j = i; i >= 0; i--)
+  for (i = _module_report.offset - 1, j = i; i >= 0; i--)
     {
-      if (_report.buffer[i] == '\0' && (j - i) > 0)
+      if (_module_report.buffer[i] == '\0' && (j - i) > 0)
 	{
-	  printf("[!]   %s\n", _report.buffer + i + 1);
+	  printf("[!]   %s\n", _module_report.buffer + i + 1);
 
 	  j = i;
 	}
     }
 
   if ((j - i) > 0)
-    printf("[!]   %s\n", _report.buffer + i + 1);
+    printf("[!]   %s\n", _module_report.buffer + i + 1);
 }
 
 /*
@@ -78,9 +78,9 @@ void			report_dump(void)
  * a single character in the static report buffer.
  */
 
-int			report_character(char			c)
+int			module_report_character(char		c)
 {
-  _report.buffer[_report.offset++] = c;
+  _module_report.buffer[_module_report.offset++] = c;
 
   return (1);
 }
@@ -91,7 +91,7 @@ int			report_character(char			c)
  * in the report module's context, this functionality is simply ignored.
  */
 
-void			report_attribute(t_uint8		attribute)
+void			module_report_attribute(t_uint8		attribute)
 {
 }
 
@@ -108,8 +108,8 @@ void			report_attribute(t_uint8		attribute)
  * 5) restore the printf()'s function pointers.
  */
 
-void			report_record(char*			fmt,
-				      ...)
+void			module_report_record(char*		fmt,
+					     ...)
 {
   va_list		args;
 
@@ -117,14 +117,14 @@ void			report_record(char*			fmt,
    * 1)
    */
 
-  _report.printf.character = printf_char;
-  _report.printf.attribute = printf_attr;
+  _module_report.printf.character = printf_char;
+  _module_report.printf.attribute = printf_attr;
 
   /*
    * 2)
    */
 
-  printf_init(report_character, report_attribute);
+  printf_init(module_report_character, module_report_attribute);
 
   /*
    * 3)
@@ -140,34 +140,35 @@ void			report_record(char*			fmt,
    * 4)
    */
 
-  _report.buffer[_report.offset++] = '\0';
+  _module_report.buffer[_module_report.offset++] = '\0';
 
   /*
    * 5)
    */
 
-  printf_char = _report.printf.character;
-  printf_attr = _report.printf.attribute;
+  printf_char = _module_report.printf.character;
+  printf_attr = _module_report.printf.attribute;
 }
 
 /*
  * this function initializes the report module.
  */
 
-t_error			report_initialize(void)
+t_error			module_report_initialize(void)
 {
-  module_call(console, console_message, '+', "report module loaded\n");
+  module_call(console, console_message,
+	      '+', "report module loaded\n");
 
-  _report.offset = 0;
+  _module_report.offset = 0;
 
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }
 
 /*
  * this function cleans everything.
  */
 
-t_error			report_clean(void)
+t_error			module_report_clean(void)
 {
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/modules/test/test.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [tue nov 23 10:34:01 2010]
+ * updated       julien quintard   [wed nov 24 15:45:41 2010]
  */
 
 /*
@@ -36,7 +36,7 @@
  * automatically generated.
  */
 
-extern s_test_function	test_functions[];
+extern s_module_test_function	_module_test_functions[];
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -46,17 +46,7 @@ extern s_test_function	test_functions[];
  * the module structure.
  */
 
-m_test			_test;
-
-/*
- * the test commands.
- */
-
-s_test_command		test_commands[] =
-  {
-    { "[call] ", test_call },
-    { NULL, NULL }
-  };
+m_module_test		_module_test;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -66,8 +56,8 @@ s_test_command		test_commands[] =
  * this function performs a very simple XOR-based checksum on the given data.
  */
 
-t_uint32		test_checksum(void*			data,
-				      t_uint32			size)
+t_uint32		module_test_checksum(void*		data,
+					     t_uint32		size)
 {
   t_uint8*		d = data;
   t_uint32		crc = 0;
@@ -89,9 +79,9 @@ t_uint32		test_checksum(void*			data,
  * 3) send the message by issuing multiple serial_write()
  */
 
-t_error			test_send(t_uint8			type,
-				  char*				message,
-				  t_uint32			length)
+t_error			module_test_send(t_uint8		type,
+					 char*			message,
+					 t_uint32		length)
 {
   t_uint32		magic;
   t_uint32		crc;
@@ -99,69 +89,95 @@ t_error			test_send(t_uint8			type,
   /*
    * 1)
    */
-  test_flush();
+
+  module_test_flush();
 
   /*
    * 2)
    */
-  magic = TEST_MAGIC;
-  crc = test_checksum(message, length);
+
+  magic = MODULE_TEST_MAGIC;
+  crc = module_test_checksum(message, length);
 
   /*
    * 3)
    */
-  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&magic, sizeof(t_uint32));
-  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&type, sizeof(t_uint8));
-  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&length, sizeof(t_uint32));
-  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)&crc, sizeof(t_uint32));
-  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)message, length);
 
-  return (ERROR_OK);
+  platform_serial_write(PLATFORM_SERIAL_PRIMARY,
+			(t_uint8*)&magic,
+			sizeof(t_uint32));
+
+  platform_serial_write(PLATFORM_SERIAL_PRIMARY,
+			(t_uint8*)&type,
+			sizeof(t_uint8));
+
+  platform_serial_write(PLATFORM_SERIAL_PRIMARY,
+			(t_uint8*)&length,
+			sizeof(t_uint32));
+
+  platform_serial_write(PLATFORM_SERIAL_PRIMARY,
+			(t_uint8*)&crc,
+			sizeof(t_uint32));
+
+  platform_serial_write(PLATFORM_SERIAL_PRIMARY,
+			(t_uint8*)message,
+			length);
+
+  MODULE_LEAVE();
 }
 
 /*
  * this function receives a message, either a text or command.
  */
 
-t_error			test_receive(t_uint8*			type,
-				     char*			message)
+t_error			module_test_receive(t_uint8*		type,
+					    char*		message)
 {
   t_uint32		magic;
   t_uint32		length;
   t_uint32		crc;
 
-  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)&magic, sizeof(t_uint32));
+  platform_serial_read(PLATFORM_SERIAL_PRIMARY,
+		       (t_uint8*)&magic,
+		       sizeof(t_uint32));
 
-  if (magic != TEST_MAGIC)
-    {
-      module_call(console, console_message, '!', "wrong magic\n");
+  if (magic != MODULE_TEST_MAGIC)
+    MODULE_ESCAPE("invalid magic number received");
 
-      return (ERROR_KO);
-    }
+  platform_serial_read(PLATFORM_SERIAL_PRIMARY,
+		       (t_uint8*)type,
+		       sizeof(t_uint8));
 
-  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)type, sizeof(t_uint8));
-  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)&length, sizeof(t_uint32));
-  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)&crc, sizeof(t_uint32));
+  platform_serial_read(PLATFORM_SERIAL_PRIMARY,
+		       (t_uint8*)&length,
+		       sizeof(t_uint32));
 
-  ibmpc_serial_read(IBMPC_SERIAL_PRIMARY, (t_uint8*)message, length);
+  platform_serial_read(PLATFORM_SERIAL_PRIMARY,
+		       (t_uint8*)&crc,
+		       sizeof(t_uint32));
 
-  if (crc != test_checksum(message, length))
-    {
-      module_call(console, console_message, '!', "wrong CRC\n");
+  platform_serial_read(PLATFORM_SERIAL_PRIMARY,
+		       (t_uint8*)message,
+		       length);
 
-      return (ERROR_KO);
-    }
+  if (crc != module_test_checksum(message, length))
+    MODULE_ESCAPE("invalid received message's CRC");
 
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }
 
 /*
  * this function is a wrapper for sending commands.
  */
 
-t_error			test_issue(char*			command)
+t_error			module_test_issue(char*			command)
 {
-  return (test_send(TEST_TYPE_COMMAND, command, strlen(command)));
+  if (module_test_send(MODULE_TEST_TYPE_COMMAND,
+		       command,
+		       strlen(command)) != ERROR_OK)
+    MODULE_ESCAPE("unable to send a command back to the client");
+
+  MODULE_LEAVE();
 }
 
 /*
@@ -169,21 +185,25 @@ t_error			test_issue(char*			command)
  * before reinitializing the buffer.
  */
 
-t_error			test_flush(void)
+t_error			module_test_flush(void)
 {
-  t_uint32		size = _test.size;
+  t_uint32		size = _module_test.size;
 
-  if (_test.size == 0)
-    return (ERROR_OK);
+  if (_module_test.size == 0)
+    MODULE_LEAVE();
 
-  _test.size = 0;
+  _module_test.size = 0;
 
-  if (test_send(TEST_TYPE_TEXT, _test.buffer, size) != ERROR_OK)
-    return (ERROR_KO);
+  if (module_test_send(MODULE_TEST_TYPE_TEXT,
+		       _module_test.buffer,
+		       size) != ERROR_OK)
+    MODULE_ESCAPE("unable to send the buffer back to the client");
 
-  memset(_test.buffer, 0x0, sizeof(_test.buffer));
+  memset(_module_test.buffer,
+	 0x0,
+	 sizeof(_module_test.buffer));
 
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }
 
 /*
@@ -195,13 +215,13 @@ t_error			test_flush(void)
  * the buffer is flushed into a text message.
  */
 
-int			test_write(char				c)
+int			module_test_write(char			c)
 {
-  _test.buffer[_test.size++] = c;
+  _module_test.buffer[_module_test.size++] = c;
 
-  if ((_test.size >= (sizeof(_test.buffer) - 1)) ||
+  if ((_module_test.size >= (sizeof(_module_test.buffer) - 1)) ||
       (c == '\n'))
-    test_flush();
+    module_test_flush();
 
   return (1);
 }
@@ -210,51 +230,58 @@ int			test_write(char				c)
  * this function locates a test function according to its symbol name.
  */
 
-f_test			test_locate(char*			symbol)
+t_error			module_test_locate(char*		symbol,
+					   f_module_test*	function)
 {
   unsigned int  i;
 
-  for (i = 0; test_functions[i].symbol != NULL; i++)
-    if (strcmp(test_functions[i].symbol, symbol) == 0)
-      return (test_functions[i].function);
+  for (i = 0; _module_test_functions[i].symbol != NULL; i++)
+    if (strcmp(_module_test_functions[i].symbol, symbol) == 0)
+      {
+	*function = _module_test_functions[i].function;
 
-  return (NULL);
+	MODULE_LEAVE();
+      }
+
+  MODULE_ESCAPE("unable to locate the test symbol");
 }
 
 /*
  * this function takes a test function symbol and calls it.
  */
 
-void			test_call(char*				symbol)
+t_error			module_test_call(char*			symbol)
 {
-  f_test		test;
+  f_module_test		test;
 
-  if ((test = test_locate(symbol)) == NULL)
-    {
-      module_call(console, console_message, '!', "unknown test '%s'", symbol);
+  if (module_test_locate(symbol, &test) != ERROR_OK)
+    MODULE_ESCAPE("invalid test symbol");
 
-      return;
-    }
-
-  test_issue("[enter]");
+  module_test_issue("[enter]");
 
   test();
 
-  test_issue("[leave]");
+  module_test_issue("[leave]");
+
+  MODULE_LEAVE();
 }
 
 /*
  * this function dumps the registered test functions.
  */
 
-void			test_dump(void)
+void			module_test_dump(void)
 {
   unsigned int  i;
 
-  module_call(console, console_message, '#', "[tests]\n");
+  module_call(console, console_message,
+	      '#', "[tests]\n");
 
-  for (i = 0; test_functions[i].symbol != NULL; i++)
-    module_call(console, console_message, '#', "  [%s] 0x%x\n", test_functions[i].symbol, test_functions[i].function);
+  for (i = 0; _module_test_functions[i].symbol != NULL; i++)
+    module_call(console, console_message,
+		'#', "  [%s] 0x%x\n",
+		_module_test_functions[i].symbol,
+		_module_test_functions[i].function);
 }
 
 /*
@@ -263,30 +290,41 @@ void			test_dump(void)
  * and waiting for commands.
  */
 
-t_error			test_run(void)
+t_error			module_test_run(void)
 {
-  module_call(console, console_message, '+', "test module loaded\n");
+  s_module_test_command	commands[] =
+    {
+      { "[call] ", module_test_call },
+      { NULL, NULL }
+    };
+
+  module_call(console, console_message,
+	      '+', "test module loaded\n");
 
   /*
    * 1)
    */
-  ibmpc_serial_init(IBMPC_SERIAL_PRIMARY,
-		    IBMPC_SERIAL_BR57600,
-		    IBMPC_SERIAL_8N1);
+
+  platform_serial_setup(PLATFORM_SERIAL_PRIMARY,
+			PLATFORM_SERIAL_BR57600,
+			PLATFORM_SERIAL_8N1);
 
   /*
    * 2)
    */
-  printf_init(test_write, NULL);
+
+  printf_init(module_test_write, NULL);
 
   /*
    * 3)
    */
-  test_issue("[ready]");
+
+  module_test_issue("[ready]");
 
   /*
    * 4)
    */
+
   while (1)
     {
       char		message[512];
@@ -295,89 +333,47 @@ t_error			test_run(void)
 
       memset(message, 0x0, sizeof(message));
 
-      if (test_receive(&type, message) != ERROR_OK)
-	continue;
-
-      if (type != TEST_TYPE_COMMAND)
-	continue;
-
-      for (i = 0; test_commands[i].command != NULL; i++)
+      if (module_test_receive(&type, message) != ERROR_OK)
 	{
-	  if (strncmp(test_commands[i].command,
+	  module_call(console, console_message,
+		      '!', "unable to received a test request\n");
+
+	  module_call(report, report_dump);
+
+	  continue;
+	}
+
+      if (type != MODULE_TEST_TYPE_COMMAND)
+	{
+	  module_call(console, console_message,
+		      '!', "invalid command type\n");
+
+	  module_call(report, report_dump);
+
+	  continue;
+	}
+
+      for (i = 0; commands[i].command != NULL; i++)
+	{
+	  if (strncmp(commands[i].command,
 		      message,
-		      strlen(test_commands[i].command)) == 0)
-	    test_commands[i].function(message +
-				      strlen(test_commands[i].command));
+		      strlen(commands[i].command)) == 0)
+	    {
+	      t_uint32		offset = strlen(commands[i].command);
+
+	      if (commands[i].function(message + offset) != ERROR_OK)
+		{
+		  module_call(console, console_message,
+			      '!', "an error occured in the triggered "
+			      "command\n");
+
+		  module_call(report, report_dump);
+
+		  continue;
+		}
+	    }
 	}
     }
 
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }
-
-/* XXX
-
-#ifdef TESTSUITE_MANUAL_ENABLE
-  extern i_thread kthread;
-
-  kthread = ID_UNUSED;
-
-  //  STI();
-
-  module_call(console, console_message, '+', "running manual tests\n");
-  check_tests();
-
-  CLI();
-
-#ifdef TESTSUITE_FAST_REBOOT
-  // disable paging to remap the bootloader
-  asm volatile("movl %%cr0, %%eax\n\t"
-	       "andl $0x7FFFFFFF, %%eax\n\t"
-	       "movl %%eax, %%cr0\n\t"
-	       :
-	       :
-	       : "%eax", "memory");
-
-// back to the bootloader
-  return;
-#else
-  while (1)
-    ;
-#endif
-
-  kthread = 0;
-#endif
-
-#if TESTSUITE_DEBUG_ENABLE
-  extern i_thread kthread;
-
-  module_call(console, console_message, '+', "starting debug manager\n");
-  kthread = ID_UNUSED;
-
-#ifdef IA32_DEPENDENT
-  STI();
-#endif
-  debug_initialize();
-#ifdef IA32_DEPENDENT
-  CLI();
-#endif
-
-#ifdef TESTSUITE_FAST_REBOOT
-// disable paging to remap the bootloader
-  asm volatile("movl %%cr0, %%eax\n\t"
-	       "andl $0x7FFFFFFF, %%eax\n\t"
-	       "movl %%eax, %%cr0\n\t"
-	       :
-	       :
-	       : "%eax", "memory");
-
-// back to the bootloader
-  return;
-#else
-  while (1)
-    ;
-#endif
-
-  kthread = 0;
-#endif
-
-*/

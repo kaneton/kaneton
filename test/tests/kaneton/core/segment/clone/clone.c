@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/segment/clone/clone.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:24:04 2010]
+ * updated       julien quintard   [wed nov 24 09:38:53 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -39,10 +39,10 @@ void			test_core_segment_clone(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(kasid,
+  if (segment_reserve(_kernel->as,
 		      PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &seg) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
   for (i = 0; i < PAGESZ; i++)
@@ -50,19 +50,19 @@ void			test_core_segment_clone(void)
       buff[i] = (i * 2 + 4) % 256;
     }
 
-  if (segment_write(seg, 0, buff, PAGESZ) != ERROR_NONE)
+  if (segment_write(seg, 0, buff, PAGESZ) != ERROR_OK)
     TEST_ERROR("[segment_write] error\n");
 
-  if (segment_clone(kasid, seg, &seg2) != ERROR_NONE)
+  if (segment_clone(_kernel->as, seg, &seg2) != ERROR_OK)
     TEST_ERROR("[segment_clone] error\n");
 
-  if (segment_get(seg2, &o) != ERROR_NONE)
+  if (segment_get(seg2, &o) != ERROR_OK)
     TEST_ERROR("[segment_get] error\n");
 
-  if (o->asid != kasid)
+  if (o->as != _kernel->as)
     TEST_ERROR("invalid segment's address space identfiier after cloning\n");
 
-  if (o->perms != (PERM_READ | PERM_WRITE))
+  if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))
     TEST_ERROR("invalid segment's permissions after cloning\n");
 
   if (o->size != PAGESZ)
@@ -73,7 +73,7 @@ void			test_core_segment_clone(void)
       buff[i] = 0;
     }
 
-  if (segment_read(seg2, 0, buff, PAGESZ) != ERROR_NONE)
+  if (segment_read(seg2, 0, buff, PAGESZ) != ERROR_OK)
     TEST_ERROR("[segment_read] error\n");
 
   for (i = 0; i < PAGESZ; i++)
@@ -82,10 +82,10 @@ void			test_core_segment_clone(void)
 	TEST_ERROR("invalid data after cloning\n");
     }
 
-  if (segment_release(seg) != ERROR_NONE)
+  if (segment_release(seg) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
-  if (segment_release(seg2) != ERROR_NONE)
+  if (segment_release(seg2) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
   TEST_LEAVE();

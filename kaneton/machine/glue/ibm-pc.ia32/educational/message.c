@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/message.c
  *
  * created       matthieu bucchianeri   [sun jun 17 18:16:18 2007]
- * updated       julien quintard   [mon nov 22 22:27:38 2010]
+ * updated       julien quintard   [wed nov 24 14:20:45 2010]
  */
 
 /*
@@ -42,7 +42,7 @@ extern m_message*	_message;
  * the ibm-pc.ia32 message manager dispatch.
  */
 
-d_message		       	message_dispatch =
+d_message		glue_message_dispatch =
   {
     NULL,
     NULL,

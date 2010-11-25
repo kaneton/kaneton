@@ -24,9 +24,5 @@
   filename: sets/ibm-pc.ia32
 
 -
-  operation: import
-  filename: sets/user:test
-
--
   operation: tarball
   filename: test:contributor

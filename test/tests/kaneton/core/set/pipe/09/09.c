@@ -38,7 +38,7 @@ void			test_core_set_pipe_09(void)
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_id), &id) != ERROR_NONE)
+  if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
   /*
@@ -49,7 +49,7 @@ void			test_core_set_pipe_09(void)
     {
       objs[i] = 4 * i;
 
-      if (set_push(id, &objs[i]) != ERROR_NONE)
+      if (set_push(id, &objs[i]) != ERROR_OK)
         TEST_ERROR("[set_push] error\n");
     }
 
@@ -57,14 +57,14 @@ void			test_core_set_pipe_09(void)
    * pick
    */
 
-  if (set_size(id, &sz) != ERROR_NONE)
+  if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   printf("%qd elements: ", sz);
   st = 0;
   for (i = 0; i < sz; i++)
     {
-      if (set_pick(id, (void**)&obj) != ERROR_NONE)
+      if (set_pick(id, (void**)&obj) != ERROR_OK)
         TEST_ERROR("[set_pick] error\n");
 
       if (!st++)
@@ -72,7 +72,7 @@ void			test_core_set_pipe_09(void)
       else
         printf(" %qd", *obj);
 
-      if (set_pop(id) != ERROR_NONE)
+      if (set_pop(id) != ERROR_OK)
 	TEST_ERROR("[set_pop] error\n");
     }
   printf("\n");
@@ -81,7 +81,7 @@ void			test_core_set_pipe_09(void)
    * release
    */
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
   TEST_LEAVE();

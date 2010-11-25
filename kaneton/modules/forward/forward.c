@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/modules/forward/forward.c
+ * file          /home/mycure/kane...STABLE/kaneton/modules/forward/forward.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [tue nov 23 10:34:19 2010]
+ * updated       julien quintard   [wed nov 24 15:45:52 2010]
  */
 
 /*
@@ -37,7 +37,7 @@
  * the module structure.
  */
 
-m_forward		_forward;
+m_module_forward	_module_forward;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -47,14 +47,16 @@ m_forward		_forward;
  * this function sends some text.
  */
 
-t_error			forward_send(char*			message,
-				     t_uint32			length)
+t_error			module_forward_send(char*		message,
+					    t_uint32		length)
 {
-  forward_flush();
+  module_forward_flush();
 
-  ibmpc_serial_write(IBMPC_SERIAL_PRIMARY, (t_uint8*)message, length);
+  platform_serial_write(PLATFORM_SERIAL_PRIMARY,
+			(t_uint8*)message,
+			length);
 
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }
 
 /*
@@ -62,21 +64,24 @@ t_error			forward_send(char*			message,
  * before reinitializing the buffer.
  */
 
-t_error			forward_flush(void)
+t_error			module_forward_flush(void)
 {
-  t_uint32		size = _forward.size;
+  t_uint32		size = _module_forward.size;
 
-  if (_forward.size == 0)
-    return (ERROR_OK);
+  if (_module_forward.size == 0)
+    MODULE_LEAVE();
 
-  _forward.size = 0;
+  _module_forward.size = 0;
 
-  if (forward_send(_forward.buffer, size) != ERROR_OK)
-    return (ERROR_KO);
+  if (module_forward_send(_module_forward.buffer,
+			  size) != ERROR_OK)
+    MODULE_ESCAPE("unable to send the buffer to the serial line");
 
-  memset(_forward.buffer, 0x0, sizeof(_forward.buffer));
+  memset(_module_forward.buffer,
+	 0x0,
+	 sizeof(_module_forward.buffer));
 
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }
 
 /*
@@ -88,13 +93,13 @@ t_error			forward_flush(void)
  * the buffer is flushed into a text message.
  */
 
-int			forward_write(char				c)
+int			module_forward_write(char			c)
 {
-  _forward.buffer[_forward.size++] = c;
+  _module_forward.buffer[_module_forward.size++] = c;
 
-  if ((_forward.size >= (sizeof(_forward.buffer) - 1)) ||
+  if ((_module_forward.size >= (sizeof(_module_forward.buffer) - 1)) ||
       (c == '\n'))
-    forward_flush();
+    module_forward_flush();
 
   return (1);
 }
@@ -103,24 +108,25 @@ int			forward_write(char				c)
  * this function just initializes the forward.
  */
 
-t_error			forward_initialize(void)
+t_error			module_forward_initialize(void)
 {
-  module_call(console, console_message, '+', "forward module loaded\n");
+  module_call(console, console_message,
+	      '+', "forward module loaded\n");
 
-  ibmpc_serial_init(IBMPC_SERIAL_PRIMARY,
-		    IBMPC_SERIAL_BR57600,
-		    IBMPC_SERIAL_8N1);
+  platform_serial_setup(PLATFORM_SERIAL_PRIMARY,
+			PLATFORM_SERIAL_BR57600,
+			PLATFORM_SERIAL_8N1);
 
-  printf_init(forward_write, NULL);
+  printf_init(module_forward_write, NULL);
 
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }
 
 /*
  * this function cleans everything.
  */
 
-t_error			forward_clean(void)
+t_error			module_forward_clean(void)
 {
-  return (ERROR_OK);
+  MODULE_LEAVE();
 }

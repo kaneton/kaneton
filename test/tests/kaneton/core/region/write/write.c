@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -37,19 +37,19 @@ void			test_core_region_write(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(kasid,
+  if (segment_reserve(_kernel->as,
 		      PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &seg) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
-  if (region_reserve(kasid,
+  if (region_reserve(_kernel->as,
 		     seg,
 		     0,
-		     REGION_OPT_FORCE,
+		     REGION_OPTION_FORCE,
 		     0x70000000,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
+		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
   p = (t_uint8*)(t_vaddr)reg;

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/kaneton/core/time/Makefile
+# file          /home/mycure/kaneton.STABLE/kaneton/core/time/Makefile
 #
 # created       julien quintard   [sun jun 10 17:11:24 2007]
-# updated       matthieu bucchianeri   [sat sep  1 12:29:19 2007]
+# updated       julien quintard   [wed nov 24 18:58:06 2010]
 #
 
 #
@@ -33,11 +33,13 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TIME_C			:=		timer.c
+TIME_C			:=		clock.c				\
+					timer.c				
 
 TIME_O			:=		$(TIME_C:.c=.o)
 
-TIME_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/timer.h
+TIME_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/clock.h	\
+					$(_CORE_INCLUDE_DIR_)/timer.h	
 
 #
 # ---------- rules ------------------------------------------------------------

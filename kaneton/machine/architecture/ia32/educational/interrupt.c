@@ -361,7 +361,7 @@ void			ia32_handler_irq(t_uint32			nr)
 	{
 	  IA32_CALL_HANDLER(o->handler, id, o->data);
 
-	  ibmpc_irq_acknowledge(nr);
+	  platform_irq_acknowledge(nr);
 	}
       else
 	event_notify(id);

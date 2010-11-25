@@ -38,69 +38,69 @@ void			test_core_as_readwrite(void)
   TEST_ENTER();
 
   if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task) != ERROR_NONE)
+		   TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE,
+		   &task) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
+  if (as_reserve(task, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
   if (segment_reserve(as,
 		      2 * PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &seg1) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &seg1) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
   if (segment_reserve(as,
 		      PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &useless) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
   if (segment_reserve(as,
 		      4 * PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &seg2) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &seg2) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
   if (segment_reserve(as,
 		      PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &useless) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
   if (segment_reserve(as,
 		      2 * PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &seg3) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &seg3) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
   if (region_reserve(as,
 		     seg1,
 		     PAGESZ,
-		     REGION_OPT_FORCE,
+		     REGION_OPTION_FORCE,
 		     0x20000000,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
+		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
   if (region_reserve(as,
 		     seg2,
 		     PAGESZ,
-		     REGION_OPT_FORCE,
+		     REGION_OPTION_FORCE,
 		     0x20001000,
 		     2 * PAGESZ,
-		     &reg) != ERROR_NONE)
+		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
   if (region_reserve(as,
 		     seg3,
 		     0,
-		     REGION_OPT_FORCE,
+		     REGION_OPTION_FORCE,
 		     0x20003000,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
+		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)
@@ -109,7 +109,7 @@ void			test_core_as_readwrite(void)
   if (as_write(as,
 	       buff + 10,
 	       4 * PAGESZ - 12,
-	       0x2000000a) != ERROR_NONE)
+	       0x2000000a) != ERROR_OK)
     TEST_ERROR("[as_write] error\n");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)
@@ -118,19 +118,19 @@ void			test_core_as_readwrite(void)
   if (segment_read(seg1,
 		   PAGESZ,
 		   buff,
-		   PAGESZ) != ERROR_NONE)
+		   PAGESZ) != ERROR_OK)
     TEST_ERROR("[segment_read] error\n");
 
   if (segment_read(seg2,
 		   PAGESZ,
 		   buff + PAGESZ,
-		   2 * PAGESZ) != ERROR_NONE)
+		   2 * PAGESZ) != ERROR_OK)
     TEST_ERROR("[segment_read] error\n");
 
   if (segment_read(seg3,
 		   0,
 		   buff + 3 * PAGESZ,
-		   PAGESZ) != ERROR_NONE)
+		   PAGESZ) != ERROR_OK)
     TEST_ERROR("[segment_read] error\n");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)
@@ -143,7 +143,7 @@ void			test_core_as_readwrite(void)
   if (as_read(as,
 	      0x2000000a,
 	      4 * PAGESZ - 12,
-	      buff + 10) != ERROR_NONE)
+	      buff + 10) != ERROR_OK)
     TEST_ERROR("[as_read] error\n");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)

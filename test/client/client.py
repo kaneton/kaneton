@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/client/client.py
+# file          /home/mycure/kaneton.TETON/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [wed nov 17 13:58:46 2010]
+# updated       julien quintard   [wed nov 24 09:12:52 2010]
 #
 
 #
@@ -269,7 +269,7 @@ def                     Information(server, capability, arguments):
   item = None
 
   # check the arguments
-  if len(arguments) != 1:
+  if len(arguments) != 0:
     Usage()
     sys.exit(42)
 
@@ -299,13 +299,13 @@ def                     Test(server, capability, arguments):
   Warning()
 
   # check the arguments
-  if len(arguments) != 3:
+  if len(arguments) != 2:
     Usage()
     sys.exit(42)
 
   # retrieve the arguments.
-  environment = arguments[1]
-  suite = arguments[2]
+  environment = arguments[0]
+  suite = arguments[1]
 
   # display the information by exploring the tree.
   env.display(env.HEADER_OK,
@@ -313,9 +313,9 @@ def                     Test(server, capability, arguments):
               env.OPTION_NONE)
 
   # export the current kaneton implementation.
-#  env.launch(env._EXPORT_SCRIPT_,
-#             "test:" + capability["identifier"],
-#             env.OPTION_QUIET)
+  env.launch(env._EXPORT_SCRIPT_,
+             "test:" + capability["identifier"],
+             env.OPTION_QUIET)
 
   # display the information by exploring the tree.
   env.display(env.HEADER_OK,
@@ -365,12 +365,12 @@ def                     Submit(server, capability, arguments):
   Warning()
 
   # check the arguments
-  if len(arguments) != 2:
+  if len(arguments) != 1:
     Usage()
     sys.exit(42)
 
   # retrieve the arguments.
-  stage = arguments[1]
+  stage = arguments[0]
 
   # export the current kaneton implementation.
   env.launch(env._EXPORT_SCRIPT_,
@@ -405,11 +405,11 @@ def                     Display(server, capability, arguments):
   unit = None
 
   # check the arguments
-  if len(arguments) != 2:
+  if len(arguments) != 1:
     Usage()
     sys.exit(42)
 
-  identifier = arguments[1]
+  identifier = arguments[0]
 
   # retrieve the report.
   report = ktp.report.Load(env._TEST_STORE_REPORT_DIR_ + "/" +          \
@@ -442,7 +442,7 @@ def                     List(server, capability, arguments):
   report = None
 
   # check the arguments
-  if len(arguments) != 1:
+  if len(arguments) != 0:
     Usage()
     sys.exit(42)
 
@@ -486,6 +486,7 @@ def                     Main():
 
   server = None
   capability = None
+  command = None
   arguments = None
 
   # retrieve the command.
@@ -493,8 +494,8 @@ def                     Main():
     Usage()
     sys.exit(42)
 
-  # set the arguments.
-  arguments = sys.argv[1].split("::")
+  # set the command.
+  command = sys.argv[1].split("-")[0]
 
   # set the variables.
   g_server = env._TEST_SERVER_
@@ -510,8 +511,15 @@ def                     Main():
 
   # trigger the appropriate command.
   for name in c_commands:
-    if arguments[0] == name.split(" ")[0]:
+    if command == name.split("-")[0]:
+      # set the arguments.
+      if len(sys.argv[1].split("-")) > 1:
+        arguments = sys.argv[1].split("-")[1].split("::")
+      else:
+        arguments = []
+
       c_commands[name](server, capability, arguments)
+
       sys.exit(0)
 
   # wrong command.
@@ -529,9 +537,9 @@ def                     Main():
 c_commands = {
   "information": Information,
   "list": List,
-  "display [identifier]": Display,
-  "test [environment] [suite]": Test,
-  "submit [stage]": Submit
+  "display-[identifier]": Display,
+  "test-[environment]::[suite]": Test,
+  "submit-[stage]": Submit
 }
 
 #

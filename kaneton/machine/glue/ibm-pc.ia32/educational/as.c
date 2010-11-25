@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [mon nov 22 22:05:29 2010]
+ * updated       julien quintard   [wed nov 24 14:19:41 2010]
  */
 
 /*
@@ -52,7 +52,7 @@ extern m_as*		_as;
  * the ibm-pc.ia32 as manager dispatch.
  */
 
-d_as				as_dispatch =
+d_as			glue_as_dispatch =
   {
     NULL,
     NULL,

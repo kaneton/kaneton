@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/init.h
  *
  * created       julien quintard   [wed jun  6 16:16:48 2007]
- * updated       julien quintard   [mon may  4 21:33:21 2009]
+ * updated       julien quintard   [wed nov 24 13:23:34 2010]
  */
 
 #ifndef GLUE_INIT_H
@@ -31,7 +31,7 @@
  * global offset table and the page directory.
  */
 
-#define INIT_SEGMENTS		13
+#define GLUE_INIT_SEGMENTS	13
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
@@ -48,13 +48,13 @@
  * nor in the regions.
  */
 
-#define INIT_REGIONS		10
+#define GLUE_INIT_REGIONS	10
 
 /*
  * the kernel stack size is set to two pages.
  */
 
-#define INIT_KSTACKSZ		(4 * PAGESZ)
+#define GLUE_INIT_KSTACKSZ	(4 * PAGESZ)
 
 /*
  * ---------- macro functions -------------------------------------------------

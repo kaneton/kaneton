@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/core/as/translation/translation.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [thu nov 18 16:15:05 2010]
+ * updated       julien quintard   [wed nov 24 09:29:37 2010]
  */
 
 #ifndef TESTS_KANETON_CORE_AS_TRANSLATION_TRANSLATION_H
@@ -31,7 +31,7 @@
 									\
     v = (_v_);								\
 									\
-    if (as_paddr(kasid, v, &p) != ERROR_NONE)				\
+    if (as_paddr(_kernel->as, v, &p) != ERROR_OK)			\
       TEST_ERROR("[as_paddr] error\n");					\
     									\
     if (p != (_p_))							\
@@ -45,7 +45,7 @@
 									\
     p = (_p_);								\
 									\
-    if (as_vaddr(kasid, p, &v) != ERROR_NONE)				\
+    if (as_vaddr(_kernel->as, p, &v) != ERROR_OK)			\
       TEST_ERROR("[as_vaddr] error\n");					\
 									\
     if (v != (_v_))							\

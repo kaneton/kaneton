@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [tue nov 23 15:53:44 2010]
+ * updated       julien quintard   [thu nov 25 12:11:03 2010]
  */
 
 /*
@@ -55,7 +55,7 @@ extern void		glue_scheduler_idle ();
  * the address space manager dispatch.
  */
 
-d_scheduler			scheduler_dispatch =
+d_scheduler		glue_scheduler_dispatch =
   {
     glue_scheduler_state,
     glue_scheduler_quantum,
@@ -92,11 +92,8 @@ t_error			glue_scheduler_state(t_state		state)
 {
   o_scheduler*		scheduler;
 
-  SCHEDULER_ENTER(_scheduler);
-
   if (scheduler_get(&scheduler) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to retrieve the current CPU's scheduler");
+    MACHINE_ESCAPE("unable to retrieve the current CPU's scheduler");
 
   switch (state)
     {
@@ -107,14 +104,13 @@ t_error			glue_scheduler_state(t_state		state)
     case SCHEDULER_STATE_DISABLE:
       {
 	if (scheduler_yield() != ERROR_OK)
-	  SCHEDULER_ESCAPE(_scheduler,
-			   "unable to yield the execution");
+	  MACHINE_ESCAPE("unable to yield the execution");
 
 	break;
       }
     }
 
-  SCHEDULER_LEAVE(_scheduler);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -161,14 +157,11 @@ void			glue_scheduler_switch_handler(void)
 
 t_error			glue_scheduler_quantum(t_quantum	quantum)
 {
-  SCHEDULER_ENTER(_scheduler);
-
   if (timer_delay(_scheduler->machine.timer, quantum) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to adjust the timer's delay to the "
-		     "scheduler's quantum");
+    MACHINE_ESCAPE("unable to adjust the timer's delay to the "
+		   "scheduler's quantum");
 
-  SCHEDULER_LEAVE(_scheduler);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -178,11 +171,9 @@ t_error			glue_scheduler_quantum(t_quantum	quantum)
 
 t_error			glue_scheduler_yield(void)
 {
-  SCHEDULER_ENTER(_scheduler);
-
   asm volatile ("int $32");
 
-  SCHEDULER_LEAVE(_scheduler);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -198,55 +189,46 @@ t_error			glue_scheduler_initialize(void)
   t_stack		stack;
   o_thread*		o;
 
-  SCHEDULER_ENTER(_scheduler);
-
   if (timer_reserve(TIMER_FUNCTION,
 		    TIMER_HANDLER(glue_scheduler_switch_handler),
 		    0,
 		    _scheduler->quantum,
-		    TIMER_REPEAT_ENABLE,
+		    TIMER_OPTION_REPEAT,
 		    &_scheduler->machine.timer) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to reserve the timer");
+    MACHINE_ESCAPE("unable to reserve the timer");
 
   if (event_reserve(7, EVENT_FUNCTION,
 		    EVENT_HANDLER(glue_scheduler_switch_extended),
 		    0) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to reserve the event assocated with the timer "
-		     "hardware interrupt");
+    MACHINE_ESCAPE("unable to reserve the event assocated with the timer "
+		   "hardware interrupt");
 
   // XXX ici on fait en sorte que la priorite ne soit pas la plus faible pour
   // que le yield fonctionne mais qu'elle soit assez basse tout de meme.
   if (thread_reserve(_kernel->task,
 		     (THREAD_PRIORITY - THREAD_LPRIORITY) / 5,
 		     &_scheduler->idle) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to reserve the idle thread");
+    MACHINE_ESCAPE("unable to reserve the idle thread");
 
   stack.base = 0;
   stack.size = PAGESZ;
 
   if (thread_stack(_scheduler->idle, stack) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to set the stack for the thread");
+    MACHINE_ESCAPE("unable to set the stack for the thread");
 
   if (thread_get(_scheduler->idle, &o) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to retrieve the thread object");
+    MACHINE_ESCAPE("unable to retrieve the thread object");
 
   ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = (t_vaddr)glue_scheduler_idle;
 
   if (thread_load(_scheduler->idle, ctx) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to load the thread context");
+    MACHINE_ESCAPE("unable to load the thread context");
 
-  if (thread_state(_scheduler->idle, THREAD_STATE_RUN) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to set the thread as running");
+  if (thread_run(_scheduler->idle) != ERROR_OK)
+    MACHINE_ESCAPE("unable to set the thread as running");
 
-  SCHEDULER_LEAVE(_scheduler);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -258,17 +240,13 @@ t_error			glue_scheduler_initialize(void)
 
 t_error			glue_scheduler_clean(void)
 {
-  SCHEDULER_ENTER(_scheduler);
-
   if (timer_release(_scheduler->machine.timer) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to release the timer");
+    MACHINE_ESCAPE("unable to release the timer");
 
   if (event_release(7) != ERROR_OK)
-    SCHEDULER_ESCAPE(_scheduler,
-		     "unable to release the timer event");
+    MACHINE_ESCAPE("unable to release the timer event");
 
-  SCHEDULER_LEAVE(_scheduler);
+  MACHINE_LEAVE();
 }
 
 /*

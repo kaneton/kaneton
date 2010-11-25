@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/io.h
+ * file          /home/mycure/kane...lue/ibm-pc.ia32/educational/include/io.h
  *
  * created       julien quintard   [wed jun  6 16:19:54 2007]
- * updated       matthieu bucchianeri   [fri jun 15 09:54:03 2007]
+ * updated       julien quintard   [wed nov 24 14:16:52 2010]
  */
 
 #ifndef GLUE_IO_H
@@ -19,15 +19,15 @@
  */
 
 #define		machine_include_io()					\
-  extern d_io		io_dispatch
+  extern d_io		glue_io_dispatch
 
 #define		machine_call_io(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;					\
+      t_error	_r_ = ERROR_OK;						\
 									\
-      if (io_dispatch._function_ != NULL)				\
-        _r_ = io_dispatch._function_(_args_);				\
+      if (glue_io_dispatch._function_ != NULL)				\
+        _r_ = glue_io_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\

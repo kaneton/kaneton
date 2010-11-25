@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       julien quintard   [fri nov  5 16:37:09 2010]
+# updated       julien quintard   [wed nov 24 19:30:07 2010]
 #
 
 #
@@ -34,6 +34,7 @@ include			../../../../../environment/env.mk
 #
 
 GLUE_C			:=		as.c				\
+					clock.c				\
 					cpu.c				\
 					event.c				\
 					io.c				\
@@ -48,6 +49,7 @@ GLUE_C			:=		as.c				\
 GLUE_O			:=		$(GLUE_C:.c=.o)
 
 GLUE_INCLUDE		:=		$(_GLUE_INCLUDE_DIR_)/as.h	\
+					$(_GLUE_INCLUDE_DIR_)/clock.h	\
 					$(_GLUE_INCLUDE_DIR_)/cpu.h	\
 					$(_GLUE_INCLUDE_DIR_)/event.h	\
 					$(_GLUE_INCLUDE_DIR_)/io.h	\

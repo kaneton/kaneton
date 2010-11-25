@@ -55,22 +55,26 @@ m_kernel*		_kernel = NULL;
  *
  * steps:
  *
- * 1) allocates and initializes the kernel manager structure.
- * 2) initializes the id manager.
- * 3) initializes the set manager.
- * 4) initializes the address space manager.
- * 5) initializes the segment manager.
- * 6) initializes the region manager.
- * 7) initializes the map manager
- * 8) initializes the task manager.
- * 9) initializes the thread manager.
- * 10) initializes the event manager.
- * 11) initializes the timer manager.
- * 12) initializes the io manager.
- * 13) initializes the message manager.
- * 14) initializes the capability manager.
- * 15) initialize the cpu manager.
- * 16) initialize the scheduler manager.
+ * 1) allocate and initialize the kernel structure.
+ * 2) initialize the id manager.
+ * 3) initialize the set manager.
+ * 4) initialize the address space manager.
+ * 5) initialize the segment manager.
+ * 6) initialize the region manager.
+ * 7) initialize the map manager
+ * 8) initialize the task manager.
+ * 9) now that everything is ready, set up the fine grain memory allocator
+ *    in order to work with the kernel managers rather than the
+ *    pre-allocated memory area provided by the boot loader.
+ * 10) initialize the thread manager.
+ * 11) initialize the event manager.
+ * 12) initialize the timer manager.
+ * 13) initialize the clock manager.
+ * 14) initialize the io manager.
+ * 15) initialize the message manager.
+ * 16) initialize the capability manager.
+ * 17) initialize the cpu manager.
+ * 18) initialize the scheduler manager.
  */
 
 void			kernel_initialize(void)
@@ -144,8 +148,8 @@ void			kernel_initialize(void)
   module_call(console, console_message,
 	      '+', "initializing the region manager\n");
 
-  if (region_initialize(REGION_VMEM_MIN, REGION_VMEM_MAX -
-			REGION_VMEM_MIN) != ERROR_OK)
+  if (region_initialize(GLUE_REGION_BASE,
+			GLUE_REGION_SIZE) != ERROR_OK)
     kernel_error("unable to initialize the region manager");
 
   /*
@@ -168,10 +172,14 @@ void			kernel_initialize(void)
   if (task_initialize() != ERROR_OK)
     kernel_error("unable to initialize the task manager");
 
+  /*
+   * 9)
+   */
+
   alloc_setup();
 
   /*
-   * 9)
+   * 10)
    */
 
   module_call(console, console_message,
@@ -181,7 +189,7 @@ void			kernel_initialize(void)
     kernel_error("unable to initialize the thread manager");
 
   /*
-   * 10)
+   * 11)
    */
 
   module_call(console, console_message,
@@ -191,7 +199,7 @@ void			kernel_initialize(void)
     kernel_error("unable to initialize the event manager");
 
   /*
-   * 11)
+   * 12)
    */
 
   module_call(console, console_message,
@@ -201,7 +209,17 @@ void			kernel_initialize(void)
     kernel_error("unable to initialize the timer manager");
 
   /*
-   * 12)
+   * 13)
+   */
+
+  module_call(console, console_message,
+	      '+', "initializing the clock manager\n");
+
+  if (clock_initialize() != ERROR_OK)
+    kernel_error("unable to initialize the clock manager");
+
+  /*
+   * 14)
    */
 
   module_call(console, console_message,
@@ -211,7 +229,7 @@ void			kernel_initialize(void)
     kernel_error("unable to initialize the io manager");
 
   /*
-   * 13)
+   * 15)
    */
 
   module_call(console, console_message,
@@ -221,7 +239,7 @@ void			kernel_initialize(void)
     kernel_error("unable to initialize the message manager");
 
   /*
-   * 14)
+   * 16)
    */
 
   module_call(console, console_message,
@@ -231,7 +249,7 @@ void			kernel_initialize(void)
     kernel_error("unable to initialize the capability manager");
 
   /*
-   * 15)
+   * 17)
    */
 
   module_call(console, console_message,
@@ -241,7 +259,7 @@ void			kernel_initialize(void)
     kernel_error("unable to initialize the cpu manager");
 
   /*
-   * 16)
+   * 18)
    */
 
   module_call(console, console_message,
@@ -260,18 +278,19 @@ void			kernel_initialize(void)
  * 2) cleans the capability manager.
  * 3) cleans the message manager.
  * 4) cleans the io manager.
- * 5) cleans the timer manager.
- * 6) cleans the event manager.
- * 7) cleans the cpu manager.
- * 8) cleans the thread manager.
- * 9) cleans the task manager.
- * 10) cleans the map manager.
- * 11) cleans the segment manager.
- * 12) cleans the region manager.
- * 13) cleans the address space manager.
- * 14) cleans the set manager.
- * 15) cleans the identifier manager.
- * 16) frees the kernel manager's structure.
+ * 5) cleans the clock manager.
+ * 6) cleans the timer manager.
+ * 7) cleans the event manager.
+ * 8) cleans the cpu manager.
+ * 9) cleans the thread manager.
+ * 10) cleans the task manager.
+ * 11) cleans the map manager.
+ * 12) cleans the segment manager.
+ * 13) cleans the region manager.
+ * 14) cleans the address space manager.
+ * 15) cleans the set manager.
+ * 16) cleans the identifier manager.
+ * 17) frees the kernel manager's structure.
  */
 
 void			kernel_clean(void)

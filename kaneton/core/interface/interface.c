@@ -974,22 +974,6 @@ t_error		interface_task_priority(o_syscall*	message)
 }
 
 /*
- * this function launchs the task_state() function.
- */
-
-t_error		interface_task_state(o_syscall*	message)
-{
-  t_error	error;
-
-  error = task_state(message->u.request.u.task_state.arg1,
-			message->u.request.u.task_state.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the task_wait() function.
  */
 
@@ -1234,22 +1218,6 @@ t_error		interface_thread_priority(o_syscall*	message)
 
   error = thread_priority(message->u.request.u.thread_priority.arg1,
 			message->u.request.u.thread_priority.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
- * this function launchs the thread_state() function.
- */
-
-t_error		interface_thread_state(o_syscall*	message)
-{
-  t_error	error;
-
-  error = thread_state(message->u.request.u.thread_state.arg1,
-			message->u.request.u.thread_state.arg2);
 
   message->u.reply.error = error;
 
@@ -1683,7 +1651,6 @@ t_interface_dispatch dispatch[] =
   interface_task_reserve,
   interface_task_release,
   interface_task_priority,
-  interface_task_state,
   interface_task_wait,
   interface_task_attribute_parent,
   interface_task_attribute_class,
@@ -1697,7 +1664,6 @@ t_interface_dispatch dispatch[] =
   interface_thread_reserve,
   interface_thread_release,
   interface_thread_priority,
-  interface_thread_state,
   interface_thread_stack,
   interface_thread_load,
   interface_thread_store,

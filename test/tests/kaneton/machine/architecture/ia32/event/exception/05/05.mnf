@@ -1,4 +1,0 @@
-name: machine/architecture/ia32/event/exception/05
-description: This test reserves an event and manually triggers it by performing a general protection fault.
-symbol: test_ia32_event_exception_05
-output:

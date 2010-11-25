@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...lue/ibm-pc.ia32/educational/include/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [fri may  1 18:01:07 2009]
+ * updated       julien quintard   [wed nov 24 14:14:44 2010]
  */
 
 #ifndef GLUE_AS_H
@@ -19,15 +19,15 @@
  */
 
 #define		machine_include_as()					\
-  extern d_as			as_dispatch
+  extern d_as			glue_as_dispatch
 
 #define		machine_call_as(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;					\
+      t_error	_r_ = ERROR_OK;						\
 									\
-      if (as_dispatch._function_ != NULL)				\
-        _r_ = as_dispatch._function_(_args_);				\
+      if (glue_as_dispatch._function_ != NULL)				\
+        _r_ = glue_as_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\

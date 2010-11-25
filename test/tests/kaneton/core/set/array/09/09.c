@@ -41,7 +41,7 @@ void			test_core_set_array_09(void)
    * reserve
    */
 
-  if (set_reserve(array, SET_OPT_SORT, 4, sizeof(t_id), &id) != ERROR_NONE)
+  if (set_reserve(array, SET_OPTION_SORT, 4, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
   /*
@@ -52,7 +52,7 @@ void			test_core_set_array_09(void)
     {
       objs[i] = (i * 234) % 6578;
 
-      if (set_add(id, &objs[i]) != ERROR_NONE)
+      if (set_add(id, &objs[i]) != ERROR_OK)
         TEST_ERROR("[set_add] error\n");
     }
 
@@ -60,14 +60,14 @@ void			test_core_set_array_09(void)
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_NONE)
+  if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   printf("%qd elements: ", sz);
   st = 0;
-  set_foreach(SET_OPT_FORWARD, id, &it, state)
+  set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
+      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
         TEST_ERROR("[set_object] error\n");
 
       if (!st++)
@@ -87,11 +87,11 @@ void			test_core_set_array_09(void)
     {
       if (i % 2)
         {
-          if (set_locate(id, objs[i], &it) != ERROR_NONE)
+          if (set_locate(id, objs[i], &it) != ERROR_OK)
 	    TEST_ERROR("[set_locate] error\n");
           else
             {
-              if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
+              if (set_object(id, it, (void**)&pdata) != ERROR_OK)
 		TEST_ERROR("[set_object] error\n");
 
               if (*pdata != objs[i])
@@ -100,7 +100,7 @@ void			test_core_set_array_09(void)
         }
       else
         {
-          if (set_get(id, objs[i], (void**)&pdata) != ERROR_NONE)
+          if (set_get(id, objs[i], (void**)&pdata) != ERROR_OK)
 	    TEST_ERROR("[set_get] error\n");
 
           if (*pdata != objs[i])
@@ -110,14 +110,14 @@ void			test_core_set_array_09(void)
 
   data = objs[5] - 1;
 
-  if (set_locate(id, data, &it) == ERROR_NONE)
+  if (set_locate(id, data, &it) == ERROR_OK)
     TEST_ERROR("[set_locate] error: found a non-existent item\n");
 
   /*
    * release
    */
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
   TEST_LEAVE();

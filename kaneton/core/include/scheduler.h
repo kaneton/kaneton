@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/scheduler.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [tue nov 23 14:45:28 2010]
+ * updated       julien quintard   [wed nov 24 23:02:15 2010]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -40,7 +40,7 @@
  * initial value for the scheduler quantum in milliseconds.
  */
 
-#define SCHEDULER_QUANTUM_INIT		TIMER_MS_PER_TICK
+#define SCHEDULER_QUANTUM		TIMER_DELAY
 
 /*
  * the number of priority levels for the scheduler.
@@ -85,12 +85,10 @@
     t_priority		thread_prior;					\
 									\
     if (thread_get((_thread_), &oth) != ERROR_OK)			\
-      SCHEDULER_ESCAPE(_scheduler,					\
-	               "unable to retrieve the thread object");		\
+      CORE_ESCAPE("unable to retrieve the thread object");		\
 									\
     if (task_get(oth->task, &otsk) != ERROR_OK)				\
-      SCHEDULER_ESCAPE(_scheduler,					\
-	               "unable to retrieve the task object");		\
+      CORE_ESCAPE("unable to retrieve the task object");		\
 									\
     task_prior = ((otsk->priority - TASK_LPRIORITY_BACKGROUND) *	\
 		  SCHEDULER_N_PRIORITY_QUEUE) /				\
@@ -228,64 +226,6 @@ typedef struct
   t_error			(*scheduler_initialize)(void);
   t_error			(*scheduler_clean)(void);
 }				d_scheduler;
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define SCHEDULER_CHECK(_scheduler_)					\
-  {									\
-    if ((_scheduler_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define SCHEDULER_ENTER(_scheduler_)					\
-  {									\
-    SCHEDULER_CHECK((_scheduler_));					\
-  }
-
-/*
- * leave
- */
-
-#define SCHEDULER_LEAVE(_scheduler_)					\
-  {									\
-    return (ERROR_OK);							\
-  }
-
-/*
- * escape
- */
-
-#define SCHEDULER_ESCAPE(_scheduler_, _fmt_, _arguments_...)		\
-  {									\
-    module_call(report, report_record,					\
-		_fmt_ " (%s:%u)",					\
-		##_arguments_, __FUNCTION__, __LINE__);			\
-    									\
-    return (ERROR_KO);							\
-  }
-
-/*
- * fail
- */
-
-#define SCHEDULER_FAIL(_fmt_, _arguments_...)				\
-  {									\
-    module_call(report, report_record,					\
-		_fmt_ " (%s:%u)",					\
-		##_arguments_, __FUNCTION__, __LINE__);			\
-									\
-    return (ERROR_KO);							\
-  }
 
 /*
  * ---------- prototypes ------------------------------------------------------

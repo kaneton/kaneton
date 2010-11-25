@@ -81,7 +81,7 @@ static t_error		region_first_fit(o_as*			as,
       if (_region->size < size)
 	REGION_LEAVE(_region, ERROR_KO);
 
-      *address = _region->start;
+      *address = _region->base;
 
       REGION_LEAVE(_region, ERROR_OK);
     }
@@ -93,9 +93,9 @@ static t_error		region_first_fit(o_as*			as,
    * 2)
    */
 
-  if ((head->address - _region->start) >= size)
+  if ((head->address - _region->base) >= size)
     {
-      *address = _region->start;
+      *address = _region->base;
 
       REGION_LEAVE(_region, ERROR_OK);
     }
@@ -147,7 +147,7 @@ static t_error		region_first_fit(o_as*			as,
    * 5)
    */
 
-  if (((_region->start + _region->size) -
+  if (((_region->base + _region->size) -
        (tail->address + tail->size)) >= size)
     {
       *address = tail->address + tail->size;

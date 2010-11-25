@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...machine/glue/ibm-pc.ia32/include/event.h
+ * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/event.h
  *
  * created       julien quintard   [wed jun  6 16:15:26 2007]
- * updated       matthieu bucchianeri   [sun jun 17 19:26:06 2007]
+ * updated       julien quintard   [wed nov 24 14:16:21 2010]
  */
 
 #ifndef GLUE_EVENT_H
@@ -19,15 +19,15 @@
  */
 
 #define		machine_include_event()					\
-  extern d_event		event_dispatch
+  extern d_event	glue_event_dispatch
 
 #define		machine_call_event(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;					\
+      t_error	_r_ = ERROR_OK;						\
 									\
-      if (event_dispatch._function_ != NULL)				\
-        _r_ = event_dispatch._function_(_args_);			\
+      if (glue_event_dispatch._function_ != NULL)			\
+        _r_ = glue_event_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\
@@ -52,6 +52,10 @@
 /*
  * ../event.c
  */
+
+t_error			glue_event_enable(void);
+
+t_error			glue_event_disable(void);
 
 t_error			glue_event_reserve(i_event		id,
 					   t_type		type,

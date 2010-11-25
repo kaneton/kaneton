@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...chine/platform/ibm-pc/include/platform.h
+ * file          /home/mycure/kane...chine/platform/ibm-pc/include/platform.h
  *
  * created       julien quintard   [mon jun 11 05:59:19 2007]
- * updated       matthieu bucchianeri   [sat sep  1 13:25:02 2007]
+ * updated       julien quintard   [wed nov 24 13:07:19 2010]
  */
 
 /*
@@ -30,7 +30,8 @@
 
 #include <platform/console.h>
 #include <platform/irq.h>
+#include <platform/pit.h>
+#include <platform/rtc.h>
 #include <platform/serial.h>
-#include <platform/timer.h>
 
 #endif

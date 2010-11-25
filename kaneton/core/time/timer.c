@@ -16,10 +16,9 @@
  * a timer is parameterised around three properties: the task it belongs to,
  * its delay and its repeat mode. When its delay (in 1/100 of sec) has expired,
  * a message is sent to the task taskid before behaving as follow:
- * a) if the timer repeat is set to TIMER_REPEAT_ENABLE, the timer is
+ * a) if the timer options are set to TIMER_OPTION_ENABLE, the timer is
  *    automaticaly reset to its original delay.
- * b) if the timer repeat is set to TIMER_REPEAT_DISABLE, then the timer is
- *    released.
+ * b) if not, the timer is released.
  */
 
 /*
@@ -82,7 +81,7 @@ t_error			timer_show(i_timer			id)
    */
 
   module_call(console, console_message,
-	      '#', "  timer %qd: delay = %u\n",
+	      '#', "  timer %qd: delay = %qu\n",
 	      o->id, o->delay - _timer->reference);
 
   TIMER_LEAVE(_timer, ERROR_OK);
@@ -246,7 +245,7 @@ t_error			timer_reserve(t_type			type,
 				      u_timer_handler		handler,
 				      t_vaddr			data,
 				      t_uint32			delay,
-				      t_uint32			repeat,
+				      t_options			options,
 				      i_timer*			id)
 {
   o_timer		o;
@@ -269,12 +268,13 @@ t_error			timer_reserve(t_type			type,
   o.type = type;
   o.handler = handler;
   o.data = data;
+  o.options = options;
 
   /*
    * 2)
    */
 
-  if (repeat)
+  if (o.options & TIMER_OPTION_REPEAT)
     o.repeat = delay;
 
   o.delay = _timer->reference + delay;
@@ -290,7 +290,7 @@ t_error			timer_reserve(t_type			type,
    * 4)
    */
 
-  if (machine_call(timer, timer_reserve, type, handler, data, delay, repeat,
+  if (machine_call(timer, timer_reserve, type, handler, data, delay, options,
 		   id) != ERROR_OK)
     TIMER_LEAVE(_timer, ERROR_KO);
 
@@ -399,7 +399,7 @@ t_error			timer_delay(i_timer			id,
  */
 
 t_error			timer_repeat(i_timer			id,
-				     t_uint32			repeat)
+				     t_uint64			repeat)
 {
   o_timer*		o;
 
@@ -416,6 +416,7 @@ t_error			timer_repeat(i_timer			id,
    * 2)
    */
 
+  o->options |= TIMER_OPTION_REPEAT;
   o->repeat = repeat;
 
   /*
@@ -441,8 +442,8 @@ t_error			timer_repeat(i_timer			id,
  */
 
 t_error			timer_modify(i_timer			id,
-				     t_uint32			delay,
-				     t_uint32			repeat)
+				     t_uint64			delay,
+				     t_options			options)
 {
   o_timer		o;
   o_timer*		old;
@@ -460,7 +461,7 @@ t_error			timer_modify(i_timer			id,
    * 2)
    */
 
-  if (machine_call(timer, timer_modify, id, delay, repeat) != ERROR_OK)
+  if (machine_call(timer, timer_modify, id, delay, options) != ERROR_OK)
     TIMER_LEAVE(_timer, ERROR_KO);
 
   /*
@@ -469,7 +470,9 @@ t_error			timer_modify(i_timer			id,
 
   memcpy(&o, old, sizeof(o_timer));
 
-  if (repeat)
+  o.options = options;
+
+  if (o.options & TIMER_OPTION_REPEAT)
     o.repeat = delay;
 
   o.delay = _timer->reference + delay;
@@ -680,10 +683,9 @@ t_error			timer_check(void)
        * 4)
        */
 
-      if (o->repeat)
+      if (o->options & TIMER_OPTION_REPEAT)
         {
-	  if (timer_modify(o->id, o->repeat, TIMER_REPEAT_ENABLE)
-	      != ERROR_OK)
+	  if (timer_modify(o->id, o->repeat, o->options) != ERROR_OK)
             TIMER_LEAVE(_timer, ERROR_KO);
         }
       else
@@ -703,7 +705,8 @@ t_error			timer_check(void)
  * steps:
  *
  * 1) update the elapsed time.
- * 2) trigger the expired timers.
+ * 2) update the clock.
+ * 3) trigger the expired timers.
  */
 
 void			timer_handler(t_id			id)
@@ -712,10 +715,16 @@ void			timer_handler(t_id			id)
    * 1)
    */
 
-  _timer->reference += TIMER_MS_PER_TICK;
+  _timer->reference += TIMER_DELAY;
 
   /*
    * 2)
+   */
+
+  assert(clock_update(TIMER_DELAY));
+
+  /*
+   * 3)
    */
 
   assert(timer_check());

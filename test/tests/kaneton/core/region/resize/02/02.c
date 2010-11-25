@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -36,28 +36,28 @@ void			test_core_region_resize_02(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(kasid,
+  if (segment_reserve(_kernel->as,
 		      10 * PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &seg) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
-  if (region_reserve(kasid,
+  if (region_reserve(_kernel->as,
 		     seg,
 		     PAGESZ,
-		     REGION_OPT_NONE,
+		     REGION_OPTION_NONE,
 		     0,
 		     2 * PAGESZ,
-		     &reg) != ERROR_NONE)
+		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
-  if (region_resize(kasid, reg, 20 * PAGESZ, &reg) == ERROR_NONE)
+  if (region_resize(_kernel->as, reg, 20 * PAGESZ, &reg) == ERROR_OK)
     TEST_ERROR("[region_resize] error: out of bound\n");
 
-  if (region_release(kasid, reg) != ERROR_NONE)
+  if (region_release(_kernel->as, reg) != ERROR_OK)
     TEST_ERROR("[region_release] error\n");
 
-  if (segment_release(seg) != ERROR_NONE)
+  if (segment_release(seg) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
   TEST_LEAVE();

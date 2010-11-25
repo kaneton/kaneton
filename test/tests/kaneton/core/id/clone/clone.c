@@ -31,28 +31,28 @@ void			test_core_id_clone(void)
 
   TEST_ENTER();
 
-  if (id_build(&id) != ERROR_NONE)
+  if (id_build(&id) != ERROR_OK)
     TEST_ERROR("[id_build] error\n");
 
-  if (id_reserve(&id, &i) != ERROR_NONE)
+  if (id_reserve(&id, &i) != ERROR_OK)
     TEST_ERROR("[id_reserve] error\n");
 
   if (!(i >= 0 && i <= (t_id)-1))
     TEST_ERROR("invalid id\n");
 
-  if (id_clone(&id, i, &j) != ERROR_NONE)
+  if (id_clone(&id, i, &j) != ERROR_OK)
     TEST_ERROR("[id_clone] error\n");
 
   if (!(j >= 0 && j <= (t_id)-1))
     TEST_ERROR("invalid id\n");
 
-  if (id_release(&id, i) != ERROR_NONE)
+  if (id_release(&id, i) != ERROR_OK)
     TEST_ERROR("[id_release] error\n");
 
-  if (id_release(&id, j) != ERROR_NONE)
+  if (id_release(&id, j) != ERROR_OK)
     TEST_ERROR("[id_release] error\n");
 
-  if (id_destroy(&id) != ERROR_NONE)
+  if (id_destroy(&id) != ERROR_OK)
     TEST_ERROR("[id_destroy] error\n");
 
   TEST_LEAVE();

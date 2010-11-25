@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/event.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [mon nov 22 10:09:52 2010]
+ * updated       julien quintard   [thu nov 25 12:04:27 2010]
  */
 
 #ifndef CORE_EVENT_H
@@ -112,6 +112,8 @@ typedef struct
 typedef struct
 {
   t_error			(*event_show)(i_event);
+  t_error			(*event_enable)(void);
+  t_error			(*event_disable)(void);
   t_error			(*event_notify)(i_event);
   t_error			(*event_reserve)(i_event,
 						 t_uint32,
@@ -169,6 +171,10 @@ t_error			event_show(i_event			id);
 t_error			event_dump(void);
 
 t_error			event_notify(i_event			id);
+
+t_error			event_enable(void);
+
+t_error			event_disable(void);
 
 t_error			event_reserve(i_event			id,
 				      t_type			type,

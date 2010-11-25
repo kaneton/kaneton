@@ -6,10 +6,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...machine/glue/ibm-pc.ia32/include/timer.h
+ * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/timer.h
  *
  * created       julien quintard   [wed jun  6 16:29:41 2007]
- * updated       julien quintard   [mon jun 11 05:54:33 2007]
+ * updated       julien quintard   [wed nov 24 19:29:19 2010]
  */
 
 #ifndef GLUE_TIMER_H
@@ -20,15 +20,15 @@
  */
 
 #define		machine_include_timer()					\
-  extern d_timer		timer_dispatch
+  extern d_timer	glue_timer_dispatch
 
 #define		machine_call_timer(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;					\
+      t_error	_r_ = ERROR_OK;						\
 									\
-      if (timer_dispatch._function_ != NULL)				\
-        _r_ = timer_dispatch._function_(_args_);			\
+      if (glue_timer_dispatch._function_ != NULL)			\
+        _r_ = glue_timer_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\
@@ -49,6 +49,8 @@
  */
 
 t_error			glue_timer_initialize(void);
+
+t_error			glue_timer_clean(void);
 
 
 /*

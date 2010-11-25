@@ -1,4 +1,0 @@
-name: machine/architecture/ia32/event/exception/07
-description: This test reserves the page fault event and triggers it though an invalid memory access. The event handler reserves a segment and maps it so that the access is resumed and succeeds. The event is finally released.
-symbol: test_ia32_event_exception_07
-output:

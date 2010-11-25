@@ -39,7 +39,7 @@ void			test_core_set_array_11(void)
    * reserve
    */
 
-  if (set_reserve(array, SET_OPT_ALLOC, 10, sizeof(t_id), &id) != ERROR_NONE)
+  if (set_reserve(array, SET_OPTION_ALLOC, 10, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
   /*
@@ -50,7 +50,7 @@ void			test_core_set_array_11(void)
     {
       obj = i;
 
-      if (set_add(id, &obj) != ERROR_NONE)
+      if (set_add(id, &obj) != ERROR_OK)
 	TEST_ERROR("[set_add] error\n");
     }
 
@@ -58,13 +58,13 @@ void			test_core_set_array_11(void)
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_NONE)
+  if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   printf("%qd elements: ", sz);
-  set_foreach(SET_OPT_BACKWARD, id, &it, state)
+  set_foreach(SET_OPTION_BACKWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
+      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
         TEST_ERROR("[set_object] error\n");
 
       if (*pdata != --i)
@@ -76,7 +76,7 @@ void			test_core_set_array_11(void)
    * release
    */
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
   TEST_LEAVE();

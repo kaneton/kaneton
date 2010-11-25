@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -36,22 +36,22 @@ void			test_core_segment_permissions_03(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
+  if (segment_reserve(_kernel->as, PAGESZ, PERMISSION_READ | PERMISSION_WRITE, &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
-  if (segment_get(seg, &o) != ERROR_NONE)
+  if (segment_get(seg, &o) != ERROR_OK)
     TEST_ERROR("[segment_get] error\n");
 
-  if (o->perms != (PERM_READ | PERM_WRITE))
+  if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))
     TEST_ERROR("invalid segment's permissions\n");
 
-  if (segment_perms(seg, ~(PERM_READ | PERM_WRITE | PERM_EXEC)) == ERROR_NONE)
-    TEST_ERROR("[segment_perms] error: accepting invalid permissions\n");
+  if (segment_permissions(seg, ~(PERMISSION_READ | PERMISSION_WRITE | PERMISSION_EXEC)) == ERROR_OK)
+    TEST_ERROR("[segment_permissions] error: accepting invalid permissions\n");
 
-  if (o->perms != (PERM_READ | PERM_WRITE))
+  if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))
     TEST_ERROR("invalid segment's permissions\n");
 
-  if (segment_release(seg) != ERROR_NONE)
+  if (segment_release(seg) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
   TEST_LEAVE();

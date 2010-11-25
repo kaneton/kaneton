@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/modules/test/include/test.h
+ * file          /home/mycure/kane...ABLE/kaneton/modules/test/include/test.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [mon may 17 12:24:23 2010]
+ * updated       julien quintard   [wed nov 24 14:12:09 2010]
  */
 
 #ifndef MODULES_TEST_TEST_H
@@ -22,7 +22,7 @@
  * this type represents a test function pointer.
  */
 
-typedef				void (*f_test)(void);
+typedef				void (*f_module_test)(void);
 
 /*
  * the tests inventory.
@@ -33,14 +33,14 @@ typedef				void (*f_test)(void);
 typedef struct
 {
   char*			symbol;
-  f_test		function;
-}			s_test_function;
+  f_module_test		function;
+}			s_module_test_function;
 
 typedef struct
 {
   char*			command;
-  void			(*function)(char*);
-}			s_test_command;
+  t_error		(*function)(char*);
+}			s_module_test_command;
 
 /*
  * the module structure.
@@ -50,7 +50,7 @@ typedef struct
 {
   char			buffer[128];
   t_uint32		size;
-}			m_test;
+}			m_module_test;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -60,13 +60,14 @@ typedef struct
  * types
  */
 
-#define TEST_TYPE_COMMAND	0x1
-#define TEST_TYPE_TEXT		0x2
+#define MODULE_TEST_TYPE_COMMAND	0x1
+#define MODULE_TEST_TYPE_TEXT		0x2
 
 /*
  * magic
  */
-#define TEST_MAGIC		0xf4859632
+
+#define MODULE_TEST_MAGIC		0xf4859632
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -78,29 +79,30 @@ typedef struct
  * ../test.c
  */
 
-t_uint32		test_checksum(void*			data,
-				      t_uint32			size);
+t_uint32		module_test_checksum(void*		data,
+					     t_uint32		size);
 
-t_error			test_send(t_uint8			type,
-				  char*				message,
-				  t_uint32			length);
+t_error			module_test_send(t_uint8		type,
+					 char*			message,
+					 t_uint32		length);
 
-t_error			test_receive(t_uint8*			type,
-				     char*			message);
+t_error			module_test_receive(t_uint8*		type,
+					    char*		message);
 
-t_error			test_issue(char*			command);
+t_error			module_test_issue(char*			command);
 
-t_error			test_flush(void);
+t_error			module_test_flush(void);
 
-int			test_write(char				c);
+int			module_test_write(char			c);
 
-f_test			test_locate(char*			symbol);
+t_error			module_test_locate(char*		symbol,
+					   f_module_test*	function);
 
-void			test_call(char*				symbol);
+t_error			module_test_call(char*			symbol);
 
-void			test_dump(void);
+void			module_test_dump(void);
 
-t_error			test_run(void);
+t_error			module_test_run(void);
 
 
 /*

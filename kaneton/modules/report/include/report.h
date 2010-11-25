@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/modules/report/include/report.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [tue nov 23 11:00:12 2010]
+ * updated       julien quintard   [wed nov 24 13:45:49 2010]
  */
 
 #ifndef MODULES_REPORT_REPORT_H
@@ -32,7 +32,7 @@ typedef struct
     t_printf_char_fn	character;
     t_printf_attr_fn	attribute;
   }			printf;
-}			m_report;
+}			m_module_report;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -44,18 +44,18 @@ typedef struct
  * ../report.c
  */
 
-void			report_dump(void);
+void			module_report_dump(void);
 
-int			report_character(char			c);
+int			module_report_character(char		c);
 
-void			report_attribute(t_uint8		attribute);
+void			module_report_attribute(t_uint8		attribute);
 
-void			report_record(char*			fmt,
-				      ...);
+void			module_report_record(char*		fmt,
+					     ...);
 
-t_error			report_initialize(void);
+t_error			module_report_initialize(void);
 
-t_error			report_clean(void);
+t_error			module_report_clean(void);
 
 
 /*

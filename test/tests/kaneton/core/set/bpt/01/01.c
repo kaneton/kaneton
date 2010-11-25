@@ -29,18 +29,18 @@ void			test_core_set_bpt_01(void)
 
   TEST_ENTER();
 
-  if (set_reserve(bpt, SET_OPT_SORT, sizeof(t_id), PAGESZ, &id) != ERROR_NONE)
+  if (set_reserve(bpt, SET_OPTION_SORT, sizeof(t_id), PAGESZ, &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
-  if (set_reserve(bpt, SET_OPT_ALLOC | SET_OPT_FREE,
-                  sizeof(t_id), PAGESZ, &id) == ERROR_NONE)
+  if (set_reserve(bpt, SET_OPTION_ALLOC | SET_OPTION_FREE,
+                  sizeof(t_id), PAGESZ, &id) == ERROR_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments\n");
 
-  if (set_reserve(bpt, SET_OPT_ORGANISE,
-                  sizeof(t_id), PAGESZ, &id) == ERROR_NONE)
+  if (set_reserve(bpt, SET_OPTION_ORGANISE,
+                  sizeof(t_id), PAGESZ, &id) == ERROR_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments\n");
 
   TEST_LEAVE();

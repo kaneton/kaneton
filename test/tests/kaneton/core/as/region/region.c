@@ -37,48 +37,48 @@ void			test_core_as_region(void)
   TEST_ENTER();
 
   if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task) != ERROR_NONE)
+		   TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE,
+		   &task) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
+  if (as_reserve(task, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
-  if (as_get(as, &o) != ERROR_NONE)
+  if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error\n");
 
-  if (set_size(o->regions, &sz_before) != ERROR_NONE)
+  if (set_size(o->regions, &sz_before) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   for (i = 0; i < 10; i++)
     {
       if (segment_reserve(as,
 			  PAGESZ,
-			  PERM_READ | PERM_WRITE,
-			  &seg) != ERROR_NONE)
+			  PERMISSION_READ | PERMISSION_WRITE,
+			  &seg) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error\n");
 
       if (region_reserve(as,
 			 seg,
 			 0,
-			 REGION_OPT_NONE,
+			 REGION_OPTION_NONE,
 			 0,
 			 PAGESZ,
-			 &reg) != ERROR_NONE)
+			 &reg) != ERROR_OK)
 	TEST_ERROR("[region_reserve] error\n");
     }
 
-  if (set_size(o->regions, &sz_after) != ERROR_NONE)
+  if (set_size(o->regions, &sz_after) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   if (sz_after < (sz_before + 10))
     TEST_ERROR("the regions have not been reserved properly\n");
 
-  if (as_release(as) != ERROR_NONE)
+  if (as_release(as) != ERROR_OK)
     TEST_ERROR("[as_release] error\n");
 
-  if (task_release(task) != ERROR_NONE)
+  if (task_release(task) != ERROR_OK)
     TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();

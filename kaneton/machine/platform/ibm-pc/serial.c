@@ -25,17 +25,21 @@
  * this function read on the serial device
  */
 
-void        		ibmpc_serial_read(t_uint32		com_port,
-					  t_uint8*		data,
-					  t_uint32 		size)
+void        		platform_serial_read(t_uint32		com_port,
+					     t_uint8*		data,
+					     t_uint32 		size)
 {
 
   while (size)
     {
-      INB(com_port + 5, *data);
+      ARCHITECTURE_IO_IN_8(com_port + 5,
+			   *data);
+
       if (*data & 1)
 	{
-	  INB(com_port, *data++);
+	  ARCHITECTURE_IO_IN_8(com_port,
+			       *data++);
+
 	  size--;
 	}
     }
@@ -45,18 +49,22 @@ void        		ibmpc_serial_read(t_uint32		com_port,
  * this function writes on the serial device
  */
 
-void			ibmpc_serial_write(t_uint32		com_port,
-					   t_uint8*		data,
-					   t_uint32		size)
+void			platform_serial_write(t_uint32		com_port,
+					      t_uint8*		data,
+					      t_uint32		size)
 {
   char			ch;
 
   while(size)
     {
-      INB(com_port + 5, ch);
+      ARCHITECTURE_IO_IN_8(com_port + 5,
+			   ch);
+
       if (ch & 0x20)
 	{
-	  OUTB(com_port, *data++);
+	  ARCHITECTURE_IO_OUT_8(com_port,
+				*data++);
+
 	  size--;
 	}
     }
@@ -66,17 +74,30 @@ void			ibmpc_serial_write(t_uint32		com_port,
  * this function initializes the serial port.
  */
 
-t_error			ibmpc_serial_init(t_uint32		com_port,
-					  t_uint8		baud_rate,
-					  t_uint8		bit_type)
+t_error			platform_serial_setup(t_uint32		com_port,
+					      t_uint8		baud_rate,
+					      t_uint8		bit_type)
 {
-  OUTB(com_port + 1, 0x00);
-  OUTB(com_port + 3, 0x80);
-  OUTB(com_port + 0, baud_rate);
-  OUTB(com_port + 1, 0x00);
-  OUTB(com_port + 3, bit_type);
-  OUTB(com_port + 2, IBMPC_SERIAL_FIFO_8);
-  OUTB(com_port + 4, 0x08);
+  ARCHITECTURE_IO_OUT_8(com_port + 1,
+			0x00);
 
-  return (ERROR_OK);
+  ARCHITECTURE_IO_OUT_8(com_port + 3,
+			0x80);
+
+  ARCHITECTURE_IO_OUT_8(com_port + 0,
+			baud_rate);
+
+  ARCHITECTURE_IO_OUT_8(com_port + 1,
+			0x00);
+
+  ARCHITECTURE_IO_OUT_8(com_port + 3,
+			bit_type);
+
+  ARCHITECTURE_IO_OUT_8(com_port + 2,
+			PLATFORM_SERIAL_FIFO_8);
+
+  ARCHITECTURE_IO_OUT_8(com_port + 4,
+			0x08);
+
+  MACHINE_LEAVE();
 }

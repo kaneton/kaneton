@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton.STABLE/view/book/development/test.tex
 %
 % created       julien quintard   [thu may 24 12:18:23 2007]
-% updated       julien quintard   [wed nov  3 15:59:51 2010]
+% updated       julien quintard   [wed nov 24 09:10:39 2010]
 %
 
 %
@@ -539,7 +539,7 @@ summary of the report in order for the user to know whether things went
 as expected.
 
 \begin{verbatim}
-  $> make test::xen::k2
+  $> make test-xen::k2
   [+] configuration:
   [+]   server:                 https://test.opaak.org:8421
   [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
@@ -571,7 +571,7 @@ The \name{display} command gives the user the possibility to dump a locally
 stored report in a very detailed way.
 
 \begin{verbatim}
-  $> make display::20101103-140601
+  $> make display-20101103-140601
   [+] report:
   [+]   meta:
   [+]     platform:               ibm-pc
@@ -613,7 +613,7 @@ Finally, the \name{submit} command sends the user's snapshot to the server
 so as to be evaluated for the given stage.
 
 \begin{verbatim}
-  $> make submit::k1
+  $> make submit-k1
   [+] configuration:
   [+]   server:                 https://test.opaak.org:8421
   [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap

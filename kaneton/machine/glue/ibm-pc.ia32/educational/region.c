@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [mon nov 22 22:31:01 2010]
+ * updated       julien quintard   [wed nov 24 14:23:17 2010]
  */
 
 /*
@@ -47,7 +47,7 @@ extern m_region*	_region;
  * the region manager dispatch.
  */
 
-d_region		region_dispatch =
+d_region		glue_region_dispatch =
   {
     /*							   [block::dispatch] */
     NULL,
@@ -67,13 +67,13 @@ d_region		region_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-
 /*							  [block::functions] */
 
 /*
  * this function resizes a region.
  *
- * this is an extremely simple implementation...
+ * this is an extremely simple and inefficient implementation... but
+ * it does work.
  */
 
 t_error			glue_region_resize(i_as			as,
@@ -82,7 +82,6 @@ t_error			glue_region_resize(i_as			as,
 					   i_region*		new)
 {
   o_region*		reg;
-  o_as*			o;
 
   if (region_get(as, old, &reg) != ERROR_OK)
     REGION_LEAVE(_region, ERROR_KO);
@@ -153,7 +152,7 @@ t_error			glue_region_release(i_as		asid,
  *
  */
 
-t_error			glue_region_initialize(t_vaddr		start,
+t_error			glue_region_initialize(t_vaddr		base,
 					       t_vsize		size)
 {
   REGION_ENTER(_region);

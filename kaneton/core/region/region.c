@@ -401,7 +401,7 @@ t_error			region_resize(i_as			as,
     }
   else
     {
-      if (reg->address + size >= _region->start + _region->size)
+      if (reg->address + size >= _region->base + _region->size)
 	REGION_LEAVE(_region, ERROR_KO);
     }
 
@@ -618,8 +618,8 @@ t_error			region_reserve(i_as			asid,
 
   if (options & REGION_OPTION_FORCE)
     {
-      if (address < _region->start ||
-	  address >= _region->start + _region->size)
+      if (address < _region->base ||
+	  address >= _region->base + _region->size)
 	REGION_LEAVE(_region, ERROR_KO);
 
       set_foreach(SET_OPTION_FORWARD, as->regions, &i, state)
@@ -821,7 +821,7 @@ t_error			region_get(i_as				asid,
  *						[endblock::initialize::comment]
  */
 
-t_error			region_initialize(t_vaddr		start,
+t_error			region_initialize(t_vaddr		base,
 					  t_vsize		size)
 {
   /*							 [block::initialize] */
@@ -847,14 +847,14 @@ t_error			region_initialize(t_vaddr		start,
    * 2)
    */
 
-  _region->start = start;
+  _region->base = base;
   _region->size = size;
 
   /*
    * 3)
    */
 
-  if (machine_call(region, region_initialize, start, size) != ERROR_OK)
+  if (machine_call(region, region_initialize, base, size) != ERROR_OK)
     return (ERROR_KO);
 
   return (ERROR_OK);

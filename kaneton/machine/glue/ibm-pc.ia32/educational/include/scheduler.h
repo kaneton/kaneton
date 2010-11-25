@@ -8,32 +8,26 @@
  * file          /home/mycure/kane...-pc.ia32/educational/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       julien quintard   [sat nov 20 16:30:25 2010]
+ * updated       julien quintard   [wed nov 24 20:42:12 2010]
  */
 
 #ifndef GLUE_SCHEDULER_H
 #define GLUE_SCHEDULER_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/id.h>
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
 #define		machine_include_scheduler()				\
-  extern d_scheduler		scheduler_dispatch
+  extern d_scheduler	glue_scheduler_dispatch
 
 #define		machine_call_scheduler(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;					\
+      t_error	_r_ = ERROR_OK;						\
 									\
-      if (scheduler_dispatch._function_ != NULL)			\
-        _r_ = scheduler_dispatch._function_(_args_);			\
+      if (glue_scheduler_dispatch._function_ != NULL)			\
+        _r_ = glue_scheduler_dispatch._function_(_args_);		\
 									\
       _r_;								\
     }									\
@@ -50,6 +44,12 @@
   {									\
     i_thread			mmx_context;				\
   }				machine;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

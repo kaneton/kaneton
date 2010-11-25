@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/modules/modules.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/modules/modules.h
  *
  * created       julien quintard   [fri may  1 12:58:24 2009]
- * updated       julien quintard   [tue nov 23 10:29:14 2010]
+ * updated       julien quintard   [wed nov 24 13:40:45 2010]
  */
 
 #ifndef MODULES_MODULES_H
@@ -28,7 +28,7 @@
   module_call_ ## _module_ (_function_, ##_arguments_)
 
 #define module_dispatch(_function_, _arguments_...)			\
-  _function_(_arguments_)
+  module_ ## _function_(_arguments_)
 
 /*
  * ---------- modules ---------------------------------------------------------
@@ -77,5 +77,42 @@
 #else
 # define module_call_report(_function_, _arguments_...)
 #endif
+
+/*
+ * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * notify
+ */
+
+#define MODULE_NOTIFY(_format_, _arguments_...)				\
+  {									\
+    module_call(report, report_record,					\
+		_format_ " (%s:%u)",					\
+		##_arguments_, __FUNCTION__, __LINE__);			\
+  }
+
+/*
+ * escape
+ */
+
+#define MODULE_ESCAPE(_format_, _arguments_...)				\
+  {									\
+    module_call(report, report_record,					\
+		_format_ " (%s:%u)",					\
+		##_arguments_, __FUNCTION__, __LINE__);			\
+									\
+    return (ERROR_KO);							\
+  }
+
+/*
+ * leave
+ */
+
+#define MODULE_LEAVE()							\
+  {									\
+    return (ERROR_OK);							\
+  }
 
 #endif

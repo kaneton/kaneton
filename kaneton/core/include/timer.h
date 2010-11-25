@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/timer.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [mon nov 22 21:32:10 2010]
+ * updated       julien quintard   [thu nov 25 11:02:21 2010]
  */
 
 #ifndef CORE_TIMER_H
@@ -36,17 +36,17 @@
 #define TIMER_MESSAGE		1
 
 /*
- * timer repeat mode.
+ * timer options.
  */
 
-#define TIMER_REPEAT_DISABLE	0
-#define TIMER_REPEAT_ENABLE	1
+#define TIMER_OPTION_NONE	0
+#define TIMER_OPTION_REPEAT	1
 
 /*
  * number of millisecond between each tick.
  */
 
-#define TIMER_MS_PER_TICK	25
+#define TIMER_DELAY		25
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -86,9 +86,10 @@ typedef struct
 {
   i_timer			id;
 
-  t_uint32			delay;
+  t_uint64			delay;
 
-  t_options			repeat;
+  t_options			options;
+  t_uint64			repeat;
 
   t_type			type;
 
@@ -117,7 +118,7 @@ typedef struct
 {
   o_id				id;
 
-  t_uint32			reference;
+  t_uint64			reference;
 
   i_set				timers;
 
@@ -204,7 +205,7 @@ t_error			timer_reserve(t_type			type,
 				      u_timer_handler		handler,
 				      t_vaddr			data,
 				      t_uint32			delay,
-				      t_uint32			repeat,
+				      t_options			options,
 				      i_timer*			id);
 
 t_error			timer_release(i_timer			id);
@@ -213,11 +214,11 @@ t_error			timer_delay(i_timer			id,
 				    t_uint32			delay);
 
 t_error			timer_repeat(i_timer			id,
-				     t_uint32			repeat);
+				     t_uint64			repeat);
 
 t_error			timer_modify(i_timer			id,
-				     t_uint32			delay,
-				     t_uint32			repeat);
+				     t_uint64			delay,
+				     t_options			options);
 
 t_error			timer_get(i_timer			id,
 				  o_timer**			o);

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/core/region/reserve/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [thu nov 18 16:20:53 2010]
+ * updated       julien quintard   [wed nov 24 09:36:15 2010]
  */
 
 /*
@@ -34,36 +34,36 @@ void			test_core_region_reserve_02(void)
   TEST_ENTER();
 
   if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task) != ERROR_NONE)
+		   TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE,
+		   &task) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
+  if (as_reserve(task, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
   if (segment_reserve(as,
 		      2 * PAGESZ,
-		      PERM_READ,
-		      &seg) != ERROR_NONE)
+		      PERMISSION_READ,
+		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
   if (region_reserve(as,
 		     seg,
 		     PAGESZ,
-		     REGION_OPT_FORCE,
+		     REGION_OPTION_FORCE,
 		     0x40000000,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
+		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
-  if (region_get(as, reg, &o) != ERROR_NONE)
+  if (region_get(as, reg, &o) != ERROR_OK)
     TEST_ERROR("[region_get] error\n");
 
-  if (o->regid != reg)
+  if (o->id != reg)
     TEST_ERROR("invalid region's identifier\n");
 
-  if (o->segid != seg)
+  if (o->segment != seg)
     TEST_ERROR("invalid region's segment identifier\n");
 
   if (o->offset != PAGESZ)
@@ -72,10 +72,10 @@ void			test_core_region_reserve_02(void)
   if (o->size != PAGESZ)
     TEST_ERROR("invalid region's size\n");
 
-  if (as_release(as) != ERROR_NONE)
+  if (as_release(as) != ERROR_OK)
     TEST_ERROR("[as_release] error\n");
 
-  if (task_release(task) != ERROR_NONE)
+  if (task_release(task) != ERROR_OK)
     TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();

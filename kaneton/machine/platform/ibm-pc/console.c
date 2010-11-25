@@ -35,7 +35,7 @@
  * the console variable.
  */
 
-t_ibmpc_console		_ibmpc_console;
+m_platform_console	_platform_console;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -45,45 +45,45 @@ t_ibmpc_console		_ibmpc_console;
  * this function just clears the console.
  */
 
-void			ibmpc_console_clear(void)
+void			platform_console_clear(void)
 {
   t_uint16		i;
 
-  for (i = 0; i < IBMPC_CONSOLE_SIZE; i++)
+  for (i = 0; i < PLATFORM_CONSOLE_SIZE; i++)
     {
-      _ibmpc_console.vga[i + 0] = 0;
-      _ibmpc_console.vga[i + 1] = _ibmpc_console.attribute;
+      _platform_console.vga[i + 0] = 0;
+      _platform_console.vga[i + 1] = _platform_console.attribute;
     }
 
-  _ibmpc_console.line = 0;
-  _ibmpc_console.column = 0;
+  _platform_console.line = 0;
+  _platform_console.column = 0;
 }
 
 /*
  * this function scrolls the screen.
  */
 
-void			ibmpc_console_scroll(t_uint16		lines)
+void			platform_console_scroll(t_uint16	lines)
 {
   t_uint16		src;
   t_uint16		dst;
 
-  for (src = lines * IBMPC_CONSOLE_COLUMNS * IBMPC_CONSOLE_BPC, dst = 0;
-       src < IBMPC_CONSOLE_SIZE;
+  for (src = lines * PLATFORM_CONSOLE_COLUMNS * PLATFORM_CONSOLE_BPC, dst = 0;
+       src < PLATFORM_CONSOLE_SIZE;
        src++, dst++)
-    _ibmpc_console.vga[dst] = _ibmpc_console.vga[src];
+    _platform_console.vga[dst] = _platform_console.vga[src];
 
-  for (src = (IBMPC_CONSOLE_LINES - lines) *
-	 IBMPC_CONSOLE_COLUMNS * IBMPC_CONSOLE_BPC;
-       src < IBMPC_CONSOLE_SIZE;
+  for (src = (PLATFORM_CONSOLE_LINES - lines) *
+	 PLATFORM_CONSOLE_COLUMNS * PLATFORM_CONSOLE_BPC;
+       src < PLATFORM_CONSOLE_SIZE;
        src += 2)
     {
-      _ibmpc_console.vga[src + 0] = 0;
-      _ibmpc_console.vga[src + 1] = _ibmpc_console.attribute;
+      _platform_console.vga[src + 0] = 0;
+      _platform_console.vga[src + 1] = _platform_console.attribute;
     }
 
-  _ibmpc_console.line -= lines;
-  _ibmpc_console.column = 0;
+  _platform_console.line -= lines;
+  _platform_console.column = 0;
 }
 
 /*
@@ -91,9 +91,9 @@ void			ibmpc_console_scroll(t_uint16		lines)
  * current console attributes with the sequence %#.
  */
 
-void			ibmpc_console_attribute(t_uint8		attribute)
+void			platform_console_attribute(t_uint8	attribute)
 {
-  _ibmpc_console.attribute = attribute;
+  _platform_console.attribute = attribute;
 }
 
 /*
@@ -101,54 +101,55 @@ void			ibmpc_console_attribute(t_uint8		attribute)
  * character.
  */
 
-int			ibmpc_console_print_char(char		c)
+int			platform_console_print_char(char	c)
 {
-  t_uint16		pos;
-
 #ifdef MODULE_test
   module_call(test, test_write, c);
 #else
-  if (_ibmpc_console.line >= IBMPC_CONSOLE_LINES)
-    ibmpc_console_scroll(1);
+  t_uint16		pos;
+
+  if (_platform_console.line >= PLATFORM_CONSOLE_LINES)
+    platform_console_scroll(1);
   if (c == '\n')
     {
-      _ibmpc_console.line++;
-      _ibmpc_console.column = 0;
+      _platform_console.line++;
+      _platform_console.column = 0;
 
       return (1);
     }
 
   if (c == '\r')
     {
-      _ibmpc_console.column = 0;
+      _platform_console.column = 0;
 
       return (1);
     }
 
   if (c == '\t')
     {
-      _ibmpc_console.column += 8;
-      if (_ibmpc_console.column & 0x7)
-	_ibmpc_console.column = _ibmpc_console.column & ~0x7;
+      _platform_console.column += 8;
+      if (_platform_console.column & 0x7)
+	_platform_console.column = _platform_console.column & ~0x7;
 
       return (1);
     }
 
-  if (_ibmpc_console.column >= IBMPC_CONSOLE_COLUMNS)
+  if (_platform_console.column >= PLATFORM_CONSOLE_COLUMNS)
     {
-      _ibmpc_console.column = 0;
-      ++_ibmpc_console.line;
-      if (_ibmpc_console.line >= IBMPC_CONSOLE_LINES)
-	ibmpc_console_scroll(1);
+      _platform_console.column = 0;
+      ++_platform_console.line;
+      if (_platform_console.line >= PLATFORM_CONSOLE_LINES)
+	platform_console_scroll(1);
     }
 
-  pos = _ibmpc_console.line * IBMPC_CONSOLE_COLUMNS * IBMPC_CONSOLE_BPC +
-    _ibmpc_console.column * IBMPC_CONSOLE_BPC;
+  pos = _platform_console.line *
+    PLATFORM_CONSOLE_COLUMNS * PLATFORM_CONSOLE_BPC +
+    _platform_console.column * PLATFORM_CONSOLE_BPC;
 
-  _ibmpc_console.vga[pos] = c;
-  _ibmpc_console.vga[pos + 1] = _ibmpc_console.attribute;
+  _platform_console.vga[pos] = c;
+  _platform_console.vga[pos + 1] = _platform_console.attribute;
 
-  _ibmpc_console.column++;
+  _platform_console.column++;
 #endif
 
   return (1);
@@ -158,12 +159,12 @@ int			ibmpc_console_print_char(char		c)
  * this function just prints a string.
  */
 
-void			ibmpc_console_print_string(char*	string)
+void			platform_console_print_string(char*	string)
 {
   t_uint32		i;
 
   for (i = 0; string[i]; i++)
-    ibmpc_console_print_char(string[i]);
+    platform_console_print_char(string[i]);
 }
 
 /*
@@ -174,39 +175,51 @@ void			ibmpc_console_print_string(char*	string)
  * '!' is used for printing warning and error messages.
  */
 
-void			ibmpc_console_message(char		indicator,
-					      char*		fmt,
-					      va_list		args)
+void			platform_console_message(char		indicator,
+						 char*		fmt,
+						 va_list	args)
 {
-  t_uint8		attribute = _ibmpc_console.attribute;
+  t_uint8		attribute = _platform_console.attribute;
 
-  _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_BLUE) |
-    IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
+  _platform_console.attribute =
+    PLATFORM_CONSOLE_FRONT(PLATFORM_CONSOLE_BLUE) |
+    PLATFORM_CONSOLE_BACK(PLATFORM_CONSOLE_BLACK) |
+    PLATFORM_CONSOLE_INT;
+
   printf("[");
 
   switch (indicator)
     {
     case '+':
-      _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_GREEN) |
-	IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
+      _platform_console.attribute =
+	PLATFORM_CONSOLE_FRONT(PLATFORM_CONSOLE_GREEN) |
+	PLATFORM_CONSOLE_BACK(PLATFORM_CONSOLE_BLACK) |
+	PLATFORM_CONSOLE_INT;
       break;
     case '#':
-      _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_MAGENTA) |
-	IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
+      _platform_console.attribute =
+	PLATFORM_CONSOLE_FRONT(PLATFORM_CONSOLE_MAGENTA) |
+	PLATFORM_CONSOLE_BACK(PLATFORM_CONSOLE_BLACK) |
+	PLATFORM_CONSOLE_INT;
       break;
     case '!':
-      _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_RED) |
-	IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
+      _platform_console.attribute =
+	PLATFORM_CONSOLE_FRONT(PLATFORM_CONSOLE_RED) |
+	PLATFORM_CONSOLE_BACK(PLATFORM_CONSOLE_BLACK) |
+	PLATFORM_CONSOLE_INT;
       break;
     }
 
   printf("%c", indicator);
 
-  _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_BLUE) |
-    IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
+  _platform_console.attribute =
+    PLATFORM_CONSOLE_FRONT(PLATFORM_CONSOLE_BLUE) |
+    PLATFORM_CONSOLE_BACK(PLATFORM_CONSOLE_BLACK) |
+    PLATFORM_CONSOLE_INT;
+
   printf("] ");
 
-  _ibmpc_console.attribute = attribute;
+  _platform_console.attribute = attribute;
 
   vprintf(fmt, args);
 }
@@ -218,17 +231,20 @@ void			ibmpc_console_message(char		indicator,
  * console.
  */
 
-t_error			ibmpc_console_initialize(void)
+t_error			platform_console_initialize(void)
 {
-  _ibmpc_console.attribute = IBMPC_CONSOLE_FRONT(IBMPC_CONSOLE_WHITE) |
-    IBMPC_CONSOLE_BACK(IBMPC_CONSOLE_BLACK) | IBMPC_CONSOLE_INT;
-  _ibmpc_console.vga = (char*)IBMPC_CONSOLE_ADDR;
+  _platform_console.attribute =
+    PLATFORM_CONSOLE_FRONT(PLATFORM_CONSOLE_WHITE) |
+    PLATFORM_CONSOLE_BACK(PLATFORM_CONSOLE_BLACK) |
+    PLATFORM_CONSOLE_INT;
 
-  ibmpc_console_clear();
+  _platform_console.vga = (char*)PLATFORM_CONSOLE_ADDR;
 
-  printf_init(ibmpc_console_print_char, ibmpc_console_attribute);
+  platform_console_clear();
 
-  return (ERROR_OK);
+  printf_init(platform_console_print_char, platform_console_attribute);
+
+  MACHINE_LEAVE();
 }
 
 /*
@@ -237,7 +253,7 @@ t_error			ibmpc_console_initialize(void)
  * there is nothing special to do.
  */
 
-t_error			ibmpc_console_clean(void)
+t_error			platform_console_clean(void)
 {
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }

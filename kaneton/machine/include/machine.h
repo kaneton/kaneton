@@ -5,17 +5,58 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/machine/include/machine.h
+ * file          /home/mycure/kane...STABLE/kaneton/machine/include/machine.h
  *
  * created       julien quintard   [thu jun  7 12:46:25 2007]
- * updated       julien quintard   [mon jun 11 05:56:19 2007]
+ * updated       julien quintard   [wed nov 24 13:39:19 2010]
  */
 
 #ifndef MACHINE_H
 #define MACHINE_H			1
 
+/*
+ * ---------- includes --------------------------------------------------------
+ */
+
 #include <glue/glue.h>
 #include <architecture/architecture.h>
 #include <platform/platform.h>
+
+/*
+ * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * notify
+ */
+
+#define MACHINE_NOTIFY(_format_, _arguments_...)			\
+  {									\
+    module_call(report, report_record,					\
+		_format_ " (%s:%u)",					\
+		##_arguments_, __FUNCTION__, __LINE__);			\
+  }
+
+/*
+ * escape
+ */
+
+#define MACHINE_ESCAPE(_format_, _arguments_...)			\
+  {									\
+    module_call(report, report_record,					\
+		_format_ " (%s:%u)",					\
+		##_arguments_, __FUNCTION__, __LINE__);			\
+									\
+    return (ERROR_KO);							\
+  }
+
+/*
+ * leave
+ */
+
+#define MACHINE_LEAVE()							\
+  {									\
+    return (ERROR_OK);							\
+  }
 
 #endif

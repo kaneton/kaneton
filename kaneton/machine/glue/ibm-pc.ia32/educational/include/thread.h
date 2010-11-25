@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ibm-pc.ia32/educational/include/thread.h
+ * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       matthieu bucchianeri   [wed jan  9 12:08:26 2008]
+ * updated       julien quintard   [wed nov 24 14:19:03 2010]
  */
 
 #ifndef GLUE_THREAD_H
@@ -19,15 +19,15 @@
  */
 
 #define         machine_include_thread()				\
-  extern d_thread                thread_dispatch
+  extern d_thread	glue_thread_dispatch
 
 #define         machine_call_thread(_function_, _args_...)		\
   (									\
     {									\
-      t_error   _r_ = ERROR_OK;					\
+      t_error   _r_ = ERROR_OK;						\
 									\
-      if (thread_dispatch._function_ != NULL)				\
-        _r_ = thread_dispatch._function_(_args_);			\
+      if (glue_thread_dispatch._function_ != NULL)			\
+        _r_ = glue_thread_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\

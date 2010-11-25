@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/core.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [mon nov 22 22:58:19 2010]
+ * updated       julien quintard   [wed nov 24 18:52:48 2010]
  */
 
 #ifndef CORE_CORE_H
@@ -47,6 +47,32 @@
 #define FIT_WORST		(1 << 3)
 
 /*
+ * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * leave
+ */
+
+#define CORE_LEAVE()							\
+  {									\
+    return (ERROR_OK);							\
+  }
+
+/*
+ * escape
+ */
+
+#define CORE_ESCAPE(_format_, _arguments_...)				\
+  {									\
+    module_call(report, report_record,					\
+		_format_ " (%s:%u)",					\
+		##_arguments_, __FUNCTION__, __LINE__);			\
+    									\
+    return (ERROR_KO);							\
+  }
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
@@ -64,6 +90,7 @@
 #include <core/map.h>
 #include <core/event.h>
 #include <core/timer.h>
+#include <core/clock.h>
 #include <core/io.h>
 #include <core/wait.h>
 #include <core/thread.h>
@@ -88,7 +115,7 @@
 
 void			kaneton(t_init*				bootloader);
 
-t_error			kaneton_spawn(void);
+void			kaneton_spawn(void);
 
 
 /*

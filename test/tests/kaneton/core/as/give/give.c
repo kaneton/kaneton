@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...E/test/tests/kaneton/core/as/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:13:10 2010]
+ * updated       julien quintard   [wed nov 24 09:26:33 2010]
  */
 
 /*
@@ -33,27 +33,27 @@ void			test_core_as_give(void)
   TEST_ENTER();
 
   if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task1) != ERROR_NONE)
+		   TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE,
+		   &task1) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
   if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task2) != ERROR_NONE)
+		   TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE,
+		   &task2) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
-  if (as_reserve(task1, &as) != ERROR_NONE)
+  if (as_reserve(task1, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
-  if (as_give(task2, as) != ERROR_NONE)
+  if (as_give(task2, as) != ERROR_OK)
     TEST_ERROR("[as_give] error\n");
 
-  if (as_get(as, &o) != ERROR_NONE)
+  if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error\n");
 
-  if (o->tskid != task2)
+  if (o->task != task2)
     TEST_ERROR("the address space's task identifier is invalid\n");
 
   TEST_LEAVE();

@@ -181,6 +181,46 @@ t_error			event_notify(i_event			id)
 }
 
 /*
+ * this function activates the event processing.
+ *
+ * steps:
+ *
+ * 1) call the machine.
+ */
+
+t_error			event_enable(void)
+{
+  /*
+   * 1)
+   */
+
+  if (machine_call(event, event_enable) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
+
+  TIMER_LEAVE(_timer, ERROR_OK);
+}
+
+/*
+ * this function deactivates the event processing.
+ *
+ * steps:
+ *
+ * 1) call the machine.
+ */
+
+t_error			event_disable(void)
+{
+  /*
+   * 1)
+   */
+
+  if (machine_call(event, event_disable) != ERROR_OK)
+    TIMER_LEAVE(_timer, ERROR_KO);
+
+  TIMER_LEAVE(_timer, ERROR_OK);
+}
+
+/*
  * reserve an event.
  *
  * steps:

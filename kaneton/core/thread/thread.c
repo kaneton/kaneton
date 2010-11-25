@@ -566,7 +566,7 @@ t_error			thread_priority(i_thread		threadid,
 }
 
 /*
- * update the thread state.
+ * set the thread as running.
  *
  * steps:
  *
@@ -578,15 +578,13 @@ t_error			thread_priority(i_thread		threadid,
  * 6) call the scheduler to schedule or cancel the thread.
  */
 
-t_error			thread_state(i_thread			threadid,
-				     t_state			state)
+t_error			thread_run(i_thread			threadid)
 {
   o_thread*		o;
   //  t_iterator		i;
   //  t_state		st;
   o_task*		task;
   t_state		wakeup;
-  t_state		current;
 
   THREAD_ENTER(_thread);
 
@@ -600,42 +598,18 @@ t_error			thread_state(i_thread			threadid,
   if (task_get(o->task, &task) != ERROR_OK)
     THREAD_LEAVE(_thread, ERROR_KO);
 
-  current = o->state;
-
   /*
    * 1)
    */
 
-  if (o->state == state)
+  if (o->state == THREAD_STATE_RUN)
     THREAD_LEAVE(_thread, ERROR_OK);
-
-  /*
-   *
-   */
-
-  switch(state)
-    {
-      case THREAD_STATE_RUN:
-	wakeup = WAIT_START;
-	break;
-      case THREAD_STATE_STOP:
-	wakeup = WAIT_STOP;
-	break;
-      case THREAD_STATE_ZOMBIE:
-	wakeup = WAIT_DEATH;
-	break;
-      case THREAD_STATE_BLOCK:
-	wakeup = 0;
-	break;
-      default:
-	THREAD_LEAVE(_thread, ERROR_KO);
-    }
 
   /*
    * XXX
    */
 
-  o->state = state;
+  o->state = THREAD_STATE_RUN;
 
   /*
    * 4)
@@ -654,37 +628,274 @@ t_error			thread_state(i_thread			threadid,
 	}
 
       if (w->options & wakeup)
-	thread_state(w->u.thread, THREAD_STATE_RUN);
+	thread_run(w->u.thread);
     }
 */
   /*
    * 5)
    */
 
-  if (machine_call(thread, thread_state, threadid, state) != ERROR_OK)
+  if (machine_call(thread, thread_run, threadid) != ERROR_OK)
     THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
    * 6)
    */
 
-  // XXX n'ajouter que les threads en run qui si la task est en run aussi
-  switch (state)
+  if (task->state == TASK_STATE_RUN)
     {
-      case THREAD_STATE_RUN:
-	if (task->state == TASK_STATE_RUN)
-	  if (scheduler_add(threadid) != ERROR_OK)
-	    THREAD_LEAVE(_thread, ERROR_KO);
+      if (scheduler_add(threadid) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
+    }
 
-	break;
-      case THREAD_STATE_STOP:
-      case THREAD_STATE_ZOMBIE:
-      case THREAD_STATE_BLOCK:
-	if (current == THREAD_STATE_RUN)
-	  if (scheduler_remove(threadid) != ERROR_OK)
-	    THREAD_LEAVE(_thread, ERROR_KO);
+  THREAD_LEAVE(_thread, ERROR_OK);
+}
 
-	break;
+/*
+ * set the thread as stopped.
+ *
+ * steps:
+ *
+ * 1) check wether the requested state is valid.
+ * 2) get the thread object from the thread container.
+ * 3) update the thread state if needed.
+ * 4) XXX
+ * 5) call the machine-dependent code.
+ * 6) call the scheduler to schedule or cancel the thread.
+ */
+
+t_error			thread_stop(i_thread			threadid)
+{
+  o_thread*		o;
+  //  t_iterator		i;
+  //  t_state		st;
+  o_task*		task;
+  t_state		wakeup;
+  t_state		state;
+
+  THREAD_ENTER(_thread);
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  if (task_get(o->task, &task) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  state = o->state;
+
+  /*
+   * 1)
+   */
+
+  if (o->state == THREAD_STATE_STOP)
+    THREAD_LEAVE(_thread, ERROR_OK);
+
+  /*
+   * XXX
+   */
+
+  o->state = THREAD_STATE_STOP;
+
+  /*
+   * 4)
+   */
+/*
+  set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
+    {
+      o_waitfor*	w;
+
+      if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
+	{
+	  module_call(console, console_message, '!', "thread: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  THREAD_LEAVE(_thread, ERROR_KO);
+	}
+
+      if (w->options & wakeup)
+	thread_run(w->u.thread);
+    }
+*/
+  /*
+   * 5)
+   */
+
+  if (machine_call(thread, thread_stop, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  /*
+   * 6)
+   */
+
+  if (state == TASK_STATE_RUN)
+    {
+      if (scheduler_remove(threadid) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
+    }
+
+  THREAD_LEAVE(_thread, ERROR_OK);
+}
+
+/*
+ * set the thread as blocking
+ *
+ * steps:
+ *
+ * 1) check wether the requested state is valid.
+ * 2) get the thread object from the thread container.
+ * 3) update the thread state if needed.
+ * 4) XXX
+ * 5) call the machine-dependent code.
+ * 6) call the scheduler to schedule or cancel the thread.
+ */
+
+t_error			thread_block(i_thread			threadid)
+{
+  o_thread*		o;
+  //  t_iterator		i;
+  //  t_state		st;
+  o_task*		task;
+  t_state		wakeup;
+  t_state		state;
+
+  THREAD_ENTER(_thread);
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  if (task_get(o->task, &task) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  state = o->state;
+
+  /*
+   * 1)
+   */
+
+  if (o->state == THREAD_STATE_BLOCK)
+    THREAD_LEAVE(_thread, ERROR_OK);
+
+  /*
+   * XXX
+   */
+
+  o->state = THREAD_STATE_BLOCK;
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(thread, thread_block, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  /*
+   * 6)
+   */
+
+  if (state == TASK_STATE_RUN)
+    {
+      if (scheduler_remove(threadid) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
+    }
+
+  THREAD_LEAVE(_thread, ERROR_OK);
+}
+
+/*
+ * set the thread as dead.
+ *
+ * steps:
+ *
+ * 1) check wether the requested state is valid.
+ * 2) get the thread object from the thread container.
+ * 3) update the thread state if needed.
+ * 4) XXX
+ * 5) call the machine-dependent code.
+ * 6) call the scheduler to schedule or cancel the thread.
+ */
+
+t_error			thread_die(i_thread			threadid)
+{
+  o_thread*		o;
+  //  t_iterator		i;
+  //  t_state		st;
+  o_task*		task;
+  t_state		wakeup;
+  t_state		state;
+
+  THREAD_ENTER(_thread);
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(threadid, &o) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  if (task_get(o->task, &task) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  state = o->state;
+
+  /*
+   * 1)
+   */
+
+  if (o->state == THREAD_STATE_RUN)
+    THREAD_LEAVE(_thread, ERROR_OK);
+
+  /*
+   * XXX
+   */
+
+  o->state = THREAD_STATE_RUN;
+
+  /*
+   * 4)
+   */
+/*
+  set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
+    {
+      o_waitfor*	w;
+
+      if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
+	{
+	  module_call(console, console_message, '!', "thread: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  THREAD_LEAVE(_thread, ERROR_KO);
+	}
+
+      if (w->options & wakeup)
+	thread_run(w->u.thread);
+    }
+
+    // XXX if list of waits empty -> release thread
+*/
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(thread, thread_die, threadid) != ERROR_OK)
+    THREAD_LEAVE(_thread, ERROR_KO);
+
+  /*
+   * 6)
+   */
+
+  if (task->state == TASK_STATE_RUN)
+    {
+      if (scheduler_remove(threadid) != ERROR_OK)
+	THREAD_LEAVE(_thread, ERROR_KO);
     }
 
   THREAD_LEAVE(_thread, ERROR_OK);
@@ -695,7 +906,7 @@ t_error			thread_state(i_thread			threadid,
  *
  * steps:
  *
- * 1) check wether the stack is large enough.
+ * 1) check whether the stack is large enough.
  * 2) get the thread object from the threads container.
  * 3) get the task owning the thread.
  * 3) allocate the thread stack in the task address space.
@@ -714,7 +925,7 @@ t_error			thread_stack(i_thread			threadid,
    * 1)
    */
 
-  if (stack.size < THREAD_MIN_STACKSZ)
+  if (stack.size < THREAD_LSTACKSZ)
     THREAD_LEAVE(_thread, ERROR_KO);
 
   /*
@@ -790,7 +1001,7 @@ void			thread_sleep_handler(i_timer		timer,
    *
    */
 
-  assert(thread_state(*data, THREAD_STATE_RUN) == ERROR_OK);
+  assert(thread_run(*data) == ERROR_OK);
 
   /*
    *
@@ -837,7 +1048,7 @@ t_error			thread_sleep(i_thread			id,
                     TIMER_HANDLER(thread_sleep_handler),
                     (t_vaddr)data,
                     milliseconds,
-                    TIMER_REPEAT_DISABLE,
+                    TIMER_OPTION_NONE,
                     (i_timer*)&useless) != ERROR_OK)
     THREAD_LEAVE(_thread, ERROR_KO);
 
@@ -845,7 +1056,7 @@ t_error			thread_sleep(i_thread			id,
    *
    */
 
-  if (thread_state(id, THREAD_STATE_BLOCK) != ERROR_OK)
+  if (thread_block(id) != ERROR_OK)
     THREAD_LEAVE(_thread, ERROR_KO);
 
   THREAD_LEAVE(_thread, ERROR_OK);
@@ -1020,7 +1231,7 @@ t_error			thread_initialize(void)
   if (thread_get(_kernel->thread, &thread) != ERROR_OK)
     return (ERROR_KO);
 
-  if (thread_state(_kernel->thread, THREAD_STATE_BLOCK) != ERROR_OK)
+  if (thread_block(_kernel->thread) != ERROR_OK)
     return (ERROR_KO);
 
   /*

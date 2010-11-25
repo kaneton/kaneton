@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/segment/flush/flush.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:25:37 2010]
+ * updated       julien quintard   [wed nov 24 09:40:08 2010]
  */
 
 /*
@@ -35,17 +35,17 @@ void			test_core_segment_flush(void)
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
+  if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE, &task) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
+  if (as_reserve(task, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
-  if (as_get(as, &o) != ERROR_NONE)
+  if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error\n");
 
-  if (set_size(o->segments, &before_sz) != ERROR_NONE)
+  if (set_size(o->segments, &before_sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   for (i = 0; i < 64; i++)
@@ -55,38 +55,38 @@ void			test_core_segment_flush(void)
 
       n = 2 * (i + 1);
 
-      if (segment_reserve(as, n * PAGESZ, PERM_READ, &seg) != ERROR_NONE)
+      if (segment_reserve(as, n * PAGESZ, PERMISSION_READ, &seg) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error\n");
 
-      if (segment_get(seg, &s) != ERROR_NONE)
+      if (segment_get(seg, &s) != ERROR_OK)
 	TEST_ERROR("[segment_get] error\n");
 
-      if (s->segid != seg)
+      if (s->id != seg)
 	TEST_ERROR("invalid segment's identifier\n");
 
-      if (s->asid != as)
+      if (s->as != as)
 	TEST_ERROR("invalid segment's address space identifier\n");
 
       if (s->size != n * PAGESZ)
 	TEST_ERROR("invalid segment's size\n");
 
-      if (s->perms != PERM_READ)
+      if (s->permissions != PERMISSION_READ)
 	TEST_ERROR("invalid segment's permissions\n");
     }
 
-  if (segment_flush(as) != ERROR_NONE)
+  if (segment_flush(as) != ERROR_OK)
     TEST_ERROR("[segment_flush] error");
 
-  if (set_size(o->segments, &after_sz) != ERROR_NONE)
+  if (set_size(o->segments, &after_sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   if (after_sz != 0)
     TEST_ERROR("segments seem to be reamining in the set after flush\n");
 
-  if (as_release(as) != ERROR_NONE)
+  if (as_release(as) != ERROR_OK)
     TEST_ERROR("[as_release] error\n");
 
-  if (task_release(task) != ERROR_NONE)
+  if (task_release(task) != ERROR_OK)
     TEST_ERROR("[task_release] error\n");
 
   TEST_LEAVE();

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/thread.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [mon nov 22 16:52:26 2010]
+ * updated       julien quintard   [thu nov 25 11:59:32 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -41,8 +41,9 @@
  * stack size
  */
 
-#define THREAD_STACKSZ		4096
-#define THREAD_MIN_STACKSZ	4096
+#define THREAD_HSTACKSZ		1000 * PAGESZ
+#define THREAD_STACKSZ		500 * PAGESZ
+#define THREAD_LSTACKSZ		1 * PAGESZ
 
 /*
  * the thread state.
@@ -125,8 +126,10 @@ typedef struct
   t_error			(*thread_release)(i_thread);
   t_error			(*thread_priority)(i_thread,
 						  t_priority);
-  t_error			(*thread_state)(i_thread,
-						t_state);
+  t_error			(*thread_run)(i_thread);
+  t_error			(*thread_stop)(i_thread);
+  t_error			(*thread_block)(i_thread);
+  t_error			(*thread_die)(i_thread);
   t_error			(*thread_stack)(i_thread,
 						t_stack);
   t_error			(*thread_args)(i_thread,
@@ -198,8 +201,13 @@ t_error			thread_release(i_thread			threadid);
 t_error			thread_priority(i_thread		threadid,
 					t_priority		prior);
 
-t_error			thread_state(i_thread			threadid,
-				     t_state			state);
+t_error			thread_run(i_thread			threadid);
+
+t_error			thread_stop(i_thread			threadid);
+
+t_error			thread_block(i_thread			threadid);
+
+t_error			thread_die(i_thread			threadid);
 
 t_error			thread_stack(i_thread			threadid,
 				     t_stack			stack);

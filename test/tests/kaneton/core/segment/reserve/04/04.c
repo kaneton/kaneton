@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -35,12 +35,12 @@ void			test_core_segment_reserve_04(void)
 
   TEST_ENTER();
 
-  TEST_ALLOCATE(kasid, 2, seg);
-  TEST_ALLOCATE(kasid, 8, seg + 1);
-  TEST_ALLOCATE(kasid, 2, seg + 2);
-  TEST_ALLOCATE(kasid, 5, seg + 1);
-  TEST_ALLOCATE(kasid, 8, seg);
-  TEST_ALLOCATE(kasid, 4, seg + 3);
+  TEST_ALLOCATE(_kernel->as, 2, seg);
+  TEST_ALLOCATE(_kernel->as, 8, seg + 1);
+  TEST_ALLOCATE(_kernel->as, 2, seg + 2);
+  TEST_ALLOCATE(_kernel->as, 5, seg + 1);
+  TEST_ALLOCATE(_kernel->as, 8, seg);
+  TEST_ALLOCATE(_kernel->as, 4, seg + 3);
 
   TEST_LEAVE();
 }

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...kaneton/core/segment/permissions/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:26:46 2010]
+ * updated       julien quintard   [wed nov 24 09:41:11 2010]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -36,22 +36,22 @@ void			test_core_segment_permissions_01(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_EXEC, &seg) != ERROR_NONE)
+  if (segment_reserve(_kernel->as, PAGESZ, PERMISSION_READ | PERMISSION_EXEC, &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
-  if (segment_get(seg, &o) != ERROR_NONE)
+  if (segment_get(seg, &o) != ERROR_OK)
     TEST_ERROR("[segment_get] error\n");
 
-  if (o->perms != (PERM_READ | PERM_EXEC))
+  if (o->permissions != (PERMISSION_READ | PERMISSION_EXEC))
     TEST_ERROR("invalid segment's permissions\n");
 
-  if (segment_perms(seg, PERM_READ | PERM_WRITE) != ERROR_NONE)
-    TEST_ERROR("[segment_perms] error\n");
+  if (segment_permissions(seg, PERMISSION_READ | PERMISSION_WRITE) != ERROR_OK)
+    TEST_ERROR("[segment_permissions] error\n");
 
-  if (o->perms != (PERM_READ | PERM_WRITE))
+  if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))
     TEST_ERROR("invalid segment's permissions\n");
 
-  if (segment_release(seg) != ERROR_NONE)
+  if (segment_release(seg) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
   TEST_LEAVE();

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [mon nov 22 22:24:11 2010]
+ * updated       julien quintard   [thu nov 25 12:05:06 2010]
  */
 
 /*
@@ -43,9 +43,11 @@ extern m_event*		_event;
  * the event manager dispatch.
  */
 
-d_event				event_dispatch =
+d_event			glue_event_dispatch =
   {
     NULL,
+    glue_event_enable,
+    glue_event_disable,
     NULL,
     glue_event_reserve,
     glue_event_release,
@@ -55,6 +57,48 @@ d_event				event_dispatch =
 
 /*
  * ---------- functions -------------------------------------------------------
+ */
+
+/*
+ * this function enables the interrupts, hence the event processing.
+ *
+ * steps:
+ *
+ * 1) call the STI instruction.
+ */
+
+t_error			glue_event_enable(void)
+{
+  /*
+   * 1)
+   */
+
+  STI();
+
+  EVENT_LEAVE(_event, ERROR_KO);
+}
+
+/*
+ * this function disables the interrupts, hence the event processing.
+ *
+ * steps:
+ *
+ * 1) call the CLI instruction.
+ */
+
+t_error			glue_event_disable(void)
+{
+  /*
+   * 1)
+   */
+
+  CLI();
+
+  EVENT_LEAVE(_event, ERROR_KO);
+}
+
+/*
+ * XXX
  */
 
 t_error			glue_event_reserve(i_event		id,
@@ -68,18 +112,22 @@ t_error			glue_event_reserve(i_event		id,
     EVENT_LEAVE(_event, ERROR_KO);
 
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
-    if (ibmpc_irq_enable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+    if (platform_irq_enable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
       EVENT_LEAVE(_event, ERROR_KO);
 
   EVENT_LEAVE(_event, ERROR_OK);
 }
+
+/*
+ * XXX
+ */
 
 t_error			glue_event_release(i_event		id)
 {
   EVENT_ENTER(_event);
 
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
-    if (ibmpc_irq_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+    if (platform_irq_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
       EVENT_LEAVE(_event, ERROR_KO);
 
   EVENT_LEAVE(_event, ERROR_OK);
@@ -113,6 +161,10 @@ void			pf_handler(t_id				id,
     ;
 }
 
+/*
+ * XXX
+ */
+
 t_error			glue_event_initialize(void)
 {
   EVENT_ENTER(_event);
@@ -120,7 +172,7 @@ t_error			glue_event_initialize(void)
   if (ia32_interrupt_vector_init() != ERROR_OK)
     EVENT_LEAVE(_event, ERROR_KO);
 
-  if (ibmpc_irq_init() != ERROR_OK)
+  if (platform_irq_initialize() != ERROR_OK)
     EVENT_LEAVE(_event, ERROR_KO);
 
   if (event_reserve(14, EVENT_FUNCTION,
@@ -130,9 +182,16 @@ t_error			glue_event_initialize(void)
   EVENT_LEAVE(_event, ERROR_OK);
 }
 
+/*
+ * XXX
+ */
+
 t_error			glue_event_clean(void)
 {
   EVENT_ENTER(_event);
+
+  if (platform_irq_clean() != ERROR_KO)
+    EVENT_LEAVE(_event, ERROR_KO);
 
   EVENT_LEAVE(_event, ERROR_OK);
 }

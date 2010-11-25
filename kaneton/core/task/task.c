@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [tue nov 23 14:47:45 2010]
+ * updated       julien quintard   [thu nov 25 12:08:36 2010]
  */
 
 /*
@@ -767,37 +767,13 @@ t_error			task_priority(i_task			id,
  * 5) start the threads.
  */
 
-t_error			task_state(i_task			id,
-				   t_state			state)
+t_error			task_run(i_task				id)
 {
   o_task*		o;
   t_iterator		i;
   t_state		st;
-  t_state		wakeup;
 
   TASK_ENTER(_task);
-
-  /*
-   *
-   */
-
-  switch (state)
-    {
-      case TASK_STATE_RUN:
-        wakeup = WAIT_START;
-        break;
-      case TASK_STATE_STOP:
-        wakeup = WAIT_STOP;
-        break;
-      case TASK_STATE_ZOMBIE:
-        wakeup = WAIT_DEATH;
-        break;
-      case TASK_STATE_BLOCK:
-	wakeup = 0;
-	break;
-      default:
-        TASK_LEAVE(_task, ERROR_KO);
-    }
 
   /*
    * 1)
@@ -810,7 +786,7 @@ t_error			task_state(i_task			id,
    * 2)
    */
 
-  if (o->state == state)
+  if (o->state == TASK_STATE_RUN)
     TASK_LEAVE(_task, ERROR_OK);
 
   /*
@@ -830,17 +806,17 @@ t_error			task_state(i_task			id,
 	  TASK_LEAVE(_task, ERROR_KO);
 	}
 
-      if (w->options & wakeup)
-	task_state(w->u.task, TASK_STATE_RUN);
+      if (w->options & WAIT_START)
+	task_run(w->u.task);
 
-      /* XXX remove */
+      /* XXX remove from wait list */
     }
 
   /*
    * 4)
    */
 
-  if (machine_call(task, task_state, id, state) != ERROR_OK)
+  if (machine_call(task, task_run, id) != ERROR_OK)
     TASK_LEAVE(_task, ERROR_KO);
 
   /*
@@ -860,20 +836,231 @@ t_error			task_state(i_task			id,
 	  TASK_LEAVE(_task, ERROR_KO);
 	}
 
-      // XXX remove toutes les threads qui run si on stoppe la task
-      // XXX meme chose si on la run, il faut ajouter les threads qui sont
-      //     en run
-
-      if (state != TASK_STATE_BLOCK &&
-	  thread_state(*th, state) != ERROR_OK)
+      if (thread_run(*th) != ERROR_OK)
 	TASK_LEAVE(_task, ERROR_KO);
     }
 
+  TASK_LEAVE(_task, ERROR_OK);
+}
+
+/*
+ * this function marks the task as stopped.
+ *
+ * steps:
+ *
+ * 1) get the task object.
+ * 2) set the new state.
+ * 3) wakeup the waiting tasks.
+ * 4) call the machine dependent code.
+ * 5) start the threads.
+ */
+
+t_error			task_stop(i_task			id)
+{
+  o_task*		o;
+  t_iterator		i;
+  t_state		st;
+
+  TASK_ENTER(_task);
+
   /*
-   * XXX
+   * 1)
    */
 
-  o->state = state;
+  if (task_get(id, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
+
+  /*
+   * 2)
+   */
+
+  if (o->state == TASK_STATE_STOP)
+    TASK_LEAVE(_task, ERROR_OK);
+
+  /*
+   * 3)
+   */
+
+  set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
+    {
+      o_wait*		w;
+
+      if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
+	{
+	  module_call(console, console_message,
+		      '!', "task: cannot find the object "
+		      "corresponding to its identifier\n");
+
+	  TASK_LEAVE(_task, ERROR_KO);
+	}
+
+      if (w->options & WAIT_STOP)
+	task_run(w->u.task);
+
+      /* XXX remove from wait list */
+    }
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(task, task_stop, id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
+
+  /*
+   * 5)
+   */
+
+  set_foreach(SET_OPTION_FORWARD, o->threads, &i, st)
+    {
+      i_thread*		th;
+
+      if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
+	{
+	  module_call(console, console_message,
+		      '!', "task: cannot find the object "
+		      "corresponding to its identifier\n");
+
+	  TASK_LEAVE(_task, ERROR_KO);
+	}
+
+      if (thread_stop(*th) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
+    }
+
+  TASK_LEAVE(_task, ERROR_OK);
+}
+
+/*
+ * this function marks the task as blocked.
+ *
+ * steps:
+ *
+ * 1) get the task object.
+ * 2) set the new state.
+ * 3) wakeup the waiting tasks.
+ * 4) call the machine dependent code.
+ * 5) start the threads.
+ */
+
+t_error			task_block(i_task			id)
+{
+  o_task*		o;
+  t_iterator		i;
+  t_state		st;
+
+  TASK_ENTER(_task);
+
+  /*
+   * 1)
+   */
+
+  if (task_get(id, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
+
+  /*
+   * 2)
+   */
+
+  if (o->state == TASK_STATE_BLOCK)
+    TASK_LEAVE(_task, ERROR_OK);
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(task, task_block, id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
+
+  TASK_LEAVE(_task, ERROR_OK);
+}
+
+/*
+ * this function marks the task as dead.
+ *
+ * steps:
+ *
+ * 1) get the task object.
+ * 2) set the new state.
+ * 3) wakeup the waiting tasks.
+ * 4) call the machine dependent code.
+ * 5) start the threads.
+ */
+
+t_error			task_die(i_task				id)
+{
+  o_task*		o;
+  t_iterator		i;
+  t_state		st;
+
+  TASK_ENTER(_task);
+
+  /*
+   * 1)
+   */
+
+  if (task_get(id, &o) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
+
+  /*
+   * 2)
+   */
+
+  if (o->state == TASK_STATE_ZOMBIE)
+    TASK_LEAVE(_task, ERROR_OK);
+
+  /*
+   * 3)
+   */
+
+  set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
+    {
+      o_wait*		w;
+
+      if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
+	{
+	  module_call(console, console_message,
+		      '!', "task: cannot find the object "
+		      "corresponding to its identifier\n");
+
+	  TASK_LEAVE(_task, ERROR_KO);
+	}
+
+      if (w->options & WAIT_DEATH)
+	task_run(w->u.task);
+
+      /* XXX remove from wait list */
+    }
+
+  // XXX if list of waits empty -> task_release
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(task, task_die, id) != ERROR_OK)
+    TASK_LEAVE(_task, ERROR_KO);
+
+  /*
+   * 5)
+   */
+
+  set_foreach(SET_OPTION_FORWARD, o->threads, &i, st)
+    {
+      i_thread*		th;
+
+      if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
+	{
+	  module_call(console, console_message,
+		      '!', "task: cannot find the object "
+		      "corresponding to its identifier\n");
+
+	  TASK_LEAVE(_task, ERROR_KO);
+	}
+
+      if (thread_stop(*th) != ERROR_OK)
+	TASK_LEAVE(_task, ERROR_KO);
+    }
 
   TASK_LEAVE(_task, ERROR_OK);
 }
@@ -943,7 +1130,7 @@ t_error			task_wait(i_task			id,
 	   * e)
 	   */
 
-	  if (task_state(w.u.task, TASK_STATE_STOP) != ERROR_OK)
+	  if (task_stop(w.u.task) != ERROR_OK)
 	    TASK_LEAVE(_task, ERROR_KO);
 	}
     }
@@ -1014,7 +1201,7 @@ t_error			task_get(i_task				id,
 
 t_error			task_initialize(void)
 {
-  i_segment		segments[INIT_SEGMENTS];
+  i_segment		segments[GLUE_INIT_SEGMENTS];
   i_region		useless;
   o_segment*		segment;
   o_region*		region;
@@ -1081,7 +1268,7 @@ t_error			task_initialize(void)
       return (ERROR_KO);
     }
 
-  if (task_state(_kernel->task, TASK_STATE_RUN) != ERROR_OK)
+  if (task_run(_kernel->task) != ERROR_OK)
     {
       module_call(console, console_message,
 		  '!', "task: unable to set the task as running\n");

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/glue.h
  *
  * created       julien quintard   [mon jun 11 05:57:15 2007]
- * updated       julien quintard   [fri may  1 00:53:23 2009]
+ * updated       julien quintard   [wed nov 24 20:41:54 2010]
  */
 
 #ifndef GLUE_GLUE_H
@@ -23,13 +23,13 @@
  */
 
 #define		machine_include(_manager_)				\
-  machine_include_##_manager_()
+  machine_include_ ## _manager_()
 
 #define		machine_call(_manager_, _function_, _arguments_...)	\
-  machine_call_##_manager_(_function_, ##_arguments_)
+  machine_call_ ## _manager_(_function_, ##_arguments_)
 
 #define		machine_data(_object_)					\
-  machine_data_##_object_()
+  machine_data_ ## _object_()
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -39,6 +39,7 @@
 #include <platform/platform.h>
 
 #include <glue/as.h>
+#include <glue/clock.h>
 #include <glue/cpu.h>
 #include <glue/event.h>
 #include <glue/init.h>

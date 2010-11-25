@@ -1,4 +1,0 @@
-name: machine/glue/ibmpc.ia32/task/guest
-description: XXX
-symbol: test_ibmpc_ia32_task_guest
-output:

@@ -62,15 +62,15 @@ i_segment		_system;
  *
  * steps:
  *
- * 1) sets the init variable from the bootloader argument.
- * 2) initializes some fundamental modules.
+ * 1) set the _init variable from the boot loader argument.
+ * 2) initialize some fundamental modules.
  * 3) displays the current kaneton version.
- * 4) initializes the fine grained allocator.
- * 5) initializes the report manager.
- * 6) initializes the kernel manager.
- * 7) initializes the test system.
- * 8) launches the very first service.
- * 9) cleans the kernel manager.
+ * 4) set up the fine grained allocator.
+ * 5) start the kernel.
+ * 6) run the test system, should have it be loaded.
+ * 7) spawn the 'system' service.
+ * 8) stop the kernel.
+ * 9) clean the loaded modules.
  * 10) shutdown the system.
  */
 
@@ -88,6 +88,7 @@ void			kaneton(t_init*				bootloader)
 
   module_call(console, console_initialize);
   module_call(forward, forward_initialize);
+  module_call(report, report_initialize);
 
   /*
    * 3)
@@ -109,25 +110,19 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
-  module_call(report, report_initialize);
-
-  /*
-   * 6)
-   */
-
   module_call(console, console_message,
 	      '+', "starting the kernel\n");
 
   kernel_initialize();
 
   /*
-   * 7)
+   * 6)
    */
 
   module_call(test, test_run);
 
   /*
-   * 8)
+   * 7)
    */
 
   module_call(console, console_message,
@@ -136,13 +131,21 @@ void			kaneton(t_init*				bootloader)
   kaneton_spawn();
 
   /*
-   * 9)
+   * 8)
    */
 
   module_call(console, console_message,
 	      '+', "stopping the kernel\n");
 
   kernel_clean();
+
+  /*
+   * 9)
+   */
+
+  module_call(console, console_clean);
+  module_call(forward, forward_clean);
+  module_call(report, report_clean);
 
   /*
    * 10)
@@ -153,14 +156,34 @@ void			kaneton(t_init*				bootloader)
 }
 
 /*
- * this function launches the very first service by creating a new
+ * this function launches the very first server by creating a new
  * task.
  *
  * the new task's address space is only composed of a stack and the
- * code which is a mapping of the code provided by the booloader: init->scode.
+ * code which is a mapping of the code provided by the booloader:
+ * init->scode.
+ *
+ * this first server is referred to as the 'system' server.
+ *
+ * steps:
+ *
+ * 1) check that the boot loader provided a system to spawn through
+ *    the _slocation_ and _scodesz_ attributes of the init structure.
+ * 2) reserve a task and addresse space for the server.
+ * 3) map the server's code segment, i.e _system (c.f. initialize() in task.c)
+ *    at a very precise location.
+ * 4) map the array of inputs (servers to be launch at boot time by the
+ *    'system' service) so that the server can access and spawn them.
+ * 5) reserve a thread.
+ * 6) set up the thread stack.
+ * 7) initialize the thread context, especially the entry point.
+ * 8) builds an arguments array containing the address of the inputs array.
+ *    place these arguments so that the thread can retrieve them in the
+ *    main() function.
+ * 9) set the task as running.
  */
 
-t_error			kaneton_spawn(void)
+void			kaneton_spawn(void)
 {
   i_thread		thread;
   i_region		region;
@@ -178,52 +201,76 @@ t_error			kaneton_spawn(void)
     char*		envp;
   }			args;
 
+  /*
+   * 1)
+   */
+
   assert(_init->scodesz != 0);
 
-  if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAVIOUR_TIMESHARING,
-		   TASK_PRIORITY_TIMESHARING,
-		   &task) != ERROR_OK)
-    return (ERROR_KO);
+  /*
+   * 2)
+   */
 
-  if (as_reserve(task, &as) != ERROR_OK)
-    return (ERROR_KO);
+  assert(task_reserve(TASK_CLASS_SERVICE,
+		      TASK_BEHAVIOUR_TIMESHARING,
+		      TASK_PRIORITY_TIMESHARING,
+		      &task) == ERROR_OK);
 
-  if (region_reserve(as,
-		     _system,
-		     0,
-		     REGION_OPTION_FORCE,
-		     _init->slocation,
-		     _init->scodesz,
-		     &region) != ERROR_OK)
-    return (ERROR_KO);
+  assert(as_reserve(task, &as) == ERROR_OK);
 
-  if (region_reserve(as,
-		     (i_segment)(t_vaddr)_init->inputs,
-		     0,
-		     REGION_OPTION_FORCE,
-		     (t_vaddr)_init->inputs,
-		     _init->inputssz,
-		     &region) != ERROR_OK)
-    return (ERROR_KO);
+  /*
+   * 3)
+   */
 
-  if (thread_reserve(task, THREAD_PRIORITY, &thread) != ERROR_OK)
-    return (ERROR_KO);
+  assert(region_reserve(as,
+			_system,
+			0,
+			REGION_OPTION_FORCE,
+			_init->slocation,
+			_init->scodesz,
+			&region) == ERROR_OK);
+
+  /*
+   * 4)
+   */
+
+  assert(region_reserve(as,
+			(i_segment)(t_vaddr)_init->inputs,
+			0,
+			REGION_OPTION_FORCE,
+			(t_vaddr)_init->inputs,
+			_init->inputssz,
+			&region) == ERROR_OK);
+
+  /*
+   * 5)
+   */
+
+  assert(thread_reserve(task, THREAD_PRIORITY, &thread) == ERROR_OK);
+
+  /*
+   * 6)
+   */
 
   stack.base = 0;
-  stack.size = 10 * PAGESZ;
+  stack.size = THREAD_STACKSZ;
 
-  if (thread_stack(thread, stack) != ERROR_OK)
-    return (ERROR_KO);
+  assert(thread_stack(thread, stack) == ERROR_OK);
 
-  if (thread_get(thread, &o) != ERROR_OK)
-    return (ERROR_KO);
+  /*
+   * 7)
+   */
+
+  assert(thread_get(thread, &o) == ERROR_OK);
 
   ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = _init->sentry;
 
-  if (thread_load(thread, ctx) != ERROR_OK)
-    return (ERROR_KO);
+  assert(thread_load(thread, ctx) == ERROR_OK);
+
+  /*
+   * 8)
+   */
 
   args.task = task;
   args.as = as;
@@ -231,11 +278,11 @@ t_error			kaneton_spawn(void)
   args.argv = (char*)_init->inputs;
   args.envp = NULL;
 
-  if (thread_args(thread, &args, sizeof (args)) != ERROR_OK)
-    return (ERROR_KO);
+  assert(thread_args(thread, &args, sizeof (args)) == ERROR_OK);
 
-  if (task_state(task, TASK_STATE_RUN) != ERROR_OK)
-    return (ERROR_KO);
+  /*
+   * 9)
+   */
 
-  return (ERROR_OK);
+  assert(task_run(task) == ERROR_OK);
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...chine/glue/ibm-pc.ia32/include/message.h
+ * file          /home/mycure/kane...bm-pc.ia32/educational/include/message.h
  *
  * created       julien quintard   [wed jun  6 16:20:48 2007]
- * updated       matthieu bucchianeri   [mon jul 23 12:40:53 2007]
+ * updated       julien quintard   [wed nov 24 14:17:10 2010]
  */
 
 #ifndef GLUE_MESSAGE_H
@@ -19,15 +19,15 @@
  */
 
 #define		machine_include_message()				\
-  extern d_message		message_dispatch
+  extern d_message	glue_message_dispatch
 
 #define		machine_call_message(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;					\
+      t_error	_r_ = ERROR_OK;						\
 									\
-      if (message_dispatch._function_ != NULL)				\
-        _r_ = message_dispatch._function_(_args_);			\
+      if (glue_message_dispatch._function_ != NULL)			\
+        _r_ = glue_message_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\

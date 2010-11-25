@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -36,14 +36,14 @@ void			test_core_segment_permissions_04(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(kasid, PAGESZ, PERM_READ, &seg) != ERROR_NONE)
+  if (segment_reserve(_kernel->as, PAGESZ, PERMISSION_READ, &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
-  if (segment_write(seg, 0, &i, sizeof(t_uint32)) == ERROR_NONE)
+  if (segment_write(seg, 0, &i, sizeof(t_uint32)) == ERROR_OK)
     TEST_ERROR("[segment_write] error: allowed writing to a read "
 	       "only segment\n");
 
-  if (segment_release(seg) != ERROR_NONE)
+  if (segment_release(seg) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
   TEST_LEAVE();

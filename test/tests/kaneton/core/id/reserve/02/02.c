@@ -32,12 +32,12 @@ void			test_core_id_reserve_02(void)
 
   TEST_ENTER();
 
-  if (id_build(&id) != ERROR_NONE)
+  if (id_build(&id) != ERROR_OK)
     TEST_ERROR("[id_build] error\n");
 
   for (j = 0; j < 1024; j++)
     {
-      if (id_reserve(&id, &i[j]) != ERROR_NONE)
+      if (id_reserve(&id, &i[j]) != ERROR_OK)
         TEST_ERROR("[id_reserve] error\n");
 
       if (!(i[j] >= 0 && i[j] <= (t_id)-1))
@@ -51,11 +51,11 @@ void			test_core_id_reserve_02(void)
 
   for (j = 0; j < 1024; j++)
     {
-      if (id_release(&id, i[j]) != ERROR_NONE)
+      if (id_release(&id, i[j]) != ERROR_OK)
         TEST_ERROR("[id_release] error\n");
     }
 
-  if (id_destroy(&id) != ERROR_NONE)
+  if (id_destroy(&id) != ERROR_OK)
     TEST_ERROR("[id_destroy] error\n");
 
   TEST_LEAVE();

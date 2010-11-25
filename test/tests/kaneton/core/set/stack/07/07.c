@@ -39,21 +39,21 @@ void			test_core_set_stack_07(void)
    * reserve
    */
 
-  if (set_reserve(stack, SET_OPT_ALLOC, sizeof(t_id), &id) != ERROR_NONE)
+  if (set_reserve(stack, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
   /*
    * pop
    */
 
-  if (set_pop(id) == ERROR_NONE)
+  if (set_pop(id) == ERROR_OK)
     TEST_ERROR("[set_pop] error: removed a non-existent item\n");
 
   /*
    * explore
    */
 
-  set_foreach(SET_OPT_FORWARD, id, &it, state)
+  set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       TEST_ERROR("there should not be any item in the set\n");
     }
@@ -63,21 +63,21 @@ void			test_core_set_stack_07(void)
    */
 
   obj = 42LL;
-  if (set_push(id, &obj) != ERROR_NONE)
+  if (set_push(id, &obj) != ERROR_OK)
     TEST_ERROR("[set_push] error\n");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_NONE)
+  if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   printf("%qd elements: ", sz);
   st = 0;
-  set_foreach(SET_OPT_FORWARD, id, &it, state)
+  set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
+      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
         TEST_ERROR("[set_object] error\n");
 
       if (!st++)
@@ -93,7 +93,7 @@ void			test_core_set_stack_07(void)
    * release
    */
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
   TEST_LEAVE();

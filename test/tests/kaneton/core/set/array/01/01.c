@@ -29,14 +29,14 @@ void			test_core_set_array_01(void)
 
   TEST_ENTER();
 
-  if (set_reserve(array, SET_OPT_NONE, 4, sizeof(t_id), &id) != ERROR_NONE)
+  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
-  if (set_reserve(array, SET_OPT_ALLOC | SET_OPT_FREE, 4,
-                  sizeof(t_id), &id) == ERROR_NONE)
+  if (set_reserve(array, SET_OPTION_ALLOC | SET_OPTION_FREE, 4,
+                  sizeof(t_id), &id) == ERROR_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments\n");
 
   TEST_LEAVE();

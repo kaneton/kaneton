@@ -39,7 +39,7 @@ void			test_core_set_array_06(void)
    * reserve
    */
 
-  if (set_reserve(array, SET_OPT_ALLOC, 4, sizeof(t_id), &id) != ERROR_NONE)
+  if (set_reserve(array, SET_OPTION_ALLOC, 4, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
   /*
@@ -47,43 +47,43 @@ void			test_core_set_array_06(void)
    */
 
   obj = 80LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 98654LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 42LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 122LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 45LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 64LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 90LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 12346LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 67LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   obj = 90LL;
-  if (set_add(id, &obj) != ERROR_NONE)
+  if (set_add(id, &obj) != ERROR_OK)
     printf("[set_add] error\n");
 
   /*
@@ -91,7 +91,7 @@ void			test_core_set_array_06(void)
    */
 
   obj = 4LL;
-  if (set_insert(id, &obj) != ERROR_NONE)
+  if (set_insert(id, &obj) != ERROR_OK)
     TEST_ERROR("[set_insert] error\n");
 
   /*
@@ -99,17 +99,17 @@ void			test_core_set_array_06(void)
    */
 
   obj = 123456LL;
-  if (set_append(id, &obj) != ERROR_NONE)
+  if (set_append(id, &obj) != ERROR_OK)
     TEST_ERROR("[set_append] error\n");
 
   /*
    * head & next
    */
 
-  if (set_head(id, &it) != ERROR_NONE)
+  if (set_head(id, &it) != ERROR_OK)
     TEST_ERROR("[set_head] error\n");
 
-  if (set_next(id, it, &it) != ERROR_NONE)
+  if (set_next(id, it, &it) != ERROR_OK)
     TEST_ERROR("[set_next] error\n");
 
   /*
@@ -117,7 +117,7 @@ void			test_core_set_array_06(void)
    */
 
   obj = 456LL;
-  if (set_after(id, it, &obj) != ERROR_NONE)
+  if (set_after(id, it, &obj) != ERROR_OK)
     TEST_ERROR("[set_after] error\n");
 
   /*
@@ -125,21 +125,21 @@ void			test_core_set_array_06(void)
    */
 
   obj = 454LL;
-  if (set_before(id, it, &obj) != ERROR_NONE)
+  if (set_before(id, it, &obj) != ERROR_OK)
     TEST_ERROR("[set_before] error\n");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_NONE)
+  if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   printf("%qd elements: ", sz);
   st = 0;
-  set_foreach(SET_OPT_FORWARD, id, &it, state)
+  set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
+      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
         TEST_ERROR("[set_object] error\n");
 
       if (!st++)
@@ -155,7 +155,7 @@ void			test_core_set_array_06(void)
    * release
    */
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
   TEST_LEAVE();

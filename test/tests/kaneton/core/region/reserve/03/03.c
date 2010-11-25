@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_as		kasid;
+extern m_kernel*	_kernel;
 
 
 /*
@@ -40,37 +40,37 @@ void			test_core_region_reserve_03(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(kasid,
+  if (segment_reserve(_kernel->as,
                       10 * PAGESZ,
-                      PERM_READ | PERM_WRITE,
-                      &seg) != ERROR_NONE)
+                      PERMISSION_READ | PERMISSION_WRITE,
+                      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
-  if (region_reserve(kasid,
+  if (region_reserve(_kernel->as,
                      seg,
                      0,
-                     REGION_OPT_NONE,
+                     REGION_OPTION_NONE,
                      0,
                      2 * PAGESZ,
-                     &reg1) != ERROR_NONE)
+                     &reg1) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
-  if (region_reserve(kasid,
+  if (region_reserve(_kernel->as,
                      seg,
                      3 * PAGESZ,
-                     REGION_OPT_NONE,
+                     REGION_OPTION_NONE,
                      0,
                      2 * PAGESZ,
-                     &reg2) != ERROR_NONE)
+                     &reg2) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
-  if (region_reserve(kasid,
+  if (region_reserve(_kernel->as,
                      seg,
                      6 * PAGESZ,
-                     REGION_OPT_NONE,
+                     REGION_OPTION_NONE,
                      0,
                      4 * PAGESZ,
-                     &reg3) != ERROR_NONE)
+                     &reg3) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
   p = (t_uint8*)(t_vaddr)reg1;
@@ -85,16 +85,16 @@ void			test_core_region_reserve_03(void)
   for (; p < (t_uint8*)(t_vaddr)reg3 + 4 * PAGESZ; p++)
     *p = 0x0;
 
-  if (region_release(kasid, reg1) != ERROR_NONE)
+  if (region_release(_kernel->as, reg1) != ERROR_OK)
     TEST_ERROR("[region_release] error\n");
 
-  if (region_release(kasid, reg2) != ERROR_NONE)
+  if (region_release(_kernel->as, reg2) != ERROR_OK)
     TEST_ERROR("[region_release] error\n");
 
-  if (region_release(kasid, reg3) != ERROR_NONE)
+  if (region_release(_kernel->as, reg3) != ERROR_OK)
     TEST_ERROR("[region_release] error\n");
 
-  if (segment_release(seg) != ERROR_NONE)
+  if (segment_release(seg) != ERROR_OK)
     TEST_ERROR("[segment_release] error\n");
 
   TEST_LEAVE();

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [mon nov 22 22:29:20 2010]
+ * updated       julien quintard   [wed nov 24 14:21:11 2010]
  */
 
 
@@ -43,7 +43,7 @@ extern m_segment*	_segment;
  * the ibm-pc.ia32 segment manager dispatch.
  */
 
-d_segment				segment_dispatch =
+d_segment		glue_segment_dispatch =
   {
     NULL,
     NULL,

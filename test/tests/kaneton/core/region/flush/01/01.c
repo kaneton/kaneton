@@ -36,36 +36,36 @@ void			test_core_region_flush_01(void)
   TEST_ENTER();
 
   if (task_reserve(TASK_CLASS_GUEST,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &task) != ERROR_NONE)
+		   TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE,
+		   &task) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
+  if (as_reserve(task, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
-  if (as_get(as, &o) != ERROR_NONE)
+  if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error\n");
 
   if (segment_reserve(as,
 		      PAGESZ,
-		      PERM_READ | PERM_WRITE,
-		      &seg) != ERROR_NONE)
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error\n");
 
   if (region_reserve(as,
 		     seg,
 		     0,
-		     REGION_OPT_NONE,
+		     REGION_OPTION_NONE,
 		     0,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
+		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
-  if (region_flush(as) != ERROR_NONE)
+  if (region_flush(as) != ERROR_OK)
     TEST_ERROR("[region_flush] error\n");
 
-  if (set_size(o->regions, &sz) != ERROR_NONE)
+  if (set_size(o->regions, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   if (sz != 0)

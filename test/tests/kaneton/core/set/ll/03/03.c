@@ -38,13 +38,13 @@ void			test_core_set_ll_03(void)
   TEST_ENTER();
 
   /*
-   * OPT_ALLOC
+   * OPTION_ALLOC
    */
 
   if (set_reserve(ll,
-		  SET_OPT_ALLOC,
+		  SET_OPTION_ALLOC,
 		  sizeof(t_test_object),
-		  &id) != ERROR_NONE)
+		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
   for (i = 0; i < 16; ++i)
@@ -53,18 +53,18 @@ void			test_core_set_ll_03(void)
 
       strcpy(obj1.str, "XXX");
 
-      if (set_add(id, &obj1) != ERROR_NONE)
+      if (set_add(id, &obj1) != ERROR_OK)
         TEST_ERROR("[set_add] error\n");
     }
 
-  if (set_size(id, &sz) != ERROR_NONE)
+  if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   printf("%qd elements: ", sz);
   st = 0;
-  set_foreach(SET_OPT_FORWARD, id, &it, state)
+  set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
+      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
         TEST_ERROR("[set_object] error\n");
 
       if (!st++)
@@ -76,17 +76,17 @@ void			test_core_set_ll_03(void)
     }
   printf("\n");
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
   /*
-   * OPT_FREE
+   * OPTION_FREE
    */
 
   if (set_reserve(ll,
-		  SET_OPT_FREE,
+		  SET_OPTION_FREE,
 		  sizeof(t_test_object),
-		  &id) != ERROR_NONE)
+		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error\n");
 
   for (i = 0; i < 16; ++i)
@@ -97,18 +97,18 @@ void			test_core_set_ll_03(void)
 
       strcpy(obj2->str, "XXX");
 
-      if (set_add(id, obj2) != ERROR_NONE)
+      if (set_add(id, obj2) != ERROR_OK)
         TEST_ERROR("[set_add] error\n");
     }
 
-  if (set_size(id, &sz) != ERROR_NONE)
+  if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error\n");
 
   printf("%qd elements: ", sz);
   st = 0;
-  set_foreach(SET_OPT_FORWARD, id, &it, state)
+  set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
+      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
         TEST_ERROR("[set_object] error\n");
 
       if (!st++)
@@ -120,7 +120,7 @@ void			test_core_set_ll_03(void)
     }
   printf("\n");
 
-  if (set_release(id) != ERROR_NONE)
+  if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error\n");
 
   TEST_LEAVE();

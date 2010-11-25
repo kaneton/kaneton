@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/region.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [mon nov 22 11:50:47 2010]
+ * updated       julien quintard   [wed nov 24 13:33:57 2010]
  */
 
 #ifndef CORE_REGION_H
@@ -82,7 +82,7 @@ typedef struct
 {
   o_id				id;
 
-  t_vaddr			start;
+  t_vaddr			base;
   t_vsize			size;
 
   machine_data(m_region);
@@ -219,7 +219,7 @@ t_error			region_get(i_as				asid,
 				   i_region			regid,
 				   o_region**			o);
 
-t_error			region_initialize(t_vaddr		start,
+t_error			region_initialize(t_vaddr		base,
 					  t_vsize		size);
 
 t_error			region_clean(void);

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/kernel.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/kernel.h
  *
  * created       julien quintard   [wed jun  6 13:27:34 2007]
- * updated       julien quintard   [tue nov 23 14:45:44 2010]
+ * updated       julien quintard   [wed nov 24 09:19:55 2010]
  */
 
 #ifndef CORE_KERNEL_H
@@ -69,11 +69,11 @@ typedef struct
  * ---------- macro functions -------------------------------------------------
  */
 
-#define kernel_error(_fmt_, _arguments_...)				\
+#define kernel_error(_format_, _arguments_...)				\
   {									\
     module_call(report, report_dump);					\
 									\
-    printf("[!] " _fmt_ " (%s:%u)\n",					\
+    printf("[!] " _format_ " (%s:%u)\n",				\
            ##_arguments_, __FUNCTION__, __LINE__);			\
 									\
     while (1)								\
