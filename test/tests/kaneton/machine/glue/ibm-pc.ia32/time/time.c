@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ton/machine/glue/ibm-pc.ia32/time/time.c
  *
  * created       julien quintard   [thu nov 18 21:50:35 2010]
- * updated       julien quintard   [sat nov 20 23:15:59 2010]
+ * updated       julien quintard   [wed nov 24 12:28:19 2010]
  */
 
 /*
@@ -58,7 +58,7 @@ unsigned char		test_ibmpc_ia32_time_read(unsigned char	reg)
 }
 
 void			test_ibmpc_ia32_time_write(unsigned char	reg,
-						    unsigned char	val)
+						   unsigned char	val)
 {
   OUTB(0x70, reg);
   OUTB(0x71, val);
@@ -88,7 +88,7 @@ void			test_ibmpc_ia32_time_rtc_setup(void)
   if (event_reserve(32 + 8,
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_ibmpc_ia32_time_rtc_handler),
-		    0) != ERROR_NONE)
+		    0) != ERROR_OK)
     TEST_ERROR("[event_reserve] error\n");
 
   /* enable IRQ 8 */

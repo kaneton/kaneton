@@ -88,7 +88,7 @@ void			test_ibmpc_ia32_scheduler_rtc_setup(void)
   if (event_reserve(32 + 8,
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_ibmpc_ia32_scheduler_rtc_handler),
-		    0) != ERROR_NONE)
+		    0) != ERROR_OK)
     TEST_ERROR("[event_reserve] error\n");
 
   /* enable IRQ 8 */

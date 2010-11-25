@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ton/machine/glue/ibm-pc.ia32/time/time.h
  *
  * created       julien quintard   [thu nov 18 20:10:44 2010]
- * updated       julien quintard   [sat nov 20 23:15:54 2010]
+ * updated       julien quintard   [wed nov 24 13:13:20 2010]
  */
 
 #ifndef TESTS_KANETON_MACHINE_GLUE_IBMPC_IA32_TIME_TIME_H

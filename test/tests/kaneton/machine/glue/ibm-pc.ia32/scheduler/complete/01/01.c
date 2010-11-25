@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_task			ktask;
+extern m_kernel*		_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -60,54 +60,54 @@ void			test_ibmpc_ia32_scheduler_complete_01_content(void)
   t_ia32_context	ia32_ctx;
 
   if (task_reserve(TASK_CLASS_GUEST,
-                   TASK_BEHAV_INTERACTIVE,
-                   TASK_PRIOR_INTERACTIVE,
-                   &task) != ERROR_NONE)
+                   TASK_BEHAVIOUR_INTERACTIVE,
+                   TASK_PRIORITY_INTERACTIVE,
+                   &task) != ERROR_OK)
     TEST_ERROR("[task_reserve] error\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
+  if (as_reserve(task, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
-  if (task_get(task, &otask) != ERROR_NONE)
+  if (task_get(task, &otask) != ERROR_OK)
     TEST_ERROR("[task_get] error\n");
 
   if (map_reserve(otask->asid,
-		  MAP_OPT_NONE,
+		  MAP_OPTION_NONE,
 		  PAGESZ,
-		  PERM_READ | PERM_WRITE,
-		  (t_vaddr*)&ptr) != ERROR_NONE)
+		  PERMISSION_READ | PERMISSION_WRITE,
+		  (t_vaddr*)&ptr) != ERROR_OK)
     TEST_ERROR("[map_reserve] error\n");
 
-  if (thread_reserve(task, THREAD_PRIOR, &thread) != ERROR_NONE)
+  if (thread_reserve(task, THREAD_PRIOR, &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error\n");
 
   stack.base = 0;
   stack.size = THREAD_MIN_STACKSZ;
 
-  if (thread_stack(thread, stack) != ERROR_NONE)
+  if (thread_stack(thread, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error\n");
 
-  if (thread_get(thread, &othread) != ERROR_NONE)
+  if (thread_get(thread, &othread) != ERROR_OK)
     TEST_ERROR("[thread_get] error\n");
 
   ctx.sp = othread->stack + othread->stacksz - 16;
   ctx.pc = (t_vaddr)test_ibmpc_ia32_scheduler_complete_01_thread;
 
-  if (thread_load(thread, ctx) != ERROR_NONE)
+  if (thread_load(thread, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error\n");
 
-  if (ia32_get_context(thread, &ia32_ctx) != ERROR_NONE)
+  if (ia32_get_context(thread, &ia32_ctx) != ERROR_OK)
     TEST_ERROR("[ia32_get_context] error\n");
 
   ia32_ctx.eflags |= (1 << 12);
   ia32_ctx.eflags |= (1 << 13);
 
-  if (ia32_set_context(thread, &ia32_ctx, IA32_CONTEXT_EFLAGS) != ERROR_NONE)
+  if (ia32_set_context(thread, &ia32_ctx, IA32_CONTEXT_EFLAGS) != ERROR_OK)
     TEST_ERROR("[ia32_set_context] error\n");
 
   CLI();
   {
-    if (task_state(task, SCHEDULER_STATE_RUN) != ERROR_NONE)
+    if (task_state(task, SCHEDULER_STATE_RUN) != ERROR_OK)
       TEST_ERROR("[task_state] error\n");
   }
   STI();
@@ -133,34 +133,34 @@ void			test_ibmpc_ia32_scheduler_complete_01(void)
 
   TEST_ENTER();
 
-  if (thread_reserve(ktask, THREAD_PRIOR, &thread) != ERROR_NONE)
+  if (thread_reserve(_kernel->task, THREAD_PRIOR, &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error\n");
 
   stack.base = 0;
   stack.size = THREAD_MIN_STACKSZ;
 
-  if (thread_stack(thread, stack) != ERROR_NONE)
+  if (thread_stack(thread, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error\n");
 
-  if (thread_get(thread, &o) != ERROR_NONE)
+  if (thread_get(thread, &o) != ERROR_OK)
     TEST_ERROR("[thread_get] error\n");
 
   ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = (t_vaddr)test_ibmpc_ia32_scheduler_complete_01_content;
 
-  if (thread_load(thread, ctx) != ERROR_NONE)
+  if (thread_load(thread, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error\n");
 
-  if (ia32_get_context(thread, &ia32_ctx) != ERROR_NONE)
+  if (ia32_get_context(thread, &ia32_ctx) != ERROR_OK)
     TEST_ERROR("[ia32_get_context] error\n");
 
   ia32_ctx.eflags |= (1 << 12);
   ia32_ctx.eflags |= (1 << 13);
 
-  if (ia32_set_context(thread, &ia32_ctx, IA32_CONTEXT_EFLAGS) != ERROR_NONE)
+  if (ia32_set_context(thread, &ia32_ctx, IA32_CONTEXT_EFLAGS) != ERROR_OK)
     TEST_ERROR("[ia32_set_context] errorn");
 
-  if (scheduler_add(thread) != ERROR_NONE)
+  if (scheduler_add(thread) != ERROR_OK)
     TEST_ERROR("[scheduler_add] error\n");
 
   printf("1\n");

@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_task			ktask;
+extern m_kernel*		_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -73,7 +73,7 @@ void			test_ibmpc_ia32_time_data_content(void)
 		    0x41414141,
 		    500,
 		    TIMER_REPEAT_DISABLE,
-		    (i_timer*)&tid) != ERROR_NONE)
+		    (i_timer*)&tid) != ERROR_OK)
     TEST_ERROR("[event_reserve] error\n");
 
   start = test_ibmpc_ia32_time_cmos();
@@ -98,30 +98,30 @@ void			test_ibmpc_ia32_time_data(void)
 
   TEST_ENTER();
 
-  if (thread_reserve(ktask, THREAD_PRIOR, &thread) != ERROR_NONE)
+  if (thread_reserve(_kernel->task, THREAD_PRIOR, &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error\n");
 
   stack.base = 0;
   stack.size = THREAD_MIN_STACKSZ;
 
-  if (thread_stack(thread, stack) != ERROR_NONE)
+  if (thread_stack(thread, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error\n");
 
-  if (thread_get(thread, &o) != ERROR_NONE)
+  if (thread_get(thread, &o) != ERROR_OK)
     TEST_ERROR("[thread_get] error\n");
 
   ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = (t_vaddr)test_ibmpc_ia32_time_data_content;
 
-  if (thread_load(thread, ctx) != ERROR_NONE)
+  if (thread_load(thread, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error\n");
 
-  if (ia32_get_context(thread, &ia32_ctx) != ERROR_NONE)
+  if (ia32_get_context(thread, &ia32_ctx) != ERROR_OK)
     TEST_ERROR("[ia32_get_context] error\n");
 
   /* XXX il manque ici set eflags puis ia32_set_context: voir kaneton/check/common/common.c */
 
-  if (scheduler_add(thread) != ERROR_NONE)
+  if (scheduler_add(thread) != ERROR_OK)
     TEST_ERROR("[scheduler_add] error\n");
 
   STI();     

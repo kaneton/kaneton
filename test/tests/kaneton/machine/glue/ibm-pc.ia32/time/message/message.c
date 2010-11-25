@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern i_task			ktask;
+extern m_kernel*		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -42,19 +42,19 @@ void			test_ibmpc_ia32_time_message_content(void)
     ;
 
   if (timer_reserve(TIMER_FUNCTION,
-		    TIMER_TASK(ktask),
+		    TIMER_TASK(_kernel->task),
 		    0x41414141,
 		    500,
 		    TIMER_REPEAT_DISABLE,
-		    &tid) != ERROR_NONE)
+		    &tid) != ERROR_OK)
     TEST_ERROR("[event_reserve] error\n");
 
   start = test_ibmpc_ia32_time_cmos();
   while (((start + 3) % 60) != test_ibmpc_ia32_time_cmos())
     ;
 
-  if (message_poll(ktask, MESSAGE_TYPE_TIMER, (t_vaddr)&evt,
-		   &sz, &sender) != ERROR_NONE)
+  if (message_poll(_kernel->task, MESSAGE_TYPE_TIMER, (t_vaddr)&evt,
+		   &sz, &sender) != ERROR_OK)
     TEST_ERROR("[message_poll] error: the timer has not been triggered\n");
 
   if (evt.id != tid)
@@ -80,28 +80,28 @@ void			test_ibmpc_ia32_time_message(void)
 
   TEST_ENTER();
 
-  if (thread_reserve(ktask, THREAD_PRIOR, &thread) != ERROR_NONE)
+  if (thread_reserve(_kernel->task, THREAD_PRIOR, &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error\n");
 
   stack.base = 0;
   stack.size = THREAD_MIN_STACKSZ;
 
-  if (thread_stack(thread, stack) != ERROR_NONE)
+  if (thread_stack(thread, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error\n");
 
-  if (thread_get(thread, &o) != ERROR_NONE)
+  if (thread_get(thread, &o) != ERROR_OK)
     TEST_ERROR("[thread_get] error\n");
 
   ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = (t_vaddr)test_ibmpc_ia32_time_message_content;
 
-  if (thread_load(thread, ctx) != ERROR_NONE)
+  if (thread_load(thread, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error\n");
 
-  if (ia32_get_context(thread, &ia32_ctx) != ERROR_NONE)
+  if (ia32_get_context(thread, &ia32_ctx) != ERROR_OK)
     TEST_ERROR("[ia32_get_context] error\n");
 
-  if (scheduler_add(thread) != ERROR_NONE)
+  if (scheduler_add(thread) != ERROR_OK)
     TEST_ERROR("[scheduler_add] error\n");
 
   STI();     
