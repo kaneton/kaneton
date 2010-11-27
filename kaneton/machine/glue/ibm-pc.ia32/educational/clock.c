@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/clock.c
  *
  * created       julien quintard   [wed nov 24 19:11:47 2010]
- * updated       julien quintard   [thu nov 25 11:12:03 2010]
+ * updated       julien quintard   [sat nov 27 16:19:33 2010]
  */
 
 /*
@@ -27,12 +27,6 @@
 #include <glue/glue.h>
 #include <architecture/architecture.h>
 #include <platform/platform.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-extern m_clock*		_clock;
 
 /*
  * ---------- globals ---------------------------------------------------------

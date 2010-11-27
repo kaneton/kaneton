@@ -65,19 +65,17 @@ t_error			cpu_show(i_cpu				id)
 {
   o_cpu*		o;
 
-  CPU_ENTER(_cpu);
-
   if (cpu_get(id, &o) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the CPU object");
 
   module_call(console, console_message,
 	      '#', "  cpu %qd: execution time %qd ms\n", id,
 	      o->efficiency);
 
   if (machine_call(cpu, cpu_show, id) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -91,14 +89,12 @@ t_error			cpu_dump(void)
   t_setsz		size;
   t_iterator		i;
 
-  CPU_ENTER(_cpu);
-
   /*
    * 1)
    */
 
   if (set_size(_cpu->cpus, &size) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
   /*
    * 2)
@@ -110,13 +106,13 @@ t_error			cpu_dump(void)
   set_foreach(SET_OPTION_FORWARD, _cpu->cpus, &i, st)
     {
       if (set_object(_cpu->cpus, i, (void**)&data) != ERROR_OK)
-	CPU_LEAVE(_cpu, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the CPU object");
 
       if (cpu_show(data->id) != ERROR_OK)
-	CPU_LEAVE(_cpu, ERROR_KO);
+	CORE_ESCAPE("unable to show the CPU");
     }
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -125,12 +121,10 @@ t_error			cpu_dump(void)
 
 t_error			cpu_current(i_cpu*			id)
 {
-  CPU_ENTER(_cpu);
-
   if (machine_call(cpu, cpu_current, id) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -139,7 +133,10 @@ t_error			cpu_current(i_cpu*			id)
 
 t_error			cpu_multiprocessor(void)
 {
-  return ((_cpu->ncpus == 1) ? ERROR_KO : ERROR_OK);
+  if (_cpu->ncpus == 1)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
@@ -152,16 +149,14 @@ t_error			cpu_select(i_cpu*			id)
   static i_cpu		current = 0;
   t_setsz		size;
 
-  CPU_ENTER(_cpu);
-
   if (set_size(_cpu->cpus, &size) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
   *id = current % size;
 
   current++;
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -174,14 +169,12 @@ t_error			cpu_statistics(i_cpu			id,
 {
   o_cpu*		o;
 
-  CPU_ENTER(_cpu);
-
   if (cpu_get(id, &o) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the CPU object");
 
   o->efficiency += time;
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -191,11 +184,9 @@ t_error			cpu_statistics(i_cpu			id,
 
 t_error			cpu_balance(void)
 {
-  CPU_ENTER(_cpu);
-
   /* XXX */
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -216,10 +207,8 @@ t_error			cpu_migrate(i_task			task,
   o_task*		o;
   t_state		state;
 
-  CPU_ENTER(_cpu);
-
   if (task_get(task, &o) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 1)
@@ -228,8 +217,10 @@ t_error			cpu_migrate(i_task			task,
   state = o->state;
 
   if (o->state == TASK_STATE_RUN)
-    if (task_stop(task) != ERROR_OK)
-      CPU_LEAVE(_cpu, ERROR_KO);
+    {
+      if (task_stop(task) != ERROR_OK)
+	CORE_ESCAPE("unable to stop the task");
+    }
 
   /*
    * 2)
@@ -243,17 +234,31 @@ t_error			cpu_migrate(i_task			task,
    */
 
   if (machine_call(cpu, cpu_migrate, task, cpu) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 4)
    */
 
   if (state == TASK_STATE_RUN)
-    if (task_run(task) != ERROR_OK)
-      CPU_LEAVE(_cpu, ERROR_KO);
+    {
+      if (task_run(task) != ERROR_OK)
+	CORE_ESCAPE("unable to stop the task");
+    }
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the cpu object exists.
+ */
+
+t_error			cpu_exist(i_cpu				id)
+{
+  if (set_exist(_cpu->cpus, id) != ERROR_TRUE)
+    CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
+
+  CORE_LEAVE();
 }
 
 /*
@@ -263,12 +268,10 @@ t_error			cpu_migrate(i_task			task,
 t_error			cpu_get(i_cpu				id,
 				o_cpu**				o)
 {
-  CPU_ENTER(_cpu);
-
   if (set_get(_cpu->cpus, id, (void**)o) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -291,13 +294,7 @@ t_error			cpu_initialize(void)
    */
 
   if ((_cpu = malloc(sizeof(m_cpu))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "cpu: cannot allocate memory for the cpu "
-		  "manager structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the CPU manager's structure");
 
   memset(_cpu, 0x0, sizeof(m_cpu));
 
@@ -307,12 +304,7 @@ t_error			cpu_initialize(void)
 
   if (set_reserve(array, SET_OPTION_ALLOC, _init->ncpus,
 		  sizeof(o_cpu), &_cpu->cpus) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "cpu: unable to reserve the cpu set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the set of CPUs");
 
   /*
    * 3)
@@ -321,32 +313,26 @@ t_error			cpu_initialize(void)
   for (i = 0; i < _init->ncpus; i++)
     {
       if (set_append(_cpu->cpus, &_init->cpus[i]) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "cpu: cannot add a cpu to the cpu set\n");
-
-	  return (ERROR_KO);
-	}
+	CORE_ESCAPE("unable to add the object to the set of CPUs");
 
       _cpu->ncpus++;
     }
 
   if (_cpu->ncpus == 1)
     module_call(console, console_message,
-		'#', " system is running in mono-processor mode.\n");
+		'#', " system is running in mono-processor mode\n");
   else
-    module_call(console, console_message, '#',
-		" system is running in multi-processor mode.\n");
+    module_call(console, console_message,
+		'#', " system is running in multi-processor mode\n");
 
   /*
    * 4)
    */
 
   if (machine_call(cpu, cpu_initialize) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  return (ERROR_OK);
-
+  CORE_LEAVE();
 }
 
 /*
@@ -365,7 +351,7 @@ t_error			cpu_clean(void)
    */
 
   if (machine_call(cpu, cpu_clean) != ERROR_OK)
-    CPU_LEAVE(_cpu, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
@@ -373,5 +359,5 @@ t_error			cpu_clean(void)
 
   free(_cpu);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

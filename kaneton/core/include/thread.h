@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/thread.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [thu nov 25 11:59:32 2010]
+ * updated       julien quintard   [sat nov 27 14:49:23 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -140,38 +140,6 @@ typedef struct
 }				d_thread;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define THREAD_CHECK(_thread_)						\
-  {									\
-    if ((_thread_) == NULL)						\
-      return ERROR_KO;						\
-  }
-
-/*
- * enter
- */
-
-#define THREAD_ENTER(_thread_)						\
-  {									\
-    THREAD_CHECK((_thread_));						\
-  }
-
-/*
- * leave
- */
-
-#define THREAD_LEAVE(_thread_, _error_)					\
-  {									\
-    return (_error_);							\
-  }
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/thread/thread.c
@@ -229,6 +197,8 @@ t_error			thread_load(i_thread			threadid,
 
 t_error			thread_store(i_thread			threadid,
 				     t_thread_context*		context);
+
+t_error			thread_exist(i_thread			threadid);
 
 t_error			thread_get(i_thread			threadid,
 				   o_thread**			o);

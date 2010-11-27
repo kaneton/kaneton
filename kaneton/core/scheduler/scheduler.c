@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...TABLE/kaneton/core/scheduler/scheduler.c
+ * file          /home/mycure/kane...TETON/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [thu nov 25 11:40:42 2010]
+ * updated       julien quintard   [sat nov 27 15:53:34 2010]
  */
 
 /*
@@ -544,30 +544,35 @@ t_error			scheduler_elect(void)
 	CORE_ESCAPE("unable to retrieve one of the queues"
 		    "from the scheduler");
 
-      if (set_pick(*queue, (void**)&highest) == ERROR_OK)
+      if (set_empty(*queue) == ERROR_TRUE)
 	{
-	  elected = BOOLEAN_TRUE;
+	  priority++;
 
-	  future_thread = highest->thread;
-	  future_priority = priority;
-	  future_timeslice = highest->timeslice;
-
-	  if (set_pop(*queue) != ERROR_OK)
-	    CORE_ESCAPE("unable to pop from the queue");
-
-	  if (thread_get(future_thread, &t) != ERROR_OK)
-	    CORE_ESCAPE("unable to retrieve the thread object");
-
-	  if (t->state != THREAD_STATE_RUN)
-	    goto try;
-
-	  //printf("[ELECT] elected the highest active thread %qu\n",
-	  //future_thread);
-
-	  break;
+	  continue;
 	}
 
-      priority++;
+      if (set_pick(*queue, (void**)&highest) != ERROR_OK)
+	CORE_ESCAPE("unable to pick the thread from the set");
+
+      elected = BOOLEAN_TRUE;
+
+      future_thread = highest->thread;
+      future_priority = priority;
+      future_timeslice = highest->timeslice;
+
+      if (set_pop(*queue) != ERROR_OK)
+	CORE_ESCAPE("unable to pop from the queue");
+
+      if (thread_get(future_thread, &t) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the thread object");
+
+      if (t->state != THREAD_STATE_RUN)
+	goto try;
+
+      //printf("[ELECT] elected the highest active thread %qu\n",
+      //future_thread);
+
+      break;
     }
 
   /*
@@ -842,6 +847,8 @@ t_error			scheduler_remove(i_thread		id)
    *
    */
 
+  // XXX il faut recuperer le scheduler qui correspond a la tache du thread.
+
   if (scheduler_get(&scheduler) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
 
@@ -880,8 +887,13 @@ t_error			scheduler_remove(i_thread		id)
 	    CORE_ESCAPE("unable to retrieve on of the queues"
 			     "from the scheduler");
 
-	  if (set_remove(*queue, id) == ERROR_OK)
-	    removed = BOOLEAN_TRUE;
+	  if (set_exist(*queue, id) == ERROR_FALSE)
+	    continue;
+
+	  if (set_remove(*queue, id) != ERROR_OK)
+	    CORE_ESCAPE("unable to remove the thread from the set");
+
+	  removed = BOOLEAN_TRUE;
 
 	  break;
 	}
@@ -897,8 +909,13 @@ t_error			scheduler_remove(i_thread		id)
 	    CORE_ESCAPE("unable to retrieve on of the queues"
 			"from the scheduler");
 
-	  if (set_remove(*queue, id) == ERROR_OK)
-	    removed = BOOLEAN_TRUE;
+	  if (set_exist(*queue, id) == ERROR_FALSE)
+	    continue;
+
+	  if (set_remove(*queue, id) != ERROR_OK)
+	    CORE_ESCAPE("unable to remove the thread from the set");
+
+	  removed = BOOLEAN_TRUE;
 
 	  break;
 	}

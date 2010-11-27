@@ -28,6 +28,13 @@
 #include <platform/platform.h>
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern t_printf_char_fn		printf_char;
+extern t_printf_attr_fn		printf_attr;
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -103,8 +110,10 @@ void			platform_console_attribute(t_uint8	attribute)
 
 int			platform_console_print_char(char	c)
 {
-#ifdef MODULE_test
+#if defined(MODULE_test)
   module_call(test, test_write, c);
+#elif defined(MODULE_forward)
+  module_call(forward, forward_write, c);
 #else
   t_uint16		pos;
 
@@ -173,6 +182,14 @@ void			platform_console_print_string(char*	string)
  * '+' is used for printing information about the execution.
  * '#' is used for printing debug information.
  * '!' is used for printing warning and error messages.
+ *
+ * steps:
+ *
+ * 1) save the printf()'s function pointers.
+ * 2) compute the console attribute according to the given indicator.
+ * 3) initialize the printf()'s pointers with the console's specialized ones.
+ * 4) forward the call to vprintf().
+ * 5) restore the printf()'s function pointers.
  */
 
 void			platform_console_message(char		indicator,
@@ -180,6 +197,17 @@ void			platform_console_message(char		indicator,
 						 va_list	args)
 {
   t_uint8		attribute = _platform_console.attribute;
+
+  /*
+   * 1)
+   */
+
+  _platform_console.printf.character = printf_char;
+  _platform_console.printf.attribute = printf_attr;
+
+  /*
+   * 2)
+   */
 
   _platform_console.attribute =
     PLATFORM_CONSOLE_FRONT(PLATFORM_CONSOLE_BLUE) |
@@ -221,14 +249,28 @@ void			platform_console_message(char		indicator,
 
   _platform_console.attribute = attribute;
 
+  /*
+   * 3)
+   */
+
+  printf_init(platform_console_print_char, platform_console_attribute);
+
+  /*
+   * 4)
+   */
+
   vprintf(fmt, args);
+
+  /*
+   * 5)
+   */
+
+  printf_char = _platform_console.printf.character;
+  printf_attr = _platform_console.printf.attribute;
 }
 
 /*
  * this function just initializes the bootloader console.
- *
- * this function also initializes the printf function to work with the
- * console.
  */
 
 t_error			platform_console_initialize(void)
@@ -241,8 +283,6 @@ t_error			platform_console_initialize(void)
   _platform_console.vga = (char*)PLATFORM_CONSOLE_ADDR;
 
   platform_console_clear();
-
-  printf_init(platform_console_print_char, platform_console_attribute);
 
   MACHINE_LEAVE();
 }

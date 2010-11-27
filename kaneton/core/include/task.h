@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/task.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [thu nov 25 11:59:26 2010]
+ * updated       julien quintard   [sat nov 27 14:02:29 2010]
  */
 
 #ifndef CORE_TASK_H
@@ -178,38 +178,6 @@ typedef struct
 }				d_task;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define TASK_CHECK(_task_)						\
-  {									\
-    if ((_task_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define TASK_ENTER(_task_)						\
-  {									\
-    TASK_CHECK((_task_));						\
-  }
-
-/*
- * leave
- */
-
-#define TASK_LEAVE(_task_, _error_)					\
-  {									\
-    return (_error_);							\
-  }
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/task/task.c
@@ -249,6 +217,8 @@ t_error			task_die(i_task				id);
 t_error			task_wait(i_task			id,
 				  t_options			opts,
 				  t_wait*			wait);
+
+t_error			task_exist(i_task			id);
 
 t_error			task_get(i_task				id,
 				 o_task**			o);

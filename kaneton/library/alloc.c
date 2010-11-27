@@ -106,7 +106,6 @@ void*			malloc(size_t				size)
   t_vsize		pagesz;
   t_vaddr		addr;
   void*			allocated = NULL;
-  t_error		err;
 
   /*
    * 1)
@@ -211,37 +210,21 @@ void*			malloc(size_t				size)
 
 	  stucked = 1;
 
-	  err = map_reserve(_kernel->as,
-			    MAP_OPTION_PRIVILEGED,
-			    pagesz,
-			    PERMISSION_READ | PERMISSION_WRITE,
-			    &addr);
+	  assert(map_reserve(_kernel->as,
+			     MAP_OPTION_PRIVILEGED,
+			     pagesz,
+			     PERMISSION_READ | PERMISSION_WRITE,
+			     &addr) == ERROR_OK);
 
 	  stucked = 0;
 
-	  if (err != ERROR_OK)
-	    {
-	      printf("FATAL ERROR: physical memory exhausted !\n");
-
-	      while (1)
-		;
-	    }
-
 	  if (_alloc.reserve == 0)
 	    {
-	      err = map_reserve(_kernel->as,
-				MAP_OPTION_PRIVILEGED,
-				PAGESZ,
-				PERMISSION_READ | PERMISSION_WRITE,
-				&_alloc.reserve);
-
-	      if (err != ERROR_OK)
-		{
-		  printf("FATAL ERROR: physical memory exhausted !\n");
-
-		  while (1)
-		    ;
-		}
+	      assert(map_reserve(_kernel->as,
+				 MAP_OPTION_PRIVILEGED,
+				 PAGESZ,
+				 PERMISSION_READ | PERMISSION_WRITE,
+				 &_alloc.reserve) == ERROR_OK)
 
 	      if (prev_area != NULL)
 		prev_area = prev_area->next_area;
@@ -598,21 +581,11 @@ void*			realloc(void* 				ptr,
 
 void			alloc_setup(void)
 {
-  t_error		err;
-
-  err = map_reserve(_kernel->as,
-		    MAP_OPTION_PRIVILEGED,
-		    PAGESZ,
-		    PERMISSION_READ | PERMISSION_WRITE,
-		    &_alloc.reserve);
-
-  if (err != ERROR_OK)
-    {
-      printf("FATAL ERROR: physical memory exhausted !\n");
-
-      while (1)
-	;
-    }
+  assert(map_reserve(_kernel->as,
+		     MAP_OPTION_PRIVILEGED,
+		     PAGESZ,
+		     PERMISSION_READ | PERMISSION_WRITE,
+		     &_alloc.reserve) == ERROR_OK);
 }
 
 /*

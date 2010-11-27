@@ -8,12 +8,7 @@
  * file          /home/mycure/kane...achine/platform/ibm-pc/include/console.h
  *
  * created       julien quintard   [wed jun  6 15:53:35 2007]
- * updated       julien quintard   [wed nov 24 22:35:10 2010]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
+ * updated       julien quintard   [fri nov 26 00:03:45 2010]
  */
 
 #ifndef PLATFORM_CONSOLE_H
@@ -25,7 +20,7 @@
 
 #include <core/types.h>
 
-#include <library/stdarg.h>
+#include <library/library.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -67,6 +62,12 @@ typedef struct
   t_uint16		column;
   t_uint8		attribute;
   char*			vga;
+
+  struct
+  {
+    t_printf_char_fn	character;
+    t_printf_attr_fn	attribute;
+  }			printf;
 }			m_platform_console;
 
 /*

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...STABLE/test/tests/kaneton/s../../../../06.c
+ * file          /home/mycure/kane...E/test/tests/kaneton/core/set/ll/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [wed nov 17 22:55:26 2010]
+ * updated       julien quintard   [sat nov 27 23:56:57 2010]
  */
 
 /*
@@ -106,10 +106,10 @@ void			test_core_set_ll_06(void)
    * head & next
    */
 
-  if (set_head(id, &it) != ERROR_OK)
+  if (set_head(id, &it) == ERROR_FALSE)
     TEST_ERROR("[set_head] error\n");
 
-  if (set_next(id, it, &it) != ERROR_OK)
+  if (set_next(id, it, &it) == ERROR_FALSE)
     TEST_ERROR("[set_next] error\n");
 
   /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [wed nov 24 14:23:17 2010]
+ * updated       julien quintard   [sat nov 27 16:32:43 2010]
  */
 
 /*
@@ -16,7 +16,6 @@
  *
  * this file  implements dependent  code for region  manager on  ia32 with
  * paging architecture.
- *
  */
 
 /*
@@ -28,16 +27,6 @@
 #include <glue/glue.h>
 #include <architecture/architecture.h>
 #include <platform/platform.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-/*
- * the region manager.
- */
-
-extern m_region*	_region;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -84,10 +73,11 @@ t_error			glue_region_resize(i_as			as,
   o_region*		reg;
 
   if (region_get(as, old, &reg) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    MACHINE_ESCAPE("unable to retrieve the region object");
 
   if (ia32_unmap_region(as, reg->address, reg->size) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to the "
+		   "original region");
 
   if (ia32_map_region(as,
 		      reg->segment,
@@ -95,9 +85,10 @@ t_error			glue_region_resize(i_as			as,
 		      reg->options,
 		      reg->address,
 		      size) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    MACHINE_ESCAPE("unable to map the virtual memory corresponding to the "
+		   "future resized region");
 
-  REGION_LEAVE(_region, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -113,17 +104,16 @@ t_error			glue_region_reserve(i_as		asid,
 					    t_vsize		size,
 					    i_region*		regid)
 {
-  REGION_ENTER(_region);
-
   if (ia32_map_region(asid,
 		      segid,
 		      offset,
 		      options,
 		      address,
 		      size) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    MACHINE_ESCAPE("unable to map the virtual memory corresponding to the "
+		   "reserved region");
 
-  REGION_LEAVE(_region, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -136,15 +126,14 @@ t_error			glue_region_release(i_as		asid,
 {
   o_region*		reg;
 
-  REGION_ENTER(_region);
-
   if (region_get(asid, regid, &reg) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    MACHINE_ESCAPE("unable to retrieve the region object");
 
   if (ia32_unmap_region(asid, reg->address, reg->size) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to "
+		   "the region");
 
-  REGION_LEAVE(_region, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -155,12 +144,10 @@ t_error			glue_region_release(i_as		asid,
 t_error			glue_region_initialize(t_vaddr		base,
 					       t_vsize		size)
 {
-  REGION_ENTER(_region);
-
   if (ia32_paging_init() != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    MACHINE_ESCAPE("unable to initialize the paging");
 
-  REGION_LEAVE(_region, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -170,12 +157,10 @@ t_error			glue_region_initialize(t_vaddr		base,
 
 t_error			glue_region_clean(void)
 {
-  REGION_ENTER(_region);
-
   if (ia32_paging_clean() != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    MACHINE_ESCAPE("unable to clean the paging");
 
-  REGION_LEAVE(_region, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*						       [endblock::functions] */

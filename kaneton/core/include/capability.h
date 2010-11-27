@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...aneton/kaneton/core/include/capability.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/capability.h
  *
  * created       julien quintard   [wed jun  6 12:44:04 2007]
- * updated       matthieu bucchianeri   [wed jan  9 10:59:58 2008]
+ * updated       julien quintard   [sat nov 27 06:08:29 2010]
  */
 
 #ifndef CORE_CAPABILITY_H
@@ -95,38 +95,6 @@ typedef struct
 }				d_capability;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define CAPABILITY_CHECK(_capability_)					\
-  {									\
-    if ((_capability_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define CAPABILITY_ENTER(_capability_)					\
-  {									\
-    CAPABILITY_CHECK((_capability_));					\
-  }
-
-/*
- * leave
- */
-
-#define CAPABILITY_LEAVE(_capability_, _error_)				\
-  {									\
-    return (_error_);							\
-  }
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/capability/capability.c
@@ -152,6 +120,8 @@ t_error			capability_restrict(t_id		id,
 
 t_error			capability_invalidate(t_id		p,
 					      t_id		c);
+
+t_error			capability_exist(t_id			id);
 
 t_error			capability_get(t_id			id,
 				       t_capability_descriptor** descriptor);

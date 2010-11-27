@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/modules/report/report.c
+ * file          /home/mycure/kaneton.TETON/kaneton/modules/report/report.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [thu nov 25 11:19:24 2010]
+ * updated       julien quintard   [fri nov 26 15:49:39 2010]
  */
 
 /*
@@ -71,6 +71,8 @@ void			module_report_dump(void)
 
   if ((j - i) > 0)
     printf("[!]   %s\n", _module_report.buffer + i + 1);
+
+  _module_report.offset = 0;
 }
 
 /*
@@ -83,16 +85,6 @@ int			module_report_character(char		c)
   _module_report.buffer[_module_report.offset++] = c;
 
   return (1);
-}
-
-/*
- * this function is called by printf to modify the printing attributes.
- *
- * in the report module's context, this functionality is simply ignored.
- */
-
-void			module_report_attribute(t_uint8		attribute)
-{
 }
 
 /*
@@ -124,7 +116,7 @@ void			module_report_record(char*		fmt,
    * 2)
    */
 
-  printf_init(module_report_character, module_report_attribute);
+  printf_init(module_report_character, NULL);
 
   /*
    * 3)

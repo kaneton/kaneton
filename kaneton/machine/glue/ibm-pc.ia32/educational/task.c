@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [thu nov 25 11:36:45 2010]
+ * updated       julien quintard   [sat nov 27 16:25:45 2010]
  */
 
 /*
@@ -27,16 +27,6 @@
 #include <glue/glue.h>
 #include <architecture/architecture.h>
 #include <platform/platform.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-/*
- * the task manager.
- */
-
-extern m_task*		_task;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -74,12 +64,10 @@ d_task			glue_task_dispatch =
 t_error			glue_task_clone(i_task			old,
 					i_task*			new)
 {
-  TASK_ENTER(_task);
-
   if (ia32_duplicate_io_bitmap(old, *new) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    MACHINE_ESCAPE("unable to duplicate the IO bitmap");
 
-  TASK_LEAVE(_task, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -94,17 +82,15 @@ t_error			glue_task_reserve(t_class		class,
 {
   o_task*		o;
 
-  TASK_ENTER(_task);
-
   if (ia32_clear_io_bitmap(*id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    MACHINE_ESCAPE("unable to clear the IO bitmap");
 
   if (task_get(*id, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    MACHINE_ESCAPE("unable to retrieve the task object");
 
   o->machine.ioflush = 0;
 
-  TASK_LEAVE(_task, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -114,13 +100,13 @@ t_error			glue_task_reserve(t_class		class,
 
 t_error			glue_task_initialize(void)
 {
-  TASK_ENTER(_task);
-
   if (ia32_extended_context_init() != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    MACHINE_ESCAPE("unable to initialize the IA32 context");
 
   if (ia32_kernel_as_finalize() != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    MACHINE_ESCAPE("unable to finilize the address space");
 
-  TASK_LEAVE(_task, ERROR_OK);
+  MACHINE_LEAVE();
 }
+
+// XXX context_init -> setup

@@ -65,14 +65,12 @@ t_error			region_show(i_as			asid,
 
   o_region*		o;
 
-  REGION_ENTER(_region);
-
   /*
    * 1)
    */
 
   if (region_get(asid, regid, &o) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   module_call(console, console_message,
 	      '#', "  region %qd in address space %qd:\n",
@@ -95,11 +93,11 @@ t_error			region_show(i_as			asid,
    */
 
   if (machine_call(region, region_show, asid, regid) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*							    [endblock::show] */
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -124,21 +122,20 @@ t_error			region_dump(i_as		asid)
   t_setsz		size;
   t_iterator		i;
 
-  REGION_ENTER(_region);
-
   /*
    * 1)
    */
 
   if (as_get(asid, &o) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
   if (set_size(o->regions, &size) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the address space's set "
+		"of regions");
 
   /*
    * 3)
@@ -150,21 +147,16 @@ t_error			region_dump(i_as		asid)
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, state)
     {
       if (set_object(o->regions, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "region: cannot find the region object "
-		      "corresponding to its identifier\n");
-
-	  REGION_LEAVE(_region, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the region object corresponding "
+		    "to its identifier\n");
 
       if (region_show(asid, data->id) != ERROR_OK)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("unable to show the region");
     }
 
   /*							    [endblock::dump] */
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -188,8 +180,6 @@ t_error			region_inject(i_as		asid,
 
   o_as*			as;
 
-  REGION_ENTER(_region);
-
   assert(o != NULL);
   assert(regid != NULL);
   assert((o->options & REGION_OPTION_INVALID) == 0);
@@ -200,7 +190,7 @@ t_error			region_inject(i_as		asid,
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
@@ -208,6 +198,7 @@ t_error			region_inject(i_as		asid,
 
   o->id = (i_region)o->address;
   o->options &= REGION_OPTION_FORCE;
+
   *regid = o->id;
 
   /*
@@ -215,18 +206,19 @@ t_error			region_inject(i_as		asid,
    */
 
   if (set_add(as->regions, o) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to add the object to the address space's set of "
+		"regions");
 
   /*
    * 4)
    */
 
   if (machine_call(region, region_inject, asid, o, regid) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*							  [endblock::inject] */
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*							      [block::split] */
@@ -256,8 +248,6 @@ t_error			region_split(i_as			asid,
   o_segment*		seg;
   o_region*		new;
 
-  REGION_ENTER(_region);
-
   assert(size != 0);
   assert(left != NULL);
   assert(right != NULL);
@@ -267,28 +257,24 @@ t_error			region_split(i_as			asid,
    */
 
   if (region_get(asid, regid, &reg) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   if (segment_get(reg->segment, &seg) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
    */
 
   if (reg->size <= size)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("the splitted size is larger than the current region's size");
 
   /*
    * 3)
    */
 
-  /*
-   * 4)
-   */
-
   if ((new = malloc(sizeof(o_region))) == NULL)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the region object");
 
   new->segment = reg->segment;
   new->offset = reg->offset + size;
@@ -298,8 +284,13 @@ t_error			region_split(i_as			asid,
 
   new->id = (i_region)new->address;
 
+  /*
+   * 4)
+   */
+
   if (region_inject(asid, new, &useless) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to inject the object in the address space's "
+		"set of regions");
 
   /*
    * 5)
@@ -318,11 +309,16 @@ t_error			region_split(i_as			asid,
    * 7)
    */
 
-  if (machine_call(region, region_split, asid, regid, size, left, right) !=
-      ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+  if (machine_call(region,
+		   region_split,
+		   asid,
+		   regid,
+		   size,
+		   left,
+		   right) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*							   [endblock::split] */
@@ -361,8 +357,6 @@ t_error			region_resize(i_as			as,
   t_iterator		next;
   t_state		state;
 
-  REGION_ENTER(_region);
-
   assert(size != 0);
   assert(new != NULL);
 
@@ -371,38 +365,36 @@ t_error			region_resize(i_as			as,
    */
 
   if (as_get(as, &oas) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
-  set_foreach(SET_OPTION_FORWARD, oas->regions, &i, state)
-    {
-      if (set_object(oas->regions, i, (void**)&reg) != ERROR_OK)
-	REGION_LEAVE(_region, ERROR_KO);
+  if (set_locate(oas->regions, old, &i) != ERROR_OK)
+    CORE_ESCAPE("unable to locate the object in the address space's "
+		"set of regions");
 
-      if (reg->id == old)
-	break;
-    }
-
-  if (reg == NULL)
-    REGION_LEAVE(_region, ERROR_KO);
+  if (set_object(oas->regions, i, (void**)&reg) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the region object");
 
   if (reg->size == size)
     {
       *new = old;
-      REGION_LEAVE(_region, ERROR_OK);
+
+      CORE_LEAVE();
     }
 
-  if (set_next(oas->regions, i, &next) == ERROR_OK)
+  if (set_next(oas->regions, i, &next) == ERROR_TRUE)
     {
       if (set_object(oas->regions, next, (void**)&next_reg) != ERROR_OK)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the next region object");
 
       if (reg->address + size >= next_reg->address)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("unable to resize the region since it would overlap with "
+		    "the next region");
     }
   else
     {
       if (reg->address + size >= _region->base + _region->size)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("unable to resize the region since it would reach the "
+		    "end of the available region space");
     }
 
   /*
@@ -410,10 +402,13 @@ t_error			region_resize(i_as			as,
    */
 
   if (segment_get(reg->segment, &seg) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
-  if (!size || size > seg->size)
-    REGION_LEAVE(_region, ERROR_KO);
+  if (size == 0)
+    CORE_ESCAPE("unable to resize to a null size");
+
+  if (size > seg->size)
+    CORE_ESCAPE("unable to resize a region to a size larger than its segment");
 
   /*
    * 3)
@@ -435,7 +430,7 @@ t_error			region_resize(i_as			as,
       i_region		id;
 
       if ((temporary = malloc(sizeof(o_region))) == NULL)
-	return (ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the region");
 
       temporary->segment = reg->segment;
       temporary->address = reg->address + reg->size;
@@ -444,14 +439,20 @@ t_error			region_resize(i_as			as,
       temporary->options = reg->options;
 
       if (region_inject(as, temporary, &id) != ERROR_OK)
-	return (ERROR_KO);
+	CORE_ESCAPE("unable to inject the temporary region in the "
+		    "address space's set of regions");
 
-      if (machine_call(region, region_resize, as, old, size, new) !=
-	  ERROR_OK)
-	REGION_LEAVE(_region, ERROR_KO);
+      if (machine_call(region,
+		       region_resize,
+		       as,
+		       old,
+		       size,
+		       new) != ERROR_OK)
+	CORE_ESCAPE("an error occured in the machine");
 
       if (set_remove(oas->regions, id) != ERROR_OK)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("unable to remove the temporary region fro the address "
+		    "space's set of regions");
     }
   else
     {
@@ -459,9 +460,13 @@ t_error			region_resize(i_as			as,
        * b)
        */
 
-      if (machine_call(region, region_resize, as, old, size, new) !=
-	  ERROR_OK)
-	REGION_LEAVE(_region, ERROR_KO);
+      if (machine_call(region,
+		       region_resize,
+		       as,
+		       old,
+		       size,
+		       new) != ERROR_OK)
+	CORE_ESCAPE("an error occured in the machine");
     }
 
   /*
@@ -470,7 +475,7 @@ t_error			region_resize(i_as			as,
 
   reg->size = size;
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*							  [endblock::resize] */
@@ -499,8 +504,6 @@ t_error			region_coalesce(i_as		asid,
   o_region*		oleft;
   o_region*		oright;
 
-  REGION_ENTER(_region);
-
   assert(left != right);
   assert(regid != NULL);
 
@@ -509,10 +512,10 @@ t_error			region_coalesce(i_as		asid,
    */
 
   if (region_get(asid, left, &oleft) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   if (region_get(asid, right, &oright) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   /*
    * 2)
@@ -523,14 +526,15 @@ t_error			region_coalesce(i_as		asid,
       oleft->offset + oleft->size != oright->offset ||
       (oleft->options & REGION_OPTION_PRIVILEGED) !=
       (oright->options & REGION_OPTION_PRIVILEGED))
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to coalesce non-adjacent regions and/or privileged "
+		"regions");
 
   /*
    * 3)
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 4)
@@ -543,19 +547,24 @@ t_error			region_coalesce(i_as		asid,
    */
 
   if (set_remove(as->regions, right) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to remove the object from the address space's set "
+		"of regions");
 
   /*
    * 6)
    */
 
-  if (machine_call(region, region_coalesce, asid, left, right, regid) !=
-      ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+  if (machine_call(region,
+		   region_coalesce,
+		   asid,
+		   left,
+		   right,
+		   regid) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   *regid = left;
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*							[endblock::coalesce] */
@@ -590,8 +599,6 @@ t_error			region_reserve(i_as			asid,
   t_iterator		i;
   o_region*		data;
 
-  REGION_ENTER(_region);
-
   assert((options & REGION_OPTION_INVALID) == 0);
   assert(size != 0);
   assert(regid != NULL);
@@ -601,16 +608,16 @@ t_error			region_reserve(i_as			asid,
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   if (segment_get(segid, &segment) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
-  if (segment->size < size + offset)
-    REGION_LEAVE(_region, ERROR_KO);
+  if (segment->size < (offset + size))
+    CORE_ESCAPE("out-of-bound operation");
 
   if ((o = malloc(sizeof(o_region))) == NULL)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the region object");
 
   /*
    * 2)
@@ -620,15 +627,16 @@ t_error			region_reserve(i_as			asid,
     {
       if (address < _region->base ||
 	  address >= _region->base + _region->size)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("the provided address is either too low or too high");
 
       set_foreach(SET_OPTION_FORWARD, as->regions, &i, state)
 	{
 	  if (set_object(as->regions, i, (void**)&data) != ERROR_OK)
-	    REGION_LEAVE(_region, ERROR_KO);
+	    CORE_ESCAPE("unable to retrieve the region object");
 
 	  if (data->address <= address && data->address + data->size > address)
-	    REGION_LEAVE(_region, ERROR_KO);
+	    CORE_ESCAPE("unable to reserve the region at this precise "
+			"location: seems to be already taken");
 	}
 
       o->address = address;
@@ -636,7 +644,8 @@ t_error			region_reserve(i_as			asid,
   else
     {
       if (region_space(asid, size, &o->address) != ERROR_OK)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("unable to find available space for the region "
+		    "reservation");
     }
 
   /*
@@ -644,14 +653,18 @@ t_error			region_reserve(i_as			asid,
    */
 
   address = o->address;
-  *regid = o->id = (i_region)o->address;
+
+  o->id = (i_region)o->address;
   o->segment = segid;
   o->size = size;
   o->offset = offset;
   o->options = options;
 
+  *regid = o->id;
+
   if (set_add(as->regions, o) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to add the object to the address space's set of "
+		"regions");
 
   /*
    * 4)
@@ -659,11 +672,11 @@ t_error			region_reserve(i_as			asid,
 
   if (machine_call(region, region_reserve, asid, segid, offset,
 		   options, address, size, regid) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*							 [endblock::reserve] */
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -687,32 +700,31 @@ t_error			region_release(i_as			asid,
 
   o_as*			as;
 
-  REGION_ENTER(_region);
-
   /*
    * 1)
    */
 
   if (machine_call(region, region_release, asid, regid) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 3)
    */
 
   if (set_remove(as->regions, regid) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to remove the object from the address space's "
+		"set of regions");
 
   /*							 [endblock::release] */
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -736,36 +748,24 @@ t_error			region_flush(i_as			asid)
   t_iterator		it;
   i_region*		obj;
 
-  REGION_ENTER(_region);
-
   /*
    * 1)
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
-  while (set_head(as->regions, &it) == ERROR_OK)
+  while (set_head(as->regions, &it) == ERROR_TRUE)
     {
       if (set_object(as->regions, it, (void**)&obj) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "region: cannot get region to release.\n");
-
-	  REGION_LEAVE(_region, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the region object");
 
       if (region_release(asid, *obj) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "region: cannot release a region.\n");
-
-	  REGION_LEAVE(_region, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to release the region");
     }
 
   /*
@@ -773,11 +773,28 @@ t_error			region_flush(i_as			asid)
    */
 
   if (machine_call(region, region_flush, asid) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*							   [endblock::flush] */
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the region object exists.
+ */
+
+t_error			region_exist(i_as			asid,
+				     i_region			regid)
+{
+  o_as*			as;
+
+  assert(as_get(asid, &as) == ERROR_OK);
+
+  if (set_exist(as->regions, regid) != ERROR_TRUE)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
@@ -792,19 +809,18 @@ t_error			region_get(i_as				asid,
 
   o_as*			as;
 
-  REGION_ENTER(_region);
-
   assert(o != NULL);
 
   if (as_get(asid, &as) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   if (set_get(as->regions, regid, (void**)o) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region from the address space's set "
+		"of regions");
 
   /*							     [endblock::get] */
 
-  REGION_LEAVE(_region, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -833,13 +849,8 @@ t_error			region_initialize(t_vaddr		base,
   assert(size != 0);
 
   if ((_region = malloc(sizeof(m_region))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "region: cannot allocate memory for the region "
-		  "manager structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the region manager's "
+		"structure");
 
   memset(_region, 0x0, sizeof(m_region));
 
@@ -855,12 +866,11 @@ t_error			region_initialize(t_vaddr		base,
    */
 
   if (machine_call(region, region_initialize, base, size) != ERROR_OK)
-    return (ERROR_KO);
-
-  return (ERROR_OK);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*						      [endblock::initialize] */
 
+  CORE_LEAVE();
 }
 
 /*
@@ -884,7 +894,7 @@ t_error			region_clean(void)
    */
 
   if (machine_call(region, region_clean) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
@@ -895,5 +905,5 @@ t_error			region_clean(void)
 
   /*							   [endblock::clean] */
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

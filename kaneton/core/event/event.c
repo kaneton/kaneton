@@ -61,14 +61,12 @@ t_error			event_show(i_event			id)
 {
   o_event*		o;
 
-  EVENT_ENTER(_event);
-
   /*
    * 1)
    */
 
   if (event_get(id, &o) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the event object");
 
   /*
    * 2)
@@ -82,9 +80,9 @@ t_error			event_show(i_event			id)
    */
 
   if (machine_call(event, event_show, id) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -103,14 +101,12 @@ t_error			event_dump(void)
   t_setsz		size;
   t_iterator		i;
 
-  EVENT_ENTER(_event);
-
   /*
    * 1)
    */
 
   if (set_size(_event->events, &size) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set of events");
 
   /*
    * 2)
@@ -122,13 +118,13 @@ t_error			event_dump(void)
   set_foreach(SET_OPTION_FORWARD, _event->events, &i, state)
     {
       if (set_object(_event->events, i, (void**)&data) != ERROR_OK)
-	EVENT_LEAVE(_event, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the object from the set of events");
 
       if (event_show(data->id) != ERROR_OK)
-	EVENT_LEAVE(_event, ERROR_KO);
+	CORE_ESCAPE("unable to show the object");
     }
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -147,14 +143,12 @@ t_error			event_notify(i_event			id)
   o_event_message	msg;
   i_node		node;
 
-  EVENT_ENTER(_event);
-
   /*
    * 1)
    */
 
   if (event_get(id, &o) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the event object");
 
   /*
    * 2)
@@ -168,16 +162,16 @@ t_error			event_notify(i_event			id)
 
   if (message_send(_kernel->task, node, MESSAGE_TYPE_EVENT, (t_vaddr)&msg,
 		   sizeof (o_event_message)) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("unable to send a message to the destination task");
 
   /*
    * 3)
    */
 
   if (machine_call(event, event_notify, id) != ERROR_OK)
-    TIMER_LEAVE(_timer, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -195,9 +189,9 @@ t_error			event_enable(void)
    */
 
   if (machine_call(event, event_enable) != ERROR_OK)
-    TIMER_LEAVE(_timer, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  TIMER_LEAVE(_timer, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -215,9 +209,9 @@ t_error			event_disable(void)
    */
 
   if (machine_call(event, event_disable) != ERROR_OK)
-    TIMER_LEAVE(_timer, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  TIMER_LEAVE(_timer, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -239,16 +233,14 @@ t_error			event_reserve(i_event			id,
   o_event*		tmp;
   o_event		o;
 
-  EVENT_ENTER(_event);
-
   assert(type == EVENT_FUNCTION || type == EVENT_MESSAGE);
 
   /*
    * 1)
    */
 
-  if (event_get(id, &tmp) == ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+  if (event_exist(id) == ERROR_TRUE)
+    CORE_ESCAPE("unable to retrieve the event object");
 
   /*
    * 2)
@@ -266,7 +258,7 @@ t_error			event_reserve(i_event			id,
    */
 
   if (set_add(_event->events, &o) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("unable to add the object to the set of events");
 
   /*
    * 4)
@@ -274,9 +266,9 @@ t_error			event_reserve(i_event			id,
 
   if (machine_call(event, event_reserve, id, type, handler,
 		   data) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -293,30 +285,40 @@ t_error			event_release(i_event			id)
 {
   o_event*		o;
 
-  EVENT_ENTER(_event);
-
   /*
    * 1)
    */
 
   if (event_get(id, &o) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the event object");
 
   /*
    * 2)
    */
 
   if (set_remove(_event->events, o->id) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("unable to remove the object from the set of events");
 
   /*
    * 3)
    */
 
   if (machine_call(event, event_release, o->id) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the event exists.
+ */
+
+t_error			event_exist(i_event			id)
+{
+  if (set_exist(_event->events, id) != ERROR_TRUE)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
@@ -326,14 +328,12 @@ t_error			event_release(i_event			id)
 t_error			event_get(i_event			id,
 				  o_event**			o)
 {
-  EVENT_ENTER(_event);
-
   assert(o != NULL);
 
   if (set_get(_event->events, id, (void**)o) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the event object from the set");
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -354,13 +354,7 @@ t_error			event_initialize(void)
    */
 
   if ((_event = malloc(sizeof(m_event))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "event: cannot allocate memory for the event manager "
-		  "structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the event manager's structure");
 
   memset(_event, 0x0, sizeof(m_event));
 
@@ -369,12 +363,7 @@ t_error			event_initialize(void)
    */
 
   if (id_build(&_event->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "event: unable to initialize the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to initialize the identifier object");
 
   /*
    * 3)
@@ -382,21 +371,16 @@ t_error			event_initialize(void)
 
   if (set_reserve(ll, SET_OPTION_ALLOC | SET_OPTION_SORT,
 		  sizeof(o_event), &_event->events) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "event: unable to reserve the event set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the set of events");
 
   /*
    * 4)
    */
 
   if (machine_call(event, event_initialize) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -421,25 +405,20 @@ t_error			event_clean(void)
    */
 
   if (machine_call(event, event_clean) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  while (set_head(_event->events, &i) == ERROR_OK)
+  while (set_head(_event->events, &i) == ERROR_TRUE)
     {
       if (set_object(_event->events, i, (void**)&o) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "event: cannot find the event object "
-		      "corresponding to its identifier\n");
-
-	  return (ERROR_KO);
-	}
+	CORE_ESCAPE("unable to find the event object corresponding to "
+		    "its identifier\n");
 
       if (event_release(o->id) != ERROR_OK)
-	return (ERROR_KO);
+	CORE_ESCAPE("unable to release the event object");
     }
 
   /*
@@ -447,24 +426,14 @@ t_error			event_clean(void)
    */
 
   if (set_release(_event->events) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "event: unable to release the event set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to release the set of events");
 
   /*
    * 4)
    */
 
   if (id_destroy(&_event->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "event: unable to destroy the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
    * 5)
@@ -472,5 +441,5 @@ t_error			event_clean(void)
 
   free(_event);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

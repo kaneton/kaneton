@@ -212,7 +212,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 	    {
 	      seg = pt.paddr;
 
-	      if (segment_get(seg, &oseg) != ERROR_OK)
+	      if (segment_exist(seg) == ERROR_FALSE)
 		{
 		  if ((pt_seg = malloc(sizeof(o_segment))) == NULL)
 		    return (ERROR_KO);
@@ -378,7 +378,6 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     &reg) != ERROR_OK)
     return (ERROR_KO);
 #endif
-
   if (region_get(_kernel->as,
 		 (i_region)(t_uint32)_thread->machine.tss,
 		 &preg) != ERROR_OK)

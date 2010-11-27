@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/message.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [mon nov 22 10:12:38 2010]
+ * updated       julien quintard   [sat nov 27 13:59:30 2010]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -161,38 +161,6 @@ typedef struct
   t_error		(*message_initialize)(void);
   t_error		(*message_clean)(void);
 }			d_message;
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define MESSAGE_CHECK(_message_)					\
-  {									\
-    if ((_message_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define MESSAGE_ENTER(_message_)					\
-  {									\
-    MESSAGE_CHECK((_message_));						\
-  }
-
-/*
- * leave
- */
-
-#define MESSAGE_LEAVE(_message_, _error_)				\
-  {									\
-    return (_error_);							\
-  }
 
 /*
  * ---------- prototypes ------------------------------------------------------

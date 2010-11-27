@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [wed nov 24 14:21:11 2010]
+ * updated       julien quintard   [sat nov 27 05:08:36 2010]
  */
 
 
@@ -28,12 +28,6 @@
 #include <glue/glue.h>
 #include <architecture/architecture.h>
 #include <platform/platform.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-extern m_segment*	_segment;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -79,12 +73,10 @@ t_error			glue_segment_read(i_segment		segid,
 					  void*			buff,
 					  t_psize		sz)
 {
-  SEGMENT_ENTER(_segment);
-
   if (ia32_segment_read(segid, offs, buff, sz) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    MACHINE_ESCAPE("unable to read data from the segment");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -97,12 +89,10 @@ t_error			glue_segment_write(i_segment		segid,
 					   const void*		buff,
 					   t_psize		sz)
 {
-  SEGMENT_ENTER(_segment);
-
   if (ia32_segment_write(segid, offs, buff, sz) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    MACHINE_ESCAPE("unable to write data to the segment");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -116,12 +106,10 @@ t_error			glue_segment_copy(i_segment		dst,
 					  t_paddr		offss,
 					  t_psize		sz)
 {
-  SEGMENT_ENTER(_segment);
-
   if (ia32_segment_copy(dst, offsd, src, offss, sz) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    MACHINE_ESCAPE("unable to copy data from a segment to another");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -130,15 +118,13 @@ t_error			glue_segment_copy(i_segment		dst,
 
 t_error			glue_segment_initialize(void)
 {
-  SEGMENT_ENTER(_segment);
-
   if (ia32_pmode_init() != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    MACHINE_ESCAPE("unable to initialize the protected mode");
 
   if (ia32_segmentation_init() != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    MACHINE_ESCAPE("unable to initialize the IA32 segmentation");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -147,10 +133,10 @@ t_error			glue_segment_initialize(void)
 
 t_error			glue_segment_clean(void)
 {
-  SEGMENT_ENTER(_segment);
+  // XXX clean segmentation.
 
   if (ia32_pmode_clean() != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    MACHINE_ESCAPE("unable to clean the protected mode");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  MACHINE_LEAVE();
 }

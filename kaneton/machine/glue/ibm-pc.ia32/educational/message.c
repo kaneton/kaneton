@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/message.c
  *
  * created       matthieu bucchianeri   [sun jun 17 18:16:18 2007]
- * updated       julien quintard   [wed nov 24 14:20:45 2010]
+ * updated       julien quintard   [sat nov 27 16:22:23 2010]
  */
 
 /*
@@ -27,12 +27,6 @@
 #include <glue/glue.h>
 #include <architecture/architecture.h>
 #include <platform/platform.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-extern m_message*	_message;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -71,12 +65,10 @@ d_message		glue_message_dispatch =
 t_error			glue_message_return(i_thread		thread,
 					    t_error		code)
 {
-  MESSAGE_ENTER(_message);
-
   if (ia32_syscall_set_code(thread, code) != ERROR_OK)
-    MESSAGE_LEAVE(_message, ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  MESSAGE_LEAVE(_message, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -88,12 +80,10 @@ t_error			glue_message_return_info(i_thread	thread,
 						 t_vsize	size,
 						 i_node		sender)
 {
-  MESSAGE_ENTER(_message);
-
   if (ia32_syscall_set_info(thread, code, size, sender) != ERROR_OK)
-    MESSAGE_LEAVE(_message, ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  MESSAGE_LEAVE(_message, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -102,12 +92,10 @@ t_error			glue_message_return_info(i_thread	thread,
 
 t_error		glue_message_initialize(void)
 {
-  MESSAGE_ENTER(_message);
-
   if (ia32_syscalls_init() != ERROR_OK)
-    MESSAGE_LEAVE(_message, ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  MESSAGE_LEAVE(_message, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -116,10 +104,8 @@ t_error		glue_message_initialize(void)
 
 t_error		glue_message_clean(void)
 {
-  MESSAGE_ENTER(_message);
-
   if (ia32_syscalls_clean() != ERROR_OK)
-    MESSAGE_LEAVE(_message, ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  MESSAGE_LEAVE(_message, ERROR_OK);
+  MACHINE_LEAVE();
 }

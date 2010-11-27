@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/core/as/clone/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [wed nov 24 09:25:27 2010]
+ * updated       julien quintard   [sat nov 27 20:12:22 2010]
  */
 
 /*
@@ -74,7 +74,7 @@ void			test_core_as_clone_02(void)
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error\n");
 
-  if (as_clone(forked, as, &cloned) != ERROR_OK)
+  if (as_clone(as, forked, &cloned) != ERROR_OK)
     TEST_ERROR("[as_clone] error\n");
 
   if (as_get(cloned, &o) != ERROR_OK)

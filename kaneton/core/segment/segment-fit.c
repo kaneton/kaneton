@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/segment/segment-fit.c
+ * file          /home/mycure/kane...TETON/kaneton/core/segment/segment-fit.c
  *
  * created       julien quintard   [sun jun 10 17:17:15 2007]
- * updated       julien quintard   [mon nov 22 20:37:28 2010]
+ * updated       julien quintard   [sat nov 27 19:30:38 2010]
  */
 
 /*
@@ -62,9 +62,9 @@ extern m_segment*	_segment;
  *
  */
 
-t_error			segment_space(i_as		asid,
-				      t_psize		size,
-				      t_paddr*		address)
+t_error			segment_fit_first(i_as			asid,
+					  t_psize		size,
+					  t_paddr*		address)
 {
   o_segment*		current;
   t_state		state;
@@ -73,30 +73,29 @@ t_error			segment_space(i_as		asid,
   t_iterator		i;
   o_as*			as;
 
-  SEGMENT_ENTER(_segment);
-
   assert(size != 0);
   assert(address != NULL);
 
   if (as_get(asid, &as) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 1)
    */
 
-  if (set_head(_segment->segments, &i) != ERROR_OK)
+  if (set_head(_segment->segments, &i) == ERROR_FALSE)
     {
       if (_segment->size < size)
-	SEGMENT_LEAVE(_segment, ERROR_KO);
+	CORE_ESCAPE("there is not enough memory to satisfy the segment "
+		    "reservation");
 
       *address = _segment->start;
 
-      SEGMENT_LEAVE(_segment, ERROR_OK);
+      CORE_LEAVE();
     }
 
   if (set_object(_segment->segments, i, (void**)&head) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the very first segment object");
 
   /*
    * 2)
@@ -106,7 +105,7 @@ t_error			segment_space(i_as		asid,
     {
       *address = _segment->start;
 
-      SEGMENT_LEAVE(_segment, ERROR_OK);
+      CORE_LEAVE();
     }
 
   /*
@@ -118,27 +117,23 @@ t_error			segment_space(i_as		asid,
       o_segment*	next;
       t_iterator	j;
 
-      if (set_object(_segment->segments, i, (void**)&current) !=
-	  ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "segment: cannot find the segment object "
-		      "corresponding to its identifier\n");
+      if (set_object(_segment->segments,
+		     i,
+		     (void**)&current) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the segment object corresponding "
+		    "to its identifier");
 
-	  SEGMENT_LEAVE(_segment, ERROR_KO);
-	}
-
-      if (set_next(_segment->segments, i, &j) != ERROR_OK)
+      if (set_next(_segment->segments, i, &j) == ERROR_FALSE)
 	break;
 
       if (set_object(_segment->segments, j, (void**)&next) != ERROR_OK)
-	SEGMENT_LEAVE(_segment, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the next segment in the set");
 
       if ((next->address - (current->address + current->size)) >= size)
 	{
 	  *address = current->address + current->size;
 
-	  SEGMENT_LEAVE(_segment, ERROR_OK);
+	  CORE_LEAVE();
 	}
     }
 
@@ -146,11 +141,11 @@ t_error			segment_space(i_as		asid,
    * 4)
    */
 
-  if (set_tail(_segment->segments, &i) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if (set_tail(_segment->segments, &i) == ERROR_FALSE)
+    CORE_ESCAPE("unable to locate the last segment in the set");
 
   if (set_object(_segment->segments, i, (void**)&tail) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 5)
@@ -161,10 +156,42 @@ t_error			segment_space(i_as		asid,
     {
       *address = tail->address + tail->size;
 
-      SEGMENT_LEAVE(_segment, ERROR_OK);
+      CORE_LEAVE();
     }
 
-  SEGMENT_LEAVE(_segment, ERROR_KO);
+  CORE_ESCAPE("unable to locate enough space between the existing segments "
+	      "to satisfy the reservation request");
+}
+
+/*
+ * this function calls the good algorithm.
+ */
+
+t_error			segment_space(i_as			asid,
+				      t_psize			size,
+				      t_paddr*			address)
+{
+  o_as*			as;
+
+  assert(size != 0);
+  assert(address != NULL);
+
+  switch (SEGMENT_FIT)
+    {
+    case FIT_FIRST:
+      {
+	if (segment_fit_first(asid, size, address) != ERROR_OK)
+	  CORE_ESCAPE("unable to locate space through the first-fit "
+		      "algorithm");
+
+	break;
+      }
+    default:
+      CORE_ESCAPE("unknown segment algorithm '%u'",
+		  SEGMENT_FIT);
+    }
+
+  CORE_LEAVE();
 }
 
 #endif

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...BLE/test/tests/kaneton/set/array/05/05.c
+ * file          /home/mycure/kane...est/tests/kaneton/core/set/array/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2050]
- * updated       julien quintard   [wed nov 17 20:51:57 2010]
+ * updated       julien quintard   [sat nov 27 23:44:50 2010]
  */
 
 /*

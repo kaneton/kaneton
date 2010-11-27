@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/modules/test/test.c
+ * file          /home/mycure/kaneton.TETON/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [wed nov 24 15:45:41 2010]
+ * updated       julien quintard   [fri nov 26 10:56:24 2010]
  */
 
 /*
@@ -45,8 +45,8 @@ extern s_module_test_function	_module_test_functions[];
 /*
  * the module structure.
  */
-
-m_module_test		_module_test;
+ 
+m_module_test*		_module_test = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -187,21 +187,21 @@ t_error			module_test_issue(char*			command)
 
 t_error			module_test_flush(void)
 {
-  t_uint32		size = _module_test.size;
+  t_uint32		size = _module_test->size;
 
-  if (_module_test.size == 0)
+  if (_module_test->size == 0)
     MODULE_LEAVE();
 
-  _module_test.size = 0;
+  _module_test->size = 0;
 
   if (module_test_send(MODULE_TEST_TYPE_TEXT,
-		       _module_test.buffer,
+		       _module_test->buffer,
 		       size) != ERROR_OK)
     MODULE_ESCAPE("unable to send the buffer back to the client");
 
-  memset(_module_test.buffer,
+  memset(_module_test->buffer,
 	 0x0,
-	 sizeof(_module_test.buffer));
+	 sizeof(_module_test->buffer));
 
   MODULE_LEAVE();
 }
@@ -213,13 +213,37 @@ t_error			module_test_flush(void)
  *
  * then, whenever the buffer is full or the character '\n' is received,
  * the buffer is flushed into a text message.
+ *
+ * steps:
+ *
+ * 1) check that the module has been initialized. indeed this module
+ *    could be called directly from the platform's console. this check
+ *    has been put in order to ignore any message that preceeds the
+ *    test module set up.
+ * 2) write the character.
+ * 3) flush if necessary.
  */
 
 int			module_test_write(char			c)
 {
-  _module_test.buffer[_module_test.size++] = c;
+  /*
+   * 1)
+   */
 
-  if ((_module_test.size >= (sizeof(_module_test.buffer) - 1)) ||
+  if (_module_test == NULL)
+    return (1);
+
+  /*
+   * 2)
+   */
+
+  _module_test->buffer[_module_test->size++] = c;
+
+  /*
+   * 3)
+   */
+
+  if ((_module_test->size >= (sizeof(_module_test->buffer) - 1)) ||
       (c == '\n'))
     module_test_flush();
 
@@ -288,6 +312,15 @@ void			module_test_dump(void)
  * this function actually runs the test system by first initializing
  * the serial line, switching printf() before performing a handshake
  * and waiting for commands.
+ *
+ * steps:
+ *
+ * 1) allocate memory for the module's structure.
+ * 2) set up the serial port.
+ * 3) initialize printf() so that every displayed text is forward onto the
+ *    serial port.
+ * 4) issues the enter command which the client must be waiting for.
+ * 5) wait for commands and treat them.
  */
 
 t_error			module_test_run(void)
@@ -305,24 +338,33 @@ t_error			module_test_run(void)
    * 1)
    */
 
-  platform_serial_setup(PLATFORM_SERIAL_PRIMARY,
-			PLATFORM_SERIAL_BR57600,
-			PLATFORM_SERIAL_8N1);
+  if ((_module_test = malloc(sizeof(m_module_test))) == NULL)
+    MODULE_ESCAPE("unable to allocate memory for the test module's structure");
+
+  memset(_module_test, 0x0, sizeof(m_module_test));
 
   /*
    * 2)
    */
 
-  printf_init(module_test_write, NULL);
+  platform_serial_setup(PLATFORM_SERIAL_PRIMARY,
+			PLATFORM_SERIAL_BR57600,
+			PLATFORM_SERIAL_8N1);
 
   /*
    * 3)
    */
 
-  module_test_issue("[ready]");
+  printf_init(module_test_write, NULL);
 
   /*
    * 4)
+   */
+
+  module_test_issue("[ready]");
+
+  /*
+   * 5)
    */
 
   while (1)
@@ -334,24 +376,10 @@ t_error			module_test_run(void)
       memset(message, 0x0, sizeof(message));
 
       if (module_test_receive(&type, message) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "unable to received a test request\n");
-
-	  module_call(report, report_dump);
-
-	  continue;
-	}
+	MODULE_ESCAPE("unable to received a test request\n");
 
       if (type != MODULE_TEST_TYPE_COMMAND)
-	{
-	  module_call(console, console_message,
-		      '!', "invalid command type\n");
-
-	  module_call(report, report_dump);
-
-	  continue;
-	}
+	MODULE_ESCAPE("invalid command type\n");
 
       for (i = 0; commands[i].command != NULL; i++)
 	{
@@ -362,15 +390,8 @@ t_error			module_test_run(void)
 	      t_uint32		offset = strlen(commands[i].command);
 
 	      if (commands[i].function(message + offset) != ERROR_OK)
-		{
-		  module_call(console, console_message,
-			      '!', "an error occured in the triggered "
+		MODULE_ESCAPE("an error occured in the triggered "
 			      "command\n");
-
-		  module_call(report, report_dump);
-
-		  continue;
-		}
 	    }
 	}
     }

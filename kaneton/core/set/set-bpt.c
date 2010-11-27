@@ -137,8 +137,6 @@ t_error			set_show_unused_bpt(o_set*		o)
 {
   t_bpt_uni(set)	i;
 
-  SET_ENTER(_set);
-
   module_call(console, console_message,
 	      '#', "showing the unused nodes: %u / %u\n",
 	      o->u.bpt.unused.index + 1,
@@ -148,7 +146,7 @@ t_error			set_show_unused_bpt(o_set*		o)
     module_call(console, console_message,
 		'#', "  [%d] 0x%x\n", i, o->u.bpt.unused.array[i]);
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -159,15 +157,33 @@ t_error			set_type_bpt(i_set			setid)
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
-  if (o->type == SET_TYPE_BPT)
-    SET_LEAVE(_set, ERROR_OK);
+  if (o->type != SET_TYPE_BPT)
+    CORE_ESCAPE("invalid set type");
 
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the object is present in the set.
+ */
+
+t_error			set_exist_bpt(i_set			setid,
+				      t_id			id)
+{
+  t_bpt_entry(set)	entry;
+  o_set*		o;
+
+  assert(id != ID_UNUSED);
+
+  assert(set_descriptor(setid, &o) == ERROR_OK);
+
+  if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
@@ -182,8 +198,6 @@ t_error			set_type_bpt(i_set			setid)
 t_error			set_build_bpt(o_set*			o,
 				      BPT_NODESZ_T		nodesz)
 {
-  SET_ENTER(_set);
-
   o->u.bpt.unusedsz = BPT_INIT_SIZE();
 
   /*
@@ -192,7 +206,7 @@ t_error			set_build_bpt(o_set*			o,
 
   if ((o->u.bpt.unused.array = malloc(o->u.bpt.unusedsz *
 				      sizeof(t_bpt_addr(set)))) == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the array of unused blocks");
 
   memset(o->u.bpt.unused.array, 0x0,
 	 o->u.bpt.unusedsz * sizeof(t_bpt_addr(set)));
@@ -209,10 +223,10 @@ t_error			set_build_bpt(o_set*			o,
     {
       if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
 	   malloc(nodesz)) == NULL)
-	SET_LEAVE(_set, ERROR_OK);
+	CORE_ESCAPE("unable to allocate memory for the unused block");
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -231,8 +245,6 @@ t_error			set_adjust_bpt(o_set*			o,
 				       t_bpt_uni(set)		alloc,
 				       t_bpt_uni(set)		size)
 {
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
@@ -242,7 +254,8 @@ t_error			set_adjust_bpt(o_set*			o,
       if ((o->u.bpt.unused.array =
 	   realloc(o->u.bpt.unused.array, size *
 		   sizeof(t_bpt_addr(set)))) == NULL)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to reallocate memory for the array of unused "
+		    "blocks");
 
       o->u.bpt.unusedsz = size;
     }
@@ -265,11 +278,11 @@ t_error			set_adjust_bpt(o_set*			o,
 	{
 	  if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
 	       malloc(o->u.bpt.bpt.nodesz)) == NULL)
-	    SET_LEAVE(_set, ERROR_OK);
+	    CORE_ESCAPE("unable to allocate memory for the unused block");
 	}
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -285,8 +298,6 @@ t_error			set_destroy_bpt(o_set*			o)
 {
   t_bpt_uni(set)	i;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
@@ -300,7 +311,7 @@ t_error			set_destroy_bpt(o_set*			o)
 
   free(o->u.bpt.unused.array);
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -318,14 +329,12 @@ t_error			set_show_bpt(i_set			setid)
   o_set*		o;
   t_iterator		i;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
@@ -353,7 +362,7 @@ t_error			set_show_bpt(i_set			setid)
       BPT_UNLOAD(&o->u.bpt.bpt, &node);
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -367,12 +376,9 @@ t_error			set_head_bpt(i_set			setid,
   t_bpt_imm(set)	root;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   BPT_LOAD(&o->u.bpt.bpt, &root, o->u.bpt.bpt.root);
 
@@ -381,12 +387,12 @@ t_error			set_head_bpt(i_set			setid,
     {
       BPT_UNLOAD(&o->u.bpt.bpt, &root);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_FALSE();
     }
 
   BPT_UNLOAD(&o->u.bpt.bpt, &root);
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -400,12 +406,9 @@ t_error			set_tail_bpt(i_set			setid,
   t_bpt_imm(set)	root;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   BPT_LOAD(&o->u.bpt.bpt, &root, o->u.bpt.bpt.root);
 
@@ -414,12 +417,12 @@ t_error			set_tail_bpt(i_set			setid,
     {
       BPT_UNLOAD(&o->u.bpt.bpt, &root);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_FALSE();
     }
 
   BPT_UNLOAD(&o->u.bpt.bpt, &root);
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -432,18 +435,15 @@ t_error			set_previous_bpt(i_set			setid,
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(previous != NULL);
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   if (bpt_prev_entry(set, &o->u.bpt.bpt, current.u.bpt.entry,
 		     &previous->u.bpt.entry, BPT_OPT_TREE) != 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -456,18 +456,15 @@ t_error			set_next_bpt(i_set			setid,
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(next != NULL);
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   if (bpt_next_entry(set, &o->u.bpt.bpt, current.u.bpt.entry,
 		     &next->u.bpt.entry, BPT_OPT_TREE) != 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -478,9 +475,7 @@ t_error			set_next_bpt(i_set			setid,
 t_error			set_insert_bpt(i_set			setid,
 				       void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -491,9 +486,7 @@ t_error			set_insert_bpt(i_set			setid,
 t_error			set_append_bpt(i_set			setid,
 				       void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -505,9 +498,7 @@ t_error			set_before_bpt(i_set			setid,
 				       t_iterator		iterator,
 				       void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -519,9 +510,7 @@ t_error			set_after_bpt(i_set			setid,
 				      t_iterator		iterator,
 				      void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -544,8 +533,6 @@ t_error			set_add_bpt(i_set			setid,
   t_bpt_lfentry(set)	lfentry;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -553,14 +540,14 @@ t_error			set_add_bpt(i_set			setid,
    */
 
   if (*(t_id*)data == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the object must begin with a valid identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
@@ -577,7 +564,7 @@ t_error			set_add_bpt(i_set			setid,
   if (o->options & SET_OPTION_ALLOC)
     {
       if ((lfentry.data = malloc(o->datasz)) == NULL)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the object's copy");
 
       memcpy(lfentry.data, data, o->datasz);
     }
@@ -592,14 +579,14 @@ t_error			set_add_bpt(i_set			setid,
 
   if (set_adjust_bpt(o, BPT_ADD_ALLOC(&o->u.bpt.bpt),
 		     BPT_ADD_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   /*
    * 6)
    */
 
   if (bpt_add(set, &o->u.bpt.bpt, &lfentry, &o->u.bpt.unused) != 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to add the object to the tree");
 
   /*
    * 7)
@@ -607,7 +594,7 @@ t_error			set_add_bpt(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -634,21 +621,19 @@ t_error			set_remove_bpt(i_set			setid,
   t_bpt_imm(set)	node;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (id == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("invalid object identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
@@ -658,7 +643,7 @@ t_error			set_remove_bpt(i_set			setid,
       (o->options & SET_OPTION_FREE))
     {
       if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to locate the given object");
 
       BPT_LOAD(&o->u.bpt.bpt, &node, entry.node);
 
@@ -673,14 +658,14 @@ t_error			set_remove_bpt(i_set			setid,
 
   if (set_adjust_bpt(o, BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
 		     BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   /*
    * 5)
    */
 
   if (bpt_remove(set, &o->u.bpt.bpt, id, &o->u.bpt.unused) != 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to remove the object from the tree");
 
   /*
    * 6)
@@ -688,7 +673,7 @@ t_error			set_remove_bpt(i_set			setid,
 
   o->size--;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -709,14 +694,12 @@ t_error			set_delete_bpt(i_set			setid,
   t_bpt_imm(set)	node;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
@@ -738,7 +721,7 @@ t_error			set_delete_bpt(i_set			setid,
 
  if (set_adjust_bpt(o, BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
 		    BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
-   SET_LEAVE(_set, ERROR_KO);
+   CORE_ESCAPE("unable to adjust the array of unused blocks");
 
  /*
   * 4)
@@ -746,7 +729,7 @@ t_error			set_delete_bpt(i_set			setid,
 
  if (bpt_collide_remove(set, &o->u.bpt.bpt, iterator.u.bpt.entry,
 			&o->u.bpt.unused) != 0)
-   SET_LEAVE(_set, ERROR_KO);
+   CORE_ESCAPE("unable to remove the object from the tree");
 
   /*
    * 5)
@@ -754,7 +737,7 @@ t_error			set_delete_bpt(i_set			setid,
 
   o->size--;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -782,14 +765,12 @@ t_error			set_flush_bpt(i_set			setid)
   t_iterator		i;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   nodesz = o->u.bpt.bpt.nodesz;
 
@@ -823,10 +804,10 @@ t_error			set_flush_bpt(i_set			setid)
 
   if (set_adjust_bpt(o, BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
 		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   if (bpt_clean(set, &o->u.bpt.bpt, &o->u.bpt.unused) != 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to clean the tree of all the elements");
 
   /*
    * 4)
@@ -834,14 +815,14 @@ t_error			set_flush_bpt(i_set			setid)
 
   if (set_adjust_bpt(o, BPT_INIT_ALLOC(),
 		     BPT_INIT_SIZE()) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   if (bpt_init(set, &o->u.bpt.bpt, nodesz,
 	       SET_BPT_UADDR, SET_BPT_UKEY, SET_BPT_UVALUE,
 	       BPT_FLAG_ZERO, set_load_bpt, set_unload_bpt,
 	       set_addrcmp_bpt, set_keycmp_bpt, set_valcmp_bpt,
 	       NULL, NULL, &o->u.bpt.unused) != 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to re-initialize the tree");
 
   /*
    * 5)
@@ -849,7 +830,7 @@ t_error			set_flush_bpt(i_set			setid)
 
   o->size = 0;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -864,22 +845,20 @@ t_error			set_locate_bpt(i_set			setid,
   t_bpt_entry(set)	entry;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
   if (id == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("invalid object identifier");
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to locate the element in the tree");
 
   memcpy(iterator, &entry, sizeof(t_bpt_entry(set)));
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -893,12 +872,10 @@ t_error			set_object_bpt(i_set			setid,
   t_bpt_imm(set)	node;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   BPT_LOAD(&o->u.bpt.bpt, &node, iterator.u.bpt.entry.node);
 
@@ -906,7 +883,7 @@ t_error			set_object_bpt(i_set			setid,
 
   BPT_UNLOAD(&o->u.bpt.bpt, &node);
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -930,8 +907,6 @@ t_error			set_reserve_bpt(t_options		options,
 {
   o_set			o;
 
-  SET_ENTER(_set);
-
   assert(datasz >= sizeof (t_id));
   assert(setid != NULL);
 
@@ -946,13 +921,14 @@ t_error			set_reserve_bpt(t_options		options,
    */
 
   if (!(options & SET_OPTION_SORT))
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the sort option cannot be provided since bpt-based are "
+		"always sorted");
 
   if (options & SET_OPTION_ORGANISE)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the organise option is invalid for bpt-based sets");
 
   if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a set with both alloc and free options");
 
   /*
    * 3)
@@ -965,7 +941,7 @@ t_error			set_reserve_bpt(t_options		options,
   else
     {
       if (id_reserve(&_set->id, setid) != ERROR_OK)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to reserve an identifier");
     }
 
   /*
@@ -989,7 +965,7 @@ t_error			set_reserve_bpt(t_options		options,
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set->id, o.id);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_ESCAPE("unable to build the array of unused blocks");
     }
 
   /*
@@ -1005,7 +981,7 @@ t_error			set_reserve_bpt(t_options		options,
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set->id, o.id);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_ESCAPE("unable to initialize the tree");
     }
 
   /*
@@ -1024,10 +1000,10 @@ t_error			set_reserve_bpt(t_options		options,
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set->id, o.id);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_ESCAPE("unable to register the new set descriptor");
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1050,21 +1026,19 @@ t_error			set_release_bpt(i_set			setid)
 {
   o_set			*o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (set_flush(setid) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to flush the set");
 
   /*
    * 3)
@@ -1072,29 +1046,32 @@ t_error			set_release_bpt(i_set			setid)
 
   if (set_adjust_bpt(o, BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
 		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   if (bpt_clean(set, &o->u.bpt.bpt, &o->u.bpt.unused) != 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to clean the tree");
 
-  set_destroy_bpt(o);
+  if (set_destroy_bpt(o) != ERROR_OK)
+    CORE_ESCAPE("unable to destroy the set");
 
   /*
    * 4)
    */
 
   if (id_release(&_set->id, o->id) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to release the set identifier");
 
   /*
    * 5)
    */
 
   if (!(o->options & SET_OPTION_CONTAINER))
-    if (set_destroy(o->id) != ERROR_OK)
-      SET_LEAVE(_set, ERROR_KO);
+    {
+      if (set_destroy(o->id) != ERROR_OK)
+	CORE_ESCAPE("unable to destroy the set descriptor");
+    }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1105,9 +1082,7 @@ t_error			set_release_bpt(i_set			setid)
 t_error			set_push_bpt(i_set			setid,
 				     void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -1117,9 +1092,7 @@ t_error			set_push_bpt(i_set			setid,
 
 t_error			set_pop_bpt(i_set			setid)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -1130,7 +1103,5 @@ t_error			set_pop_bpt(i_set			setid)
 t_error			set_pick_bpt(i_set			setid,
 				     void**			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }

@@ -8,11 +8,17 @@
  * file          /home/mycure/kane.../kaneton/modules/report/include/report.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [wed nov 24 13:45:49 2010]
+ * updated       julien quintard   [fri nov 26 00:03:59 2010]
  */
 
 #ifndef MODULES_REPORT_REPORT_H
 #define MODULES_REPORT_REPORT_H	1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <library/library.h>
 
 /*
  * ---------- structures ------------------------------------------------------
@@ -47,8 +53,6 @@ typedef struct
 void			module_report_dump(void);
 
 int			module_report_character(char		c);
-
-void			module_report_attribute(t_uint8		attribute);
 
 void			module_report_record(char*		fmt,
 					     ...);

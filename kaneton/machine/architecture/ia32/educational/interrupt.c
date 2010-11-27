@@ -327,8 +327,10 @@ void			ia32_handler_exception(t_uint32			nr,
 
   assert(ia32_context_ring0_stack() == ERROR_OK);
 
-  if (event_get(id, &o) == ERROR_OK)
+  if (event_exist(id) == ERROR_TRUE)
     {
+      assert(event_get(id, &o) == ERROR_OK);
+
       if (o->type == EVENT_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data, code);
       else
@@ -355,8 +357,10 @@ void			ia32_handler_irq(t_uint32			nr)
 
   assert(ia32_context_ring0_stack() == ERROR_OK);
 
-  if (event_get(id, &o) == ERROR_OK)
+  if (event_exist(id) == ERROR_TRUE)
     {
+      assert(event_get(id, &o) == ERROR_OK);
+
       if (o->type == EVENT_FUNCTION)
 	{
 	  IA32_CALL_HANDLER(o->handler, id, o->data);
@@ -389,8 +393,10 @@ void			ia32_handler_ipi(t_uint32			nr)
 
   ia32_ipi_acknowledge();
 
-  if (event_get(id, &o) == ERROR_OK)
+  if (event_exist(id) == ERROR_TRUE)
     {
+      assert(event_get(id, &o) == ERROR_OK);
+
       if (o->type == EVENT_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data);
       else
@@ -417,8 +423,10 @@ void			ia32_handler_syscall(t_uint32			nr)
 
   assert(ia32_context_ring0_stack() == ERROR_OK);
 
-  if (event_get(id, &o) == ERROR_OK)
+  if (event_exist(id) == ERROR_TRUE)
     {
+      assert(event_get(id, &o) == ERROR_OK);
+
       if (o->type == EVENT_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data);
       else

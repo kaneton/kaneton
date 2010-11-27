@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/as.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [mon nov 22 10:08:18 2010]
+ * updated       julien quintard   [sat nov 27 20:13:14 2010]
  */
 
 #ifndef CORE_AS_H
@@ -75,16 +75,16 @@ typedef struct
 typedef struct
 {
   t_error			(*as_show)(i_as);
-  t_error			(*as_give)(i_task,
-					   i_as);
+  t_error			(*as_give)(i_as,
+					   i_task);
   t_error			(*as_vaddr)(i_as,
 					    t_paddr,
 					    t_vaddr*);
   t_error			(*as_paddr)(i_as,
 					    t_vaddr,
 					    t_paddr*);
-  t_error			(*as_clone)(i_task,
-					    i_as,
+  t_error			(*as_clone)(i_as,
+					    i_task,
 					    i_as*);
   t_error			(*as_reserve)(i_task,
 					      i_as*);
@@ -92,38 +92,6 @@ typedef struct
   t_error			(*as_initialize)(void);
   t_error			(*as_clean)(void);
 }				d_as;
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define AS_CHECK(_as_)							\
-  {									\
-    if ((_as_) == NULL)							\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define AS_ENTER(_as_)							\
-  {									\
-    AS_CHECK((_as_));							\
-  }
-
-/*
- * leave
- */
-
-#define AS_LEAVE(_as_, _error_)						\
-  {									\
-    return (_error_);							\
-  }
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -174,6 +142,8 @@ t_error			as_reserve(i_task			task,
 				   i_as*			id);
 
 t_error			as_release(i_as			id);
+
+t_error			as_exist(i_as				id);
 
 t_error			as_get(i_as				id,
 			       o_as**				o);

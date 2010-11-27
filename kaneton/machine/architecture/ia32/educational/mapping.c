@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/mapping.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:26:06 2007]
- * updated       julien quintard   [mon nov 22 21:52:37 2010]
+ * updated       julien quintard   [sat nov 27 19:33:37 2010]
  */
 
 /*

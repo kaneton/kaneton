@@ -24,8 +24,8 @@
  * ---------- functions -------------------------------------------------------
  */
 
-t_error		as_give(i_task		arg1,
-			t_id		arg2)
+t_error		as_give(i_as		arg1,
+			i_task		arg2)
 {
   o_syscall		message;
   i_node		node;
@@ -146,8 +146,8 @@ t_error		as_copy(t_id		arg1,
   return (ERROR_NONE);
 }
 
-t_error		as_clone(i_task		arg1,
-			t_id		arg2,
+t_error		as_clone(i_as		arg1,
+			i_task		arg2,
 			i_as*		result1)
 {
   o_syscall		message;

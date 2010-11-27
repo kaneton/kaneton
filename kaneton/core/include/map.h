@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/map.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/map.h
  *
  * created       julien quintard   [wed jun  6 13:31:27 2007]
- * updated       julien quintard   [mon nov 22 10:12:08 2010]
+ * updated       julien quintard   [fri nov 26 19:21:49 2010]
  */
 
 #ifndef CORE_MAP_H
@@ -48,38 +48,6 @@
 typedef struct
 {
 }				m_map;
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define MAP_CHECK(_map_)						\
-  {									\
-    if ((_map_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define MAP_ENTER(_map_)						\
-  {									\
-    MAP_CHECK((_map_));							\
-  }
-
-/*
- * leave
- */
-
-#define MAP_LEAVE(_map_, _error_)					\
-  {									\
-    return (_error_);							\
-  }
 
 /*
  * ---------- prototypes ------------------------------------------------------

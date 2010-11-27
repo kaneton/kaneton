@@ -113,7 +113,7 @@ void			kaneton(t_init*				bootloader)
   module_call(console, console_message,
 	      '+', "starting the kernel\n");
 
-  kernel_initialize();
+  assert(kernel_initialize() == ERROR_OK);
 
   /*
    * 6)
@@ -128,7 +128,7 @@ void			kaneton(t_init*				bootloader)
   module_call(console, console_message,
 	      '+', "spawning the 'system' server\n");
 
-  kaneton_spawn();
+  assert(kaneton_spawn() == ERROR_OK);
 
   /*
    * 8)
@@ -137,7 +137,7 @@ void			kaneton(t_init*				bootloader)
   module_call(console, console_message,
 	      '+', "stopping the kernel\n");
 
-  kernel_clean();
+  assert(kernel_clean() == ERROR_OK);
 
   /*
    * 9)
@@ -183,7 +183,7 @@ void			kaneton(t_init*				bootloader)
  * 9) set the task as running.
  */
 
-void			kaneton_spawn(void)
+t_error			kaneton_spawn(void)
 {
   i_thread		thread;
   i_region		region;
@@ -205,48 +205,54 @@ void			kaneton_spawn(void)
    * 1)
    */
 
-  assert(_init->scodesz != 0);
+  if (_init->scodesz == 0)
+    CORE_ESCAPE("there is no 'system' server to launch");
 
   /*
    * 2)
    */
 
-  assert(task_reserve(TASK_CLASS_SERVICE,
-		      TASK_BEHAVIOUR_TIMESHARING,
-		      TASK_PRIORITY_TIMESHARING,
-		      &task) == ERROR_OK);
+  if (task_reserve(TASK_CLASS_SERVICE,
+		   TASK_BEHAVIOUR_TIMESHARING,
+		   TASK_PRIORITY_TIMESHARING,
+		   &task) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve a task");
 
-  assert(as_reserve(task, &as) == ERROR_OK);
+  if (as_reserve(task, &as) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve an address space");
 
   /*
    * 3)
    */
 
-  assert(region_reserve(as,
-			_system,
-			0,
-			REGION_OPTION_FORCE,
-			_init->slocation,
-			_init->scodesz,
-			&region) == ERROR_OK);
+  if (region_reserve(as,
+		     _system,
+		     0,
+		     REGION_OPTION_FORCE,
+		     _init->slocation,
+		     _init->scodesz,
+		     &region) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve the region for the server code");
 
   /*
    * 4)
    */
 
-  assert(region_reserve(as,
-			(i_segment)(t_vaddr)_init->inputs,
-			0,
-			REGION_OPTION_FORCE,
-			(t_vaddr)_init->inputs,
-			_init->inputssz,
-			&region) == ERROR_OK);
+  if (region_reserve(as,
+		     (i_segment)(t_vaddr)_init->inputs,
+		     0,
+		     REGION_OPTION_FORCE,
+		     (t_vaddr)_init->inputs,
+		     _init->inputssz,
+		     &region) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve the region for the inputs");
 
   /*
    * 5)
    */
 
-  assert(thread_reserve(task, THREAD_PRIORITY, &thread) == ERROR_OK);
+  if (thread_reserve(task, THREAD_PRIORITY, &thread) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve a thread");
 
   /*
    * 6)
@@ -255,18 +261,21 @@ void			kaneton_spawn(void)
   stack.base = 0;
   stack.size = THREAD_STACKSZ;
 
-  assert(thread_stack(thread, stack) == ERROR_OK);
+  if (thread_stack(thread, stack) != ERROR_OK)
+    CORE_ESCAPE("unable to set up the thread's stack");
 
   /*
    * 7)
    */
 
-  assert(thread_get(thread, &o) == ERROR_OK);
+  if (thread_get(thread, &o) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = _init->sentry;
 
-  assert(thread_load(thread, ctx) == ERROR_OK);
+  if (thread_load(thread, ctx) != ERROR_OK)
+    CORE_ESCAPE("unable to load the initial thread's context");
 
   /*
    * 8)
@@ -278,11 +287,15 @@ void			kaneton_spawn(void)
   args.argv = (char*)_init->inputs;
   args.envp = NULL;
 
-  assert(thread_args(thread, &args, sizeof (args)) == ERROR_OK);
+  if (thread_args(thread, &args, sizeof (args)) != ERROR_OK)
+    CORE_ESCAPE("unable to pass arguments to the thread");
 
   /*
    * 9)
    */
 
-  assert(task_run(task) == ERROR_OK);
+  if (task_run(task) != ERROR_OK)
+    CORE_ESCAPE("unable to start the task");
+
+  CORE_LEAVE();
 }

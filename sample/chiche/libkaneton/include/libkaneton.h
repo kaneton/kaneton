@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/chiche/libkaneton/include/libkaneton.h
  *
  * created       matthieu bucchianeri   [sun aug  5 23:20:36 2007]
- * updated       julien quintard   [sat may  2 00:40:35 2009]
+ * updated       julien quintard   [sat nov 27 20:15:53 2010]
  */
 
 #ifndef LIBKANETON_LIBKANETON_H
@@ -126,8 +126,8 @@ t_error			syscall_message_send_unlock(i_node		dest,
  * ../libkaneton.c
  */
 
-t_error		as_give(i_task		arg1,
-			t_id		arg2);
+t_error		as_give(i_as		arg1,
+			i_task		arg2);
 
 t_error		as_vaddr(t_id		arg1,
 			t_paddr		arg2,
@@ -143,8 +143,8 @@ t_error		as_copy(t_id		arg1,
 			t_vaddr		arg4,
 			t_vsize		arg5);
 
-t_error		as_clone(i_task		arg1,
-			t_id		arg2,
+t_error		as_clone(i_as		arg1,
+			i_task		arg2,
 			i_as*		result1);
 
 t_error		as_reserve(i_task		arg1,

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/set.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/set.h
  *
  * created       julien quintard   [wed jun  6 11:56:46 2007]
- * updated       julien quintard   [mon nov 22 12:06:52 2010]
+ * updated       julien quintard   [sat nov 27 17:30:58 2010]
  */
 
 #ifndef CORE_SET_H
@@ -142,34 +142,6 @@ typedef struct
  */
 
 /*
- * check
- */
-
-#define SET_CHECK(_set_)						\
-  {									\
-    if ((_set_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define SET_ENTER(_set_)						\
-  {									\
-    SET_CHECK((_set_));							\
-  }
-
-/*
- * leave
- */
-
-#define SET_LEAVE(_set_, _error_)					\
-  {									\
-    return (_error_);							\
-  }
-
-/*
  * debug
  */
 
@@ -194,7 +166,7 @@ typedef struct
 #define set_trap(_func_, _id_, _args_...)				\
   (									\
     {									\
-      t_error		_r_ = ERROR_KO;				\
+      t_error		_r_ = ERROR_KO;					\
       o_set*		_set_;						\
 									\
       set_debug(_func_, _id_, _args_);					\
@@ -220,6 +192,7 @@ typedef struct
                 break;							\
             }								\
         }								\
+									\
       _r_;								\
     }									\
   )
@@ -229,6 +202,9 @@ typedef struct
 
 #define set_reserve(_type_, _args_...)					\
   set_reserve_##_type_(_args_)
+
+#define set_exist(_id_, _args_...)					\
+  set_trap(set_exist, _id_, ##_args_)
 
 #define set_release(_id_, _args_...)					\
   set_trap(set_release, _id_, ##_args_)
@@ -287,24 +263,23 @@ typedef struct
 #define set_pick(_id_, _args_...)					\
   set_trap(set_pick, _id_, ##_args_)
 
-
 /*
  * foreach
  */
 
 #define set_foreach(_opt_, _id_, _iterator_, _state_)			\
   for ((_state_) = ITERATOR_STATE_UNUSED;				\
-        (((_state_) == ITERATOR_STATE_UNUSED) ?				\
-          ((_opt_) == SET_OPTION_FORWARD ?				\
-            set_head((_id_), (_iterator_)) == ERROR_OK :		\
-            set_tail((_id_), (_iterator_)) == ERROR_OK) :		\
-          ((_opt_) == SET_OPTION_FORWARD ?				\
-            set_next((_id_), *(_iterator_), (_iterator_)) ==		\
-              ERROR_OK :						\
-            set_previous((_id_), *(_iterator_), (_iterator_)) ==	\
-              ERROR_OK));						\
-	 (_state_) = ITERATOR_STATE_USED				\
-       )
+       (((_state_) == ITERATOR_STATE_UNUSED) ?				\
+         ((_opt_) == SET_OPTION_FORWARD ?				\
+           set_head((_id_), (_iterator_)) == ERROR_TRUE :		\
+           set_tail((_id_), (_iterator_)) == ERROR_TRUE) :		\
+         ((_opt_) == SET_OPTION_FORWARD ?				\
+           set_next((_id_), *(_iterator_), (_iterator_)) ==		\
+             ERROR_TRUE :						\
+           set_previous((_id_), *(_iterator_), (_iterator_)) ==		\
+             ERROR_TRUE));						\
+       (_state_) = ITERATOR_STATE_USED					\
+      )
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -322,6 +297,8 @@ typedef struct
  */
 
 t_error			set_dump(void);
+
+t_error			set_empty(i_set				setid);
 
 t_error			set_size(i_set				setid,
 				 t_setsz*			size);
@@ -348,6 +325,9 @@ t_error			set_clean(void);
 
 t_error			set_type_array(i_set			setid);
 
+t_error			set_exist_array(i_set			setid,
+					t_id			id);
+
 t_error			set_show_array(i_set			setid);
 
 t_error			set_head_array(i_set			setid,
@@ -363,6 +343,13 @@ t_error			set_previous_array(i_set		setid,
 t_error			set_next_array(i_set			setid,
 				       t_iterator		current,
 				       t_iterator*		next);
+
+t_error			set_expand_array(o_set			*o,
+					 void			*data);
+
+t_error			set_insert_array_at(o_set		*o,
+					    t_setsz		pos,
+					    void		*data);
 
 t_error			set_insert_array(i_set			setid,
 					 void*			data);
@@ -418,6 +405,9 @@ t_error			set_pick_array(i_set			setid,
  */
 
 t_error			set_type_ll(i_set			setid);
+
+t_error			set_exist_ll(i_set			setid,
+				     t_id			id);
 
 t_error			set_show_ll(i_set			setid);
 
@@ -510,6 +500,9 @@ t_error			set_show_unused_bpt(o_set*		o);
 
 t_error			set_type_bpt(i_set			setid);
 
+t_error			set_exist_bpt(i_set			setid,
+				      t_id			id);
+
 t_error			set_build_bpt(o_set*			o,
 				      BPT_NODESZ_T		nodesz);
 
@@ -594,6 +587,9 @@ t_error			set_reserve_pipe(t_options		options,
 					 t_size			datasz,
 					 i_set*			setid);
 
+t_error			set_exist_pipe(i_set			setid,
+				       t_id			id);
+
 t_error			set_show_pipe(i_set			setid);
 
 t_error			set_release_pipe(i_set		setid);
@@ -663,6 +659,9 @@ t_error			set_type_stack(i_set			setid);
 t_error			set_reserve_stack(t_options		options,
 					  t_size		datasz,
 					  i_set*		setid);
+
+t_error			set_exist_stack(i_set			setid,
+					t_id			id);
 
 t_error			set_show_stack(i_set			setid);
 

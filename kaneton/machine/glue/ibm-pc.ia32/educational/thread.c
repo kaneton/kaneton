@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [thu nov 25 11:56:11 2010]
+ * updated       julien quintard   [sat nov 27 16:29:56 2010]
  */
 
 /*
@@ -24,16 +24,6 @@
 #include <kaneton.h>
 
 #include <architecture/architecture.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-/*
- * the thread manager.
- */
-
-extern m_thread*	_thread;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -70,104 +60,84 @@ d_thread		glue_thread_dispatch =
 
 /*
  * clone the ia32 architecture dependent part of a thread.
- *
  */
 
 t_error			glue_thread_clone(i_task		taskid,
 					  i_thread		old,
 					  i_thread*		new)
 {
-  o_task*		o;
-
-  THREAD_ENTER(_thread);
-
   if (ia32_duplicate_context(old, *new) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    MACHINE_ESCAPE("unable to duplicate the IA32 context");
 
-  if (task_get(taskid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
-
-  THREAD_LEAVE(_thread, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
  * reserve a thread on the ia32 architecture
- *
  */
 
 t_error			glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid)
 {
-  THREAD_ENTER(_thread);
-
   if (ia32_init_context(taskid, *threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    MACHINE_ESCAPE("unable to initialize the IA32 context");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
  * this function updates the context with the new stack and
  * instruction pointers.
- *
  */
 
 t_error			glue_thread_load(i_thread		threadid,
 					 t_thread_context	context)
 {
-  THREAD_ENTER(_thread);
-
   if (ia32_setup_context(threadid, context.pc, context.sp) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    MACHINE_ESCAPE("unable to set up the IA32 context");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
  * this function reads from the context both the stack and instruction
  * pointers.
- *
  */
 
 t_error			glue_thread_store(i_thread		threadid,
 					  t_thread_context*	context)
 {
-  THREAD_ENTER(_thread);
-
   if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    MACHINE_ESCAPE("unable to retrieve the IA32 context");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  // XXX ici on devrai recup le ia32 context et copier ce qu'il faut dans le
+  // thread context.
+
+  MACHINE_LEAVE();
 }
 
 /*
  * this function pushes function arguments onto the stack.
- *
  */
 
 t_error			glue_thread_args(i_thread		threadid,
 					 const void*	       	args,
 					 t_vsize		size)
 {
-  THREAD_ENTER(_thread);
-
   if (ia32_push_args(threadid, args, size) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    MACHINE_ESCAPE("unable to push the arguments");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
  * initialize the machine related structures for the thread manager.
- *
  */
 
 t_error			glue_thread_initialize(void)
 {
-  THREAD_ENTER(_thread);
-
   if (ia32_init_switcher() != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    MACHINE_ESCAPE("unable to initialize the context switcher");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  MACHINE_LEAVE();
 }

@@ -149,8 +149,8 @@ typedef struct
 	}		as_copy;
 	struct
 	{
-	  i_task	arg1;
-	  t_id	arg2;
+	  i_as		arg1;
+	  i_task	arg2;
 	}		as_clone;
 	struct
 	{

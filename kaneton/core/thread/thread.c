@@ -67,14 +67,12 @@ t_error			thread_show(i_thread			threadid)
   char*			state;
   o_thread*		o;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 1)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
    * 2)
@@ -83,17 +81,29 @@ t_error			thread_show(i_thread			threadid)
   switch (o->state)
     {
     case THREAD_STATE_RUN:
-      state = "running";
-      break;
+      {
+	state = "running";
+
+	break;
+      }
     case THREAD_STATE_STOP:
-      state = "stopped";
-      break;
+      {
+	state = "stopped";
+
+	break;
+      }
     case THREAD_STATE_ZOMBIE:
-      state = "zombie";
-      break;
+      {
+	state = "zombie";
+
+	break;
+      }
     case THREAD_STATE_BLOCK:
-      state = "blocked";
-      break;
+      {
+	state = "blocked";
+
+	break;
+      }
     }
 
   module_call(console, console_message,
@@ -105,9 +115,9 @@ t_error			thread_show(i_thread			threadid)
    */
 
   if (machine_call(thread, thread_show, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -126,14 +136,12 @@ t_error			thread_dump(void)
   t_setsz		size;
   t_iterator		i;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 1)
    */
 
   if (set_size(_thread->threads, &size) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set of threads");
 
   /*
    * 2)
@@ -145,13 +153,13 @@ t_error			thread_dump(void)
   set_foreach(SET_OPTION_FORWARD, _thread->threads, &i, st)
     {
       if (set_object(_thread->threads, i, (void**)&data) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       if (thread_show(data->id) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to show the thread");
     }
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -176,61 +184,61 @@ t_error			thread_give(i_task			taskid,
   o_task*		src;
   o_task*		dest;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 1)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
    * 2)
    */
 
   if (o->task == taskid)
-    THREAD_LEAVE(_thread, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * 3)
    */
 
   if (task_get(taskid, &dest) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 4)
    */
 
   if (task_get(o->task, &src) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 5)
    */
 
   if (set_remove(src->threads, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to remove the thread from the task's set of threads");
 
   /*
    * 6)
    */
 
   o->task = taskid;
+
   if (set_add(dest->threads, &threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to add the object to the task's set of threads");
 
   /*
    * 7)
    */
 
-  // XXX update CR3 value.
+  // XXX what if the thread is running? should it be moved to the task's CPU?
+  // XXX update CR3 value?
 
   if (machine_call(thread, thread_give, taskid, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -255,8 +263,6 @@ t_error			thread_clone(i_task			taskid,
   //  t_iterator	i; USED IN 4)
   i_thread		threadid;
 
-  THREAD_ENTER(_thread);
-
   assert(new != NULL);
 
   /*
@@ -264,20 +270,19 @@ t_error			thread_clone(i_task			taskid,
    */
 
   if (thread_get(old, &from) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrive the thread object");
 
   /*
    * 2)
    */
 
   if (thread_reserve(taskid, from->priority, new) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a thread");
 
   threadid = *new;
 
   if (thread_get(threadid, &to) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
-
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
    * 3)
@@ -295,51 +300,42 @@ t_error			thread_clone(i_task			taskid,
   switch(to->state)
     {
       case THREAD_STATE_RUN:
-	if (scheduler_add(threadid) != ERROR_OK)
-	  THREAD_LEAVE(_thread, ERROR_KO);
-	break;
-      case THREAD_STATE_STOP:
-	if (scheduler_remove(threadid) != ERROR_OK)
-	  THREAD_LEAVE(_thread, ERROR_KO);
-	break;
-      case THREAD_STATE_ZOMBIE:
-	/* XXX */
-	break;
-      case THREAD_STATE_BLOCK:
-	if (scheduler_remove(threadid) != ERROR_OK)
-	  THREAD_LEAVE(_thread, ERROR_KO);
-	break;
-    }
-
-  /*
-   * 4)
-   */
-  /*
-  set_foreach(SET_OPTION_FORWARD, from->waits, &i, st)
-    {
-      i_thread*		data;
-
-      if (set_object(from->waits, i, (void**)&data) != ERROR_OK)
 	{
-	  module_call(console, console_message,
-	              '!', "thread: cannot find the object "
-		      "corresponding to its identifier\n");
+	  if (scheduler_add(threadid) != ERROR_OK)
+	    CORE_ESCAPE("unable to add the thread to the scheduler");
 
-	  THREAD_LEAVE(_thread, ERROR_KO);
+	  break;
 	}
+      case THREAD_STATE_STOP:
+	{
+	  if (scheduler_remove(threadid) != ERROR_OK)
+	    CORE_ESCAPE("unable to remove the thread from the scheduler");
 
-      if (set_add(to->waits, data) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	  break;
+	}
+      case THREAD_STATE_ZOMBIE:
+	{
+	  /* XXX */
+
+	  break;
+	}
+      case THREAD_STATE_BLOCK:
+	{
+	  if (scheduler_remove(threadid) != ERROR_OK)
+	    CORE_ESCAPE("unable to remove the thread from the scheduler");
+
+	  break;
+	}
     }
-  */
+
   /*
    * 5)
    */
 
   if (machine_call(thread, thread_clone, taskid, old, new) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -362,8 +358,6 @@ t_error			thread_reserve(i_task			taskid,
   o_task*		task;
   o_thread		o;
 
-  THREAD_ENTER(_thread);
-
   assert(threadid != NULL);
 
   /*
@@ -371,21 +365,21 @@ t_error			thread_reserve(i_task			taskid,
    */
 
   if (prior < THREAD_LPRIORITY || prior > THREAD_HPRIORITY)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("invalid priority");
 
   /*
    * 2)
    */
 
   if (task_get(taskid, &task) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 3)
    */
 
   if (id_reserve(&_thread->id, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a thread identifier");
 
   /*
    * 4)
@@ -404,29 +398,19 @@ t_error			thread_reserve(i_task			taskid,
    */
 
   if (set_add(_thread->threads, &o) != ERROR_OK)
-    {
-      id_release(&_thread->id, o.id);
-
-      THREAD_LEAVE(_thread, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to add the object to the set of threads");
 
   if (set_add(task->threads, &o.id) != ERROR_OK)
-    {
-      set_remove(_thread->threads, o.id);
-
-      id_release(&_thread->id, o.id);
-
-      THREAD_LEAVE(_thread, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to add the thread to the task's set of threads");
 
   /*
    * 6)
    */
 
   if (machine_call(thread, thread_reserve, taskid, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -448,28 +432,26 @@ t_error			thread_release(i_thread			threadid)
   o_task*		task;
   o_thread*		o;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 1)
    */
 
   if (machine_call(thread, thread_release, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
    * 3)
    */
 
   if (task_get(o->task, &task) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 4)
@@ -478,7 +460,7 @@ t_error			thread_release(i_thread			threadid)
   if (o->stack)
     {
       if (map_release(task->as, o->stack) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to release the map for the thread's stack");
     }
 
   /*
@@ -486,23 +468,24 @@ t_error			thread_release(i_thread			threadid)
    */
 
   if (id_release(&_thread->id, o->id) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to release the thread identifier");
 
   /*
    * 6)
    */
 
   if (set_remove(task->threads, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to remove the thread from the task's set of threads");
 
   /*
    * 7)
    */
 
   if (set_remove(_thread->threads, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to remove the thread identifier from the set of "
+		"threads");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -522,28 +505,26 @@ t_error			thread_priority(i_thread		threadid,
 {
   o_thread*		o;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 1)
    */
 
   if (prior < THREAD_LPRIORITY || prior > THREAD_HPRIORITY)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("invalid priority");
 
   /*
    * 2)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
    * 3)
    */
 
   if (o->priority == prior)
-    THREAD_LEAVE(_thread, ERROR_OK);
+    CORE_LEAVE();
 
   o->priority = prior;
 
@@ -552,17 +533,19 @@ t_error			thread_priority(i_thread		threadid,
    */
 
   if (machine_call(thread, thread_priority, threadid, prior) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 5)
    */
 
   if (o->state == THREAD_STATE_RUN)
-    if (scheduler_update(threadid) != ERROR_OK)
-      THREAD_LEAVE(_thread, ERROR_KO);
+    {
+      if (scheduler_update(threadid) != ERROR_OK)
+	CORE_ESCAPE("unable to update the scheduled thread");
+    }
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -586,24 +569,22 @@ t_error			thread_run(i_thread			threadid)
   o_task*		task;
   t_state		wakeup;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 2)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   if (task_get(o->task, &task) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 1)
    */
 
   if (o->state == THREAD_STATE_RUN)
-    THREAD_LEAVE(_thread, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * XXX
@@ -620,15 +601,11 @@ t_error			thread_run(i_thread			threadid)
       o_waitfor*	w;
 
       if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
-	{
-	  module_call(console, console_message, '!', "thread: cannot find the object "
-		   "corresponding to its identifier\n");
-
-	  THREAD_LEAVE(_thread, ERROR_KO);
-	}
+      XXX;
 
       if (w->options & wakeup)
-	thread_run(w->u.thread);
+      if (thread_run(w->u.thread) != ERROR_OK)
+      XXX;
     }
 */
   /*
@@ -636,7 +613,7 @@ t_error			thread_run(i_thread			threadid)
    */
 
   if (machine_call(thread, thread_run, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 6)
@@ -645,10 +622,10 @@ t_error			thread_run(i_thread			threadid)
   if (task->state == TASK_STATE_RUN)
     {
       if (scheduler_add(threadid) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to add the thread to the scheduler");
     }
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -673,17 +650,15 @@ t_error			thread_stop(i_thread			threadid)
   t_state		wakeup;
   t_state		state;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 2)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   if (task_get(o->task, &task) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   state = o->state;
 
@@ -692,7 +667,7 @@ t_error			thread_stop(i_thread			threadid)
    */
 
   if (o->state == THREAD_STATE_STOP)
-    THREAD_LEAVE(_thread, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * XXX
@@ -709,15 +684,10 @@ t_error			thread_stop(i_thread			threadid)
       o_waitfor*	w;
 
       if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
-	{
-	  module_call(console, console_message, '!', "thread: cannot find the object "
-		   "corresponding to its identifier\n");
-
-	  THREAD_LEAVE(_thread, ERROR_KO);
-	}
-
+XXX;
       if (w->options & wakeup)
-	thread_run(w->u.thread);
+      if (thread_run(w->u.thread) != ERROR_OK)
+      XXX;
     }
 */
   /*
@@ -725,7 +695,7 @@ t_error			thread_stop(i_thread			threadid)
    */
 
   if (machine_call(thread, thread_stop, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 6)
@@ -734,10 +704,10 @@ t_error			thread_stop(i_thread			threadid)
   if (state == TASK_STATE_RUN)
     {
       if (scheduler_remove(threadid) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to remove the thread from the scheduler");
     }
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -762,17 +732,15 @@ t_error			thread_block(i_thread			threadid)
   t_state		wakeup;
   t_state		state;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 2)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   if (task_get(o->task, &task) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   state = o->state;
 
@@ -781,7 +749,7 @@ t_error			thread_block(i_thread			threadid)
    */
 
   if (o->state == THREAD_STATE_BLOCK)
-    THREAD_LEAVE(_thread, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * XXX
@@ -794,7 +762,7 @@ t_error			thread_block(i_thread			threadid)
    */
 
   if (machine_call(thread, thread_block, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 6)
@@ -803,10 +771,10 @@ t_error			thread_block(i_thread			threadid)
   if (state == TASK_STATE_RUN)
     {
       if (scheduler_remove(threadid) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to remove the thread from the scheduler");
     }
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -831,17 +799,15 @@ t_error			thread_die(i_thread			threadid)
   t_state		wakeup;
   t_state		state;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 2)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   if (task_get(o->task, &task) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   state = o->state;
 
@@ -850,7 +816,7 @@ t_error			thread_die(i_thread			threadid)
    */
 
   if (o->state == THREAD_STATE_RUN)
-    THREAD_LEAVE(_thread, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * XXX
@@ -867,15 +833,11 @@ t_error			thread_die(i_thread			threadid)
       o_waitfor*	w;
 
       if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
-	{
-	  module_call(console, console_message, '!', "thread: cannot find the object "
-		   "corresponding to its identifier\n");
-
-	  THREAD_LEAVE(_thread, ERROR_KO);
-	}
+      XXX;
 
       if (w->options & wakeup)
-	thread_run(w->u.thread);
+      if (thread_run(w->u.thread) != ERROR_OK)
+      XXX;
     }
 
     // XXX if list of waits empty -> release thread
@@ -886,7 +848,7 @@ t_error			thread_die(i_thread			threadid)
    */
 
   if (machine_call(thread, thread_die, threadid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 6)
@@ -895,10 +857,10 @@ t_error			thread_die(i_thread			threadid)
   if (task->state == TASK_STATE_RUN)
     {
       if (scheduler_remove(threadid) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to remove the thread from the scheduler");
     }
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -919,34 +881,32 @@ t_error			thread_stack(i_thread			threadid,
   o_thread*		o;
   o_task*		task;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 1)
    */
 
   if (stack.size < THREAD_LSTACKSZ)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("the provided stack size is too low");
 
   /*
    * 2)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
    * 3)
    */
 
   if (task_get(o->task, &task) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 4)
    */
 
-  if (!stack.base)
+  if (stack.base == 0)
     {
       if (map_reserve(task->as,
 		      MAP_OPTION_NONE |
@@ -955,7 +915,7 @@ t_error			thread_stack(i_thread			threadid,
 		      stack.size,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &(o->stack)) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to reserve a map for the thread's stack");
     }
   else
     o->stack = stack.base;
@@ -967,9 +927,9 @@ t_error			thread_stack(i_thread			threadid,
    */
 
   if (machine_call(thread, thread_stack, threadid, stack) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -980,12 +940,10 @@ t_error			thread_args(i_thread			threadid,
 				    const void*			args,
 				    t_vsize			size)
 {
-  THREAD_ENTER(_thread);
-
   if (machine_call(thread, thread_args, threadid, args, size) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1021,23 +979,23 @@ t_error			thread_sleep(i_thread			id,
   i_thread*		data;
   o_thread*		o;
 
-  THREAD_ENTER(_thread);
-
   /*
    *
    */
 
   if (thread_get(id, (void**)&o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   if (o->state != THREAD_STATE_RUN)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to put to sleep a non-running thread");
 
   /*
    *
    */
 
-  data = malloc(sizeof(i_thread));
+  if ((data = malloc(sizeof(i_thread))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the thread identifier");
+
   *data = id;
 
   /*
@@ -1050,16 +1008,16 @@ t_error			thread_sleep(i_thread			id,
                     milliseconds,
                     TIMER_OPTION_NONE,
                     (i_timer*)&useless) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a timer");
 
   /*
    *
    */
 
   if (thread_block(id) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to block the thread");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1078,41 +1036,34 @@ t_error			thread_flush(i_task			taskid)
   o_task*		task;
   t_iterator		i;
 
-  THREAD_ENTER(_thread);
-
   /*
    * 1)
    */
 
   if (machine_call(thread, thread_flush, taskid) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
   if (task_get(taskid, &task) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 3)
    */
 
-  while (set_head(task->threads, &i) == ERROR_OK)
+  while (set_head(task->threads, &i) == ERROR_TRUE)
     {
       if (set_object(task->threads, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "thread: cannot find the object "
-		      "corresponding to ist identifier\n");
+	CORE_ESCAPE("unable to retrieve the thread identifier");
 
-	  THREAD_LEAVE(_thread, ERROR_KO);
-	}
       if (thread_release(*data) != ERROR_OK)
-	THREAD_LEAVE(_thread, ERROR_KO);
+	CORE_ESCAPE("unable to release the thread");
     }
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1122,12 +1073,10 @@ t_error			thread_flush(i_task			taskid)
 t_error			thread_load(i_thread			threadid,
 				    t_thread_context		context)
 {
-  THREAD_ENTER(_thread);
-
   if (machine_call(thread, thread_load, threadid, context) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1137,12 +1086,22 @@ t_error			thread_load(i_thread			threadid,
 t_error			thread_store(i_thread			threadid,
 				     t_thread_context*		context)
 {
-  THREAD_ENTER(_thread);
-
   if (machine_call(thread, thread_store, threadid, context) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the thread object exists.
+ */
+
+t_error			thread_exist(i_thread			threadid)
+{
+  if (set_exist(_thread->threads, threadid) != ERROR_TRUE)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
@@ -1152,14 +1111,12 @@ t_error			thread_store(i_thread			threadid,
 t_error			thread_get(i_thread			threadid,
 				   o_thread**			o)
 {
-  THREAD_ENTER(_thread);
-
   assert(o != NULL);
 
   if (set_get(_thread->threads, threadid, (void**)o) != ERROR_OK)
-    THREAD_LEAVE(_thread, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the object from the set of threads");
 
-  THREAD_LEAVE(_thread, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1182,13 +1139,8 @@ t_error			thread_initialize(void)
    */
 
   if ((_thread = malloc(sizeof(m_thread))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "thread: cannot allocate memory "
-		  "for the thread manager structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the thread manager's "
+		"structure");
 
   memset(_thread, 0x0, sizeof(m_thread));
 
@@ -1197,53 +1149,38 @@ t_error			thread_initialize(void)
    */
 
   if (id_build(&_thread->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "thread: unable to initialize the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to build the identifier object");
 
   /*
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPTION_ALLOC, sizeof(o_thread), &_thread->threads)
-      != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "thread: unable to reserve the thread set\n\n");
-
-      return (ERROR_KO);
-    }
+  if (set_reserve(ll,
+		  SET_OPTION_ALLOC,
+		  sizeof(o_thread),
+		  &_thread->threads) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve the set of threads");
 
   /*
    * 4)
    */
 
-  // XXX
-
   if (thread_reserve(_kernel->task,
 		     THREAD_PRIORITY,
 		     &_kernel->thread) != ERROR_OK)
-    return (ERROR_KO);
-
-  if (thread_get(_kernel->thread, &thread) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("unable to reserve the kernel thread");
 
   if (thread_block(_kernel->thread) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("unable to block the kernel thread");
 
   /*
    * 5)
    */
 
-  // XXX
-
   if (machine_call(thread, thread_initialize) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1264,31 +1201,21 @@ t_error			thread_clean(void)
    */
 
   if (machine_call(thread, thread_clean) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
   if (set_release(_thread->threads) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "thread: unable to release the thread set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to release the set of threads");
 
   /*
    * 3)
    */
 
   if (id_destroy(&_thread->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "thread: unable to destroy the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
    * 4)
@@ -1296,5 +1223,5 @@ t_error			thread_clean(void)
 
   free(_thread);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

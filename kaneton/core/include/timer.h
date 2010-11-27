@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/timer.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [thu nov 25 11:02:21 2010]
+ * updated       julien quintard   [sat nov 27 16:05:40 2010]
  */
 
 #ifndef CORE_TIMER_H
@@ -152,38 +152,6 @@ typedef struct
 }				d_timer;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define TIMER_CHECK(_timer_)						\
-  {									\
-    if ((_timer_) == NULL)						\
-      return ERROR_KO;						\
-  }
-
-/*
- * enter
- */
-
-#define TIMER_ENTER(_timer_)						\
-  {									\
-    TIMER_CHECK((_timer_));						\
-  }
-
-/*
- * leave
- */
-
-#define TIMER_LEAVE(_timer_, _error_)					\
-  {									\
-    return (_error_);							\
-  }
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/time/timer.c
@@ -192,6 +160,10 @@ typedef struct
 /*
  * ../../core/time/timer.c
  */
+
+t_error			timer_check(void);
+
+void			timer_handler(t_id			id);
 
 t_error			timer_show(i_timer			id);
 
@@ -220,16 +192,14 @@ t_error			timer_modify(i_timer			id,
 				     t_uint64			delay,
 				     t_options			options);
 
+t_error			timer_exist(i_timer			id);
+
 t_error			timer_get(i_timer			id,
 				  o_timer**			o);
 
 t_error			timer_initialize(void);
 
 t_error			timer_clean(void);
-
-t_error			timer_check(void);
-
-void			timer_handler(t_id			id);
 
 
 /*

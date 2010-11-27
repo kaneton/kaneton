@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/id.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/id.h
  *
  * created       julien quintard   [wed jun  6 12:50:13 2007]
- * updated       julien quintard   [sun jun 10 19:03:10 2007]
+ * updated       julien quintard   [sat nov 27 06:17:33 2010]
  */
 
 #ifndef CORE_ID_H
@@ -82,38 +82,6 @@ typedef struct
 typedef struct
 {
 }				m_id;
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define ID_CHECK(_id_)							\
-  {									\
-    if ((_id_) == NULL)							\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define ID_ENTER(_id_)							\
-  {									\
-    ID_CHECK((_id_));							\
-  }
-
-/*
- * leave
- */
-
-#define ID_LEAVE(_id_, _error_)						\
-  {									\
-    return (_error_);							\
-  }
 
 /*
  * ---------- prototypes ------------------------------------------------------

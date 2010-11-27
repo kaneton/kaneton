@@ -61,8 +61,6 @@ t_error			map_reserve(i_as		as,
   i_segment		segment;
   i_region		region;
 
-  MAP_ENTER(_map);
-
   assert((options & MAP_OPTION_INVALID) == 0);
   assert((permissions & PERMISSION_INVALID) == 0);
   assert(size != 0);
@@ -73,7 +71,7 @@ t_error			map_reserve(i_as		as,
    */
 
   if (segment_reserve(as, size, permissions, &segment) != ERROR_OK)
-    MAP_LEAVE(_map, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a segment");
 
   /*
    * 2)
@@ -94,7 +92,7 @@ t_error			map_reserve(i_as		as,
 			 *address,
 			 size,
 			 &region) != ERROR_OK)
-	MAP_LEAVE(_map, ERROR_KO);
+	CORE_ESCAPE("unable to reserve the region");
     }
   else
     {
@@ -111,12 +109,12 @@ t_error			map_reserve(i_as		as,
 			 0,
 			 size,
 			 &region) != ERROR_OK)
-	MAP_LEAVE(_map, ERROR_KO);
+	CORE_ESCAPE("unable to reserve a region");
 
       *address = (t_vaddr)region;
     }
 
-  MAP_LEAVE(_map, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -137,8 +135,6 @@ t_error			map_release(i_as		as,
   i_segment		segment;
   o_region*		o;
 
-  MAP_ENTER(_map);
-
   /*
    * 1)
    */
@@ -146,7 +142,7 @@ t_error			map_release(i_as		as,
   region = (i_region)address;
 
   if (region_get(as, region, &o) != ERROR_OK)
-    MAP_LEAVE(_map, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   segment = o->segment;
 
@@ -155,16 +151,16 @@ t_error			map_release(i_as		as,
    */
 
   if (region_release(as, region) != ERROR_OK)
-    MAP_LEAVE(_map, ERROR_KO);
+    CORE_ESCAPE("unable to release the region");
 
   /*
    * 3)
    */
 
   if (segment_release(segment) != ERROR_OK)
-    MAP_LEAVE(_map, ERROR_KO);
+    CORE_ESCAPE("unable to release the segment");
 
-  MAP_LEAVE(_map, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*							     [block::resize] */
@@ -195,20 +191,18 @@ t_error			map_resize(i_as			as,
   i_region		region;
   o_region*		o;
 
-  MAP_ENTER(_map);
-
   assert(size != 0);
   assert(new != NULL);
 
   if (region_get(as, (i_region)old, &o) != ERROR_OK)
-    MAP_LEAVE(_map, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   /*
    * 1)
    */
 
   if (segment_resize(o->segment, size, &segment) != ERROR_OK)
-    MAP_LEAVE(_map, ERROR_KO);
+    CORE_ESCAPE("unable to resize the segment");
 
   /*
    * A)
@@ -224,7 +218,7 @@ t_error			map_resize(i_as			as,
        */
 
       if (region_release(as, (i_region)old) != ERROR_OK)
-	MAP_LEAVE(_map, ERROR_KO);
+	CORE_ESCAPE("unable to release the region");
 
       /*
        * 3)
@@ -239,7 +233,8 @@ t_error			map_resize(i_as			as,
 			 &region) != ERROR_OK)
 	{
 	  if (options & REGION_OPTION_FORCE)
-	    MAP_LEAVE(_map, ERROR_KO);
+	    CORE_ESCAPE("unable to resize while maintaining the region at "
+			"the previous location");
 
 	  /*
 	   * 4)
@@ -252,7 +247,7 @@ t_error			map_resize(i_as			as,
 			     0,
 			     size,
 			     &region) != ERROR_OK)
-	    MAP_LEAVE(_map, ERROR_KO);
+	    CORE_ESCAPE("unable to reserve a region");
 	}
 
       *new = (t_vaddr)region;
@@ -270,12 +265,12 @@ t_error			map_resize(i_as			as,
        */
 
       if (region_resize(as, (i_region)old, size, &region) != ERROR_OK)
-	MAP_LEAVE(_map, ERROR_KO);
+	CORE_ESCAPE("unable to resize the region");
 
       *new = (t_vaddr)region;
     }
 
-  MAP_LEAVE(_map, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*							  [endblock::resize] */
@@ -295,17 +290,11 @@ t_error			map_initialize(void)
    */
 
   if ((_map = malloc(sizeof(m_map))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "map: cannot allocate memory for the map "
-		  "manager structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the map manager's structure\n");
 
   memset(_map, 0x0, sizeof(m_map));
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -324,5 +313,5 @@ t_error			map_clean(void)
 
   free(_map);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

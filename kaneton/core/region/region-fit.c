@@ -57,10 +57,9 @@ extern m_region*       _region;
  * 3) for each region, tries to find space after it.
  * 4) gets the last region.
  * 5) tries to find space after the last region.
- *
  */
 
-static t_error		region_first_fit(o_as*			as,
+t_error			region_fit_first(i_as			asid,
 					 t_vsize		size,
 					 t_vaddr*		address)
 {
@@ -68,26 +67,33 @@ static t_error		region_first_fit(o_as*			as,
   t_state		state;
   o_region*		head;
   o_region*		tail;
+  o_as*			as;
   t_iterator		i;
 
-  REGION_ENTER(_region);
+  /*
+   * XXX
+   */
+
+  if (as_get(asid, &as) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 1)
    */
 
-  if (set_head(as->regions, &i) != ERROR_OK)
+  if (set_head(as->regions, &i) != ERROR_TRUE)
     {
       if (_region->size < size)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("there is not enough memory to satisfy the reservation "
+		    "request");
 
       *address = _region->base;
 
-      REGION_LEAVE(_region, ERROR_OK);
+      CORE_LEAVE();
     }
 
   if (set_object(as->regions, i, (void**)&head) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space's very first region");
 
   /*
    * 2)
@@ -97,7 +103,7 @@ static t_error		region_first_fit(o_as*			as,
     {
       *address = _region->base;
 
-      REGION_LEAVE(_region, ERROR_OK);
+      CORE_LEAVE();
     }
 
   /*
@@ -109,27 +115,20 @@ static t_error		region_first_fit(o_as*			as,
       o_region*		next;
       t_iterator	j;
 
-      if (set_object(as->regions, i, (void**)&current) !=
-	  ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "region: cannot find the region object "
-		      "corresponding to its identifier\n");
+      if (set_object(as->regions, i, (void**)&current) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the region object");
 
-	  REGION_LEAVE(_region, ERROR_KO);
-	}
-
-      if (set_next(as->regions, i, &j) != ERROR_OK)
+      if (set_next(as->regions, i, &j) != ERROR_TRUE)
 	break;
 
       if (set_object(as->regions, j, (void**)&next) != ERROR_OK)
-	REGION_LEAVE(_region, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the next region object");
 
       if ((next->address - (current->address + current->size)) >= size)
 	{
 	  *address = current->address + current->size;
 
-	  REGION_LEAVE(_region, ERROR_OK);
+	  CORE_LEAVE();
 	}
     }
 
@@ -137,11 +136,11 @@ static t_error		region_first_fit(o_as*			as,
    * 4)
    */
 
-  if (set_tail(as->regions, &i) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+  if (set_tail(as->regions, &i) != ERROR_TRUE)
+    CORE_ESCAPE("unable to locate the address space's last region");
 
   if (set_object(as->regions, i, (void**)&tail) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   /*
    * 5)
@@ -152,10 +151,11 @@ static t_error		region_first_fit(o_as*			as,
     {
       *address = tail->address + tail->size;
 
-      REGION_LEAVE(_region, ERROR_OK);
+      CORE_LEAVE();
     }
 
-  REGION_LEAVE(_region, ERROR_KO);
+  CORE_ESCAPE("unable to locate enough space between the existing regions "
+	      "to satisfy the reservation request");
 }
 
 /*
@@ -168,24 +168,25 @@ t_error			region_space(i_as		asid,
 {
   o_as*			as;
 
-  REGION_ENTER(_region);
-
   assert(size != 0);
   assert(address != NULL);
 
-  if (as_get(asid, &as) != ERROR_OK)
-    REGION_LEAVE(_region, ERROR_KO);
-
   switch (REGION_FIT)
     {
-      case FIT_FIRST:
-	{
-	  REGION_LEAVE(_region, region_first_fit(as, size, address));
-	  break;
-	}
-      default:
-	REGION_LEAVE(_region, ERROR_KO);
+    case FIT_FIRST:
+      {
+	if (region_fit_first(asid, size, address) != ERROR_OK)
+	  CORE_ESCAPE("unable to locate space through the first-fit "
+		      "algorithm");
+
+	break;
+      }
+    default:
+      CORE_ESCAPE("unknown region algorithm '%u'",
+		  REGION_FIT);
     }
+
+  CORE_LEAVE();
 }
 
 #endif

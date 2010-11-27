@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/core.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [wed nov 24 18:52:48 2010]
+ * updated       julien quintard   [fri nov 26 16:31:04 2010]
  */
 
 #ifndef CORE_CORE_H
@@ -49,6 +49,20 @@
 /*
  * ---------- macro functions -------------------------------------------------
  */
+
+/*
+ * true
+ */
+
+#define CORE_TRUE()							\
+  return (ERROR_TRUE)
+
+/*
+ * false
+ */
+
+#define CORE_FALSE()							\
+  return (ERROR_FALSE)
 
 /*
  * leave
@@ -115,7 +129,7 @@
 
 void			kaneton(t_init*				bootloader);
 
-void			kaneton_spawn(void);
+t_error			kaneton_spawn(void);
 
 
 /*

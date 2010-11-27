@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/region.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [wed nov 24 13:33:57 2010]
+ * updated       julien quintard   [sat nov 27 05:28:45 2010]
  */
 
 #ifndef CORE_REGION_H
@@ -128,49 +128,10 @@ typedef struct
 }				d_region;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define REGION_CHECK(_region_)						\
-  {									\
-    if ((_region_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define REGION_ENTER(_region_)						\
-  {									\
-    REGION_CHECK((_region_));						\
-  }
-
-/*
- * leave
- */
-
-#define REGION_LEAVE(_region_, _error_)					\
-  {									\
-    return (_error_);							\
-  }
-
-/*
- * ---------- common prototypes -----------------------------------------------
- */
-
-t_error			region_space(i_as		asid,
-				     t_vsize		size,
-				     t_vaddr*		address);
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/region/region.c
+ *      ../../core/region/region-fit.c
  */
 
 /*
@@ -215,6 +176,9 @@ t_error			region_release(i_as			asid,
 
 t_error			region_flush(i_as			asid);
 
+t_error			region_exist(i_as			asid,
+				     i_region			regid);
+
 t_error			region_get(i_as				asid,
 				   i_region			regid,
 				   o_region**			o);
@@ -223,6 +187,19 @@ t_error			region_initialize(t_vaddr		base,
 					  t_vsize		size);
 
 t_error			region_clean(void);
+
+
+/*
+ * ../../core/region/region-fit.c
+ */
+
+t_error			region_fit_first(i_as			asid,
+					 t_vsize		size,
+					 t_vaddr*		address);
+
+t_error			region_space(i_as		asid,
+				     t_vsize		size,
+				     t_vaddr*		address);
 
 
 /*

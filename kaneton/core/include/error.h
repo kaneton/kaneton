@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/error.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/error.h
  *
  * created       julien quintard   [wed jun  6 13:02:28 2007]
- * updated       julien quintard   [tue nov 23 14:45:51 2010]
+ * updated       julien quintard   [fri nov 26 16:29:37 2010]
  */
 
 #ifndef CORE_ERROR_H
@@ -34,8 +34,11 @@ typedef t_sint32		t_error;
  * ---------- macros ----------------------------------------------------------
  */
 
-#define ERROR_OK		(1 << 0)
-#define ERROR_KO		(1 << 1)
+#define ERROR_OK		42
+#define ERROR_KO		666
+
+#define ERROR_TRUE		1
+#define ERROR_FALSE		0
 
 /*
  * ---------- macro functions -------------------------------------------------

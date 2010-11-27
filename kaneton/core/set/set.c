@@ -77,14 +77,6 @@
  * tells the subpart of the set manager to always organise data in the
  * best way. for the array data structure, this option means that the
  * elements will always be left shifted to fulfill the array by the left.
- *
- * the two macros SET_ENTER and SET_LEAVE are used to launch operations
- * entering and leaving each set manager functions excluding the
- * set_initialize() and set_clean() functions which install the manager.
- *
- * if a developer wants to add something at the start of each set manager's
- * function, he simply has to add his lines in the SET_ENTER macro located
- * in the kaneton/include/core/set.h header file.
  */
 
 /*
@@ -120,14 +112,12 @@ t_error			set_dump(void)
   o_set*		o;
   t_iterator		i;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(_set->sets, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
@@ -141,19 +131,31 @@ t_error			set_dump(void)
   set_foreach(SET_OPTION_FORWARD, _set->sets, &i, state)
     {
       if (set_object(_set->sets, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "set: cannot find the set object "
-		      "corresponding to its identifier\n");
-
-	  SET_LEAVE(_set, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the set object corresponding "
+		    "to its identifier");
 
       if (set_show(data->id) != ERROR_OK)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to show the set");
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the set is empty.
+ */
+
+t_error			set_empty(i_set				setid)
+{
+  o_set*		o;
+
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the set descriptor");
+
+  if (o->size > 0)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
@@ -165,16 +167,14 @@ t_error			set_size(i_set				setid,
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(size != NULL);
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   *size = o->size;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -189,8 +189,6 @@ t_error			set_size(i_set				setid,
 
 t_error			set_new(o_set*				o)
 {
-  SET_ENTER(_set);
-
   assert(o != NULL);
 
   /*
@@ -200,11 +198,11 @@ t_error			set_new(o_set*				o)
   if (o->id == _set->sets)
     {
       if ((_set->container = malloc(sizeof(o_set))) == NULL)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the set container");
 
       memcpy(_set->container, o, sizeof(o_set));
 
-      SET_LEAVE(_set, ERROR_OK);
+      CORE_LEAVE();
     }
 
   /*
@@ -212,15 +210,9 @@ t_error			set_new(o_set*				o)
    */
 
   if (set_add(_set->sets, o) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "set: unable to add this set descriptor "
-		  "to the set container\n");
+    CORE_ESCAPE("unable to add the set descriptor to the set container");
 
-      SET_LEAVE(_set, ERROR_KO);
-    }
-
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -234,8 +226,6 @@ t_error			set_new(o_set*				o)
 
 t_error			set_destroy(i_set			setid)
 {
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
@@ -244,7 +234,7 @@ t_error			set_destroy(i_set			setid)
     {
       free(_set->container);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_LEAVE();
     }
 
   /*
@@ -252,15 +242,9 @@ t_error			set_destroy(i_set			setid)
    */
 
   if (set_remove(_set->sets, setid) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "set: unable to remove this descriptor "
-		  "from the set container\n");
+    CORE_ESCAPE("unable to remove the descriptor from the set container");
 
-      SET_LEAVE(_set, ERROR_KO);
-    }
-
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -275,8 +259,6 @@ t_error			set_destroy(i_set			setid)
 t_error			set_descriptor(i_set			setid,
 				       o_set**			o)
 {
-  SET_ENTER(_set);
-
   assert(o != NULL);
 
   /*
@@ -287,7 +269,7 @@ t_error			set_descriptor(i_set			setid,
     {
       *o = _set->container;
 
-      SET_LEAVE(_set, ERROR_OK);
+      CORE_LEAVE();
     }
 
   /*
@@ -295,9 +277,10 @@ t_error			set_descriptor(i_set			setid,
    */
 
   if (set_get(_set->sets, setid, (void**)o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the descriptor object from "
+		"the set container");
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -316,8 +299,6 @@ t_error			set_get(i_set				setid,
 {
   t_iterator		iterator;
 
-  SET_ENTER(_set);
-
   assert(o != NULL);
 
   /*
@@ -325,16 +306,16 @@ t_error			set_get(i_set				setid,
    */
 
   if (set_locate(setid, id, &iterator) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to locate the object in the set");
 
   /*
    * 2)
    */
 
   if (set_object(setid, iterator, o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the object");
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -363,13 +344,7 @@ t_error			set_initialize(void)
    */
 
   if ((_set = malloc(sizeof(m_set))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "set: cannot allocate memory for the set manager "
-		  "structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the set manager's structure");
 
   memset(_set, 0x0, sizeof(m_set));
 
@@ -378,24 +353,14 @@ t_error			set_initialize(void)
    */
 
   if (id_build(&_set->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "set: unable to initialize the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to build the identifier object");
 
   /*
    * 3)
    */
 
   if (id_reserve(&_set->id, &_set->sets) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "set: unable to reserve an identifier\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the identifier for the set container");
 
   /*
    * 4)
@@ -407,14 +372,9 @@ t_error			set_initialize(void)
 		  sizeof(o_set),
 		  PAGESZ,
 		  &needless) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "set: unable to reserve the set container\n");
+    CORE_ESCAPE("unable to reserve the set container");
 
-      return (ERROR_KO);
-    }
-
-  return (ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -436,27 +396,15 @@ t_error			set_clean(void)
    * 1)
    */
 
-  while (set_head(_set->sets, &iterator) == ERROR_OK)
+  while (set_head(_set->sets, &iterator) == ERROR_TRUE)
     {
       o_set*		o;
 
       if (set_object(_set->sets, iterator, (void**)&o) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "set: cannot find the set object "
-		      "corresponding to its identifier\n");
-
-	  SET_LEAVE(_set, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the object from the set");
 
       if (set_release(o->id) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "set: cannot releases a set object located in the "
-		      "set container\n");
-
-	  SET_LEAVE(_set, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to releases the set object");
     }
 
   /*
@@ -464,24 +412,14 @@ t_error			set_clean(void)
    */
 
   if (set_release(_set->sets) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "set: unable to release the set container\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to release the set container");
 
   /*
    * 3)
    */
 
   if (id_destroy(&_set->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "set: unable to destroy the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
    * 4)
@@ -489,5 +427,5 @@ t_error			set_clean(void)
 
   free(_set);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

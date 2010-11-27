@@ -8,11 +8,13 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [thu nov 25 12:05:06 2010]
+ * updated       julien quintard   [sat nov 27 16:20:23 2010]
  */
 
 /*
- * ---------- globals ---------------------------------------------------------
+ * ---------- information -----------------------------------------------------
+ *
+ * XXX
  */
 
 /*
@@ -24,16 +26,6 @@
 #include <glue/glue.h>
 #include <architecture/architecture.h>
 #include <platform/platform.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-/*
- * the event manager.
- */
-
-extern m_event*		_event;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -75,7 +67,7 @@ t_error			glue_event_enable(void)
 
   STI();
 
-  EVENT_LEAVE(_event, ERROR_KO);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -94,7 +86,7 @@ t_error			glue_event_disable(void)
 
   CLI();
 
-  EVENT_LEAVE(_event, ERROR_KO);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -106,16 +98,18 @@ t_error			glue_event_reserve(i_event		id,
 					   u_event_handler	handler,
 					   t_vaddr		data)
 {
-  EVENT_ENTER(_event);
-
   if (id >= IA32_HANDLER_NR)
-    EVENT_LEAVE(_event, ERROR_KO);
+    MACHINE_ESCAPE("the event identifier '%qu' is larger than the higher "
+		   "syscall number that the kernel is supposed to handle",
+		   id);
 
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
-    if (platform_irq_enable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
-      EVENT_LEAVE(_event, ERROR_KO);
+    {
+      if (platform_irq_enable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+	MACHINE_ESCAPE("unable to enable the IRQ");
+    }
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -124,13 +118,13 @@ t_error			glue_event_reserve(i_event		id,
 
 t_error			glue_event_release(i_event		id)
 {
-  EVENT_ENTER(_event);
-
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
-    if (platform_irq_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
-      EVENT_LEAVE(_event, ERROR_KO);
+    {
+      if (platform_irq_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+	MACHINE_ESCAPE("unable to disable the IRQ");
+    }
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 // XXX a renommer
@@ -167,19 +161,18 @@ void			pf_handler(t_id				id,
 
 t_error			glue_event_initialize(void)
 {
-  EVENT_ENTER(_event);
-
   if (ia32_interrupt_vector_init() != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    MACHINE_ESCAPE("unable to initialize the interrupt table");
 
   if (platform_irq_initialize() != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    MACHINE_ESCAPE("unable to initialize the IRQs");
 
   if (event_reserve(14, EVENT_FUNCTION,
 		    EVENT_HANDLER(pf_handler), 0) != ERROR_OK)
-    EVENT_LEAVE(_event, ERROR_KO);
+    MACHINE_ESCAPE("unable to reserve the event associated with the "
+		   "page fault exception");
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -188,10 +181,8 @@ t_error			glue_event_initialize(void)
 
 t_error			glue_event_clean(void)
 {
-  EVENT_ENTER(_event);
-
   if (platform_irq_clean() != ERROR_KO)
-    EVENT_LEAVE(_event, ERROR_KO);
+    MACHINE_ESCAPE("unable to clean the IRQs");
 
-  EVENT_LEAVE(_event, ERROR_OK);
+  MACHINE_LEAVE();
 }

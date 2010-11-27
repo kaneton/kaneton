@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/glue/ibm-pc.ia32/educational/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       julien quintard   [wed nov 24 14:19:45 2010]
+ * updated       julien quintard   [sat nov 27 16:19:49 2010]
  */
 
 /*
@@ -26,12 +26,6 @@
 /*
  * ---------- externs ---------------------------------------------------------
  */
-
-/*
- * the cpu manager.
- */
-
-extern m_cpu*		_cpu;
 
 /*
  * the init structure.
@@ -67,9 +61,7 @@ d_cpu			glue_cpu_dispatch =
 
 t_error			glue_cpu_current(i_cpu*			cpuid)
 {
-  CPU_ENTER(_cpu);
-
   *cpuid = _init->bsp;
 
-  CPU_LEAVE(_cpu, ERROR_OK);
+  MACHINE_LEAVE();
 }

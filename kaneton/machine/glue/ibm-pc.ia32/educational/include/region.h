@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/region.h
  *
  * created       julien quintard   [wed jun  6 16:22:05 2007]
- * updated       julien quintard   [wed nov 24 14:17:36 2010]
+ * updated       julien quintard   [sat nov 27 16:37:11 2010]
  */
 
 /*

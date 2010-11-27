@@ -80,14 +80,12 @@ t_error			segment_show(i_segment			segid)
   char*			type;
   o_segment*		o;
 
-  SEGMENT_ENTER(_segment);
-
   /*
    * 1)
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   module_call(console, console_message,
 	      '#', "  segment %qd in address space %qd:\n",
@@ -147,9 +145,9 @@ t_error			segment_show(i_segment			segid)
    */
 
   if (machine_call(segment, segment_show, segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -172,14 +170,12 @@ t_error			segment_dump(void)
   t_setsz		size;
   t_iterator		i;
 
-  SEGMENT_ENTER(_segment);
-
   /*
    * 1)
    */
 
   if (set_size(_segment->segments, &size) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set of segments");
 
   /*
    * 2)
@@ -196,19 +192,13 @@ t_error			segment_dump(void)
   set_foreach(SET_OPTION_FORWARD, _segment->segments, &i, state)
     {
       if (set_object(_segment->segments, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "segment: cannot find the segment object "
-		      "corresponding to its identifier\n");
-
-	  SEGMENT_LEAVE(_segment, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the object's identifier from the set");
 
       if (segment_show(data->id) != ERROR_OK)
-	SEGMENT_LEAVE(_segment, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the object");
     }
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -231,8 +221,6 @@ t_error			segment_clone(i_as			asid,
   o_segment*		from;
   t_permissions		perms;
 
-  SEGMENT_ENTER(_segment);
-
   assert(new != NULL);
 
   /*
@@ -240,7 +228,7 @@ t_error			segment_clone(i_as			asid,
    */
 
   if (segment_get(old, &from) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   assert(from->type != SEGMENT_TYPE_SYSTEM);
 
@@ -249,7 +237,7 @@ t_error			segment_clone(i_as			asid,
    */
 
   if (segment_reserve(asid, from->size, PERMISSION_WRITE, new) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a segment");
 
   /*
    * 3)
@@ -260,29 +248,32 @@ t_error			segment_clone(i_as			asid,
   if (!(perms & PERMISSION_READ))
     {
       if (segment_permissions(old, PERMISSION_READ) != ERROR_OK)
-	SEGMENT_LEAVE(_segment, ERROR_KO);
+	CORE_ESCAPE("unable to modify the segment's permissions");
 
       if (segment_copy(*new, 0, old, 0, from->size) != ERROR_OK)
-	SEGMENT_LEAVE(_segment, ERROR_KO);
+	CORE_ESCAPE("unable to copy from the source segment to "
+		    "the cloned one");
 
       if (segment_permissions(old, perms) != ERROR_OK)
-	SEGMENT_LEAVE(_segment, ERROR_KO);
+	CORE_ESCAPE("unable to modify the segment to its original "
+		    "permissions");
     }
   else
     if (segment_copy(*new, 0, old, 0, from->size) != ERROR_OK)
-      SEGMENT_LEAVE(_segment, ERROR_KO);
+      CORE_ESCAPE("unable to copy from the source segment to "
+		  "the cloned one");
 
   if (segment_permissions(*new, perms) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to set the permissions on the cloned segment");
 
   /*
    * 4)
    */
 
   if (machine_call(segment, segment_clone, asid, old, new) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -304,8 +295,6 @@ t_error			segment_inject(i_as		asid,
 {
   o_as*			as;
 
-  SEGMENT_ENTER(_segment);
-
   assert(o != NULL);
   assert(o->type == SEGMENT_TYPE_MEMORY ||
 	 o->type == SEGMENT_TYPE_CATCH ||
@@ -319,7 +308,7 @@ t_error			segment_inject(i_as		asid,
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space segment");
 
   /*
    * 2)
@@ -334,23 +323,19 @@ t_error			segment_inject(i_as		asid,
    */
 
   if (set_add(_segment->segments, o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to add the object to the set of segments");
 
   if (set_add(as->segments, &o->id) != ERROR_OK)
-    {
-      set_remove(_segment->segments, o->id);
-
-      SEGMENT_LEAVE(_segment, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to add the segment identifier to the address space");
 
   /*
    * 4)
    */
 
   if (machine_call(segment, segment_inject, asid, o, segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -373,53 +358,51 @@ t_error			segment_give(i_as		asid,
   o_as*			dest;
   o_as*			src;
 
-  SEGMENT_ENTER(_segment);
-
   /*
    * 1)
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
    */
 
   if (as_get(asid, &dest) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 3)
    */
 
   if (as_get(o->as, &src) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 4)
    */
 
   if (set_remove(src->segments, segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to remove the object from the set of segments");
 
   /*
    * 5)
    */
 
   o->as = asid;
+
   if (set_add(dest->segments, &segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to add the object to the set of segments");
 
   /*
    * 6)
    */
 
-  if (machine_call(segment, segment_give, asid, segid) !=
-      ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if (machine_call(segment, segment_give, asid, segid) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -449,8 +432,6 @@ t_error			segment_resize(i_segment	old,
   t_uint8		changed = 0;
   t_permissions		perms;
 
-  SEGMENT_ENTER(_segment);
-
   assert(size != 0);
   assert(new != NULL);
 
@@ -459,10 +440,10 @@ t_error			segment_resize(i_segment	old,
    */
 
   if (set_locate(_segment->segments, old, &it) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to locate the object in the set of segments");
 
   if (set_object(_segment->segments, it, (void**)&o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
@@ -475,11 +456,10 @@ t_error			segment_resize(i_segment	old,
        * a)
        */
 
-      if (set_next(_segment->segments, it, &next) == ERROR_OK)
+      if (set_next(_segment->segments, it, &next) == ERROR_TRUE)
 	{
-	  if (set_object(_segment->segments, next, (void**)&onext) !=
-	      ERROR_OK)
-	    SEGMENT_LEAVE(_segment, ERROR_KO);
+	  if (set_object(_segment->segments, next, (void**)&onext) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the segment object");
 
 	  /*
 	   * b)
@@ -492,21 +472,23 @@ t_error			segment_resize(i_segment	old,
 
 	      perms = o->permissions;
 
-	      if (segment_reserve(o->as, size, PERMISSION_WRITE, new) !=
-		  ERROR_OK)
-		SEGMENT_LEAVE(_segment, ERROR_KO);
+	      if (segment_reserve(o->as,
+				  size,
+				  PERMISSION_WRITE,
+				  new) != ERROR_OK)
+		CORE_ESCAPE("unable to reserve a segment");
 
 	      if (segment_permissions(old, PERMISSION_READ) != ERROR_OK)
-		SEGMENT_LEAVE(_segment, ERROR_KO);
+		CORE_ESCAPE("unable to modify the segment's permissions");
 
 	      if (segment_copy(*new, 0, old, 0, o->size) != ERROR_OK)
-		SEGMENT_LEAVE(_segment, ERROR_KO);
+		CORE_ESCAPE("unable to copy from one segment to the other");
 
 	      if (segment_permissions(*new, perms) != ERROR_OK)
-		SEGMENT_LEAVE(_segment, ERROR_KO);
+		CORE_ESCAPE("unable to modify the segment's permissions");
 
 	      if (segment_release(old) != ERROR_OK)
-		SEGMENT_LEAVE(_segment, ERROR_KO);
+		CORE_ESCAPE("unable to release the segment");
 
 	      changed = 1;
 	    }
@@ -514,7 +496,7 @@ t_error			segment_resize(i_segment	old,
       else
 	{
 	  if (o->address + size > _segment->start + _segment->size)
-	    SEGMENT_LEAVE(_segment, ERROR_KO);
+	    CORE_ESCAPE("XXX");
 
 	  /* XXX look for a new location ? */
 	}
@@ -535,9 +517,9 @@ t_error			segment_resize(i_segment	old,
    */
 
   if (machine_call(segment, segment_resize, old, size, new) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -561,8 +543,6 @@ t_error			segment_split(i_segment		segid,
   o_segment*		n;
   i_segment		useless;
 
-  SEGMENT_ENTER(_segment);
-
   assert(size != 0);
   assert(left != NULL);
   assert(right != NULL);
@@ -572,23 +552,24 @@ t_error			segment_split(i_segment		segid,
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   if (as_get(o->as, &as) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
   if (size > o->size)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("the splitted size must be smaller than the current size");
 
   if ((n = malloc(sizeof (o_segment))) == NULL)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the segment object");
 
   n->size = o->size - size;
   o->size = size;
+
   *left = segid;
 
   /*
@@ -603,17 +584,21 @@ t_error			segment_split(i_segment		segid,
   *right = n->id = (i_segment)n->address;
 
   if (segment_inject(o->as, n, &useless) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to inject the segment object");
 
   /*
    * 4)
    */
 
-  if (machine_call(segment, segment_split, segid, size, left, right) !=
-      ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if (machine_call(segment,
+		   segment_split,
+		   segid,
+		   size,
+		   left,
+		   right) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -635,8 +620,6 @@ t_error			segment_coalesce(i_segment	left,
   o_segment*		seg1;
   o_segment*		seg2;
 
-  SEGMENT_ENTER(_segment);
-
   assert(left != right);
   assert(segid != NULL);
 
@@ -644,9 +627,11 @@ t_error			segment_coalesce(i_segment	left,
    * 1)
    */
 
-  if (segment_get(left, &seg1) != ERROR_OK ||
-      segment_get(right, &seg2) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if (segment_get(left, &seg1) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the segment object");
+
+  if (segment_get(right, &seg2) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
@@ -656,13 +641,14 @@ t_error			segment_coalesce(i_segment	left,
       seg1->as != seg2->as ||
       seg1->permissions != seg2->permissions ||
       seg1->type != seg2->type)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to coalesce non-adjacent segments");
 
   /*
    * 3)
    */
 
   seg1->size += seg2->size;
+
   *segid = seg1->id;
 
   /*
@@ -670,7 +656,7 @@ t_error			segment_coalesce(i_segment	left,
    */
 
   if (segment_release(right) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to release the segment");
 
   /*
    * 5)
@@ -681,9 +667,9 @@ t_error			segment_coalesce(i_segment	left,
 		   left,
 		   right,
 		   segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -705,8 +691,6 @@ t_error			segment_read(i_segment		segid,
 {
   o_segment*		o;
 
-  SEGMENT_ENTER(_segment);
-
   assert(sz != 0);
 
   /*
@@ -714,26 +698,26 @@ t_error			segment_read(i_segment		segid,
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
    */
 
   if (!(o->permissions & PERMISSION_READ))
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to read data from a non-readable segment");
 
-  if (offs + sz > o->size)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if ((offs + sz) > o->size)
+    CORE_ESCAPE("out-of-bound operation");
 
   /*
    * 3)
    */
 
   if (machine_call(segment, segment_read, segid, offs, buff, sz) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -755,8 +739,6 @@ t_error			segment_write(i_segment		segid,
 {
   o_segment*		o;
 
-  SEGMENT_ENTER(_segment);
-
   assert(sz != 0);
 
   /*
@@ -764,27 +746,31 @@ t_error			segment_write(i_segment		segid,
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
    */
 
   if (!(o->permissions & PERMISSION_WRITE))
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to write a non-writable segment");
 
   if (offs + sz > o->size)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("out-of-bound operation");
 
   /*
    * 3)
    */
 
-  if (machine_call(segment, segment_write, segid, offs, buff, sz) !=
-      ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if (machine_call(segment,
+		   segment_write,
+		   segid,
+		   offs,
+		   buff,
+		   sz) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -808,8 +794,6 @@ t_error			segment_copy(i_segment		dst,
   o_segment*		o1;
   o_segment*		o2;
 
-  SEGMENT_ENTER(_segment);
-
   assert(sz != 0);
 
   /*
@@ -817,34 +801,41 @@ t_error			segment_copy(i_segment		dst,
    */
 
   if (segment_get(dst, &o1) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   if (segment_get(src, &o2) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
    */
 
-  if (!((o1->permissions & PERMISSION_WRITE) &&
-	(o2->permissions & PERMISSION_READ)))
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if (!(o1->permissions & PERMISSION_WRITE))
+    CORE_ESCAPE("unable to copy from a non-readable segment");
+
+  if (!(o2->permissions & PERMISSION_READ))
+    CORE_ESCAPE("unable to copy to a non-writable segment");
 
   if (offsd + sz > o1->size)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("the source address is out-of-bound");
 
   if (offss + sz > o2->size)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("the destination address is out-of-bound");
 
   /*
    * 3)
    */
 
-  if (machine_call(segment, segment_copy, dst, offsd, src, offss, sz) !=
-      ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if (machine_call(segment,
+		   segment_copy,
+		   dst,
+		   offsd,
+		   src,
+		   offss,
+		   sz) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -868,8 +859,6 @@ t_error			segment_reserve(i_as			asid,
   o_as*			as;
   o_segment*		o;
 
-  SEGMENT_ENTER(_segment);
-
   assert(size != 0);
   assert((perms & PERMISSION_INVALID) == 0);
   assert(segid != NULL);
@@ -879,19 +868,19 @@ t_error			segment_reserve(i_as			asid,
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   if ((o = malloc(sizeof(o_segment))) == NULL)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the segment object");
 
   /*
    * 2)
    */
 
   if (segment_space(asid, size, &o->address) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to locate unused space for the segment resevation");
 
-  /*
+   /*
    * 3)
    */
 
@@ -899,28 +888,29 @@ t_error			segment_reserve(i_as			asid,
   o->size = size;
   o->permissions = perms;
   o->type = SEGMENT_TYPE_MEMORY;
+  o->id = (i_segment)o->address;
 
-  *segid = o->id = (i_segment)o->address;
+  *segid = o->id;
 
   if (set_add(_segment->segments, o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to add the object to the set of segments");
 
   if (set_add(as->segments, &o->id) != ERROR_OK)
-    {
-      set_remove(_segment->segments, o->id);
-
-      SEGMENT_LEAVE(_segment, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to add the segment identifier to the addresss space");
 
   /*
    * 4)
    */
 
-  if (machine_call(segment, segment_reserve, asid, size, perms, segid) !=
-      ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+  if (machine_call(segment,
+		   segment_reserve,
+		   asid,
+		   size,
+		   perms,
+		   segid) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -942,44 +932,43 @@ t_error			segment_release(i_segment		segid)
   o_as*			as;
   o_segment*		o;
 
-  SEGMENT_ENTER(_segment);
-
   /*
    * 1)
    */
 
   if (machine_call(segment, segment_release, segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 3)
    */
 
   if (as_get(o->as, &as) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 4)
    */
 
   if (set_remove(as->segments, segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to remove the segment identifier from the "
+		"address space");
 
   /*
    * 5)
    */
 
   if (set_remove(_segment->segments, segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to remove the object from the set of segments");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1011,37 +1000,39 @@ t_error			segment_catch(i_as			asid,
   o_as*			old;
   o_segment*		o;
 
-  SEGMENT_ENTER(_segment);
-
   /*
    * 1)
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 3)
    */
 
   if (o->type != SEGMENT_TYPE_CATCH)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to catch a non-catchable segment");
 
   /*
    * 4)
    */
 
-  if (o->as != ID_UNUSED && as_get(o->as, &old) == ERROR_OK)
+  if (o->as != ID_UNUSED)
     {
+      if (as_get(o->as, &old) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the address space object");
+
       if (set_remove(old->segments, o->id) != ERROR_OK)
-	SEGMENT_LEAVE(_segment, ERROR_KO);
+	CORE_ESCAPE("unable to remove the segment to catch from its "
+		    "current address space");
     }
 
   /*
@@ -1049,7 +1040,8 @@ t_error			segment_catch(i_as			asid,
    */
 
   if (set_add(as->segments, &o->id) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to add the segment to catch to its future "
+		"address space");
 
   /*
    * 6)
@@ -1063,9 +1055,9 @@ t_error			segment_catch(i_as			asid,
    */
 
   if (machine_call(segment, segment_catch, asid, segid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1086,14 +1078,12 @@ t_error			segment_permissions(i_segment		segid,
 {
   o_segment*		o;
 
-  SEGMENT_ENTER(_segment);
-
   /*
    * 1)
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
@@ -1102,7 +1092,7 @@ t_error			segment_permissions(i_segment		segid,
   if (!(perms & PERMISSION_EXEC) &&
       !(perms & PERMISSION_READ) &&
       !(perms & PERMISSION_WRITE))
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("the provided set of permissions is invalid");
 
   /*
    * 3)
@@ -1115,9 +1105,9 @@ t_error			segment_permissions(i_segment		segid,
    */
 
   if (machine_call(segment, segment_permissions, segid, perms) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1136,14 +1126,12 @@ t_error			segment_type(i_segment			segid,
 {
   o_segment*		o;
 
-  SEGMENT_ENTER(_segment);
-
   /*
    * 1)
    */
 
   if (segment_get(segid, &o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
@@ -1152,7 +1140,7 @@ t_error			segment_type(i_segment			segid,
   if ((type != SEGMENT_TYPE_MEMORY) &&
       (type != SEGMENT_TYPE_CATCH) &&
       (type != SEGMENT_TYPE_SYSTEM))
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("the provided type is invalid");
 
   /*
    * 3)
@@ -1165,9 +1153,9 @@ t_error			segment_type(i_segment			segid,
    */
 
   if (machine_call(segment, segment_type, segid, type) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1190,60 +1178,62 @@ t_error			segment_flush(i_as			asid)
   o_as*			as;
   t_iterator		i;
 
-  SEGMENT_ENTER(_segment);
-
   /*
    * 1)
    */
 
   if (machine_call(segment, segment_flush, asid) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
   if (as_get(asid, &as) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 3)
    */
 
-  while (set_head(as->segments, &i) == ERROR_OK)
+  while (set_head(as->segments, &i) == ERROR_TRUE)
     {
       if (set_object(as->segments, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "segment: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  SEGMENT_LEAVE(_segment, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the object corresponding to "
+		    "its identifier\n");
 
       if (segment_release(*data) != ERROR_OK)
-	SEGMENT_LEAVE(_segment, ERROR_KO);
+	CORE_ESCAPE("unable to release the segment");
     }
 
- SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the segment exists.
+ */
+
+t_error			segment_exist(i_segment			segid)
+{
+  if (set_exist(_segment->segments, segid) != ERROR_TRUE)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
  * this function returns a segment object.
- *
  */
 
 t_error			segment_get(i_segment			segid,
 				    o_segment**			o)
 {
-  SEGMENT_ENTER(_segment);
-
   assert(o != NULL);
 
   if (set_get(_segment->segments, segid, (void**)o) != ERROR_OK)
-    SEGMENT_LEAVE(_segment, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the object from the set of segments");
 
-  SEGMENT_LEAVE(_segment, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1267,13 +1257,8 @@ t_error			segment_initialize(void)
    */
 
   if ((_segment = malloc(sizeof(m_segment))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "segment: cannot allocate memory for the segment "
-		  "manager structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the segment manager's "
+		"structure\n");
 
   memset(_segment, 0x0, sizeof(m_segment));
 
@@ -1290,21 +1275,16 @@ t_error			segment_initialize(void)
 
   if (set_reserve(bpt, SET_OPTION_SORT | SET_OPTION_FREE, sizeof(o_segment),
 		  SEGMENT_BPT_NODESZ, &_segment->segments) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "segment: unable to reserve the segment set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the segments set\n");
 
   /*
    * 4)
    */
 
   if (machine_call(segment, segment_initialize) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1329,34 +1309,24 @@ t_error			segment_clean(void)
    */
 
   if (machine_call(segment, segment_clean) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  while (set_head(_segment->segments, &i) == ERROR_OK)
+  while (set_head(_segment->segments, &i) == ERROR_TRUE)
     {
       if (set_object(_segment->segments, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "segment: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  return (ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the object corresponding to "
+		    "its identifier\n");
 
       if (segment_release(data->id) != ERROR_OK)
-	return (ERROR_KO);
+	CORE_ESCAPE("unable to release the segment");
     }
 
   if (set_release(_segment->segments) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "segment: unable to release the segment set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to release the segments set\n");
 
   /*
    * 3)
@@ -1364,5 +1334,5 @@ t_error			segment_clean(void)
 
   free(_segment);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

@@ -60,23 +60,112 @@ t_error			set_type_array(i_set			setid)
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (o->type != SET_TYPE_ARRAY)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("invalid set type");
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * this function tries to find an object with its identifier and returns
+ * true or false.
+ *
+ * steps:
+ *
+ * 1) checks the given id.
+ * 2) gets the descriptor.
+ * 3) search for the element.
+ *   A) dichotomy lookup. (on sorted array)
+ *   B) sequentially searchs for the needed element. (unsorted)
+ */
+
+t_error			set_exist_array(i_set			setid,
+					t_id			id)
+{
+  o_set*       		o;
+  i_set			i;
+  t_setsz		left;
+  t_setsz		right;
+  t_setsz		dicho;
+
+  /*
+   * 1)
+   */
+
+  assert(id != ID_UNUSED);
+
+  /*
+   * 2)
+   */
+
+  assert(set_descriptor(setid, &o) == ERROR_OK);
+
+  /*
+   * 3)
+   */
+
+  /* XXX la dicho marche mal */
+  if (0 && (o->options & SET_OPTION_SORT))
+    {
+
+      /*
+       * A)
+       */
+
+      left = 0;
+      right = o->u.array.arraysz - 1;
+
+      while (left <= right)
+	{
+	  dicho = left + (right - left) / 2;
+
+	  for (i = dicho; i < right; ++i)
+	    if (o->u.array.array[i])
+	      break;
+
+	  if (*((t_id*)(o->u.array.array[i])) == id)
+	    break;
+
+	  if (i == right || *((t_id*)(o->u.array.array[i])) > id)
+	    {
+	      right = dicho - 1;
+	    }
+	  else
+	    {
+	      left = dicho + 1;
+	    }
+	}
+
+      if (left <= right)
+	CORE_TRUE();
+    }
+  else
+    {
+
+      /*
+       * B)
+       */
+
+      for (i = 0; i < o->u.array.arraysz; ++i)
+	{
+	  if (o->u.array.array[i] &&
+	      *((t_id*)(o->u.array.array[i])) == id)
+	    CORE_TRUE();
+	}
+    }
+
+  CORE_FALSE();
 }
 
 /*
@@ -95,14 +184,12 @@ t_error			set_show_array(i_set			setid)
   t_setsz		pos;
   t_id			id;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
@@ -130,7 +217,7 @@ t_error			set_show_array(i_set			setid)
       ++pos;
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -150,23 +237,20 @@ t_error			set_head_array(i_set			setid,
   o_set*		o;
   t_setsz		i;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   /*
    * 2)
    */
 
   if (o->size == 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
   for (i = 0; i < o->u.array.arraysz; ++i)
     {
@@ -182,7 +266,7 @@ t_error			set_head_array(i_set			setid,
 
   iterator->u.array.i = i;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -202,23 +286,20 @@ t_error			set_tail_array(i_set			setid,
   o_set*		o;
   t_setsz		i;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   /*
    * 2)
    */
 
   if (o->size == 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
   for (i = o->u.array.arraysz - 1; i >= 0; --i)
     {
@@ -234,7 +315,7 @@ t_error			set_tail_array(i_set			setid,
 
   iterator->u.array.i = i;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -254,16 +335,13 @@ t_error			set_previous_array(i_set		setid,
   o_set*		o;
   t_setsz		i;
 
-  SET_ENTER(_set);
-
   assert(previous != NULL);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   /*
    * 2)
@@ -276,7 +354,7 @@ t_error			set_previous_array(i_set		setid,
     }
 
   if (i == -1)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
   /*
    * 3)
@@ -284,7 +362,7 @@ t_error			set_previous_array(i_set		setid,
 
   previous->u.array.i = i;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -304,16 +382,13 @@ t_error			set_next_array(i_set			setid,
   o_set*		o;
   t_setsz		i;
 
-  SET_ENTER(_set);
-
   assert(next != NULL);
 
   /*
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   /*
    * 2)
@@ -326,7 +401,7 @@ t_error			set_next_array(i_set			setid,
     }
 
   if (i >= o->u.array.arraysz)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
   /*
    * 3)
@@ -334,7 +409,7 @@ t_error			set_next_array(i_set			setid,
 
   next->u.array.i = i;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -348,7 +423,7 @@ t_error			set_next_array(i_set			setid,
  * 3) initializes created slots
  */
 
-static t_error		set_expand_array(o_set			*o,
+t_error			set_expand_array(o_set			*o,
 					 void			*data)
 {
   t_setsz		i;
@@ -373,7 +448,7 @@ static t_error		set_expand_array(o_set			*o,
 
   if ((o->u.array.array = realloc(o->u.array.array,
 				  sz * sizeof(void*))) == NULL)
-    return ERROR_KO;
+    CORE_ESCAPE("unable to reallocate memory for the array");
 
   o->u.array.arraysz = sz;
 
@@ -385,7 +460,7 @@ static t_error		set_expand_array(o_set			*o,
   for (++i; i < o->u.array.arraysz; ++i)
     o->u.array.array[i] = NULL;
 
-  return ERROR_OK;
+  CORE_LEAVE();
 }
 
 /*
@@ -399,9 +474,9 @@ static t_error		set_expand_array(o_set			*o,
  * 4) shifts right to make some room and inserts.
  */
 
-static t_error		set_insert_at(o_set			*o,
-				      t_setsz			pos,
-				      void			*data)
+t_error			set_insert_array_at(o_set		*o,
+					    t_setsz		pos,
+					    void		*data)
 {
   t_setsz		limit;
 
@@ -413,7 +488,10 @@ static t_error		set_insert_at(o_set			*o,
 
   if (o->u.array.arraysz == pos)
     {
-      return set_expand_array(o, data);
+      if (set_expand_array(o, data) != ERROR_OK)
+	CORE_ESCAPE("unable to expand the array");
+
+      CORE_LEAVE();
     }
 
   /*
@@ -423,7 +501,8 @@ static t_error		set_insert_at(o_set			*o,
   if (o->u.array.array[pos] == NULL)
     {
       o->u.array.array[pos] = data;
-      return ERROR_OK;
+
+      CORE_LEAVE();
     }
 
   /*
@@ -435,7 +514,8 @@ static t_error		set_insert_at(o_set			*o,
       if (o->u.array.array[pos - 1] == NULL)
 	{
 	  o->u.array.array[pos - 1] = data;
-	  return ERROR_OK;
+
+	  CORE_LEAVE();
 	}
     }
 
@@ -448,19 +528,21 @@ static t_error		set_insert_at(o_set			*o,
       if (o->u.array.array[limit] == NULL)
 	break;
     }
+
   if (limit == o->u.array.arraysz)
     {
-      if (set_expand_array(o, o->u.array.array[limit - 1]) !=
-	  ERROR_OK)
-	return ERROR_KO;
+      if (set_expand_array(o, o->u.array.array[limit - 1]) != ERROR_OK)
+	CORE_ESCAPE("unable to expand the array");
     }
+
   for (; limit > pos; --limit)
     {
       o->u.array.array[limit] = o->u.array.array[limit - 1];
     }
+
   o->u.array.array[pos] = data;
 
-  return ERROR_OK;
+  CORE_LEAVE();
 }
 
 /*
@@ -480,8 +562,6 @@ t_error			set_insert_array(i_set			setid,
   o_set*		o;
   void*			cpy;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -489,14 +569,14 @@ t_error			set_insert_array(i_set			setid,
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (o->options & SET_OPTION_SORT)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("this operation is not allowed for sorted sets");
 
   /*
    * 3)
@@ -504,9 +584,11 @@ t_error			set_insert_array(i_set			setid,
 
   if (o->options & SET_OPTION_ALLOC)
     {
-      if (!(cpy = malloc(o->datasz)))
-	SET_LEAVE(_set, ERROR_KO);
+      if ((cpy = malloc(o->datasz)) == NULL)
+	CORE_ESCAPE("unable to allocate memory for the object's copy");
+
       memcpy(cpy, data, o->datasz);
+
       data = cpy;
     }
 
@@ -514,11 +596,12 @@ t_error			set_insert_array(i_set			setid,
    * 4)
    */
 
-  if (set_insert_at(o, 0, data) != ERROR_OK)
+  if (set_insert_array_at(o, 0, data) != ERROR_OK)
     {
       if (o->options & SET_OPTION_ALLOC)
 	free(data);
-      SET_LEAVE(_set, ERROR_KO);
+
+      CORE_ESCAPE("unable to insert the object in the set");
     }
 
   /*
@@ -527,7 +610,7 @@ t_error			set_insert_array(i_set			setid,
 
   ++o->size;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -548,8 +631,6 @@ t_error			set_append_array(i_set			setid,
   t_setsz		i;
   void*			cpy;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -557,14 +638,14 @@ t_error			set_append_array(i_set			setid,
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (o->options & SET_OPTION_SORT)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to append an object to a sorted set");
 
   /*
    * 3)
@@ -573,8 +654,10 @@ t_error			set_append_array(i_set			setid,
   if (o->options & SET_OPTION_ALLOC)
     {
       if (!(cpy = malloc(o->datasz)))
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the object's copy");
+
       memcpy(cpy, data, o->datasz);
+
       data = cpy;
     }
 
@@ -593,11 +676,12 @@ t_error			set_append_array(i_set			setid,
   else
     i = 0;
 
-  if (set_insert_at(o, i, data) != ERROR_OK)
+  if (set_insert_array_at(o, i, data) != ERROR_OK)
     {
       if (o->options & SET_OPTION_ALLOC)
 	free(data);
-      SET_LEAVE(_set, ERROR_KO);
+
+      CORE_ESCAPE("unable to insert the object in the set");
     }
 
   /*
@@ -606,7 +690,7 @@ t_error			set_append_array(i_set			setid,
 
   ++o->size;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -628,8 +712,6 @@ t_error			set_before_array(i_set			setid,
   t_setsz		i;
   void*			cpy;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -637,14 +719,14 @@ t_error			set_before_array(i_set			setid,
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (o->options & SET_OPTION_SORT)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to insert at a specific location in a sorted set");
 
   /*
    * 3)
@@ -653,8 +735,10 @@ t_error			set_before_array(i_set			setid,
   if (o->options & SET_OPTION_ALLOC)
     {
       if (!(cpy = malloc(o->datasz)))
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the object's copy");
+
       memcpy(cpy, data, o->datasz);
+
       data = cpy;
     }
 
@@ -667,11 +751,12 @@ t_error			set_before_array(i_set			setid,
   if (i < 0)
     i = 0;
 
-  if (set_insert_at(o, i, data) != ERROR_OK)
+  if (set_insert_array_at(o, i, data) != ERROR_OK)
     {
       if (o->options & SET_OPTION_ALLOC)
 	free(data);
-      SET_LEAVE(_set, ERROR_KO);
+
+      CORE_ESCAPE("unable to insert the object in the set");
     }
 
   /*
@@ -680,7 +765,7 @@ t_error			set_before_array(i_set			setid,
 
   ++o->size;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -703,8 +788,6 @@ t_error			set_after_array(i_set			setid,
   t_setsz		i;
   void*			cpy;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -712,14 +795,14 @@ t_error			set_after_array(i_set			setid,
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (o->options & SET_OPTION_SORT)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to insert at a precise position in a sorted set");
 
   /*
    * 3)
@@ -728,8 +811,10 @@ t_error			set_after_array(i_set			setid,
   if (o->options & SET_OPTION_ALLOC)
     {
       if (!(cpy = malloc(o->datasz)))
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the object's copy");
+
       memcpy(cpy, data, o->datasz);
+
       data = cpy;
     }
 
@@ -742,11 +827,12 @@ t_error			set_after_array(i_set			setid,
   if (i > o->u.array.arraysz)
     i = o->u.array.arraysz;
 
-  if (set_insert_at(o, i, data) != ERROR_OK)
+  if (set_insert_array_at(o, i, data) != ERROR_OK)
     {
       if (o->options & SET_OPTION_ALLOC)
 	free(data);
-      SET_LEAVE(_set, ERROR_KO);
+
+      CORE_ESCAPE("unable to insert the object in the set");
     }
 
   /*
@@ -755,7 +841,7 @@ t_error			set_after_array(i_set			setid,
 
   ++o->size;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -788,8 +874,6 @@ t_error			set_add_array(i_set			setid,
   t_uint8		empty;
   t_setsz		last;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -797,14 +881,14 @@ t_error			set_add_array(i_set			setid,
    */
 
   if (!data || *((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the object to add must begin with a valid identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
@@ -813,8 +897,10 @@ t_error			set_add_array(i_set			setid,
   if (o->options & SET_OPTION_ALLOC)
     {
       if (!(cpy = malloc(o->datasz)))
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the object's copy");
+
       memcpy(cpy, data, o->datasz);
+
       data = cpy;
     }
 
@@ -834,27 +920,29 @@ t_error			set_add_array(i_set			setid,
 
       empty = 1;
       last = -1;
+
       id = *((t_id*)data);
+
       for (i = 0; i < o->u.array.arraysz; ++i)
 	{
 	  if (o->u.array.array[i] != NULL)
 	    {
 	      current = *((t_id*)o->u.array.array[i]);
+
 	      empty = 0;
+
 	      if (current == id)
 		{
-		  module_call(console, console_message,
-			      '!', "set: identifier collision detected "
-			      "in the set %qu on the object identifier %qu\n",
-			      o->id, id);
-
 		  if (o->options & SET_OPTION_ALLOC)
 		    free(data);
 
-		  SET_LEAVE(_set, ERROR_KO);
+		  CORE_ESCAPE("identifier collision detected in the set "
+			      "%qu on the object identifier %qu\n",
+			      o->id, id);
 		}
 	      if (current > id)
 		break;
+
 	      last = i;
 	    }
 	}
@@ -864,15 +952,18 @@ t_error			set_add_array(i_set			setid,
        */
 
       ++last;
+
       if (empty)
 	last = i = o->u.array.arraysz / 2;
+
       if (last < o->u.array.arraysz)
 	{
-	  if (set_insert_at(o, last, data) != ERROR_OK)
+	  if (set_insert_array_at(o, last, data) != ERROR_OK)
 	    {
 	      if (o->options & SET_OPTION_ALLOC)
 		free(data);
-	      SET_LEAVE(_set, ERROR_KO);
+
+	      CORE_ESCAPE("unable to insert the object in the set");
 	    }
 	}
 
@@ -886,7 +977,8 @@ t_error			set_add_array(i_set			setid,
 	    {
 	      if (o->options & SET_OPTION_ALLOC)
 		free(data);
-	      SET_LEAVE(_set, ERROR_KO);
+
+	      CORE_ESCAPE("unable to expand the array");
 	    }
 	}
     }
@@ -906,6 +998,7 @@ t_error			set_add_array(i_set			setid,
 	  if (o->u.array.array[i] == NULL)
 	    {
 	      o->u.array.array[i] = data;
+
 	      break;
 	    }
 	}
@@ -920,7 +1013,8 @@ t_error			set_add_array(i_set			setid,
 	    {
 	      if (o->options & SET_OPTION_ALLOC)
 		free(data);
-	      SET_LEAVE(_set, ERROR_KO);
+
+	      CORE_ESCAPE("unable to expand the array");
 	    }
 	}
     }
@@ -931,7 +1025,7 @@ t_error			set_add_array(i_set			setid,
 
   ++o->size;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -954,28 +1048,26 @@ t_error			set_remove_array(i_set			setid,
   t_setsz		i;
   t_id			current;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (id == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("invalid object identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
    */
 
   if (o->size == 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the set is empty");
 
   for (i = 0; i < o->u.array.arraysz; ++i)
     {
@@ -984,21 +1076,23 @@ t_error			set_remove_array(i_set			setid,
 	  current = *((t_id*)(o->u.array.array[i]));
 
 	  if ((o->options & SET_OPTION_SORT) && current > id)
-	    SET_LEAVE(_set, ERROR_KO);
+	    CORE_ESCAPE("unable to locate the given object");
 
 	  if (current == id)
 	    {
 	      if ((o->options & SET_OPTION_FREE) ||
 		  (o->options & SET_OPTION_ALLOC))
 		free(o->u.array.array[i]);
+
 	      o->u.array.array[i] = NULL;
+
 	      break;
 	    }
 	}
     }
 
   if (i == o->u.array.arraysz)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to locate the given object");
 
   /*
    * 4)
@@ -1012,9 +1106,11 @@ t_error			set_remove_array(i_set			setid,
 	}
 
       --o->u.array.arraysz;
-      o->u.array.array = realloc(o->u.array.array,
-				 o->u.array.arraysz *
-				 sizeof(void*));
+
+      if ((o->u.array.array = realloc(o->u.array.array,
+				      o->u.array.arraysz *
+				      sizeof(void*))) == NULL)
+	CORE_ESCAPE("unable to reallocate memory for the array");
     }
 
   /*
@@ -1023,7 +1119,7 @@ t_error			set_remove_array(i_set			setid,
 
   --o->size;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1045,29 +1141,28 @@ t_error			set_delete_array(i_set			setid,
   o_set*		o;
   t_setsz		i;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   i = iterator.u.array.i;
+
   if (i >= o->u.array.arraysz)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the given iterator is out of bound");
 
   /*
    * 3)
    */
 
   if (o->u.array.array[i] == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the object the iterator points to does not exist");
 
   /*
    * 4)
@@ -1076,6 +1171,7 @@ t_error			set_delete_array(i_set			setid,
   if (o->options & SET_OPTION_ALLOC ||
       o->options & SET_OPTION_FREE)
     free(o->u.array.array[i]);
+
   o->u.array.array[i] = NULL;
 
   /*
@@ -1090,9 +1186,11 @@ t_error			set_delete_array(i_set			setid,
 	}
 
       --o->u.array.arraysz;
-      o->u.array.array = realloc(o->u.array.array,
-				 o->u.array.arraysz *
-				 sizeof(void*));
+
+      if ((o->u.array.array = realloc(o->u.array.array,
+				      o->u.array.arraysz *
+				      sizeof(void*))) == NULL)
+	CORE_ESCAPE("unable to reallocate memory for the array");
     }
 
   /*
@@ -1101,7 +1199,7 @@ t_error			set_delete_array(i_set			setid,
 
   o->size--;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1119,14 +1217,12 @@ t_error			set_flush_array(i_set			setid)
   o_set*       		o;
   t_setsz		i;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
@@ -1140,9 +1236,11 @@ t_error			set_flush_array(i_set			setid)
 	  if (o->u.array.array[i])
 	    {
 	      free(o->u.array.array[i]);
+
 	      o->u.array.array[i] = NULL;
 	    }
 	}
+
       o->size = 0;
     }
 
@@ -1150,19 +1248,20 @@ t_error			set_flush_array(i_set			setid)
    * 3)
    */
 
-  if ((o->u.array.array =
-       realloc(o->u.array.array,
-	       o->u.array.initsz * sizeof(void*))) == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+  if ((o->u.array.array = realloc(o->u.array.array,
+				  o->u.array.initsz * sizeof(void*))) == NULL)
+    CORE_ESCAPE("unable to reallocate memory for the array");
+
   for (i = 0; i < o->u.array.initsz; ++i)
     {
       o->u.array.array[i] = NULL;
     }
 
   o->u.array.arraysz = o->u.array.initsz;
+
   o->size = 0;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1188,8 +1287,6 @@ t_error			set_locate_array(i_set			setid,
   t_setsz		right;
   t_setsz		dicho;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
   /*
@@ -1197,19 +1294,20 @@ t_error			set_locate_array(i_set			setid,
    */
 
   if (id == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("invalid object identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
    */
-/* XXX la dicho marche mal */
+
+  /* XXX la dicho marche mal */
   if (0 && (o->options & SET_OPTION_SORT))
     {
 
@@ -1223,11 +1321,14 @@ t_error			set_locate_array(i_set			setid,
       while (left <= right)
 	{
 	  dicho = left + (right - left) / 2;
+
 	  for (i = dicho; i < right; ++i)
 	    if (o->u.array.array[i])
 	      break;
+
 	  if (*((t_id*)(o->u.array.array[i])) == id)
 	    break;
+
 	  if (i == right || *((t_id*)(o->u.array.array[i])) > id)
 	    {
 	      right = dicho - 1;
@@ -1241,7 +1342,8 @@ t_error			set_locate_array(i_set			setid,
       if (left <= right)
 	{
 	  iterator->u.array.i = i;
-	  SET_LEAVE(_set, ERROR_OK);
+
+	  CORE_LEAVE();
 	}
     }
   else
@@ -1257,12 +1359,13 @@ t_error			set_locate_array(i_set			setid,
 	      *((t_id*)(o->u.array.array[i])) == id)
 	    {
 	      iterator->u.array.i = i;
-	      SET_LEAVE(_set, ERROR_OK);
+
+	      CORE_LEAVE();
 	    }
 	}
     }
 
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("unable to locate the given identifier in the set");
 }
 
 /*
@@ -1281,8 +1384,6 @@ t_error			set_object_array(i_set			setid,
 {
   o_set*       		o;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -1290,25 +1391,25 @@ t_error			set_object_array(i_set			setid,
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (iterator.u.array.i >= o->u.array.arraysz)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the given iterator is out of bound");
 
   /*
    * 3)
    */
 
-  if (o->u.array.array[iterator.u.array.i])
-    *data = o->u.array.array[iterator.u.array.i];
-  else
-    SET_LEAVE(_set, ERROR_KO);
+  if (o->u.array.array[iterator.u.array.i] == NULL)
+    CORE_ESCAPE("the object the iterator points to does not exist");
 
-  SET_LEAVE(_set, ERROR_OK);
+  *data = o->u.array.array[iterator.u.array.i];
+
+  CORE_LEAVE();
 }
 
 /*
@@ -1331,8 +1432,6 @@ t_error			set_reserve_array(t_options		options,
   o_set			o;
   t_setsz		i;
 
-  SET_ENTER(_set);
-
   assert(datasz >= sizeof (t_id));
   assert(setid != NULL);
 
@@ -1341,7 +1440,7 @@ t_error			set_reserve_array(t_options		options,
    */
 
   if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a set with both alloc and free options");
 
   /*
    * 2)
@@ -1360,7 +1459,7 @@ t_error			set_reserve_array(t_options		options,
   else
     {
       if (id_reserve(&_set->id, setid) != ERROR_OK)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to reserve an identifier");
     }
 
   /*
@@ -1376,13 +1475,12 @@ t_error			set_reserve_array(t_options		options,
   o.u.array.arraysz = (initsz == 0 ? 1 : initsz);
   o.u.array.initsz = o.u.array.arraysz;
 
-  if ((o.u.array.array =
-       malloc(o.u.array.arraysz * sizeof(void*))) == NULL)
+  if ((o.u.array.array = malloc(o.u.array.arraysz * sizeof(void*))) == NULL)
     {
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set->id, o.id);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_ESCAPE("unable to allocate memory for the array");
     }
 
   for (i = 0; i < o.u.array.arraysz; i++)
@@ -1399,10 +1497,10 @@ t_error			set_reserve_array(t_options		options,
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set->id, o.id);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_ESCAPE("unable to register the new set descriptor");
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1421,28 +1519,26 @@ t_error			set_release_array(i_set		setid)
 {
   o_set*       		o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (set_flush(setid) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to flush the set");
 
   /*
    * 3)
    */
 
   if (id_release(&_set->id, o->id) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to release the set's identifier");
 
   /*
    * 4)
@@ -1455,10 +1551,12 @@ t_error			set_release_array(i_set		setid)
    */
 
   if (!(o->options & SET_OPTION_CONTAINER))
-    if (set_destroy(o->id) != ERROR_OK)
-      SET_LEAVE(_set, ERROR_KO);
+    {
+      if (set_destroy(o->id) != ERROR_OK)
+	CORE_ESCAPE("unable to destroy the set descriptor");
+    }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1469,9 +1567,7 @@ t_error			set_release_array(i_set		setid)
 t_error			set_push_array(i_set			setid,
 				       void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -1481,9 +1577,7 @@ t_error			set_push_array(i_set			setid,
 
 t_error			set_pop_array(i_set			setid)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -1494,7 +1588,5 @@ t_error			set_pop_array(i_set			setid)
 t_error			set_pick_array(i_set			setid,
 				       void**			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }

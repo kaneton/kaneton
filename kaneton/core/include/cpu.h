@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/cpu.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [mon nov 22 10:09:18 2010]
+ * updated       julien quintard   [sat nov 27 06:11:21 2010]
  */
 
 #ifndef CORE_CPU_H
@@ -69,38 +69,6 @@ typedef struct
 }				d_cpu;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define CPU_CHECK(_cpu_)						\
-  {									\
-    if ((_cpu_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define CPU_ENTER(_cpu_)						\
-  {									\
-    CPU_CHECK((_cpu_));							\
-  }
-
-/*
- * leave
- */
-
-#define CPU_LEAVE(_cpu_, _error_)					\
-  {									\
-    return (_error_);							\
-  }
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/cpu/cpu.c
@@ -127,6 +95,8 @@ t_error			cpu_balance(void);
 
 t_error			cpu_migrate(i_task			task,
 				    i_cpu			cpu);
+
+t_error			cpu_exist(i_cpu				id);
 
 t_error			cpu_get(i_cpu				id,
 				o_cpu**				o);

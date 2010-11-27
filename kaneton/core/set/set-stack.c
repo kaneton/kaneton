@@ -42,15 +42,13 @@ t_error			set_type_stack(i_set			setid)
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
-  if (o->type == SET_TYPE_STACK)
-    SET_LEAVE(_set, ERROR_OK);
+  if (o->type != SET_TYPE_STACK)
+    CORE_ESCAPE("invalid set type");
 
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_LEAVE();
 }
 
 /*
@@ -71,8 +69,6 @@ t_error			set_reserve_stack(t_options		options,
 {
   o_set			o;
 
-  SET_ENTER(_set);
-
   assert(datasz >= sizeof (t_id));
   assert(setid != NULL);
 
@@ -87,10 +83,10 @@ t_error			set_reserve_stack(t_options		options,
    */
 
   if (options & SET_OPTION_ORGANISE)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the organise option does not make sense for a stack set");
 
   if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a set with both alloc and free options");
 
   /*
    * 3)
@@ -103,7 +99,7 @@ t_error			set_reserve_stack(t_options		options,
   else
     {
       if (id_reserve(&_set->id, setid) != ERROR_OK)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to reserve the set identifier");
     }
 
   /*
@@ -128,10 +124,22 @@ t_error			set_reserve_stack(t_options		options,
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set->id, o.id);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_ESCAPE("unable to register the set descriptor");
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * not relevant to the stack.
+ *
+ * this function just returns an error.
+ */
+
+t_error			set_exist_stack(i_set			setid,
+					t_id			id)
+{
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -141,13 +149,10 @@ t_error			set_reserve_stack(t_options		options,
 
 t_error			set_show_stack(i_set			setid)
 {
-  t_error		retval;
+  if (set_show_ll(setid) != ERROR_OK)
+    CORE_ESCAPE("unable to show the linked-list set");
 
-  SET_ENTER(_set);
-
-  retval = set_show_ll(setid);
-
-  SET_LEAVE(_set, retval);
+  CORE_LEAVE();
 }
 
 /*
@@ -155,13 +160,10 @@ t_error			set_show_stack(i_set			setid)
  */
 t_error			set_release_stack(i_set			setid)
 {
-  t_error		retval;
+  if (set_release_ll(setid) != ERROR_OK)
+    CORE_ESCAPE("unable to release the linked-list set");
 
-  SET_ENTER(_set);
-
-  retval = set_release_ll(setid);
-
-  SET_LEAVE(_set, retval);
+  CORE_LEAVE();
 }
 
 /*
@@ -170,13 +172,10 @@ t_error			set_release_stack(i_set			setid)
 
 t_error			set_flush_stack(i_set			setid)
 {
-  t_error		retval;
+  if (set_flush_ll(setid) != ERROR_OK)
+    CORE_ESCAPE("unable to flush the linked-list set");
 
-  SET_ENTER(_set);
-
-  retval = set_flush_ll(setid);
-
-  SET_LEAVE(_set, retval);
+  CORE_LEAVE();
 }
 
 /*
@@ -186,13 +185,10 @@ t_error			set_flush_stack(i_set			setid)
 t_error			set_push_stack(i_set			setid,
 				       void*			data)
 {
-  t_error		retval;
+  if (set_insert_ll(setid, data) != ERROR_OK)
+    CORE_ESCAPE("unable to insert in the linked-list set");
 
-  SET_ENTER(_set);
-
-  retval = set_insert_ll(setid, data);
-
-  SET_LEAVE(_set, retval);
+  CORE_LEAVE();
 }
 
 
@@ -203,17 +199,15 @@ t_error			set_push_stack(i_set			setid,
 t_error			set_pick_stack(i_set			setid,
 				       void**			data)
 {
-  t_error		retval;
   t_iterator		iterator;
 
-  SET_ENTER(_set);
+  if (set_head_ll(setid, &iterator) != ERROR_TRUE)
+    CORE_ESCAPE("unable to locate the head of the linked-list set");
 
-  if ((retval = set_head_ll(setid, &iterator)) != ERROR_OK)
-    SET_LEAVE(_set, retval);
+  if (set_object_ll(setid, iterator, data) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the object");
 
-  retval = set_object_ll(setid, iterator, data);
-
-  SET_LEAVE(_set, retval);
+  CORE_LEAVE();
 }
 
 /*
@@ -222,17 +216,15 @@ t_error			set_pick_stack(i_set			setid,
 
 t_error			set_pop_stack(i_set			setid)
 {
-  t_error		retval;
   t_iterator		iterator;
 
-  SET_ENTER(_set);
+  if (set_head_ll(setid, &iterator) != ERROR_TRUE)
+    CORE_ESCAPE("unable to locate the head of the linked-list set");
 
-  if ((retval = set_head_ll(setid, &iterator)) != ERROR_OK)
-    SET_LEAVE(_set, retval);
+  if (set_delete_ll(setid, iterator) != ERROR_OK)
+    CORE_ESCAPE("unable to delete the object");
 
-  retval = set_delete_ll(setid, iterator);
-
-  SET_LEAVE(_set, retval);
+  CORE_LEAVE();
 }
 
 /*
@@ -244,13 +236,10 @@ t_error			set_pop_stack(i_set			setid)
 t_error			set_head_stack(i_set			setid,
 				       t_iterator*		iterator)
 {
-  t_error		retval;
+  if (set_head_ll(setid, iterator) != ERROR_TRUE)
+    CORE_FALSE();
 
-  SET_ENTER(_set);
-
-  retval = set_head_ll(setid, iterator);
-
-  SET_LEAVE(_set, retval);
+  CORE_TRUE();
 }
 
 
@@ -262,13 +251,10 @@ t_error			set_head_stack(i_set			setid,
 t_error			set_tail_stack(i_set			setid,
 				       t_iterator*		iterator)
 {
-  t_error		retval;
+  if (set_tail_ll(setid, iterator) != ERROR_TRUE)
+    CORE_FALSE();
 
-  SET_ENTER(_set);
-
-  retval = set_tail_ll(setid, iterator);
-
-  SET_LEAVE(_set, retval);
+  CORE_TRUE();
 }
 
 /*
@@ -281,17 +267,14 @@ t_error			set_previous_stack(i_set		setid,
 					   t_iterator		current,
 					   t_iterator*		previous)
 {
-  t_error		retval;
+  if (set_previous_ll(setid, current, previous) != ERROR_TRUE)
+    CORE_FALSE();
 
-  SET_ENTER(_set);
-
-  retval = set_previous_ll(setid, current, previous);
-
-  SET_LEAVE(_set, retval);
+  CORE_TRUE();
 }
 
 /*
- * this function returns an iterator on nthe next node.
+ * this function returns an iterator on the next node.
  *
  * useful for the for_each macro
  */
@@ -300,13 +283,10 @@ t_error			set_next_stack(i_set			setid,
 				       t_iterator		current,
 				       t_iterator*		next)
 {
-  t_error		retval;
+  if (set_next_ll(setid, current, next) != ERROR_TRUE)
+    CORE_FALSE();
 
-  SET_ENTER(_set);
-
-  retval = set_next_ll(setid, current, next);
-
-  SET_LEAVE(_set, retval);
+  CORE_TRUE();
 }
 
 /*
@@ -318,9 +298,7 @@ t_error			set_next_stack(i_set			setid,
 t_error			set_insert_stack(i_set			setid,
 					 void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -331,9 +309,7 @@ t_error			set_insert_stack(i_set			setid,
 t_error			set_append_stack(i_set			setid,
 					 void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -345,9 +321,7 @@ t_error			set_before_stack(i_set			setid,
 					 t_iterator		iterator,
 					 void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -359,9 +333,7 @@ t_error			set_after_stack(i_set			setid,
 					t_iterator		iterator,
 					void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -373,9 +345,7 @@ t_error			set_after_stack(i_set			setid,
 t_error			set_add_stack(i_set			setid,
 				      void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -387,9 +357,7 @@ t_error			set_add_stack(i_set			setid,
 t_error			set_remove_stack(i_set			setid,
 					 t_id			id)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -401,13 +369,12 @@ t_error			set_remove_stack(i_set			setid,
 t_error			set_delete_stack(i_set			setid,
 					 t_iterator		iterator)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
  * not relevant to the stack.
+ *
  * this function just returns an error.
  */
 
@@ -415,13 +382,10 @@ t_error			set_locate_stack(i_set			setid,
 					 t_id			id,
 					 t_iterator*		iterator)
 {
-  t_error		retval;
+  if (set_locate_ll(setid, id, iterator) != ERROR_OK)
+    CORE_ESCAPE("unable to locate the object from the linked-list set");
 
-  SET_ENTER(_set);
-
-  retval = set_locate_ll(setid, id, iterator);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_LEAVE();
 }
 
 /*
@@ -432,11 +396,8 @@ t_error			set_object_stack(i_set			setid,
 					 t_iterator		iterator,
 					 void**			data)
 {
-  t_error		retval;
+  if (set_object_ll(setid, iterator, data) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the object from the linked-list set");
 
-  SET_ENTER(_set);
-
-  retval = set_object_ll(setid, iterator, data);
-
-  SET_LEAVE(_set, retval);
+  CORE_LEAVE();
 }

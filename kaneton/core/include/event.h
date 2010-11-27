@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/event.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [thu nov 25 12:04:27 2010]
+ * updated       julien quintard   [fri nov 26 17:03:53 2010]
  */
 
 #ifndef CORE_EVENT_H
@@ -125,38 +125,6 @@ typedef struct
 }				d_event;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define EVENT_CHECK(_event_)						\
-  {									\
-    if ((_event_) == NULL)						\
-      return ERROR_KO;						\
-  }
-
-/*
- * enter
- */
-
-#define EVENT_ENTER(_event_)						\
-  {									\
-    EVENT_CHECK((_event_));						\
-  }
-
-/*
- * leave
- */
-
-#define EVENT_LEAVE(_event_, _error_)					\
-  {									\
-    return (_error_);							\
-  }
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/event/event.c
@@ -182,6 +150,8 @@ t_error			event_reserve(i_event			id,
 				      t_vaddr			data);
 
 t_error			event_release(i_event			id);
+
+t_error			event_exist(i_event			id);
 
 t_error			event_get(i_event			id,
 				  o_event**			o);

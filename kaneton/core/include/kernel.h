@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/kernel.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/kernel.h
  *
  * created       julien quintard   [wed jun  6 13:27:34 2007]
- * updated       julien quintard   [wed nov 24 09:19:55 2010]
+ * updated       julien quintard   [sat nov 27 13:52:45 2010]
  */
 
 #ifndef CORE_KERNEL_H
@@ -66,21 +66,6 @@ typedef struct
 }				d_kernel;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-#define kernel_error(_format_, _arguments_...)				\
-  {									\
-    module_call(report, report_dump);					\
-									\
-    printf("[!] " _format_ " (%s:%u)\n",				\
-           ##_arguments_, __FUNCTION__, __LINE__);			\
-									\
-    while (1)								\
-      ;									\
-  }
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/kernel/kernel.c
@@ -90,9 +75,9 @@ typedef struct
  * ../../core/kernel/kernel.c
  */
 
-void			kernel_initialize(void);
+t_error			kernel_initialize(void);
 
-void			kernel_clean(void);
+t_error			kernel_clean(void);
 
 
 /*

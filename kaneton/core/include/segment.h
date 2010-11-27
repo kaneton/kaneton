@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/segment.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [mon nov 22 12:30:04 2010]
+ * updated       julien quintard   [sat nov 27 05:28:56 2010]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -143,50 +143,10 @@ typedef struct
 }				d_segment;
 
 /*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define SEGMENT_CHECK(_segment_)					\
-  {									\
-    if ((_segment_) == NULL)						\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define SEGMENT_ENTER(_segment_)					\
-  {									\
-    SEGMENT_CHECK((_segment_));						\
-  }
-
-/*
- * leave
- */
-
-#define SEGMENT_LEAVE(_segment_, _error_)				\
-  {									\
-    return (_error_);							\
-  }
-
-/*
- * ---------- common prototypes -----------------------------------------------
- */
-
-t_error			segment_space(i_as		asid,
-				      t_psize		size,
-				      t_paddr*		address);
-
-
-/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/segment/segment.c
+ *      ../../core/segment/segment-fit.c
  */
 
 /*
@@ -255,12 +215,27 @@ t_error			segment_type(i_segment			segid,
 
 t_error			segment_flush(i_as			asid);
 
+t_error			segment_exist(i_segment			segid);
+
 t_error			segment_get(i_segment			segid,
 				    o_segment**			o);
 
 t_error			segment_initialize(void);
 
 t_error			segment_clean(void);
+
+
+/*
+ * ../../core/segment/segment-fit.c
+ */
+
+t_error			segment_fit_first(i_as			asid,
+					  t_psize		size,
+					  t_paddr*		address);
+
+t_error			segment_space(i_as			asid,
+				      t_psize			size,
+				      t_paddr*			address);
 
 
 /*

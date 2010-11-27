@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...E/test/tests/kaneton/core/as/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 24 09:26:33 2010]
+ * updated       julien quintard   [sat nov 27 19:59:15 2010]
  */
 
 /*
@@ -47,7 +47,7 @@ void			test_core_as_give(void)
   if (as_reserve(task1, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error\n");
 
-  if (as_give(task2, as) != ERROR_OK)
+  if (as_give(as, task2) != ERROR_OK)
     TEST_ERROR("[as_give] error\n");
 
   if (as_get(as, &o) != ERROR_OK)

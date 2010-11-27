@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/tests/kaneton/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [fri nov 19 07:31:38 2010]
+# updated       julien quintard   [thu nov 25 20:08:00 2010]
 #
 
 #
@@ -27,8 +27,8 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-COMPONENTS		:=		core				\
-					machine				
+COMPONENTS		:=		core				
+#					machine				
 
 SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
 					$(COMPONENTS)

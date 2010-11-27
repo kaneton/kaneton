@@ -77,15 +77,15 @@ m_kernel*		_kernel = NULL;
  * 18) initialize the scheduler manager.
  */
 
-void			kernel_initialize(void)
+t_error			kernel_initialize(void)
 {
   /*
    * 1)
    */
 
   if ((_kernel = malloc(sizeof(m_kernel))) == NULL)
-    kernel_error("unable to allocate memory for the kernel "
-		 "manager structure");
+    CORE_ESCAPE("unable to allocate memory for the kernel "
+		"manager structure");
 
   memset(_kernel, 0x0, sizeof(m_kernel));
 
@@ -109,7 +109,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the identifier manager\n");
 
   if (id_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the identifier manager");
+    CORE_ESCAPE("unable to initialize the identifier manager");
 
   /*
    * 3)
@@ -119,7 +119,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the set manager\n");
 
   if (set_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the set manager");
+    CORE_ESCAPE("unable to initialize the set manager");
 
   /*
    * 4)
@@ -129,7 +129,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the address space manager\n");
 
   if (as_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the address space manager");
+    CORE_ESCAPE("unable to initialize the address space manager");
 
   /*
    * 5)
@@ -139,7 +139,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the segment manager\n");
 
   if (segment_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the segment manager");
+    CORE_ESCAPE("unable to initialize the segment manager");
 
   /*
    * 6)
@@ -150,7 +150,7 @@ void			kernel_initialize(void)
 
   if (region_initialize(GLUE_REGION_BASE,
 			GLUE_REGION_SIZE) != ERROR_OK)
-    kernel_error("unable to initialize the region manager");
+    CORE_ESCAPE("unable to initialize the region manager");
 
   /*
    * 7)
@@ -160,7 +160,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the map manager\n");
 
   if (map_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the map manager");
+    CORE_ESCAPE("unable to initialize the map manager");
 
   /*
    * 8)
@@ -170,7 +170,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the task manager\n");
 
   if (task_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the task manager");
+    CORE_ESCAPE("unable to initialize the task manager");
 
   /*
    * 9)
@@ -186,7 +186,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the thread manager\n");
 
   if (thread_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the thread manager");
+    CORE_ESCAPE("unable to initialize the thread manager");
 
   /*
    * 11)
@@ -196,7 +196,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the event manager\n");
 
   if (event_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the event manager");
+    CORE_ESCAPE("unable to initialize the event manager");
 
   /*
    * 12)
@@ -206,7 +206,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the timer manager\n");
 
   if (timer_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the timer manager");
+    CORE_ESCAPE("unable to initialize the timer manager");
 
   /*
    * 13)
@@ -216,7 +216,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the clock manager\n");
 
   if (clock_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the clock manager");
+    CORE_ESCAPE("unable to initialize the clock manager");
 
   /*
    * 14)
@@ -226,7 +226,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the io manager\n");
 
   if (io_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the io manager");
+    CORE_ESCAPE("unable to initialize the io manager");
 
   /*
    * 15)
@@ -236,7 +236,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the message manager\n");
 
   if (message_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the message manager");
+    CORE_ESCAPE("unable to initialize the message manager");
 
   /*
    * 16)
@@ -246,7 +246,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the capability manager\n");
 
   if (capability_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the capability manager");
+    CORE_ESCAPE("unable to initialize the capability manager");
 
   /*
    * 17)
@@ -256,7 +256,7 @@ void			kernel_initialize(void)
 	      '+', "initializing the cpu manager\n");
 
   if (cpu_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the cpu manager");
+    CORE_ESCAPE("unable to initialize the cpu manager");
 
   /*
    * 18)
@@ -266,7 +266,9 @@ void			kernel_initialize(void)
 	      '+', "initializing the scheduler manager\n");
 
   if (scheduler_initialize() != ERROR_OK)
-    kernel_error("unable to initialize the scheduler manager");
+    CORE_ESCAPE("unable to initialize the scheduler manager");
+
+  CORE_LEAVE();
 }
 
 /*
@@ -293,7 +295,7 @@ void			kernel_initialize(void)
  * 17) frees the kernel manager's structure.
  */
 
-void			kernel_clean(void)
+t_error			kernel_clean(void)
 {
   /*
    * 1)
@@ -303,7 +305,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the scheduler manager\n");
 
   if (scheduler_clean() != ERROR_OK)
-    kernel_error("unable to clean the scheduler manager");
+    CORE_ESCAPE("unable to clean the scheduler manager");
 
   /*
    * 2)
@@ -313,7 +315,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the capability manager\n");
 
   if (capability_clean() != ERROR_OK)
-    kernel_error("unable to clean the capability manager");
+    CORE_ESCAPE("unable to clean the capability manager");
 
   /*
    * 3)
@@ -323,7 +325,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the message manager\n");
 
   if (message_clean() != ERROR_OK)
-    kernel_error("unable to clean the message manager");
+    CORE_ESCAPE("unable to clean the message manager");
 
   /*
    * 4)
@@ -333,7 +335,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the scheduler manager\n");
 
   if (io_clean() != ERROR_OK)
-    kernel_error("unable to clean the io manager");
+    CORE_ESCAPE("unable to clean the io manager");
 
   /*
    * 5)
@@ -343,7 +345,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the timer manager\n");
 
   if (timer_clean() != ERROR_OK)
-    kernel_error("unable to clean the timer manager");
+    CORE_ESCAPE("unable to clean the timer manager");
 
   /*
    * 6)
@@ -353,7 +355,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the event manager\n");
 
   if (event_clean() != ERROR_OK)
-    kernel_error("unable to clean the event manager");
+    CORE_ESCAPE("unable to clean the event manager");
 
   /*
    * 7)
@@ -363,7 +365,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the cpu manager\n");
 
   if (cpu_clean() != ERROR_OK)
-    kernel_error("unable to clean the cpu manager");
+    CORE_ESCAPE("unable to clean the cpu manager");
 
   /*
    * 8)
@@ -373,7 +375,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the thread manager\n");
 
   if (thread_clean() != ERROR_OK)
-    kernel_error("unable to clean the thread manager");
+    CORE_ESCAPE("unable to clean the thread manager");
 
   /*
    * 9)
@@ -383,7 +385,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the task manager\n");
 
   if (task_clean() != ERROR_OK)
-    kernel_error("unable to clean the task manager");
+    CORE_ESCAPE("unable to clean the task manager");
 
   /*
    * 10)
@@ -393,7 +395,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the map manager\n");
 
   if (map_clean() != ERROR_OK)
-    kernel_error("unable to clean the map manager");
+    CORE_ESCAPE("unable to clean the map manager");
 
   /*
    * 11)
@@ -403,7 +405,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the region manager\n");
 
   if (region_clean() != ERROR_OK)
-    kernel_error("unable to clean the region manager");
+    CORE_ESCAPE("unable to clean the region manager");
 
   /*
    * 12)
@@ -413,7 +415,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the segment manager\n");
 
   if (segment_clean() != ERROR_OK)
-    kernel_error("unable to clean the segment manager");
+    CORE_ESCAPE("unable to clean the segment manager");
 
   /*
    * 13)
@@ -423,7 +425,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the address space manager\n");
 
   if (as_clean() != ERROR_OK)
-    kernel_error("unable to clean the address space manager");
+    CORE_ESCAPE("unable to clean the address space manager");
 
   /*
    * 14)
@@ -433,7 +435,7 @@ void			kernel_clean(void)
 	      '+', "cleaning the set manager\n");
 
   if (set_clean() != ERROR_OK)
-    kernel_error("unable to clean the set manager");
+    CORE_ESCAPE("unable to clean the set manager");
 
   /*
    * 15)
@@ -443,11 +445,13 @@ void			kernel_clean(void)
 	      '+', "cleaning the identifier manager\n");
 
   if (id_clean() != ERROR_OK)
-    kernel_error("unable to clean the identifier manager");
+    CORE_ESCAPE("unable to clean the identifier manager");
 
   /*
    * 16)
    */
 
   free(_kernel);
+
+  CORE_LEAVE();
 }

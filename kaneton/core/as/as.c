@@ -73,14 +73,12 @@ t_error			as_show(i_as				id)
   t_iterator		i;
   o_as*			o;
 
-  AS_ENTER(_as);
-
   /*
    * 1)
    */
 
   if (as_get(id, &o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   module_call(console, console_message, '#',
 	      "  address space %qd in task %qd:\n",
@@ -92,15 +90,15 @@ t_error			as_show(i_as				id)
    */
 
   module_call(console, console_message,
-	      '#', "    segments %qd:\n", o->segments);
+	      '#', "    segments:\n");
 
   set_foreach(SET_OPTION_FORWARD, o->segments, &i, st)
     {
       if (set_object(o->segments, i, (void**)&segment) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the segment object");
 
       module_call(console, console_message,
-		  '#', "      %qd\n", segment);
+		  '#', "      %qu\n", segment);
     }
 
   /*
@@ -108,15 +106,15 @@ t_error			as_show(i_as				id)
    */
 
   module_call(console, console_message,
-	      '#', "    regions %qd:\n", o->regions);
+	      '#', "    regions:\n");
 
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
     {
       if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       module_call(console, console_message,
-		  '#', "      %qd\n", region);
+		  '#', "      %qu\n", region);
     }
 
   /*
@@ -124,9 +122,9 @@ t_error			as_show(i_as				id)
    */
 
   if (machine_call(as, as_show, id) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -146,14 +144,12 @@ t_error			as_dump(void)
   t_state		st;
   t_iterator		i;
 
-  AS_ENTER(_as);
-
   /*
    * 1)
    */
 
   if (set_size(_as->ass, &size) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set");
 
   /*
    * 2)
@@ -165,13 +161,13 @@ t_error			as_dump(void)
   set_foreach(SET_OPTION_FORWARD, _as->ass, &i, st)
     {
       if (set_object(_as->ass, i, (void**)&o) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the address space object");
 
       if (as_show(o->id) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to show the address space object");
     }
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -193,31 +189,29 @@ t_error			as_give(i_as				id,
   o_task*		to;
   o_as*			o;
 
-  AS_ENTER(_as);
-
   /*
    * 1)
    */
 
   if (as_get(id, &o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
   if (task_get(o->task, &from) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 3)
    */
 
   if (task_get(task, &to) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   if (to->as != ID_UNUSED)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("the task already possesses an address space");
 
   /*
    * 4)
@@ -233,9 +227,9 @@ t_error			as_give(i_as				id,
    */
 
   if (machine_call(as, as_give, id, task) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -253,8 +247,6 @@ t_error			as_vaddr(i_as				id,
   t_state		st;
   t_iterator		i;
 
-  AS_ENTER(_as);
-
   assert(virtual != NULL);
 
   /*
@@ -262,7 +254,7 @@ t_error			as_vaddr(i_as				id,
    */
 
   if (as_get(id, &o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
@@ -273,10 +265,10 @@ t_error			as_vaddr(i_as				id,
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
     {
       if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       if (segment_get(region->segment, &segment) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the segment object");
 
       if (segment->address + region->offset <= physical &&
 	  physical < segment->address + region->offset + region->size)
@@ -292,7 +284,8 @@ t_error			as_vaddr(i_as				id,
    */
 
   if (found == BOOLEAN_FALSE)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to locate the segment corresponding to the given "
+		"physical address");
 
   /*
    * 4)
@@ -305,9 +298,9 @@ t_error			as_vaddr(i_as				id,
    */
 
   if (machine_call(as, as_vaddr, id, physical, virtual) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -333,8 +326,6 @@ t_error			as_paddr(i_as				id,
   t_iterator		i;
   t_state		st;
 
-  AS_ENTER(_as);
-
   assert(physical != NULL);
 
   /*
@@ -342,7 +333,7 @@ t_error			as_paddr(i_as				id,
    */
 
   if (as_get(id, &o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
@@ -353,7 +344,7 @@ t_error			as_paddr(i_as				id,
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
     {
       if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       if (region->address <= virtual &&
 	  virtual < region->address + region->size)
@@ -364,7 +355,8 @@ t_error			as_paddr(i_as				id,
 	}
 
       if (region->address > virtual)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to locate the region containing the given "
+		    "virtual address");
     }
 
   /*
@@ -372,14 +364,15 @@ t_error			as_paddr(i_as				id,
    */
 
   if (found == BOOLEAN_FALSE)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to locate the region corresponding to the given "
+		"virtual address");
 
   /*
    * 4)
    */
 
   if (segment_get(region->segment, &segment) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   *physical = segment->address + region->offset + (virtual - region->address);
 
@@ -388,9 +381,9 @@ t_error			as_paddr(i_as				id,
    */
 
   if (machine_call(as, as_paddr, id, virtual, physical) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -424,8 +417,6 @@ t_error			as_read(i_as				id,
   o_as*			o;
   t_iterator		i;
 
-  AS_ENTER(_as);
-
   assert(size != 0);
 
   /*
@@ -433,17 +424,17 @@ t_error			as_read(i_as				id,
    */
 
   if (as_get(id, &o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
-  if (set_head(o->regions, &i) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+  if (set_head(o->regions, &i) != ERROR_TRUE)
+    CORE_ESCAPE("unable to locate the set's head");
 
   if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   /*
    * 3)
@@ -451,17 +442,18 @@ t_error			as_read(i_as				id,
 
   while (region->address + region->size <= source)
     {
-      if (set_next(o->regions, i, &next) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+      if (set_next(o->regions, i, &next) != ERROR_TRUE)
+	CORE_ESCAPE("unable to locate the next set's object");
 
       if (set_object(o->regions, next, (void**)&region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       memcpy(&i, &next, sizeof (t_iterator));
     }
 
   if (region->address > source)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("the located region's address is higher than the "
+		"source address");
 
   /*
    * 4)
@@ -481,13 +473,13 @@ t_error			as_read(i_as				id,
    */
 
   if (segment_read(region->segment, offset, buffer, copy) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to read from the segment");
 
   buffer += copy;
   size -= copy;
 
   if (size == 0)
-    AS_LEAVE(_as, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * 6)
@@ -501,14 +493,14 @@ t_error			as_read(i_as				id,
        * 7)
        */
 
-      if (set_next(o->regions, next, &i) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+      if (set_next(o->regions, next, &i) != ERROR_TRUE)
+	CORE_ESCAPE("unable to retrieve the next set's object");
 
       if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       if (region->address != previous->address + previous->size)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to read from non-adjacent regions");
 
       /*
        * 8)
@@ -526,7 +518,7 @@ t_error			as_read(i_as				id,
        */
 
       if (segment_read(region->segment, offset, buffer, copy) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to read from the segment");
 
       buffer += copy;
       size -= copy;
@@ -537,7 +529,7 @@ t_error			as_read(i_as				id,
       memcpy(&next, &i, sizeof (t_iterator));
     }
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -571,8 +563,6 @@ t_error			as_write(i_as				id,
   o_as*			o;
   t_iterator		i;
 
-  AS_ENTER(_as);
-
   assert(size != 0);
 
   /*
@@ -580,17 +570,17 @@ t_error			as_write(i_as				id,
    */
 
   if (as_get(id, &o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
-  if (set_head(o->regions, &i) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+  if (set_head(o->regions, &i) != ERROR_TRUE)
+    CORE_ESCAPE("unable to locate the set's head");
 
   if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   /*
    * 3)
@@ -598,17 +588,18 @@ t_error			as_write(i_as				id,
 
   while (region->address + region->size <= destination)
     {
-      if (set_next(o->regions, i, &next) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+      if (set_next(o->regions, i, &next) != ERROR_TRUE)
+	CORE_ESCAPE("unable to locate the next set's object");
 
       if (set_object(o->regions, next, (void**)&region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       memcpy(&i, &next, sizeof (t_iterator));
     }
 
   if (region->address > destination)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("the located region's address is higher than the "
+		"destination address");
 
   /*
    * 4)
@@ -628,13 +619,13 @@ t_error			as_write(i_as				id,
    */
 
   if (segment_write(region->segment, offset, buffer, copy) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to write to the segment");
 
   buffer += copy;
   size -= copy;
 
   if (size == 0)
-    AS_LEAVE(_as, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * 6)
@@ -648,14 +639,14 @@ t_error			as_write(i_as				id,
        * 7)
        */
 
-      if (set_next(o->regions, next, &i) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+      if (set_next(o->regions, next, &i) != ERROR_TRUE)
+	CORE_ESCAPE("unable to locate the next set's object");
 
       if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       if (region->address != previous->address + previous->size)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to write to non-adjacent regions");
 
       /*
        * 8)
@@ -673,7 +664,7 @@ t_error			as_write(i_as				id,
        */
 
       if (segment_write(region->segment, offset, buffer, copy) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to write to the segment");
 
       buffer += copy;
       size -= copy;
@@ -684,7 +675,7 @@ t_error			as_write(i_as				id,
       memcpy(&next, &i, sizeof (t_iterator));
     }
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -726,8 +717,6 @@ t_error			as_copy(i_as			source_id,
   o_region*		previous;
   t_iterator		next;
 
-  AS_ENTER(_as);
-
   assert(size != 0);
   assert(source_id != destination_id);
 
@@ -736,76 +725,80 @@ t_error			as_copy(i_as			source_id,
    */
 
   if (as_get(source_id, &source_o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   if (as_get(destination_id, &destination_o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
-  if (set_head(source_o->regions, &source_i) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+  if (set_head(source_o->regions, &source_i) != ERROR_TRUE)
+    CORE_ESCAPE("unable to locate the set's head");
 
   if (set_object(source_o->regions,
 		 source_i,
 		 (void**)&source_region) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   while (source_region->address + source_region->size <= source_address)
     {
-      if (set_next(source_o->regions, source_i, &source_next) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+      if (set_next(source_o->regions,
+		   source_i,
+		   &source_next) != ERROR_TRUE)
+	CORE_ESCAPE("unable to locate the next set's object");
 
       if (set_object(source_o->regions,
 		     source_next,
 		     (void**)&source_region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       memcpy(&source_i, &source_next, sizeof (t_iterator));
     }
 
   if (source_region->address > source_address)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("the located region's address is higher the source "
+		"virtual address");
 
   if (segment_get(source_region->segment, &source_segment) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 3)
    */
 
-  if (set_head(destination_o->regions, &destination_i) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+  if (set_head(destination_o->regions, &destination_i) != ERROR_TRUE)
+    CORE_ESCAPE("unable to locate the set's head");
 
   if (set_object(destination_o->regions,
 		 destination_i,
 		 (void**)&destination_region) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the region object");
 
   while (destination_region->address + destination_region->size <=
 	 destination_address)
     {
       if (set_next(destination_o->regions,
 		   destination_i,
-		   &destination_next) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+		   &destination_next) != ERROR_TRUE)
+	CORE_ESCAPE("unable to locate the next set's object");
 
       if (set_object(destination_o->regions,
 		     destination_next,
 		     (void**)&destination_region) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the region object");
 
       memcpy(&destination_i, &destination_next, sizeof (t_iterator));
     }
 
   if (destination_region->address > destination_address)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("the located region's address is higher than the "
+		"destination virtual address");
 
   if (segment_get(destination_region->segment,
 		  &destination_segment) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 4)
@@ -839,7 +832,7 @@ t_error			as_copy(i_as			source_id,
 		       source_region->segment,
 		       source_offset,
 		       copy) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to copy from one segment to another");
 
       source_offset += copy;
       destination_offset += copy;
@@ -860,22 +853,22 @@ t_error			as_copy(i_as			source_id,
 	{
 	  previous = source_region;
 
-	  if (set_next(source_o->regions, source_i, &next) != ERROR_OK)
-	    AS_LEAVE(_as, ERROR_KO);
+	  if (set_next(source_o->regions, source_i, &next) != ERROR_TRUE)
+	    CORE_ESCAPE("unable to locate the next set's object");
 
 	  if (set_object(source_o->regions,
 			 next,
 			 (void**)&source_region) != ERROR_OK)
-	    AS_LEAVE(_as, ERROR_KO);
+	    CORE_ESCAPE("unable to retrieve the region object");
 
 	  if (source_region->address != previous->address + previous->size)
-	    AS_LEAVE(_as, ERROR_KO);
+	    CORE_ESCAPE("unable to copy from non-adjacent regions");
 
 	  memcpy(&source_i, &next, sizeof (t_iterator));
 
 	  if (segment_get(source_region->segment,
 			  &source_segment) != ERROR_OK)
-	    AS_LEAVE(_as, ERROR_KO);
+	    CORE_ESCAPE("unable to retrieve the segment object");
 
 	  source_offset = source_region->offset;
 
@@ -893,30 +886,30 @@ t_error			as_copy(i_as			source_id,
 
 	  if (set_next(destination_o->regions,
 		       destination_i,
-		       &next) != ERROR_OK)
-	    AS_LEAVE(_as, ERROR_KO);
+		       &next) != ERROR_TRUE)
+	    CORE_ESCAPE("unable to locate the next set's object");
 
 	  if (set_object(destination_o->regions,
 			 next,
 			 (void**)&destination_region) != ERROR_OK)
-	    AS_LEAVE(_as, ERROR_KO);
+	    CORE_ESCAPE("unable to retrieve the region object");
 
 	  if (destination_region->address !=
 	      previous->address + previous->size)
-	    AS_LEAVE(_as, ERROR_KO);
+	    CORE_ESCAPE("unable to copy to non-adjacent regions");
 
 	  memcpy(&destination_i, &next, sizeof (t_iterator));
 
 	  if (segment_get(destination_region->segment,
 			  &destination_segment) != ERROR_OK)
-	    AS_LEAVE(_as, ERROR_KO);
+	    CORE_ESCAPE("unable to retrieve the segment object");
 
 	  destination_offset = destination_region->offset;
 	  destination_copy = destination_region->size;
 	}
     }
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -948,8 +941,6 @@ t_error			as_clone(i_as				id,
   t_setsz		setsz;
   i_set			mapping;
 
-  AS_ENTER(_as);
-
   assert(as != NULL);
 
   /*
@@ -957,42 +948,42 @@ t_error			as_clone(i_as				id,
    */
 
   if (as_get(id, &from) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
   if (task_get(task, &target) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   if (target->as != ID_UNUSED)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("the task already possesses an address space");
 
   /*
    * 3)
    */
 
   if (as_reserve(task, as) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to reserve an address space");
 
   /*
    * 4)
    */
 
   if (as_get(*as, &to) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 5)
    */
 
   if (set_size(from->segments, &setsz) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set");
 
   if (set_reserve(array, SET_OPTION_ALLOC, setsz,
 		  sizeof (pool), &mapping) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a set");
 
   /*
    * 6)
@@ -1005,28 +996,22 @@ t_error			as_clone(i_as				id,
       o_segment*	o;
 
       if (set_object(from->segments, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "as: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  AS_LEAVE(_as, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the segment identifier from the set");
 
       if (segment_get(*data, &o) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the segment object");
 
       if (o->type == SEGMENT_TYPE_SYSTEM)
 	continue;
 
       if (segment_clone(to->id, *data, &needless) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to clone the segment");
 
       map[0] = *data;
       map[1] = needless;
 
       if (set_add(mapping, map) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to add the segment to the set of segments");
     }
 
   /*
@@ -1039,16 +1024,13 @@ t_error			as_clone(i_as				id,
       o_region*		data;
 
       if (set_object(from->regions, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "as: cannot find the object "
-		      "corresponding to its identifier\n");
+	CORE_ESCAPE("unable to retrieve the region identifier from the set");
 
-	  AS_LEAVE(_as, ERROR_KO);
-	}
+      if (set_exist(mapping, data->segment) == ERROR_FALSE)
+	continue;
 
       if (set_get(mapping, data->segment, (void**)&map) != ERROR_OK)
-	continue;
+	CORE_ESCAPE("unable to retrieve the segment identifier");
 
       if (region_reserve(to->id,
 			 map[1],
@@ -1057,7 +1039,7 @@ t_error			as_clone(i_as				id,
 			 data->address,
 			 data->size,
 			 &needless) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	CORE_ESCAPE("unable to reserve the region");
     }
 
   /*
@@ -1065,9 +1047,9 @@ t_error			as_clone(i_as				id,
    */
 
   if (machine_call(as, as_clone, id, task, as) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1091,8 +1073,6 @@ t_error			as_reserve(i_task			task,
   o_task*		target;
   o_as			o;
 
-  AS_ENTER(_as);
-
   assert(id != NULL);
 
   /*
@@ -1100,10 +1080,10 @@ t_error			as_reserve(i_task			task,
    */
 
   if (task_get(task, &target) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   if (target->as != ID_UNUSED)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("the task alread possesses an address space");
 
   /*
    * 2)
@@ -1121,7 +1101,7 @@ t_error			as_reserve(i_task			task,
    */
 
   if (id_reserve(&_as->id, id) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to reserve an identifier");
 
   o.id = *id;
 
@@ -1134,11 +1114,7 @@ t_error			as_reserve(i_task			task,
 		  AS_SEGMENTS_INITSZ,
 		  sizeof(i_segment),
 		  &o.segments) != ERROR_OK)
-    {
-      id_release(&_as->id, o.id);
-
-      AS_LEAVE(_as, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the set of segments");
 
   /*
    * 5)
@@ -1149,27 +1125,14 @@ t_error			as_reserve(i_task			task,
 		  AS_REGIONS_INITSZ,
 		  sizeof(o_region),
 		  &o.regions) != ERROR_OK)
-    {
-      id_release(&_as->id, o.id);
-
-      set_release(o.segments);
-
-      AS_LEAVE(_as, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the set of regions");
 
   /*
    * 6)
    */
 
   if (set_add(_as->ass, &o) != ERROR_OK)
-    {
-      id_release(&_as->id, o.id);
-
-      set_release(o.segments);
-      set_release(o.regions);
-
-      AS_LEAVE(_as, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to add the object to the set of address spaces");
 
   /*
    * 7)
@@ -1182,9 +1145,9 @@ t_error			as_reserve(i_task			task,
    */
 
   if (machine_call(as, as_reserve, task, id) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1206,21 +1169,19 @@ t_error			as_release(i_as			id)
   o_task*		task;
   o_as*			o;
 
-  AS_ENTER(_as);
-
   /*
    * 1)
    */
 
   if (as_get(id, &o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
   if (task_get(o->task, &task) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   task->as = ID_UNUSED;
 
@@ -1229,43 +1190,55 @@ t_error			as_release(i_as			id)
    */
 
   if (id_release(&_as->id, o->id) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to release the identifier");
 
   /*
    * 4)
    */
 
   if (region_flush(o->id) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to flush the regions");
 
   if (set_release(o->regions) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to release the set of regions");
 
   /*
    * 5)
    */
 
   if (segment_flush(o->id) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to flush the segments");
 
   if (set_release(o->segments) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to release the set of segments");
 
   /*
    * 6)
    */
 
   if (machine_call(as, as_release, id) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 7)
    */
 
   if (set_remove(_as->ass, o->id) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to remove the object from the set of address spaces");
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the given address space object exists.
+ */
+
+t_error			as_exist(i_as				id)
+{
+  if (set_exist(_as->ass, id) != ERROR_TRUE)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
@@ -1276,14 +1249,13 @@ t_error			as_release(i_as			id)
 t_error			as_get(i_as				id,
 			       o_as**				o)
 {
-  AS_ENTER(_as);
-
   assert(o != NULL);
 
   if (set_get(_as->ass, id, (void**)o) != ERROR_OK)
-    AS_LEAVE(_as, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the object from the set of "
+		"address spaces");
 
-  AS_LEAVE(_as, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1309,13 +1281,8 @@ t_error			as_initialize(void)
    */
 
   if ((_as = malloc(sizeof(m_as))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "as: cannot allocate memory for the address "
-		  "space manager structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the address space "
+		"manager's structure");
 
   memset(_as, 0x0, sizeof(m_as));
 
@@ -1324,12 +1291,7 @@ t_error			as_initialize(void)
    */
 
   if (id_build(&_as->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "as: unable to initialize the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to initialize the identifier object");
 
   /*
    * 3)
@@ -1339,21 +1301,16 @@ t_error			as_initialize(void)
 		  SET_OPTION_ALLOC | SET_OPTION_SORT,
 		  sizeof(o_as),
 		  &_as->ass) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "as: unable to reserve the address space set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the set of address spaces");
 
   /*
    * 4)
    */
 
   if (machine_call(as, as_initialize) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1377,49 +1334,34 @@ t_error			as_clean(void)
    */
 
   if (machine_call(as, as_clean) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  while (set_head(_as->ass, &i) == ERROR_OK)
+  while (set_head(_as->ass, &i) == ERROR_TRUE)
     {
       if (set_object(_as->ass, i, (void**)&o) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "as: cannot find the address space object "
-		      "corresponding to its identifier\n");
-
-	  return (ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the object from the set of "
+		    "address spaces");
 
       if (o->id == _kernel->as)
 	set_remove(_as->ass, o->id);
       else
 	if (as_release(o->id) != ERROR_OK)
-	  return (ERROR_KO);
+	  CORE_ESCAPE("unable to release the address space object");
     }
 
   if (set_release(_as->ass) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "as: unable to release the as' set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to release the set of address spaces");
 
   /*
    * 3)
    */
 
   if (id_destroy(&_as->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "as: unable to destroy the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
    * 4)
@@ -1427,5 +1369,5 @@ t_error			as_clean(void)
 
   free(_as);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

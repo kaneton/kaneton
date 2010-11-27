@@ -52,14 +52,12 @@ t_error			io_grant(i_port				id,
 				 i_task				task,
 				 t_uint8			width)
 {
-  IO_ENTER(_io);
-
   assert(width > 0 && width <= 8);
 
   if (machine_call(io, io_grant, id, task, width) != ERROR_OK)
-    IO_LEAVE(_io, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  IO_LEAVE(_io, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -70,14 +68,12 @@ t_error			io_deny(i_port				id,
 				i_task				task,
 				t_uint8				width)
 {
-  IO_ENTER(_io);
-
   assert(width > 0 && width <= 8);
 
   if (machine_call(io, io_deny, id, task, width) != ERROR_OK)
-    IO_LEAVE(_io, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  IO_LEAVE(_io, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -88,11 +84,12 @@ t_error			io_read_8(i_task			task,
 				  i_port			id,
 				  t_uint8*			data)
 {
-  IO_ENTER(_io);
-
   assert(data != NULL);
 
-  IO_LEAVE(_io, machine_call(io, io_read_8, task, id, data));
+  if (machine_call(io, io_read_8, task, id, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
 }
 
 /*
@@ -103,11 +100,12 @@ t_error			io_read_16(i_task			task,
 				   i_port			id,
 				   t_uint16*			data)
 {
-  IO_ENTER(_io);
-
   assert(data != NULL);
 
-  IO_LEAVE(_io, machine_call(io, io_read_16, task, id, data));
+  if (machine_call(io, io_read_16, task, id, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
 }
 
 /*
@@ -118,11 +116,12 @@ t_error			io_read_32(i_task			task,
 				   i_port			id,
 				   t_uint32*			data)
 {
-  IO_ENTER(_io);
-
   assert(data != NULL);
 
-  IO_LEAVE(_io, machine_call(io, io_read_32, task, id, data));
+  if (machine_call(io, io_read_32, task, id, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
 }
 
 /*
@@ -133,11 +132,12 @@ t_error			io_read_64(i_task			task,
 				   i_port			id,
 				   t_uint64*			data)
 {
-  IO_ENTER(_io);
-
   assert(data != NULL);
 
-  IO_LEAVE(_io, machine_call(io, io_read_64, task, id, data));
+  if (machine_call(io, io_read_64, task, id, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
 }
 
 /*
@@ -148,9 +148,10 @@ t_error			io_write_8(i_task			task,
 				   i_port			id,
 				   t_uint8			data)
 {
-  IO_ENTER(_io);
+  if (machine_call(io, io_write_8, task, id, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  IO_LEAVE(_io, machine_call(io, io_write_8, task, id, data));
+  CORE_LEAVE();
 }
 
 /*
@@ -161,9 +162,10 @@ t_error			io_write_16(i_task			task,
 				    i_port			id,
 				    t_uint16			data)
 {
-  IO_ENTER(_io);
+  if (machine_call(io, io_write_16, task, id, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  IO_LEAVE(_io, machine_call(io, io_write_16, task, id, data));
+  CORE_LEAVE();
 }
 
 /*
@@ -174,9 +176,10 @@ t_error			io_write_32(i_task			task,
 				    i_port			id,
 				    t_uint32			data)
 {
-  IO_ENTER(_io);
+  if (machine_call(io, io_write_32, task, id, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  IO_LEAVE(_io, machine_call(io, io_write_32, task, id, data));
+  CORE_LEAVE();
 }
 
 /*
@@ -187,9 +190,10 @@ t_error			io_write_64(i_task			task,
 				    i_port			id,
 				    t_uint64			data)
 {
-  IO_ENTER(_io);
+  if (machine_call(io, io_write_64, task, id, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
-  IO_LEAVE(_io, machine_call(io, io_write_64, task, id, data));
+  CORE_LEAVE();
 }
 
 /*
@@ -208,13 +212,7 @@ t_error			io_initialize(void)
    */
 
   if ((_io = malloc(sizeof(m_io))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "io: cannot allocate memory for the io "
-		  "manager structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the IO manager's structure");
 
   memset(_io, 0x0, sizeof(m_io));
 
@@ -223,10 +221,9 @@ t_error			io_initialize(void)
    */
 
   if (machine_call(io, io_initialize) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  return (ERROR_OK);
-
+  CORE_LEAVE();
 }
 
 /*
@@ -245,7 +242,7 @@ t_error			io_clean(void)
    */
 
   if (machine_call(io, io_clean) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
@@ -253,5 +250,5 @@ t_error			io_clean(void)
 
   free(_io);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

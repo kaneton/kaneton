@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton.TETON/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [thu nov 25 12:08:36 2010]
+ * updated       julien quintard   [sat nov 27 20:14:54 2010]
  */
 
 /*
@@ -84,26 +84,24 @@ t_error			task_current(i_task*			tsk)
   i_thread		current;
   o_thread*		o;
 
-  TASK_ENTER(_task);
-
   assert(tsk != NULL);
 
   if (_scheduler == NULL)
     {
       *tsk = _kernel->task;
 
-      TASK_LEAVE(_task, ERROR_OK);
+      CORE_LEAVE();
     }
 
   if (scheduler_current(&current) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the currently scheduled thread");
 
   if (thread_get(current, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the thread object");
 
   *tsk = o->task;
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -115,10 +113,8 @@ t_error			task_show(i_task			id)
   o_task*		o;
   char*			state;
 
-  TASK_ENTER(_task);
-
   if (task_get(id, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   switch (o->state)
     {
@@ -141,9 +137,9 @@ t_error			task_show(i_task			id)
 	      id, o->cpu, state);
 
   if (machine_call(task, task_show, id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -162,14 +158,12 @@ t_error			task_dump(void)
   t_setsz		size;
   t_iterator		i;
 
-  TASK_ENTER(_task);
-
   /*
    * 1)
    */
 
   if (set_size(_task->tasks, &size) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the size of the set of tasks");
 
   /*
    * 2)
@@ -181,13 +175,13 @@ t_error			task_dump(void)
   set_foreach(SET_OPTION_FORWARD, _task->tasks, &i, state)
     {
       if (set_object(_task->tasks, i, (void**)&data) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the task object");
 
       if (task_show(data->id) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to show the task");
     }
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -215,8 +209,6 @@ t_error			task_clone(i_task			old,
   o_task*		to;
   t_iterator		i;
 
-  TASK_ENTER(_task);
-
   assert(new != NULL);
 
   /*
@@ -224,7 +216,7 @@ t_error			task_clone(i_task			old,
    */
 
   if (task_get(old, &from) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
@@ -234,14 +226,14 @@ t_error			task_clone(i_task			old,
 		   from->behaviour,
 		   from->priority,
 		   new) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a task");
 
   /*
    * 3)
    */
 
   if (task_get(*new, &to) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the cloned task");
 
   /*
    * 4)
@@ -249,8 +241,8 @@ t_error			task_clone(i_task			old,
 
   if (from->as != ID_UNUSED)
     {
-      if (as_clone(to->id, from->as, &to->as) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+      if (as_clone(from->as, to->id, &to->as) != ERROR_OK)
+	CORE_ESCAPE("unable to clone the task's address space");
     }
 
   /*
@@ -263,16 +255,11 @@ t_error			task_clone(i_task			old,
       i_thread*		data;
 
       if (set_object(from->threads, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the object from the task's "
+		    "set of threads");
 
       if (thread_clone(to->id, *data, &needless) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to clone the thread");
     }
 
   /*
@@ -292,9 +279,9 @@ t_error			task_clone(i_task			old,
    */
 
   if (machine_call(task, task_clone, old, new) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -323,8 +310,6 @@ t_error			task_reserve(t_class			class,
   o_task		o;
   o_task*		parent;
 
-  TASK_ENTER(_task);
-
   assert(id != NULL);
 
   /*
@@ -335,44 +320,68 @@ t_error			task_reserve(t_class			class,
       (class != TASK_CLASS_DRIVER) &&
       (class != TASK_CLASS_SERVICE) &&
       (class != TASK_CLASS_GUEST))
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("invalid class");
 
   if ((behav != TASK_BEHAVIOUR_KERNEL) &&
       (behav != TASK_BEHAVIOUR_REALTIME) &&
       (behav != TASK_BEHAVIOUR_INTERACTIVE) &&
       (behav != TASK_BEHAVIOUR_TIMESHARING) &&
       (behav != TASK_BEHAVIOUR_BACKGROUND))
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("invalid behaviour");
 
   switch (behav)
     {
       case TASK_BEHAVIOUR_KERNEL:
-	if (prior < TASK_LPRIORITY_KERNEL ||
-	    prior > TASK_HPRIORITY_KERNEL)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_KERNEL ||
+	      prior > TASK_HPRIORITY_KERNEL)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       case TASK_BEHAVIOUR_REALTIME:
-	if (prior < TASK_LPRIORITY_REALTIME ||
-	    prior > TASK_HPRIORITY_REALTIME)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_REALTIME ||
+	      prior > TASK_HPRIORITY_REALTIME)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+
+	  break;
+	}
       case TASK_BEHAVIOUR_INTERACTIVE:
-	if (prior < TASK_LPRIORITY_INTERACTIVE ||
-	    prior > TASK_HPRIORITY_INTERACTIVE)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_INTERACTIVE ||
+	      prior > TASK_HPRIORITY_INTERACTIVE)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       case TASK_BEHAVIOUR_TIMESHARING:
-	if (prior < TASK_LPRIORITY_TIMESHARING ||
-	    prior > TASK_HPRIORITY_TIMESHARING)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_TIMESHARING ||
+	      prior > TASK_HPRIORITY_TIMESHARING)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       case TASK_BEHAVIOUR_BACKGROUND:
-	if (prior < TASK_LPRIORITY_BACKGROUND ||
-	    prior > TASK_HPRIORITY_BACKGROUND)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_BACKGROUND ||
+	      prior > TASK_HPRIORITY_BACKGROUND)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       default:
-	TASK_LEAVE(_task, ERROR_KO);
+	{
+	  CORE_ESCAPE("unknown behaviour '%u'",
+		      behav);
+	}
     }
 
   /*
@@ -392,7 +401,7 @@ t_error			task_reserve(t_class			class,
   if (_kernel->task != ID_UNUSED)
     {
       if (cpu_select(&o.cpu) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to select a CPU on which to place the task");
     }
   else
     o.cpu = _init->bsp;
@@ -404,7 +413,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (id_reserve(&_task->id, &o.id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to reserve an identifier for the task");
 
   /*
    * 4)
@@ -413,13 +422,14 @@ t_error			task_reserve(t_class			class,
   if (_kernel->task != ID_UNUSED)
     {
       if (task_current(&o.parent) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the currently scheduled task");
 
       if (task_get(o.parent, &parent) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the task object");
 
       if (set_add(parent->children, &o) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to add the new task to the list of its parent's "
+		    "children tasks");
     }
   else
     o.parent = ID_UNUSED;
@@ -435,11 +445,7 @@ t_error			task_reserve(t_class			class,
 		  TASK_THREADS_INITSZ,
 		  sizeof (i_thread),
 		  &o.threads) != ERROR_OK)
-    {
-      id_release(&_task->id, o.id);
-
-      TASK_LEAVE(_task, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve a set of threads");
 
   /*
    * 6)
@@ -447,13 +453,7 @@ t_error			task_reserve(t_class			class,
 
   if (set_reserve(array, SET_OPTION_ALLOC, TASK_WAITS_INITSZ,
 		  sizeof (o_wait), &o.waits) != ERROR_OK)
-    {
-      id_release(&_task->id, o.id);
-
-      set_release(o.threads);
-
-      TASK_LEAVE(_task, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve a set for the waiting tasks/threads");
 
   /*
    * 7)
@@ -461,14 +461,7 @@ t_error			task_reserve(t_class			class,
 
   if (set_reserve(ll, SET_OPTION_SORT | SET_OPTION_ALLOC,
 		  sizeof (i_task), &o.children) != ERROR_OK)
-    {
-      id_release(&_task->id, o.id);
-
-      set_release(o.threads);
-      set_release(o.waits);
-
-      TASK_LEAVE(_task, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve a set for the children tasks");
 
   /*
    * 8)
@@ -477,31 +470,14 @@ t_error			task_reserve(t_class			class,
   if (set_reserve(bpt, SET_OPTION_SORT | SET_OPTION_ALLOC,
 		  sizeof (o_message_type),
 		  MESSAGE_BPT_NODESZ, &o.messages) != ERROR_OK)
-  {
-      id_release(&_task->id, o.id);
-
-      set_release(o.threads);
-      set_release(o.waits);
-      set_release(o.children);
-
-      TASK_LEAVE(_task, ERROR_KO);
-  }
+    CORE_ESCAPE("unable to reserve a set for the messages");
 
   /*
    * 9)
    */
 
   if (set_add(_task->tasks, &o) != ERROR_OK)
-    {
-      id_release(&_task->id, o.id);
-
-      set_release(o.messages);
-      set_release(o.threads);
-      set_release(o.waits);
-      set_release(o.children);
-
-      TASK_LEAVE(_task, ERROR_KO);
-    }
+    CORE_ESCAPE("unable to add the object to the set of tasks");
 
   /*
    * 10)
@@ -509,7 +485,7 @@ t_error			task_reserve(t_class			class,
 
   if (machine_call(task, task_reserve, class,
 		   behav, prior, id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 11)
@@ -519,52 +495,21 @@ t_error			task_reserve(t_class			class,
     {
       if (message_register(o.id, MESSAGE_TYPE_INTERFACE,
 			   sizeof (o_syscall)) != ERROR_OK)
-	{
-	  message_flush(o.id);
-
-	  id_release(&_task->id, o.id);
-
-	  set_release(o.messages);
-	  set_release(o.threads);
-	  set_release(o.waits);
-	  set_release(o.children);
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to register the message channel for the "
+		    "kernel interface");
 
       if (message_register(o.id, MESSAGE_TYPE_EVENT,
 			   sizeof (o_event_message)) != ERROR_OK)
-	{
-	  message_flush(o.id);
-
-	  id_release(&_task->id, o.id);
-
-	  set_release(o.messages);
-	  set_release(o.threads);
-	  set_release(o.waits);
-	  set_release(o.children);
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to register the message channel for notifying "
+		    "events");
 
       if (message_register(o.id, MESSAGE_TYPE_TIMER,
 			   sizeof (o_timer_message)) != ERROR_OK)
-
-	{
-	  message_flush(o.id);
-
-	  id_release(&_task->id, o.id);
-
-	  set_release(o.messages);
-	  set_release(o.threads);
-	  set_release(o.waits);
-	  set_release(o.children);
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to register the message channel for triggering "
+		    "timers");
     }
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -585,28 +530,26 @@ t_error			task_release(i_task			id)
 {
   o_task*		o;
 
-  TASK_ENTER(_task);
-
   /*
    * 1)
    */
 
   if (machine_call(task, task_release, id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
   if (task_get(id, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 3)
    */
 
   if (id_release(&_task->id, o->id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to release the task identifier");
 
   /*
    * 4)
@@ -615,7 +558,7 @@ t_error			task_release(i_task			id)
   if (o->as != ID_UNUSED && id != _kernel->task)
     {
       if (as_release(o->as) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to release the task's address space");
     }
 
   /*
@@ -623,36 +566,39 @@ t_error			task_release(i_task			id)
    */
 
   if (thread_flush(id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to flush the task's threads");
 
   if (set_release(o->threads) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to release the set of threads");
+
+  if (set_release(o->children) != ERROR_OK)
+    CORE_ESCAPE("unable to release the set of children tasks");
 
   /*
    * 5)
    */
 
   if (set_release(o->waits) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to release the set of waiting tasks/threads");
 
   /*
    * 6)
    */
 
   if (message_flush(id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to flush the messages");
 
   if (set_release(o->messages) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to release the set of messages");
 
   /*
    * 7)
    */
 
   if (set_remove(_task->tasks, o->id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to remove the object from the set of tasks");
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -674,14 +620,12 @@ t_error			task_priority(i_task			id,
   t_iterator		i;
   t_state		state;
 
-  TASK_ENTER(_task);
-
   /*
    * 1)
    */
 
   if (task_get(id, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
@@ -690,32 +634,55 @@ t_error			task_priority(i_task			id,
   switch (o->behaviour)
     {
       case TASK_BEHAVIOUR_KERNEL:
-	if (prior < TASK_LPRIORITY_KERNEL ||
-	    prior > TASK_HPRIORITY_KERNEL)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_KERNEL ||
+	      prior > TASK_HPRIORITY_KERNEL)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       case TASK_BEHAVIOUR_REALTIME:
-	if (prior < TASK_LPRIORITY_REALTIME ||
-	    prior > TASK_HPRIORITY_REALTIME)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_REALTIME ||
+	      prior > TASK_HPRIORITY_REALTIME)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       case TASK_BEHAVIOUR_INTERACTIVE:
-	if (prior < TASK_LPRIORITY_INTERACTIVE ||
-	    prior > TASK_HPRIORITY_INTERACTIVE)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_INTERACTIVE ||
+	      prior > TASK_HPRIORITY_INTERACTIVE)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       case TASK_BEHAVIOUR_TIMESHARING:
-	if (prior < TASK_LPRIORITY_TIMESHARING ||
-	    prior > TASK_HPRIORITY_TIMESHARING)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_TIMESHARING ||
+	      prior > TASK_HPRIORITY_TIMESHARING)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       case TASK_BEHAVIOUR_BACKGROUND:
-	if (prior < TASK_LPRIORITY_BACKGROUND ||
-	    prior > TASK_HPRIORITY_BACKGROUND)
-	  TASK_LEAVE(_task, ERROR_KO);
-	break;
+	{
+	  if (prior < TASK_LPRIORITY_BACKGROUND ||
+	      prior > TASK_HPRIORITY_BACKGROUND)
+	    CORE_ESCAPE("the given priority is inconsistent with the "
+			"behaviour");
+
+	  break;
+	}
       default:
-	TASK_LEAVE(_task, ERROR_KO);
+	{
+	  CORE_ESCAPE("unknown behaviour '%u'",
+		      o->behaviour);
+	}
     }
 
   /*
@@ -729,7 +696,7 @@ t_error			task_priority(i_task			id,
    */
 
   if (machine_call(task, task_priority, id, prior) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 5)
@@ -740,19 +707,13 @@ t_error			task_priority(i_task			id,
       i_thread*		th;
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the thread object");
 
       if (scheduler_update(*th) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to update the thread scheduling state");
     }
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -773,21 +734,19 @@ t_error			task_run(i_task				id)
   t_iterator		i;
   t_state		st;
 
-  TASK_ENTER(_task);
-
   /*
    * 1)
    */
 
   if (task_get(id, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
   if (o->state == TASK_STATE_RUN)
-    TASK_LEAVE(_task, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * 3)
@@ -798,16 +757,13 @@ t_error			task_run(i_task				id)
       o_wait*		w;
 
       if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the waiting entity");
 
       if (w->options & WAIT_START)
-	task_run(w->u.task);
+	{
+	  if (task_run(w->u.task) != ERROR_OK)
+	    CORE_ESCAPE("unable to run the waiting task");
+	}
 
       /* XXX remove from wait list */
     }
@@ -817,7 +773,7 @@ t_error			task_run(i_task				id)
    */
 
   if (machine_call(task, task_run, id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 5)
@@ -828,19 +784,16 @@ t_error			task_run(i_task				id)
       i_thread*		th;
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the object "
-		      "corresponding to its identifier\n");
+	CORE_ESCAPE("unable to retrieve the thread object");
 
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+      // XXX ne run que les threads en stop car block/zombie ca n'a
+      // pas de sens.
 
       if (thread_run(*th) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to run the thread");
     }
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -861,21 +814,19 @@ t_error			task_stop(i_task			id)
   t_iterator		i;
   t_state		st;
 
-  TASK_ENTER(_task);
-
   /*
    * 1)
    */
 
   if (task_get(id, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
   if (o->state == TASK_STATE_STOP)
-    TASK_LEAVE(_task, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * 3)
@@ -886,16 +837,13 @@ t_error			task_stop(i_task			id)
       o_wait*		w;
 
       if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the waiting entity");
 
       if (w->options & WAIT_STOP)
-	task_run(w->u.task);
+	{
+	  if (task_run(w->u.task) != ERROR_OK)
+	    CORE_ESCAPE("unable to run the task");
+	}
 
       /* XXX remove from wait list */
     }
@@ -905,7 +853,7 @@ t_error			task_stop(i_task			id)
    */
 
   if (machine_call(task, task_stop, id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 5)
@@ -916,19 +864,13 @@ t_error			task_stop(i_task			id)
       i_thread*		th;
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the thread");
 
       if (thread_stop(*th) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to stop the thread");
     }
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -946,33 +888,29 @@ t_error			task_stop(i_task			id)
 t_error			task_block(i_task			id)
 {
   o_task*		o;
-  t_iterator		i;
-  t_state		st;
-
-  TASK_ENTER(_task);
 
   /*
    * 1)
    */
 
   if (task_get(id, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
   if (o->state == TASK_STATE_BLOCK)
-    TASK_LEAVE(_task, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * 4)
    */
 
   if (machine_call(task, task_block, id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -993,21 +931,19 @@ t_error			task_die(i_task				id)
   t_iterator		i;
   t_state		st;
 
-  TASK_ENTER(_task);
-
   /*
    * 1)
    */
 
   if (task_get(id, &o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
   if (o->state == TASK_STATE_ZOMBIE)
-    TASK_LEAVE(_task, ERROR_OK);
+    CORE_LEAVE();
 
   /*
    * 3)
@@ -1018,16 +954,13 @@ t_error			task_die(i_task				id)
       o_wait*		w;
 
       if (set_object(o->waits, i, (void**)&w) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the waiting entity");
 
       if (w->options & WAIT_DEATH)
-	task_run(w->u.task);
+	{
+	  if (task_run(w->u.task) != ERROR_OK)
+	    CORE_ESCAPE("unable to run the task");
+	}
 
       /* XXX remove from wait list */
     }
@@ -1039,7 +972,7 @@ t_error			task_die(i_task				id)
    */
 
   if (machine_call(task, task_die, id) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 5)
@@ -1050,19 +983,13 @@ t_error			task_die(i_task				id)
       i_thread*		th;
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the object "
-		      "corresponding to its identifier\n");
-
-	  TASK_LEAVE(_task, ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the thread");
 
       if (thread_stop(*th) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to stop the thread");
     }
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1075,8 +1002,6 @@ t_error			task_wait(i_task			id,
 {
   o_task*		o;
   o_wait		w;
-
-  TASK_ENTER(_task);
 
   assert(wait != NULL);
 
@@ -1093,20 +1018,20 @@ t_error			task_wait(i_task			id,
        */
 
       if (task_get(id, &o) != ERROR_OK)
-	TASK_LEAVE(_task, ERROR_KO);
+	CORE_ESCAPE("unable to retrieve the task object");
 
       /*
        * b)
        */
 
       if ((opts & WAIT_START) && o->state == TASK_STATE_RUN)
-	TASK_LEAVE(_task, ERROR_OK);
+	CORE_LEAVE();
 
       if ((opts & WAIT_STOP) && o->state == TASK_STATE_STOP)
-	TASK_LEAVE(_task, ERROR_OK);
+	CORE_LEAVE();
 
       if ((opts & WAIT_DEATH) && o->state == TASK_STATE_ZOMBIE)
-	TASK_LEAVE(_task, ERROR_OK);
+	CORE_LEAVE();
 
       /*
        * c)
@@ -1119,19 +1044,19 @@ t_error			task_wait(i_task			id,
 	   */
 
 	  if (task_current(&w.u.task) != ERROR_OK)
-	    TASK_LEAVE(_task, ERROR_KO);;
+	    CORE_ESCAPE("unable to retrieve the currently scheduled task");
 
 	  w.options = opts;
 
 	  if (set_add(o->waits, &w) != ERROR_OK)
-	    TASK_LEAVE(_task, ERROR_KO);
+	    CORE_ESCAPE("unable to add the task to the waiting list");
 
 	  /*
 	   * e)
 	   */
 
 	  if (task_stop(w.u.task) != ERROR_OK)
-	    TASK_LEAVE(_task, ERROR_KO);
+	    CORE_ESCAPE("unable to stop the task");
 	}
     }
   else
@@ -1140,6 +1065,7 @@ t_error			task_wait(i_task			id,
        * 2)
        */
 
+      // XXX
     }
 
   /*
@@ -1148,7 +1074,7 @@ t_error			task_wait(i_task			id,
 
   if (wait != NULL)
     {
-
+      // XXX
     }
 
   /*
@@ -1157,9 +1083,21 @@ t_error			task_wait(i_task			id,
    */
 
   if (machine_call(task, task_wait, id, opts, wait) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  TASK_LEAVE(_task, ERROR_KO);
+  CORE_ESCAPE("unable to wait for the entity");
+}
+
+/*
+ * this function returns true if the task object exists.
+ */
+
+t_error			task_exist(i_task			id)
+{
+  if (set_exist(_task->tasks, id) != ERROR_TRUE)
+    CORE_FALSE();
+
+  CORE_TRUE();
 }
 
 /*
@@ -1169,14 +1107,12 @@ t_error			task_wait(i_task			id,
 t_error			task_get(i_task				id,
 				 o_task**			o)
 {
-  TASK_ENTER(_task);
-
   assert(o != NULL);
 
   if (set_get(_task->tasks, id, (void**)o) != ERROR_OK)
-    TASK_LEAVE(_task, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the object from the set of tasks");
 
-  TASK_LEAVE(_task, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1212,13 +1148,7 @@ t_error			task_initialize(void)
    */
 
   if ((_task = malloc(sizeof(m_task))) == NULL)
-    {
-      module_call(console, console_message,
-		  '!', "task: cannot allocate memory for the task manager "
-		  "structure\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to allocate memory for the task manager's structure");
 
   memset(_task, 0x0, sizeof(m_task));
 
@@ -1227,12 +1157,7 @@ t_error			task_initialize(void)
    */
 
   if (id_build(&_task->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "task: unable to initialize the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to build the identifier object");
 
   /*
    * 3)
@@ -1240,12 +1165,7 @@ t_error			task_initialize(void)
 
   if (set_reserve(ll, SET_OPTION_ALLOC | SET_OPTION_SORT,
 		  sizeof(o_task), &_task->tasks) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "task: unable to reserve the task set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the set of tasks");
 
   /*
    * 4)
@@ -1253,28 +1173,13 @@ t_error			task_initialize(void)
 
   if (task_reserve(TASK_CLASS_KERNEL, TASK_BEHAVIOUR_KERNEL,
 		   TASK_PRIORITY_KERNEL, &_kernel->task) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "task: unable to reserve the kernel task\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the kernel task");
 
   if (as_reserve(_kernel->task, &_kernel->as) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "task: unable to reserve the kernel address space\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to reserve the kernel task's address space");
 
   if (task_run(_kernel->task) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "task: unable to set the task as running\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to run the kernel task");
 
   /*
    * 5)
@@ -1283,7 +1188,7 @@ t_error			task_initialize(void)
   for (i = 0; i < _init->nsegments; i++)
     {
       if ((segment = malloc(sizeof(o_segment))) == NULL)
-	return (ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the segment object");
 
       segment->type = SEGMENT_TYPE_MEMORY;
       segment->address = _init->segments[i].address;
@@ -1293,13 +1198,8 @@ t_error			task_initialize(void)
       assert(segment->size != 0);
 
       if (segment_inject(_kernel->as, segment, &segments[i]) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "segment: cannot add a pre-reserved segment in "
-		      "the segment set\n");
-
-	  return (ERROR_KO);
-	}
+	CORE_ESCAPE("unable to inject the segment object pre-reserved "
+		    "by the boot loader");
 
       if (_init->scode == _init->segments[i].address)
 	_system = segments[i];
@@ -1312,7 +1212,7 @@ t_error			task_initialize(void)
   for (i = 0; i < _init->nregions; i++)
     {
       if ((region = malloc(sizeof(o_region))) == NULL)
-	return (ERROR_KO);
+	CORE_ESCAPE("unable to allocate memory for the region object");
 
       region->segment = segments[_init->regions[i].segment];
       region->address = _init->regions[i].address;
@@ -1323,13 +1223,8 @@ t_error			task_initialize(void)
       assert(region->size != 0);
 
       if (region_inject(_kernel->as, region, &useless) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "region: cannot map a region to a pre-reserved "
-		      "region\n");
-
-	  return (ERROR_KO);
-	}
+	CORE_ESCAPE("unable to inject the region object pre-reserved "
+		    "by the boot loader");
     }
 
   /*
@@ -1337,9 +1232,9 @@ t_error			task_initialize(void)
    */
 
   if (machine_call(task, task_initialize) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1363,46 +1258,30 @@ t_error			task_clean(void)
    */
 
   if (machine_call(task, task_clean) != ERROR_OK)
-    return (ERROR_KO);
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  while (set_head(_task->tasks, &i) == ERROR_OK)
+  while (set_head(_task->tasks, &i) == ERROR_TRUE)
     {
       if (set_object(_task->tasks, i, (void**)&data) != ERROR_OK)
-	{
-	  module_call(console, console_message,
-		      '!', "task: cannot find the task object "
-		      "corresponding to its identifier\n");
-
-	  return (ERROR_KO);
-	}
+	CORE_ESCAPE("unable to retrieve the task identifier");
 
       if (task_release(*data) != ERROR_OK)
-	return (ERROR_KO);
+	CORE_ESCAPE("unable to release the task");
     }
 
   if (set_release(_task->tasks) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "task: unable to release the task set\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to release the set of tasks");
 
   /*
    * 3)
    */
 
   if (id_destroy(&_task->id) != ERROR_OK)
-    {
-      module_call(console, console_message,
-		  '!', "task: unable to destroy the identifier object\n");
-
-      return (ERROR_KO);
-    }
+    CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
    * 4)
@@ -1410,5 +1289,5 @@ t_error			task_clean(void)
 
   free(_task);
 
-  return (ERROR_OK);
+  CORE_LEAVE();
 }

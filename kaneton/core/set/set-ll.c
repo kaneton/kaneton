@@ -60,15 +60,55 @@ t_error			set_type_ll(i_set			setid)
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
-  if (o->type == SET_TYPE_LL)
-    SET_LEAVE(_set, ERROR_OK);
+  if (o->type != SET_TYPE_LL)
+    CORE_ESCAPE("invalid set type");
 
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_LEAVE();
+}
+
+/*
+ * this function tries to find an object with its identifier and returns
+ * true or false.
+ *
+ * steps:
+ *
+ * 1) checks if the identifier is a correct one.
+ * 2) gets the set object corresponding to the set identifier.
+ * 3) tries to find the identifier looked for in the set object's elements.
+ */
+
+t_error			set_exist_ll(i_set			setid,
+				     t_id			id)
+{
+  t_set_ll_node*	tmp;
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  assert(id != ID_UNUSED);
+
+  /*
+   * 2)
+   */
+
+  assert(set_descriptor(setid, &o) == ERROR_OK);
+
+  /*
+   * 3)
+   */
+
+  for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->next)
+    {
+      if (*((t_id*)tmp->data) == id)
+	CORE_TRUE();
+    }
+
+  CORE_FALSE();
 }
 
 /*
@@ -86,14 +126,12 @@ t_error			set_show_ll(i_set			setid)
   o_set*		o;
   t_iterator		i;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
@@ -113,13 +151,13 @@ t_error			set_show_ll(i_set			setid)
 		  *((t_id*)n->data), n->previous, n, n->next);
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
  * this function returns an iterator on the first node of the list.
  *
- * if there is no node in the list, the function returns ERROR_KO.
+ * if there is no node in the list, the function returns ERROR_FALSE.
  */
 
 t_error			set_head_ll(i_set			setid,
@@ -127,27 +165,24 @@ t_error			set_head_ll(i_set			setid,
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   if (o->size == 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
   iterator->u.ll.node = o->u.ll.head;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
  * this function returns an iterator on the last node of the list.
  *
- * if there is no node in the list, the function returns ERROR_KO.
+ * if there is no node in the list, the function returns ERROR_FALSE.
  */
 
 t_error			set_tail_ll(i_set			setid,
@@ -155,21 +190,18 @@ t_error			set_tail_ll(i_set			setid,
 {
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   if (o->size == 0)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
   iterator->u.ll.node = o->u.ll.tail;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -183,21 +215,18 @@ t_error			set_previous_ll(i_set			setid,
   t_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(previous != NULL);
 
   memset(previous, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   if (c->previous == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
   previous->u.ll.node = c->previous;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -211,21 +240,18 @@ t_error			set_next_ll(i_set			setid,
   t_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(next != NULL);
 
   memset(next, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+  assert(set_descriptor(setid, &o) == ERROR_OK);
 
   if (c->next == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_FALSE();
 
   next->u.ll.node = c->next;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_TRUE();
 }
 
 /*
@@ -248,8 +274,6 @@ t_error			set_insert_ll(i_set			setid,
   t_set_ll_node		*n;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -257,28 +281,28 @@ t_error			set_insert_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the provided object must begin with a valid identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
    */
 
   if (o->options & SET_OPTION_SORT)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to insert an object in a sorted set");
 
   /*
    * 4)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -292,7 +316,7 @@ t_error			set_insert_ll(i_set			setid,
 	{
 	  free(n);
 
-	  SET_LEAVE(_set, ERROR_KO);
+	  CORE_ESCAPE("unable to allocate memory for the object's copy");
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -323,7 +347,7 @@ t_error			set_insert_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -346,8 +370,6 @@ t_error			set_append_ll(i_set			setid,
   t_set_ll_node		*n;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -355,28 +377,28 @@ t_error			set_append_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the provided object must begin with a valid identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
    */
 
   if (o->options & SET_OPTION_SORT)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to append an object to a sorted set");
 
   /*
    * 4)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -390,7 +412,7 @@ t_error			set_append_ll(i_set			setid,
 	{
 	  free(n);
 
-	  SET_LEAVE(_set, ERROR_KO);
+	  CORE_ESCAPE("unable to allocate memory for the object's copy");
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -421,7 +443,7 @@ t_error			set_append_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -446,8 +468,6 @@ t_error			set_before_ll(i_set			setid,
   t_set_ll_node		*n;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -455,28 +475,28 @@ t_error			set_before_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the provided object must begin with a valid identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
    */
 
   if (o->options & SET_OPTION_SORT)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to insert at a precise location in a sorted set");
 
   /*
    * 4)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -490,7 +510,7 @@ t_error			set_before_ll(i_set			setid,
 	{
 	  free(n);
 
-	  SET_LEAVE(_set, ERROR_KO);
+	  CORE_ESCAPE("unable to allocate memory for the object's copy");
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -520,7 +540,7 @@ t_error			set_before_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -546,8 +566,6 @@ t_error			set_after_ll(i_set			setid,
   t_set_ll_node		*n;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -555,28 +573,28 @@ t_error			set_after_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the provided object must begin with a valid identifier");
 
  /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
    */
 
   if (o->options & SET_OPTION_SORT)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to insert at a precise location in a sorted set");
 
   /*
    * 4)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -590,7 +608,7 @@ t_error			set_after_ll(i_set			setid,
 	{
 	  free(n);
 
-	  SET_LEAVE(_set, ERROR_KO);
+	  CORE_ESCAPE("unable to allocate memory for the object's copy");
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -620,7 +638,7 @@ t_error			set_after_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -650,8 +668,6 @@ t_error			set_add_ll(i_set			setid,
   t_set_ll_node*	n;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(data != NULL);
 
   /*
@@ -659,21 +675,21 @@ t_error			set_add_ll(i_set			setid,
    */
 
   if (*((t_id*)data) == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the provided object must begin with a valid identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
@@ -687,7 +703,7 @@ t_error			set_add_ll(i_set			setid,
 	{
 	  free(n);
 
-	  SET_LEAVE(_set, ERROR_KO);
+	  CORE_ESCAPE("unable to allocate memory for the object's copy");
 	}
 
       memcpy(n->data, data, o->datasz);
@@ -723,19 +739,16 @@ t_error			set_add_ll(i_set			setid,
 		   * i)
 		   */
 
-		  module_call(console, console_message,
-			      '!', "set: identifier collision detected "
-			      "in the set %qu on the object identifier %qu\n",
-			      o->id,
-			      *((t_id*)n->data));
-
 		  if ((o->options & SET_OPTION_ALLOC) ||
 		      (o->options & SET_OPTION_FREE))
 		    free(n->data);
 
 		  free(n);
 
-		  SET_LEAVE(_set, ERROR_KO);
+		  CORE_ESCAPE("identifier collision detected in the set "
+			      "%qu on the object identifier %qu\n",
+			      o->id,
+			      *((t_id*)n->data));
 		}
 
 	      if (*((t_id*)n->data) < *((t_id*)tmp->data))
@@ -815,7 +828,7 @@ t_error			set_add_ll(i_set			setid,
 
   o->size++;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -838,21 +851,19 @@ t_error			set_remove_ll(i_set			setid,
   o_set*		o;
   t_iterator		i;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (set_locate(setid, id, &i) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to locate the object in the set");
 
   tmp = i.u.ll.node;
 
@@ -890,7 +901,7 @@ t_error			set_remove_ll(i_set			setid,
 
   o->size--;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -912,14 +923,12 @@ t_error			set_delete_ll(i_set			setid,
   t_set_ll_node*	n;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
@@ -927,7 +936,7 @@ t_error			set_delete_ll(i_set			setid,
 
   n = iterator.u.ll.node;
   if (n == NULL)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("the object the iterator points to does not exist");
 
   /*
    * 3)
@@ -963,7 +972,7 @@ t_error			set_delete_ll(i_set			setid,
 
   o->size--;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -982,14 +991,12 @@ t_error			set_flush_ll(i_set			setid)
   t_set_ll_node*	tmp;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
@@ -1021,7 +1028,7 @@ t_error			set_flush_ll(i_set			setid)
 
   o->size = 0;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1042,8 +1049,6 @@ t_error			set_locate_ll(i_set			setid,
   t_set_ll_node*	tmp;
   o_set*		o;
 
-  SET_ENTER(_set);
-
   assert(iterator != NULL);
 
   /*
@@ -1051,14 +1056,14 @@ t_error			set_locate_ll(i_set			setid,
    */
 
   if (id == ID_UNUSED)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("invalid object identifier");
 
   /*
    * 2)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 3)
@@ -1070,11 +1075,11 @@ t_error			set_locate_ll(i_set			setid,
 	{
 	  iterator->u.ll.node = tmp;
 
-	  SET_LEAVE(_set, ERROR_OK);
+	  CORE_LEAVE();
 	}
     }
 
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("unable to find the given object identifier in the set");
 }
 
 /*
@@ -1087,11 +1092,9 @@ t_error			set_object_ll(i_set			setid,
 {
   t_set_ll_node*	n = iterator.u.ll.node;
 
-  SET_ENTER(_set);
-
   *data = n->data;
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1112,8 +1115,6 @@ t_error			set_reserve_ll(t_options		options,
 {
   o_set			o;
 
-  SET_ENTER(_set);
-
   assert(datasz >= sizeof (t_id));
   assert(setid != NULL);
 
@@ -1128,10 +1129,11 @@ t_error			set_reserve_ll(t_options		options,
    */
 
   if (options & SET_OPTION_ORGANISE)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to set the organise option since linked-list sets "
+		"are implicitly organised");
 
   if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to reserve a set with both alloc and free options");
 
   /*
    * 3)
@@ -1144,7 +1146,7 @@ t_error			set_reserve_ll(t_options		options,
   else
     {
       if (id_reserve(&_set->id, setid) != ERROR_OK)
-	SET_LEAVE(_set, ERROR_KO);
+	CORE_ESCAPE("unable to reserve the set identifier");
     }
 
   /*
@@ -1169,10 +1171,10 @@ t_error			set_reserve_ll(t_options		options,
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set->id, o.id);
 
-      SET_LEAVE(_set, ERROR_KO);
+      CORE_ESCAPE("unable to register the set descriptor");
     }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1190,38 +1192,38 @@ t_error			set_release_ll(i_set			setid)
 {
   o_set			*o;
 
-  SET_ENTER(_set);
-
   /*
    * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
   if (set_flush(setid) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to flush the set");
 
   /*
    * 3)
    */
 
   if (id_release(&_set->id, o->id) != ERROR_OK)
-    SET_LEAVE(_set, ERROR_KO);
+    CORE_ESCAPE("unable to release the set identifier");
 
   /*
    * 4)
    */
 
   if (!(o->options & SET_OPTION_CONTAINER))
-    if (set_destroy(o->id) != ERROR_OK)
-      SET_LEAVE(_set, ERROR_KO);
+    {
+      if (set_destroy(o->id) != ERROR_OK)
+	CORE_ESCAPE("unable to destroy the set descriptor");
+    }
 
-  SET_LEAVE(_set, ERROR_OK);
+  CORE_LEAVE();
 }
 
 /*
@@ -1232,9 +1234,7 @@ t_error			set_release_ll(i_set			setid)
 t_error			set_push_ll(i_set			setid,
 				    void*			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -1244,9 +1244,7 @@ t_error			set_push_ll(i_set			setid,
 
 t_error			set_pop_ll(i_set			setid)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }
 
 /*
@@ -1257,7 +1255,5 @@ t_error			set_pop_ll(i_set			setid)
 t_error			set_pick_ll(i_set			setid,
 				    void**			data)
 {
-  SET_ENTER(_set);
-
-  SET_LEAVE(_set, ERROR_KO);
+  CORE_ESCAPE("this type of set does not support this operation");
 }

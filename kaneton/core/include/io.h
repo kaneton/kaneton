@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/io.h
+ * file          /home/mycure/kaneton.TETON/kaneton/core/include/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [fri jun 22 18:39:31 2007]
+ * updated       julien quintard   [sat nov 27 06:19:59 2010]
  */
 
 #ifndef CORE_IO_H
@@ -76,38 +76,6 @@ typedef struct
   t_error			(*io_initialize)(void);
   t_error			(*io_clean)(void);
 }				d_io;
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * check
- */
-
-#define IO_CHECK(_io_)							\
-  {									\
-    if ((_io_) == NULL)							\
-      return (ERROR_KO);						\
-  }
-
-/*
- * enter
- */
-
-#define IO_ENTER(_io_)							\
-  {									\
-    IO_CHECK((_io_));							\
-  }
-
-/*
- * leave
- */
-
-#define IO_LEAVE(_io_, _error_)						\
-  {									\
-    return (_error_);							\
-  }
 
 /*
  * ---------- prototypes ------------------------------------------------------

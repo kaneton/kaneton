@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [wed nov 24 14:19:41 2010]
+ * updated       julien quintard   [fri nov 26 16:17:51 2010]
  */
 
 /*
@@ -37,12 +37,6 @@
  */
 
 extern m_kernel*	_kernel;
-
-/*
- * the as manager.
- */
-
-extern m_as*		_as;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -76,18 +70,16 @@ d_as			glue_as_dispatch =
 t_error			glue_as_reserve(i_task			tskid,
 					i_as*			asid)
 {
-  AS_ENTER(_as);
-
   if (tskid == _kernel->task)
     {
       if (ia32_kernel_as_initialize(*asid) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	MACHINE_ESCAPE("unable to initialize the kernel's address space");
     }
   else
     {
       if (ia32_task_as_initialize(*asid) != ERROR_OK)
-	AS_LEAVE(_as, ERROR_KO);
+	MACHINE_ESCAPE("unable to initialize the task's address space");
     }
 
-  AS_LEAVE(_as, ERROR_OK);
+  MACHINE_LEAVE();
 }

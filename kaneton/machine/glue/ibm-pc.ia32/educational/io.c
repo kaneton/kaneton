@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       julien quintard   [wed nov 24 14:20:32 2010]
+ * updated       julien quintard   [sat nov 27 16:21:31 2010]
  */
 
 /*
@@ -31,12 +31,6 @@
  */
 
 #include <kaneton.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-extern m_io*		_io;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -74,12 +68,10 @@ t_error			glue_io_grant(i_port			id,
 				      i_task			task,
 				      t_uint8			width)
 {
-  IO_ENTER(_io);
-
   if (ia32_set_io_bitmap(task, id, width, 1) != ERROR_OK)
-    IO_LEAVE(_io, ERROR_KO);
+    MACHINE_ESCAPE("unable to set the IO bitmap");
 
-  IO_LEAVE(_io, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -90,12 +82,10 @@ t_error			glue_io_deny(i_port			id,
 				     i_task			task,
 				     t_uint8			width)
 {
-  IO_ENTER(_io);
-
   if (ia32_set_io_bitmap(task, id, width, 0) != ERROR_OK)
-    IO_LEAVE(_io, ERROR_KO);
+    MACHINE_ESCAPE("unable to set the IO bitmap");
 
-  IO_LEAVE(_io, ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 
@@ -105,10 +95,8 @@ t_error			glue_io_deny(i_port			id,
 
 t_error			glue_io_initialize(void)
 {
-  IO_ENTER(_io);
-
   if (ia32_reset_iopl() != ERROR_OK)
-    IO_LEAVE(_io, ERROR_KO);
+    MACHINE_ESCAPE("unable to reset the IOPL");
 
-  IO_LEAVE(_io, ERROR_OK);
+  MACHINE_LEAVE();
 }
