@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/kaneton/core/scheduler/Makefile
+# file          /home/mycure/kaneton.STABLE/kaneton/core/scheduler/Makefile
 #
 # created       julien quintard   [thu jun 28 20:35:48 2007]
-# updated       matthieu bucchianeri   [sat sep  1 12:29:59 2007]
+# updated       julien quintard   [sun nov 28 19:44:50 2010]
 #
 
 #
@@ -33,7 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SCHEDULER_C		:=		scheduler.c
+SCHEDULER_C		:=		scheduler-mfq.c
 
 SCHEDULER_O		:=		$(SCHEDULER_C:.c=.o)
 

@@ -5,13 +5,11 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...TABLE/kaneton/core/scheduler/scheduler.c
+ * file          /home/mycure/kane...E/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sun nov 28 19:35:19 2010]
+ * updated       julien quintard   [sun nov 28 19:45:12 2010]
  */
-
-#if (SCHEDULER_ALGORITHM == SCHEDULER_ALGORITHM_MFQ)
 
 /*
  * ---------- information -----------------------------------------------------
@@ -58,6 +56,8 @@
  * scheduler   and  the  current   GNU/Linux  implementation   can  be
  * downloaded at http://josh.trancesoftware.com/linux.
  */
+
+#if (SCHEDULER_ALGORITHM == SCHEDULER_ALGORITHM_MFQ)
 
 /*
  * ---------- includes --------------------------------------------------------

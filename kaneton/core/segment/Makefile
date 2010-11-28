@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/kaneton/core/segment/Makefile
 #
 # created       julien quintard   [sun jun 10 17:02:46 2007]
-# updated       julien quintard   [sun nov 28 19:32:43 2010]
+# updated       julien quintard   [sun nov 28 19:44:24 2010]
 #
 
 #
@@ -33,7 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SEGMENT_C		:=		segment.c			
+SEGMENT_C		:=		segment-fit.c			
 
 SEGMENT_O		:=		$(SEGMENT_C:.c=.o)
 
