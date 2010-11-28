@@ -127,6 +127,10 @@
  * ../../core/core.c
  */
 
+void			thread1(void);
+
+void			THREAD(void* p);
+
 void			kaneton(t_init*				bootloader);
 
 t_error			kaneton_spawn(void);

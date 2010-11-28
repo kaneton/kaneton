@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [sat nov 27 20:14:54 2010]
+ * updated       julien quintard   [sun nov 28 19:41:41 2010]
  */
 
 /*
@@ -451,16 +451,21 @@ t_error			task_reserve(t_class			class,
    * 6)
    */
 
-  if (set_reserve(array, SET_OPTION_ALLOC, TASK_WAITS_INITSZ,
-		  sizeof (o_wait), &o.waits) != ERROR_OK)
+  if (set_reserve(array,
+		  SET_OPTION_ALLOC,
+		  TASK_WAITS_INITSZ,
+		  sizeof (i_task),
+		  &o.waits) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a set for the waiting tasks/threads");
 
   /*
    * 7)
    */
 
-  if (set_reserve(ll, SET_OPTION_SORT | SET_OPTION_ALLOC,
-		  sizeof (i_task), &o.children) != ERROR_OK)
+  if (set_reserve(ll,
+		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  sizeof (i_task),
+		  &o.children) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a set for the children tasks");
 
   /*
@@ -469,7 +474,8 @@ t_error			task_reserve(t_class			class,
 
   if (set_reserve(bpt, SET_OPTION_SORT | SET_OPTION_ALLOC,
 		  sizeof (o_message_type),
-		  MESSAGE_BPT_NODESZ, &o.messages) != ERROR_OK)
+		  MESSAGE_BPT_NODESZ,
+		  &o.messages) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a set for the messages");
 
   /*
@@ -483,8 +489,7 @@ t_error			task_reserve(t_class			class,
    * 10)
    */
 
-  if (machine_call(task, task_reserve, class,
-		   behav, prior, id) != ERROR_OK)
+  if (machine_call(task, task_reserve, class, behav, prior, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -748,10 +753,12 @@ t_error			task_run(i_task				id)
   if (o->state == TASK_STATE_RUN)
     CORE_LEAVE();
 
+  o->state = TASK_STATE_RUN;
+
   /*
    * 3)
    */
-
+  /*
   set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
     {
       o_wait*		w;
@@ -765,9 +772,9 @@ t_error			task_run(i_task				id)
 	    CORE_ESCAPE("unable to run the waiting task");
 	}
 
-      /* XXX remove from wait list */
+	// XXX remove from wait list
     }
-
+  */
   /*
    * 4)
    */
@@ -828,10 +835,12 @@ t_error			task_stop(i_task			id)
   if (o->state == TASK_STATE_STOP)
     CORE_LEAVE();
 
+  o->state = TASK_STATE_STOP;
+
   /*
    * 3)
    */
-
+  /*
   set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
     {
       o_wait*		w;
@@ -845,8 +854,9 @@ t_error			task_stop(i_task			id)
 	    CORE_ESCAPE("unable to run the task");
 	}
 
-      /* XXX remove from wait list */
+	// XXX remove from wait list
     }
+  */
 
   /*
    * 4)
@@ -903,6 +913,8 @@ t_error			task_block(i_task			id)
   if (o->state == TASK_STATE_BLOCK)
     CORE_LEAVE();
 
+  o->state = TASK_STATE_BLOCK;
+
   /*
    * 4)
    */
@@ -945,10 +957,12 @@ t_error			task_die(i_task				id)
   if (o->state == TASK_STATE_ZOMBIE)
     CORE_LEAVE();
 
+  o->state = TASK_STATE_ZOMBIE;
+
   /*
    * 3)
    */
-
+  /*
   set_foreach(SET_OPTION_FORWARD, o->waits, &i, st)
     {
       o_wait*		w;
@@ -962,9 +976,9 @@ t_error			task_die(i_task				id)
 	    CORE_ESCAPE("unable to run the task");
 	}
 
-      /* XXX remove from wait list */
+      // XXX remove from wait list
     }
-
+  */
   // XXX if list of waits empty -> task_release
 
   /*
@@ -1000,29 +1014,16 @@ t_error			task_wait(i_task			id,
 				  t_options			opts,
 				  t_wait*			wait)
 {
+  /*
   o_task*		o;
   o_wait		w;
 
   assert(wait != NULL);
 
-  /* XXX */
-
   if (opts & WAIT_ID)
     {
-      /*
-       * 1)
-       */
-
-      /*
-       * a)
-       */
-
       if (task_get(id, &o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
-
-      /*
-       * b)
-       */
 
       if ((opts & WAIT_START) && o->state == TASK_STATE_RUN)
 	CORE_LEAVE();
@@ -1033,16 +1034,8 @@ t_error			task_wait(i_task			id,
       if ((opts & WAIT_DEATH) && o->state == TASK_STATE_ZOMBIE)
 	CORE_LEAVE();
 
-      /*
-       * c)
-       */
-
       if (!(opts & WAIT_NOHANG))
 	{
-	  /*
-	   * d)
-	   */
-
 	  if (task_current(&w.u.task) != ERROR_OK)
 	    CORE_ESCAPE("unable to retrieve the currently scheduled task");
 
@@ -1051,41 +1044,24 @@ t_error			task_wait(i_task			id,
 	  if (set_add(o->waits, &w) != ERROR_OK)
 	    CORE_ESCAPE("unable to add the task to the waiting list");
 
-	  /*
-	   * e)
-	   */
-
 	  if (task_stop(w.u.task) != ERROR_OK)
 	    CORE_ESCAPE("unable to stop the task");
 	}
     }
   else
     {
-      /*
-       * 2)
-       */
-
-      // XXX
     }
-
-  /*
-   * 3)
-   */
 
   if (wait != NULL)
     {
       // XXX
     }
 
-  /*
-   * 4)
-   * XXX ou mettre ca !?
-   */
-
   if (machine_call(task, task_wait, id, opts, wait) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_ESCAPE("unable to wait for the entity");
+  */
 }
 
 /*

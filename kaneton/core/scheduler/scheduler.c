@@ -5,11 +5,13 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...TETON/kaneton/core/scheduler/scheduler.c
+ * file          /home/mycure/kane...TABLE/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sat nov 27 15:53:34 2010]
+ * updated       julien quintard   [sun nov 28 19:35:19 2010]
  */
+
+#if (SCHEDULER_ALGORITHM == SCHEDULER_ALGORITHM_MFQ)
 
 /*
  * ---------- information -----------------------------------------------------
@@ -218,7 +220,7 @@ t_error			scheduler_dump(void)
 }
 
 /*
- * this function controls the scheduler's state.
+ * this function starts the scheduler.
  *
  * steps:
  *
@@ -227,7 +229,7 @@ t_error			scheduler_dump(void)
  * 3) call the machine.
  */
 
-t_error			scheduler_state(t_state			state)
+t_error			scheduler_start(void)
 {
   o_scheduler*		scheduler;
 
@@ -242,13 +244,50 @@ t_error			scheduler_state(t_state			state)
    * 2)
    */
 
-  scheduler->state = state;
+  scheduler->state = SCHEDULER_STATE_START;
 
   /*
    * 3)
    */
 
-  if (machine_call(scheduler, scheduler_state, state) != ERROR_OK)
+  if (machine_call(scheduler, scheduler_start) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function stops the scheduler.
+ *
+ * steps:
+ *
+ * 1) retrieve the current scheduler.
+ * 2) change the scheduler's state.
+ * 3) call the machine.
+ */
+
+t_error			scheduler_stop(void)
+{
+  o_scheduler*		scheduler;
+
+  /*
+   * 1)
+   */
+
+  if (scheduler_get(&scheduler) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
+
+  /*
+   * 2)
+   */
+
+  scheduler->state = SCHEDULER_STATE_STOP;
+
+  /*
+   * 3)
+   */
+
+  if (machine_call(scheduler, scheduler_stop) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -450,6 +489,7 @@ t_error			scheduler_elect(void)
   t_priority		priority;
   t_boolean		elected;
   i_set*		queue;
+  t_boolean		tried;
   i_cpu			cpu;
   t_state		st;
   t_iterator		i;
@@ -487,19 +527,13 @@ t_error			scheduler_elect(void)
    * 2)
    */
 
-  if (o->state == THREAD_STATE_RUN)
+  if ((o->state == THREAD_STATE_RUN) &&
+      (current_timeslice == 0))
     {
-      i_set		list;
       o_scheduled	entity;
 
-      list = current_timeslice == 0 ?
-	scheduler->expired : scheduler->active;
-
       entity.thread = current_thread;
-      entity.timeslice = current_timeslice == 0 ?
-	SCHEDULER_COMPUTE_TIMESLICE(current_thread) :
-	current_timeslice;
-
+      entity.timeslice = SCHEDULER_COMPUTE_TIMESLICE(current_thread);
       current_priority = SCHEDULER_COMPUTE_PRIORITY(current_thread);
 
       priority = 0;
@@ -507,16 +541,18 @@ t_error			scheduler_elect(void)
 	{
 	  if (priority == current_priority)
 	    {
-	      if (set_object(list, i, (void**)&queue) != ERROR_OK)
+	      if (set_object(scheduler->expired,
+			     i,
+			     (void**)&queue) != ERROR_OK)
 		CORE_ESCAPE("unable to retrieve one of the queues"
 			    "from the scheduler");
 
-	      if (set_push(*queue, &entity) != ERROR_OK)
-		CORE_ESCAPE("unable to retrieve the thread identifier "
-			    "from the queue");
+	      if (set_insert(*queue, &entity) != ERROR_OK)
+		CORE_ESCAPE("unable to insert the thread identifier "
+			    "to the queue");
 
 	      // XXX
-	      //printf("[ELECT] saved %qu (%u, %u ms) in queue\n",
+	      //printf("[ELECT] saved %qu (%u, %u ms) in expired queue\n",
 	      //current_thread, current_priority, current_timeslice);
 	      // XXX
 
@@ -532,45 +568,113 @@ t_error			scheduler_elect(void)
    */
 
   elected = BOOLEAN_FALSE;
+  tried = BOOLEAN_FALSE;
 
  try:
   priority = 0;
   set_foreach(SET_OPTION_FORWARD, scheduler->active, &i, st)
     {
+      t_iterator	iterator;
       o_scheduled*	highest;
       o_thread*		t;
 
-      if (set_object(scheduler->active, i, (void**)&queue) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve one of the queues"
-		    "from the scheduler");
-
-      if (set_empty(*queue) == ERROR_TRUE)
+      // XXX si le thread courant n'a pas expire mais qu'il reste le plus
+      // prioritaire, ne rien change et le laisse s'executer.
+      if ((current_timeslice != 0) &&
+	  (priority > current_priority))
 	{
-	  priority++;
+	  if (thread_get(current_thread, &t) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the thread object");
 
-	  continue;
+	  if (t->state != THREAD_STATE_RUN)
+	    continue;
+
+	  elected = BOOLEAN_TRUE;
+
+	  future_thread = current_thread;
+	  future_priority = current_priority;
+	  future_timeslice = current_timeslice;
+
+	  // XXX
+	  //printf("[ELECT] elected the current thread\n");
+	  // XXX
 	}
+      else
+	{
+	  if (set_object(scheduler->active, i, (void**)&queue) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve one of the queues"
+			"from the scheduler");
 
-      if (set_pick(*queue, (void**)&highest) != ERROR_OK)
-	CORE_ESCAPE("unable to pick the thread from the set");
+	  if (set_empty(*queue) == ERROR_TRUE)
+	    {
+	      priority++;
+	      continue;
+	    }
 
-      elected = BOOLEAN_TRUE;
+	  if (set_tail(*queue, &iterator) != ERROR_TRUE)
+	    CORE_ESCAPE("unable to locate the the thread with the "
+			"highest priority");
 
-      future_thread = highest->thread;
-      future_priority = priority;
-      future_timeslice = highest->timeslice;
+	  if (set_object(*queue, iterator, (void**)&highest) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the thread");
 
-      if (set_pop(*queue) != ERROR_OK)
-	CORE_ESCAPE("unable to pop from the queue");
+	  if (thread_get(highest->thread, &t) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the thread object");
 
-      if (thread_get(future_thread, &t) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the thread object");
+	  if (t->state != THREAD_STATE_RUN)
+	    continue;
 
-      if (t->state != THREAD_STATE_RUN)
-	goto try;
+	  elected = BOOLEAN_TRUE;
 
-      //printf("[ELECT] elected the highest active thread %qu\n",
-      //future_thread);
+	  future_thread = highest->thread;
+	  future_priority = priority;
+	  future_timeslice = highest->timeslice;
+
+	  if (set_delete(*queue, iterator) != ERROR_OK)
+	    CORE_ESCAPE("unable to delete the elected thread from the queue");
+
+	  // XXX
+	  //printf("[ELECT] elected the highest active thread %qu\n",
+	  //	 future_thread);
+	  // XXX
+
+	  if ((o->state == THREAD_STATE_RUN) &&
+	      (current_timeslice != 0))
+	    {
+	      o_scheduled	entity;
+
+	      entity.thread = current_thread;
+	      entity.timeslice = current_timeslice;
+	      current_priority = current_priority;
+
+	      priority = 0;
+	      set_foreach(SET_OPTION_FORWARD, scheduler->active, &i, st)
+		{
+		  if (priority == current_priority)
+		    {
+		      if (set_object(scheduler->active,
+				     i,
+				     (void**)&queue) != ERROR_OK)
+			CORE_ESCAPE("unable to retrieve one of the queues"
+				    "from the scheduler");
+
+		      if (set_insert(*queue, &entity) != ERROR_OK)
+			CORE_ESCAPE("unable to insert the thread identifier "
+				    "to the queue");
+
+		      // XXX
+		      //printf("[ELECT] saved %qu (%u, %u ms) in active queue\n",
+		      //current_thread, current_priority,
+		      //     current_timeslice);
+		      // XXX
+
+		      break;
+		    }
+
+		  priority++;
+		}
+	    }
+	}
 
       break;
     }
@@ -583,14 +687,31 @@ t_error			scheduler_elect(void)
     {
       i_set		list;
 
-      //printf("[ELECT] switch lists\n");
+      if (tried == BOOLEAN_TRUE)
+	{
+	  // XXX
+	  //printf("[ELECT] idle\n");
+	  // XXX
 
-      list = scheduler->active;
+	  future_thread = _scheduler->idle;
+	  future_priority = SCHEDULER_COMPUTE_PRIORITY(future_thread);
+	  future_timeslice = _scheduler->quantum;
+	}
+      else
+	{
+	  // XXX
+	  //printf("[ELECT] switch lists\n");
+	  // XXX
 
-      scheduler->active = scheduler->expired;
-      scheduler->expired = list;
+	  list = scheduler->active;
 
-      goto try;
+	  scheduler->active = scheduler->expired;
+	  scheduler->expired = list;
+
+	  tried = BOOLEAN_TRUE;
+
+	  goto try;
+	}
     }
 
   /*
@@ -599,11 +720,11 @@ t_error			scheduler_elect(void)
 
   switch (scheduler->state)
     {
-    case SCHEDULER_STATE_ENABLE:
+    case SCHEDULER_STATE_START:
       {
 	break;
       }
-    case SCHEDULER_STATE_DISABLE:
+    case SCHEDULER_STATE_STOP:
       {
 	o_scheduled	entity;
 
@@ -621,9 +742,9 @@ t_error			scheduler_elect(void)
 		  CORE_ESCAPE("unable to retrieve one of the queues"
 			      "from the scheduler");
 
-		if (set_push(*queue, &entity) != ERROR_OK)
-		  CORE_ESCAPE("unable to retrieve the thread identifier "
-			      "from the queue");
+		if (set_insert(*queue, &entity) != ERROR_OK)
+		  CORE_ESCAPE("unable to insert the the thread identifier "
+			      "to the queue");
 
 		break;
 	      }
@@ -772,9 +893,9 @@ t_error			scheduler_add(i_thread			id)
 	    CORE_ESCAPE("unable to retrieve on of the queues"
 			"from the scheduler");
 
-	  if (set_push(*queue, &entity) != ERROR_OK)
-	    CORE_ESCAPE("unable to retrieve the thread identifier "
-			"from the queue");
+	  if (set_insert(*queue, &entity) != ERROR_OK)
+	    CORE_ESCAPE("unable to insert the thread identifier "
+			"to the queue");
 
 	  break;
 	}
@@ -1052,16 +1173,15 @@ t_error			scheduler_initialize(void)
       scheduler.priority = SCHEDULER_N_PRIORITY_QUEUE;
       scheduler.active = ID_UNUSED;
       scheduler.expired = ID_UNUSED;
-      scheduler.state = SCHEDULER_STATE_ENABLE;
+      scheduler.state = SCHEDULER_STATE_STOP;
 
       if (set_reserve(array, SET_OPTION_ALLOC, SCHEDULER_N_PRIORITY_QUEUE + 1,
-		      sizeof(i_set), &scheduler.active) !=
-	  ERROR_OK)
+		      sizeof(i_set), &scheduler.active) != ERROR_OK)
 	CORE_ESCAPE("unable to reserve a set for the active queues");
 
       for (i = 0; i <= SCHEDULER_N_PRIORITY_QUEUE; i++)
 	{
-	  if (set_reserve(pipe,
+	  if (set_reserve(ll,
 			  SET_OPTION_ALLOC,
 			  sizeof(o_scheduled),
 			  &queue) != ERROR_OK)
@@ -1084,7 +1204,7 @@ t_error			scheduler_initialize(void)
 
       for (i = 0; i <= SCHEDULER_N_PRIORITY_QUEUE; i++)
 	{
-	  if (set_reserve(pipe,
+	  if (set_reserve(ll,
 			  SET_OPTION_ALLOC,
 			  sizeof(o_scheduled),
 			  &queue) != ERROR_OK)
@@ -1200,3 +1320,5 @@ t_error			scheduler_clean(void)
 
   CORE_LEAVE();
 }
+
+#endif

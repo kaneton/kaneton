@@ -61,7 +61,9 @@
  * ../scheduler.c
  */
 
-t_error			glue_scheduler_state(t_state		state);
+t_error			glue_scheduler_start(void);
+
+t_error			glue_scheduler_stop(void);
 
 void			glue_scheduler_switch_handler(void);
 

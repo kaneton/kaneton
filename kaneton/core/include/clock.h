@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/clock.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/clock.h
  *
  * created       julien quintard   [wed nov 24 18:52:04 2010]
- * updated       julien quintard   [sat nov 27 16:06:18 2010]
+ * updated       julien quintard   [sun nov 28 12:17:35 2010]
  */
 
 #ifndef CORE_CLOCK_H
@@ -53,7 +53,8 @@ typedef struct
 
 /*
  * this macro-function takes a clock structure and computes a unique number
- * representing the number of seconds elapsed since the birth of Jesus Christ.
+ * representing the number of milliseconds elapsed since the birth of Jesus
+ * Christ.
  *
  * since this number can be larger than 32-bit, a 64-bit number should be
  * used to store it. the type t_clock_unique has been introduced for that

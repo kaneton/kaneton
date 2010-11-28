@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [wed nov 24 23:02:15 2010]
+ * updated       julien quintard   [sun nov 28 19:37:10 2010]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -31,8 +31,9 @@
 /*
  * the scheduler state.
  */
-#define SCHEDULER_STATE_ENABLE		1
-#define SCHEDULER_STATE_DISABLE		2
+
+#define SCHEDULER_STATE_START		1
+#define SCHEDULER_STATE_STOP		2
 
 /*						   [block::macro::constants] */
 
@@ -62,6 +63,12 @@
 
 #define SCHEDULER_HPRIORITY		0
 #define SCHEDULER_LPRIORITY		SCHEDULER_N_PRIORITY_QUEUE - 1
+
+/*
+ * ---------- algorithms ------------------------------------------------------
+ */
+
+#define SCHEDULER_ALGORITHM_MFQ		(1 << 0)
 
 /*						[endblock::macro::constants] */
 
@@ -216,7 +223,8 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*scheduler_state)(t_state);
+  t_error			(*scheduler_start)(void);
+  t_error			(*scheduler_stop)(void);
   t_error			(*scheduler_quantum)(t_quantum);
   t_error			(*scheduler_yield)(void);
   t_error			(*scheduler_add)(i_thread);
@@ -239,7 +247,9 @@ typedef struct
 
 t_error			scheduler_dump(void);
 
-t_error			scheduler_state(t_state			state);
+t_error			scheduler_start(void);
+
+t_error			scheduler_stop(void);
 
 t_error			scheduler_quantum(t_quantum		quantum);
 

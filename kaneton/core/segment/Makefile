@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/kaneton/core/segment/Makefile
+# file          /home/mycure/kaneton.STABLE/kaneton/core/segment/Makefile
 #
 # created       julien quintard   [sun jun 10 17:02:46 2007]
-# updated       matthieu bucchianeri   [sat sep  1 12:29:53 2007]
+# updated       julien quintard   [sun nov 28 19:32:43 2010]
 #
 
 #
@@ -33,8 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SEGMENT_C		:=		segment.c			\
-					segment-fit.c
+SEGMENT_C		:=		segment.c			
 
 SEGMENT_O		:=		$(SEGMENT_C:.c=.o)
 

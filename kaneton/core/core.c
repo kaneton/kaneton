@@ -54,6 +54,136 @@ t_init*			_init;
 i_segment		_system;
 
 /*
+ * ---------- XXX -------------------------------------------------------------
+ */
+
+extern m_kernel*	_kernel;
+
+/*
+ * ---------- macro-functions -------------------------------------------------
+ */
+
+#define TEST_ENTER()
+
+#define TEST_ERROR(_format_, _arguments_...)				\
+  do									\
+    {									\
+      module_call(report, report_dump);					\
+									\
+      printf(_format_ "\n", ##_arguments_);				\
+									\
+      TEST_LEAVE();							\
+    } while (0)
+
+#define TEST_LEAVE()							\
+  return;
+
+void			thread1(void)
+{
+  t_clock		clock;
+  t_uint64		past;
+  t_uint64		current;
+
+  clock_current(&clock);
+  past = CLOCK_UNIQUE(&clock);
+
+  while (1)
+    {
+      printf("[thread1]\n");
+
+      int i;
+      for (i = 0; i < 2222222; i++)
+	;
+
+      /*
+      if (thread_sleep(3000) != ERROR_OK)
+	{
+	  printf("ERROR\n");
+	  module_report_dump();
+	}
+
+      clock_current(&clock);
+      current = CLOCK_UNIQUE(&clock);
+
+      printf("[difference] %d\n", current - past);
+
+      past = current;
+      */
+
+      //thread_wait(
+    }
+}
+
+void			thread2(void)
+{
+  t_clock		clock;
+  t_uint64		past;
+  t_uint64		current;
+
+  clock_current(&clock);
+  past = CLOCK_UNIQUE(&clock);
+
+  while (1)
+    {
+      printf("[thread2]\n");
+
+      int i;
+      for (i = 0; i < 4444444; i++)
+	;
+      for (i = 0; i < 4444444; i++)
+	;
+
+      i_thread id;
+      scheduler_current(&id);
+      printf("DYING\n");
+      thread_die(id);
+    }
+}
+
+void			THREAD(void* p)
+{
+  i_thread		thread;
+  o_thread*		o;
+  t_thread_context	ctx;
+  t_stack		stack;
+  t_ia32_context	ia32_ctx;
+
+  TEST_ENTER();
+
+  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
+    TEST_ERROR("[thread_reserve] error\n");
+
+  stack.base = 0;
+  stack.size = THREAD_LSTACKSZ;
+
+  if (thread_stack(thread, stack) != ERROR_OK)
+    TEST_ERROR("[thread_stack] error\n");
+
+  if (thread_get(thread, &o) != ERROR_OK)
+    TEST_ERROR("[thread_get] error\n");
+
+  ctx.sp = o->stack + o->stacksz - 16;
+  ctx.pc = (t_vaddr)p;
+
+  if (thread_load(thread, ctx) != ERROR_OK)
+    TEST_ERROR("[thread_load] error\n");
+
+  if (ia32_get_context(thread, &ia32_ctx) != ERROR_OK)
+    TEST_ERROR("[ia32_get_context] error\n");
+
+  ia32_ctx.eflags |= (1 << 12);
+  ia32_ctx.eflags |= (1 << 13);
+
+  if (ia32_set_context(thread, &ia32_ctx, IA32_CONTEXT_EFLAGS) != ERROR_OK)
+    TEST_ERROR("[ia32_set_context] error\n");
+
+  if (thread_run(thread) != ERROR_OK)
+    TEST_ERROR("[thread_run] error\n");
+
+  TEST_LEAVE();
+}
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -114,6 +244,17 @@ void			kaneton(t_init*				bootloader)
 	      '+', "starting the kernel\n");
 
   assert(kernel_initialize() == ERROR_OK);
+
+  // XXX
+  THREAD(thread1);
+  THREAD(thread2);
+
+  if (scheduler_start() != ERROR_OK)
+    TEST_ERROR("[scheduler_start] error\n");
+
+  if (event_enable() != ERROR_OK)
+    TEST_ERROR("[event_enable] error\n");
+  // XXX
 
   /*
    * 6)

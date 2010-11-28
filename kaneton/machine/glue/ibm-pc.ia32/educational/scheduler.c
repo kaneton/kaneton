@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [thu nov 25 12:11:03 2010]
+ * updated       julien quintard   [sun nov 28 14:49:18 2010]
  */
 
 /*
@@ -57,7 +57,8 @@ extern void		glue_scheduler_idle ();
 
 d_scheduler		glue_scheduler_dispatch =
   {
-    glue_scheduler_state,
+    glue_scheduler_start,
+    glue_scheduler_stop,
     glue_scheduler_quantum,
     glue_scheduler_yield,
     NULL,
@@ -84,31 +85,23 @@ asm (".text				\n"
      ".text				\n");
 
 /*
+ * XXX
+ */
+
+t_error			glue_scheduler_start(void)
+{
+  MACHINE_LEAVE();
+}
+
+/*
  * this function manually triggers the timer interrupt in order to
  * induce an immediate context switch.
  */
 
-t_error			glue_scheduler_state(t_state		state)
+t_error			glue_scheduler_stop(void)
 {
-  o_scheduler*		scheduler;
-
-  if (scheduler_get(&scheduler) != ERROR_OK)
-    MACHINE_ESCAPE("unable to retrieve the current CPU's scheduler");
-
-  switch (state)
-    {
-    case SCHEDULER_STATE_ENABLE:
-      {
-	break;
-      }
-    case SCHEDULER_STATE_DISABLE:
-      {
-	if (scheduler_yield() != ERROR_OK)
-	  MACHINE_ESCAPE("unable to yield the execution");
-
-	break;
-      }
-    }
+  if (scheduler_yield() != ERROR_OK)
+    MACHINE_ESCAPE("unable to yield the execution");
 
   MACHINE_LEAVE();
 }
@@ -225,8 +218,11 @@ t_error			glue_scheduler_initialize(void)
   if (thread_load(_scheduler->idle, ctx) != ERROR_OK)
     MACHINE_ESCAPE("unable to load the thread context");
 
+  /* XXX
   if (thread_run(_scheduler->idle) != ERROR_OK)
     MACHINE_ESCAPE("unable to set the thread as running");
+  */
+  thread_block(_scheduler->idle);
 
   MACHINE_LEAVE();
 }

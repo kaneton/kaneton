@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/task.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [sat nov 27 14:02:29 2010]
+ * updated       julien quintard   [sun nov 28 19:40:02 2010]
  */
 
 #ifndef CORE_TASK_H
@@ -136,21 +136,6 @@ typedef struct
 }				m_task;
 
 /*
- * waitlist
- */
-
-typedef struct
-{
-  union
-  {
-    i_task			task;
-    i_thread			thread;
-  }				u;
-
-  t_options			options;
-}				o_wait;
-
-/*
  * the task architecture dependent interface
  */
 
@@ -170,9 +155,6 @@ typedef struct
   t_error			(*task_stop)(i_task);
   t_error			(*task_block)(i_task);
   t_error			(*task_die)(i_task);
-  t_error			(*task_wait)(i_task,
-					     t_options,
-					     t_wait*);
   t_error			(*task_initialize)(void);
   t_error			(*task_clean)(void);
 }				d_task;

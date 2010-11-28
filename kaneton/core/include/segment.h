@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/segment.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [sat nov 27 05:28:56 2010]
+ * updated       julien quintard   [sun nov 28 19:36:57 2010]
  */
 
 #ifndef CORE_SEGMENT_H

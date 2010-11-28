@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/test/engine/engine.h
  *
  * created       julien quintard   [sun oct 17 15:43:58 2010]
- * updated       julien quintard   [sat nov 27 22:57:34 2010]
+ * updated       julien quintard   [sun nov 28 12:54:53 2010]
  */
 
 #ifndef TEST_ENGINE_ENGINE_H

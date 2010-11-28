@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/kaneton/core/region/Makefile
+# file          /home/mycure/kaneton.STABLE/kaneton/core/region/Makefile
 #
 # created       julien quintard   [sun jun 10 17:00:15 2007]
-# updated       matthieu bucchianeri   [sat sep  1 12:30:07 2007]
+# updated       julien quintard   [sun nov 28 19:32:54 2010]
 #
 
 #
@@ -33,8 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-REGION_C		:=		region.c			\
-					region-fit.c
+REGION_C		:=		region.c			
 
 REGION_O		:=		$(REGION_C:.c=.o)
 

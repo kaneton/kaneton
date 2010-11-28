@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/wait.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/wait.h
  *
  * created       julien quintard   [wed jun  6 15:48:52 2007]
- * updated       julien quintard   [thu jun  7 12:24:52 2007]
+ * updated       julien quintard   [sun nov 28 18:11:00 2010]
  */
 
 #ifndef CORE_WAIT_H
@@ -25,19 +25,19 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define WAIT_DEATH		(1 << 1)
-#define WAIT_START		(1 << 2)
-#define WAIT_STOP		(1 << 3)
-#define WAIT_ALL		(WAIT_DEATH | WAIT_START | WAIT_STOP)
+#define WAIT_STATE_UNKNOWN	0
+#define WAIT_STATE_START	1
+#define WAIT_STATE_STOP		2
+#define WAIT_STATE_DEATH	4
+#define WAIT_STATE_ANY		(WAIT_DEATH | WAIT_START | WAIT_STOP)
 
-#define WAIT_ID			(0 << 4)
-#define WAIT_CHILDREN		(1 << 4)
+#define WAIT_TARGET_NONE	0
+#define WAIT_TARGET_SIBLING	1
+#define WAIT_TARGET_CHILDREN	2
 
-#define WAIT_NOHANG		(1 << 0)
-
-#define STATUS_STARTED		1
-#define STATUS_STOPPED		2
-#define STATUS_EXITED		3
+#define WAIT_STATUS_UNKNOWN	0
+#define WAIT_STATUS_EXIT	1
+#define WAIT_STATUS_ERROR	2
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -50,30 +50,30 @@
   (_wait_).u.thread
 
 #define WAIT_CAUSE(_wait_)						\
-  (_wait_).status
+  (_wait_).cause
 
 #define WAIT_STATUS(_wait_)						\
-  (_wait_).error
+  (_wait_).status
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * wait type
+ * the wait type that is returned to the caller.
  */
 
 typedef struct
 {
   union
   {
-    i_task			task;
-    i_thread			thread;
-  }				id;
+    i_task		task;
+    i_thread		thread;
+  }			id;
 
-  t_status			status;
-
-  t_uint32			error;
-}				t_wait;
+  t_state		state;
+  t_state		cause;
+  t_status		status;
+}			t_wait;
 
 #endif

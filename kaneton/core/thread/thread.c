@@ -391,7 +391,18 @@ t_error			thread_reserve(i_task			taskid,
   o.task = taskid;
   o.priority = prior;
   o.state = THREAD_STATE_STOP;
-  o.waits = ID_UNUSED; // XXX
+  o.waits = ID_UNUSED;
+
+  /*
+   * XXX
+   */
+
+  if (set_reserve(array,
+		  SET_OPTION_ALLOC,
+		  THREAD_WAITS_INITSZ,
+		  sizeof (i_thread),
+		  &o.waits) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve a set for the waiting tasks/threads");
 
   /*
    * 5)
@@ -815,14 +826,14 @@ t_error			thread_die(i_thread			threadid)
    * 1)
    */
 
-  if (o->state == THREAD_STATE_RUN)
+  if (o->state == THREAD_STATE_ZOMBIE)
     CORE_LEAVE();
 
   /*
    * XXX
    */
 
-  o->state = THREAD_STATE_RUN;
+  o->state = THREAD_STATE_ZOMBIE;
 
   /*
    * 4)
@@ -854,11 +865,92 @@ t_error			thread_die(i_thread			threadid)
    * 6)
    */
 
-  if (task->state == TASK_STATE_RUN)
+  if (state == TASK_STATE_RUN)
     {
       if (scheduler_remove(threadid) != ERROR_OK)
 	CORE_ESCAPE("unable to remove the thread from the scheduler");
     }
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function waits for a thread to change state.
+ *
+ * XXX wait for the current thread
+ */
+
+t_error			thread_wait(t_state			state,
+				    i_thread			id,
+				    t_wait*			wait)
+{
+  i_thread		thread;
+  o_thread*		object;
+  o_thread*		o;
+
+  assert(wait != NULL);
+
+  /*
+   * XXX
+   */
+
+  if (scheduler_current(&thread) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the currently scheduled thread");
+
+  /*
+   * XXX
+   */
+
+  if (thread_get(thread, &object) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the thread object");
+
+  if (thread_get(id, &o) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the thread object");
+
+  /*
+   * XXX
+   */
+
+  if ((state & WAIT_STATE_START) &&
+      (o->state == TASK_STATE_RUN))
+    CORE_LEAVE();
+
+  if ((state & WAIT_STATE_STOP) &&
+      (o->state == TASK_STATE_STOP))
+    CORE_LEAVE();
+
+  if ((state & WAIT_STATE_DEATH) &&
+      (o->state == TASK_STATE_ZOMBIE))
+    CORE_LEAVE();
+
+  /*
+   * XXX
+   */
+
+  object->wait.id.thread = id;
+  object->wait.state = state;
+  object->wait.cause = WAIT_STATE_UNKNOWN;
+  object->wait.status = WAIT_STATUS_UNKNOWN;
+
+  /*
+   * XXX
+   */
+
+  if (set_add(o->waits, &thread) != ERROR_OK)
+    CORE_ESCAPE("unable to add the thread identifier to the waiting list");
+
+  /*
+   * XXX
+   */
+
+  if (thread_stop(thread) != ERROR_OK)
+    CORE_ESCAPE("unable to stop the task");
+
+  /*
+   * XXX
+   */
+
+  memcpy(wait, &o->wait, sizeof (t_wait));
 
   CORE_LEAVE();
 }
@@ -970,18 +1062,23 @@ void			thread_sleep_handler(i_timer		timer,
 
 /*
  * XXX
+ *
+ * XXX sleep for the current thread
  */
 
-t_error			thread_sleep(i_thread			id,
-				     t_uint32			milliseconds)
+t_error			thread_sleep(t_uint32			milliseconds)
 {
   i_timer		useless;
   i_thread*		data;
+  i_thread		id;
   o_thread*		o;
 
   /*
    *
    */
+
+  if (scheduler_current(&id) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the currently scheduled thread");
 
   if (thread_get(id, (void**)&o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the thread object");

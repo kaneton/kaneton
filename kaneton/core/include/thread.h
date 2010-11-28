@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/thread.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [sat nov 27 14:49:23 2010]
+ * updated       julien quintard   [sun nov 28 19:39:55 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -44,6 +44,12 @@
 #define THREAD_HSTACKSZ		1000 * PAGESZ
 #define THREAD_STACKSZ		500 * PAGESZ
 #define THREAD_LSTACKSZ		1 * PAGESZ
+
+/*
+ * init sizes for the array data structure set
+ */
+
+#define THREAD_WAITS_INITSZ	0x1
 
 /*
  * the thread state.
@@ -187,8 +193,7 @@ t_error			thread_args(i_thread			threadid,
 void			thread_sleep_handler(i_timer		timer,
 					     t_vaddr		address);
 
-t_error			thread_sleep(i_thread			id,
-				     t_uint32			milliseconds);
+t_error			thread_sleep(t_uint32			milliseconds);
 
 t_error			thread_flush(i_task			taskid);
 
