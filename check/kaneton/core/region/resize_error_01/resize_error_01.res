@@ -1,2 +1,0 @@
-Test check_region_resize_error_01
-check_region_resize_error_01 done.

@@ -1,2 +1,0 @@
-Test check_segment_flush_01
-check_segment_flush_01 done.

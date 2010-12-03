@@ -1,2 +1,0 @@
-Test check_as_as_with_regions_01
-check_as_as_with_regions_01 done.

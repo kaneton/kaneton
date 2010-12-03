@@ -1,2 +1,0 @@
-Test check_time_release_01_entry
-check_time_release_01_entry done.

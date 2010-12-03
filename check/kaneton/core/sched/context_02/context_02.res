@@ -1,2 +1,0 @@
-Test check_sched_context_02_entry
-check_sched_context_02_entry done.

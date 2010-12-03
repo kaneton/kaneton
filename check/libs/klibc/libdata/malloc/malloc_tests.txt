@@ -1,6 +1,0 @@
-01 malloc, read/write, free
-02 hundred malloc + free
-03 realloc
-04 reuse and fragmentation
-05 one big malloc to observe virtual memory allocation.
-06 lot and lot of malloc + free, kernel as region check (area release)

@@ -1,3 +1,0 @@
-Test check_task_driver_01_entry
-Ring 1
-check_task_driver_01_entry done.

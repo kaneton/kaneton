@@ -127,14 +127,6 @@
  * ../../core/core.c
  */
 
-void			XXX_test_core_task_clone_thread1(void);
-
-void			XXX_test_core_task_clone_thread2(void);
-
-void			XXX_test_core_task_clone_content(void);
-
-void			XXX_test_core_task_clone(void);
-
 void			kaneton(t_init*				bootloader);
 
 t_error			kaneton_spawn(void);

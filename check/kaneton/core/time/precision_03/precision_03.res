@@ -1,3 +1,0 @@
-Test check_time_precision_03_entry
-Timer precision 32ms
-check_time_precision_03_entry done.

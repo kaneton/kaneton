@@ -6,28 +6,10 @@
 c'est tjs mieux que 8192 bytes a memcpy.
 
 --
-
- inet:
-  * exporter les ops restants
-  * virer les 2 copies de packet inutile
-  * t_id et pas pointeurs castes
-  * faire une class driver net, avec l'op qui va bien
-
---
  un truc qui me parait bizarre dans le bootloader: la stack courant
-elle est pas mappée explicitement !
+elle est pas mappee explicitement !
 
 --
-check/
-  - revoir tous les tests bootloader
-  - finir message/*
-  - task/clone_**, thread/clone_**
-  - task/priority_**, thread/priority_**
-  - task/state_**
-  - deplacer sched/state_** dans thread/state_**
-  - thread/give_**
-  - interface/**
-  - io/**
 
 autre:
  - map_resize, {region,segment}_{split,resize,coalesce}
@@ -35,13 +17,9 @@ autre:
  - ia32_as_reserve: ajuster les flags G des pte du kas
  - sched_update: optimiser car ca pue
  - set_array_locate : dicho desactivée
- - thread_give: copier la pile dans le nouvel AS ?
 
 --
   on devrait (dans kaneton) fournir la possibilite de creer une capability
   utilisable une fois, ou dans une periode de temps etc.
 
   inclure le nom du process dans la capability pour que ce ne soit pas anonyme?
-
---
- profiles: netbsd, cygwin etc.

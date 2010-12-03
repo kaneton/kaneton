@@ -1,2 +1,0 @@
-Test check_event_as_map_01
-check_event_as_map_01 done.

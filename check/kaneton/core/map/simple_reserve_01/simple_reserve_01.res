@@ -1,2 +1,0 @@
-Test check_map_simple_reserve_01
-check_map_simple_reserve_01 done.

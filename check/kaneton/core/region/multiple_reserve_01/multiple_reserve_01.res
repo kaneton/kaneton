@@ -1,2 +1,0 @@
-Test check_region_multiple_reserve_01
-check_region_multiple_reserve_01 done.

@@ -1,2 +1,0 @@
-Test check_segment_coalesce_01
-check_segment_coalesce_01 done.

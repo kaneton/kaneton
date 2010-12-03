@@ -1,2 +1,0 @@
-Test check_message_async_03_entry
-check_message_async_03_entry done.

@@ -1,2 +1,0 @@
-Test check_segment_catch_01
-check_segment_catch_01 done.

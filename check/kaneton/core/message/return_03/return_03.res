@@ -1,2 +1,0 @@
-Test check_message_return_03_entry
-check_message_return_03_entry done.

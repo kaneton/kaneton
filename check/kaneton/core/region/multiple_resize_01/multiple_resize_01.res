@@ -1,2 +1,0 @@
-Test check_region_multiple_resize_01
-check_region_multiple_resize_01 done.
