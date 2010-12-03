@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...aneton/core/as/translation/translation.c
+ * file          /data/mycure/repo...aneton/core/as/translation/translation.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 24 09:28:53 2010]
+ * updated       julien quintard   [mon nov 29 18:43:37 2010]
  */
 
 /*
@@ -41,7 +41,7 @@ void			test_core_as_translation(void)
 		      2048 * PAGESZ,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     seg,
@@ -50,7 +50,7 @@ void			test_core_as_translation(void)
 		     0,
 		     8 * PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   /*
    * virtual to physical
@@ -84,6 +84,8 @@ void			test_core_as_translation(void)
   for (i = 0; i < 8 * PAGESZ; i++)
     VIRTUAL((t_paddr)seg + 4 * PAGESZ + i,
 	    (t_vaddr)reg + i);
+
+  TEST_SIGNATURE(r3289u9idsjjsfwe9tg9);
 
   TEST_LEAVE();
 }

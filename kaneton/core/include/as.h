@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/as.h
+ * file          /data/mycure/repo...kaneton.STABLE/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [sat nov 27 20:13:14 2010]
+ * updated       julien quintard   [thu dec  2 16:21:20 2010]
  */
 
 #ifndef CORE_AS_H
@@ -52,6 +52,8 @@ typedef struct
   i_set				segments;
   i_set				regions;
 
+  t_options			options;
+
   machine_data(o_as);
 }				o_as;
 
@@ -62,6 +64,7 @@ typedef struct
 typedef struct
 {
   o_id				id;
+
 
   i_set				ass;
 
@@ -83,9 +86,6 @@ typedef struct
   t_error			(*as_paddr)(i_as,
 					    t_vaddr,
 					    t_paddr*);
-  t_error			(*as_clone)(i_as,
-					    i_task,
-					    i_as*);
   t_error			(*as_reserve)(i_task,
 					      i_as*);
   t_error			(*as_release)(i_as);
@@ -133,10 +133,6 @@ t_error			as_copy(i_as			source_id,
 				i_as			destination_id,
 				t_vaddr			destination_address,
 				t_vsize			size);
-
-t_error			as_clone(i_as				id,
-				 i_task				task,
-				 i_as*				as);
 
 t_error			as_reserve(i_task			task,
 				   i_as*			id);

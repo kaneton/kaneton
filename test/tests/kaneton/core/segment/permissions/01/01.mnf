@@ -1,4 +1,5 @@
 name: core/segment/permissions/01
 description: This test reserves a segment and changes its permissions before releasing it.
 symbol: test_core_segment_permissions_01
+signature: i9awefg94igy3h43h
 output:

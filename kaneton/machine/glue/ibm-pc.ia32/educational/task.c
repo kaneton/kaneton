@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
+ * file          /data/mycure/repo...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sun nov 28 18:13:43 2010]
+ * updated       julien quintard   [thu dec  2 16:19:30 2010]
  */
 
 /*
@@ -39,7 +39,6 @@
 d_task			glue_task_dispatch =
   {
     NULL,
-    glue_task_clone,
     glue_task_reserve,
     NULL,
     NULL,
@@ -54,20 +53,6 @@ d_task			glue_task_dispatch =
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this function clones the dependent part of a task.
- *
- */
-
-t_error			glue_task_clone(i_task			old,
-					i_task*			new)
-{
-  if (ia32_duplicate_io_bitmap(old, *new) != ERROR_OK)
-    MACHINE_ESCAPE("unable to duplicate the IO bitmap");
-
-  MACHINE_LEAVE();
-}
 
 /*
  * this function initialize the dependent structures.

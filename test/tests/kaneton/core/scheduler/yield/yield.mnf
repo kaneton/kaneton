@@ -1,0 +1,5 @@
+name: core/scheduler/yield
+description: This test spawns two threads. The first one yields the execution, forcing the second one to execute. The second one stops both threads. Finally, the kernel threads verifies things went as expected.
+symbol: test_core_scheduler_yield
+signature: f923ufwjvc90fg29gncvwq2jfd0f309k30bbb
+output:

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...STABLE/test/tests/kaneton/s../../../../07.c
+ * file          /data/mycure/repo...E/test/tests/kaneton/core/set/ll/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2070]
- * updated       julien quintard   [wed nov 17 23:23:34 2010]
+ * updated       julien quintard   [mon nov 29 19:22:37 2010]
  */
 
 /*
@@ -43,7 +43,7 @@ void			test_core_set_ll_07(void)
    */
 
   if (set_reserve(ll, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   /*
    * add
@@ -94,48 +94,48 @@ void			test_core_set_ll_07(void)
    */
 
   if (set_remove(id, 80LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 98654LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 42LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 122LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 45LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 64LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 90LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 12346LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 67LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   if (set_remove(id, 90LL) != ERROR_OK)
-    TEST_ERROR("[set_remove] error\n");
+    TEST_ERROR("[set_remove] error");
 
   /*
    * display
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -185,7 +185,7 @@ void			test_core_set_ll_07(void)
       t_id*	o;
 
       if (set_object(id, it, (void**)&o) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (i++ % 2)
 	objs[j++] = *o;
@@ -193,21 +193,21 @@ void			test_core_set_ll_07(void)
 
   for (i = 0; i < j; i++)
     if (set_remove(id, objs[i]) != ERROR_OK)
-      TEST_ERROR("[set_remove] error\n");
+      TEST_ERROR("[set_remove] error");
 
   /*
    * display
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -223,7 +223,9 @@ void			test_core_set_ll_07(void)
    */
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(klvk34gh34g450h);
 
   TEST_LEAVE();
 }

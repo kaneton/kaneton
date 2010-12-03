@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/scheduler.h
+ * file          /data/mycure/repo....STABLE/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [sun nov 28 19:37:10 2010]
+ * updated       julien quintard   [fri dec  3 16:19:13 2010]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -61,8 +61,8 @@
  * scheduling priorities
  */
 
-#define SCHEDULER_HPRIORITY		0
-#define SCHEDULER_LPRIORITY		SCHEDULER_N_PRIORITY_QUEUE - 1
+#define SCHEDULER_PRIORITY_HIGH		0
+#define SCHEDULER_PRIORITY_LOW		SCHEDULER_N_PRIORITY_QUEUE - 1
 
 /*
  * ---------- algorithms ------------------------------------------------------
@@ -97,13 +97,13 @@
     if (task_get(oth->task, &otsk) != ERROR_OK)				\
       CORE_ESCAPE("unable to retrieve the task object");		\
 									\
-    task_prior = ((otsk->priority - TASK_LPRIORITY_BACKGROUND) *	\
+    task_prior = ((otsk->priority - TASK_PRIORITY_BACKGROUND_LOW) *	\
 		  SCHEDULER_N_PRIORITY_QUEUE) /				\
-      (TASK_HPRIORITY_KERNEL - TASK_LPRIORITY_BACKGROUND);		\
+      (TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW);	\
 									\
-    thread_prior = ((oth->priority - THREAD_LPRIORITY) *		\
+    thread_prior = ((oth->priority - THREAD_PRIORITY_LOW) *		\
 		    SCHEDULER_N_PRIORITY_QUEUE) /			\
-      (THREAD_HPRIORITY - THREAD_LPRIORITY);				\
+      (THREAD_PRIORITY_HIGH - THREAD_PRIORITY_LOW);			\
 									\
     (task_prior * thread_prior);					\
   })
@@ -238,11 +238,11 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../core/scheduler/scheduler.c
+ *      ../../core/scheduler/scheduler-mfq.c
  */
 
 /*
- * ../../core/scheduler/scheduler.c
+ * ../../core/scheduler/scheduler-mfq.c
  */
 
 t_error			scheduler_dump(void);

@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton.STABLE/test/engine/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [mon nov  8 08:03:18 2010]
+# updated       julien quintard   [mon nov 29 16:53:11 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/engine
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/test/tests/kaneton/set/pipe/03/03.c
+ * file          /data/mycure/repo...test/tests/kaneton/core/set/pipe/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [thu nov 18 05:28:31 2010]
+ * updated       julien quintard   [mon nov 29 19:15:09 2010]
  */
 
 /*
@@ -45,7 +45,7 @@ void			test_core_set_pipe_03(void)
 		  SET_OPTION_ALLOC,
 		  sizeof(t_test_object),
 		  &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 16; ++i)
     {
@@ -54,18 +54,18 @@ void			test_core_set_pipe_03(void)
       strcpy(obj1.str, "XXX");
 
       if (set_push(id, &obj1) != ERROR_OK)
-        TEST_ERROR("[set_push] error\n");
+        TEST_ERROR("[set_push] error");
     }
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd %s",
@@ -77,7 +77,7 @@ void			test_core_set_pipe_03(void)
   printf("\n");
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
 
   /*
    * OPTION_FREE
@@ -87,7 +87,7 @@ void			test_core_set_pipe_03(void)
 		  SET_OPTION_FREE,
 		  sizeof(t_test_object),
 		  &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 16; ++i)
     {
@@ -98,18 +98,18 @@ void			test_core_set_pipe_03(void)
       strcpy(obj2->str, "XXX");
 
       if (set_push(id, obj2) != ERROR_OK)
-        TEST_ERROR("[set_push] error\n");
+        TEST_ERROR("[set_push] error");
     }
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd %s",
@@ -121,7 +121,9 @@ void			test_core_set_pipe_03(void)
   printf("\n");
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(0g9i23goig4h3);
 
   TEST_LEAVE();
 }

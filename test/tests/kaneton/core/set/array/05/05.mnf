@@ -1,4 +1,5 @@
 name: core/set/array/05
 description: "This test reserves a set, adds many objects and displays the set contents in both ways: forward and backward."
 symbol: test_core_set_array_05
+signature: 9aizds90icvw239g
 output: "10 elements: 80 98654 42 122 45 64 90 12346 67 90\n10 elements: 90 67 12346 90 64 45 122 42 98654 80\n"

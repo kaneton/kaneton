@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
+ * file          /data/mycure/repo...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sun nov 28 14:49:18 2010]
+ * updated       julien quintard   [fri dec  3 16:23:02 2010]
  */
 
 /*
@@ -199,7 +199,7 @@ t_error			glue_scheduler_initialize(void)
   // XXX ici on fait en sorte que la priorite ne soit pas la plus faible pour
   // que le yield fonctionne mais qu'elle soit assez basse tout de meme.
   if (thread_reserve(_kernel->task,
-		     (THREAD_PRIORITY - THREAD_LPRIORITY) / 5,
+		     (THREAD_PRIORITY - THREAD_PRIORITY_LOW) / 5,
 		     &_scheduler->idle) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the idle thread");
 
@@ -218,11 +218,8 @@ t_error			glue_scheduler_initialize(void)
   if (thread_load(_scheduler->idle, ctx) != ERROR_OK)
     MACHINE_ESCAPE("unable to load the thread context");
 
-  /* XXX
-  if (thread_run(_scheduler->idle) != ERROR_OK)
-    MACHINE_ESCAPE("unable to set the thread as running");
-  */
-  thread_block(_scheduler->idle);
+  if (thread_block(_scheduler->idle) != ERROR_OK)
+    MACHINE_ESCAPE("unable to set the thread as blocked");
 
   MACHINE_LEAVE();
 }

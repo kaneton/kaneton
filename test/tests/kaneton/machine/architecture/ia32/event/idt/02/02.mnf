@@ -1,0 +1,5 @@
+name: machine/architecture/event/idt/02
+description: This test reserves an event and verifies that every IDT entry is valid according to the IA32 segment selectors. Finally, the event is released.
+symbol: test_architecture_event_idt_02
+signature: acdjif0wv94eg3h34h
+output:

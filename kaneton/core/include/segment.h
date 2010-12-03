@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [sun nov 28 19:36:57 2010]
+ * updated       julien quintard   [sun nov 28 20:50:30 2010]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -145,17 +145,24 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../core/segment/segment.c
  *      ../../core/segment/segment-fit.c
  */
 
 /*
- * ../../core/segment/segment.c
+ * ../../core/segment/segment-fit.c
  */
 
 t_error			segment_show(i_segment			segid);
 
 t_error			segment_dump(void);
+
+t_error			segment_fit_first(i_as			asid,
+					  t_psize		size,
+					  t_paddr*		address);
+
+t_error			segment_space(i_as			asid,
+				      t_psize			size,
+				      t_paddr*			address);
 
 t_error			segment_clone(i_as			asid,
 				      i_segment			old,
@@ -167,6 +174,9 @@ t_error			segment_inject(i_as		asid,
 
 t_error			segment_give(i_as		asid,
 				     i_segment		segid);
+
+t_error			segment_locate(t_paddr		address,
+				       i_segment*	id);
 
 t_error			segment_resize(i_segment	old,
 				       t_psize		size,
@@ -223,19 +233,6 @@ t_error			segment_get(i_segment			segid,
 t_error			segment_initialize(void);
 
 t_error			segment_clean(void);
-
-
-/*
- * ../../core/segment/segment-fit.c
- */
-
-t_error			segment_fit_first(i_as			asid,
-					  t_psize		size,
-					  t_paddr*		address);
-
-t_error			segment_space(i_as			asid,
-				      t_psize			size,
-				      t_paddr*			address);
 
 
 /*

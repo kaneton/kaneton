@@ -107,43 +107,6 @@ t_error		interface_as_copy(o_syscall*	message)
 }
 
 /*
- * this function launchs the as_clone() function.
- */
-
-t_error		interface_as_clone(o_syscall*	message)
-{
-  t_error	error;
-  i_as	result1;
-
-  error = as_clone(message->u.request.u.as_clone.arg1,
-			message->u.request.u.as_clone.arg2,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.as_clone.result1 = result1;
-
-  return (ERROR_OK);
-}
-
-/*
- * this function launchs the as_reserve() function.
- */
-
-t_error		interface_as_reserve(o_syscall*	message)
-{
-  t_error	error;
-  i_as	result1;
-
-  error = as_reserve(message->u.request.u.as_reserve.arg1,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.as_reserve.result1 = result1;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the as_release() function.
  */
 
@@ -601,36 +564,6 @@ t_error		interface_scheduler_current(o_syscall*	message)
 }
 
 /*
- * this function launchs the scheduler_add() function.
- */
-
-t_error		interface_scheduler_add(o_syscall*	message)
-{
-  t_error	error;
-
-  error = scheduler_add(message->u.request.u.scheduler_add.arg1);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
- * this function launchs the scheduler_remove() function.
- */
-
-t_error		interface_scheduler_remove(o_syscall*	message)
-{
-  t_error	error;
-
-  error = scheduler_remove(message->u.request.u.scheduler_remove.arg1);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the scheduler_update() function.
  */
 
@@ -905,24 +838,6 @@ t_error		interface_task_current(o_syscall*	message)
 }
 
 /*
- * this function launchs the task_clone() function.
- */
-
-t_error		interface_task_clone(o_syscall*	message)
-{
-  t_error	error;
-  i_task	result1;
-
-  error = task_clone(message->u.request.u.task_clone.arg1,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.task_clone.result1 = result1;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the task_reserve() function.
  */
 
@@ -969,25 +884,6 @@ t_error		interface_task_priority(o_syscall*	message)
 			message->u.request.u.task_priority.arg2);
 
   message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
- * this function launchs the task_wait() function.
- */
-
-t_error		interface_task_wait(o_syscall*	message)
-{
-  t_error	error;
-  t_wait	result1;
-
-  error = task_wait(message->u.request.u.task_wait.arg1,
-			message->u.request.u.task_wait.arg2,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.task_wait.result1 = result1;
 
   return (ERROR_OK);
 }
@@ -1119,27 +1015,6 @@ t_error		interface_task_attribute_sched(o_syscall*	message)
 }
 
 /*
- * this function get the wait attribute of the o_task object.
- */
-
-t_error		interface_task_attribute_wait(o_syscall*	message)
-{
-  o_task*		o;
-
-  if (task_get(message->u.request.u.task_attribute_wait.arg1, &o) != ERROR_OK)
-    {
-      message->u.reply.error = ERROR_KO;
-    }
-  else
-    {
-      message->u.reply.error = ERROR_OK;
-      message->u.reply.u.task_attribute_wait.result1 = o->wait;
-    }
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the thread_give() function.
  */
 
@@ -1151,25 +1026,6 @@ t_error		interface_thread_give(o_syscall*	message)
 			message->u.request.u.thread_give.arg2);
 
   message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
- * this function launchs the thread_clone() function.
- */
-
-t_error		interface_thread_clone(o_syscall*	message)
-{
-  t_error	error;
-  i_thread	result1;
-
-  error = thread_clone(message->u.request.u.thread_clone.arg1,
-			message->u.request.u.thread_clone.arg2,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.thread_clone.result1 = result1;
 
   return (ERROR_OK);
 }
@@ -1332,27 +1188,6 @@ t_error		interface_thread_attribute_state(o_syscall*	message)
     {
       message->u.reply.error = ERROR_OK;
       message->u.reply.u.thread_attribute_state.result1 = o->state;
-    }
-
-  return (ERROR_OK);
-}
-
-/*
- * this function get the wait attribute of the o_thread object.
- */
-
-t_error		interface_thread_attribute_wait(o_syscall*	message)
-{
-  o_thread*		o;
-
-  if (thread_get(message->u.request.u.thread_attribute_wait.arg1, &o) != ERROR_OK)
-    {
-      message->u.reply.error = ERROR_KO;
-    }
-  else
-    {
-      message->u.reply.error = ERROR_OK;
-      message->u.reply.u.thread_attribute_wait.result1 = o->wait;
     }
 
   return (ERROR_OK);
@@ -1601,8 +1436,6 @@ t_interface_dispatch dispatch[] =
   interface_as_vaddr,
   interface_as_paddr,
   interface_as_copy,
-  interface_as_clone,
-  interface_as_reserve,
   interface_as_release,
   interface_as_attribute_task,
   interface_event_reserve,
@@ -1630,8 +1463,6 @@ t_interface_dispatch dispatch[] =
   interface_scheduler_quantum,
   interface_scheduler_yield,
   interface_scheduler_current,
-  interface_scheduler_add,
-  interface_scheduler_remove,
   interface_scheduler_update,
   interface_segment_clone,
   interface_segment_give,
@@ -1647,20 +1478,16 @@ t_interface_dispatch dispatch[] =
   interface_segment_attribute_size,
   interface_segment_attribute_permissions,
   interface_task_current,
-  interface_task_clone,
   interface_task_reserve,
   interface_task_release,
   interface_task_priority,
-  interface_task_wait,
   interface_task_attribute_parent,
   interface_task_attribute_class,
   interface_task_attribute_behaviour,
   interface_task_attribute_priority,
   interface_task_attribute_as,
   interface_task_attribute_sched,
-  interface_task_attribute_wait,
   interface_thread_give,
-  interface_thread_clone,
   interface_thread_reserve,
   interface_thread_release,
   interface_thread_priority,
@@ -1670,7 +1497,6 @@ t_interface_dispatch dispatch[] =
   interface_thread_attribute_task,
   interface_thread_attribute_priority,
   interface_thread_attribute_state,
-  interface_thread_attribute_wait,
   interface_thread_attribute_stack,
   interface_thread_attribute_stacksz,
   interface_timer_reserve,

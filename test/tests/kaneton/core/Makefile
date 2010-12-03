@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/tests/kaneton/core/Makefile
+# file          /data/mycure/repo....STABLE/test/tests/kaneton/core/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu nov 18 17:25:29 2010]
+# updated       julien quintard   [wed dec  1 06:45:02 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -32,8 +38,11 @@ UNITS			:=		as				\
 					map				\
 					region				\
 					segment				\
-					set				
-
+					scheduler			\
+					set				\
+					task				\
+					thread				\
+					time				
 
 SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
 					$(UNITS)

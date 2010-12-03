@@ -415,7 +415,7 @@ t_error			event_clean(void)
     {
       if (set_object(_event->events, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to find the event object corresponding to "
-		    "its identifier\n");
+		    "its identifier");
 
       if (event_release(o->id) != ERROR_OK)
 	CORE_ESCAPE("unable to release the event object");

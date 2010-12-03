@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/test/tests/kaneton/set/stack/09/09.c
+ * file          /data/mycure/repo...est/tests/kaneton/core/set/stack/09/09.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2090]
- * updated       julien quintard   [thu nov 18 06:58:48 2010]
+ * updated       julien quintard   [mon nov 29 19:20:08 2010]
  */
 
 /*
@@ -39,7 +39,7 @@ void			test_core_set_stack_09(void)
    */
 
   if (set_reserve(stack, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   /*
    * push
@@ -50,7 +50,7 @@ void			test_core_set_stack_09(void)
       objs[i] = 4 * i;
 
       if (set_push(id, &objs[i]) != ERROR_OK)
-        TEST_ERROR("[set_push] error\n");
+        TEST_ERROR("[set_push] error");
     }
 
   /*
@@ -58,14 +58,14 @@ void			test_core_set_stack_09(void)
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   for (i = 0; i < sz; i++)
     {
       if (set_pick(id, (void**)&obj) != ERROR_OK)
-        TEST_ERROR("[set_pick] error\n");
+        TEST_ERROR("[set_pick] error");
 
       if (!st++)
         printf("%qd", *obj);
@@ -73,7 +73,7 @@ void			test_core_set_stack_09(void)
         printf(" %qd", *obj);
 
       if (set_pop(id) != ERROR_OK)
-	TEST_ERROR("[set_pop] error\n");
+	TEST_ERROR("[set_pop] error");
     }
   printf("\n");
 
@@ -82,7 +82,9 @@ void			test_core_set_stack_09(void)
    */
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(sdlkvfog34gh34);
 
   TEST_LEAVE();
 }

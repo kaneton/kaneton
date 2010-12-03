@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/task.h
+ * file          /data/mycure/repo...neton.STABLE/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [sun nov 28 19:40:02 2010]
+ * updated       julien quintard   [fri dec  3 16:07:31 2010]
  */
 
 #ifndef CORE_TASK_H
@@ -53,24 +53,24 @@
  */
 
 #define TASK_PRIORITY_KERNEL		230
-#define TASK_HPRIORITY_KERNEL		250
-#define TASK_LPRIORITY_KERNEL		210
+#define TASK_PRIORITY_KERNEL_HIGH	250
+#define TASK_PRIORITY_KERNEL_LOW	210
 
 #define TASK_PRIORITY_REALTIME		190
-#define TASK_HPRIORITY_REALTIME		210
-#define TASK_LPRIORITY_REALTIME		170
+#define TASK_PRIORITY_REALTIME_HIGH	210
+#define TASK_PRIORITY_REALTIME_LOW	170
 
 #define TASK_PRIORITY_INTERACTIVE	150
-#define TASK_HPRIORITY_INTERACTIVE	170
-#define TASK_LPRIORITY_INTERACTIVE	130
+#define TASK_PRIORITY_INTERACTIVE_HIGH	170
+#define TASK_PRIORITY_INTERACTIVE_LOW	130
 
 #define TASK_PRIORITY_TIMESHARING	90
-#define TASK_HPRIORITY_TIMESHARING	130
-#define TASK_LPRIORITY_TIMESHARING	50
+#define TASK_PRIORITY_TIMESHARING_HIGH	130
+#define TASK_PRIORITY_TIMESHARING_LOW	50
 
 #define TASK_PRIORITY_BACKGROUND	30
-#define TASK_HPRIORITY_BACKGROUND	50
-#define TASK_LPRIORITY_BACKGROUND	10
+#define TASK_PRIORITY_BACKGROUND_HIGH	50
+#define TASK_PRIORITY_BACKGROUND_LOW	10
 
 /*
  * init sizes for the array data structure set
@@ -83,10 +83,11 @@
  * the task state.
  */
 
-#define TASK_STATE_RUN		1
+#define TASK_STATE_START	1
 #define TASK_STATE_STOP		2
-#define TASK_STATE_ZOMBIE	3
-#define TASK_STATE_BLOCK	4
+#define TASK_STATE_BLOCK	3
+#define TASK_STATE_ZOMBIE	4
+#define TASK_STATE_DEAD		5
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -142,8 +143,6 @@ typedef struct
 typedef struct
 {
   t_error			(*task_show)(i_task);
-  t_error			(*task_clone)(i_task,
-					      i_task*);
   t_error			(*task_reserve)(t_class,
 						t_behaviour,
 						t_priority,
@@ -151,10 +150,11 @@ typedef struct
   t_error			(*task_release)(i_task);
   t_error			(*task_priority)(i_task,
 						 t_priority);
-  t_error			(*task_run)(i_task);
+  t_error			(*task_start)(i_task);
   t_error			(*task_stop)(i_task);
   t_error			(*task_block)(i_task);
-  t_error			(*task_die)(i_task);
+  t_error			(*task_exit)(i_task,
+					     t_value);
   t_error			(*task_initialize)(void);
   t_error			(*task_clean)(void);
 }				d_task;
@@ -175,9 +175,6 @@ t_error			task_show(i_task			id);
 
 t_error			task_dump(void);
 
-t_error			task_clone(i_task			old,
-				   i_task*			new);
-
 t_error			task_reserve(t_class			class,
 				     t_behaviour		behav,
 				     t_priority			prior,
@@ -188,13 +185,14 @@ t_error			task_release(i_task			id);
 t_error			task_priority(i_task			id,
 				      t_priority		prior);
 
-t_error			task_run(i_task				id);
+t_error			task_start(i_task			id);
 
 t_error			task_stop(i_task			id);
 
 t_error			task_block(i_task			id);
 
-t_error			task_die(i_task				id);
+t_error			task_exit(i_task			id,
+				  t_value			value);
 
 t_error			task_wait(i_task			id,
 				  t_options			opts,

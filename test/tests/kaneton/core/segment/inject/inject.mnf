@@ -1,4 +1,5 @@
 name: core/segment/inject
 description: This test creates a task, an address space and allocates and build a segment through malloc() before injecting it into the task's address space. Finally, the task and address space are released.
 symbol: test_core_segment_inject
+signature: fg32aaaargkse3gg43
 output:

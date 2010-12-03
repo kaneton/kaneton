@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...TABLE/test/tests/kaneton/set/bpt/09/09.c
+ * file          /data/mycure/repo.../test/tests/kaneton/core/set/bpt/09/09.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2090]
- * updated       julien quintard   [wed nov 17 22:56:51 2010]
+ * updated       julien quintard   [mon nov 29 19:13:11 2010]
  */
 
 /*
@@ -42,7 +42,7 @@ void			test_core_set_bpt_09(void)
    */
 
   if (set_reserve(bpt, SET_OPTION_SORT, sizeof(t_id), PAGESZ, &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   /*
    * add
@@ -53,7 +53,7 @@ void			test_core_set_bpt_09(void)
       objs[i] = (i * 234) % 6578;
 
       if (set_add(id, &objs[i]) != ERROR_OK)
-        TEST_ERROR("[set_add] error\n");
+        TEST_ERROR("[set_add] error");
     }
 
   /*
@@ -61,14 +61,14 @@ void			test_core_set_bpt_09(void)
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -88,37 +88,39 @@ void			test_core_set_bpt_09(void)
       if (i % 2)
         {
           if (set_locate(id, objs[i], &it) != ERROR_OK)
-	    TEST_ERROR("[set_locate] error\n");
+	    TEST_ERROR("[set_locate] error");
           else
             {
               if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-		TEST_ERROR("[set_object] error\n");
+		TEST_ERROR("[set_object] error");
 
               if (*pdata != objs[i])
-                TEST_ERROR("the retrieved object has an invalid identifier\n");
+                TEST_ERROR("the retrieved object has an invalid identifier");
             }
         }
       else
         {
           if (set_get(id, objs[i], (void**)&pdata) != ERROR_OK)
-	    TEST_ERROR("[set_get] error\n");
+	    TEST_ERROR("[set_get] error");
 
           if (*pdata != objs[i])
-	    TEST_ERROR("the retrieved object has an invalid identifier\n");
+	    TEST_ERROR("the retrieved object has an invalid identifier");
         }
     }
 
   data = objs[5] - 1;
 
   if (set_locate(id, data, &it) == ERROR_OK)
-    TEST_ERROR("[set_locate] error: found a non-existent item\n");
+    TEST_ERROR("[set_locate] error: found a non-existent item");
 
   /*
    * release
    */
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(fi9g09iw3gh09ih);
 
   TEST_LEAVE();
 }

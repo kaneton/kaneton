@@ -111,9 +111,11 @@ void			platform_console_attribute(t_uint8	attribute)
 int			platform_console_print_char(char	c)
 {
 #if defined(MODULE_test)
-  module_call(test, test_write, c);
-#elif defined(MODULE_forward)
+# if defined(MODULE_forward)
   module_call(forward, forward_write, c);
+# else
+  module_call(test, test_write, c);
+# endif
 #else
   t_uint16		pos;
 

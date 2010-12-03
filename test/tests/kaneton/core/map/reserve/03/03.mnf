@@ -1,4 +1,5 @@
 name: core/map/reserve/03
 description: This test reserves hundreds of maps. For every map, the test writes data into the region and checks that the data has been properly written. Finally, every map is released.
 symbol: test_core_map_reserve_03
+signature: 9t43teiafgw23gh0
 output:

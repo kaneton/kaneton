@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...E/test/tests/kaneton/core/set/ll/06/06.c
+ * file          /data/mycure/repo...E/test/tests/kaneton/core/set/ll/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [sat nov 27 23:56:57 2010]
+ * updated       julien quintard   [mon nov 29 19:22:15 2010]
  */
 
 /*
@@ -40,7 +40,7 @@ void			test_core_set_ll_06(void)
    */
 
   if (set_reserve(ll, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   /*
    * add
@@ -92,7 +92,7 @@ void			test_core_set_ll_06(void)
 
   obj = 4LL;
   if (set_insert(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_insert] error\n");
+    TEST_ERROR("[set_insert] error");
 
   /*
    * append
@@ -100,17 +100,17 @@ void			test_core_set_ll_06(void)
 
   obj = 123456LL;
   if (set_append(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_append] error\n");
+    TEST_ERROR("[set_append] error");
 
   /*
    * head & next
    */
 
   if (set_head(id, &it) == ERROR_FALSE)
-    TEST_ERROR("[set_head] error\n");
+    TEST_ERROR("[set_head] error");
 
   if (set_next(id, it, &it) == ERROR_FALSE)
-    TEST_ERROR("[set_next] error\n");
+    TEST_ERROR("[set_next] error");
 
   /*
    * after
@@ -118,7 +118,7 @@ void			test_core_set_ll_06(void)
 
   obj = 456LL;
   if (set_after(id, it, &obj) != ERROR_OK)
-    TEST_ERROR("[set_after] error\n");
+    TEST_ERROR("[set_after] error");
 
   /*
    * before
@@ -126,21 +126,21 @@ void			test_core_set_ll_06(void)
 
   obj = 454LL;
   if (set_before(id, it, &obj) != ERROR_OK)
-    TEST_ERROR("[set_before] error\n");
+    TEST_ERROR("[set_before] error");
 
   /*
    * display
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -156,7 +156,9 @@ void			test_core_set_ll_06(void)
    */
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(xcklvg34okgh);
 
   TEST_LEAVE();
 }

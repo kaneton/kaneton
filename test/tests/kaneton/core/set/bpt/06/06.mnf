@@ -1,4 +1,5 @@
 name: core/set/bpt/06
 description: This test reserves a set, adds several objects, inserts a specific object, appends another and so forth before releasing the set.
 symbol: test_core_set_bpt_06
+signature: f0igih43h903
 output: "10 elements: 42 45 64 67 80 90 90 122 12346 98654\n"

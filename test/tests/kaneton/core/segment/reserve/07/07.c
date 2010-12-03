@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...sts/kaneton/core/segment/reserve/07/07.c
+ * file          /data/mycure/repo...sts/kaneton/core/segment/reserve/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:32:08 2010]
+ * updated       julien quintard   [mon nov 29 19:00:42 2010]
  */
 
 /*
@@ -33,43 +33,45 @@ void			test_core_segment_reserve_07(void)
 
   if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE, &task) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task, &as) != ERROR_OK)
-    TEST_ERROR("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error");
 
   TEST_ALLOCATE(as, 2, seg);
   TEST_ALLOCATE(as, 8, seg + 1);
   TEST_ALLOCATE(as, 2, seg + 2);
 
   if (segment_release(seg[1]) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   TEST_ALLOCATE(as, 5, seg + 1);
 
   if (segment_release(seg[0]) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   TEST_ALLOCATE(as, 8, seg);
   TEST_ALLOCATE(as, 4, seg + 3);
 
   if (segment_release(seg[0]) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   if (segment_release(seg[1]) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   if (segment_release(seg[2]) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   if (segment_release(seg[3]) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   if (as_release(as) != ERROR_OK)
-    TEST_ERROR("[as_release] error\n");
+    TEST_ERROR("[as_release] error");
 
   if (task_release(task) != ERROR_OK)
-    TEST_ERROR("[task_release] error\n");
+    TEST_ERROR("[task_release] error");
+
+  TEST_SIGNATURE(r3982804tg3g43);
 
   TEST_LEAVE();
 }

@@ -216,7 +216,7 @@ t_error			cpu_migrate(i_task			task,
 
   state = o->state;
 
-  if (o->state == TASK_STATE_RUN)
+  if (o->state == TASK_STATE_START)
     {
       if (task_stop(task) != ERROR_OK)
 	CORE_ESCAPE("unable to stop the task");
@@ -240,9 +240,9 @@ t_error			cpu_migrate(i_task			task,
    * 4)
    */
 
-  if (state == TASK_STATE_RUN)
+  if (state == TASK_STATE_START)
     {
-      if (task_run(task) != ERROR_OK)
+      if (task_start(task) != ERROR_OK)
 	CORE_ESCAPE("unable to stop the task");
     }
 

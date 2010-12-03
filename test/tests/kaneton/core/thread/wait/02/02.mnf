@@ -1,0 +1,5 @@
+name: core/thread/wait/02
+description: This test creates two threads. The first one waits for the second to die while the second actually exits with an error code. Note that in this test, the waiting request occurs after the death of the thread.
+symbol: test_core_thread_wait_02
+signature: 9wij09fia0w9wr9832yjpsfwafg872q33q09r3q2w9fwof
+output:

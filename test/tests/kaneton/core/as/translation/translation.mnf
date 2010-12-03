@@ -1,4 +1,5 @@
 name: core/as/translation
 description: This test reserves a segment/region couple and verifies that the inner virtual/physical address translations are correct.
 symbol: test_core_as_translation
+signature: r3289u9idsjjsfwe9tg9
 output:

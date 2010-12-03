@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../kaneton/core/as/read-write/read-write.c
+ * file          /data/mycure/repo.../kaneton/core/as/read-write/read-write.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:14:09 2010]
+ * updated       julien quintard   [mon nov 29 18:42:21 2010]
  */
 
 /*
@@ -41,40 +41,40 @@ void			test_core_as_readwrite(void)
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
 		   &task) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task, &as) != ERROR_OK)
-    TEST_ERROR("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as,
 		      2 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg1) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &useless) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
 		      4 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg2) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &useless) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
 		      2 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg3) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as,
 		     seg1,
@@ -83,7 +83,7 @@ void			test_core_as_readwrite(void)
 		     0x20000000,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as,
 		     seg2,
@@ -92,7 +92,7 @@ void			test_core_as_readwrite(void)
 		     0x20001000,
 		     2 * PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as,
 		     seg3,
@@ -101,7 +101,7 @@ void			test_core_as_readwrite(void)
 		     0x20003000,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)
     buff[i] = (i * 2 + 4) % 256;
@@ -110,7 +110,7 @@ void			test_core_as_readwrite(void)
 	       buff + 10,
 	       4 * PAGESZ - 12,
 	       0x2000000a) != ERROR_OK)
-    TEST_ERROR("[as_write] error\n");
+    TEST_ERROR("[as_write] error");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)
     buff[i] = 0;
@@ -119,23 +119,23 @@ void			test_core_as_readwrite(void)
 		   PAGESZ,
 		   buff,
 		   PAGESZ) != ERROR_OK)
-    TEST_ERROR("[segment_read] error\n");
+    TEST_ERROR("[segment_read] error");
 
   if (segment_read(seg2,
 		   PAGESZ,
 		   buff + PAGESZ,
 		   2 * PAGESZ) != ERROR_OK)
-    TEST_ERROR("[segment_read] error\n");
+    TEST_ERROR("[segment_read] error");
 
   if (segment_read(seg3,
 		   0,
 		   buff + 3 * PAGESZ,
 		   PAGESZ) != ERROR_OK)
-    TEST_ERROR("[segment_read] error\n");
+    TEST_ERROR("[segment_read] error");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)
     if (buff[i] != (i * 2 + 4) % 256)
-      TEST_ERROR("the data read differs from the one written\n");
+      TEST_ERROR("the data read differs from the one written");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)
     buff[i] = 0;
@@ -144,11 +144,13 @@ void			test_core_as_readwrite(void)
 	      0x2000000a,
 	      4 * PAGESZ - 12,
 	      buff + 10) != ERROR_OK)
-    TEST_ERROR("[as_read] error\n");
+    TEST_ERROR("[as_read] error");
 
   for (i = 10; i < 4 * PAGESZ - 12; i++)
     if (buff[i] != (i * 2 + 4) % 256)
-      TEST_ERROR("the data read differs from the one written\n");
+      TEST_ERROR("the data read differs from the one written");
+
+  TEST_SIGNATURE(03ri290saoigfeio0032);
 
   TEST_LEAVE();
 }

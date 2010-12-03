@@ -1,0 +1,5 @@
+name: core/scheduler/complete/01
+description: This test creates a task with a single thread which spawns another thread. A segment is shared between these two threads and the kernel threads and data is written at different times, proving that all the thread have been scheduled properly.
+symbol: test_core_scheduler_complete_01
+signature: weiofjwc39fw30gi99ccwseifvwb09giifawooierwg
+output:

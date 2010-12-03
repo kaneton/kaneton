@@ -1,4 +1,5 @@
 name: core/set/ll/01
 description: This test reserves a basic set, releases it and then reserves another set with advanced though invalid options.
 symbol: test_core_set_ll_01
+signature: xclkv3pog3h
 output:

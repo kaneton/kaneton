@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
+ * file          /data/mycure/repo...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sat nov 27 16:29:56 2010]
+ * updated       julien quintard   [thu dec  2 16:17:14 2010]
  */
 
 /*
@@ -37,7 +37,6 @@ d_thread		glue_thread_dispatch =
   {
     NULL,
     NULL,
-    glue_thread_clone,
     NULL,
     glue_thread_load,
     glue_thread_store,
@@ -57,20 +56,6 @@ d_thread		glue_thread_dispatch =
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * clone the ia32 architecture dependent part of a thread.
- */
-
-t_error			glue_thread_clone(i_task		taskid,
-					  i_thread		old,
-					  i_thread*		new)
-{
-  if (ia32_duplicate_context(old, *new) != ERROR_OK)
-    MACHINE_ESCAPE("unable to duplicate the IA32 context");
-
-  MACHINE_LEAVE();
-}
 
 /*
  * reserve a thread on the ia32 architecture

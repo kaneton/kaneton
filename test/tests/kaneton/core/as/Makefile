@@ -8,8 +8,14 @@
 # file          /home/mycure/kane...ABLE/test/tests/kaneton/core/as/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu nov 18 16:08:46 2010]
+# updated       julien quintard   [thu dec  2 16:54:34 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/as
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -27,8 +33,7 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		clone				\
-					copy				\
+SUBDIRS			:=		copy				\
 					give				\
 					map				\
 					read-write			\

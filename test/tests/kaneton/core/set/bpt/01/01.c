@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...TABLE/test/tests/kaneton/set/bpt/01/01.c
+ * file          /data/mycure/repo.../test/tests/kaneton/core/set/bpt/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 06:22:09 2010]
+ * updated       julien quintard   [mon nov 29 19:10:15 2010]
  */
 
 /*
@@ -30,18 +30,20 @@ void			test_core_set_bpt_01(void)
   TEST_ENTER();
 
   if (set_reserve(bpt, SET_OPTION_SORT, sizeof(t_id), PAGESZ, &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
 
   if (set_reserve(bpt, SET_OPTION_ALLOC | SET_OPTION_FREE,
                   sizeof(t_id), PAGESZ, &id) == ERROR_OK)
-    TEST_ERROR("[set_reserve] error: invalid arguments\n");
+    TEST_ERROR("[set_reserve] error: invalid arguments");
 
   if (set_reserve(bpt, SET_OPTION_ORGANISE,
                   sizeof(t_id), PAGESZ, &id) == ERROR_OK)
-    TEST_ERROR("[set_reserve] error: invalid arguments\n");
+    TEST_ERROR("[set_reserve] error: invalid arguments");
+
+  TEST_SIGNATURE(s90if3ja4g93);
 
   TEST_LEAVE();
 }

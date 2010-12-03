@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...est/tests/kaneton/segment/flush/Makefile
+# file          /data/mycure/repo...ests/kaneton/core/segment/flush/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [wed oct 20 14:14:01 2010]
+# updated       julien quintard   [tue nov 30 16:08:52 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/segment/flush
 
 #
 # ---------- dependencies -----------------------------------------------------

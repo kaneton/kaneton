@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/test/tests/kaneton/set/pipe/04/04.c
+ * file          /data/mycure/repo...test/tests/kaneton/core/set/pipe/04/04.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2040]
- * updated       julien quintard   [thu nov 18 07:01:20 2010]
+ * updated       julien quintard   [mon nov 29 19:15:27 2010]
  */
 
 /*
@@ -44,7 +44,7 @@ void			test_core_set_pipe_04(void)
 		  SET_OPTION_ALLOC,
                   sizeof(t_id),
 		  &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   /*
    * push
@@ -96,21 +96,21 @@ void			test_core_set_pipe_04(void)
 
   for (i = 0; i < 10; i++)
     if (set_pop(id) != ERROR_OK)
-      TEST_ERROR("[set_pop] error\n");
+      TEST_ERROR("[set_pop] error");
 
   /*
    * display
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -155,21 +155,21 @@ void			test_core_set_pipe_04(void)
 
   for (i = 0; i < 3; i++)
     if (set_pop(id) != ERROR_OK)
-      TEST_ERROR("[set_pop] error\n");
+      TEST_ERROR("[set_pop] error");
 
   /*
    * display
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -185,7 +185,9 @@ void			test_core_set_pipe_04(void)
    */
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(vopkvg03g34h3);
 
   TEST_LEAVE();
 }

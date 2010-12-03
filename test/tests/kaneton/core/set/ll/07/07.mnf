@@ -1,4 +1,5 @@
 name: core/set/ll/07
 description: This test reserves a set, adds many objects and display the set.
 symbol: test_core_set_ll_07
+signature: klvk34gh34g450h
 output: "0 elements: \n3 elements: 16 4 2\n"

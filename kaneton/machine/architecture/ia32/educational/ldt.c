@@ -142,7 +142,7 @@ t_error			ia32_ldt_build(t_uint16			entries,
 
   seg.base = base;
   seg.limit = entries * sizeof(t_ia32_ldt_entry);
-  seg.privilege = ia32_privilege_supervisor;
+  seg.privilege = ia32_privilege_kernel;
   seg.is_system = 1;
   seg.type.system = ia32_type_ldt;
 

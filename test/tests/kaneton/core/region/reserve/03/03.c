@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ests/kaneton/core/region/reserve/03/03.c
+ * file          /data/mycure/repo...ests/kaneton/core/region/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [thu nov 18 16:21:13 2010]
+ * updated       julien quintard   [mon nov 29 18:49:27 2010]
  */
 
 /*
@@ -44,7 +44,7 @@ void			test_core_region_reserve_03(void)
                       10 * PAGESZ,
                       PERMISSION_READ | PERMISSION_WRITE,
                       &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
                      seg,
@@ -53,7 +53,7 @@ void			test_core_region_reserve_03(void)
                      0,
                      2 * PAGESZ,
                      &reg1) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(_kernel->as,
                      seg,
@@ -62,7 +62,7 @@ void			test_core_region_reserve_03(void)
                      0,
                      2 * PAGESZ,
                      &reg2) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(_kernel->as,
                      seg,
@@ -71,7 +71,7 @@ void			test_core_region_reserve_03(void)
                      0,
                      4 * PAGESZ,
                      &reg3) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   p = (t_uint8*)(t_vaddr)reg1;
   for (; p < (t_uint8*)(t_vaddr)reg1 + 2 * PAGESZ; p++)
@@ -86,16 +86,18 @@ void			test_core_region_reserve_03(void)
     *p = 0x0;
 
   if (region_release(_kernel->as, reg1) != ERROR_OK)
-    TEST_ERROR("[region_release] error\n");
+    TEST_ERROR("[region_release] error");
 
   if (region_release(_kernel->as, reg2) != ERROR_OK)
-    TEST_ERROR("[region_release] error\n");
+    TEST_ERROR("[region_release] error");
 
   if (region_release(_kernel->as, reg3) != ERROR_OK)
-    TEST_ERROR("[region_release] error\n");
+    TEST_ERROR("[region_release] error");
 
   if (segment_release(seg) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
+
+  TEST_SIGNATURE(taf9ewi0g23r92tg);
 
   TEST_LEAVE();
 }

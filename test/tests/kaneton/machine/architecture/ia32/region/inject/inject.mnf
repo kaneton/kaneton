@@ -1,0 +1,5 @@
+name: machine/architecture/region/inject
+description: This test creates a task and address space, then builds a region by allocating memory directly through malloc(). Finally, the memory region is mapped and injected.
+symbol: test_architecture_region_inject
+signature: w09ciekwijg4hg9
+output:

@@ -1,4 +1,0 @@
-name: core/as/clone/02
-description: This test creates two tasks and reserves an address space with a segment which is mapped in the first. Then, the address space is cloned in the second task. The various segments and regions populating the address spaces are verified since supposed to be identical. Finally, every resource is released.
-symbol: test_core_as_clone_02
-output:

@@ -1,0 +1,5 @@
+name: core/thread/wait/04
+description: This test creates three threads. The first one waits for the second to start while the third starts the second. Note that in this case, the first thread requests the wait() function while the second thread has already been started.
+symbol: test_core_thread_wait_04
+signature: 0ir32qeiojdgreh39ut90tgiesswe40r23ur90a0fewgug2309fwe90gie09g
+output:

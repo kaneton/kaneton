@@ -1,4 +1,5 @@
 name: core/segment/reserve/07
 description: This test creates a task and address space before reserving several segments. Note that in this test, some of the segments are also released.
 symbol: test_core_segment_reserve_07
+signature: r3982804tg3g43
 output:

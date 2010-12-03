@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...sts/kaneton/core/segment/reserve/05/05.c
+ * file          /data/mycure/repo...sts/kaneton/core/segment/reserve/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:31:21 2010]
+ * updated       julien quintard   [mon nov 29 18:59:56 2010]
  */
 
 /*
@@ -41,6 +41,8 @@ void			test_core_segment_reserve_05(void)
   TEST_ALLOCATE(_kernel->as, 7, seg + 1);
   TEST_ALLOCATE(_kernel->as, 8, seg);
   TEST_ALLOCATE(_kernel->as, 2, seg + 3);
+
+  TEST_SIGNATURE(r223t9it9585hwe);
 
   TEST_LEAVE();
 }

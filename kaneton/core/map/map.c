@@ -290,7 +290,7 @@ t_error			map_initialize(void)
    */
 
   if ((_map = malloc(sizeof(m_map))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the map manager's structure\n");
+    CORE_ESCAPE("unable to allocate memory for the map manager's structure");
 
   memset(_map, 0x0, sizeof(m_map));
 

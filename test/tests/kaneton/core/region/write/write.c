@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../tests/kaneton/core/region/write/write.c
+ * file          /data/mycure/repo.../tests/kaneton/core/region/write/write.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:23:12 2010]
+ * updated       julien quintard   [mon nov 29 18:51:34 2010]
  */
 
 /*
@@ -41,7 +41,7 @@ void			test_core_region_write(void)
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     seg,
@@ -50,11 +50,13 @@ void			test_core_region_write(void)
 		     0x70000000,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   p = (t_uint8*)(t_vaddr)reg;
   for (; p < (t_uint8*)(t_vaddr)reg + PAGESZ; p++)
     *p = 0x42;
+
+  TEST_SIGNATURE(0t09i490eirgi340g);
 
   TEST_LEAVE();
 }

@@ -67,8 +67,8 @@ m_as*			_as = NULL;
 
 t_error			as_show(i_as				id)
 {
-  i_segment		segment;
-  i_region		region;
+  i_segment*		segment;
+  o_region*		region;
   t_state		st;
   t_iterator		i;
   o_as*			o;
@@ -80,8 +80,8 @@ t_error			as_show(i_as				id)
   if (as_get(id, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
-  module_call(console, console_message, '#',
-	      "  address space %qd in task %qd:\n",
+  module_call(console, console_message,
+	      '#', "  address space %qu in task %qu:\n",
 	      id,
 	      o->task);
 
@@ -94,11 +94,22 @@ t_error			as_show(i_as				id)
 
   set_foreach(SET_OPTION_FORWARD, o->segments, &i, st)
     {
+      o_segment*	seg;
+
       if (set_object(o->segments, i, (void**)&segment) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the segment identifier");
+
+      if (segment_get(*segment, &seg) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the segment object");
 
+      /* XXX
       module_call(console, console_message,
-		  '#', "      %qu\n", segment);
+		  '#', "      %qu [0x%x - 0x%x]\n",
+		  *segment,
+		  seg->address,
+		  seg->address + seg->size - 1);
+      */
+      segment_show(seg->id);
     }
 
   /*
@@ -114,7 +125,11 @@ t_error			as_show(i_as				id)
 	CORE_ESCAPE("unable to retrieve the region object");
 
       module_call(console, console_message,
-		  '#', "      %qu\n", region);
+		  '#', "      %qu [0x%x - 0x%x] targets segment %qu\n",
+		  region->id,
+		  region->address,
+		  region->address + region->size - 1,
+		  region->segment);
     }
 
   /*
@@ -908,146 +923,6 @@ t_error			as_copy(i_as			source_id,
 	  destination_copy = destination_region->size;
 	}
     }
-
-  CORE_LEAVE();
-}
-
-/*
- * this function clones an address space.
- *
- * steps:
- *
- * 1) gets the source address space object given its identifier.
- * 2) gets the task object.
- * 3) reserves the cloned address space object.
- * 4) gets the destination address space object previously reserved.
- * 5) prepare a temporary set for the mapping between segments and regions.
- * 6) clones the segment set from the source address space object.
- * 7) clones the region set from the source address space object.
- * 8) calls the machine-dependent code.
- */
-
-t_error			as_clone(i_as				id,
-				 i_task				task,
-				 i_as*				as)
-{
-  i_segment		pool[2];
-  i_segment*		map = pool;
-  o_task*		target;
-  o_as*			from;
-  o_as*			to;
-  t_state		st;
-  t_iterator		i;
-  t_setsz		setsz;
-  i_set			mapping;
-
-  assert(as != NULL);
-
-  /*
-   * 1)
-   */
-
-  if (as_get(id, &from) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the address space object");
-
-  /*
-   * 2)
-   */
-
-  if (task_get(task, &target) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the task object");
-
-  if (target->as != ID_UNUSED)
-    CORE_ESCAPE("the task already possesses an address space");
-
-  /*
-   * 3)
-   */
-
-  if (as_reserve(task, as) != ERROR_OK)
-    CORE_ESCAPE("unable to reserve an address space");
-
-  /*
-   * 4)
-   */
-
-  if (as_get(*as, &to) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the address space object");
-
-  /*
-   * 5)
-   */
-
-  if (set_size(from->segments, &setsz) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set");
-
-  if (set_reserve(array, SET_OPTION_ALLOC, setsz,
-		  sizeof (pool), &mapping) != ERROR_OK)
-    CORE_ESCAPE("unable to reserve a set");
-
-  /*
-   * 6)
-   */
-
-  set_foreach(SET_OPTION_FORWARD, from->segments, &i, st)
-    {
-      i_segment		needless;
-      i_segment*	data;
-      o_segment*	o;
-
-      if (set_object(from->segments, i, (void**)&data) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the segment identifier from the set");
-
-      if (segment_get(*data, &o) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the segment object");
-
-      if (o->type == SEGMENT_TYPE_SYSTEM)
-	continue;
-
-      if (segment_clone(to->id, *data, &needless) != ERROR_OK)
-	CORE_ESCAPE("unable to clone the segment");
-
-      map[0] = *data;
-      map[1] = needless;
-
-      if (set_add(mapping, map) != ERROR_OK)
-	CORE_ESCAPE("unable to add the segment to the set of segments");
-    }
-
-  /*
-   * 7)
-   */
-
-  set_foreach(SET_OPTION_FORWARD, from->regions, &i, st)
-    {
-      i_region		needless;
-      o_region*		data;
-
-      if (set_object(from->regions, i, (void**)&data) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the region identifier from the set");
-
-      if (set_exist(mapping, data->segment) == ERROR_FALSE)
-	continue;
-
-      if (set_get(mapping, data->segment, (void**)&map) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the segment identifier");
-
-      if (region_reserve(to->id,
-			 map[1],
-			 data->offset,
-			 data->options | REGION_OPTION_FORCE,
-			 data->address,
-			 data->size,
-			 &needless) != ERROR_OK)
-	CORE_ESCAPE("unable to reserve the region");
-    }
-
-  /*
-   * 8)
-   */
-
-  if (machine_call(as, as_clone, id, task, as) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }

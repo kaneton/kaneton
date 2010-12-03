@@ -1,0 +1,5 @@
+name: core/scheduler/simple/02
+description: This test creates two threads and makes sure the threads get scheduled.
+symbol: test_core_scheduler_simple_02
+signature: nvwoi23wev0i03f2
+output:

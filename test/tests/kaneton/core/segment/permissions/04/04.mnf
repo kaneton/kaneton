@@ -1,4 +1,5 @@
 name: core/segment/permissions/04
 description: This test reserves a segment and tries to write into it before releasing it.
 symbol: test_core_segment_permissions_04
+signature: t3oarfskr34h90
 output:

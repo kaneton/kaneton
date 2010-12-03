@@ -1,4 +1,5 @@
 name: core/segment/resize
 description: This test allocates a segment, resizes it and verifies that everything went as normal. The same segment is resized another time forcing it to be moved somewhere else in memory. Finally, the segment is released.
 symbol: test_core_segment_resize
+signature: ergklzdkg4g34h
 output:

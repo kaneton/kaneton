@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...t/tests/kaneton/region/flush/02/Makefile
+# file          /data/mycure/repo...ts/kaneton/core/region/flush/02/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [mon nov  8 11:49:49 2010]
+# updated       julien quintard   [tue nov 30 16:06:24 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/region/flush/02
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -1,4 +1,5 @@
 name: core/segment/reserve/05
 description: This test reserves several segments and verifies them.
 symbol: test_core_segment_reserve_05
+signature: r223t9it9585hwe
 output:

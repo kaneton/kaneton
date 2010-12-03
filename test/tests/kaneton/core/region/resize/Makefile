@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...est/tests/kaneton/region/resize/Makefile
+# file          /data/mycure/repo...ests/kaneton/core/region/resize/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [mon nov  8 12:19:13 2010]
+# updated       julien quintard   [tue nov 30 16:07:16 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/region/resize
 
 #
 # ---------- dependencies -----------------------------------------------------

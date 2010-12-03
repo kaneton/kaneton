@@ -1,4 +1,5 @@
 name: core/as/region
 description: This test allocates several segments and regions in a new task's address space. Finally, the task and its address space are released.
 symbol: test_core_as_region
+signature: r32iijogdpzfepwg0t
 output:

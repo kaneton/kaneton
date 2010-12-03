@@ -1,0 +1,5 @@
+name: core/scheduler/complete/02
+description: This test creates two tasks which share a segment with the kernel. Every thread initially contains a single thread but the kernel thread adds a thread to every task and schedule them.
+symbol: test_core_scheduler_complete_02
+signature: 23rfjsovcewrnbe04zdvcowejfwegbeihbe0
+output:

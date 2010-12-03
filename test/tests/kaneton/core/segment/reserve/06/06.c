@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...sts/kaneton/core/segment/reserve/06/06.c
+ * file          /data/mycure/repo...sts/kaneton/core/segment/reserve/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:31:38 2010]
+ * updated       julien quintard   [mon nov 29 19:00:18 2010]
  */
 
 /*
@@ -35,10 +35,10 @@ void			test_core_segment_reserve_06(void)
 
   if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE, &task) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task, &as) != ERROR_OK)
-    TEST_ERROR("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error");
 
   for (i = 0; i < 64; i++)
     {
@@ -57,10 +57,12 @@ void			test_core_segment_reserve_06(void)
   TEST_ALLOCATE(as, 4, seg + 3);
 
   if (as_release(as) != ERROR_OK)
-    TEST_ERROR("[as_release] error\n");
+    TEST_ERROR("[as_release] error");
 
   if (task_release(task) != ERROR_OK)
-    TEST_ERROR("[task_release] error\n");
+    TEST_ERROR("[task_release] error");
+
+  TEST_SIGNATURE(230i0f9i32qgi3g34);
 
   TEST_LEAVE();
 }

@@ -1,4 +1,5 @@
 name: core/segment/coalesce
 description: This test allocates adjacent segments before coalescing them. Note that the last part of the test tries to coalesce segments with different permissions. Finally, every allocated resource is released.
 symbol: test_core_segment_coalesce
+signature: 043t90iesroikf29hg34h
 output:

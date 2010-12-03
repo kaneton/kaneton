@@ -1,4 +1,5 @@
 name: core/as/segment
 description: This test creates a task with an address space and reserves several segments. Finally, the test verifies that the number of segments creates is correct while maintaining the address space object's consistency. Finally, the task and its address space are released.
 symbol: test_core_as_segment
+signature: r9329i54yszjw0909r34t
 output:

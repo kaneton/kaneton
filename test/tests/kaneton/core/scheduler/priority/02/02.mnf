@@ -1,0 +1,5 @@
+name: core/scheduler/priority/02
+description: This test creates eight threads with increasing priorities. The test lets the threads execute for some time and finally verifies that the threads with the highest priorities have been scheduled more time than the others.
+symbol: test_core_scheduler_priority_02
+signature: 09fiwfmcv0i3f2waf09mccc2q3d09wg93h34
+output:

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...BLE/test/tests/kaneton/set/array/02/02.c
+ * file          /data/mycure/repo...est/tests/kaneton/core/set/array/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [wed nov 17 23:08:28 2010]
+ * updated       julien quintard   [mon nov 29 19:04:53 2010]
  */
 
 /*
@@ -37,25 +37,25 @@ void			test_core_set_array_02(void)
   TEST_ENTER();
 
   if (set_reserve(array, SET_OPTION_NONE, 4, sizeof(t_id), &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 64; ++i)
     {
       objs[i] = (i * 234) % 6578;
 
       if (set_add(id, &objs[i]) != ERROR_OK)
-        TEST_ERROR("[set_add] error\n");
+        TEST_ERROR("[set_add] error");
     }
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd", *((i_set*)pdata));
@@ -65,7 +65,9 @@ void			test_core_set_array_02(void)
   printf("\n");
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(i23f0w3ifgo4kg);
 
   TEST_LEAVE();
 }

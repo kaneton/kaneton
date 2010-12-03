@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/test/tests/kaneton/set/pipe/05/05.c
+ * file          /data/mycure/repo...test/tests/kaneton/core/set/pipe/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2050]
- * updated       julien quintard   [thu nov 18 07:02:04 2010]
+ * updated       julien quintard   [mon nov 29 19:15:47 2010]
  */
 
 /*
@@ -40,7 +40,7 @@ void			test_core_set_pipe_05(void)
    */
 
   if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   /*
    * push
@@ -48,57 +48,57 @@ void			test_core_set_pipe_05(void)
 
   obj = 80LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 98654LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 42LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 122LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 45LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 64LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 90LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 12346LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 67LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   obj = 90LL;
   if (set_push(id, &obj) != ERROR_OK)
-    TEST_ERROR("[set_push] error\n");
+    TEST_ERROR("[set_push] error");
 
   /*
    * display
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -110,14 +110,14 @@ void			test_core_set_pipe_05(void)
   printf("\n");
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_BACKWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -133,7 +133,9 @@ void			test_core_set_pipe_05(void)
    */
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(09fg23g3g43khoph);
 
   TEST_LEAVE();
 }

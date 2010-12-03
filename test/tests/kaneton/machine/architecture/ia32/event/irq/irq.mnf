@@ -1,0 +1,5 @@
+name: machine/architecture/event/irq
+description: This test creates a thread which sets up an event and checks that the IRQs are being caught.
+symbol: test_architecture_event_irq
+signature: vnmweiofwjf90ggber9gsjc93r2g
+output:

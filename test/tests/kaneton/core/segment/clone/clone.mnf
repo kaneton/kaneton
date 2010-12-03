@@ -1,4 +1,5 @@
 name: core/segment/clone
 description: This test reserves a segment, write data to this segment before cloning it and checking that everything went well. The test finishes by releasing the allocated and cloned segments.
 symbol: test_core_segment_clone
+signature: 09tgi30g9a9wegoh
 output:

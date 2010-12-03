@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...test/tests/kaneton/segment/copy/Makefile
+# file          /data/mycure/repo...tests/kaneton/core/segment/copy/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [wed oct 20 14:06:05 2010]
+# updated       julien quintard   [tue nov 30 16:08:45 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/segment/copy
 
 #
 # ---------- dependencies -----------------------------------------------------

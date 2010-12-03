@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...BLE/test/tests/kaneton/set/array/01/01.c
+ * file          /data/mycure/repo...est/tests/kaneton/core/set/array/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 17 15:50:06 2010]
+ * updated       julien quintard   [mon nov 29 19:50:50 2010]
  */
 
 /*
@@ -30,14 +30,16 @@ void			test_core_set_array_01(void)
   TEST_ENTER();
 
   if (set_reserve(array, SET_OPTION_NONE, 4, sizeof(t_id), &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
 
   if (set_reserve(array, SET_OPTION_ALLOC | SET_OPTION_FREE, 4,
                   sizeof(t_id), &id) == ERROR_OK)
-    TEST_ERROR("[set_reserve] error: invalid arguments\n");
+    TEST_ERROR("[set_reserve] error: invalid arguments");
+
+  TEST_SIGNATURE(df093fiwg093h);
 
   TEST_LEAVE();
 }

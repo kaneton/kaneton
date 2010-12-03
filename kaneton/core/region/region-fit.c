@@ -92,8 +92,9 @@ t_error			region_show(i_as			asid,
    */
 
   module_call(console, console_message,
-	      '#', "    0x%08x [%qd] (%u) %c\n",
+	      '#', "    0x%08x - 0x%08x [%qd] (%u bytes) %c\n",
 	      o->address,
+	      o->address + o->size - 1,
 	      o->segment,
 	      o->size,
 	      (o->options & REGION_OPTION_PRIVILEGED) ? 'S' : 'U');
@@ -158,7 +159,7 @@ t_error			region_dump(i_as		asid)
     {
       if (set_object(o->regions, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the region object corresponding "
-		    "to its identifier\n");
+		    "to its identifier");
 
       if (region_show(asid, data->id) != ERROR_OK)
 	CORE_ESCAPE("unable to show the region");
@@ -786,7 +787,8 @@ t_error			region_reserve(i_as			asid,
 
 	  if (data->address <= address && data->address + data->size > address)
 	    CORE_ESCAPE("unable to reserve the region at this precise "
-			"location: seems to be already taken");
+			"location 0x%x: seems to be already taken",
+			address);
 	}
 
       o->address = address;

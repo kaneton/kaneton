@@ -1,0 +1,5 @@
+name: core/time/precision/03
+description: This test creates a thread, sets up a timer a verifies the extreme precision of the timer.
+symbol: test_core_time_precision_03
+signature: zxckml3f3209gu8ti20e9wfc20392
+output:

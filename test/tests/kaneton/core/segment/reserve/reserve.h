@@ -27,22 +27,22 @@
 			  (_pages_) * PAGESZ,				\
 			  PERMISSION_READ,				\
 			  (_segment_)) != ERROR_OK)			\
-	TEST_ERROR("[segment_reserve] error\n");			\
+	TEST_ERROR("[segment_reserve] error");			\
 									\
       if (segment_get(*(_segment_), &o) != ERROR_OK)			\
-	TEST_ERROR("[segment_get] error\n");				\
+	TEST_ERROR("[segment_get] error");				\
 									\
       if (o->id != *(_segment_))					\
-	TEST_ERROR("invalid segment's identifier\n");			\
+	TEST_ERROR("invalid segment's identifier");			\
 									\
       if (o->as != (_as_))						\
-	TEST_ERROR("invalid segment's address space identifier\n");	\
+	TEST_ERROR("invalid segment's address space identifier");	\
 									\
       if (o->size != (_pages_) * PAGESZ)				\
-	TEST_ERROR("invalid segment's size\n");				\
+	TEST_ERROR("invalid segment's size");				\
 									\
       if (o->permissions != PERMISSION_READ)				\
-	TEST_ERROR("invalid segment's permissions\n");			\
+	TEST_ERROR("invalid segment's permissions");			\
     } while (0)
 
 #endif

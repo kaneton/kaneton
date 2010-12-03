@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../architecture/ia32/educational/mapping.c
+ * file          /data/mycure/repo.../architecture/ia32/educational/mapping.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:26:06 2007]
- * updated       julien quintard   [sat nov 27 19:33:37 2010]
+ * updated       julien quintard   [wed dec  1 23:50:19 2010]
  */
 
 /*
@@ -90,7 +90,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
       pt.rw = IA32_PAGE_TABLE_WRITABLE;
       pt.present = 1;
       pt.user = IA32_PAGE_TABLE_PRIVILEGED;
-      pt.cached = IA32_PAGE_TABLE_CACHED;
+      pt.cached = IA32_PAGE_TABLE_CACHED; // XXX CACHED
       pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
 
       if (ia32_pd_add_table(IA32_PAGE_DIRECTORY_CURRENT,
@@ -117,7 +117,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
   pg.rw = IA32_PAGE_WRITABLE;
   pg.present = 1;
   pg.user = IA32_PAGE_PRIVILEGED;
-  pg.cached = IA32_PAGE_CACHED;
+  pg.cached = IA32_PAGE_CACHED; // CACHED
   pg.writeback = IA32_PAGE_WRITEBACK;
   pg.addr = p;
 
@@ -330,7 +330,7 @@ t_error			ia32_map_region(i_as		asid,
     IA32_PAGE_PRIVILEGED : IA32_PAGE_USER;
   pg.global = (options & REGION_OPTION_GLOBAL) ?
     IA32_PAGE_GLOBAL : IA32_PAGE_NONGLOBAL;
-  pg.cached = IA32_PAGE_CACHED;
+  pg.cached = IA32_PAGE_CACHED; // XXX CACHED
   pg.writeback = IA32_PAGE_WRITEBACK;
 
   /*
@@ -383,7 +383,7 @@ t_error			ia32_map_region(i_as		asid,
 	  pt.rw = IA32_PAGE_TABLE_WRITABLE;
 	  pt.present = 1;
 	  pt.user = IA32_PAGE_TABLE_USER;
-	  pt.cached = IA32_PAGE_TABLE_CACHED;
+	  pt.cached = IA32_PAGE_TABLE_CACHED; // XXX CACHED
 	  pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
 
 	  if (ia32_pd_add_table(&pd, pde, pt) != ERROR_OK)

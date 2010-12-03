@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/kaneton/core/time/clock.c
  *
  * created       julien quintard   [wed nov 24 18:40:55 2010]
- * updated       julien quintard   [wed nov 24 23:26:00 2010]
+ * updated       julien quintard   [wed dec  1 07:18:20 2010]
  */
 
 /*
@@ -135,7 +135,7 @@ t_error			clock_initialize(void)
 
   if ((_clock = malloc(sizeof(m_clock))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the clock manager's "
-		"structure\n");
+		"structure");
 
   memset(_clock, 0x0, sizeof(m_clock));
 

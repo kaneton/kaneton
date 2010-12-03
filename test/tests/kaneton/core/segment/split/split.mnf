@@ -1,4 +1,5 @@
 name: core/segment/split
 description: This test reserves a segment, splits it in two and verifies that the segments are valid. Finally, both segments are released.
 symbol: test_core_segment_split
+signature: vsdlawogjjgeoihj4e3h
 output:

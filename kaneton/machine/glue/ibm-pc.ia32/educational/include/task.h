@@ -58,9 +58,6 @@
  * ../task.c
  */
 
-t_error			glue_task_clone(i_task			old,
-					i_task*			new);
-
 t_error			glue_task_reserve(t_class		class,
 					  t_behaviour		behav,
 					  t_priority		prior,

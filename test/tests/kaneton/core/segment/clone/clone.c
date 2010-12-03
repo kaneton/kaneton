@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...tests/kaneton/core/segment/clone/clone.c
+ * file          /data/mycure/repo...tests/kaneton/core/segment/clone/clone.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 24 09:38:53 2010]
+ * updated       julien quintard   [mon nov 29 18:53:08 2010]
  */
 
 /*
@@ -43,7 +43,7 @@ void			test_core_segment_clone(void)
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < PAGESZ; i++)
     {
@@ -51,22 +51,22 @@ void			test_core_segment_clone(void)
     }
 
   if (segment_write(seg, 0, buff, PAGESZ) != ERROR_OK)
-    TEST_ERROR("[segment_write] error\n");
+    TEST_ERROR("[segment_write] error");
 
   if (segment_clone(_kernel->as, seg, &seg2) != ERROR_OK)
-    TEST_ERROR("[segment_clone] error\n");
+    TEST_ERROR("[segment_clone] error");
 
   if (segment_get(seg2, &o) != ERROR_OK)
-    TEST_ERROR("[segment_get] error\n");
+    TEST_ERROR("[segment_get] error");
 
   if (o->as != _kernel->as)
-    TEST_ERROR("invalid segment's address space identfiier after cloning\n");
+    TEST_ERROR("invalid segment's address space identfiier after cloning");
 
   if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))
-    TEST_ERROR("invalid segment's permissions after cloning\n");
+    TEST_ERROR("invalid segment's permissions after cloning");
 
   if (o->size != PAGESZ)
-    TEST_ERROR("invalid segment's size after cloning\n");
+    TEST_ERROR("invalid segment's size after cloning");
 
   for (i = 0; i < PAGESZ; i++)
     {
@@ -74,19 +74,21 @@ void			test_core_segment_clone(void)
     }
 
   if (segment_read(seg2, 0, buff, PAGESZ) != ERROR_OK)
-    TEST_ERROR("[segment_read] error\n");
+    TEST_ERROR("[segment_read] error");
 
   for (i = 0; i < PAGESZ; i++)
     {
       if (buff[i] != (i * 2 + 4) % 256)
-	TEST_ERROR("invalid data after cloning\n");
+	TEST_ERROR("invalid data after cloning");
     }
 
   if (segment_release(seg) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   if (segment_release(seg2) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
+
+  TEST_SIGNATURE(09tgi30g9a9wegoh);
 
   TEST_LEAVE();
 }

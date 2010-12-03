@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...E/kaneton/core/scheduler/scheduler-mfq.c
+ * file          /data/mycure/repo...E/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sun nov 28 19:45:12 2010]
+ * updated       julien quintard   [fri dec  3 16:19:45 2010]
  */
 
 /*
@@ -92,6 +92,8 @@ extern m_cpu*		_cpu;
  */
 
 m_scheduler*		_scheduler = NULL;
+
+int _XXX = 0;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -421,7 +423,7 @@ t_error			scheduler_yield(void)
    * 2)
    */
 
-  scheduler->priority = SCHEDULER_LPRIORITY;
+  scheduler->priority = SCHEDULER_PRIORITY_LOW;
   scheduler->timeslice = _scheduler->quantum;
 
   /*
@@ -493,6 +495,7 @@ t_error			scheduler_elect(void)
   i_cpu			cpu;
   t_state		st;
   t_iterator		i;
+  o_task*		t;
   o_thread*		o;
 
   /*						    [endblock::switch::vars] */
@@ -508,6 +511,9 @@ t_error			scheduler_elect(void)
 
   if (thread_get(scheduler->thread, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the given thread object");
+
+  if (task_get(o->task, &t) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the thread's task object");
 
   /*
    * 2)
@@ -527,7 +533,8 @@ t_error			scheduler_elect(void)
    * 2)
    */
 
-  if ((o->state == THREAD_STATE_RUN) &&
+  if ((t->state == TASK_STATE_START) &&
+      (o->state == THREAD_STATE_START) &&
       (current_timeslice == 0))
     {
       o_scheduled	entity;
@@ -576,17 +583,22 @@ t_error			scheduler_elect(void)
     {
       t_iterator	iterator;
       o_scheduled*	highest;
-      o_thread*		t;
+      o_task*		tt;
+      o_thread*		oo;
 
       // XXX si le thread courant n'a pas expire mais qu'il reste le plus
       // prioritaire, ne rien change et le laisse s'executer.
       if ((current_timeslice != 0) &&
 	  (priority > current_priority))
 	{
-	  if (thread_get(current_thread, &t) != ERROR_OK)
+	  if (thread_get(current_thread, &oo) != ERROR_OK)
 	    CORE_ESCAPE("unable to retrieve the thread object");
 
-	  if (t->state != THREAD_STATE_RUN)
+	  if (task_get(oo->task, &tt) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the thread's task object");
+
+	  if ((tt->state != TASK_STATE_START) &&
+	      (oo->state != THREAD_STATE_START))
 	    continue;
 
 	  elected = BOOLEAN_TRUE;
@@ -618,10 +630,14 @@ t_error			scheduler_elect(void)
 	  if (set_object(*queue, iterator, (void**)&highest) != ERROR_OK)
 	    CORE_ESCAPE("unable to retrieve the thread");
 
-	  if (thread_get(highest->thread, &t) != ERROR_OK)
+	  if (thread_get(highest->thread, &oo) != ERROR_OK)
 	    CORE_ESCAPE("unable to retrieve the thread object");
 
-	  if (t->state != THREAD_STATE_RUN)
+	  if (task_get(oo->task, &tt) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the thread's task object");
+
+	  if ((tt->state != TASK_STATE_START) &&
+	      (oo->state != THREAD_STATE_START))
 	    continue;
 
 	  elected = BOOLEAN_TRUE;
@@ -635,11 +651,12 @@ t_error			scheduler_elect(void)
 
 	  // XXX
 	  //printf("[ELECT] elected the highest active thread %qu\n",
-	  //	 future_thread);
+	  //future_thread);
 	  // XXX
 
-	  if ((o->state == THREAD_STATE_RUN) &&
-	      (current_timeslice != 0))
+	  if ((t->state == TASK_STATE_START) &&
+	      (o->state == THREAD_STATE_START) &&
+	      (current_timeslice != 0)) /* XXX to avoid the thread to be saved twice since if timeslice == 0 it has been saved when entering the elect() function */
 	    {
 	      o_scheduled	entity;
 
@@ -665,7 +682,7 @@ t_error			scheduler_elect(void)
 		      // XXX
 		      //printf("[ELECT] saved %qu (%u, %u ms) in active queue\n",
 		      //current_thread, current_priority,
-		      //     current_timeslice);
+		      //current_timeslice);
 		      // XXX
 
 		      break;
@@ -835,8 +852,6 @@ t_error			scheduler_add(i_thread			id)
   o_scheduler*		scheduler;
   t_priority		priority;
   o_scheduled		entity;
-  o_thread*		thread;
-  o_task*		task;
   i_set*		queue;
   t_state		st;
   t_iterator		i;
@@ -851,6 +866,8 @@ t_error			scheduler_add(i_thread			id)
    * 1)
    */
 
+  // XXX recuperer le scheduler du CPU associe avec le thread
+
   if (scheduler_get(&scheduler) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
 
@@ -858,22 +875,8 @@ t_error			scheduler_add(i_thread			id)
    * XXX
    */
 
-  if ((id == _kernel->thread) &&
-      (scheduler->thread == id))
-    CORE_LEAVE();
-
-  /*
-   * 2)
-   */
-
-  if (thread_get(id, &thread) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the thread object");
-
-  if (task_get(thread->task, &task) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the task object");
-
-  if (thread->state != THREAD_STATE_RUN)
-    CORE_ESCAPE("unable to add a thread which has not been started yet");
+  if (id == _kernel->thread)
+    printf("THIS SHOULD NEVER OCCUR\n");
 
   /*
    * 3)
@@ -904,19 +907,6 @@ t_error			scheduler_add(i_thread			id)
     }
 
   /*
-   * 3)
-   */
-
-  if (scheduler->timeslice > _scheduler->quantum &&
-      priority < SCHEDULER_COMPUTE_PRIORITY(scheduler->thread))
-    {
-      if (scheduler_yield() != ERROR_OK)
-	CORE_ESCAPE("unable to yield the execution");
-
-      CORE_LEAVE();
-    }
-
-  /*
    * 4)
    */
 
@@ -943,11 +933,7 @@ t_error			scheduler_remove(i_thread		id)
   /*						       [block::remove::vars] */
 
   o_scheduler*		scheduler;
-  t_boolean		removed;
-  t_boolean		yield;
-  o_thread*		thread;
   t_priority		priority;
-  o_task*		task;
   i_set*		queue;
   t_state		st;
   t_iterator		i;
@@ -961,30 +947,10 @@ t_error			scheduler_remove(i_thread		id)
    * 1)
    */
 
-  removed = BOOLEAN_FALSE;
-  yield = BOOLEAN_FALSE;
-
-  /*
-   *
-   */
-
   // XXX il faut recuperer le scheduler qui correspond a la tache du thread.
 
   if (scheduler_get(&scheduler) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
-
-  /*
-   * 2)
-   */
-
-  if (thread_get(id, &thread) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the thread object");
-
-  if (task_get(thread->task, &task) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the task object");
-
-  if (thread->state == THREAD_STATE_RUN)
-    CORE_ESCAPE("unable to remove a thread which has not been stopped");
 
   /*
    * 3)
@@ -997,7 +963,7 @@ t_error			scheduler_remove(i_thread		id)
    */
 
   if (scheduler->thread == id)
-    removed = BOOLEAN_TRUE;
+    goto removed;
 
   p = 0;
   set_foreach(SET_OPTION_FORWARD, scheduler->active, &i, st)
@@ -1014,10 +980,9 @@ t_error			scheduler_remove(i_thread		id)
 	  if (set_remove(*queue, id) != ERROR_OK)
 	    CORE_ESCAPE("unable to remove the thread from the set");
 
-	  removed = BOOLEAN_TRUE;
-
-	  break;
+	  goto removed;
 	}
+
       p++;
     }
 
@@ -1036,16 +1001,16 @@ t_error			scheduler_remove(i_thread		id)
 	  if (set_remove(*queue, id) != ERROR_OK)
 	    CORE_ESCAPE("unable to remove the thread from the set");
 
-	  removed = BOOLEAN_TRUE;
-
-	  break;
+	  goto removed;
 	}
+
       p++;
     }
 
-  if (removed == BOOLEAN_FALSE)
-    CORE_ESCAPE("the thread to remove has not been found in any of "
-		"the scheduler's queues");
+  CORE_ESCAPE("the thread to remove has not been found in any of "
+	      "the scheduler's queues");
+
+ removed:
 
   /*
    * 5)
@@ -1059,8 +1024,10 @@ t_error			scheduler_remove(i_thread		id)
    */
 
   if (scheduler->thread == id)
-    if (scheduler_yield() != ERROR_OK)
-      CORE_ESCAPE("unable to yield the execution");
+    {
+      if (scheduler_yield() != ERROR_OK)
+	CORE_ESCAPE("unable to yield the execution");
+    }
 
   /*							  [endblock::remove] */
 
@@ -1088,15 +1055,18 @@ t_error			scheduler_update(i_thread			thread)
    * 1)
    */
 
-  // XXX le mettre en stop
+  // XXX le mettre en stop puis en run -> ca ne marchera surement pas
+  // d'autant que si c'est le thread courant, le remove va faire
+  // un yield et donc on ne sera plus jamais schedule.
+  //
+  // il faut simplement faire un yield pour forcer a ce qu'un autre thread
+  // soit choisi vu qu'on passera a une petit prio et timeslice=0.
+  //
+  // une fois le thread replace en liste, il aura sa nouvelle priroite
+  // niquel!
 
-  if (scheduler_remove(thread) != ERROR_OK)
-    CORE_ESCAPE("unable to remove the thread from the scheduler");
-
-  // XXX le mettre en run
-
-  if (scheduler_add(thread) != ERROR_OK)
-    CORE_ESCAPE("unable to add the thread to the scheduler");
+  if (scheduler_yield() != ERROR_OK)
+    CORE_ESCAPE("unable to yield the execution");
 
   /*
    * 2)

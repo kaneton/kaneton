@@ -1,0 +1,5 @@
+name: machine/architecture/event/context/01
+description: This test reserves an event slot and manually triggers this event. Then, the test verifies that the registers have been restored to their original state.
+symbol: test_architecture_event_context_01
+signature: sdvni20fwg9i3h0
+output:

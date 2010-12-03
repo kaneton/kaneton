@@ -1,0 +1,5 @@
+name: machine/architecture/event/pic/02
+description: This test reserves and releases an event and checks the PIC's mask to verify that it is consistent with the reserved event.
+symbol: test_architecture_event_pic_02
+signature: vniwojw0f32wg3hh
+output:

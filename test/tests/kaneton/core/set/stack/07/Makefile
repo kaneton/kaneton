@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...test/tests/kaneton/set/stack/07/Makefile
+# file          /data/mycure/repo...tests/kaneton/core/set/stack/07/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [wed nov 17 20:16:37 2010]
+# updated       julien quintard   [tue nov 30 16:19:09 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/set/stack/07
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...test/tests/kaneton/core/region/get/get.c
+ * file          /data/mycure/repo...test/tests/kaneton/core/region/get/get.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 24 09:38:11 2010]
+ * updated       julien quintard   [mon nov 29 18:48:09 2010]
  */
 
 /*
@@ -41,7 +41,7 @@ void			test_core_region_get(void)
 		      10 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     seg,
@@ -50,22 +50,24 @@ void			test_core_region_get(void)
 		     0,
 		     2 * PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_get(_kernel->as, reg, &o) != ERROR_OK)
-    TEST_ERROR("[region_get] error\n");
+    TEST_ERROR("[region_get] error");
 
   if (o->id != reg)
-    TEST_ERROR("invalid region's identifier\n");
+    TEST_ERROR("invalid region's identifier");
 
   if (o->segment != seg)
-    TEST_ERROR("invalid region's segment identifier\n");
+    TEST_ERROR("invalid region's segment identifier");
 
   if (o->offset != PAGESZ)
-    TEST_ERROR("invalid region's offset\n");
+    TEST_ERROR("invalid region's offset");
 
   if (o->size != 2 * PAGESZ)
-    TEST_ERROR("invalid region's size\n");
+    TEST_ERROR("invalid region's size");
+
+  TEST_SIGNATURE(8t3uiegisijf2w93w);
 
   TEST_LEAVE();
 }

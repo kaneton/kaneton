@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...st/tests/kaneton/as/translation/Makefile
+# file          /data/mycure/repo...sts/kaneton/core/as/translation/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [sun nov  7 16:31:09 2010]
+# updated       julien quintard   [tue nov 30 16:04:19 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/as/translation
 
 #
 # ---------- dependencies -----------------------------------------------------

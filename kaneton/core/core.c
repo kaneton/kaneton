@@ -54,136 +54,6 @@ t_init*			_init;
 i_segment		_system;
 
 /*
- * ---------- XXX -------------------------------------------------------------
- */
-
-extern m_kernel*	_kernel;
-
-/*
- * ---------- macro-functions -------------------------------------------------
- */
-
-#define TEST_ENTER()
-
-#define TEST_ERROR(_format_, _arguments_...)				\
-  do									\
-    {									\
-      module_call(report, report_dump);					\
-									\
-      printf(_format_ "\n", ##_arguments_);				\
-									\
-      TEST_LEAVE();							\
-    } while (0)
-
-#define TEST_LEAVE()							\
-  return;
-
-void			thread1(void)
-{
-  t_clock		clock;
-  t_uint64		past;
-  t_uint64		current;
-
-  clock_current(&clock);
-  past = CLOCK_UNIQUE(&clock);
-
-  while (1)
-    {
-      printf("[thread1]\n");
-
-      int i;
-      for (i = 0; i < 2222222; i++)
-	;
-
-      /*
-      if (thread_sleep(3000) != ERROR_OK)
-	{
-	  printf("ERROR\n");
-	  module_report_dump();
-	}
-
-      clock_current(&clock);
-      current = CLOCK_UNIQUE(&clock);
-
-      printf("[difference] %d\n", current - past);
-
-      past = current;
-      */
-
-      //thread_wait(
-    }
-}
-
-void			thread2(void)
-{
-  t_clock		clock;
-  t_uint64		past;
-  t_uint64		current;
-
-  clock_current(&clock);
-  past = CLOCK_UNIQUE(&clock);
-
-  while (1)
-    {
-      printf("[thread2]\n");
-
-      int i;
-      for (i = 0; i < 4444444; i++)
-	;
-      for (i = 0; i < 4444444; i++)
-	;
-
-      i_thread id;
-      scheduler_current(&id);
-      printf("DYING\n");
-      thread_die(id);
-    }
-}
-
-void			THREAD(void* p)
-{
-  i_thread		thread;
-  o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
-  t_ia32_context	ia32_ctx;
-
-  TEST_ENTER();
-
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
-    TEST_ERROR("[thread_reserve] error\n");
-
-  stack.base = 0;
-  stack.size = THREAD_LSTACKSZ;
-
-  if (thread_stack(thread, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error\n");
-
-  if (thread_get(thread, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error\n");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)p;
-
-  if (thread_load(thread, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error\n");
-
-  if (ia32_get_context(thread, &ia32_ctx) != ERROR_OK)
-    TEST_ERROR("[ia32_get_context] error\n");
-
-  ia32_ctx.eflags |= (1 << 12);
-  ia32_ctx.eflags |= (1 << 13);
-
-  if (ia32_set_context(thread, &ia32_ctx, IA32_CONTEXT_EFLAGS) != ERROR_OK)
-    TEST_ERROR("[ia32_set_context] error\n");
-
-  if (thread_run(thread) != ERROR_OK)
-    TEST_ERROR("[thread_run] error\n");
-
-  TEST_LEAVE();
-}
-
-/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -199,9 +69,14 @@ void			THREAD(void* p)
  * 5) start the kernel.
  * 6) run the test system, should have it be loaded.
  * 7) spawn the 'system' service.
- * 8) stop the kernel.
- * 9) clean the loaded modules.
- * 10) shutdown the system.
+ * 8) start the scheduler.
+ * 9) start the event processing, action which will have the effet of
+ *    activating the hardware interrupts, hence trigger context switchs. then,
+ *    should the execution come back to the kernel, its first task is to
+ *    actually disable the events so that the execution does not go away.
+ * 10) stop the kernel.
+ * 11) clean the loaded modules.
+ * 12) shutdown the system.
  */
 
 void			kaneton(t_init*				bootloader)
@@ -245,17 +120,6 @@ void			kaneton(t_init*				bootloader)
 
   assert(kernel_initialize() == ERROR_OK);
 
-  // XXX
-  THREAD(thread1);
-  THREAD(thread2);
-
-  if (scheduler_start() != ERROR_OK)
-    TEST_ERROR("[scheduler_start] error\n");
-
-  if (event_enable() != ERROR_OK)
-    TEST_ERROR("[event_enable] error\n");
-  // XXX
-
   /*
    * 6)
    */
@@ -275,13 +139,26 @@ void			kaneton(t_init*				bootloader)
    * 8)
    */
 
+  assert(scheduler_start() == ERROR_OK);
+
+  /*
+   * 9)
+   */
+
+  assert(event_enable() == ERROR_OK);
+  assert(event_disable() == ERROR_OK);
+
+  /*
+   * 10)
+   */
+
   module_call(console, console_message,
 	      '+', "stopping the kernel\n");
 
   assert(kernel_clean() == ERROR_OK);
 
   /*
-   * 9)
+   * 11)
    */
 
   module_call(console, console_clean);
@@ -289,7 +166,7 @@ void			kaneton(t_init*				bootloader)
   module_call(report, report_clean);
 
   /*
-   * 10)
+   * 12)
    */
 
   while (1)
@@ -322,6 +199,7 @@ void			kaneton(t_init*				bootloader)
  *    place these arguments so that the thread can retrieve them in the
  *    main() function.
  * 9) set the task as running.
+ * 10) start the thread.
  */
 
 t_error			kaneton_spawn(void)
@@ -435,8 +313,15 @@ t_error			kaneton_spawn(void)
    * 9)
    */
 
-  if (task_run(task) != ERROR_OK)
+  if (task_start(task) != ERROR_OK)
     CORE_ESCAPE("unable to start the task");
+
+  /*
+   * 10)
+   */
+
+  if (thread_start(thread) != ERROR_OK)
+    CORE_ESCAPE("unable to start the thread");
 
   CORE_LEAVE();
 }

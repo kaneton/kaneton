@@ -1,4 +1,5 @@
 name: core/segment/reserve/04
 description: This test reserves several segments.
 symbol: test_core_segment_reserve_04
+signature: 32u98f3we4g3
 output:

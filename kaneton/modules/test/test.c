@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/modules/test/test.c
+ * file          /data/mycure/repo...neton.STABLE/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri nov 26 10:56:24 2010]
+ * updated       julien quintard   [fri dec  3 15:13:24 2010]
  */
 
 /*
@@ -86,6 +86,9 @@ t_error			module_test_send(t_uint8		type,
   t_uint32		magic;
   t_uint32		crc;
 
+  if (_module_test == NULL)
+    MODULE_LEAVE();
+
   /*
    * 1)
    */
@@ -137,6 +140,9 @@ t_error			module_test_receive(t_uint8*		type,
   t_uint32		length;
   t_uint32		crc;
 
+  if (_module_test == NULL)
+    MODULE_LEAVE();
+
   platform_serial_read(PLATFORM_SERIAL_PRIMARY,
 		       (t_uint8*)&magic,
 		       sizeof(t_uint32));
@@ -172,6 +178,9 @@ t_error			module_test_receive(t_uint8*		type,
 
 t_error			module_test_issue(char*			command)
 {
+  if (_module_test == NULL)
+    MODULE_LEAVE();
+
   if (module_test_send(MODULE_TEST_TYPE_COMMAND,
 		       command,
 		       strlen(command)) != ERROR_OK)
@@ -187,7 +196,12 @@ t_error			module_test_issue(char*			command)
 
 t_error			module_test_flush(void)
 {
-  t_uint32		size = _module_test->size;
+  t_uint32		size;
+
+  if (_module_test == NULL)
+    MODULE_LEAVE();
+
+  size = _module_test->size;
 
   if (_module_test->size == 0)
     MODULE_LEAVE();
@@ -216,31 +230,23 @@ t_error			module_test_flush(void)
  *
  * steps:
  *
- * 1) check that the module has been initialized. indeed this module
- *    could be called directly from the platform's console. this check
- *    has been put in order to ignore any message that preceeds the
- *    test module set up.
- * 2) write the character.
- * 3) flush if necessary.
+ * 1) write the character.
+ * 2) flush if necessary.
  */
 
 int			module_test_write(char			c)
 {
-  /*
-   * 1)
-   */
-
   if (_module_test == NULL)
     return (1);
 
   /*
-   * 2)
+   * 1)
    */
 
   _module_test->buffer[_module_test->size++] = c;
 
   /*
-   * 3)
+   * 2)
    */
 
   if ((_module_test->size >= (sizeof(_module_test->buffer) - 1)) ||
@@ -276,14 +282,14 @@ t_error			module_test_locate(char*		symbol,
 
 t_error			module_test_call(char*			symbol)
 {
-  f_module_test		test;
+  f_module_test		function;
 
-  if (module_test_locate(symbol, &test) != ERROR_OK)
+  if (module_test_locate(symbol, &function) != ERROR_OK)
     MODULE_ESCAPE("invalid test symbol");
 
   module_test_issue("[enter]");
 
-  test();
+  function();
 
   module_test_issue("[leave]");
 
@@ -376,10 +382,10 @@ t_error			module_test_run(void)
       memset(message, 0x0, sizeof(message));
 
       if (module_test_receive(&type, message) != ERROR_OK)
-	MODULE_ESCAPE("unable to received a test request\n");
+	MODULE_ESCAPE("unable to received a test request");
 
       if (type != MODULE_TEST_TYPE_COMMAND)
-	MODULE_ESCAPE("invalid command type\n");
+	MODULE_ESCAPE("invalid command type");
 
       for (i = 0; commands[i].command != NULL; i++)
 	{
@@ -391,7 +397,7 @@ t_error			module_test_run(void)
 
 	      if (commands[i].function(message + offset) != ERROR_OK)
 		MODULE_ESCAPE("an error occured in the triggered "
-			      "command\n");
+			      "command");
 	    }
 	}
     }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../kaneton/core/segment/read-write/01/01.c
+ * file          /data/mycure/repo.../kaneton/core/segment/read-write/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:28:22 2010]
+ * updated       julien quintard   [mon nov 29 18:57:49 2010]
  */
 
 /*
@@ -41,26 +41,28 @@ void			test_core_segment_readwrite_01(void)
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < PAGESZ; i++)
     buff[i] = (i * 2 + 4) % 256;
 
   if (segment_write(seg, 0, buff, PAGESZ) != ERROR_OK)
-    TEST_ERROR("[segment_write] error\n");
+    TEST_ERROR("[segment_write] error");
 
   for (i = 0; i < PAGESZ; i++)
     buff[i] = 0;
 
   if (segment_read(seg, 0, buff, PAGESZ) != ERROR_OK)
-    TEST_ERROR("[segment_read] error\n");
+    TEST_ERROR("[segment_read] error");
 
   for (i = 0; i < PAGESZ; i++)
     if (buff[i] != (i * 2 + 4) % 256)
-      TEST_ERROR("the data read is different from the one written\n");
+      TEST_ERROR("the data read is different from the one written");
 
   if (segment_release(seg) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
+
+  TEST_SIGNATURE(ri09iawefk34hgh);
 
   TEST_LEAVE();
 }

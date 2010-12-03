@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/task/task.c
+ * file          /data/mycure/repo.../kaneton.STABLE/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [sun nov 28 19:41:41 2010]
+ * updated       julien quintard   [fri dec  3 16:21:14 2010]
  */
 
 /*
@@ -118,18 +118,39 @@ t_error			task_show(i_task			id)
 
   switch (o->state)
     {
+      case TASK_STATE_START:
+	{
+	  state = "started";
+
+	  break;
+	}
       case TASK_STATE_STOP:
-	state = "stopped";
-	break;
-      case TASK_STATE_RUN:
-	state = "running";
-	break;
-      case TASK_STATE_ZOMBIE:
-	state = "zombie";
-	break;
+	{
+	  state = "stopped";
+
+	  break;
+	}
       case TASK_STATE_BLOCK:
-	state = "blocked";
-	break;
+	{
+	  state = "blocked";
+
+	  break;
+	}
+      case TASK_STATE_ZOMBIE:
+	{
+	  state = "zombie";
+
+	  break;
+	}
+      case TASK_STATE_DEAD:
+	{
+	  state = "dead";
+
+	  break;
+	}
+    default:
+      CORE_ESCAPE("unknown task state '%u'",
+		  o->state);
     }
 
   module_call(console, console_message,
@@ -185,106 +206,6 @@ t_error			task_dump(void)
 }
 
 /*
- * this function clones a task.
- *
- * this function so takes care of cloning the address space and every thread.
- *
- * steps:
- *
- * 1) get the source task object given its identifier.
- * 2) reserve the cloned task object.
- * 3) get the destination task object previously reserved.
- * 4) clone the address space from the source task object.
- * 5) clone the thread set from the source task object.
- * 6) clone the waits.
- * 7) set the new task state.
- * 8) call the machine-dependent code.
- */
-
-t_error			task_clone(i_task			old,
-				   i_task*			new)
-{
-  t_state		state;
-  o_task*		from;
-  o_task*		to;
-  t_iterator		i;
-
-  assert(new != NULL);
-
-  /*
-   * 1)
-   */
-
-  if (task_get(old, &from) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the task object");
-
-  /*
-   * 2)
-   */
-
-  if (task_reserve(from->class,
-		   from->behaviour,
-		   from->priority,
-		   new) != ERROR_OK)
-    CORE_ESCAPE("unable to reserve a task");
-
-  /*
-   * 3)
-   */
-
-  if (task_get(*new, &to) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the cloned task");
-
-  /*
-   * 4)
-   */
-
-  if (from->as != ID_UNUSED)
-    {
-      if (as_clone(from->as, to->id, &to->as) != ERROR_OK)
-	CORE_ESCAPE("unable to clone the task's address space");
-    }
-
-  /*
-   * 5)
-   */
-
-  set_foreach(SET_OPTION_FORWARD, from->threads, &i, state)
-    {
-      i_thread		needless;
-      i_thread*		data;
-
-      if (set_object(from->threads, i, (void**)&data) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the object from the task's "
-		    "set of threads");
-
-      if (thread_clone(to->id, *data, &needless) != ERROR_OK)
-	CORE_ESCAPE("unable to clone the thread");
-    }
-
-  /*
-   * 6)
-   */
-
-  /* XXX waits */
-
-  /*
-   * 7)
-   */
-
-  to->state = from->state;
-
-  /*
-   * 8)
-   */
-
-  if (machine_call(task, task_clone, old, new) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
  * this function reserves a task object.
  *
  * steps:
@@ -333,8 +254,8 @@ t_error			task_reserve(t_class			class,
     {
       case TASK_BEHAVIOUR_KERNEL:
 	{
-	  if (prior < TASK_LPRIORITY_KERNEL ||
-	      prior > TASK_HPRIORITY_KERNEL)
+	  if (prior < TASK_PRIORITY_KERNEL_LOW ||
+	      prior > TASK_PRIORITY_KERNEL_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -342,8 +263,8 @@ t_error			task_reserve(t_class			class,
 	}
       case TASK_BEHAVIOUR_REALTIME:
 	{
-	  if (prior < TASK_LPRIORITY_REALTIME ||
-	      prior > TASK_HPRIORITY_REALTIME)
+	  if (prior < TASK_PRIORITY_REALTIME_LOW ||
+	      prior > TASK_PRIORITY_REALTIME_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -352,8 +273,8 @@ t_error			task_reserve(t_class			class,
 	}
       case TASK_BEHAVIOUR_INTERACTIVE:
 	{
-	  if (prior < TASK_LPRIORITY_INTERACTIVE ||
-	      prior > TASK_HPRIORITY_INTERACTIVE)
+	  if (prior < TASK_PRIORITY_INTERACTIVE_LOW ||
+	      prior > TASK_PRIORITY_INTERACTIVE_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -361,8 +282,8 @@ t_error			task_reserve(t_class			class,
 	}
       case TASK_BEHAVIOUR_TIMESHARING:
 	{
-	  if (prior < TASK_LPRIORITY_TIMESHARING ||
-	      prior > TASK_HPRIORITY_TIMESHARING)
+	  if (prior < TASK_PRIORITY_TIMESHARING_LOW ||
+	      prior > TASK_PRIORITY_TIMESHARING_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -370,8 +291,8 @@ t_error			task_reserve(t_class			class,
 	}
       case TASK_BEHAVIOUR_BACKGROUND:
 	{
-	  if (prior < TASK_LPRIORITY_BACKGROUND ||
-	      prior > TASK_HPRIORITY_BACKGROUND)
+	  if (prior < TASK_PRIORITY_BACKGROUND_LOW ||
+	      prior > TASK_PRIORITY_BACKGROUND_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -640,8 +561,8 @@ t_error			task_priority(i_task			id,
     {
       case TASK_BEHAVIOUR_KERNEL:
 	{
-	  if (prior < TASK_LPRIORITY_KERNEL ||
-	      prior > TASK_HPRIORITY_KERNEL)
+	  if (prior < TASK_PRIORITY_KERNEL_LOW ||
+	      prior > TASK_PRIORITY_KERNEL_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -649,8 +570,8 @@ t_error			task_priority(i_task			id,
 	}
       case TASK_BEHAVIOUR_REALTIME:
 	{
-	  if (prior < TASK_LPRIORITY_REALTIME ||
-	      prior > TASK_HPRIORITY_REALTIME)
+	  if (prior < TASK_PRIORITY_REALTIME_LOW ||
+	      prior > TASK_PRIORITY_REALTIME_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -658,8 +579,8 @@ t_error			task_priority(i_task			id,
 	}
       case TASK_BEHAVIOUR_INTERACTIVE:
 	{
-	  if (prior < TASK_LPRIORITY_INTERACTIVE ||
-	      prior > TASK_HPRIORITY_INTERACTIVE)
+	  if (prior < TASK_PRIORITY_INTERACTIVE_LOW ||
+	      prior > TASK_PRIORITY_INTERACTIVE_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -667,8 +588,8 @@ t_error			task_priority(i_task			id,
 	}
       case TASK_BEHAVIOUR_TIMESHARING:
 	{
-	  if (prior < TASK_LPRIORITY_TIMESHARING ||
-	      prior > TASK_HPRIORITY_TIMESHARING)
+	  if (prior < TASK_PRIORITY_TIMESHARING_LOW ||
+	      prior > TASK_PRIORITY_TIMESHARING_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -676,8 +597,8 @@ t_error			task_priority(i_task			id,
 	}
       case TASK_BEHAVIOUR_BACKGROUND:
 	{
-	  if (prior < TASK_LPRIORITY_BACKGROUND ||
-	      prior > TASK_HPRIORITY_BACKGROUND)
+	  if (prior < TASK_PRIORITY_BACKGROUND_LOW ||
+	      prior > TASK_PRIORITY_BACKGROUND_HIGH)
 	    CORE_ESCAPE("the given priority is inconsistent with the "
 			"behaviour");
 
@@ -710,12 +631,20 @@ t_error			task_priority(i_task			id,
   set_foreach(SET_OPTION_FORWARD, o->threads, &i, state)
     {
       i_thread*		th;
+      o_thread*		oth;
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the thread identifier");
+
+      if (thread_get(*th, &oth) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the thread object");
 
-      if (scheduler_update(*th) != ERROR_OK)
-	CORE_ESCAPE("unable to update the thread scheduling state");
+      if ((o->state == TASK_STATE_START) &&
+	  (oth->state == THREAD_STATE_START))
+	{
+	  if (scheduler_update(*th) != ERROR_OK)
+	    CORE_ESCAPE("unable to update the thread scheduling state");
+	}
     }
 
   CORE_LEAVE();
@@ -733,7 +662,7 @@ t_error			task_priority(i_task			id,
  * 5) start the threads.
  */
 
-t_error			task_run(i_task				id)
+t_error			task_start(i_task			id)
 {
   o_task*		o;
   t_iterator		i;
@@ -750,10 +679,10 @@ t_error			task_run(i_task				id)
    * 2)
    */
 
-  if (o->state == TASK_STATE_RUN)
-    CORE_LEAVE();
+  if (o->state == TASK_STATE_START)
+    CORE_ESCAPE("a task cannot be started twice"); // XXX appliquer aux autres operations
 
-  o->state = TASK_STATE_RUN;
+  o->state = TASK_STATE_START;
 
   /*
    * 3)
@@ -779,25 +708,28 @@ t_error			task_run(i_task				id)
    * 4)
    */
 
-  if (machine_call(task, task_run, id) != ERROR_OK)
+  if (machine_call(task, task_start, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 5)
    */
-
   set_foreach(SET_OPTION_FORWARD, o->threads, &i, st)
     {
       i_thread*		th;
+      o_thread*		oth;
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the thread identifier");
+
+      if (thread_get(*th, &oth) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the thread object");
 
-      // XXX ne run que les threads en stop car block/zombie ca n'a
-      // pas de sens.
-
-      if (thread_run(*th) != ERROR_OK)
-	CORE_ESCAPE("unable to run the thread");
+      if (oth->state == THREAD_STATE_START)
+	{
+	  if (scheduler_add(oth->id) != ERROR_OK)
+	    CORE_ESCAPE("unable to add the thread to the scheduler");
+	}
     }
 
   CORE_LEAVE();
@@ -817,6 +749,7 @@ t_error			task_run(i_task				id)
 
 t_error			task_stop(i_task			id)
 {
+  t_state		state;
   o_task*		o;
   t_iterator		i;
   t_state		st;
@@ -832,8 +765,18 @@ t_error			task_stop(i_task			id)
    * 2)
    */
 
+  state = o->state;
+
+  /*
+   * XXX
+   */
+
   if (o->state == TASK_STATE_STOP)
     CORE_LEAVE();
+
+  /*
+   *
+   */
 
   o->state = TASK_STATE_STOP;
 
@@ -872,12 +815,20 @@ t_error			task_stop(i_task			id)
   set_foreach(SET_OPTION_FORWARD, o->threads, &i, st)
     {
       i_thread*		th;
+      o_thread*		oth;
 
       if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the thread");
+	CORE_ESCAPE("unable to retrieve the thread identifier");
 
-      if (thread_stop(*th) != ERROR_OK)
-	CORE_ESCAPE("unable to stop the thread");
+      if (thread_get(*th, &oth) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the thread object");
+
+      if ((state == TASK_STATE_START) &&
+	  (oth->state == THREAD_STATE_START))
+	{
+	  if (scheduler_remove(oth->id) != ERROR_OK)
+	    CORE_ESCAPE("unable to remove the thread from the scheduler");
+	}
     }
 
   CORE_LEAVE();
@@ -897,7 +848,10 @@ t_error			task_stop(i_task			id)
 
 t_error			task_block(i_task			id)
 {
+  t_state		state;
   o_task*		o;
+  t_iterator		i;
+  t_state		st;
 
   /*
    * 1)
@@ -907,11 +861,21 @@ t_error			task_block(i_task			id)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
+   *
+   */
+
+  state = o->state;
+
+  /*
    * 2)
    */
 
   if (o->state == TASK_STATE_BLOCK)
     CORE_LEAVE();
+
+  /*
+   *
+   */
 
   o->state = TASK_STATE_BLOCK;
 
@@ -921,6 +885,29 @@ t_error			task_block(i_task			id)
 
   if (machine_call(task, task_block, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
+
+  /*
+   * 5)
+   */
+
+  set_foreach(SET_OPTION_FORWARD, o->threads, &i, st)
+    {
+      i_thread*		th;
+      o_thread*		oth;
+
+      if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the thread identifier");
+
+      if (thread_get(*th, &oth) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the thread object");
+
+      if ((state == TASK_STATE_START) &&
+	  (oth->state == THREAD_STATE_START))
+	{
+	  if (scheduler_remove(oth->id) != ERROR_OK)
+	    CORE_ESCAPE("unable to remove the thread from the scheduler");
+	}
+    }
 
   CORE_LEAVE();
 }
@@ -937,7 +924,8 @@ t_error			task_block(i_task			id)
  * 5) start the threads.
  */
 
-t_error			task_die(i_task				id)
+t_error			task_exit(i_task			id,
+				  t_value			value)
 {
   o_task*		o;
   t_iterator		i;
@@ -985,13 +973,13 @@ t_error			task_die(i_task				id)
    * 4)
    */
 
-  if (machine_call(task, task_die, id) != ERROR_OK)
+  if (machine_call(task, task_exit, id, value) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 5)
    */
-
+  /*
   set_foreach(SET_OPTION_FORWARD, o->threads, &i, st)
     {
       i_thread*		th;
@@ -1001,7 +989,10 @@ t_error			task_die(i_task				id)
 
       if (thread_stop(*th) != ERROR_OK)
 	CORE_ESCAPE("unable to stop the thread");
+
+	// exit every thread
     }
+  */
 
   CORE_LEAVE();
 }
@@ -1154,8 +1145,8 @@ t_error			task_initialize(void)
   if (as_reserve(_kernel->task, &_kernel->as) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the kernel task's address space");
 
-  if (task_run(_kernel->task) != ERROR_OK)
-    CORE_ESCAPE("unable to run the kernel task");
+  if (task_start(_kernel->task) != ERROR_OK)
+    CORE_ESCAPE("unable to start the kernel task");
 
   /*
    * 5)

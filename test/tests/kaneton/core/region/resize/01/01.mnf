@@ -1,4 +1,5 @@
 name: core/region/resize/01
 description: This test reserves a segment and a region. Then, the region is resized and verified. Finally, data is written and checked.
 symbol: test_core_region_resize_01
+signature: fw3ijwesf23t23t
 output:

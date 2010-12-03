@@ -1,0 +1,5 @@
+name: machine/architecture/event/exception/02
+description: This test reserves and manually triggers an event. The event handler checks that the received event identifier is valid.
+symbol: test_architecture_event_exception_02
+signature: 2f9023foivvke30gh934
+output:

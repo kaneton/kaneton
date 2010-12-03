@@ -32,10 +32,10 @@
     v = (_v_);								\
 									\
     if (as_paddr(_kernel->as, v, &p) != ERROR_OK)			\
-      TEST_ERROR("[as_paddr] error\n");					\
+      TEST_ERROR("[as_paddr] error");					\
     									\
     if (p != (_p_))							\
-      TEST_ERROR("the virtual to physical conversion failed\n");	\
+      TEST_ERROR("the virtual to physical conversion failed");	\
   }
 
 #define VIRTUAL(_p_, _v_)						\
@@ -46,10 +46,10 @@
     p = (_p_);								\
 									\
     if (as_vaddr(_kernel->as, p, &v) != ERROR_OK)			\
-      TEST_ERROR("[as_vaddr] error\n");					\
+      TEST_ERROR("[as_vaddr] error");					\
 									\
     if (v != (_v_))							\
-      TEST_ERROR("the physical to virtual conversion failed\n");	\
+      TEST_ERROR("the physical to virtual conversion failed");	\
   }
 
 /*

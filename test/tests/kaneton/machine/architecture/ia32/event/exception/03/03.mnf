@@ -1,0 +1,5 @@
+name: machine/architecture/event/exception/03
+description: This test reserves and event and triggers it manually several times.
+symbol: test_architecture_event_exception_03
+signature: 3jov9we340g9i3
+output:

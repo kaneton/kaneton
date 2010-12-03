@@ -1,0 +1,5 @@
+name: machine/architecture/scheduler/complete
+description: This test creates a kernel thread along with a driver-class task with a single thread. The task's thread retrieves its ring level and writes it in a shared segment which is retrieved and checked by the kernel thread.
+symbol: test_architecture_scheduler_complete
+signature: scijewf902gkwe9i0nweof32w9ri3gkjehk
+output:

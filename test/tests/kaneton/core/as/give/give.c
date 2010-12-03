@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...E/test/tests/kaneton/core/as/give/give.c
+ * file          /data/mycure/repo...E/test/tests/kaneton/core/as/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat nov 27 19:59:15 2010]
+ * updated       julien quintard   [mon nov 29 18:41:29 2010]
  */
 
 /*
@@ -36,25 +36,27 @@ void			test_core_as_give(void)
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
 		   &task1) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
 		   &task2) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task1, &as) != ERROR_OK)
-    TEST_ERROR("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error");
 
   if (as_give(as, task2) != ERROR_OK)
-    TEST_ERROR("[as_give] error\n");
+    TEST_ERROR("[as_give] error");
 
   if (as_get(as, &o) != ERROR_OK)
-    TEST_ERROR("[as_get] error\n");
+    TEST_ERROR("[as_get] error");
 
   if (o->task != task2)
-    TEST_ERROR("the address space's task identifier is invalid\n");
+    TEST_ERROR("the address space's task identifier is invalid");
+
+  TEST_SIGNATURE(9ri2309skdporgke9);
 
   TEST_LEAVE();
 }

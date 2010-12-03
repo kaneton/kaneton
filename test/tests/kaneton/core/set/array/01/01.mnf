@@ -1,4 +1,5 @@
 name: core/set/array/01
 description: This test reserves a basic set, releases it and then reserves another set with advanced options.
 symbol: test_core_set_array_01
+signature: df093fiwg093h
 output:

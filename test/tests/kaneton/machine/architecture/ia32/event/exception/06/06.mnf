@@ -1,0 +1,5 @@
+name: machine/architecture/event/exception/06
+description: This test reserves an event and manually triggers it through a general protection fault. The interrupt service routine verifies the error code. The event is finally released.
+symbol: test_architecture_event_exception_06
+signature: 0vfwwfi32w9fwjovkhg
+output:

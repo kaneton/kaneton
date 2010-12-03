@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/test/tests/kaneton/set/pipe/08/08.c
+ * file          /data/mycure/repo...test/tests/kaneton/core/set/pipe/08/08.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2080]
- * updated       julien quintard   [thu nov 18 06:54:34 2010]
+ * updated       julien quintard   [mon nov 29 19:16:46 2010]
  */
 
 /*
@@ -40,7 +40,7 @@ void			test_core_set_pipe_08(void)
    */
 
   if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   /*
    * push
@@ -51,7 +51,7 @@ void			test_core_set_pipe_08(void)
       obj = i;
 
       if (set_push(id, &obj) != ERROR_OK)
-	TEST_ERROR("[set_push] error\n");
+	TEST_ERROR("[set_push] error");
     }
   i = 0;
 
@@ -60,13 +60,13 @@ void			test_core_set_pipe_08(void)
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   set_foreach(SET_OPTION_BACKWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (*pdata != i++)
 	printf("invalid order for the element %qu\n", *pdata);
@@ -78,7 +78,9 @@ void			test_core_set_pipe_08(void)
    */
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(fi2oeksokgh4);
 
   TEST_LEAVE();
 }

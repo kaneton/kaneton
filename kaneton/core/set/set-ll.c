@@ -746,7 +746,7 @@ t_error			set_add_ll(i_set			setid,
 		  free(n);
 
 		  CORE_ESCAPE("identifier collision detected in the set "
-			      "%qu on the object identifier %qu\n",
+			      "%qu on the object identifier %qu",
 			      o->id,
 			      *((t_id*)n->data));
 		}

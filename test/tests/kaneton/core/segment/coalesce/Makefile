@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane.../tests/kaneton/segment/coalesce/Makefile
+# file          /data/mycure/repo...s/kaneton/core/segment/coalesce/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [wed oct 20 12:42:35 2010]
+# updated       julien quintard   [tue nov 30 16:08:35 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/segment/coalesce
 
 #
 # ---------- dependencies -----------------------------------------------------

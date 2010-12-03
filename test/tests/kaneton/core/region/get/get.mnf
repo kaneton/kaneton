@@ -1,4 +1,5 @@
 name: core/region/get
 description: This test reserves a segment and a region. Then, the region is retrieve through the get() routine before verifying its validity.
 symbol: test_core_region_get
+signature: 8t3uiegisijf2w93w
 output:

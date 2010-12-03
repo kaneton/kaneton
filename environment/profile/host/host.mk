@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.NEW/environment/profile/host/host.mk
+# file          /home/mycure/kaneton.STABLE/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [tue nov 23 10:42:18 2010]
+# updated       julien quintard   [mon nov 29 10:18:58 2010]
 #
 
 #

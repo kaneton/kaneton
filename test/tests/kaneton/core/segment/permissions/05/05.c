@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...kaneton/core/segment/permissions/05/05.c
+ * file          /data/mycure/repo...kaneton/core/segment/permissions/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:28:13 2010]
+ * updated       julien quintard   [mon nov 29 18:57:18 2010]
  */
 
 /*
@@ -42,13 +42,13 @@ void			test_core_segment_permissions_05(void)
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg_ref) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(_kernel->as,
 		      PAGESZ,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < PAGESZ; i++)
     {
@@ -56,16 +56,18 @@ void			test_core_segment_permissions_05(void)
     }
 
   if (segment_write(seg_ref, 0, buff, PAGESZ) != ERROR_OK)
-    TEST_ERROR("[segment_write] error\n");
+    TEST_ERROR("[segment_write] error");
 
   if (segment_copy(seg, 0, seg_ref, 0, PAGESZ) == ERROR_OK)
-    TEST_ERROR("[segment_copy] error: allowed copy to a read only segment\n");
+    TEST_ERROR("[segment_copy] error: allowed copy to a read only segment");
 
   if (segment_release(seg) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   if (segment_release(seg_ref) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
+
+  TEST_SIGNATURE(riafe93gh09i4h);
 
   TEST_LEAVE();
 }

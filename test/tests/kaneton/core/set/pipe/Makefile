@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...BLE/test/tests/kaneton/set/pipe/Makefile
+# file          /data/mycure/repo...est/tests/kaneton/core/set/pipe/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu nov 18 05:43:43 2010]
+# updated       julien quintard   [tue nov 30 16:17:17 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/set/pipe
 
 #
 # ---------- dependencies -----------------------------------------------------

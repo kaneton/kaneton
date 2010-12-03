@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ests/kaneton/segment/read-write/Makefile
+# file          /data/mycure/repo...kaneton/core/segment/read-write/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [sat nov  6 17:30:44 2010]
+# updated       julien quintard   [tue nov 30 16:10:12 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/segment/read-write
 
 #
 # ---------- dependencies -----------------------------------------------------

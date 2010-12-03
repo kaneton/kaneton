@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ABLE/test/tests/kaneton/segment/Makefile
+# file          /data/mycure/repo...test/tests/kaneton/core/segment/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [mon nov  8 09:36:28 2010]
+# updated       julien quintard   [tue nov 30 16:08:05 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/segment
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -266,7 +266,6 @@ t_error			ia32_init_context(i_task		taskid,
    * 3)
    */
 
-  /* XXX can be deleted after first cs when task->class == TASK_CLASS_KERNEL*/
   if (map_reserve(task->as,
 		  MAP_OPTION_NONE,
 		  PAGESZ,
@@ -281,7 +280,9 @@ t_error			ia32_init_context(i_task		taskid,
    */
 
   memset(&ctx, 0, sizeof (t_ia32_context));
+
   ctx.eflags = (1 << 9) | (1 << 1);
+
   if (task->class == TASK_CLASS_DRIVER)
     ctx.eflags |= (1 << 12);
 
@@ -481,7 +482,7 @@ t_error			ia32_init_switcher(void)
    */
 
   if (ia32_tss_load(_thread->machine.tss,
-		    IA32_SEGMENT_SELECTOR(IA32_PMODE_GDT_KANETON_DS,
+		    IA32_SEGMENT_SELECTOR(IA32_PMODE_GDT_KERNEL_DS,
 					  IA32_PRIVILEGE_RING0),
 		    int_stack + 2 * PAGESZ - 16,
 		    0x68) != ERROR_OK)
@@ -500,9 +501,9 @@ t_error			ia32_init_switcher(void)
    *
    */
 
-  ia32_gdt_build_selector(IA32_PMODE_GDT_KANETON_CS, ia32_privilege_supervisor,
+  ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_CS, ia32_privilege_kernel,
 			  &_thread->machine.core_cs);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_KANETON_DS, ia32_privilege_supervisor,
+  ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_DS, ia32_privilege_kernel,
 			  &_thread->machine.core_ds);
   ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_CS, ia32_privilege_driver,
 			  &_thread->machine.driver_cs);
@@ -512,9 +513,9 @@ t_error			ia32_init_switcher(void)
 			  &_thread->machine.service_cs);
   ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_DS, ia32_privilege_service,
 			  &_thread->machine.service_ds);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_CS, ia32_privilege_user,
+  ia32_gdt_build_selector(IA32_PMODE_GDT_GUEST_CS, ia32_privilege_guest,
 			  &_thread->machine.program_cs);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_DS, ia32_privilege_user,
+  ia32_gdt_build_selector(IA32_PMODE_GDT_GUEST_DS, ia32_privilege_guest,
 			  &_thread->machine.program_ds);
 
   return (ERROR_OK);
@@ -577,14 +578,6 @@ t_error			ia32_context_switch(i_thread		current,
   if (current == elected)
     return (ERROR_OK);
 
-  //printf("context switch from %qu to %qu\n", current, elected);
-  /*
-  printf("[from]\n");
-  ia32_print_context(current);
-  printf("[to]\n");
-  ia32_print_context(elected);
-  */
-
   /*
    * 2)
    */
@@ -610,7 +603,7 @@ t_error			ia32_context_switch(i_thread		current,
 
   if (ia32_pd_get_cr3(&cr3,
 		      as->machine.pd,
-		      IA32_PAGE_DIRECTORY_CACHED,
+		      IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
 		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     return (ERROR_KO);
 
@@ -620,7 +613,7 @@ t_error			ia32_context_switch(i_thread		current,
 		     sizeof (t_ia32_context));
 
   if (ia32_tss_load(_thread->machine.tss,
-		    IA32_SEGMENT_SELECTOR(IA32_PMODE_GDT_KANETON_DS,
+		    IA32_SEGMENT_SELECTOR(IA32_PMODE_GDT_KERNEL_DS,
 					  IA32_PRIVILEGE_RING0),
 		    to->machine.interrupt_stack,
 		    0x68) != ERROR_OK)
@@ -647,24 +640,6 @@ t_error			ia32_context_switch(i_thread		current,
 
   STS();
 
-  // XXX
-  /*
-  {
-    i_thread c;
-
-    if (scheduler_current(&c) != ERROR_OK)
-      printf("ERROR scheduler current\n");
-
-    printf("[from]\n");
-    ia32_print_context(current);
-    printf("[to]\n");
-    ia32_print_context(elected);
-    printf("[current]\n");
-    ia32_print_context(c);
-  }
-  */
-  // XXX
-
   return (ERROR_OK);
 }
 
@@ -688,8 +663,6 @@ t_error			ia32_extended_context_switch(i_thread	current,
 {
   o_thread*		o;
   o_thread*		old;
-
-  printf("EXTENDED SWITCH\n");
 
   /*
    * 1)

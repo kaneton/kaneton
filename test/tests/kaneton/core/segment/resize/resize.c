@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...sts/kaneton/core/segment/resize/resize.c
+ * file          /data/mycure/repo...sts/kaneton/core/segment/resize/resize.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed nov 24 09:44:22 2010]
+ * updated       julien quintard   [mon nov 29 19:01:10 2010]
  */
 
 /*
@@ -43,28 +43,28 @@ void			test_core_segment_resize(void)
 		      3 * PAGESZ,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_resize(seg, PAGESZ, &seg) != ERROR_OK)
-    TEST_ERROR("[segment_resize] error\n");
+    TEST_ERROR("[segment_resize] error");
 
   if (segment_get(seg, &o) != ERROR_OK)
-    TEST_ERROR("[segment_get] error\n");
+    TEST_ERROR("[segment_get] error");
 
   if (o->id != seg)
-    TEST_ERROR("invalid segment identifier after resize\n");
+    TEST_ERROR("invalid segment identifier after resize");
 
   if (o->as != _kernel->as)
-    TEST_ERROR("invalid segment's address space identifier after resize\n");
+    TEST_ERROR("invalid segment's address space identifier after resize");
 
   if (o->type != SEGMENT_TYPE_MEMORY)
-    TEST_ERROR("invalid segment's type after resize\n");
+    TEST_ERROR("invalid segment's type after resize");
 
   if (o->size != PAGESZ)
-    TEST_ERROR("invalid segment's size after resize\n");
+    TEST_ERROR("invalid segment's size after resize");
 
   if (o->permissions != PERMISSION_READ)
-    TEST_ERROR("invalid segment's permissions after resize\n");
+    TEST_ERROR("invalid segment's permissions after resize");
 
   try = 0;
   while (try < 40)
@@ -76,19 +76,19 @@ void			test_core_segment_resize(void)
 			  PAGESZ,
 			  PERMISSION_READ,
 			  &seg2) != ERROR_OK)
-	TEST_ERROR("[segment_reserve] error\n");
+	TEST_ERROR("[segment_reserve] error");
 
       if (segment_get(seg, &o1) != ERROR_OK)
-	TEST_ERROR("[segment_get] error\n");
+	TEST_ERROR("[segment_get] error");
 
       if (segment_get(seg2, &o2) != ERROR_OK)
-	TEST_ERROR("[segment_get] error\n");
+	TEST_ERROR("[segment_get] error");
 
       if (o2->address == o1->address + PAGESZ)
 	break;
 
       if (segment_release(seg) != ERROR_OK)
-	TEST_ERROR("[segment_release] error\n");
+	TEST_ERROR("[segment_release] error");
 
       seg = seg2;
 
@@ -100,36 +100,38 @@ void			test_core_segment_resize(void)
 	       "reserved one");
 
   if (segment_resize(seg, 10 * PAGESZ, &seg3) != ERROR_OK)
-    TEST_ERROR("[segment_resize] error\n");
+    TEST_ERROR("[segment_resize] error");
 
   if (seg3 == seg)
-    TEST_ERROR("some segments seem to be overlapping\n");
+    TEST_ERROR("some segments seem to be overlapping");
 
   if (segment_release(seg2) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   seg = seg3;
 
   if (segment_get(seg, &o) != ERROR_OK)
-    TEST_ERROR("[segment_get] error\n");
+    TEST_ERROR("[segment_get] error");
 
   if (o->id != seg)
-    TEST_ERROR("invalid segment's identifier resize\n");
+    TEST_ERROR("invalid segment's identifier resize");
 
   if (o->as != _kernel->as)
-    TEST_ERROR("invalid segment's address space identifier after resize\n");
+    TEST_ERROR("invalid segment's address space identifier after resize");
 
   if (o->type != SEGMENT_TYPE_MEMORY)
-    TEST_ERROR("invalid segment's type after resize\n");
+    TEST_ERROR("invalid segment's type after resize");
 
   if (o->size != 10 * PAGESZ)
-    TEST_ERROR("invalid segment's size after resize\n");
+    TEST_ERROR("invalid segment's size after resize");
 
   if (o->permissions != PERMISSION_READ)
-    TEST_ERROR("invalid segment's permissions after resize\n");
+    TEST_ERROR("invalid segment's permissions after resize");
 
   if (segment_release(seg) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
+
+  TEST_SIGNATURE(ergklzdkg4g34h);
 
   TEST_LEAVE();
 }

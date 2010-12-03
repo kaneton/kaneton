@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../tests/kaneton/core/region/flush/01/01.c
+ * file          /data/mycure/repo.../tests/kaneton/core/region/flush/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:18:50 2010]
+ * updated       julien quintard   [mon nov 29 18:47:28 2010]
  */
 
 /*
@@ -39,19 +39,19 @@ void			test_core_region_flush_01(void)
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
 		   &task) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task, &as) != ERROR_OK)
-    TEST_ERROR("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error");
 
   if (as_get(as, &o) != ERROR_OK)
-    TEST_ERROR("[as_get] error\n");
+    TEST_ERROR("[as_get] error");
 
   if (segment_reserve(as,
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as,
 		     seg,
@@ -60,16 +60,18 @@ void			test_core_region_flush_01(void)
 		     0,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_flush(as) != ERROR_OK)
-    TEST_ERROR("[region_flush] error\n");
+    TEST_ERROR("[region_flush] error");
 
   if (set_size(o->regions, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   if (sz != 0)
-    TEST_ERROR("there should not be regions left after a flush\n");
+    TEST_ERROR("there should not be regions left after a flush");
+
+  TEST_SIGNATURE(923ri0ge0giaw093);
 
   TEST_LEAVE();
 }

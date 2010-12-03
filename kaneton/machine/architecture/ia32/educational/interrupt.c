@@ -167,7 +167,7 @@ static t_error		interrupt_add(t_uint32			nr,
    */
 
   gate.offset = (t_uint32)prehandler;
-  gate.segsel = IA32_PMODE_GDT_KANETON_CS << 3;
+  gate.segsel = IA32_PMODE_GDT_KERNEL_CS << 3;
   gate.privilege = privilege;
   gate.type = ia32_type_gate_interrupt;
 

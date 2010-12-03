@@ -1,0 +1,5 @@
+name: core/thread/wait/06
+description: This test creates three threads. The first one waits for the second to stop. Note that in this test the first thread performs the wait after the second thread has stopped.
+symbol: test_core_thread_wait_06
+signature: fwa09ijafgiejghr3wruawefi09gi439042q09aiwfe0hghi4hj
+output:

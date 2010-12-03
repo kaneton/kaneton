@@ -1,0 +1,5 @@
+name: machine/architecture/scheduler/context/03
+description: This test creates a thread which spawns another thread. This last thread retrieves the segment selectors which are then verified by the first thread.
+symbol: test_architecture_scheduler_context_03
+signature: nsvdiojw0e9w32qfr32dsnvoweif039g
+output:

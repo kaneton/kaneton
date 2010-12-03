@@ -1,0 +1,5 @@
+name: core/thread/sleep
+description: This test creates a thread which starts by sleeping. This test then computes the number of milliseconds elapsed since the sleep and determines if the kernel has put the thread to sleep for the right amount of time.
+symbol: test_core_thread_sleep
+signature: 34fwop843otj12sakpow3208adrf3r3kfwef0
+output:

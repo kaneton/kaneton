@@ -1,0 +1,5 @@
+name: machine/architecture/event/map
+description: This test creates several tasks with address spaces, retrieves the location in physical memory of the IDT structure and checks that every address space maps it.
+symbol: test_architecture_event_map
+signature: cmnweiovw0fg934gh
+output:

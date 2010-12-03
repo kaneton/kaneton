@@ -110,7 +110,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   memcpy(&o->machine.pd, &_init->machine.pd, sizeof(t_ia32_directory));
 
   if (ia32_pd_activate(o->machine.pd,
-		       IA32_PAGE_DIRECTORY_CACHED,
+		       IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     return (ERROR_KO);
 
@@ -119,12 +119,13 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    */
 
   if (ia32_pt_build((t_paddr)o->machine.pd, &pt) != ERROR_OK)
+
     return (ERROR_KO);
 
   pt.present = 1;
   pt.rw = IA32_PAGE_TABLE_WRITABLE;
   pt.user = IA32_PAGE_TABLE_PRIVILEGED;
-  pt.cached = IA32_PAGE_TABLE_NOTCACHED;
+  pt.cached = IA32_PAGE_TABLE_CACHED; // XXX CACHED
   pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
 
   if (ia32_pd_add_table(&o->machine.pd,
@@ -136,13 +137,16 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    * 4)
    */
 
+  // XXX a noter que l'on inject pas de segment ni de region pour le page directory
+  // car ils sont dans init segment/regions et seront injectes dans task_initialize()
+
   if ((preg = malloc(sizeof(o_region))) == NULL)
     return (ERROR_KO);
 
   preg->address = IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR, 0);
   preg->segment = (i_segment)pt.paddr;
   preg->offset = 0;
-  preg->size = IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ;
+  preg->size = IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ; // XXX
   preg->options = REGION_OPTION_NONE;
 
   if (region_inject(asid, preg, &useless) != ERROR_OK)
@@ -241,7 +245,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 
   if (ia32_pd_get_cr3((t_uint32*)&ia32_interrupt_pdbr,
 		      o->machine.pd,
-		      IA32_PAGE_DIRECTORY_CACHED,
+		      IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
 		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     return (ERROR_KO);
 
@@ -267,9 +271,12 @@ t_error			ia32_kernel_as_finalize(void)
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     return (ERROR_KO);
 
-  if (segment_type((i_segment)_init->segments[12].address,
-		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    return (ERROR_KO);
+  if (_init->segments[12].size != 0)
+    {
+      if (segment_type((i_segment)_init->segments[12].address,
+		       SEGMENT_TYPE_SYSTEM) != ERROR_OK)
+	return (ERROR_KO);
+    }
 
   return (ERROR_OK);
 }
@@ -337,49 +344,8 @@ t_error			ia32_task_as_initialize(i_as		asid)
    * 5)
    */
 
-#ifdef IA32_KERNEL_MAPPED
-  if (region_reserve(asid,
-		     (i_segment)0x1000,
-		     0,
-		     REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
-		     0x1000,
-		     0x00100000 - 0x1000,
-		     &reg) != ERROR_OK)
-    return (ERROR_KO);
-
-  if (region_reserve(asid,
-		     (i_segment)_init->kcode,
-		     0,
-		     REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
-		     _init->kcode,
-		     _init->kcodesz,
-		     &reg) != ERROR_OK)
-    return (ERROR_KO);
-#else
-  if (region_reserve(asid,
-		     (i_segment)_init->kcode,
-		     LINKER_SYMBOL(_handler_begin) - _init->kcode,
-		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
-		     REGION_OPTION_GLOBAL,
-		     LINKER_SYMBOL(_handler_begin),
-		     LINKER_SYMBOL(_handler_end) -
-		     LINKER_SYMBOL(_handler_begin),
-		     &reg) != ERROR_OK)
-    return (ERROR_KO);
-
-  if (region_reserve(asid,
-		     (i_segment)_init->kcode,
-		     LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
-		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
-		     REGION_OPTION_GLOBAL,
-		     LINKER_SYMBOL(_handler_data_begin),
-		     LINKER_SYMBOL(_handler_data_end) -
-		     LINKER_SYMBOL(_handler_data_begin),
-		     &reg) != ERROR_OK)
-    return (ERROR_KO);
-#endif
   if (region_get(_kernel->as,
-		 (i_region)(t_uint32)_thread->machine.tss,
+		 (i_region)(t_vaddr)_thread->machine.tss,
 		 &preg) != ERROR_OK)
     return (ERROR_KO);
 
@@ -413,6 +379,151 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     &reg) != ERROR_OK)
     return (ERROR_KO);
 
+  /*
+   * XXX
+   */
+
+  if (1)
+    {
+      /*
+      if (region_reserve(asid,
+			 (i_segment)0x1000,
+			 0,
+			 REGION_OPTION_FORCE,
+			 0x1000,
+			 0x00100000 - 0x1000,
+			 &reg) != ERROR_OK)
+	return (ERROR_KO);
+
+      if (region_reserve(asid,
+			 (i_segment)_init->kcode,
+			 0,
+			 REGION_OPTION_FORCE,
+			 _init->kcode,
+			 _init->kcodesz,
+			 &reg) != ERROR_OK)
+	return (ERROR_KO);
+      */
+      /*
+      // XXX
+      {
+	as_show(_kernel->as);
+
+	t_setsz		setsz;
+	i_set		mapping;
+	o_as*		as;
+	t_state		st;
+	t_iterator	i;
+
+	if (as_get(_kernel->as, &as) != ERROR_OK)
+	  CORE_ESCAPE("XXX");
+
+	if (set_size(as->regions, &setsz) != ERROR_OK)
+	  CORE_ESCAPE("unable to retrieve the size of the set");
+
+	if (set_reserve(array, SET_OPTION_ALLOC, setsz,
+			sizeof (i_region), &mapping) != ERROR_OK)
+	  CORE_ESCAPE("unable to reserve a set");
+
+	set_foreach(SET_OPTION_FORWARD, as->regions, &i, st)
+	  {
+	    o_region*	region;
+
+	    if (set_object(as->regions, i, (void**)&region) != ERROR_OK)
+	      CORE_ESCAPE("unable to retrieve the region object from the set");
+
+	    if (set_add(mapping, &region->id) != ERROR_OK)
+	      CORE_ESCAPE("unable to add the segment to the set of segments");
+	  }
+
+	set_show(mapping);
+
+	set_foreach(SET_OPTION_FORWARD, mapping, &i, st)
+	  {
+	    i_region*	id;
+	    i_region	needless;
+	    o_region*	region;
+	    o_segment*	segment;
+
+	    if (set_object(mapping, i, (void**)&id) != ERROR_OK)
+	      CORE_ESCAPE("unable to retrieve the region identifier from the set");
+
+	    if (region_get(as->id, *id, &region) != ERROR_OK)
+	      CORE_ESCAPE("unable to retrieve the region object");
+
+	    if (region_exist(asid, *id) == ERROR_TRUE)
+	      {
+		printf("skip 0x%qx\n", *id);
+		continue;
+	      }
+
+	    if (segment_get(region->segment, &segment) != ERROR_OK)
+	      CORE_ESCAPE("unable to retrieve the segment object");
+
+	    switch (segment->type)
+	      {
+	      case SEGMENT_TYPE_SYSTEM:
+		{
+		  break;
+		}
+	      case SEGMENT_TYPE_MEMORY:
+		{
+		  i_segment	clone;
+
+		  if (segment_clone(asid, segment->id, &clone) != ERROR_OK)
+		    CORE_ESCAPE("unable to clone the segment");
+
+		  printf("memory segment {virtual} 0x%x - 0x%x -> 0x%x - 0x%x [%qu] (%u bytes)\n",
+		  region->address, region->address + region->size - 1, (t_paddr)clone, (t_paddr)clone + segment->size, segment->id, region->size);
+
+		  if (region_reserve(asid,
+				     clone,
+				     region->offset,
+				     region->options | REGION_OPTION_FORCE,
+				     region->address,
+				     region->size,
+				     &needless) != ERROR_OK)
+		    CORE_ESCAPE("unable to reserve the region");
+
+		  break;
+		}
+	      default:
+		{
+		  printf("[XXX] UNKNOWN\n");
+		}
+	      }
+	  }
+
+	printf("...\n");
+      }
+      // XXX
+      */
+    }
+  else
+    {
+      if (region_reserve(asid,
+			 (i_segment)_init->kcode,
+			 LINKER_SYMBOL(_handler_begin) - _init->kcode,
+			 REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
+			 REGION_OPTION_GLOBAL,
+			 LINKER_SYMBOL(_handler_begin),
+			 LINKER_SYMBOL(_handler_end) -
+			 LINKER_SYMBOL(_handler_begin),
+			 &reg) != ERROR_OK)
+	return (ERROR_KO);
+
+      if (region_reserve(asid,
+			 (i_segment)_init->kcode,
+			 LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
+			 REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
+			 REGION_OPTION_GLOBAL,
+			 LINKER_SYMBOL(_handler_data_begin),
+			 LINKER_SYMBOL(_handler_data_end) -
+			 LINKER_SYMBOL(_handler_data_begin),
+			 &reg) != ERROR_OK)
+	return (ERROR_KO);
+    }
+
   return (ERROR_OK);
 }
 
@@ -424,7 +535,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
  * 1) insert code and data segments for kernel task.
  * 2) insert code and data segments for drivers.
  * 3) insert code and data segments for services.
- * 4) insert code and data segments for userland programs.
+ * 4) insert code and data segments for userland guests.
  * 5) update segment selector registers.
  * 6) setup the segment selector for interrupts.
  */
@@ -441,19 +552,19 @@ t_error			ia32_segmentation_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_supervisor;
+  seg.privilege = ia32_privilege_kernel;
   seg.is_system = 0;
   seg.type.user = ia32_type_code;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_KANETON_CS,
+  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_KERNEL_CS,
 			   seg) != ERROR_OK)
     return (ERROR_KO);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_supervisor;
+  seg.privilege = ia32_privilege_kernel;
   seg.is_system = 0;
   seg.type.user = ia32_type_data;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_KANETON_DS,
+  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_KERNEL_DS,
 			   seg) != ERROR_OK)
     return (ERROR_KO);
 
@@ -507,19 +618,19 @@ t_error			ia32_segmentation_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_user;
+  seg.privilege = ia32_privilege_guest;
   seg.is_system = 0;
   seg.type.user = ia32_type_code;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_PROGRAM_CS,
+  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_GUEST_CS,
 			   seg) != ERROR_OK)
     return (ERROR_KO);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_user;
+  seg.privilege = ia32_privilege_guest;
   seg.is_system = 0;
   seg.type.user = ia32_type_data;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_PROGRAM_DS,
+  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_GUEST_DS,
 			   seg) != ERROR_OK)
     return (ERROR_KO);
 
@@ -527,11 +638,11 @@ t_error			ia32_segmentation_init(void)
    * 5)
    */
 
-  ia32_gdt_build_selector(IA32_PMODE_GDT_KANETON_CS,
-			  ia32_privilege_supervisor,
+  ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_CS,
+			  ia32_privilege_kernel,
 			  &kcs);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_KANETON_DS,
-			  ia32_privilege_supervisor,
+  ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_DS,
+			  ia32_privilege_kernel,
 			  &kds);
   ia32_pmode_set_segment_registers(kcs, kds);
 

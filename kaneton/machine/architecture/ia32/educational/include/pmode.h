@@ -87,17 +87,17 @@
   ((_entry_) << 3)
 
 /*
- * gdt map for the four components: kaneton, driver, service, program
+ * gdt map for the four components: kaneton, driver, service, guest
  */
 
-#define IA32_PMODE_GDT_KANETON_CS	0x1
-#define IA32_PMODE_GDT_KANETON_DS	0x2
+#define IA32_PMODE_GDT_KERNEL_CS	0x1
+#define IA32_PMODE_GDT_KERNEL_DS	0x2
 #define IA32_PMODE_GDT_DRIVER_CS	0x3
 #define IA32_PMODE_GDT_DRIVER_DS	0x4
 #define IA32_PMODE_GDT_SERVICE_CS	0x5
 #define IA32_PMODE_GDT_SERVICE_DS	0x6
-#define IA32_PMODE_GDT_PROGRAM_CS	0x7
-#define IA32_PMODE_GDT_PROGRAM_DS	0x8
+#define IA32_PMODE_GDT_GUEST_CS		0x7
+#define IA32_PMODE_GDT_GUEST_DS		0x8
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -109,10 +109,10 @@
 
 typedef enum
   {
-    ia32_privilege_supervisor = IA32_PRIVILEGE_RING0,
+    ia32_privilege_kernel = IA32_PRIVILEGE_RING0,
     ia32_privilege_driver = IA32_PRIVILEGE_RING1,
     ia32_privilege_service = IA32_PRIVILEGE_RING2,
-    ia32_privilege_user = IA32_PRIVILEGE_RING3,
+    ia32_privilege_guest = IA32_PRIVILEGE_RING3,
   } t_ia32_privilege;
 
 /*

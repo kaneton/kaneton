@@ -25,8 +25,6 @@
 #define INTERFACE_AS_VADDR 1
 #define INTERFACE_AS_PADDR 2
 #define INTERFACE_AS_COPY 3
-#define INTERFACE_AS_CLONE 4
-#define INTERFACE_AS_RESERVE 5
 #define INTERFACE_AS_RELEASE 6
 #define INTERFACE_AS_ATTRIBUTE_TASK 7
 #define INTERFACE_EVENT_RESERVE 8
@@ -52,8 +50,6 @@
 #define INTERFACE_SCHEDULER_QUANTUM 28
 #define INTERFACE_SCHEDULER_YIELD 29
 #define INTERFACE_SCHEDULER_CURRENT 30
-#define INTERFACE_SCHEDULER_ADD 31
-#define INTERFACE_SCHEDULER_REMOVE 32
 #define INTERFACE_SCHEDULER_UPDATE 33
 #define INTERFACE_SEGMENT_CLONE 34
 #define INTERFACE_SEGMENT_GIVE 35
@@ -69,20 +65,16 @@
 #define INTERFACE_SEGMENT_ATTRIBUTE_SIZE 45
 #define INTERFACE_SEGMENT_ATTRIBUTE_PERMISSIONS 46
 #define INTERFACE_TASK_CURRENT 47
-#define INTERFACE_TASK_CLONE 48
 #define INTERFACE_TASK_RESERVE 49
 #define INTERFACE_TASK_RELEASE 50
 #define INTERFACE_TASK_PRIORITY 51
-#define INTERFACE_TASK_WAIT 53
 #define INTERFACE_TASK_ATTRIBUTE_PARENT 54
 #define INTERFACE_TASK_ATTRIBUTE_CLASS 55
 #define INTERFACE_TASK_ATTRIBUTE_BEHAVIOUS 56
 #define INTERFACE_TASK_ATTRIBUTE_PRIORITY 57
 #define INTERFACE_TASK_ATTRIBUTE_AS 58
 #define INTERFACE_TASK_ATTRIBUTE_SCHED 59
-#define INTERFACE_TASK_ATTRIBUTE_WAIT 60
 #define INTERFACE_THREAD_GIVE 61
-#define INTERFACE_THREAD_CLONE 62
 #define INTERFACE_THREAD_RESERVE 63
 #define INTERFACE_THREAD_RELEASE 64
 #define INTERFACE_THREAD_PRIORITY 65
@@ -92,7 +84,6 @@
 #define INTERFACE_THREAD_ATTRIBUTE_TASK 70
 #define INTERFACE_THREAD_ATTRIBUTE_PRIORITY 71
 #define INTERFACE_THREAD_ATTRIBUTE_STATE 72
-#define INTERFACE_THREAD_ATTRIBUTE_WAIT 73
 #define INTERFACE_THREAD_ATTRIBUTE_STACK 74
 #define INTERFACE_THREAD_ATTRIBUTE_STACKSZ 75
 #define INTERFACE_TIMER_RESERVE 76
@@ -147,15 +138,6 @@ typedef struct
 	  t_vaddr	arg4;
 	  t_vsize	arg5;
 	}		as_copy;
-	struct
-	{
-	  i_as		arg1;
-	  i_task	arg2;
-	}		as_clone;
-	struct
-	{
-	  i_task	arg1;
-	}		as_reserve;
 	struct
 	{
 	  t_id	arg1;
@@ -286,14 +268,6 @@ typedef struct
 	struct
 	{
 	  i_thread	arg1;
-	}		scheduler_add;
-	struct
-	{
-	  i_thread	arg1;
-	}		scheduler_remove;
-	struct
-	{
-	  i_thread	arg1;
 	}		scheduler_update;
 	struct
 	{
@@ -360,10 +334,6 @@ typedef struct
 	}		segment_attribute_permissions;
 	struct
 	{
-	  t_id	arg1;
-	}		task_clone;
-	struct
-	{
 	  t_class	arg1;
 	  t_behaviour	arg2;
 	  t_priority	arg3;
@@ -377,11 +347,6 @@ typedef struct
 	  t_id	arg1;
 	  t_priority	arg2;
 	}		task_priority;
-	struct
-	{
-	  t_id	arg1;
-	  t_options	arg2;
-	}		task_wait;
 	struct
 	{
 	  t_id	arg1;
@@ -408,18 +373,9 @@ typedef struct
 	}		task_attribute_sched;
 	struct
 	{
-	  t_id	arg1;
-	}		task_attribute_wait;
-	struct
-	{
 	  i_task	arg1;
 	  t_id	arg2;
 	}		thread_give;
-	struct
-	{
-	  i_task	arg1;
-	  t_id	arg2;
-	}		thread_clone;
 	struct
 	{
 	  i_task	arg1;
@@ -460,10 +416,6 @@ typedef struct
 	{
 	  t_id	arg1;
 	}		thread_attribute_state;
-	struct
-	{
-	  t_id	arg1;
-	}		thread_attribute_wait;
 	struct
 	{
 	  t_id	arg1;
@@ -535,14 +487,6 @@ typedef struct
 	{
 	  t_paddr	result1;
 	}		as_paddr;
-	struct
-	{
-	  i_as	result1;
-	}		as_clone;
-	struct
-	{
-	  i_as	result1;
-	}		as_reserve;
 	struct
 	{
 	  i_task	result1;
@@ -626,15 +570,7 @@ typedef struct
 	struct
 	{
 	  i_task	result1;
-	}		task_clone;
-	struct
-	{
-	  i_task	result1;
 	}		task_reserve;
-	struct
-	{
-	  t_wait	result1;
-	}		task_wait;
 	struct
 	{
 	  i_task	result1;
@@ -661,14 +597,6 @@ typedef struct
 	}		task_attribute_sched;
 	struct
 	{
-	  t_wait	result1;
-	}		task_attribute_wait;
-	struct
-	{
-	  i_thread	result1;
-	}		thread_clone;
-	struct
-	{
 	  i_thread	result1;
 	}		thread_reserve;
 	struct
@@ -687,10 +615,6 @@ typedef struct
 	{
 	  t_state	result1;
 	}		thread_attribute_state;
-	struct
-	{
-	  t_wait	result1;
-	}		thread_attribute_wait;
 	struct
 	{
 	  t_vaddr	result1;
@@ -749,10 +673,6 @@ t_error		interface_as_paddr(o_syscall*	message);
 
 t_error		interface_as_copy(o_syscall*	message);
 
-t_error		interface_as_clone(o_syscall*	message);
-
-t_error		interface_as_reserve(o_syscall*	message);
-
 t_error		interface_as_release(o_syscall*	message);
 
 t_error		interface_as_attribute_task(o_syscall*	message);
@@ -803,10 +723,6 @@ t_error		interface_scheduler_yield(o_syscall*	message);
 
 t_error		interface_scheduler_current(o_syscall*	message);
 
-t_error		interface_scheduler_add(o_syscall*	message);
-
-t_error		interface_scheduler_remove(o_syscall*	message);
-
 t_error		interface_scheduler_update(o_syscall*	message);
 
 t_error		interface_segment_clone(o_syscall*	message);
@@ -837,15 +753,11 @@ t_error		interface_segment_attribute_permissions(o_syscall*	message);
 
 t_error		interface_task_current(o_syscall*	message);
 
-t_error		interface_task_clone(o_syscall*	message);
-
 t_error		interface_task_reserve(o_syscall*	message);
 
 t_error		interface_task_release(o_syscall*	message);
 
 t_error		interface_task_priority(o_syscall*	message);
-
-t_error		interface_task_wait(o_syscall*	message);
 
 t_error		interface_task_attribute_parent(o_syscall*	message);
 
@@ -859,11 +771,7 @@ t_error		interface_task_attribute_as(o_syscall*	message);
 
 t_error		interface_task_attribute_sched(o_syscall*	message);
 
-t_error		interface_task_attribute_wait(o_syscall*	message);
-
 t_error		interface_thread_give(o_syscall*	message);
-
-t_error		interface_thread_clone(o_syscall*	message);
 
 t_error		interface_thread_reserve(o_syscall*	message);
 
@@ -882,8 +790,6 @@ t_error		interface_thread_attribute_task(o_syscall*	message);
 t_error		interface_thread_attribute_priority(o_syscall*	message);
 
 t_error		interface_thread_attribute_state(o_syscall*	message);
-
-t_error		interface_thread_attribute_wait(o_syscall*	message);
 
 t_error		interface_thread_attribute_stack(o_syscall*	message);
 

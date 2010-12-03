@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...test/tests/kaneton/set/array/10/Makefile
+# file          /data/mycure/repo...tests/kaneton/core/set/array/10/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2010]
-# updated       julien quintard   [wed nov 17 21:01:49 2010]
+# updated       julien quintard   [tue nov 30 16:13:40 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/set/array/10
 
 #
 # ---------- dependencies -----------------------------------------------------

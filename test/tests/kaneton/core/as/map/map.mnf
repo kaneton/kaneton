@@ -1,4 +1,5 @@
 name: core/as/map
 description: This test reserves an address space in a new task and allocates several maps before checking that the segments and regions have been properly reserved. Finally, the task and its address space are released.
 symbol: test_core_as_map
+signature: 9i32aaaaaigfjergj39g
 output:

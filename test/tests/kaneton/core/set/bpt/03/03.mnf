@@ -1,4 +1,5 @@
 name: core/set/bpt/03
 description: This test reserves a set, adds several objects to it, releases it and does it again with different options.
 symbol: test_core_set_bpt_03
+signature: 90fgi3g0h34h3h
 output: "16 elements: 0 XXX 234 XXX 468 XXX 702 XXX 936 XXX 1170 XXX 1404 XXX 1638 XXX 1872 XXX 2106 XXX 2340 XXX 2574 XXX 2808 XXX 3042 XXX 3276 XXX 3510 XXX\n16 elements: 0 XXX 234 XXX 468 XXX 702 XXX 936 XXX 1170 XXX 1404 XXX 1638 XXX 1872 XXX 2106 XXX 2340 XXX 2574 XXX 2808 XXX 3042 XXX 3276 XXX 3510 XXX\n"

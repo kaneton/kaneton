@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../test/tests/kaneton/core/as/copy/01/01.c
+ * file          /data/mycure/repo.../test/tests/kaneton/core/as/copy/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:12:29 2010]
+ * updated       julien quintard   [mon nov 29 18:40:32 2010]
  */
 
 /*
@@ -50,40 +50,40 @@ void			test_core_as_copy_01(void)
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
 		   &task1) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task1, &as1) != ERROR_OK)
-    TEST_ERROR("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as1,
 		      2 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg1) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &useless) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      4 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg2) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &useless) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      2 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg3) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as1,
 		     seg1,
@@ -92,7 +92,7 @@ void			test_core_as_copy_01(void)
 		     0x20000000,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as1,
 		     seg2,
@@ -101,7 +101,7 @@ void			test_core_as_copy_01(void)
 		     0x20001000,
 		     2 * PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as1,
 		     seg3,
@@ -110,7 +110,7 @@ void			test_core_as_copy_01(void)
 		     0x20003000,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   /*
    * second address space
@@ -120,40 +120,40 @@ void			test_core_as_copy_01(void)
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
 		   &task2) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task2, &as2) != ERROR_OK)
-    TEST_ERROR("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as2,
 		      2 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg4) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &useless) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      4 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg5) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &useless) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      2 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg6) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as2,
 		     seg4,
@@ -162,7 +162,7 @@ void			test_core_as_copy_01(void)
 		     0x40000000,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as2,
 		     seg5,
@@ -171,7 +171,7 @@ void			test_core_as_copy_01(void)
 		     0x40001000,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as2,
 		     seg6,
@@ -180,7 +180,7 @@ void			test_core_as_copy_01(void)
 		     0x40002000,
 		     2 * PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   /*
    * operations
@@ -190,21 +190,23 @@ void			test_core_as_copy_01(void)
     buff[i] = (i * 2 + 4) % 256;
 
   if (as_write(as1, buff, 4 * PAGESZ, 0x20000000) != ERROR_OK)
-    TEST_ERROR("[as_write] error\n");
+    TEST_ERROR("[as_write] error");
 
   for (i = 0; i < 4 * PAGESZ; i++)
     buff[i] = 0;
 
   if (as_copy(as1, 0x20000000, as2, 0x40000000, 4 * PAGESZ) != ERROR_OK)
-    TEST_ERROR("[as_copy] error\n");
+    TEST_ERROR("[as_copy] error");
 
   if (as_read(as2, 0x40000000, 4 * PAGESZ, buff) != ERROR_OK)
-    TEST_ERROR("[as_read] error\n");
+    TEST_ERROR("[as_read] error");
 
   for (i = 0; i < 4 * PAGESZ; i++)
     if (buff[i] != (i * 2 + 4) % 256)
       TEST_ERROR("the data appears invalid once read from the "
 		 "address space\n");
+
+  TEST_SIGNATURE(rr3fiw3w20aafi9gre9g);
 
   TEST_LEAVE();
 }

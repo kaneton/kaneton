@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../test/tests/kaneton/core/set/bpt/06/06.c
+ * file          /data/mycure/repo.../test/tests/kaneton/core/set/bpt/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [sat nov 27 23:56:15 2010]
+ * updated       julien quintard   [mon nov 29 19:12:04 2010]
  */
 
 /*
@@ -44,7 +44,7 @@ void			test_core_set_bpt_06(void)
 		  sizeof(t_id),
 		  PAGESZ,
 		  &id) != ERROR_OK)
-    TEST_ERROR("[set_reserve] error\n");
+    TEST_ERROR("[set_reserve] error");
 
   /*
    * add
@@ -113,10 +113,10 @@ void			test_core_set_bpt_06(void)
    */
 
   if (set_head(id, &it) == ERROR_FALSE)
-    TEST_ERROR("[set_head] error\n");
+    TEST_ERROR("[set_head] error");
 
   if (set_next(id, it, &it) == ERROR_FALSE)
-    TEST_ERROR("[set_next] error\n");
+    TEST_ERROR("[set_next] error");
 
   /*
    * after
@@ -141,14 +141,14 @@ void			test_core_set_bpt_06(void)
    */
 
   if (set_size(id, &sz) != ERROR_OK)
-    TEST_ERROR("[set_size] error\n");
+    TEST_ERROR("[set_size] error");
 
   printf("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
-        TEST_ERROR("[set_object] error\n");
+        TEST_ERROR("[set_object] error");
 
       if (!st++)
         printf("%qd",
@@ -164,7 +164,9 @@ void			test_core_set_bpt_06(void)
    */
 
   if (set_release(id) != ERROR_OK)
-    TEST_ERROR("[set_release] error\n");
+    TEST_ERROR("[set_release] error");
+
+  TEST_SIGNATURE(f0igih43h903);
 
   TEST_LEAVE();
 }

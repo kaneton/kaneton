@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...t/tests/kaneton/core/segment/type/type.c
+ * file          /data/mycure/repo...t/tests/kaneton/core/segment/type/type.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:33:31 2010]
+ * updated       julien quintard   [mon nov 29 19:02:04 2010]
  */
 
 /*
@@ -40,31 +40,36 @@ void			test_core_segment_type(void)
 		      2 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_EXEC,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (segment_permissions(seg, PERMISSION_READ | PERMISSION_WRITE) != ERROR_OK)
-    TEST_ERROR("[segment_permissions] error\n");
+    TEST_ERROR("[segment_permissions] error");
 
   if (segment_type(seg, SEGMENT_TYPE_CATCH) != ERROR_OK)
-    TEST_ERROR("[segment_type] error\n");
+    TEST_ERROR("[segment_type] error");
 
   if (segment_get(seg, &o) != ERROR_OK)
-    TEST_ERROR("[segment_get] error\n");
+    TEST_ERROR("[segment_get] error");
 
   if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))
-    TEST_ERROR("invalid segment's permissions\n");
+    TEST_ERROR("invalid segment's permissions");
 
   if (o->type != SEGMENT_TYPE_CATCH)
-    TEST_ERROR("invalid segment's type\n");
+    TEST_ERROR("invalid segment's type");
 
-  if (segment_permissions(seg, ~(PERMISSION_READ | PERMISSION_WRITE | PERMISSION_EXEC)) == ERROR_OK)
-    TEST_ERROR("[segment_permissions] error: setting invalid permissions\n");
+  if (segment_permissions(seg,
+			  ~(PERMISSION_READ |
+			    PERMISSION_WRITE |
+			    PERMISSION_EXEC)) == ERROR_OK)
+    TEST_ERROR("[segment_permissions] error: setting invalid permissions");
 
   if (segment_type(seg, (1 << 4)) == ERROR_OK)
-    TEST_ERROR("[segment_type] error: setting invalid type\n");
+    TEST_ERROR("[segment_type] error: setting invalid type");
 
   if (segment_release(seg) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
+
+  TEST_SIGNATURE(sklcowekavgegh4h);
 
   TEST_LEAVE();
 }

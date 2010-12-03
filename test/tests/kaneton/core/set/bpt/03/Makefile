@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...test/tests/kaneton/set/bpt/03/Makefile
+# file          /data/mycure/repo...t/tests/kaneton/core/set/bpt/03/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [wed nov 17 16:52:33 2010]
+# updated       julien quintard   [tue nov 30 16:14:13 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/set/bpt/03
 
 #
 # ---------- dependencies -----------------------------------------------------

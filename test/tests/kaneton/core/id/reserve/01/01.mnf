@@ -1,4 +1,5 @@
 name: core/id/reserve/01
 description: This test reserves a single identifier.
 symbol: test_core_id_reserve_01
+signature: 9i43sdkfwaoir23wt
 output:

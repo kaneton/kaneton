@@ -1,4 +1,5 @@
 name: core/region/flush/02
 description: This test reserves several segments and regions in a newly created task's address space. Then, the test flushes the regions and checks that no region remains. Finally, every resource is released.
 symbol: test_core_region_flush_02
+signature: r3t04ge0giea9wgggg
 output:

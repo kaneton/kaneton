@@ -1,0 +1,5 @@
+name: core/task/service
+description: This test creates a service-class task with which a segment is shared with the kernel address space. In addition a thread is spawn within the kernel which will stop the scheduler after some time. The created task's thread writes data to the shared segment while the main thread verifies that the proper value has been written.
+symbol: test_core_task_service
+signature: 90cwscfmwefw32g9f0veofo23w9fri92309gig
+output:

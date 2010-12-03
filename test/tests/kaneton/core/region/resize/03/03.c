@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...tests/kaneton/core/region/resize/03/03.c
+ * file          /data/mycure/repo...tests/kaneton/core/region/resize/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [wed nov 24 09:37:18 2010]
+ * updated       julien quintard   [mon nov 29 18:50:32 2010]
  */
 
 /*
@@ -42,7 +42,7 @@ void			test_core_region_resize_03(void)
 		      10 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     seg,
@@ -51,43 +51,43 @@ void			test_core_region_resize_03(void)
 		     0,
 		     2 * PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_resize(_kernel->as, reg, PAGESZ, &reg) != ERROR_OK)
-    TEST_ERROR("[region_resize] error\n");
+    TEST_ERROR("[region_resize] error");
 
   if (region_get(_kernel->as, reg, &o) != ERROR_OK)
-    TEST_ERROR("[region_get] error\n");
+    TEST_ERROR("[region_get] error");
 
   if (o->id != reg)
-    TEST_ERROR("invalid region's identifier after resize\n");
+    TEST_ERROR("invalid region's identifier after resize");
 
   if (o->segment != seg)
-    TEST_ERROR("invalid region's segment identifier after resize\n");
+    TEST_ERROR("invalid region's segment identifier after resize");
 
   if (o->offset != PAGESZ)
-    TEST_ERROR("invalid region's offset after resize\n");
+    TEST_ERROR("invalid region's offset after resize");
 
   if (o->size != PAGESZ)
-    TEST_ERROR("invalid region's size after resize\n");
+    TEST_ERROR("invalid region's size after resize");
 
   if (region_resize(_kernel->as, reg, 3 * PAGESZ, &reg) != ERROR_OK)
-    TEST_ERROR("[region_resize] error\n");
+    TEST_ERROR("[region_resize] error");
 
   if (region_get(_kernel->as, reg, &o) != ERROR_OK)
-    TEST_ERROR("[region_get] error\n");
+    TEST_ERROR("[region_get] error");
 
   if (o->id != reg)
-    TEST_ERROR("invalid region's identifier after resize\n");
+    TEST_ERROR("invalid region's identifier after resize");
 
   if (o->segment != seg)
-    TEST_ERROR("invalid region's segment identifier after resize\n");
+    TEST_ERROR("invalid region's segment identifier after resize");
 
   if (o->offset != PAGESZ)
-    TEST_ERROR("invalid region's offset after resize\n");
+    TEST_ERROR("invalid region's offset after resize");
 
   if (o->size != 3 * PAGESZ)
-    TEST_ERROR("invalid region's size after resize\n");
+    TEST_ERROR("invalid region's size after resize");
 
   p = (t_uint8*)(t_vaddr)reg;
   for (; p < (t_uint8*)(t_vaddr)reg + 3 * PAGESZ; p++)
@@ -95,14 +95,16 @@ void			test_core_region_resize_03(void)
       *p = 0x0d;
 
       if (*p != 0x0d)
-	TEST_ERROR("the data read differs from the one written\n");
+	TEST_ERROR("the data read differs from the one written");
     }
 
   if (region_release(_kernel->as, reg) != ERROR_OK)
-    TEST_ERROR("[region_release] error\n");
+    TEST_ERROR("[region_release] error");
 
   if (segment_release(seg) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
+
+  TEST_SIGNATURE(ftr3wg0eeg90w2fg4);
 
   TEST_LEAVE();
 }

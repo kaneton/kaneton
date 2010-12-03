@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/thread.h
+ * file          /data/mycure/repo...ton.STABLE/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [sun nov 28 19:39:55 2010]
+ * updated       julien quintard   [fri dec  3 16:06:42 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -34,16 +34,16 @@
  */
 
 #define THREAD_PRIORITY		130
-#define THREAD_HPRIORITY	250
-#define THREAD_LPRIORITY	10
+#define THREAD_PRIORITY_HIGH	250
+#define THREAD_PRIORITY_LOW	10
 
 /*
  * stack size
  */
 
-#define THREAD_HSTACKSZ		1000 * PAGESZ
 #define THREAD_STACKSZ		500 * PAGESZ
-#define THREAD_LSTACKSZ		1 * PAGESZ
+#define THREAD_STACKSZ_HIGH	1000 * PAGESZ
+#define THREAD_STACKSZ_LOW	1 * PAGESZ
 
 /*
  * init sizes for the array data structure set
@@ -55,10 +55,18 @@
  * the thread state.
  */
 
-#define THREAD_STATE_RUN	1
+#define THREAD_STATE_START	1
 #define THREAD_STATE_STOP	2
 #define THREAD_STATE_BLOCK	3
 #define THREAD_STATE_ZOMBIE	4
+#define THREAD_STATE_DEAD	5
+
+/*
+ * the delay in milliseconds until a thread is definitely buried
+ * i.e resources are released.
+ */
+
+#define THREAD_DELAY_BURY	3000
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -89,7 +97,20 @@ typedef struct
   t_state			state;
 
   i_set				waits;
-  t_wait			wait;
+
+  struct
+  {
+    t_state			state;
+
+    t_state			cause;
+    t_value			value;
+  }				wait;
+
+  struct
+  {
+    t_state			cause;
+    t_value			value;
+  }				status;
 
   t_vaddr			stack;
   t_vsize			stacksz;
@@ -119,9 +140,6 @@ typedef struct
   t_error			(*thread_show)(i_thread);
   t_error			(*thread_give)(i_task,
 					       i_thread);
-  t_error			(*thread_clone)(i_task,
-						i_thread,
-						i_thread*);
   t_error			(*thread_flush)(i_task);
   t_error			(*thread_load)(i_thread,
 					       t_thread_context);
@@ -132,10 +150,11 @@ typedef struct
   t_error			(*thread_release)(i_thread);
   t_error			(*thread_priority)(i_thread,
 						  t_priority);
-  t_error			(*thread_run)(i_thread);
+  t_error			(*thread_start)(i_thread);
   t_error			(*thread_stop)(i_thread);
   t_error			(*thread_block)(i_thread);
-  t_error			(*thread_die)(i_thread);
+  t_error			(*thread_exit)(i_thread,
+					       t_value);
   t_error			(*thread_stack)(i_thread,
 						t_stack);
   t_error			(*thread_args)(i_thread,
@@ -162,10 +181,6 @@ t_error			thread_dump(void);
 t_error			thread_give(i_task			taskid,
 				    i_thread			threadid);
 
-t_error			thread_clone(i_task			taskid,
-				     i_thread			old,
-				     i_thread*			new);
-
 t_error			thread_reserve(i_task			taskid,
 				       t_priority		prior,
 				       i_thread*		threadid);
@@ -175,13 +190,21 @@ t_error			thread_release(i_thread			threadid);
 t_error			thread_priority(i_thread		threadid,
 					t_priority		prior);
 
-t_error			thread_run(i_thread			threadid);
+t_error			thread_start(i_thread			id);
 
-t_error			thread_stop(i_thread			threadid);
+t_error			thread_stop(i_thread			id);
 
-t_error			thread_block(i_thread			threadid);
+t_error			thread_block(i_thread			id);
 
-t_error			thread_die(i_thread			threadid);
+t_error			thread_exit(i_thread			id,
+				    t_value			value);
+
+void			thread_bury(i_timer			timer,
+				    t_vaddr			address);
+
+t_error			thread_wait(t_state			state,
+				    i_thread			id,
+				    t_wait*			wait);
 
 t_error			thread_stack(i_thread			threadid,
 				     t_stack			stack);

@@ -76,10 +76,6 @@
  * ../thread.c
  */
 
-t_error			glue_thread_clone(i_task		taskid,
-					  i_thread		old,
-					  i_thread*		new);
-
 t_error			glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid);
 

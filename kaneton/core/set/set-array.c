@@ -937,7 +937,7 @@ t_error			set_add_array(i_set			setid,
 		    free(data);
 
 		  CORE_ESCAPE("identifier collision detected in the set "
-			      "%qu on the object identifier %qu\n",
+			      "%qu on the object identifier %qu",
 			      o->id, id);
 		}
 	      if (current > id)

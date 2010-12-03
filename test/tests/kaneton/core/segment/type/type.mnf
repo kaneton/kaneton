@@ -1,4 +1,5 @@
 name: core/segment/type
 description: This test reserves a segment, changes its permissions and type. Finally, the segment is released.
 symbol: test_core_segment_type
+signature: sklcowekavgegh4h
 output:

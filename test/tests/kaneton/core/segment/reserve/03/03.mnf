@@ -1,4 +1,5 @@
 name: core/segment/reserve/03
 description: This test reserves a large segment and releases it.
 symbol: test_core_segment_reserve_03
+signature: fg90i3i2fwoai43hg
 output:

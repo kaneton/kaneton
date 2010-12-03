@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...st/tests/kaneton/core/id/reserve/01/01.c
+ * file          /data/mycure/repo...st/tests/kaneton/core/id/reserve/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu nov 18 16:16:51 2010]
+ * updated       julien quintard   [mon nov 29 18:44:49 2010]
  */
 
 /*
@@ -31,19 +31,21 @@ void			test_core_id_reserve_01(void)
   TEST_ENTER();
 
   if (id_build(&id) != ERROR_OK)
-    TEST_ERROR("[id_build] error\n");
+    TEST_ERROR("[id_build] error");
 
   if (id_reserve(&id, &i) != ERROR_OK)
-    TEST_ERROR("[id_reserve] error\n");
+    TEST_ERROR("[id_reserve] error");
 
   if (!(i >= 0 && i <= (t_id)-1))
-    TEST_ERROR("invalid id\n");
+    TEST_ERROR("invalid id");
 
   if (id_release(&id, i) != ERROR_OK)
-    TEST_ERROR("[id_release] error\n");
+    TEST_ERROR("[id_release] error");
 
   if (id_destroy(&id) != ERROR_OK)
-    TEST_ERROR("[id_destroy] error\n");
+    TEST_ERROR("[id_destroy] error");
+
+  TEST_SIGNATURE(9i43sdkfwaoir23wt);
 
   TEST_LEAVE();
 }

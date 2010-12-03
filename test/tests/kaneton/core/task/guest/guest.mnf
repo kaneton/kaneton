@@ -1,0 +1,5 @@
+name: core/task/guest
+description: This test creates a guest-class task with which a segment is shared with the kernel address space. In addition a thread is spawn within the kernel which will stop the scheduler after some time. The created task's thread writes data to the shared segment while the main thread verifies that the proper value has been written.
+symbol: test_core_task_guest
+signature: mvwdfi90r02ig3ghj34nmcoiawqdjqwd32i093g4
+output:

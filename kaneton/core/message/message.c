@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/message/message.c
+ * file          /data/mycure/repo...on.STABLE/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       julien quintard   [sat nov 27 16:40:35 2010]
+ * updated       julien quintard   [thu dec  2 12:31:43 2010]
  */
 
 /*
@@ -912,7 +912,7 @@ t_error			message_return(i_thread			thread,
   if (machine_call(message, message_return, thread, code) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (thread_run(thread) != ERROR_OK)
+  if (thread_start(thread) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -932,7 +932,7 @@ t_error			message_return_info(i_thread		thread,
 		   sender) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (thread_run(thread) != ERROR_OK)
+  if (thread_start(thread) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();

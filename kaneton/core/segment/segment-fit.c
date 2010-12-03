@@ -98,11 +98,6 @@ t_error			segment_show(i_segment			segid)
   if (segment_get(segid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
-  module_call(console, console_message,
-	      '#', "  segment %qd in address space %qd:\n",
-	      segid,
-	      o->as);
-
   /*
    * 2)
    */
@@ -144,12 +139,14 @@ t_error			segment_show(i_segment			segid)
    */
 
   module_call(console, console_message,
-	      '#', "    [%s] 0x%08x - 0x%08x %s (%u bytes)\n",
+	      '#', "    [%s] %qu :: 0x%08x - 0x%08x %s (%u bytes) in address space %qu\n",
 	      type,
+	      o->id,
 	      o->address,
-	      o->address + o->size,
+	      o->address + o->size - 1,
 	      perms,
-	      o->size);
+	      o->size,
+	      o->as);
 
   /*
    * 5)
@@ -558,6 +555,34 @@ t_error			segment_give(i_as		asid,
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
+}
+
+/*
+ * XXX
+ */
+
+t_error			segment_locate(t_paddr		address,
+				       i_segment*	id)
+{
+  o_segment*		object;
+  t_state		state;
+  t_iterator		i;
+
+  set_foreach(SET_OPTION_FORWARD, _segment->segments, &i, state)
+    {
+      if (set_object(_segment->segments, i, (void**)&object) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the object from the set");
+
+      if ((object->address <= address) &&
+	  (address < (object->address + object->size)))
+	{
+	  *id = object->id;
+
+	  CORE_LEAVE();
+	}
+    }
+
+  CORE_ESCAPE("unable to locate the given address");
 }
 
 /*
@@ -1355,7 +1380,7 @@ t_error			segment_flush(i_as			asid)
     {
       if (set_object(as->segments, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object corresponding to "
-		    "its identifier\n");
+		    "its identifier");
 
       if (segment_release(*data) != ERROR_OK)
 	CORE_ESCAPE("unable to release the segment");
@@ -1413,7 +1438,7 @@ t_error			segment_initialize(void)
 
   if ((_segment = malloc(sizeof(m_segment))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the segment manager's "
-		"structure\n");
+		"structure");
 
   memset(_segment, 0x0, sizeof(m_segment));
 
@@ -1430,7 +1455,7 @@ t_error			segment_initialize(void)
 
   if (set_reserve(bpt, SET_OPTION_SORT | SET_OPTION_FREE, sizeof(o_segment),
 		  SEGMENT_BPT_NODESZ, &_segment->segments) != ERROR_OK)
-    CORE_ESCAPE("unable to reserve the segments set\n");
+    CORE_ESCAPE("unable to reserve the segments set");
 
   /*
    * 4)
@@ -1474,14 +1499,14 @@ t_error			segment_clean(void)
     {
       if (set_object(_segment->segments, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object corresponding to "
-		    "its identifier\n");
+		    "its identifier");
 
       if (segment_release(data->id) != ERROR_OK)
 	CORE_ESCAPE("unable to release the segment");
     }
 
   if (set_release(_segment->segments) != ERROR_OK)
-    CORE_ESCAPE("unable to release the segments set\n");
+    CORE_ESCAPE("unable to release the segments set");
 
   /*
    * 3)

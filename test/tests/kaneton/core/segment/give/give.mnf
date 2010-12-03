@@ -1,4 +1,5 @@
 name: core/segment/give
 description: This test creates two tasks and address spaces, reserves a segment in the first address space and gives it to the second. To finish, all the allocated resources are released.
 symbol: test_core_segment_give
+signature: 34i90iaopwrkrekhgoph349
 output:

@@ -1,0 +1,5 @@
+name: machine/architecture/as/mapping
+description: This test takes all the regions of all the existing address spaces and verifies that the ia32 mappings are correct.
+symbol: test_architecture_as_mapping
+signature: 90fi2ksoorpgk3
+output:

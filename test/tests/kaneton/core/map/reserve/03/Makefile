@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...st/tests/kaneton/map/reserve/03/Makefile
+# file          /data/mycure/repo...sts/kaneton/core/map/reserve/03/Makefile
 #
 # created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [mon nov  8 09:54:00 2010]
+# updated       julien quintard   [tue nov 30 16:05:45 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/map/reserve/03
 
 #
 # ---------- dependencies -----------------------------------------------------

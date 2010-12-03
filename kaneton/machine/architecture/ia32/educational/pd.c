@@ -34,6 +34,9 @@
 
 t_ia32_directory	ia32_pd;
 
+// XXX
+//extern i_as		ia32_as;
+
 /*
  * ---------- XXX -------------------------------------------------------------
  */
@@ -78,14 +81,7 @@ t_error			XXX_ia32_directory_dump(t_paddr		paddr)
   for (i = 0; i < IA32_PAGE_DIRECTORY_MAX_ENTRIES; i++)
     {
       if (directory[i] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_P)
-	{
-	  printf("  [page directory entry] %u [0x%08x - 0x%08x]\n",
-		 i,
-		 i * IA32_PAGE_DIRECTORY_MAX_ENTRIES * PAGESZ,
-		 (i + 1) * IA32_PAGE_DIRECTORY_MAX_ENTRIES * PAGESZ);
-
-	  XXX_ia32_table_dump(directory, i);
-	}
+	XXX_ia32_table_dump(directory, i);
     }
 
   if (XXX_ia32_page_unmap(vaddr) != ERROR_OK)
@@ -107,7 +103,11 @@ t_error			XXX_ia32_table_dump(t_ia32_directory	directory,
   if (XXX_ia32_page_map(paddr, &vaddr) != ERROR_OK)
     return (ERROR_KO);
 
-  printf("    [page table] paddr=0x%08x, vaddr=0x%08x\n", paddr, vaddr);
+  printf("  [page table %4u] paddr=0x%08x, vaddr=0x%08x range=[0x%x - 0x%x]\n",
+	 index,
+	 paddr, vaddr,
+	 index * IA32_PAGE_DIRECTORY_MAX_ENTRIES * PAGESZ,
+	 (index + 1) * IA32_PAGE_DIRECTORY_MAX_ENTRIES * PAGESZ - 1);
 
   table = (t_ia32_pte*)vaddr;
 
@@ -115,8 +115,9 @@ t_error			XXX_ia32_table_dump(t_ia32_directory	directory,
     {
       if (table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USED)
 	{
-	  printf("      [page table entry] %u\n ", i);
-	  printf("        vaddr=0x%08x, paddr=0x%08x, r/w=%d, user/supervisor=%d, accessed=%d dirty=%d\n",
+	  printf("    [page table entry %4u] "
+		 "vaddr=0x%08x, paddr=0x%08x, r/w=%d, user/supervisor=%d, accessed=%d dirty=%d\n",
+		 i,
 		 index * IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ + i * PAGESZ,
 		 IA32_BASE(table[i]),
 		 !!(table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_RW),

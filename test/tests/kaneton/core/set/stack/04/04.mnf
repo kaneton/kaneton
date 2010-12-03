@@ -1,4 +1,5 @@
 name: core/set/stack/04
 description: This test reserves a set, pushes objects, pops some, pushes more, display the set contents etc. before releasing the set.
 symbol: test_core_set_stack_04
+signature: sdlkf34gi30wh
 output: "0 elements: \n3 elements: 3 2 18\n"

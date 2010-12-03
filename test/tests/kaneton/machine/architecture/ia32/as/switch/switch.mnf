@@ -1,0 +1,5 @@
+name: machine/architecture/as/switch
+description: This tests reserves two regions in a newly created address space, activates this address space, writes and read data to/from the regions and finally switches back to the kernel address space.
+symbol: test_architecture_as_switch
+signature: vsdowkf43g3hg3g30hg
+output:

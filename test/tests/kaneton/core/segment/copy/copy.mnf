@@ -1,4 +1,5 @@
 name: core/segment/copy
 description: This test reserves two segments, write data to the first one, copies the data from the first to the second segment and verifies that the data is correct. To conclude, the segments are released.
 symbol: test_core_segment_copy
+signature: t9030awfoir4oj39t34
 output:

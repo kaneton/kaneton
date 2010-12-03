@@ -1,4 +1,5 @@
 name: core/as/give
 description: This test creates two tasks, an address space and gives it to the second task.
 symbol: test_core_as_give
+signature: 9ri2309skdporgke9
 output:

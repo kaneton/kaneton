@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...tests/kaneton/core/region/resize/02/02.c
+ * file          /data/mycure/repo...tests/kaneton/core/region/resize/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [thu nov 18 16:21:56 2010]
+ * updated       julien quintard   [mon nov 29 18:50:14 2010]
  */
 
 /*
@@ -40,7 +40,7 @@ void			test_core_region_resize_02(void)
 		      10 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     seg,
@@ -49,16 +49,18 @@ void			test_core_region_resize_02(void)
 		     0,
 		     2 * PAGESZ,
 		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 
   if (region_resize(_kernel->as, reg, 20 * PAGESZ, &reg) == ERROR_OK)
-    TEST_ERROR("[region_resize] error: out of bound\n");
+    TEST_ERROR("[region_resize] error: out of bound");
 
   if (region_release(_kernel->as, reg) != ERROR_OK)
-    TEST_ERROR("[region_release] error\n");
+    TEST_ERROR("[region_release] error");
 
   if (segment_release(seg) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
+
+  TEST_SIGNATURE(3w2f0w9agi09h09hiw3);
 
   TEST_LEAVE();
 }

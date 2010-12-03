@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../architecture/ia32/educational/segment.c
+ * file          /data/mycure/repo.../architecture/ia32/educational/segment.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:25:22 2007]
- * updated       julien quintard   [mon nov 22 21:53:53 2010]
+ * updated       julien quintard   [wed dec  1 16:59:24 2010]
  */
 
 /*

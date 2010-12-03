@@ -1,4 +1,5 @@
 name: core/region/resize/02
 description: This test allocates a segment, a region, and resizes the region in an incorrect manner.
 symbol: test_core_region_resize_02
+signature: 3w2f0w9agi09h09hiw3
 output:

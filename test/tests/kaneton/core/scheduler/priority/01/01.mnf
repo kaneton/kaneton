@@ -1,0 +1,5 @@
+name: core/scheduler/priority/01
+description: This test creates a thread which spawns two thread with different priority. The test verifies that the thread with the highest priority has been scheduled more than the other.
+symbol: test_core_scheduler_priority_01
+signature: nsdv09wi23f0w9gvmvnweifjq2309gi34g
+output:

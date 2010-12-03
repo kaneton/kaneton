@@ -1,0 +1,5 @@
+name: core/scheduler/simple/01
+description: This test creates and starts a single thread.
+symbol: test_core_scheduler_simple_01
+signature: mf23r09gfi029gi23
+output:

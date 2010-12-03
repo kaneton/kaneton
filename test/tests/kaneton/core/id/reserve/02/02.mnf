@@ -1,4 +1,5 @@
 name: core/id/reserve/02
 description: This test reserves thousands of identifiers, checking that no collisions occured. The identifiers are then released.
 symbol: test_core_id_reserve_02
+signature: t4390teasoifj0g394
 output:

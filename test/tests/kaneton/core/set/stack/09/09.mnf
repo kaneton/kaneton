@@ -1,4 +1,5 @@
 name: core/set/stack/09
 description: This test reserves a set, pushes objects and empties it by picking and poping the elements.
 symbol: test_core_set_stack_09
+signature: sdlkvfog34gh34
 output: "20 elements: 76 72 68 64 60 56 52 48 44 40 36 32 28 24 20 16 12 8 4 0\n"

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/region.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [sat nov 27 05:28:45 2010]
+ * updated       julien quintard   [sun nov 28 20:50:35 2010]
  */
 
 #ifndef CORE_REGION_H
@@ -130,18 +130,25 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../core/region/region.c
  *      ../../core/region/region-fit.c
  */
 
 /*
- * ../../core/region/region.c
+ * ../../core/region/region-fit.c
  */
 
 t_error			region_show(i_as			asid,
 				    i_region			regid);
 
 t_error			region_dump(i_as		asid);
+
+t_error			region_fit_first(i_as			asid,
+					 t_vsize		size,
+					 t_vaddr*		address);
+
+t_error			region_space(i_as		asid,
+				     t_vsize		size,
+				     t_vaddr*		address);
 
 t_error			region_inject(i_as		asid,
 				      o_region*		o,
@@ -187,19 +194,6 @@ t_error			region_initialize(t_vaddr		base,
 					  t_vsize		size);
 
 t_error			region_clean(void);
-
-
-/*
- * ../../core/region/region-fit.c
- */
-
-t_error			region_fit_first(i_as			asid,
-					 t_vsize		size,
-					 t_vaddr*		address);
-
-t_error			region_space(i_as		asid,
-				     t_vsize		size,
-				     t_vaddr*		address);
 
 
 /*

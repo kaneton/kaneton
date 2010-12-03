@@ -1,4 +1,5 @@
 name: core/set/pipe/07
 description: This test reserves a set and tries to pop and iterate through an empty set.
 symbol: test_core_set_pipe_07
+signature: 09fi23zefwkmlg43
 output: "1 elements: 42\n"
