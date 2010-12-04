@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...LE/kaneton/machine/platform/ibm-pc/rtc.c
  *
  * created       julien quintard   [wed nov 24 10:17:08 2010]
- * updated       julien quintard   [thu nov 25 11:15:41 2010]
+ * updated       julien quintard   [fri dec  3 22:03:32 2010]
  */
 
 /*
@@ -263,8 +263,6 @@ t_error			platform_rtc_update(t_uint32		millisecond)
 
 t_error			platform_rtc_initialize(void)
 {
-  t_uint8		mask;
-
   /*
    * 1)
    */

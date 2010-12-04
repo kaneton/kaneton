@@ -21,7 +21,6 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define INTERFACE_AS_GIVE 0
 #define INTERFACE_AS_VADDR 1
 #define INTERFACE_AS_PADDR 2
 #define INTERFACE_AS_COPY 3
@@ -74,7 +73,6 @@
 #define INTERFACE_TASK_ATTRIBUTE_PRIORITY 57
 #define INTERFACE_TASK_ATTRIBUTE_AS 58
 #define INTERFACE_TASK_ATTRIBUTE_SCHED 59
-#define INTERFACE_THREAD_GIVE 61
 #define INTERFACE_THREAD_RESERVE 63
 #define INTERFACE_THREAD_RELEASE 64
 #define INTERFACE_THREAD_PRIORITY 65
@@ -115,11 +113,6 @@ typedef struct
       t_capability	capability;
       union
       {
-	struct
-	{
-	  t_id	arg2;
-	  i_task	arg1;
-	}		as_give;
 	struct
 	{
 	  t_id	arg1;
@@ -371,11 +364,6 @@ typedef struct
 	{
 	  t_id	arg1;
 	}		task_attribute_sched;
-	struct
-	{
-	  i_task	arg1;
-	  t_id	arg2;
-	}		thread_give;
 	struct
 	{
 	  i_task	arg1;
@@ -665,8 +653,6 @@ typedef t_error (*t_interface_dispatch)(o_syscall*);
  * ../../core/interface/interface.c
  */
 
-t_error		interface_as_give(o_syscall*	message);
-
 t_error		interface_as_vaddr(o_syscall*	message);
 
 t_error		interface_as_paddr(o_syscall*	message);
@@ -770,8 +756,6 @@ t_error		interface_task_attribute_priority(o_syscall*	message);
 t_error		interface_task_attribute_as(o_syscall*	message);
 
 t_error		interface_task_attribute_sched(o_syscall*	message);
-
-t_error		interface_thread_give(o_syscall*	message);
 
 t_error		interface_thread_reserve(o_syscall*	message);
 

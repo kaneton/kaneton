@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo.../architecture/ia32/event/context/01/01.c
+ * file          /home/mycure/kane.../architecture/ia32/event/context/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [tue nov 30 18:03:17 2010]
+ * updated       julien quintard   [sat dec  4 12:46:58 2010]
  */
 
 /*
@@ -53,7 +53,7 @@ void			test_architecture_event_context_01(void)
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_architecture_event_context_01_handler),
 		    0) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_ERROR("[event_reserve] error");
 
   asm volatile("pushl %%eax\n"
 	       "pushl %%ebx\n"
@@ -75,29 +75,29 @@ void			test_architecture_event_context_01(void)
 	       "movl %%esp, %1"
 	       : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
-  if (event_release(3) != ERROR_OK)
-    TEST_ERROR("[event_release] error\n");
-
   if (thrown != 1)
-    TEST_ERROR("the triggered exception has not been caught\n");
+    TEST_ERROR("the triggered exception has not been caught");
 
   if (esp != (t_uint32)ctx1)
-    TEST_ERROR("the ESP register is different from before the exception\n");
+    TEST_ERROR("the ESP register is different from before the exception");
 
   if (ctx1->eax != ctx2->eax)
-    TEST_ERROR("the EAX register is different\n");
+    TEST_ERROR("the EAX register is different");
   if (ctx1->ebx != ctx2->ebx)
-    TEST_ERROR("the EBX register is different\n");
+    TEST_ERROR("the EBX register is different");
   if (ctx1->ecx != ctx2->ecx)
-    TEST_ERROR("the ECX register is different\n");
+    TEST_ERROR("the ECX register is different");
   if (ctx1->edx != ctx2->edx)
-    TEST_ERROR("the EDX register is different\n");
+    TEST_ERROR("the EDX register is different");
   if (ctx1->esi != ctx2->esi)
-    TEST_ERROR("the ESI register is different\n");
+    TEST_ERROR("the ESI register is different");
   if (ctx1->edi != ctx2->edi)
-    TEST_ERROR("the EDI register is different\n");
+    TEST_ERROR("the EDI register is different");
   if (ctx1->ebp != ctx2->ebp)
-    TEST_ERROR("the EBP register is different\n");
+    TEST_ERROR("the EBP register is different");
+
+  if (event_release(3) != ERROR_OK)
+    TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(sdvni20fwg9i3h0);
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/scheduler/stack/stack.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 20:36:58 2010]
+ * updated       julien quintard   [fri dec  3 22:29:06 2010]
  */
 
 /*
@@ -37,7 +37,7 @@ static volatile t_vaddr		esp2 = 0;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_architecture_scheduler_stack_thread_01(void);
+void			test_architecture_scheduler_stack_thread_01 (void);
 asm ("test_architecture_scheduler_stack_thread_01:\n"
      "  cli\n"
      "  movl %esp, esp1\n"
@@ -45,7 +45,7 @@ asm ("test_architecture_scheduler_stack_thread_01:\n"
      "1:\n"
      "  jmp 1b");
 
-void			test_architecture_scheduler_stack_thread_02(void);
+void			test_architecture_scheduler_stack_thread_02 (void);
 asm ("test_architecture_scheduler_stack_thread_02:\n"
      "  cli\n"
      "  movl %esp, esp2\n"

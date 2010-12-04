@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [wed nov 24 14:19:03 2010]
+ * updated       julien quintard   [sat dec  4 01:16:52 2010]
  */
 
 #ifndef GLUE_THREAD_H
@@ -38,14 +38,14 @@
   {									\
     t_ia32_tss*		tss;						\
 									\
-    t_uint16		core_cs;					\
-    t_uint16		core_ds;					\
+    t_uint16		kernel_cs;					\
+    t_uint16		kernel_ds;					\
     t_uint16		driver_cs;					\
     t_uint16		driver_ds;					\
     t_uint16		service_cs;					\
     t_uint16		service_ds;					\
-    t_uint16		program_cs;					\
-    t_uint16		program_ds;					\
+    t_uint16		guest_cs;					\
+    t_uint16		guest_ds;					\
   }			machine;
 
 #define         machine_data_o_thread()					\

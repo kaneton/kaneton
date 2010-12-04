@@ -27,16 +27,12 @@
  */
 
 /*
- * 01.c
+ * stack.c
  */
 
-void			test_core_scheduler_stack_01_thread_01(void);
+void			test_architecture_scheduler_stack_content(void);
 
-void			test_core_scheduler_stack_01_thread_02(void);
-
-void			test_core_scheduler_stack_01_thread_03(void);
-
-void			test_core_scheduler_stack_01(void);
+void			test_architecture_scheduler_stack(void);
 
 
 /*

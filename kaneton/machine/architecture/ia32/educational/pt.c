@@ -39,9 +39,6 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab,
 
   t_uint32		i;
 
-  if (ia32_map_pd(&tab) != ERROR_OK)
-    return ERROR_KO;
-
   for (i = 0; i < IA32_PAGE_TABLE_MAX_ENTRIES; i++)
     {
       if (tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USED)
@@ -57,9 +54,6 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab,
 		 !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_D));
 	}
     }
-
-  if (ia32_unmap_chunk(tab) != ERROR_OK)
-    return ERROR_KO;
 
   /*							 [endblock::pt_dump] */
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 16:12:12 2010]
+ * updated       julien quintard   [sat dec  4 12:08:50 2010]
  */
 
 /*
@@ -37,7 +37,7 @@ static volatile i_thread	thread3;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_core_thread_wait_03_content_01(void)
+void			test_core_thread_wait_03_thread_01(void)
 {
   t_wait		wait;
 
@@ -61,7 +61,7 @@ void			test_core_thread_wait_03_content_01(void)
   TEST_HANG("unreachable");
 }
 
-void			test_core_thread_wait_03_content_02(void)
+void			test_core_thread_wait_03_thread_02(void)
 {
   if (thread_sleep(1000) != ERROR_OK)
     TEST_HANG("[thread_sleep] error");
@@ -72,7 +72,7 @@ void			test_core_thread_wait_03_content_02(void)
     ;
 }
 
-void			test_core_thread_wait_03_content_03(void)
+void			test_core_thread_wait_03_thread_03(void)
 {
   TEST_SIGNATURE(32w98ru30rwaf09i);
 
@@ -110,7 +110,7 @@ void			test_core_thread_wait_03(void)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_thread_wait_03_content_01;
+  ctx.pc = (t_vaddr)test_core_thread_wait_03_thread_01;
 
   if (thread_load(thread1, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");
@@ -137,7 +137,7 @@ void			test_core_thread_wait_03(void)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_thread_wait_03_content_02;
+  ctx.pc = (t_vaddr)test_core_thread_wait_03_thread_02;
 
   if (thread_load(thread2, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");
@@ -161,7 +161,7 @@ void			test_core_thread_wait_03(void)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_thread_wait_03_content_03;
+  ctx.pc = (t_vaddr)test_core_thread_wait_03_thread_03;
 
   if (thread_load(thread3, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");

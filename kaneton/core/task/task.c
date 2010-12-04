@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo.../kaneton.STABLE/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [fri dec  3 16:21:14 2010]
+ * updated       julien quintard   [fri dec  3 21:52:27 2010]
  */
 
 /*
@@ -928,8 +928,6 @@ t_error			task_exit(i_task			id,
 				  t_value			value)
 {
   o_task*		o;
-  t_iterator		i;
-  t_state		st;
 
   /*
    * 1)
@@ -1053,6 +1051,7 @@ t_error			task_wait(i_task			id,
 
   CORE_ESCAPE("unable to wait for the entity");
   */
+  CORE_ESCAPE("XXX");
 }
 
 /*

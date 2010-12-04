@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...rchitecture/ia32/event/exception/03/03.c
+ * file          /home/mycure/kane...rchitecture/ia32/event/exception/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [tue nov 30 18:13:23 2010]
+ * updated       julien quintard   [sat dec  4 12:22:17 2010]
  */
 
 /*
@@ -42,7 +42,7 @@ void			test_architecture_event_exception_03(void)
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_architecture_event_exception_03_handler),
 		    0) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_ERROR("[event_reserve] error");
 
   asm volatile("int $3");
   asm volatile("int $3");
@@ -51,10 +51,10 @@ void			test_architecture_event_exception_03(void)
   asm volatile("int $3");
 
   if (event_release(3) != ERROR_OK)
-    TEST_ERROR("[event_release] error\n");
+    TEST_ERROR("[event_release] error");
 
   if (thrown != 5)
-    TEST_ERROR("one or more exceptions have not been caught\n");
+    TEST_ERROR("one or more exceptions have not been caught");
 
   TEST_SIGNATURE(3jov9we340g9i3);
 

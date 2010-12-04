@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...t/tests/kaneton/core/segment/give/give.c
+ * file          /home/mycure/kane...t/tests/kaneton/core/segment/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:54:41 2010]
+ * updated       julien quintard   [sat dec  4 13:23:06 2010]
  */
 
 /*
@@ -60,7 +60,7 @@ void			test_core_segment_give(void)
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_give(as2, seg) != ERROR_OK)
+  if (segment_give(seg, as2) != ERROR_OK)
     TEST_ERROR("[segment_give] error");
 
   if (segment_get(seg, &o) != ERROR_OK)

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...on.STABLE/kaneton/core/message/message.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       julien quintard   [thu dec  2 12:31:43 2010]
+ * updated       julien quintard   [sat dec  4 01:02:44 2010]
  */
 
 /*
@@ -110,7 +110,6 @@ t_error			message_register(i_task			task,
 {
   t_id			typeid = type;
   o_task*		o;
-  void*			needless;
   o_message_type	msgtype;
 
   /*
@@ -337,7 +336,6 @@ t_error			message_send(i_task			task,
 
   if (destination.task == _kernel->task && type == 0)
     {
-      t_error		res;
       void*		buffer;
       i_node		source;
 
@@ -377,8 +375,6 @@ t_error			message_send(i_task			task,
 
   if (setsz != 0)
     {
-      t_error		res;
-
       if (message_transmit(task, destination, type, data, size) != ERROR_OK)
 	CORE_ESCAPE("XXX");
 
@@ -694,8 +690,6 @@ t_error			message_receive(i_task			task,
     }
   else
     {
-      t_error		res;
-
       /*
        * b)
        */

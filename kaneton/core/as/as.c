@@ -22,8 +22,6 @@
  *
  * the latter describes the regions, the virtual areas which reference
  * some segments.
- *
- * a task can give its address space to another with as_give().
  */
 
 /*
@@ -95,6 +93,8 @@ t_error			as_show(i_as				id)
   set_foreach(SET_OPTION_FORWARD, o->segments, &i, st)
     {
       o_segment*	seg;
+      char*		type;
+      char		perms[4];
 
       if (set_object(o->segments, i, (void**)&segment) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the segment identifier");
@@ -102,14 +102,43 @@ t_error			as_show(i_as				id)
       if (segment_get(*segment, &seg) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the segment object");
 
-      /* XXX
+      switch (seg->type)
+	{
+	case SEGMENT_TYPE_MEMORY:
+	  type = "memory";
+	  break;
+	case SEGMENT_TYPE_CATCH:
+	  type = "catch";
+	  break;
+	case SEGMENT_TYPE_SYSTEM:
+	  type = "system";
+	  break;
+	default:
+	  type = "(unknown)";
+	  break;
+	}
+
+      memset(perms, '.', 3);
+
+      perms[3] = 0;
+
+      if (seg->permissions & PERMISSION_READ)
+	perms[0] = 'r';
+
+      if (seg->permissions & PERMISSION_WRITE)
+	perms[1] = 'w';
+
+      if (seg->permissions & PERMISSION_EXEC)
+	perms[2] = 'x';
+
       module_call(console, console_message,
-		  '#', "      %qu [0x%x - 0x%x]\n",
-		  *segment,
+		  '#', "      %qu %s [0x%x - 0x%x] (%u bytes) %s\n",
+		  seg->id,
+		  type,
 		  seg->address,
-		  seg->address + seg->size - 1);
-      */
-      segment_show(seg->id);
+		  seg->address + seg->size - 1,
+		  seg->size,
+		  perms);
     }
 
   /*
@@ -125,10 +154,12 @@ t_error			as_show(i_as				id)
 	CORE_ESCAPE("unable to retrieve the region object");
 
       module_call(console, console_message,
-		  '#', "      %qu [0x%x - 0x%x] targets segment %qu\n",
+		  '#', "      %qu [0x%x - 0x%x] (%u bytes) targets "
+		  "segment %qu\n",
 		  region->id,
 		  region->address,
 		  region->address + region->size - 1,
+		  region->size,
 		  region->segment);
     }
 
@@ -181,68 +212,6 @@ t_error			as_dump(void)
       if (as_show(o->id) != ERROR_OK)
 	CORE_ESCAPE("unable to show the address space object");
     }
-
-  CORE_LEAVE();
-}
-
-/*
- * this function gives an address space from a task to another.
- *
- * steps:
- *
- * 1) gets the address space object given its identifier.
- * 2) gets the source task object.
- * 3) gets the destination task object.
- * 4) swaps the address space identifier.
- * 5) calls the machine-dependent code.
- */
-
-t_error			as_give(i_as				id,
-				i_task				task)
-{
-  o_task*		from;
-  o_task*		to;
-  o_as*			o;
-
-  /*
-   * 1)
-   */
-
-  if (as_get(id, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the address space object");
-
-  /*
-   * 2)
-   */
-
-  if (task_get(o->task, &from) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the task object");
-
-  /*
-   * 3)
-   */
-
-  if (task_get(task, &to) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the task object");
-
-  if (to->as != ID_UNUSED)
-    CORE_ESCAPE("the task already possesses an address space");
-
-  /*
-   * 4)
-   */
-
-  from->as = ID_UNUSED;
-  to->as = id;
-
-  o->task = task;
-
-  /*
-   * 5)
-   */
-
-  if (machine_call(as, as_give, id, task) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }

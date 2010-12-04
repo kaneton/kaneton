@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...kaneton.STABLE/kaneton/core/include/as.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [thu dec  2 16:21:20 2010]
+ * updated       julien quintard   [sat dec  4 13:27:51 2010]
  */
 
 #ifndef CORE_AS_H
@@ -78,8 +78,6 @@ typedef struct
 typedef struct
 {
   t_error			(*as_show)(i_as);
-  t_error			(*as_give)(i_as,
-					   i_task);
   t_error			(*as_vaddr)(i_as,
 					    t_paddr,
 					    t_vaddr*);
@@ -106,9 +104,6 @@ typedef struct
 t_error			as_show(i_as				id);
 
 t_error			as_dump(void);
-
-t_error			as_give(i_as				id,
-				i_task				task);
 
 t_error			as_vaddr(i_as				id,
 				 t_paddr			physical,

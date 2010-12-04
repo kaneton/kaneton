@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...ne/glue/ibm-pc.ia32/educational/thread.c
+ * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [thu dec  2 16:17:14 2010]
+ * updated       julien quintard   [sat dec  4 13:25:07 2010]
  */
 
 /*
@@ -35,7 +35,6 @@
 
 d_thread		glue_thread_dispatch =
   {
-    NULL,
     NULL,
     NULL,
     glue_thread_load,

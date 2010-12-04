@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/core/time/precision/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [fri dec  3 16:12:55 2010]
+ * updated       julien quintard   [sat dec  4 12:20:28 2010]
  */
 
 /*
@@ -68,7 +68,7 @@ void			test_core_time_precision_01_content(void)
 		    500,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[event_reserve] error\n");
+    TEST_HANG("[event_reserve] error");
 
   if (clock_current(&clock) != ERROR_OK)
     TEST_HANG("[clock_current] error");
@@ -92,7 +92,7 @@ void			test_core_time_precision_01_content(void)
     TEST_HANG("the timer has not been triggered");
 
   if ((end - begin) > 1000)
-    TEST_HANG("imprecise timer: %u milliseconds\n", end - begin);
+    TEST_HANG("imprecise timer: %u milliseconds", end - begin);
 
   TEST_SIGNATURE(t3490gjsdof29);
 

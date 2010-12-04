@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/as/mapping/mapping.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec  2 21:13:27 2010]
+ * updated       julien quintard   [sat dec  4 12:21:20 2010]
  */
 
 /*
@@ -44,7 +44,7 @@ void			test_architecture_as_mapping(void)
   set_foreach(SET_OPTION_FORWARD, _as->ass, &it, st)
     {
       if (set_object(_as->ass, it, (void**)&oas) != ERROR_OK)
-	TEST_ERROR("[set_object] error\n");
+	TEST_ERROR("[set_object] error");
 
       set_foreach(SET_OPTION_FORWARD, oas->regions, &it2, st2)
         {
@@ -65,7 +65,7 @@ void			test_architecture_as_mapping(void)
 	  t_uint32	pages;
 
           if (set_object(oas->regions, it2, (void**)&oreg) != ERROR_OK)
-	    TEST_ERROR("[set_object] error\n");
+	    TEST_ERROR("[set_object] error");
 
 	  start = oreg->address;
 	  size = oreg->size;
@@ -75,7 +75,7 @@ void			test_architecture_as_mapping(void)
 	  pages = 0;
 
           if (segment_get(oreg->segment, &oseg) != ERROR_OK)
-	    TEST_ERROR("[segment_get] error\n");
+	    TEST_ERROR("[segment_get] error");
 
 	  phys = oseg->address;
 	  paddr = phys;
@@ -90,7 +90,7 @@ void			test_architecture_as_mapping(void)
 	      if (ia32_pd_get_table(NULL, pde, &pt) != ERROR_OK)
 		TEST_ERROR("[ia32_pd_get_table] error: the region at 0x%x "
 			   "seems to be incorrectly mapped i.e no page "
-			   "table\n",
+			   "table",
 			   start);
 
 	      pt.vaddr = IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
@@ -107,14 +107,14 @@ void			test_architecture_as_mapping(void)
 		  if (ia32_pt_get_page(&pt, pte, &pg) != ERROR_OK)
 		    TEST_ERROR("[ia32_pt_get_page] error: the region at 0x%x "
 			       "seems to be incorrectly mapped i.e no page "
-			       "table entry for 0x%x\n",
+			       "table entry for 0x%x",
 			       start,
 			       IA32_ENTRY_ADDRESS(pde, pte));
 
 		  if (pg.addr != paddr)
 		    TEST_ERROR("the region at 0x%x seems to be incorrectly "
 			       "mapped i.e 0x%x mapped to 0x%x, expecting "
-			       "address 0x%x\n",
+			       "address 0x%x",
 			       start,
 			       IA32_ENTRY_ADDRESS(pde, pte),
 			       pg.addr,

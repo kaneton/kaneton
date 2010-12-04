@@ -503,8 +503,8 @@ t_error			segment_inject(i_as		asid,
  * 6) calls dependent code.
  */
 
-t_error			segment_give(i_as		asid,
-				     i_segment		segid)
+t_error			segment_give(i_segment			segid,
+				     i_as			asid)
 {
   o_segment*		o;
   o_as*			dest;
@@ -551,7 +551,7 @@ t_error			segment_give(i_as		asid,
    * 6)
    */
 
-  if (machine_call(segment, segment_give, asid, segid) != ERROR_OK)
+  if (machine_call(segment, segment_give, segid, asid) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();

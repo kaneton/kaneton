@@ -286,6 +286,8 @@ t_error			platform_console_initialize(void)
 
   platform_console_clear();
 
+  printf_init(platform_console_print_char, platform_console_attribute);
+
   MACHINE_LEAVE();
 }
 

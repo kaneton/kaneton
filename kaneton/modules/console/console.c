@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...STABLE/kaneton/modules/console/console.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [wed nov 24 13:42:14 2010]
+ * updated       julien quintard   [fri dec  3 22:57:25 2010]
  */
 
 /*
@@ -76,6 +76,9 @@ t_error			module_console_initialize(void)
 {
   if (platform_console_initialize() != ERROR_OK)
     MODULE_ESCAPE("unable to initialize the platform's console");
+
+  module_call(console, console_message,
+	      '+', "console module loaded\n");
 
   MODULE_LEAVE();
 }

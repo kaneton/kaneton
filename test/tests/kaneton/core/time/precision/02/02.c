@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/core/time/precision/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [fri dec  3 16:12:59 2010]
+ * updated       julien quintard   [sat dec  4 12:20:38 2010]
  */
 
 /*
@@ -68,7 +68,7 @@ void			test_core_time_precision_02_content(void)
 		    1000,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[event_reserve] error\n");
+    TEST_HANG("[event_reserve] error");
 
   if (clock_current(&clock) != ERROR_OK)
     TEST_HANG("[clock_current] error");
@@ -93,7 +93,7 @@ void			test_core_time_precision_02_content(void)
 
   if (((end - begin) < 800) ||
       ((end - begin) > 1200))
-    TEST_HANG("imprecise timer: %u milliseconds\n", end - begin);
+    TEST_HANG("imprecise timer: %u milliseconds", end - begin);
 
   TEST_SIGNATURE(d0329erop9fg0292);
 

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...rchitecture/ia32/event/message/message.c
+ * file          /home/mycure/kane...rchitecture/ia32/event/message/message.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed dec  1 05:47:00 2010]
+ * updated       julien quintard   [sat dec  4 12:21:45 2010]
  */
 
 /*
@@ -41,7 +41,7 @@ void			test_architecture_event_message(void)
 		    EVENT_MESSAGE,
 		    EVENT_TASK(_kernel->task),
 		    0x42424242) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_ERROR("[event_reserve] error");
 
   asm volatile("int $3");
 
@@ -51,16 +51,16 @@ void			test_architecture_event_message(void)
 		   &sz,
 		   &sender) != ERROR_OK)
     TEST_ERROR("[message_poll] error: this means the exception "
-	       "has not been caught\n");
+	       "has not been caught");
 
   if (evt.id != 3)
-    TEST_ERROR("invalid message's event identifier\n");
+    TEST_ERROR("invalid message's event identifier");
 
   if (evt.data != 0x42424242)
-    TEST_ERROR("invalid message's event data\n");
+    TEST_ERROR("invalid message's event data");
 
   if (sender.task != 0)
-    TEST_ERROR("invalid message's sender\n");
+    TEST_ERROR("invalid message's sender");
 
   TEST_SIGNATURE(98sdcujwefqwndff230);
 

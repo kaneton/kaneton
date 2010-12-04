@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [sun nov 28 20:50:30 2010]
+ * updated       julien quintard   [sat dec  4 13:23:36 2010]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -101,8 +101,8 @@ typedef struct
   t_error			(*segment_inject)(i_as,
 						  o_segment*,
 						  i_segment*);
-  t_error			(*segment_give)(i_as,
-						i_segment);
+  t_error			(*segment_give)(i_segment,
+						i_as);
   t_error			(*segment_resize)(i_segment,
 						  t_psize,
 						  i_segment*);
@@ -172,8 +172,8 @@ t_error			segment_inject(i_as		asid,
 				       o_segment*	o,
 				       i_segment*	segid);
 
-t_error			segment_give(i_as		asid,
-				     i_segment		segid);
+t_error			segment_give(i_segment			segid,
+				     i_as			asid);
 
 t_error			segment_locate(t_paddr		address,
 				       i_segment*	id);

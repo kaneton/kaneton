@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/scheduler/context/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 16:16:22 2010]
+ * updated       julien quintard   [fri dec  3 22:26:34 2010]
  */
 
 /*
@@ -37,7 +37,7 @@ static volatile t_uint32	eflags;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_architecture_scheduler_context_01_thread(void);
+void			test_architecture_scheduler_context_01_thread (void);
 asm ("test_architecture_scheduler_context_01_thread:\n"
      "  cli\n"
      "  pushl %eax\n"

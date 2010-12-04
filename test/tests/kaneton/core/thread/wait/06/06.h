@@ -30,9 +30,9 @@
  * 06.c
  */
 
-void			test_core_thread_wait_06_content_01(void);
+void			test_core_thread_wait_06_thread_01(void);
 
-void			test_core_thread_wait_06_content_02(void);
+void			test_core_thread_wait_06_thread_02(void);
 
 void			test_core_thread_wait_06(void);
 

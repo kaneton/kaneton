@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...achine/glue/ibm-pc.ia32/educational/as.c
+ * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [thu dec  2 16:21:32 2010]
+ * updated       julien quintard   [sat dec  4 13:28:01 2010]
  */
 
 /*
@@ -48,7 +48,6 @@ extern m_kernel*	_kernel;
 
 d_as			glue_as_dispatch =
   {
-    NULL,
     NULL,
     NULL,
     NULL,

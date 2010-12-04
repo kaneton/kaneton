@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...rchitecture/ia32/event/exception/05/05.c
+ * file          /home/mycure/kane...rchitecture/ia32/event/exception/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2050]
- * updated       julien quintard   [tue nov 30 18:13:47 2010]
+ * updated       julien quintard   [sat dec  4 12:23:42 2010]
  */
 
 /*
@@ -44,20 +44,20 @@ void			test_architecture_event_exception_05(void)
   TEST_ENTER();
 
   if (ia32_gdt_delete_segment(NULL, 16) != ERROR_OK)
-    TEST_ERROR("[ia32_gdt_delete_segment] error\n");
+    TEST_ERROR("[ia32_gdt_delete_segment] error");
 
   if (event_reserve(13,
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_architecture_event_exception_05_handler),
 		    0) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_ERROR("[event_reserve] error");
 
   asm volatile("movw %0, %%gs"
 	       :
 	       : "m" (gs));
 
   if (thrown != 1)
-    TEST_ERROR("the exception has not been caught\n");
+    TEST_ERROR("the exception has not been caught");
 
   TEST_SIGNATURE(90fiwwmsi93fghgf);
 

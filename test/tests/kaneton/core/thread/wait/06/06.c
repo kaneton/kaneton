@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 16:12:26 2010]
+ * updated       julien quintard   [sat dec  4 12:10:01 2010]
  */
 
 /*
@@ -36,7 +36,7 @@ static volatile i_thread	thread2;
  * ---------- test ------------------------------------------------------------
  */
 
-void			test_core_thread_wait_06_content_01(void)
+void			test_core_thread_wait_06_thread_01(void)
 {
   t_wait		wait;
 
@@ -60,7 +60,7 @@ void			test_core_thread_wait_06_content_01(void)
   TEST_HANG("unreachable");
 }
 
-void			test_core_thread_wait_06_content_02(void)
+void			test_core_thread_wait_06_thread_02(void)
 {
   TEST_SIGNATURE(fwa09ijafgiejgh);
 
@@ -97,7 +97,7 @@ void			test_core_thread_wait_06(void)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_thread_wait_06_content_01;
+  ctx.pc = (t_vaddr)test_core_thread_wait_06_thread_01;
 
   if (thread_load(thread1, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");
@@ -124,7 +124,7 @@ void			test_core_thread_wait_06(void)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_thread_wait_06_content_02;
+  ctx.pc = (t_vaddr)test_core_thread_wait_06_thread_02;
 
   if (thread_load(thread2, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");

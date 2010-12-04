@@ -83,7 +83,6 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 {
   o_as*			o;
   i_segment	        seg;
-  o_segment*		oseg;
   o_segment*		pt_seg;
   o_region*		preg;
   t_ia32_table		pt;
@@ -301,12 +300,16 @@ t_error			ia32_task_as_initialize(i_as		asid)
   i_region		reg;
   o_region*		preg;
   t_ia32_directory	pd;
+  o_task*		task;
 
   /*
    * 1)
    */
 
   if (as_get(asid, &o) != ERROR_OK)
+    return (ERROR_KO);
+
+  if (task_get(o->task, &task) != ERROR_OK)
     return (ERROR_KO);
 
   /*
@@ -383,145 +386,51 @@ t_error			ia32_task_as_initialize(i_as		asid)
    * XXX
    */
 
-  if (1)
+  switch (task->class)
     {
-      /*
-      if (region_reserve(asid,
-			 (i_segment)0x1000,
-			 0,
-			 REGION_OPTION_FORCE,
-			 0x1000,
-			 0x00100000 - 0x1000,
-			 &reg) != ERROR_OK)
-	return (ERROR_KO);
-
-      if (region_reserve(asid,
-			 (i_segment)_init->kcode,
-			 0,
-			 REGION_OPTION_FORCE,
-			 _init->kcode,
-			 _init->kcodesz,
-			 &reg) != ERROR_OK)
-	return (ERROR_KO);
-      */
-      /*
-      // XXX
+    case TASK_CLASS_DRIVER:
+    case TASK_CLASS_SERVICE:
+    case TASK_CLASS_GUEST:
       {
-	as_show(_kernel->as);
+	// XXX on map le kernel code/data car lors d'une interruption,
+	// XXX on arrive dans une page qui contient l'ISR.
+	// XXX dans la version educationa, on switch dans l'AS kernel
+	// XXX a chaque fois pour eviter de propager les modifs de page
+	// XXX directory/table des que le kernel alloue dynamiquement des
+	// XXX donnees ou d'utiliser du mapping de porc a la linux. cela dit,
+	// XXX l'ISR doit connaitre l'AS du kernel. il faut donc mappe les
+	// XXX donnees du kernel ainsi que son code (pour le code de l'ISR).
 
-	t_setsz		setsz;
-	i_set		mapping;
-	o_as*		as;
-	t_state		st;
-	t_iterator	i;
+	if (region_reserve(asid,
+			   (i_segment)_init->kcode,
+			   LINKER_SYMBOL(_handler_begin) - _init->kcode,
+			   REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
+			   REGION_OPTION_GLOBAL,
+			   LINKER_SYMBOL(_handler_begin),
+			   LINKER_SYMBOL(_handler_end) -
+			   LINKER_SYMBOL(_handler_begin),
+			   &reg) != ERROR_OK)
+	  return (ERROR_KO);
 
-	if (as_get(_kernel->as, &as) != ERROR_OK)
-	  CORE_ESCAPE("XXX");
+	if (region_reserve(asid,
+			   (i_segment)_init->kcode,
+			   LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
+			   REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
+			   REGION_OPTION_GLOBAL,
+			   LINKER_SYMBOL(_handler_data_begin),
+			   LINKER_SYMBOL(_handler_data_end) -
+			   LINKER_SYMBOL(_handler_data_begin),
+			   &reg) != ERROR_OK)
+	  return (ERROR_KO);
 
-	if (set_size(as->regions, &setsz) != ERROR_OK)
-	  CORE_ESCAPE("unable to retrieve the size of the set");
-
-	if (set_reserve(array, SET_OPTION_ALLOC, setsz,
-			sizeof (i_region), &mapping) != ERROR_OK)
-	  CORE_ESCAPE("unable to reserve a set");
-
-	set_foreach(SET_OPTION_FORWARD, as->regions, &i, st)
-	  {
-	    o_region*	region;
-
-	    if (set_object(as->regions, i, (void**)&region) != ERROR_OK)
-	      CORE_ESCAPE("unable to retrieve the region object from the set");
-
-	    if (set_add(mapping, &region->id) != ERROR_OK)
-	      CORE_ESCAPE("unable to add the segment to the set of segments");
-	  }
-
-	set_show(mapping);
-
-	set_foreach(SET_OPTION_FORWARD, mapping, &i, st)
-	  {
-	    i_region*	id;
-	    i_region	needless;
-	    o_region*	region;
-	    o_segment*	segment;
-
-	    if (set_object(mapping, i, (void**)&id) != ERROR_OK)
-	      CORE_ESCAPE("unable to retrieve the region identifier from the set");
-
-	    if (region_get(as->id, *id, &region) != ERROR_OK)
-	      CORE_ESCAPE("unable to retrieve the region object");
-
-	    if (region_exist(asid, *id) == ERROR_TRUE)
-	      {
-		printf("skip 0x%qx\n", *id);
-		continue;
-	      }
-
-	    if (segment_get(region->segment, &segment) != ERROR_OK)
-	      CORE_ESCAPE("unable to retrieve the segment object");
-
-	    switch (segment->type)
-	      {
-	      case SEGMENT_TYPE_SYSTEM:
-		{
-		  break;
-		}
-	      case SEGMENT_TYPE_MEMORY:
-		{
-		  i_segment	clone;
-
-		  if (segment_clone(asid, segment->id, &clone) != ERROR_OK)
-		    CORE_ESCAPE("unable to clone the segment");
-
-		  printf("memory segment {virtual} 0x%x - 0x%x -> 0x%x - 0x%x [%qu] (%u bytes)\n",
-		  region->address, region->address + region->size - 1, (t_paddr)clone, (t_paddr)clone + segment->size, segment->id, region->size);
-
-		  if (region_reserve(asid,
-				     clone,
-				     region->offset,
-				     region->options | REGION_OPTION_FORCE,
-				     region->address,
-				     region->size,
-				     &needless) != ERROR_OK)
-		    CORE_ESCAPE("unable to reserve the region");
-
-		  break;
-		}
-	      default:
-		{
-		  printf("[XXX] UNKNOWN\n");
-		}
-	      }
-	  }
-
-	printf("...\n");
+	break;
       }
-      // XXX
-      */
-    }
-  else
-    {
-      if (region_reserve(asid,
-			 (i_segment)_init->kcode,
-			 LINKER_SYMBOL(_handler_begin) - _init->kcode,
-			 REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
-			 REGION_OPTION_GLOBAL,
-			 LINKER_SYMBOL(_handler_begin),
-			 LINKER_SYMBOL(_handler_end) -
-			 LINKER_SYMBOL(_handler_begin),
-			 &reg) != ERROR_OK)
-	return (ERROR_KO);
-
-      if (region_reserve(asid,
-			 (i_segment)_init->kcode,
-			 LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
-			 REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
-			 REGION_OPTION_GLOBAL,
-			 LINKER_SYMBOL(_handler_data_begin),
-			 LINKER_SYMBOL(_handler_data_end) -
-			 LINKER_SYMBOL(_handler_data_begin),
-			 &reg) != ERROR_OK)
-	return (ERROR_KO);
+    case TASK_CLASS_KERNEL:
+    default:
+      {
+	// nothing to do
+	break;
+      }
     }
 
   return (ERROR_OK);

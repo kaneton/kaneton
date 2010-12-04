@@ -230,7 +230,6 @@ t_error			event_reserve(i_event			id,
 				      u_event_handler		handler,
 				      t_vaddr			data)
 {
-  o_event*		tmp;
   o_event		o;
 
   assert(type == EVENT_FUNCTION || type == EVENT_MESSAGE);

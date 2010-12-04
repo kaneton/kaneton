@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec  2 19:37:41 2010]
+ * updated       julien quintard   [sat dec  4 12:21:12 2010]
  */
 
 /*
@@ -50,13 +50,13 @@ void			test_architecture_as_switch(void)
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
 		   &task) != ERROR_OK)
-    TEST_ERROR("[task_reserve] error\n");
+    TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task, &as) != ERROR_OK)
-    TEST_ERROR("[as_reserve] error\n");
+    TEST_ERROR("[as_reserve] error");
 
   if (as_get(as, &o) != ERROR_OK)
-    TEST_ERROR("[as_get] error\n");
+    TEST_ERROR("[as_get] error");
 
   if (region_reserve(as,
 		     (i_segment)_init->kcode,
@@ -75,7 +75,7 @@ void			test_architecture_as_switch(void)
 		     _init->kstacksz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error: unable to map the kstack segment "
-	       "at a precise address\n");
+	       "at a precise address");
 
   if (segment_reserve(as,
 		      PAGESZ,
@@ -100,12 +100,12 @@ void			test_architecture_as_switch(void)
     TEST_ERROR("[map_reserve] error");
 
   if (as_get(_kernel->as, &o) != ERROR_OK)
-    TEST_ERROR("[as_get] error\n");
+    TEST_ERROR("[as_get] error");
 
   kdir = o->machine.pd;
 
   if (as_get(as, &o) != ERROR_OK)
-    TEST_ERROR("[as_get] error\n");
+    TEST_ERROR("[as_get] error");
 
   ptr1 = (int*)(t_uint32)reg;
   ptr2 = (int*)addr;
@@ -114,7 +114,7 @@ void			test_architecture_as_switch(void)
 		       IA32_PAGE_DIRECTORY_CACHED,
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     TEST_ERROR("[ia32_pd_activate] error: unable to activate the task's "
-	       "address space\n");
+	       "address space");
 
   *ptr1 = 0x41424344;
   i = *ptr1;
@@ -125,15 +125,15 @@ void			test_architecture_as_switch(void)
 		       IA32_PAGE_DIRECTORY_CACHED,
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     TEST_ERROR("[ia32_pd_activate] error: unable to activate the kernel's "
-	       "address space\n");
+	       "address space");
 
   if (i != 0x41424344)
     TEST_ERROR("the data written through the kernel address space is invalid "
-	       "in the task's\n");
+	       "in the task's");
 
   if (j != 0x40414243)
     TEST_ERROR("the data written through the kernel address space is invalid "
-	       "in the task's\n");
+	       "in the task's");
 
   TEST_SIGNATURE(vsdowkf43g3hg3g30hg);
 

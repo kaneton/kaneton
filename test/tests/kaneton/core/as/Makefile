@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ABLE/test/tests/kaneton/core/as/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu dec  2 16:54:34 2010]
+# updated       julien quintard   [sat dec  4 13:30:02 2010]
 #
 
 #
@@ -34,7 +34,6 @@ include			../../../../../environment/env.mk
 #
 
 SUBDIRS			:=		copy				\
-					give				\
 					map				\
 					read-write			\
 					region				\

@@ -5,17 +5,23 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/services/chiche/libkaneton/Makefile
+# file          /home/mycure/kane...sts/kaneton/core/thread/reserve/Makefile
 #
-# created       matthieu bucchianeri   [sun aug  5 23:11:44 2007]
-# updated       julien quintard   [wed apr 22 12:14:32 2009]
+# created       julien quintard   [wed apr 15 04:30:04 2009]
+# updated       julien quintard   [sat dec  4 13:15:11 2010]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/tests/kaneton/core/thread/reserve
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../environment/env.mk
+include			../../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,41 +33,39 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-LIBKANETON_A		:=		libkaneton.a
+TEST_C			:=		reserve.c
+TEST_O			:=		$(TEST_C:.c=.o)
 
-LIBKANETON_C		:=		messaging.c			\
-					libkaneton.c			\
-					thread_args.c			\
-					thread_state_unlock.c
+TEST_H			:=		$(directory)/$(TEST_C:.c=.h)
 
-LIBKANETON_O		:=		$(LIBKANETON_C:.c=.o)
-
-LIBKANETON_INCLUDE	:=		$(_LIBKANETON_INCLUDE_DIR_)/libkaneton.h
+TEST_LO			:=		$(TEST_O:.o=.lo)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(LIBKANETON_A)
+main:			$(TEST_LO)
 
-$(LIBKANETON_A):		$(LIBKANETON_O)
-	$(call env_static-library,$(LIBKANETON_A),$(LIBKANETON_O),)
+$(TEST_LO):		$(TEST_O)
+	$(call env_remove,$(TEST_LO),)
+
+	$(call env_archive,$(TEST_LO),$(TEST_O),)
 
 clear:
-	$(call env_remove,$(LIBKANETON_O),)
+	$(call env_remove,$(TEST_O),)
 
-	$(call env_remove,$(LIBKANETON_A),)
+	$(call env_remove,$(TEST_LO),)
 
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,$(LIBKANETON_INCLUDE),)
+	$(call env_prototypes,$(TEST_H),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(LIBKANETON_C),)
+	$(call env_headers,$(TEST_C),)
 
 endif
 #

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/priority/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 16:45:33 2010]
+ * updated       julien quintard   [fri dec  3 22:07:29 2010]
  */
 
 /*
@@ -59,7 +59,6 @@ void			test_core_scheduler_priority_01_content(void)
   t_thread_context	ctx;
   t_stack		stack;
   o_thread*		t;
-  t_uint32		i;
   t_clock		clock;
   t_uint64		start;
 

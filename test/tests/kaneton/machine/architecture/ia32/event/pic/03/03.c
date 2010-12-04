@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...hine/architecture/ia32/event/pic/03/03.c
+ * file          /home/mycure/kane...hine/architecture/ia32/event/pic/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [wed dec  1 05:50:40 2010]
+ * updated       julien quintard   [sat dec  4 12:25:39 2010]
  */
 
 /*
@@ -38,20 +38,20 @@ void			test_architecture_event_pic_03(void)
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_architecture_event_pic_03),
 		    0) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_ERROR("[event_reserve] error");
+
+  if (event_release(32 + 3) != ERROR_OK)
+    TEST_ERROR("[event_release] error");
 
   INB(TEST_MASTER_PORT_B, mask);
 
   if ((mask & (1 << 3)) == 0)
-    TEST_ERROR("invalid PIC mask\n");
+    TEST_ERROR("invalid PIC mask");
 
   INB(TEST_SLAVE_PORT_B, mask);
 
   if (mask != 0xff)
-    TEST_ERROR("invalid PIC mask\n");
-
-  if (event_release(32 + 3) != ERROR_OK)
-    TEST_ERROR("[event_release] error\n");
+    TEST_ERROR("invalid PIC mask");
 
   TEST_SIGNATURE(mzsdqwdwfjwgomre);
 

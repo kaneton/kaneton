@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...rchitecture/ia32/event/exception/01/01.c
+ * file          /home/mycure/kane...rchitecture/ia32/event/exception/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [tue nov 30 18:13:05 2010]
+ * updated       julien quintard   [sat dec  4 12:23:13 2010]
  */
 
 /*
@@ -42,15 +42,15 @@ void			test_architecture_event_exception_01(void)
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_architecture_event_exception_01_handler),
 		    0) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_ERROR("[event_reserve] error");
 
   asm volatile("int $3");
 
   if (event_release(3) != ERROR_OK)
-    TEST_ERROR("[event_release] error\n");
+    TEST_ERROR("[event_release] error");
 
   if (thrown != 1)
-    TEST_ERROR("the exception has not been caught\n");
+    TEST_ERROR("the exception has not been caught");
 
   TEST_SIGNATURE(203i09iwek9fihg93h034);
 

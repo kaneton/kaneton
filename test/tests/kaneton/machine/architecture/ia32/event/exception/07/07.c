@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...rchitecture/ia32/event/exception/07/07.c
+ * file          /home/mycure/kane...rchitecture/ia32/event/exception/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2070]
- * updated       julien quintard   [tue nov 30 18:16:49 2010]
+ * updated       julien quintard   [sat dec  4 12:23:59 2010]
  */
 
 /*
@@ -50,13 +50,13 @@ void			test_architecture_event_exception_07_handler(t_id id,
 	 !(error & (1 << 2)) &&		/* supervisor mode when exception */
 	 !(error & (1 << 3)) &&		/* reserved bit error */
 	 !(error & (1 << 4)))))
-    TEST_ERROR("invalid error code\n");
+    TEST_ERROR("invalid error code");
 
   if (segment_reserve(_kernel->as,
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &segid) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     segid,
@@ -65,7 +65,7 @@ void			test_architecture_event_exception_07_handler(t_id id,
                      region,
 		     PAGESZ,
 		     &regid) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error\n");
+    TEST_ERROR("[region_reserve] error");
 }
 
 void			test_architecture_event_exception_07(void)
@@ -81,7 +81,7 @@ void			test_architecture_event_exception_07(void)
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &segid) != ERROR_OK)
-    TEST_ERROR("[segment_reserve] error\n");
+    TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < 10; i++)
     if (region_reserve(_kernel->as,
@@ -91,16 +91,16 @@ void			test_architecture_event_exception_07(void)
 		       0,
 		       PAGESZ,
 		       &regids[i]) != ERROR_OK)
-      TEST_ERROR("[region_reserve] error\n");
+      TEST_ERROR("[region_reserve] error");
 
   region = (t_paddr)regids[9];
 
   for (i = 0; i < 10; i++)
     if (region_release(_kernel->as, regids[i]) != ERROR_OK)
-      TEST_ERROR("[region_release] error\n");
+      TEST_ERROR("[region_release] error");
 
   if (segment_release(segid) != ERROR_OK)
-    TEST_ERROR("[segment_release] error\n");
+    TEST_ERROR("[segment_release] error");
 
   event_release(14);
 
@@ -108,7 +108,7 @@ void			test_architecture_event_exception_07(void)
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_architecture_event_exception_07_handler),
 		    0) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_ERROR("[event_reserve] error");
 
   ptr = (t_uint8*)region + 0x42;
 
@@ -117,10 +117,10 @@ void			test_architecture_event_exception_07(void)
   asm volatile("nop");
 
   if (thrown != 1)
-    TEST_ERROR("the exception has not been caught\n");
+    TEST_ERROR("the exception has not been caught");
 
   if (event_release(14) != ERROR_OK)
-    TEST_ERROR("[event_release] error\n");
+    TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(0i3rfw90ug8938hy3);
 

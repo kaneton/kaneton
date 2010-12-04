@@ -289,8 +289,8 @@ t_error			ia32_init_context(i_task		taskid,
   switch (task->class)
     {
       case TASK_CLASS_KERNEL:
-	ctx.ds = ctx.ss = _thread->machine.core_ds;
-	ctx.cs = _thread->machine.core_cs;
+	ctx.ds = ctx.ss = _thread->machine.kernel_ds;
+	ctx.cs = _thread->machine.kernel_cs;
 	break;
       case TASK_CLASS_DRIVER:
 	ctx.ds = ctx.ss = _thread->machine.driver_ds;
@@ -301,8 +301,8 @@ t_error			ia32_init_context(i_task		taskid,
 	ctx.cs = _thread->machine.service_cs;
 	break;
       case TASK_CLASS_GUEST:
-	ctx.ds = ctx.ss = _thread->machine.program_ds;
-	ctx.cs = _thread->machine.program_cs;
+	ctx.ds = ctx.ss = _thread->machine.guest_ds;
+	ctx.cs = _thread->machine.guest_cs;
 	break;
     }
 
@@ -502,9 +502,9 @@ t_error			ia32_init_switcher(void)
    */
 
   ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_CS, ia32_privilege_kernel,
-			  &_thread->machine.core_cs);
+			  &_thread->machine.kernel_cs);
   ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_DS, ia32_privilege_kernel,
-			  &_thread->machine.core_ds);
+			  &_thread->machine.kernel_ds);
   ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_CS, ia32_privilege_driver,
 			  &_thread->machine.driver_cs);
   ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_DS, ia32_privilege_driver,
@@ -514,9 +514,9 @@ t_error			ia32_init_switcher(void)
   ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_DS, ia32_privilege_service,
 			  &_thread->machine.service_ds);
   ia32_gdt_build_selector(IA32_PMODE_GDT_GUEST_CS, ia32_privilege_guest,
-			  &_thread->machine.program_cs);
+			  &_thread->machine.guest_cs);
   ia32_gdt_build_selector(IA32_PMODE_GDT_GUEST_DS, ia32_privilege_guest,
-			  &_thread->machine.program_ds);
+			  &_thread->machine.guest_ds);
 
   return (ERROR_OK);
 }
@@ -749,7 +749,7 @@ t_error			ia32_push_args(i_thread			threadid,
   if (thread_get(threadid, &o) != ERROR_OK)
     return (ERROR_KO);
 
-  if (task_get(o->id, &otask) != ERROR_OK)
+  if (task_get(o->task, &otask) != ERROR_OK)
     return (ERROR_KO);
 
   /*

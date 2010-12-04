@@ -30,11 +30,11 @@
  * 03.c
  */
 
-void			test_core_thread_wait_03_content_01(void);
+void			test_core_thread_wait_03_thread_01(void);
 
-void			test_core_thread_wait_03_content_02(void);
+void			test_core_thread_wait_03_thread_02(void);
 
-void			test_core_thread_wait_03_content_03(void);
+void			test_core_thread_wait_03_thread_03(void);
 
 void			test_core_thread_wait_03(void);
 

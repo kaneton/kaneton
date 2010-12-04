@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...ton.STABLE/kaneton/core/include/thread.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [fri dec  3 16:06:42 2010]
+ * updated       julien quintard   [sat dec  4 13:24:59 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -138,8 +138,6 @@ typedef struct
 typedef struct
 {
   t_error			(*thread_show)(i_thread);
-  t_error			(*thread_give)(i_task,
-					       i_thread);
   t_error			(*thread_flush)(i_task);
   t_error			(*thread_load)(i_thread,
 					       t_thread_context);
@@ -177,9 +175,6 @@ typedef struct
 t_error			thread_show(i_thread			threadid);
 
 t_error			thread_dump(void);
-
-t_error			thread_give(i_task			taskid,
-				    i_thread			threadid);
 
 t_error			thread_reserve(i_task			taskid,
 				       t_priority		prior,

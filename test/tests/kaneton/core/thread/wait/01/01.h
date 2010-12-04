@@ -30,9 +30,9 @@
  * 01.c
  */
 
-void			test_core_thread_wait_01_content_01(void);
+void			test_core_thread_wait_01_thread_01(void);
 
-void			test_core_thread_wait_01_content_02(void);
+void			test_core_thread_wait_01_thread_02(void);
 
 void			test_core_thread_wait_01(void);
 

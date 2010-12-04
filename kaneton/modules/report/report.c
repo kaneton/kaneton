@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/modules/report/report.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/modules/report/report.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri nov 26 15:49:39 2010]
+ * updated       julien quintard   [fri dec  3 22:57:17 2010]
  */
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/scheduler/complete/complete.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 16:16:03 2010]
+ * updated       julien quintard   [fri dec  3 22:12:56 2010]
  */
 
 /*
@@ -90,8 +90,6 @@ void			test_architecture_scheduler_complete(void)
   i_segment		segment;
   t_thread_context	ctx;
   t_stack		stack;
-  t_clock		clock;
-  t_uint64		start;
   o_thread*		t;
   o_region*		r;
 

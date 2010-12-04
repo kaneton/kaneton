@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/architecture/ia32/event/flags/flags.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 16:14:19 2010]
+ * updated       julien quintard   [sat dec  4 12:27:23 2010]
  */
 
 /*
@@ -57,12 +57,12 @@ void			test_architecture_event_flags_content(void)
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_architecture_event_flags_handler),
 		    0) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_HANG("[event_reserve] error");
 
   asm volatile("int $3");
 
   if (thrown != 1)
-    TEST_ERROR("the exception has not been caught\n");
+    TEST_HANG("the exception has not been caught");
 
   asm volatile("pushf\n"
                "popl %0"

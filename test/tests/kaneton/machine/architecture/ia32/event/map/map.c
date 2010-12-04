@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...achine/architecture/ia32/event/map/map.c
+ * file          /home/mycure/kane...achine/architecture/ia32/event/map/map.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [wed dec  1 05:46:21 2010]
+ * updated       julien quintard   [sat dec  4 12:24:25 2010]
  */
 
 /*
@@ -50,10 +50,10 @@ void			test_architecture_event_map(void)
 		       TASK_BEHAVIOUR_INTERACTIVE,
 		       TASK_PRIORITY_INTERACTIVE,
 		       &tskid) != ERROR_OK)
-	TEST_ERROR("[task_reserve] error\n");
+	TEST_ERROR("[task_reserve] error");
 
       if (as_reserve(tskid, &asid) != ERROR_OK)
-	TEST_ERROR("[as_reserve] error\n");
+	TEST_ERROR("[as_reserve] error");
     }
 
   memset(&idtr, 0, sizeof (idtr));
@@ -61,16 +61,16 @@ void			test_architecture_event_map(void)
   SIDT(idtr);
 
   if (as_paddr(_kernel->as, idtr.address, &paddr) != ERROR_OK)
-    TEST_ERROR("[as_paddr] error\n");
+    TEST_ERROR("[as_paddr] error");
 
   set_foreach(SET_OPTION_FORWARD, _as->ass, &it, state)
     {
       if (set_object(_as->ass, it, (void**)&o) != ERROR_OK)
-	TEST_ERROR("[set_object] error\n");
+	TEST_ERROR("[set_object] error");
 
       if (as_vaddr(o->id, paddr, &vaddr) != ERROR_OK)
 	TEST_ERROR("[as_vaddr] error: the IDT does not seem to be "
-		   "mapped in this address space\n");
+		   "mapped in this address space");
     }
 
   TEST_SIGNATURE(cmnweiovw0fg934gh);

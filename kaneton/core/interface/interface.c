@@ -34,22 +34,6 @@ extern m_kernel*	_kernel;
  */
 
 /*
- * this function launchs the as_give() function.
- */
-
-t_error		interface_as_give(o_syscall*	message)
-{
-  t_error	error;
-
-  error = as_give(message->u.request.u.as_give.arg1,
-		  message->u.request.u.as_give.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the as_vaddr() function.
  */
 
@@ -1015,22 +999,6 @@ t_error		interface_task_attribute_sched(o_syscall*	message)
 }
 
 /*
- * this function launchs the thread_give() function.
- */
-
-t_error		interface_thread_give(o_syscall*	message)
-{
-  t_error	error;
-
-  error = thread_give(message->u.request.u.thread_give.arg1,
-			message->u.request.u.thread_give.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the thread_reserve() function.
  */
 
@@ -1432,7 +1400,6 @@ t_error		interface_timer_attribute_data(o_syscall*	message)
 
 t_interface_dispatch dispatch[] =
 {
-  interface_as_give,
   interface_as_vaddr,
   interface_as_paddr,
   interface_as_copy,
@@ -1487,7 +1454,6 @@ t_interface_dispatch dispatch[] =
   interface_task_attribute_priority,
   interface_task_attribute_as,
   interface_task_attribute_sched,
-  interface_thread_give,
   interface_thread_reserve,
   interface_thread_release,
   interface_thread_priority,
@@ -1542,6 +1508,7 @@ t_error			interface_notify(t_uint8*		buffer,
    */
   t_uint32 op =  message->u.request.operation;
   (void) op; /* XXX: UNUSED VAR */
+
   if (dispatch[message->u.request.operation](message) != ERROR_OK)
     return (ERROR_KO);
 

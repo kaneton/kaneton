@@ -34,9 +34,6 @@
 
 t_ia32_directory	ia32_pd;
 
-// XXX
-//extern i_as		ia32_as;
-
 /*
  * ---------- XXX -------------------------------------------------------------
  */
@@ -149,17 +146,10 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
   t_uint32		i;
   t_ia32_pde*		d;
 
-  if (ia32_map_pd(&dir) != ERROR_OK)
-    return ERROR_KO;
-
-  d = dir;
-
-  /*
   if (dir == IA32_PAGE_DIRECTORY_CURRENT)
     d = ia32_pd;
   else
     d = *dir;
-  */
 
   for (i = 0; i < IA32_PAGE_DIRECTORY_MAX_ENTRIES; i++)
     {
@@ -171,10 +161,6 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
 		       i);
 	}
     }
-
-
-  if (ia32_unmap_chunk(d) != ERROR_OK)
-    return ERROR_KO;
 
   /*							 [endblock::pd_dump] */
 

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...E/kaneton/core/scheduler/scheduler-mfq.c
+ * file          /home/mycure/kane...E/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [fri dec  3 16:19:45 2010]
+ * updated       julien quintard   [sat dec  4 00:55:52 2010]
  */
 
 /*

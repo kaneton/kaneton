@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo.../test/tests/kaneton/core/thread/Makefile
+# file          /home/mycure/kane.../test/tests/kaneton/core/thread/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [tue nov 30 16:20:25 2010]
+# updated       julien quintard   [sat dec  4 13:14:53 2010]
 #
 
 #
@@ -33,7 +33,8 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		sleep				\
+SUBDIRS			:=		reserve				\
+					sleep				\
 					wait				
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)

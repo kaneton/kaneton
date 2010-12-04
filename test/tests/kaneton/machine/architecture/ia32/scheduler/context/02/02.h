@@ -30,13 +30,9 @@
  * 02.c
  */
 
-void			test_core_scheduler_context_02_thread_02(void);
+void			test_architecture_scheduler_context_02_content(void);
 
-void			test_core_scheduler_context_02_thread_02(void);
-
-void			test_core_scheduler_context_02_thread_03(void);
-
-void			test_core_scheduler_context_02(void);
+void			test_architecture_scheduler_context_02(void);
 
 
 /*

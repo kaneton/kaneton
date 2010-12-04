@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/architecture/ia32/event/irq/irq.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 16:14:37 2010]
+ * updated       julien quintard   [sat dec  4 12:24:09 2010]
  */
 
 /*
@@ -48,7 +48,7 @@ void			test_architecture_event_irq_content(void)
 		    EVENT_FUNCTION,
 		    EVENT_HANDLER(test_architecture_event_irq_handler),
 		    0) != ERROR_OK)
-    TEST_ERROR("[event_reserve] error\n");
+    TEST_HANG("[event_reserve] error");
 
   OUTB(0x3F0 + 2, 0);
   for (i = 0; i < 10000; i++)
@@ -67,7 +67,7 @@ void			test_architecture_event_irq_content(void)
     asm volatile("nop");
 
   if (thrown != 2)
-    TEST_ERROR("one or more IRQs have not been caught\n");
+    TEST_HANG("one or more IRQs have not been caught");
 
   TEST_SIGNATURE(vnmweiofwjf90gg);
 

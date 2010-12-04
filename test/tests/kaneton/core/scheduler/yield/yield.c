@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/scheduler/yield/yield.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 20:36:15 2010]
+ * updated       julien quintard   [fri dec  3 22:08:08 2010]
  */
 
 /*
@@ -84,7 +84,9 @@ void			test_core_scheduler_yield_content(void)
    * thread 1
    */
 
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread_01) != ERROR_OK)
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_01) != ERROR_OK)
     TEST_HANG("[thread_reserve] error");
 
   stack.base = 0;
@@ -109,7 +111,9 @@ void			test_core_scheduler_yield_content(void)
    * thread 2
    */
 
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread_02) != ERROR_OK)
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_02) != ERROR_OK)
     TEST_HANG("[thread_reserve] error");
 
   stack.base = 0;

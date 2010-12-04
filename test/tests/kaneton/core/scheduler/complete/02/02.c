@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/complete/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 16:09:32 2010]
+ * updated       julien quintard   [fri dec  3 22:07:09 2010]
  */
 
 /*
@@ -174,8 +174,6 @@ void			test_core_scheduler_complete_02(void)
   i_segment		segment;
   t_thread_context	ctx;
   t_stack		stack;
-  t_clock		clock;
-  t_uint64		start;
   o_thread*		t;
   o_region*		r;
 
