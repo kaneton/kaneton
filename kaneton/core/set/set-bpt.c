@@ -137,13 +137,13 @@ t_error			set_show_unused_bpt(o_set*		o)
 {
   t_bpt_uni(set)	i;
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "showing the unused nodes: %u / %u\n",
 	      o->u.bpt.unused.index + 1,
 	      o->u.bpt.unusedsz);
 
   for (i = 0; i <= o->u.bpt.unused.index; i++)
-    module_call(console, console_message,
+    module_call(console, message,
 		'#', "  [%d] 0x%x\n", i, o->u.bpt.unused.array[i]);
 
   CORE_LEAVE();
@@ -340,7 +340,7 @@ t_error			set_show_bpt(i_set			setid)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  %qd node(s) from the balanced+ tree set %qu:\n",
 	      o->size,
 	      setid);
@@ -354,7 +354,7 @@ t_error			set_show_bpt(i_set			setid)
 
       leaf = BPT_LFENTRY(set, &node, i.u.bpt.entry.ndi);
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "    %qu <%qu 0x%x> [0x%x:%u]\n",
 		  leaf->id, *((t_id*)leaf->data), leaf->data,
 		  i.u.bpt.entry.node, i.u.bpt.entry.ndi);

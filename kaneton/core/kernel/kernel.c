@@ -105,7 +105,7 @@ t_error			kernel_initialize(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the identifier manager\n");
 
   if (id_initialize() != ERROR_OK)
@@ -115,7 +115,7 @@ t_error			kernel_initialize(void)
    * 3)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the set manager\n");
 
   if (set_initialize() != ERROR_OK)
@@ -125,7 +125,7 @@ t_error			kernel_initialize(void)
    * 4)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the address space manager\n");
 
   if (as_initialize() != ERROR_OK)
@@ -135,7 +135,7 @@ t_error			kernel_initialize(void)
    * 5)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the segment manager\n");
 
   if (segment_initialize() != ERROR_OK)
@@ -145,7 +145,7 @@ t_error			kernel_initialize(void)
    * 6)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the region manager\n");
 
   if (region_initialize(GLUE_REGION_BASE,
@@ -156,7 +156,7 @@ t_error			kernel_initialize(void)
    * 7)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the map manager\n");
 
   if (map_initialize() != ERROR_OK)
@@ -166,7 +166,7 @@ t_error			kernel_initialize(void)
    * 8)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the task manager\n");
 
   if (task_initialize() != ERROR_OK)
@@ -182,7 +182,7 @@ t_error			kernel_initialize(void)
    * 10)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the thread manager\n");
 
   if (thread_initialize() != ERROR_OK)
@@ -192,7 +192,7 @@ t_error			kernel_initialize(void)
    * 11)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the event manager\n");
 
   if (event_initialize() != ERROR_OK)
@@ -202,7 +202,7 @@ t_error			kernel_initialize(void)
    * 12)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the timer manager\n");
 
   if (timer_initialize() != ERROR_OK)
@@ -212,7 +212,7 @@ t_error			kernel_initialize(void)
    * 13)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the clock manager\n");
 
   if (clock_initialize() != ERROR_OK)
@@ -222,7 +222,7 @@ t_error			kernel_initialize(void)
    * 14)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the io manager\n");
 
   if (io_initialize() != ERROR_OK)
@@ -232,7 +232,7 @@ t_error			kernel_initialize(void)
    * 15)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the message manager\n");
 
   if (message_initialize() != ERROR_OK)
@@ -242,7 +242,7 @@ t_error			kernel_initialize(void)
    * 16)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the capability manager\n");
 
   if (capability_initialize() != ERROR_OK)
@@ -252,7 +252,7 @@ t_error			kernel_initialize(void)
    * 17)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the cpu manager\n");
 
   if (cpu_initialize() != ERROR_OK)
@@ -262,7 +262,7 @@ t_error			kernel_initialize(void)
    * 18)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "initializing the scheduler manager\n");
 
   if (scheduler_initialize() != ERROR_OK)
@@ -301,7 +301,7 @@ t_error			kernel_clean(void)
    * 1)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the scheduler manager\n");
 
   if (scheduler_clean() != ERROR_OK)
@@ -311,7 +311,7 @@ t_error			kernel_clean(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the capability manager\n");
 
   if (capability_clean() != ERROR_OK)
@@ -321,7 +321,7 @@ t_error			kernel_clean(void)
    * 3)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the message manager\n");
 
   if (message_clean() != ERROR_OK)
@@ -331,7 +331,7 @@ t_error			kernel_clean(void)
    * 4)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the scheduler manager\n");
 
   if (io_clean() != ERROR_OK)
@@ -341,7 +341,7 @@ t_error			kernel_clean(void)
    * 5)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the timer manager\n");
 
   if (timer_clean() != ERROR_OK)
@@ -351,7 +351,7 @@ t_error			kernel_clean(void)
    * 6)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the event manager\n");
 
   if (event_clean() != ERROR_OK)
@@ -361,7 +361,7 @@ t_error			kernel_clean(void)
    * 7)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the cpu manager\n");
 
   if (cpu_clean() != ERROR_OK)
@@ -371,7 +371,7 @@ t_error			kernel_clean(void)
    * 8)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the thread manager\n");
 
   if (thread_clean() != ERROR_OK)
@@ -381,7 +381,7 @@ t_error			kernel_clean(void)
    * 9)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the task manager\n");
 
   if (task_clean() != ERROR_OK)
@@ -391,7 +391,7 @@ t_error			kernel_clean(void)
    * 10)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the map manager\n");
 
   if (map_clean() != ERROR_OK)
@@ -401,7 +401,7 @@ t_error			kernel_clean(void)
    * 11)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the region manager\n");
 
   if (region_clean() != ERROR_OK)
@@ -411,7 +411,7 @@ t_error			kernel_clean(void)
    * 12)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the segment manager\n");
 
   if (segment_clean() != ERROR_OK)
@@ -421,7 +421,7 @@ t_error			kernel_clean(void)
    * 13)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the address space manager\n");
 
   if (as_clean() != ERROR_OK)
@@ -431,7 +431,7 @@ t_error			kernel_clean(void)
    * 14)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the set manager\n");
 
   if (set_clean() != ERROR_OK)
@@ -441,7 +441,7 @@ t_error			kernel_clean(void)
    * 15)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "cleaning the identifier manager\n");
 
   if (id_clean() != ERROR_OK)

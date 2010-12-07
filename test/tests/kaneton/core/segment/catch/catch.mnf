@@ -3,3 +3,4 @@ description: This test creates tasks, reserves address spaces and segments befor
 symbol: test_core_segment_catch
 signature: r93i29egih34i3
 output:
+points: 3

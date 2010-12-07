@@ -47,7 +47,7 @@ m_id*			_id = NULL;
 
 t_error			id_show(o_id*				o)
 {
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "    id object's state: %qu\n", o->id);
 
   CORE_LEAVE();

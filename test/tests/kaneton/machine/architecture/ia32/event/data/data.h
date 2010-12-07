@@ -31,7 +31,7 @@
  */
 
 void			test_architecture_event_data_handler(t_id	id,
-						     t_vaddr	pv);
+							     t_vaddr	pv);
 
 void			test_architecture_event_data(void);
 

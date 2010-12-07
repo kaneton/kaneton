@@ -115,7 +115,7 @@ t_error			thread_show(i_thread			threadid)
 		  o->state);
     }
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  thread %qu from task %qu is %s with a priority of %u\n",
 	      threadid, o->task, state, o->priority);
 
@@ -156,7 +156,7 @@ t_error			thread_dump(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qu thread(s):\n", size);
 
   set_foreach(SET_OPTION_FORWARD, _thread->threads, &i, st)
@@ -871,11 +871,11 @@ void			thread_bury(i_timer			timer,
  * XXX wait for the current thread
  */
 
-t_error			thread_wait(t_state			state,
-				    i_thread			id,
+t_error			thread_wait(i_thread			id,
+				    t_state			state,
+				    i_thread			target,
 				    t_wait*			wait)
 {
-  i_thread		thread;
   o_thread*		object;
   o_thread*		o;
 
@@ -885,17 +885,10 @@ t_error			thread_wait(t_state			state,
    * XXX
    */
 
-  if (scheduler_current(&thread) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the currently scheduled thread");
-
-  /*
-   * XXX
-   */
-
-  if (thread_get(thread, &object) != ERROR_OK)
+  if (thread_get(id, &object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the thread object");
 
-  if (thread_get(id, &o) != ERROR_OK)
+  if (thread_get(target, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
@@ -909,7 +902,7 @@ t_error			thread_wait(t_state			state,
        * XXX
        */
 
-      wait->id.thread = id;
+      wait->id.thread = target;
       wait->state = state;
       wait->cause = WAIT_STATE_START;
       wait->value = WAIT_VALUE_UNKNOWN;
@@ -924,7 +917,7 @@ t_error			thread_wait(t_state			state,
        * XXX
        */
 
-      wait->id.thread = id;
+      wait->id.thread = target;
       wait->state = state;
       wait->cause = WAIT_STATE_STOP;
       wait->value = WAIT_VALUE_UNKNOWN;
@@ -942,7 +935,7 @@ t_error			thread_wait(t_state			state,
        * XXX
        */
 
-      wait->id.thread = id;
+      wait->id.thread = target;
       wait->state = state;
       wait->cause = o->status.cause;
       wait->value = o->status.value;
@@ -954,7 +947,7 @@ t_error			thread_wait(t_state			state,
       if ((data = malloc(sizeof(i_thread))) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the thread identifier");
 
-      *data = id;
+      *data = target;
 
       /*
        * XXX
@@ -987,21 +980,21 @@ t_error			thread_wait(t_state			state,
    * XXX
    */
 
-  if (set_add(o->waits, &thread) != ERROR_OK)
+  if (set_add(o->waits, &id) != ERROR_OK)
     CORE_ESCAPE("unable to add the thread identifier to the waiting list");
 
   /*
    * XXX
    */
 
-  if (thread_stop(thread) != ERROR_OK)
+  if (thread_stop(id) != ERROR_OK)
     CORE_ESCAPE("unable to stop the task");
 
   /*
    * XXX
    */
 
-  wait->id.thread = id;
+  wait->id.thread = target;
   wait->state = object->wait.state;
   wait->cause = object->wait.cause;
   wait->value = object->wait.value;
@@ -1089,7 +1082,7 @@ t_error			thread_stack(i_thread			threadid,
  */
 
 t_error			thread_args(i_thread			threadid,
-				    const void*			args,
+				    void*			args,
 				    t_vsize			size)
 {
   if (machine_call(thread, thread_args, threadid, args, size) != ERROR_OK)
@@ -1126,19 +1119,16 @@ void			thread_sleep_handler(i_timer		timer,
  * XXX sleep for the current thread
  */
 
-t_error			thread_sleep(t_uint32			milliseconds)
+t_error			thread_sleep(i_thread			id,
+				     t_uint32			milliseconds)
 {
   i_timer		useless;
   i_thread*		data;
-  i_thread		id;
   o_thread*		o;
 
   /*
    *
    */
-
-  if (scheduler_current(&id) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the currently scheduled thread");
 
   if (thread_get(id, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the thread object");

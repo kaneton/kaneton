@@ -1,0 +1,24 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/tests/kaneton/README
+#
+# created       julien quintard   [sun dec  5 00:03:10 2010]
+# updated       julien quintard   [sun dec  5 00:04:34 2010]
+#
+
+Note that in order to generate the tests bundle for the test server,
+the administrator *must* activate the 'test' module in its user
+profile:
+
+  _MODULES_		+=		test
+
+Then, the kaneton tests can be safely compiled as shown below:
+
+  $> cd test/tests/kaneton/
+  $> make
+  [...]

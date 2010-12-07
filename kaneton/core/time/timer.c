@@ -176,7 +176,7 @@ t_error			timer_show(i_timer			id)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  timer %qd: delay = %qu\n",
 	      o->id, o->delay - _timer->reference);
 
@@ -207,7 +207,7 @@ t_error			timer_dump(void)
   if (set_size(_timer->timers, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of timers");
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qd timer(s):\n",
 	      size);
 

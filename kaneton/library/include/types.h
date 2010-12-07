@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/library/library/include/libsys/types.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/library/include/types.h
  *
  * created       julien quintard   [sun jun 10 17:37:19 2007]
- * updated       matthieu bucchianeri   [sun aug  5 17:52:11 2007]
+ * updated       julien quintard   [sun dec  5 15:59:22 2010]
  */
 
-#ifndef LIBC_LIBSYS_TYPES_H
-#define LIBC_LIBSYS_TYPES_H		1
+#ifndef LIBRARY_TYPES_H
+#define LIBRARY_TYPES_H		1
 
 /*
  * ---------- types -----------------------------------------------------------

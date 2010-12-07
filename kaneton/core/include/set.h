@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/set.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/set.h
  *
  * created       julien quintard   [wed jun  6 11:56:46 2007]
- * updated       julien quintard   [sat nov 27 17:30:58 2010]
+ * updated       julien quintard   [sun dec  5 16:03:37 2010]
  */
 
 #ifndef CORE_SET_H
@@ -146,17 +146,14 @@ typedef struct
  */
 
 #if (DEBUG & DEBUG_SET) && defined(SET_DEBUG_TRAP)
-
-#define set_debug(_func_, _id_, _args_...)				\
-  fprintf(stderr, "[setd] trap: %s(%qu, %s)\n",				\
-          #_func_,							\
-          _id_,								\
-          #_args_);
-
+# define set_debug(_func_, _id_, _args_...)				\
+  module_call(console, print,						\
+	      "[setd] trap: %s(%qu, %s)\n",				\
+	      #_func_,							\
+	      _id_,							\
+	      #_args_);
 #else
-
-#define set_debug(_func_, _id_, _args_...)
-
+# define set_debug(_func_, _id_, _args_...)
 #endif
 
 /*

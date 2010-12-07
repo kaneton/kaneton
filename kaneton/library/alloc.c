@@ -329,7 +329,8 @@ void			free(void*				ptr)
   if (ptr < _alloc.lowest)
     {
 #ifdef MALLOC_DEBUG
-      printf("warning: junk pointer, to low to make sense.\n");
+      module_call(console, print
+		  "warning: junk pointer, to low to make sense.\n");
 #endif
       return;
     }
@@ -337,7 +338,8 @@ void			free(void*				ptr)
   if (ptr > _alloc.highest)
     {
 #ifdef MALLOC_DEBUG
-      printf("warning: junk pointer, to high to make sense.\n");
+      module_call(console, print
+		  "warning: junk pointer, to high to make sense.\n");
 #endif
       return;
     }
@@ -354,7 +356,8 @@ void			free(void*				ptr)
     {
       if (l == chunk)
 	{
-	  printf("warning: chunk is already free.\n");
+	  module_call(console, print,
+		      "warning: chunk is already free.\n");
 	  return;
 	}
       if (l > chunk)
@@ -403,7 +406,8 @@ void			free(void*				ptr)
       area->prev_area->next_area = NULL;
 
       if (map_release(_kernel->as, (t_vaddr)area) != ERROR_OK)
-	printf("warning: unable to release area.\n");
+	module_call(console, print,
+		    "warning: unable to release area.\n");
     }
 
   /*
@@ -457,11 +461,15 @@ void			alloc_dump(void)
    * 1)
    */
 
-  printf("allocator dump\n");
+  module_call(console, print,
+	      "allocator dump\n");
 
-  printf("calls: %u alloc(), %u free()\n", _alloc.nalloc, _alloc.nfree);
+  module_call(console, print,
+	      "calls: %u alloc(), %u free()\n",
+	      _alloc.nalloc, _alloc.nfree);
 
-  printf("dumping all chunks:\n");
+  module_call(console, print,
+	      "dumping all chunks:\n");
 
   /*
    * 2)
@@ -471,7 +479,9 @@ void			alloc_dump(void)
        area != NULL;
        area = area->next_area)
     {
-      printf("area: %p, size: %u\n", area, area->size);
+      module_call(console, print,
+		  "area: %p, size: %u\n",
+		  area, area->size);
 
       limit = AREA_LIMIT(area);
       next_free = area->first_free_chunk;
@@ -484,15 +494,18 @@ void			alloc_dump(void)
 	   (void*)chunk < limit;
 	   chunk = next)
 	{
-	  printf("  chunk: %p, user address: %p, size: %u", chunk,
+	  module_call(console, print,
+		      "  chunk: %p, user address: %p, size: %u", chunk,
 		 chunk + 1, chunk->size);
 	  if (chunk == next_free)
 	    {
 	      next_free = chunk->next_free;
-	      printf(" FREE\n");
+	      module_call(console, print,
+			  " FREE\n");
 	    }
 	  else
-	    printf("\n");
+	    module_call(console, print,
+			"\n");
 
 	  next = NEXT_CHUNK(chunk);
 	}
@@ -527,14 +540,18 @@ void			alloc_check_signatures(void)
       limit = AREA_LIMIT(area);
 
       if (!CHECK_SIGN(AREA, area))
-	printf("warning: area %p signature is broken\n", area);
+	module_call(console, print,
+		    "warning: area %p signature is broken\n",
+		    area);
 
       for (chunk = (t_chunk*)(area + 1);
 	   (void*)chunk < limit;
 	   chunk = next)
 	{
 	  if (!CHECK_SIGN(CHUNK, chunk))
-	    printf("warning: chunk %p signature is broken\n", area);
+	    module_call(console, print,
+			"warning: chunk %p signature is broken\n",
+			area);
 
 	  next = NEXT_CHUNK(chunk);
 	}

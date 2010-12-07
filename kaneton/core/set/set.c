@@ -123,7 +123,7 @@ t_error			set_dump(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping the set container %qd with %qd node(s)\n",
 	      _set->sets,
 	      o->size);

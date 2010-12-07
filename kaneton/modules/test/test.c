@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...neton.STABLE/kaneton/modules/test/test.c
+ * file          /home/mycure/kaneton.STABLE/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec  3 15:13:24 2010]
+ * updated       julien quintard   [mon dec  6 17:28:14 2010]
  */
 
 /*
@@ -17,9 +17,21 @@
  * this file implements the in-kernel test system that basically waits for
  * incoming calls and launches the according tests.
  *
- * this module is not portable as it relies on the ibm-pc platform for
- * serial communication.
+ * this module is partially portable as it relies on the platform for serial
+ * communication.
  */
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#if !defined(MODULE_console)
+# warning "the 'test' module depends upon the 'console' module"
+#endif
+
+#if defined(MODULE_forward)
+# error "the 'forward' module cannot be activated with the 'test' module"
+#endif
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -46,7 +58,7 @@ extern s_module_test_function	_module_test_functions[];
  * the module structure.
  */
  
-m_module_test*		_module_test = NULL;
+m_module_test		_module_test;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -86,9 +98,6 @@ t_error			module_test_send(t_uint8		type,
   t_uint32		magic;
   t_uint32		crc;
 
-  if (_module_test == NULL)
-    MODULE_LEAVE();
-
   /*
    * 1)
    */
@@ -100,6 +109,7 @@ t_error			module_test_send(t_uint8		type,
    */
 
   magic = MODULE_TEST_MAGIC;
+
   crc = module_test_checksum(message, length);
 
   /*
@@ -131,6 +141,12 @@ t_error			module_test_send(t_uint8		type,
 
 /*
  * this function receives a message, either a text or command.
+ *
+ * steps:
+ *
+ * 1) receive and check the magic number.
+ * 2) receive the content.
+ * 3) check the checksum.
  */
 
 t_error			module_test_receive(t_uint8*		type,
@@ -140,8 +156,9 @@ t_error			module_test_receive(t_uint8*		type,
   t_uint32		length;
   t_uint32		crc;
 
-  if (_module_test == NULL)
-    MODULE_LEAVE();
+  /*
+   * 1)
+   */
 
   platform_serial_read(PLATFORM_SERIAL_PRIMARY,
 		       (t_uint8*)&magic,
@@ -149,6 +166,10 @@ t_error			module_test_receive(t_uint8*		type,
 
   if (magic != MODULE_TEST_MAGIC)
     MODULE_ESCAPE("invalid magic number received");
+
+  /*
+   * 2)
+   */
 
   platform_serial_read(PLATFORM_SERIAL_PRIMARY,
 		       (t_uint8*)type,
@@ -166,6 +187,10 @@ t_error			module_test_receive(t_uint8*		type,
 		       (t_uint8*)message,
 		       length);
 
+  /*
+   * 3)
+   */
+
   if (crc != module_test_checksum(message, length))
     MODULE_ESCAPE("invalid received message's CRC");
 
@@ -178,9 +203,6 @@ t_error			module_test_receive(t_uint8*		type,
 
 t_error			module_test_issue(char*			command)
 {
-  if (_module_test == NULL)
-    MODULE_LEAVE();
-
   if (module_test_send(MODULE_TEST_TYPE_COMMAND,
 		       command,
 		       strlen(command)) != ERROR_OK)
@@ -192,68 +214,78 @@ t_error			module_test_issue(char*			command)
 /*
  * this function flushes the pending text by sending a text message
  * before reinitializing the buffer.
+ *
+ * steps:
+ *
+ * 1) if there is nothing in the buffer, just leave.
+ * 2) send the buffered text to the serial line. note that the buffer size
+ *    is set to zero to avoid infinite loops since send() will call flush().
+ * 3) re-initialize the buffer.
  */
 
 t_error			module_test_flush(void)
 {
   t_uint32		size;
 
-  if (_module_test == NULL)
+  /*
+   * 1)
+   */
+
+  size = _module_test.size;
+
+  if (_module_test.size == 0)
     MODULE_LEAVE();
 
-  size = _module_test->size;
+  /*
+   * 2)
+   */
 
-  if (_module_test->size == 0)
-    MODULE_LEAVE();
-
-  _module_test->size = 0;
+  _module_test.size = 0;
 
   if (module_test_send(MODULE_TEST_TYPE_TEXT,
-		       _module_test->buffer,
+		       _module_test.buffer,
 		       size) != ERROR_OK)
     MODULE_ESCAPE("unable to send the buffer back to the client");
 
-  memset(_module_test->buffer,
+  /*
+   * 3)
+   */
+
+  memset(_module_test.buffer,
 	 0x0,
-	 sizeof(_module_test->buffer));
+	 sizeof(_module_test.buffer));
 
   MODULE_LEAVE();
 }
 
 /*
  * this function adds a single character to the buffer. this function
- * is used by printf_init() so that printf() uses it every time
- * it needs to print a character, that this function actually buffers.
+ * is called by format().
  *
  * then, whenever the buffer is full or the character '\n' is received,
  * the buffer is flushed into a text message.
  *
  * steps:
  *
- * 1) write the character.
+ * 1) record the character.
  * 2) flush if necessary.
  */
 
-int			module_test_write(char			c)
+void			module_test_character(char			c)
 {
-  if (_module_test == NULL)
-    return (1);
-
   /*
    * 1)
    */
 
-  _module_test->buffer[_module_test->size++] = c;
+  _module_test.buffer[_module_test.size++] = c;
 
   /*
    * 2)
    */
 
-  if ((_module_test->size >= (sizeof(_module_test->buffer) - 1)) ||
+  if ((_module_test.size >= (sizeof(_module_test.buffer) - 1)) ||
       (c == '\n'))
     module_test_flush();
-
-  return (1);
 }
 
 /*
@@ -278,18 +310,41 @@ t_error			module_test_locate(char*		symbol,
 
 /*
  * this function takes a test function symbol and calls it.
+ *
+ * steps:
+ *
+ * 1) locate the symbol in the table.
+ * 2) issue the enter command, specifying the beginning of the test.
+ * 3) call the test function.
+ * 4) issue the leave command.
  */
 
 t_error			module_test_call(char*			symbol)
 {
   f_module_test		function;
 
+  /*
+   * 1)
+   */
+
   if (module_test_locate(symbol, &function) != ERROR_OK)
     MODULE_ESCAPE("invalid test symbol");
 
+  /*
+   * 2)
+   */
+
   module_test_issue("[enter]");
 
+  /*
+   * 3)
+   */
+
   function();
+
+  /*
+   * 4)
+   */
 
   module_test_issue("[leave]");
 
@@ -304,11 +359,11 @@ void			module_test_dump(void)
 {
   unsigned int  i;
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "[tests]\n");
 
   for (i = 0; _module_test_functions[i].symbol != NULL; i++)
-    module_call(console, console_message,
+    module_call(console, message,
 		'#', "  [%s] 0x%x\n",
 		_module_test_functions[i].symbol,
 		_module_test_functions[i].function);
@@ -316,17 +371,15 @@ void			module_test_dump(void)
 
 /*
  * this function actually runs the test system by first initializing
- * the serial line, switching printf() before performing a handshake
- * and waiting for commands.
+ * the serial line, performing a handshake and waiting for commands.
  *
  * steps:
  *
- * 1) allocate memory for the module's structure.
+ * 1) display a message.
  * 2) set up the serial port.
- * 3) initialize printf() so that every displayed text is forward onto the
- *    serial port.
- * 4) issues the enter command which the client must be waiting for.
- * 5) wait for commands and treat them.
+ * 3) tell the console module to forward everything to the test module.
+ * 4) issues the ready command which the client must be waiting for.
+ * 5) wait for commands and handle them.
  */
 
 t_error			module_test_run(void)
@@ -337,17 +390,12 @@ t_error			module_test_run(void)
       { NULL, NULL }
     };
 
-  module_call(console, console_message,
-	      '+', "test module loaded\n");
-
   /*
    * 1)
    */
 
-  if ((_module_test = malloc(sizeof(m_module_test))) == NULL)
-    MODULE_ESCAPE("unable to allocate memory for the test module's structure");
-
-  memset(_module_test, 0x0, sizeof(m_module_test));
+  module_call(console, message,
+	      '+', "running the 'test' module\n");
 
   /*
    * 2)
@@ -361,7 +409,9 @@ t_error			module_test_run(void)
    * 3)
    */
 
-  printf_init(module_test_write, NULL);
+  module_call(console, set,
+	      module_test_character,
+	      NULL);
 
   /*
    * 4)
@@ -401,6 +451,30 @@ t_error			module_test_run(void)
 	    }
 	}
     }
+
+  MODULE_LEAVE();
+}
+
+/*
+ * this function loads the module.
+ */
+
+t_error			module_test_load(void)
+{
+  module_call(console, message,
+	      '+', "loading the 'test' module\n");
+
+  MODULE_LEAVE();
+}
+
+/*
+ * this function unloads the module.
+ */
+
+t_error			module_test_unload(void)
+{
+  module_call(console, message,
+	      '+', "unloading the 'test' module\n");
 
   MODULE_LEAVE();
 }

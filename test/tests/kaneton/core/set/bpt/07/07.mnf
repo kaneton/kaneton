@@ -3,3 +3,4 @@ description: This test reserves a set, adds many objects and display the set.
 symbol: test_core_set_bpt_07
 signature: f90wigi34htjy
 output: "0 elements: \n3 elements: 2 4 16\n"
+points: 3

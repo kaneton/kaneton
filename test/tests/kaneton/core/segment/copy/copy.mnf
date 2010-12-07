@@ -3,3 +3,4 @@ description: This test reserves two segments, write data to the first one, copie
 symbol: test_core_segment_copy
 signature: t9030awfoir4oj39t34
 output:
+points: 2

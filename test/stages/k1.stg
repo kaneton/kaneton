@@ -5,12 +5,14 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/grades/k3.grd
+# file          /home/mycure/KANETON-TEST-SYSTEM/stages/k1.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [tue nov  2 22:23:36 2010]
+# updated       julien quintard   [tue dec  7 15:38:19 2010]
 #
 
+name: k1
+description: This stage evaluates the kaneton's event procesing capabilities.
 configurations:
   - name: QEMU
     platform: ibm-pc
@@ -18,7 +20,7 @@ configurations:
     environments:
       construct: xen
       stress: qemu
-    suite: k2
+    suite: k1
     weight: 0.2
   - name: Xen
     platform: ibm-pc
@@ -26,9 +28,5 @@ configurations:
     environments:
       construct: xen
       stress: xen
-    suite: k2
+    suite: k1
     weight: 0.8
-points:
-  - k1
-  - k2
-  - k3

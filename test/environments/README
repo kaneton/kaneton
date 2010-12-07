@@ -1,0 +1,17 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/KANETON-TEST-SYSTEM/environments/README
+#
+# created       julien quintard   [tue nov  2 06:01:29 2010]
+# updated       julien quintard   [sun dec  5 22:16:37 2010]
+#
+
+The environment file describes an environment in which a kaneton
+implementation can be tested.
+
+Every environment is described through a name and description string.

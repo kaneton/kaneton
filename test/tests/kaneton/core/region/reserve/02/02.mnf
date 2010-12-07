@@ -3,3 +3,4 @@ description: This test reserves a segment which is mapped in a new task's addres
 symbol: test_core_region_reserve_02
 signature: 0923i0f9weaaaaawe392
 output:
+points: 2

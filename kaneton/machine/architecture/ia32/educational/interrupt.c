@@ -283,30 +283,44 @@ static void		spurious_interrupt(i_event			id)
   i_thread		th;
   o_task*		o;
   t_ia32_context	ctx;
+  o_thread*		othread;
 
   assert(ia32_context_ring0_stack() == ERROR_OK);
 
   if (scheduler_current(&th) != ERROR_OK ||
       ia32_get_context(th, &ctx) != ERROR_OK)
     {
-      printf("Unhandled exception %qu\n", id);
+      module_call(console, print,
+		  "Unhandled exception %qu\n", id);
       return;
     }
 
-  printf("Unhandled exception %qu @ %p\n", id, ctx.eip);
-  printf("eflags=%08x\tcs=%04x\tds=%04x\tss=%04x\n", ctx.eflags,
-	 ctx.cs, ctx.ds, ctx.ss);
-  printf("%%eax=%08x\t%%ebx=%08x\n", ctx.eax, ctx.ebx);
-  printf("%%ecx=%08x\t%%edx=%08x\n", ctx.ecx, ctx.edx);
-  printf("%%esi=%08x\t%%edi=%08x\n", ctx.esi, ctx.edi);
-  printf("%%esp=%08x\t%%ebp=%08x\n", ctx.esp, ctx.ebp);
+  module_call(console, print,
+	      "Unhandled exception %qu @ %p\n", id, ctx.eip);
+  module_call(console, print,
+	      "eflags=%08x\tcs=%04x\tds=%04x\tss=%04x\n", ctx.eflags,
+	      ctx.cs, ctx.ds, ctx.ss);
+  module_call(console, print,
+	      "%%eax=%08x\t%%ebx=%08x\n", ctx.eax, ctx.ebx);
+  module_call(console, print,
+	      "%%ecx=%08x\t%%edx=%08x\n", ctx.ecx, ctx.edx);
+  module_call(console, print,
+	      "%%esi=%08x\t%%edi=%08x\n", ctx.esi, ctx.edi);
+  module_call(console, print,
+	      "%%esp=%08x\t%%ebp=%08x\n", ctx.esp, ctx.ebp);
 
-  if (task_current(&tsk) == ERROR_OK &&
-      task_get(tsk, &o) == ERROR_OK &&
-      as_read(o->as, ctx.esp, 32, stack) == ERROR_OK)
+  if (thread_get(th, &othread) != ERROR_OK)
+    return;
+
+  if (task_get(othread->task, &o) != ERROR_OK)
+    return;
+
+  if (as_read(o->as, ctx.esp, 32, stack) == ERROR_OK)
     {
-      printf("%08x %08x %08x %08x\n", stack[0], stack[1], stack[2], stack[3]);
-      printf("%08x %08x %08x %08x\n", stack[4], stack[5], stack[6], stack[7]);
+      module_call(console, print,
+		  "%08x %08x %08x %08x\n", stack[0], stack[1], stack[2], stack[3]);
+      module_call(console, print,
+		  "%08x %08x %08x %08x\n", stack[4], stack[5], stack[6], stack[7]);
     }
 
   while (1)

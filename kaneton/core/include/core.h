@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/core.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [fri nov 26 16:31:04 2010]
+ * updated       julien quintard   [sat dec  4 23:05:04 2010]
  */
 
 #ifndef CORE_CORE_H
@@ -79,7 +79,7 @@
 
 #define CORE_ESCAPE(_format_, _arguments_...)				\
   {									\
-    module_call(report, report_record,					\
+    module_call(report, record,						\
 		_format_ " (%s:%u)",					\
 		##_arguments_, __FUNCTION__, __LINE__);			\
     									\

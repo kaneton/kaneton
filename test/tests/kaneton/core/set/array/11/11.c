@@ -61,16 +61,16 @@ void			test_core_set_array_11(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   set_foreach(SET_OPTION_BACKWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_OK)
         TEST_ERROR("[set_object] error");
 
       if (*pdata != --i)
-	printf("invalid order for the element %qu\n", *pdata);
+	TEST_PRINT("invalid order for the element %qu\n", *pdata);
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   /*
    * release

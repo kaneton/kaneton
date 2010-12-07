@@ -3,3 +3,4 @@ description: This test creates a task with a single thread which spawns another 
 symbol: test_core_scheduler_complete_01
 signature: weiofjwc39fw30gi99ccwseifvwb09giifawooierwg
 output:
+points: 4

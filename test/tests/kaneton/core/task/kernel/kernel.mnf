@@ -3,3 +3,4 @@ description: This test creates a kernel-class task with which a segment is share
 symbol: test_core_task_kernel
 signature: fwe90gevzdvmcw0egdv90wsifc3rfi43g09i34
 output:
+points: 2

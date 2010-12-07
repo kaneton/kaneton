@@ -3,3 +3,4 @@ description: This test creates several tasks with address spaces, retrieves the 
 symbol: test_architecture_event_map
 signature: cmnweiovw0fg934gh
 output:
+points: 2

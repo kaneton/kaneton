@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/data/data.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:24:15 2010]
+ * updated       julien quintard   [sun dec  5 20:01:34 2010]
  */
 
 /*
@@ -30,7 +30,7 @@ static volatile int	thrown = 0;
  */
 
 void			test_architecture_event_data_handler(t_id	id,
-						     t_vaddr	pv)
+							     t_vaddr	pv)
 {
   thrown = 1;
   

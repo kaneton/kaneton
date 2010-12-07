@@ -3,3 +3,4 @@ description: This test creates a service-class task with which a segment is shar
 symbol: test_core_task_service
 signature: 90cwscfmwefw32g9f0veofo23w9fri92309gig
 output:
+points: 3

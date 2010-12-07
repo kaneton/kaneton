@@ -3,3 +3,4 @@ description: This test reserves a basic set, releases it and then reserves other
 symbol: test_core_set_pipe_01
 signature: f09ig390390iqawf
 output:
+points: 1

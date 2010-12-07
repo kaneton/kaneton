@@ -3,3 +3,4 @@ description: This test reserves a basic set, releases it and then reserves anoth
 symbol: test_core_set_array_01
 signature: df093fiwg093h
 output:
+points: 1

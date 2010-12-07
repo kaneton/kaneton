@@ -8,20 +8,30 @@
  * file          /home/mycure/kane...STABLE/kaneton/modules/forward/forward.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [wed nov 24 15:45:52 2010]
+ * updated       julien quintard   [sun dec  5 15:51:03 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements a module which forwards everything displayed text
- * to the serial line.
+ * this file implements a module which forwards everything text displayed
+ * through the console module to the serial line.
  *
- * this module is not portable as it relies on the ibm-pc platform.
- *
- * besides, this module also relies on the console module in order
- * to forward the call to console as well, such as console_message() etc.
+ * this module is only partially portable as it relies on the platform
+ * serial functionality.
  */
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#if !defined(MODULE_console)
+# warning "the 'forward' module depends upon the 'console' module"
+#endif
+
+#if defined(MODULE_test)
+# error "the 'test' module cannot be activated with the 'forward' module"
+#endif
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -44,13 +54,27 @@ m_module_forward	_module_forward;
  */
 
 /*
- * this function sends some text.
+ * this function forces the module to send the buffered and given text to
+ * the serial line.
+ *
+ * steps:
+ *
+ * 1) flush the buffer hence forcing it to be sent to the serial line.
+ * 2) send the given message to the serial line.
  */
 
 t_error			module_forward_send(char*		message,
 					    t_uint32		length)
 {
+  /*
+   * 1)
+   */
+
   module_forward_flush();
+
+  /*
+   * 2)
+   */
 
   platform_serial_write(PLATFORM_SERIAL_PRIMARY,
 			(t_uint8*)message,
@@ -60,22 +84,44 @@ t_error			module_forward_send(char*		message,
 }
 
 /*
- * this function flushes the pending text by sending a text message
- * before reinitializing the buffer.
+ * this function flushes the pending text by sending the buffered text before
+ * reinitializing the buffer.
+ *
+ * steps:
+ *
+ * 1) if there is nothing in the buffer, leave.
+ * 2) send the buffered text. note that the size if first set to zero
+ *    in order to avoid infinite loops since the send() function will
+ *    call the flush() function
+ * 3) reset the buffer.
  */
 
 t_error			module_forward_flush(void)
 {
-  t_uint32		size = _module_forward.size;
+  t_uint32		size;
+
+  /*
+   * 1)
+   */
+
+  size = _module_forward.size;
 
   if (_module_forward.size == 0)
     MODULE_LEAVE();
+
+  /*
+   * 2)
+   */
 
   _module_forward.size = 0;
 
   if (module_forward_send(_module_forward.buffer,
 			  size) != ERROR_OK)
     MODULE_ESCAPE("unable to send the buffer to the serial line");
+
+  /*
+   * 3)
+   */
 
   memset(_module_forward.buffer,
 	 0x0,
@@ -85,17 +131,26 @@ t_error			module_forward_flush(void)
 }
 
 /*
- * this function adds a single character to the buffer. this function
- * is used by printf_init() so that printf() uses it every time
- * it needs to print a character, that this function actually buffers.
+ * this function adds a single character to the buffer.
  *
- * then, whenever the buffer is full or the character '\n' is received,
- * the buffer is flushed into a text message.
+ * steps:
+ *
+ * 1) add the character to the buffer.
+ * 2) whenever the buffer is full or the character '\n' is received, the
+ *    buffer is flushed into a text message.
  */
 
-int			module_forward_write(char			c)
+int			module_forward_character(char			c)
 {
+  /*
+   * 1)
+   */
+
   _module_forward.buffer[_module_forward.size++] = c;
+
+  /*
+   * 2)
+   */
 
   if ((_module_forward.size >= (sizeof(_module_forward.buffer) - 1)) ||
       (c == '\n'))
@@ -105,28 +160,51 @@ int			module_forward_write(char			c)
 }
 
 /*
- * this function just initializes the forward.
+ * this function loads the module.
+ *
+ * steps:
+ *
+ * 1) display a message.
+ * 2) initialize the platform serial line.
+ * 3) initialize the console module in order to receive everything.
  */
 
-t_error			module_forward_initialize(void)
+t_error			module_forward_load(void)
 {
-  module_call(console, console_message,
-	      '+', "forward module loaded\n");
+  /*
+   * 1)
+   */
+
+  module_call(console, message,
+	      '+', "loading the 'forward' module\n");
+
+  /*
+   * 2)
+   */
 
   platform_serial_setup(PLATFORM_SERIAL_PRIMARY,
 			PLATFORM_SERIAL_BR57600,
 			PLATFORM_SERIAL_8N1);
 
-  printf_init(module_forward_write, NULL);
+  /*
+   * 3)
+   */
+
+  module_call(console, set,
+	      module_forward_character,
+	      NULL);
 
   MODULE_LEAVE();
 }
 
 /*
- * this function cleans everything.
+ * this function unloads the module.
  */
 
-t_error			module_forward_clean(void)
+t_error			module_forward_unload(void)
 {
+  module_call(console, message,
+	      '+', "unloading the 'forward' module\n");
+
   MODULE_LEAVE();
 }

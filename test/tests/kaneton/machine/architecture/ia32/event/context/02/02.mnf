@@ -3,3 +3,4 @@ description: This test reserves an event slot and manually triggers this event. 
 symbol: test_architecture_event_context_02
 signature: twjvviw094g398w2ur2
 output:
+points: 5

@@ -5,24 +5,21 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/grades/README
+# file          /home/mycure/KANETON-TEST-SYSTEM/stages/README
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [tue nov  2 07:38:18 2010]
+# updated       julien quintard   [sun dec  5 20:40:26 2010]
 #
 
-The grade files specify grading rules through a set a configurations and a set
-of points associated with tests.
+The stage files specify grading rules through a set a configurations
+associated with tests.
 
 Every test configuration specifies the emulated environment in which the
 image construction and kernel stressing process must occur, along with the
-platform and architecture of the kernel to test. the suite indicates the
+platform and architecture of the kernel to test. The suite indicates the
 test suite to use for the stressing process. Finally, the weight attribute
 indicates how important this configuration is in the final grade.
 
 For every configuration, the kaneton snapshot is tested after the given
 test suite, leading to a set of reports. For every report and every
 successful test, points are added to the grade.
-
-The points section contains the names of the point files. For more
-information on these files, please refer to the points/ directory.

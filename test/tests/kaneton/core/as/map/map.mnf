@@ -3,3 +3,4 @@ description: This test reserves an address space in a new task and allocates sev
 symbol: test_core_as_map
 signature: 9i32aaaaaigfjergj39g
 output:
+points: 2

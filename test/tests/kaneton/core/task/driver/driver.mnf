@@ -3,3 +3,4 @@ description: This test creates a driver-class task with which a segment is share
 symbol: test_core_task_driver
 signature: vnweoiwf30f9i3gi390dfi23jwmelcewgkweg
 output:
+points: 3

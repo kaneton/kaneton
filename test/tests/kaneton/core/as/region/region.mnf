@@ -3,3 +3,4 @@ description: This test allocates several segments and regions in a new task's ad
 symbol: test_core_as_region
 signature: r32iijogdpzfepwg0t
 output:
+points: 2

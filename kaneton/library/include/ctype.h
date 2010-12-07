@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/library/include/ctype.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/library/include/ctype.h
  *
  * created       julien quintard   [sun jun 10 17:35:42 2007]
- * updated       matthieu bucchianeri   [sat sep  1 13:13:58 2007]
+ * updated       julien quintard   [sun dec  5 15:55:58 2010]
  */
 
-#ifndef LIBC_LIBSTRING_CTYPE_H
-#define LIBC_LIBSTRING_CTYPE_H		1
+#ifndef LIBRARY_CTYPE_H
+#define LIBRARY_CTYPE_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------

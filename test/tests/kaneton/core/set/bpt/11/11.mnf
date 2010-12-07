@@ -3,3 +3,4 @@ description: This test reserves a set, adds many objects and display the content
 symbol: test_core_set_bpt_11
 signature: vmlke4f922g43
 output: "130 elements: \n"
+points: 3

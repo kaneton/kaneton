@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton.STABLE/view/book/development/test.tex
 %
 % created       julien quintard   [thu may 24 12:18:23 2007]
-% updated       julien quintard   [wed nov 24 09:10:39 2010]
+% updated       julien quintard   [sat dec  4 14:26:19 2010]
 %
 
 %
@@ -86,12 +86,8 @@ administrator and the server running the test system.
     \name{k0}, \name{k1}, \name{k2} etc{};
   \item
     The administrator can decide to evaluate the snapshots which have been
-    submitted for a stage by invoking a script which will attribute grade
-    points to tests according to a \name{point} file;
-  \item
-    These grade points are then compiled into a final grade which is
-    normalised according to a \name{reference} maximal grade, $20$ for
-    instance;
+    submitted for a stage by invoking a script which will attribute grades
+    according to the \textit{point}s associated with every test.
   \item
     Finally, a \name{statement} is produced containing the grades of every
     student for a given stage.
@@ -106,7 +102,7 @@ a student who uses it in order to improve and/or evaluate his implementation.
 %
 \subsubsection{Administrator}
 
-The administrator is reponsible for setting up the system but also maintaining
+The administrator is responsible for setting up the system but also maintaining
 it on a daily basis.
 
 % requirements
@@ -127,6 +123,10 @@ may be out of date by the time the administrator sets it up. In addition,
 the system depends on a variety of \name{Python} packages including
 \name{argparse}, \name{yaml}, \name{pyopenssl}, \name{hmac}, \name{pickle},
 \name{xmlrpc}, \name{subprocess} among others.
+
+Finally, the administrator should make sure the following applications
+are installed since some test scripts need them: \name{dd}, \name{mkfs.ext2},
+\name{mount}, \name{umount}, \name{mutt} and \name{mkisofs}.
 
 % set up
 \subsubsubsection{Set Up}
@@ -270,9 +270,6 @@ case, include the following absolutely necessary items:
     The \location{test/grades/} directory which contains the files requirement
     for evaluating the students' snapshots;
   \item
-    The \location{test/hooks/} directory which contains the scripts for
-    constructing and stressing kaneton snapshots;
-  \item
     The \location{test/images/} directory which contains a script for
     automatically generating a \name{Debian Live} system which is used
     for compiling a kaneton snapshot into a bootable image;
@@ -280,12 +277,8 @@ case, include the following absolutely necessary items:
     The \location{test/packages/} directory which contains the \name{ktp -
     Kaneton Test Package} required by the server-side standalone scripts
     for manipulating files such as databases, capabilities \etc{} but also
-    to perform cryptographic operations and send/receive \name{XMLRPC}
+    for performing cryptographic operations and send/receive \name{XMLRPC}
     requests;
-  \item
-    The \location{test/points/} directory which contains files specifying
-    the number of points associated with every test. These files are necessary
-    to the evaluation process;
   \item
     The \location{test/scripts/} directory which contains the fundamental
     scripts for building bootable images, distributing the capabilities to
@@ -306,7 +299,7 @@ in the \location{test/server/} directory, as shown below:
 
 \begin{verbatim}
   $> ./server.py
-  [information] serving on 88.191.84.128:8421
+  [meta] serving on 88.191.84.128:8421
 \end{verbatim}
 
 Note that a few additional steps may be required depending on the current state
@@ -324,14 +317,16 @@ pre-compiled in order to prevent leaking information since students could
 very well dump the content of those tests and force the compilation to fail,
 hence retrieving the source code in the compilation process' error log.
 
-In order to generate such a bundle, the administrator must first activate
-the \name{test} module in his environment profile and then move to the
-\location{test/tests/} and launch a compilation process through the following
-command:
+In order to generate such a bundle, the administrator must move to the
+\location{test/tests/} directory and launch a compilation process through
+the following command:
 
 \begin{verbatim}
   $> make
 \end{verbatim}
+
+Once generated, the test bundle, located in \location{store/bundle/[machine]/}
+must be copied to the server, at the same location.
 
 Finally, for more information on the server script, please refer to the
 \location{test/server/} directory.
@@ -364,7 +359,6 @@ building and testing the received kaneton snapshots.
   $> ./construct.py --snapshot kaneton.tar.bz2                          \
                     --image kaneton.img                                 \
                     --environment xen                                   \
-                    --architecture `ia32/educational'
   the kaneton image has been constructed in 'kaneton.img'
   $> ./stress.py --image kaneton.img                                    \
                  --suite k2                                             \
@@ -386,9 +380,50 @@ especially through the following command:
   $> qemu -fda kaneton.img -curses
 \end{verbatim}
 
-The \name{evaluate} script can be used by the administrator in order
-to assign grades to the snapshots submitted by the students. The script
-generates a statement containing the results of this evaluation process.
+Besides, note that an administrator willing to include a new test in the
+system would probably want to test it locally first since testing through
+the server takes some time. In order to test locally, the administrator
+must first activate the console and test modules in its user profile
+\location{environment/profile/user/\${KANETON\_USER}/\${KANETON\_USER}.conf}:
+
+\begin{verbatim}
+  _MODULES_               +=              console test
+\end{verbatim}
+
+Then, the administrator must trigger the test by calling the test function
+manually in its kaneton implementation. For instance, in order to trigger
+the \name{kaneton/core/task/guest} test, the administrator could add the
+following line after \code{kernel\_initialize()} and before running the
+test system in \location{kaneton/core/core.c}:
+
+\begin{verbatim}
+  [...]
+
+  module_call(console, console_message,
+              '+', "starting the kernel\n");
+
+  assert(kernel_initialize() == ERROR_OK);
+
+  /* XXX[temporary] */
+  test_core_task_guest();
+
+  module_call(test, test_run);
+
+  [...]
+\end{verbatim}
+
+Once the kaneton image rebuilt, the administrator can boot it locally
+through \name{QEMU} and get the output, hence check that the test went
+as excepted:
+
+\begin{verbatim}
+  $> qemu -fda environment/profile/user/${KANETON_USER}/${KANETON_USER}.img
+\end{verbatim}
+
+Back to the server side, the \name{evaluate} script can be used by the
+administrator in order to assign grades to the snapshots submitted by the
+students. The script generates a statement containing the results of this
+evaluation process.
 
 \begin{verbatim}
   $> ./evaluate.py --stage k2                                           \
@@ -452,10 +487,10 @@ described below.
 
   [!] commands:
   [!]   information
-  [!]   submit [stage]
-  [!]   test [environment] [suite]
+  [!]   submit-[stage]
+  [!]   test-[environment]::[suite]
   [!]   list
-  [!]   display [identifier]
+  [!]   display-[identifier]
   $>
 \end{verbatim}
 
@@ -546,16 +581,11 @@ as expected.
   [+]   platform:               ibm-pc
   [+]   architecture:           ia32/educational
 
-  [+] report(20101103-140601):
+  [+] report(20101103:140601):
   [+]   segment                                                           [1/1]
   [+]   id                                                                [3/3]
   $> 
 \end{verbatim}
-
-Note that should the kernel crash or hang, the whole test suite whould be
-considered as having completely failed. Students should therefore be extremely
-careful to test and submit snapshots that have been thoroughly tested manually
-beforehand.
 
 The \name{list} command enables the user to display the identifiers of the
 reports in the local store.
@@ -563,7 +593,7 @@ reports in the local store.
 \begin{verbatim}
   $> make list
   [+] reports:
-  [+]   20101103-140601:
+  [+]   20101103:140601:
   [+]     xen :: ibm-pc :: ia32/educational :: k2 :: 2010/11/03 14:06:01
 \end{verbatim}
 
@@ -571,7 +601,7 @@ The \name{display} command gives the user the possibility to dump a locally
 stored report in a very detailed way.
 
 \begin{verbatim}
-  $> make display-20101103-140601
+  $> make display-20101103:140601
   [+] report:
   [+]   meta:
   [+]     platform:               ibm-pc
@@ -579,7 +609,7 @@ stored report in a very detailed way.
   [+]     architecture:           ia32/educational
   [+]     duration:               63.499
   [+]     suite:                  k2
-  [+]     identifier:             20101103-140601
+  [+]     identifier:             20101103:140601
   [+]     environments:
   [+]       stress:               xen
   [+]       construct:            xen

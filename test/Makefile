@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [mon nov 29 16:53:04 2010]
+# updated       julien quintard   [sun dec  5 20:06:55 2010]
 #
 
 #
@@ -40,7 +40,6 @@ SUBDIRS			:=		client				\
 					hooks				\
 					images				\
 					packages			\
-					points				\
 					scripts				\
 					server				\
 					store				\

@@ -3,3 +3,4 @@ description: This test creates eight threads with increasing priorities. The tes
 symbol: test_core_scheduler_priority_02
 signature: 09fiwfmcv0i3f2waf09mccc2q3d09wg93h34
 output:
+points: 3

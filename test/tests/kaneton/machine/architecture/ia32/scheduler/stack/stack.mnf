@@ -3,3 +3,4 @@ description: This test spawns two threads which record their current stack point
 symbol: test_architecture_scheduler_stack
 signature: f03fj23f09g230g2nweof32w9ri3gkjehk
 output:
+points: 2

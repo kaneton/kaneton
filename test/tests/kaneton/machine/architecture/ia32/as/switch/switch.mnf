@@ -3,3 +3,4 @@ description: This tests reserves two regions in a newly created address space, a
 symbol: test_architecture_as_switch
 signature: vsdowkf43g3hg3g30hg
 output:
+points: 3

@@ -16,60 +16,12 @@
 #include <library/library.h>
 
 /*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define GET_VAL(Sign)							\
-  if (quadflag)								\
-    quadvalue = va_arg(args, quad_t);					\
-  else									\
-    {									\
-      if ((Sign))							\
-	{								\
-	  if (longflag)							\
-	    quadvalue = (u_quad_t) va_arg(args, long);			\
-	  else								\
-	    quadvalue = (u_quad_t) va_arg(args, int);			\
-	}								\
-      else								\
-	if (longflag)							\
-	  quadvalue = (u_quad_t) va_arg(args, unsigned long);		\
-	else								\
-	  quadvalue = (u_quad_t) va_arg(args, unsigned int);		\
-    }
-
-#define PRINTF_LADJUST		0x1
-#define PRINTF_ZPAD		0x2
-#define PRINTF_DOT		0x4
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-#define PRINTF_SWAP(_i1_, _i2_)						\
-  {									\
-    int		_tmp_;							\
-									\
-    _tmp_ = (_i1_);							\
-    (_i1_) = (_i2_);							\
-    (_i2_) = _tmp_;							\
-  }
-
-/* XXX */
-#define fprintf(_stream_, _args_...) printf(_args_)
-
-/*
- * ---------- globals ---------------------------------------------------------
- */
-
-t_printf_char_fn	printf_char = NULL;
-t_printf_attr_fn	printf_attr = NULL;
-
-/*
  * ---------- functions -------------------------------------------------------
  */
 
-int			printf_string(char*			string,
+int			format_string(t_format_character_fn	character,
+				      t_format_attribute_fn	attribute,
+				      char*			string,
 				      unsigned int		flags,
 				      int			len1,
 				      int			len2)
@@ -81,41 +33,56 @@ int			printf_string(char*			string,
   written = 0;
 
   if (string == NULL)
-    return (printf_string("(null)", flags, len1, len2));
+    return (format_string(character, attribute,
+			  "(null)", flags, len1, len2));
 
   for (i = 0; string[i]; i++)
     ;
 
-  if (!(flags & PRINTF_DOT))
+  if (!(flags & FORMAT_DOT))
     {
       padlen = len1 - i;
 
       if (padlen < 0)
 	padlen = 0;
 
-      if (flags & PRINTF_LADJUST)
+      if (flags & FORMAT_LADJUST)
 	padlen = -padlen;
 
       for (; padlen > 0; padlen--)
-	if (printf_char != NULL)
-	  written += printf_char(' ');
+	if (character != NULL)
+	  {
+	    character(' ');
+
+	    written++;
+	  }
     }
 
   for (i = 0; (string[i] != 0) && (i < (len1 != -1 ? len1 : i + 1)); i++)
-    if (printf_char != NULL)
-      written += printf_char(string[i]);
+    if (character != NULL)
+      {
+	character(string[i]);
 
-  if (!(flags & PRINTF_DOT))
+	written++;
+      }
+
+  if (!(flags & FORMAT_DOT))
     {
       for (; padlen < 0; padlen++)
-	if (printf_char != NULL)
-	  written += printf_char(' ');
+	if (character != NULL)
+	  {
+	    character(' ');
+
+	    written++;
+	  }
     }
 
   return (written);
 }
 
-int			printf_quad(quad_t			value,
+int			format_quad(t_format_character_fn	character,
+				    t_format_attribute_fn	attribute,
+				    quad_t			value,
 				    int				base,
 				    int				hdl_sign,
 				    unsigned int		flags,
@@ -130,8 +97,8 @@ int			printf_quad(quad_t			value,
   u_quad_t		v;
   int			i;
 
-  if (flags & PRINTF_DOT)
-    PRINTF_SWAP(len1, len2);
+  if (flags & FORMAT_DOT)
+    FORMAT_SWAP(len1, len2);
 
   written = 0;
   caps = 0;
@@ -165,50 +132,76 @@ int			printf_quad(quad_t			value,
   if (padlen < 0)
     padlen = 0;
 
-  if (flags & PRINTF_LADJUST)
+  if (flags & FORMAT_LADJUST)
     padlen = -padlen;
 
-  if ((flags & PRINTF_ZPAD) && (padlen > 0))
+  if ((flags & FORMAT_ZPAD) && (padlen > 0))
     {
       if (sign)
 	{
-	  if (printf_char != NULL)
-	    written += printf_char(sign);
+	  if (character != NULL)
+	    {
+	      character(sign);
+
+	      written++;
+	    }
 	  sign = 0;
 	  padlen--;
 	}
 
       for (; padlen > 0; padlen--)
-	if (printf_char != NULL)
-	  written += printf_char('0');
+	if (character != NULL)
+	  {
+	    character('0');
+
+	    written++;
+	  }
     }
 
   if (padlen > 0)
     {
       for (; padlen > 0; padlen--)
-	if (printf_char != NULL)
-	  written += printf_char(' ');
+	if (character != NULL)
+	  {
+	    character(' ');
+
+	    written++;
+	  }
     }
 
   if (sign)
-    if (printf_char != NULL)
-      written += printf_char(sign);
+    if (character != NULL)
+      {
+	character(sign);
+
+	written++;
+      }
 
   for (i--; i >= 0; i--)
-    if (printf_char != NULL)
-      written += printf_char(convert[i]);
+    if (character != NULL)
+      {
+	character(convert[i]);
+
+	written++;
+      }
 
   for (; padlen < 0; padlen++)
     {
-      if (printf_char != NULL)
-	written += printf_char(' ');
+      if (character != NULL)
+	{
+	  character(' ');
+
+	  written++;
+	}
     }
 
   return (written);
 }
 
-int			vprintf(const char*			fmt,
-				va_list				args)
+int			format(t_format_character_fn		character,
+			       t_format_attribute_fn		attribute,
+			       const char*			fmt,
+			       va_list				args)
 {
   quad_t		quadvalue;
   char			charvalue;
@@ -252,7 +245,7 @@ int			vprintf(const char*			fmt,
 		}
 	      case '-':
 		{
-		  flags |= PRINTF_LADJUST;
+		  flags |= FORMAT_LADJUST;
 		  goto _next_char_;
 		}
 	      case '*':
@@ -265,7 +258,7 @@ int			vprintf(const char*			fmt,
 		{
 		  len2 = len1;
 		  len1 = -1;
-		  flags |= PRINTF_DOT;
+		  flags |= FORMAT_DOT;
 
 		  goto _next_char_;
 		}
@@ -273,12 +266,12 @@ int			vprintf(const char*			fmt,
 		{
 		  if (starflag)
 		    {
-		      flags |= PRINTF_ZPAD;
+		      flags |= FORMAT_ZPAD;
 		      goto _next_char_;
 		    }
 
 		  if (len1 == -1)
-		    flags |= PRINTF_ZPAD;
+		    flags |= FORMAT_ZPAD;
 		}
 	      case '1': case '2': case '3':
 	      case '4': case '5': case '6':
@@ -303,55 +296,61 @@ int			vprintf(const char*			fmt,
 		{
 		  charvalue = (char) va_arg(args, int);
 
-		  if (printf_attr != NULL)
-		    printf_attr(charvalue);
+		  if (attribute != NULL)
+		    attribute(charvalue);
 
 		  break;
 		}
 	      case 'b':
 		{
-		  GET_VAL(0);
-		  written += printf_quad(quadvalue, 2, 0, flags,
+		  FORMAT_VALUE(0);
+		  written += format_quad(character, attribute,
+					 quadvalue, 2, 0, flags,
 					 len1, len2);
 
 		  break;
 		}
 	      case 'd': case 'i': case 'D':
 		{
-		  GET_VAL(1);
-		  written += printf_quad(quadvalue, 10, 1, flags,
+		  FORMAT_VALUE(1);
+		  written += format_quad(character, attribute,
+					 quadvalue, 10, 1, flags,
 					 len1, len2);
 
 		  break;
 		}
 	      case 'u': case 'U':
 		{
-		  GET_VAL(0);
-		  written += printf_quad(quadvalue, 10, 0, flags,
+		  FORMAT_VALUE(0);
+		  written += format_quad(character, attribute,
+					 quadvalue, 10, 0, flags,
 					 len1, len2);
 
 		  break;
 		}
 	      case 'o': case 'O':
 		{
-		  GET_VAL(0);
-		  written += printf_quad(quadvalue, 8, 0, flags,
+		  FORMAT_VALUE(0);
+		  written += format_quad(character, attribute,
+					 quadvalue, 8, 0, flags,
 					 len1, len2);
 
 		  break;
 		}
 	      case 'p': case 'x':
 		{
-		  GET_VAL(0);
-		  written += printf_quad(quadvalue, 16, 0, flags,
+		  FORMAT_VALUE(0);
+		  written += format_quad(character, attribute,
+					 quadvalue, 16, 0, flags,
 					 len1, len2);
 
 		  break;
 		}
 	      case 'X':
 		{
-		  GET_VAL(0);
-		  written += printf_quad(quadvalue, -16, 0, flags,
+		  FORMAT_VALUE(0);
+		  written += format_quad(character, attribute,
+					 quadvalue, -16, 0, flags,
 					 len1, len2);
 
 		  break;
@@ -360,7 +359,8 @@ int			vprintf(const char*			fmt,
 		{
 		  strvalue = va_arg(args, char*);
 
-		  written += printf_string(strvalue, flags,
+		  written += format_string(character, attribute,
+					   strvalue, flags,
 					   len1, len2);
 
 		  break;
@@ -369,24 +369,34 @@ int			vprintf(const char*			fmt,
 		{
 		  charvalue = va_arg(args, int);
 
-		  if (printf_char != NULL)
-		    written += printf_char(charvalue);
+		  if (character != NULL)
+		    {
+		      character(charvalue);
+
+		      written++;
+		    }
 
 		  break;
 		}
 	      case '%':
 		{
-		  if (printf_char != NULL)
-		    written += printf_char(c);
+		  if (character != NULL)
+		    {
+		      character(c);
+
+		      written++;
+		    }
 
 		  break;
 		}
 	      default:
 		{
-		  if (printf_char != NULL)
+		  if (character != NULL)
 		    {
-		      written += printf_char('%');
-		      written += printf_char(fmt[i]);
+		      character('%');
+		      character(fmt[i]);
+
+		      written += 2;
 		    }
 		}
 	      }
@@ -395,36 +405,16 @@ int			vprintf(const char*			fmt,
 	  }
 	default:
 	  {
-	    if (printf_char != NULL)
-	      written += printf_char(fmt[i]);
+	    if (character != NULL)
+	      {
+		character(fmt[i]);
+
+		written++;
+	      }
 	    break;
 	  }
 	}
     }
-
-  va_end(args);
-
-  return (written);
-}
-
-int			printf_init(t_printf_char_fn		pc,
-				    t_printf_attr_fn		pa)
-{
-  printf_char = pc;
-  printf_attr = pa;
-
-  return (0);
-}
-
-int			printf(char*				fmt,
-			       ...)
-{
-  unsigned int		written;
-  va_list		args;
-
-  va_start(args, fmt);
-
-  written = vprintf(fmt, args);
 
   va_end(args);
 

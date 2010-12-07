@@ -3,3 +3,4 @@ description: This test reserves a segment. The test then writes data to the segm
 symbol: test_core_segment_readwrite_01
 signature: ri09iawefk34hgh
 output:
+points: 2

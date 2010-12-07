@@ -103,8 +103,9 @@ t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt)
       if (!type)
 	type = "Other";
 
-      printf("segment %d, base = 0x%x limit = 0x%x, type = %s\n",
-	     i, seg.base, seg.limit, type);
+      module_call(console, print,
+		  "segment %d, base = 0x%x limit = 0x%x, type = %s\n",
+		  i, seg.base, seg.limit, type);
     }
 
   return ERROR_OK;

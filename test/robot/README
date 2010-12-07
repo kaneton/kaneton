@@ -1,0 +1,26 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/robot/README
+#
+# created       julien quintard   [tue dec  7 21:53:26 2010]
+# updated       julien quintard   [tue dec  7 22:05:05 2010]
+#
+
+The robot enables the contributor to be notified of the state of the current
+research implementation.
+
+The robot script starts by retrieving the current kaneton implementation by
+checking-out the kaneton repository. For this purpose, the SSH keys located
+in the robot/ directory are used. Note that the 'config' SSH file must be
+placed in the ~/.ssh/ directory so that, whenever the script request a
+Subversion operation, the correct keys are used along with the proper user
+identity.
+
+Once the repository checked-out, the script initialize the environment
+and triggers a test through the test client script located in the kaneton
+directory.

@@ -1,0 +1,32 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton.STABLE/test/tests/README
+#
+# created       julien quintard   [sun dec  5 19:29:51 2010]
+# updated       julien quintard   [sun dec  5 19:43:32 2010]
+#
+
+This directory contains tests that will be triggered either manually
+or through the test system. Every test is composed of one or more functions
+though one will act as the test entry point and a test manifest which
+describes the test. The following gives an example of the multiple fileds
+the test system expect to find in those manifests:
+
+  name: A unique name for the test such as 'core/task/kernel'
+  description: A description of the test so that students and contributors can
+               understand what this test does
+  symbol: The name of the test's function entry point such as
+           'test_core_task_kernel'
+  signature: A random sequence that the test is supposed to generate
+  output: The output of the test
+  points: The number of points in the range [1, 5] that are assigned
+          to this test. Note that the difficulty must be evaluated according
+	  to the tests of the same manager i.e the number of points cannot
+	  be used to compare the difficulty between core/id/reserve/01 and
+	  scheduler/complete/02
+

@@ -3,3 +3,4 @@ description: This test allocates adjacent segments before coalescing them. Note 
 symbol: test_core_segment_coalesce
 signature: 043t90iesroikf29hg34h
 output:
+points: 3

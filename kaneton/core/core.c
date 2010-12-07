@@ -63,7 +63,7 @@ i_segment		_system;
  * steps:
  *
  * 1) set the _init variable from the boot loader argument.
- * 2) initialize some fundamental modules.
+ * 2) load some fundamental modules.
  * 3) displays the current kaneton version.
  * 4) set up the fine grained allocator.
  * 5) start the kernel.
@@ -75,7 +75,7 @@ i_segment		_system;
  *    should the execution come back to the kernel, its first task is to
  *    actually disable the events so that the execution does not go away.
  * 10) stop the kernel.
- * 11) clean the loaded modules.
+ * 11) unload the modules.
  * 12) shutdown the system.
  */
 
@@ -91,22 +91,23 @@ void			kaneton(t_init*				bootloader)
    * 2)
    */
 
-  module_call(console, console_initialize);
-  module_call(forward, forward_initialize);
-  module_call(report, report_initialize);
+  module_load(console);
+  module_load(report);
+  module_load(forward);
+  module_load(test);
 
   /*
    * 3)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "%s\n", version);
 
   /*
    * 4)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "setting up the fine-graind memeory allocator\n");
 
   alloc_init(_init->alloc, _init->allocsz);
@@ -115,7 +116,7 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "starting the kernel\n");
 
   assert(kernel_initialize() == ERROR_OK);
@@ -124,13 +125,13 @@ void			kaneton(t_init*				bootloader)
    * 6)
    */
 
-  module_call(test, test_run);
+  module_call(test, run);
 
   /*
    * 7)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "spawning the 'system' server\n");
 
   assert(kaneton_spawn() == ERROR_OK);
@@ -152,7 +153,7 @@ void			kaneton(t_init*				bootloader)
    * 10)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '+', "stopping the kernel\n");
 
   assert(kernel_clean() == ERROR_OK);
@@ -161,9 +162,10 @@ void			kaneton(t_init*				bootloader)
    * 11)
    */
 
-  module_call(console, console_clean);
-  module_call(forward, forward_clean);
-  module_call(report, report_clean);
+  module_unload(test);
+  module_unload(forward);
+  module_unload(report);
+  module_unload(console);
 
   /*
    * 12)

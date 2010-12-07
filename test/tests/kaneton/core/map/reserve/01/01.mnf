@@ -3,3 +3,4 @@ description: This test reserves a single map, writes data and verifies it.
 symbol: test_core_map_reserve_01
 signature: fjerioj32t4o330a0
 output:
+points: 1

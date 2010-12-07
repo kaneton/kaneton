@@ -71,7 +71,9 @@ t_error			XXX_ia32_directory_dump(t_paddr		paddr)
   if (XXX_ia32_page_map(paddr, &vaddr) != ERROR_OK)
     return (ERROR_KO);
 
-  printf("[page directory] paddr=0x%08x, vaddr=0x%08x\n", paddr, vaddr);
+  module_call(console, print,
+	      "[page directory] paddr=0x%08x, vaddr=0x%08x\n",
+	      paddr, vaddr);
 
   directory = (t_ia32_directory)vaddr;
 
@@ -100,7 +102,8 @@ t_error			XXX_ia32_table_dump(t_ia32_directory	directory,
   if (XXX_ia32_page_map(paddr, &vaddr) != ERROR_OK)
     return (ERROR_KO);
 
-  printf("  [page table %4u] paddr=0x%08x, vaddr=0x%08x range=[0x%x - 0x%x]\n",
+  module_call(console, print,
+	      "  [page table %4u] paddr=0x%08x, vaddr=0x%08x range=[0x%x - 0x%x]\n",
 	 index,
 	 paddr, vaddr,
 	 index * IA32_PAGE_DIRECTORY_MAX_ENTRIES * PAGESZ,
@@ -112,8 +115,9 @@ t_error			XXX_ia32_table_dump(t_ia32_directory	directory,
     {
       if (table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USED)
 	{
-	  printf("    [page table entry %4u] "
-		 "vaddr=0x%08x, paddr=0x%08x, r/w=%d, user/supervisor=%d, accessed=%d dirty=%d\n",
+	  module_call(console, print,
+		      "    [page table entry %4u] "
+		      "vaddr=0x%08x, paddr=0x%08x, r/w=%d, user/supervisor=%d, accessed=%d dirty=%d\n",
 		 i,
 		 index * IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ + i * PAGESZ,
 		 IA32_BASE(table[i]),
@@ -155,7 +159,8 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
     {
       if (d[i] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_P)
 	{
-	  printf("entry %d\n", i);
+	  module_call(console, print,
+		      "entry %d\n", i);
 
 	  ia32_pt_dump((t_ia32_pte*)(IA32_BASE(d[i])),
 		       i);

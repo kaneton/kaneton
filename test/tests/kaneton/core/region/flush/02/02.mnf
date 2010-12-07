@@ -3,3 +3,4 @@ description: This test reserves several segments and regions in a newly created 
 symbol: test_core_region_flush_02
 signature: r3t04ge0giea9wgggg
 output:
+points: 2

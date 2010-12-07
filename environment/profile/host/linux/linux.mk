@@ -8,7 +8,7 @@
 # file          /home/mycure/kane.../environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [mon nov 29 16:53:39 2010]
+# updated       julien quintard   [sun dec  5 00:02:41 2010]
 #
 
 #
@@ -504,18 +504,4 @@ endef
 
 ifneq ($(call findstring,kaneton,$(components)),)
   _CC_FLAGS_		+=		-D___kaneton$$\kernel
-endif
-
-#
-# test
-#
-
-ifneq ($(call findstring,test/engine,$(components)),)
-  _MODULES_		+=		test
-  _CC_FLAGS_		+=		-DMODULE_test
-endif
-
-ifneq ($(call findstring,test/tests/kaneton,$(components)),)
-  _MODULES_		+=		test
-  _CC_FLAGS_		+=		-DMODULE_test
 endif

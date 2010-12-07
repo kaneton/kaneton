@@ -3,3 +3,4 @@ description: This test reserves a software interrupt event and triggers it. The 
 symbol: test_architecture_event_interrupt_01
 signature: snmvnweg3f90r4geh
 output:
+points: 1

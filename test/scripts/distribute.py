@@ -6,17 +6,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/test/scripts/distribute.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/distribute.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [thu nov  4 00:22:17 2010]
+# updated       julien quintard   [mon dec  6 19:06:14 2010]
 #
 
 #
 # ---------- information ------------------------------------------------------
 #
 # the distribute script takes the set of capabilities--though this set can
-# be controlled through the --pattern option---and sends an email to the
+# be controlled through the '--pattern' option---and sends an email to the
 # capability owner so that it can be used for triggering tests and submitting
 # snapshots.
 #
@@ -83,10 +83,10 @@ def                     Distribute(namespace):
   configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
   # create a configuration file.
-  content = """
+  content = """\
 set realname = "opaak admin"
 set from = "admin@opaak.org"
-set use_from = yes
+set use_from = yes\
 """
 
   # store the temporary mutt configuration file.

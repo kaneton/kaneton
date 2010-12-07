@@ -1,0 +1,7 @@
+#
+# user keypair used for repositories.passeism.org
+#
+
+Host repositories.passeism.org
+  User kaneton:robot
+  IdentityFile robot.prv

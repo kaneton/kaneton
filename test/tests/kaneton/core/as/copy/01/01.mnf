@@ -3,3 +3,4 @@ description: This test creates two tasks, every one with its address space. Seve
 symbol: test_core_as_copy_01
 signature: rr3fiw3w20aafi9gre9g
 output:
+points: 3

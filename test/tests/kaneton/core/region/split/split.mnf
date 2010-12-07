@@ -3,3 +3,4 @@ description: The test starts by allocating a segment and a region mapping it. Th
 symbol: test_core_region_split
 signature: fr309iearbg9hh34h
 output:
+points: 3

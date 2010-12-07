@@ -79,8 +79,9 @@ t_error			ia32_idt_dump(t_ia32_idt*		table)
       if (!type)
 	type = "other";
 
-      printf("gate %d, offset = 0x%x, type = %x\n",
-      i, gate.offset, type);
+      module_call(console, print,
+		  "gate %d, offset = 0x%x, type = %x\n",
+		  i, gate.offset, type);
     }
 
   return ERROR_OK;

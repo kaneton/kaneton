@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/library/Makefile
+# file          /home/mycure/kaneton.STABLE/kaneton/library/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       julien quintard   [fri may  1 02:00:55 2009]
+# updated       julien quintard   [sun dec  5 15:21:00 2010]
 #
 
 #
@@ -38,7 +38,7 @@ LIBRARY_C		:=		alloc.c				\
 					memcpy.c			\
 					memcmp.c			\
 					memset.c			\
-					printf.c			\
+					format.c			\
 					strchr.c			\
 					strcmp.c			\
 					strcpy.c			\

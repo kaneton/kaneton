@@ -138,8 +138,9 @@ t_error			segment_show(i_segment			segid)
    * 4)
    */
 
-  module_call(console, console_message,
-	      '#', "    [%s] %qu :: 0x%08x - 0x%08x %s (%u bytes) in address space %qu\n",
+  module_call(console, message,
+	      '#', "    [%s] %qu :: 0x%08x - 0x%08x %s "
+	      "(%u bytes) in address space %qu\n",
 	      type,
 	      o->id,
 	      o->address,
@@ -189,7 +190,7 @@ t_error			segment_dump(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qu segment(s) from the segment set:\n",
 	      size);
 

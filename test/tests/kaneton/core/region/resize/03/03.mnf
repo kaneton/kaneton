@@ -3,3 +3,4 @@ description: This test reserves a segment and a region. The region is resized an
 symbol: test_core_region_resize_03
 signature: ftr3wg0eeg90w2fg4
 output:
+points: 3

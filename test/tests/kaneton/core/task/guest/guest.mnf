@@ -3,3 +3,4 @@ description: This test creates a guest-class task with which a segment is shared
 symbol: test_core_task_guest
 signature: mvwdfi90r02ig3ghj34nmcoiawqdjqwd32i093g4
 output:
+points: 4

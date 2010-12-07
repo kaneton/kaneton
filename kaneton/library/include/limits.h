@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/lec_l/kaneton/kaneton/library/include/limits.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/library/include/limits.h
  *
  * created       julien quintard   [sun jun 10 17:53:28 2007]
- * updated       laurent lec   [sun mar 30 17:55:59 2008]
+ * updated       julien quintard   [sun dec  5 15:58:53 2010]
  */
 
-#ifndef LIBC_LIBSYS_LIMITS_H
-#define LIBC_LIBSYS_LIMITS_H		1
+#ifndef LIBRARY_LIMITS_H
+#define LIBRARY_LIMITS_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------

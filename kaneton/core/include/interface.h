@@ -63,7 +63,6 @@
 #define INTERFACE_SEGMENT_ATTRIBUTE_ADDRESS 44
 #define INTERFACE_SEGMENT_ATTRIBUTE_SIZE 45
 #define INTERFACE_SEGMENT_ATTRIBUTE_PERMISSIONS 46
-#define INTERFACE_TASK_CURRENT 47
 #define INTERFACE_TASK_RESERVE 49
 #define INTERFACE_TASK_RELEASE 50
 #define INTERFACE_TASK_PRIORITY 51
@@ -554,10 +553,6 @@ typedef struct
 	struct
 	{
 	  i_task	result1;
-	}		task_current;
-	struct
-	{
-	  i_task	result1;
 	}		task_reserve;
 	struct
 	{
@@ -736,8 +731,6 @@ t_error		interface_segment_attribute_address(o_syscall*	message);
 t_error		interface_segment_attribute_size(o_syscall*	message);
 
 t_error		interface_segment_attribute_permissions(o_syscall*	message);
-
-t_error		interface_task_current(o_syscall*	message);
 
 t_error		interface_task_reserve(o_syscall*	message);
 

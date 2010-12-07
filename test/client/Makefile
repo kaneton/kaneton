@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.TETON/test/client/Makefile
+# file          /home/mycure/kaneton.STABLE/test/client/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [tue nov 23 22:53:29 2010]
+# updated       julien quintard   [tue dec  7 17:05:53 2010]
 #
 
 #
@@ -39,6 +39,12 @@ test- test:
 	$(call env_launch,$(_TEST_CLIENT_SCRIPT_),$@,)
 
 test-%:
+	$(call env_launch,$(_TEST_CLIENT_SCRIPT_),$@,)
+
+retest- retest:
+	$(call env_launch,$(_TEST_CLIENT_SCRIPT_),$@,)
+
+retest-%:
 	$(call env_launch,$(_TEST_CLIENT_SCRIPT_),$@,)
 
 list- list:

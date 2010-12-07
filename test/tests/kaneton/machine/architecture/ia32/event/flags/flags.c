@@ -45,7 +45,7 @@ void			test_architecture_event_flags_handler(t_id	id)
                "popl %0"
                : "=g" (eflags));
 
-  printf("[isr] eflags: %s\n",
+  TEST_PRINT("[isr] eflags: %s\n",
 	 (eflags & (1 << 9) ? "enabled" : "disabled"));
 }
 
@@ -68,7 +68,7 @@ void			test_architecture_event_flags_content(void)
                "popl %0"
                : "=g" (eflags));
 
-  printf("[content] eflags: %s\n",
+  TEST_PRINT("[content] eflags: %s\n",
 	 (eflags & (1 << 9) ? "enabled" : "disabled"));
 
   TEST_SIGNATURE(09i2309if09jgjhh3);

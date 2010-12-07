@@ -3,3 +3,4 @@ description: This test reserves a set, adds many objects, flushes the set etc.
 symbol: test_core_set_array_08
 signature: 12szdvf93g9h3h
 output: "0 elements: \n0 elements: \n0 elements: \n"
+points: 3

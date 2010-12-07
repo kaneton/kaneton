@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...STABLE/kaneton/modules/console/console.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec  3 22:57:25 2010]
+ * updated       julien quintard   [sun dec  5 16:36:28 2010]
  */
 
 /*
@@ -16,7 +16,8 @@
  *
  * this file implements the in-kernel console utility.
  *
- * this module is not portable and relies on platform console functionality.
+ * this module is partially portable since it relies on the platform's console
+ * functionality.
  */
 
 /*
@@ -26,33 +27,49 @@
 #include <kaneton.h>
 
 /*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+m_module_console	_module_console;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
 /*
- * this function just clears the console.
+ * this function is called by format() for displaying a character.
  */
 
-void			module_console_clear(void)
+void			module_console_character(char			c)
 {
-  platform_console_clear();
+  if (_module_console.character == NULL)
+    return;
+
+  _module_console.character(c);
 }
 
 /*
- * this function scrolls the screen.
+ * this function is called by format() for setting the attribute.
  */
 
-void			module_console_scroll(t_uint16		lines)
+void			module_console_attribute(t_uint8	attribute)
 {
-  platform_console_scroll(lines);
+  if (_module_console.attribute == NULL)
+    return;
+
+  _module_console.attribute(attribute);
 }
 
 /*
- * this function prints a status message.
+ * this function displays an advanced message.
  *
- * '+' is used for printing information about the execution.
- * '#' is used for printing debug information.
- * '!' is used for printing warning and error messages.
+ * steps:
+ *
+ * 1) display the opening bracket.
+ * 2) display the indicator in a specific color.
+ * 3) display the closing bracket.
+ * 4) display the space.
+ * 5) call the format() function to treat the arguments.
  */
 
 void			module_console_message(char		indicator,
@@ -61,34 +78,191 @@ void			module_console_message(char		indicator,
 {
   va_list		args;
 
+  /*
+   * 1)
+   */
+
+  module_console_attribute(MODULE_CONSOLE_FRONT(MODULE_CONSOLE_BLUE) |
+			   MODULE_CONSOLE_BACK(MODULE_CONSOLE_BLACK) |
+			   MODULE_CONSOLE_BRIGHT);
+
+  module_console_character('[');
+
+  /*
+   * 2)
+   */
+
+  switch (indicator)
+    {
+    case '+':
+      module_console_attribute(MODULE_CONSOLE_FRONT(MODULE_CONSOLE_GREEN) |
+			       MODULE_CONSOLE_BACK(MODULE_CONSOLE_BLACK) |
+			       MODULE_CONSOLE_BRIGHT);
+      break;
+    case '#':
+      module_console_attribute(MODULE_CONSOLE_FRONT(MODULE_CONSOLE_MAGENTA) |
+			       MODULE_CONSOLE_BACK(MODULE_CONSOLE_BLACK) |
+			       MODULE_CONSOLE_BRIGHT);
+      break;
+    case '!':
+      module_console_attribute(MODULE_CONSOLE_FRONT(MODULE_CONSOLE_RED) |
+			       MODULE_CONSOLE_BACK(MODULE_CONSOLE_BLACK) |
+			       MODULE_CONSOLE_BRIGHT);
+      break;
+    }
+
+  module_console_character(indicator);
+
+  /*
+   * 3)
+   */
+
+  module_console_attribute(MODULE_CONSOLE_FRONT(MODULE_CONSOLE_BLUE) |
+			   MODULE_CONSOLE_BACK(MODULE_CONSOLE_BLACK) |
+			   MODULE_CONSOLE_BRIGHT);
+
+  module_console_character(']');
+
+  /*
+   * 4)
+   */
+
+  module_console_attribute(MODULE_CONSOLE_FRONT(MODULE_CONSOLE_WHITE) |
+			   MODULE_CONSOLE_BACK(MODULE_CONSOLE_BLACK) |
+			   MODULE_CONSOLE_BRIGHT);
+
+  module_console_character(' ');
+
+  /*
+   * 5)
+   */
+
   va_start(args, fmt);
 
-  platform_console_message(indicator, fmt, args);
+  format(module_console_character, module_console_attribute,
+	 fmt, args);
 
   va_end(args);
 }
 
 /*
- * this function just initializes the console.
+ * this function prints a formatted text to the screen.
  */
 
-t_error			module_console_initialize(void)
+void			module_console_print(char*		fmt,
+					     ...)
 {
-  if (platform_console_initialize() != ERROR_OK)
-    MODULE_ESCAPE("unable to initialize the platform's console");
+  va_list		args;
 
-  module_call(console, console_message,
-	      '+', "console module loaded\n");
+  va_start(args, fmt);
+
+  format(module_console_character, module_console_attribute,
+	 fmt, args);
+
+  va_end(args);
+}
+
+/*
+ * this function sets the console configuration pointers.
+ */
+
+t_error			module_console_set(f_module_console_character	character,
+					   f_module_console_attribute	attribute)
+{
+  _module_console.character = character;
+  _module_console.attribute = attribute;
 
   MODULE_LEAVE();
 }
 
 /*
- * this function cleans everything.
+ * this function returns the console configuration pointers.
  */
 
-t_error			module_console_clean(void)
+t_error			module_console_get(f_module_console_character*	character,
+					   f_module_console_attribute*	attribute)
 {
+  *character = _module_console.character;
+  *attribute = _module_console.attribute;
+
+  MODULE_LEAVE();
+}
+
+/*
+ * this function loads the module.
+ *
+ * steps:
+ *
+ * 1) initialize the console structure.
+ * 2) initialize the platform console.
+ * 3) set the initialize configuration pointers to forward the calls
+ *    to the platform.
+ * 4) initialize the console attribute.
+ * 5) display a message.
+ */
+
+t_error			module_console_load(void)
+{
+  /*
+   * 1)
+   */
+
+  memset(&_module_console, 0x0, sizeof (m_module_console));
+
+  /*
+   * 2)
+   */
+
+  if (platform_console_initialize() != ERROR_OK)
+    MODULE_ESCAPE("unable to initialize the platform's console");
+
+  /*
+   * 3)
+   */
+
+  module_console_set(platform_console_character,
+		     platform_console_attribute);
+
+  /*
+   * 4)
+   */
+
+  module_console_attribute(MODULE_CONSOLE_FRONT(MODULE_CONSOLE_WHITE) |
+			   MODULE_CONSOLE_BACK(MODULE_CONSOLE_BLACK) |
+			   MODULE_CONSOLE_BRIGHT);
+
+  /*
+   * 5)
+   */
+
+  module_call(console, message,
+	      '+', "loading the 'console' module\n");
+
+  MODULE_LEAVE();
+}
+
+/*
+ * this function unloads the module.
+ *
+ * steps:
+ *
+ * 1) display a message.
+ * 2) clean the underlying platform console.
+ */
+
+t_error			module_console_unload(void)
+{
+  /*
+   * 1)
+   */
+
+  module_call(console, message,
+	      '+', "unloading the 'console' module\n");
+
+  /*
+   * 2)
+   */
+
   if (platform_console_clean() != ERROR_OK)
     MODULE_ESCAPE("unable to clean the platform's console");
 

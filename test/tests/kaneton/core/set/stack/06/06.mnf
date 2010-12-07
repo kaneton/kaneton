@@ -3,3 +3,4 @@ description: This test reserves a set, pushes several objects, flushes the set, 
 symbol: test_core_set_stack_06
 signature: zmdlkwiov34gh34
 output: "0 elements: \n0 elements: \n0 elements: \n"
+points: 2

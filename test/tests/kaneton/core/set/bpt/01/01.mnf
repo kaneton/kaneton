@@ -3,3 +3,4 @@ description: This test reserves a basic set, releases it and then reserves other
 symbol: test_core_set_bpt_01
 signature: s90if3ja4g93
 output:
+points: 1

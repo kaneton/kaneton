@@ -3,3 +3,4 @@ description: This test reserves a segment and changes its permissions. Note that
 symbol: test_core_segment_permissions_03
 signature: 9r23awofk4gk3y0gh
 output:
+points: 1

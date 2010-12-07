@@ -3,3 +3,4 @@ description: This test reserves a segment, splits it in two and verifies that th
 symbol: test_core_segment_split
 signature: vsdlawogjjgeoihj4e3h
 output:
+points: 2

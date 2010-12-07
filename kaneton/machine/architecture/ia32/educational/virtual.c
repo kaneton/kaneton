@@ -300,16 +300,12 @@ t_error			ia32_task_as_initialize(i_as		asid)
   i_region		reg;
   o_region*		preg;
   t_ia32_directory	pd;
-  o_task*		task;
 
   /*
    * 1)
    */
 
   if (as_get(asid, &o) != ERROR_OK)
-    return (ERROR_KO);
-
-  if (task_get(o->task, &task) != ERROR_OK)
     return (ERROR_KO);
 
   /*
@@ -386,51 +382,60 @@ t_error			ia32_task_as_initialize(i_as		asid)
    * XXX
    */
 
-  switch (task->class)
+  if (asid != _kernel->as)
     {
-    case TASK_CLASS_DRIVER:
-    case TASK_CLASS_SERVICE:
-    case TASK_CLASS_GUEST:
-      {
-	// XXX on map le kernel code/data car lors d'une interruption,
-	// XXX on arrive dans une page qui contient l'ISR.
-	// XXX dans la version educationa, on switch dans l'AS kernel
-	// XXX a chaque fois pour eviter de propager les modifs de page
-	// XXX directory/table des que le kernel alloue dynamiquement des
-	// XXX donnees ou d'utiliser du mapping de porc a la linux. cela dit,
-	// XXX l'ISR doit connaitre l'AS du kernel. il faut donc mappe les
-	// XXX donnees du kernel ainsi que son code (pour le code de l'ISR).
+      // XXX on map le kernel code/data car lors d'une interruption,
+      // XXX on arrive dans une page qui contient l'ISR.
+      // XXX dans la version educationa, on switch dans l'AS kernel
+      // XXX a chaque fois pour eviter de propager les modifs de page
+      // XXX directory/table des que le kernel alloue dynamiquement des
+      // XXX donnees ou d'utiliser du mapping de porc a la linux. cela dit,
+      // XXX l'ISR doit connaitre l'AS du kernel. il faut donc mappe les
+      // XXX donnees du kernel ainsi que son code (pour le code de l'ISR).
 
-	if (region_reserve(asid,
-			   (i_segment)_init->kcode,
-			   LINKER_SYMBOL(_handler_begin) - _init->kcode,
-			   REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
-			   REGION_OPTION_GLOBAL,
-			   LINKER_SYMBOL(_handler_begin),
-			   LINKER_SYMBOL(_handler_end) -
-			   LINKER_SYMBOL(_handler_begin),
-			   &reg) != ERROR_OK)
-	  return (ERROR_KO);
+      /* XXX
+	 if (region_reserve(asid,
+	 (i_segment)_init->kcode,
+	 LINKER_SYMBOL(_handler_begin) - _init->kcode,
+	 REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
+	 REGION_OPTION_GLOBAL,
+	 LINKER_SYMBOL(_handler_begin),
+	 LINKER_SYMBOL(_handler_end) -
+	 LINKER_SYMBOL(_handler_begin),
+	 &reg) != ERROR_OK)
+	 return (ERROR_KO);
 
-	if (region_reserve(asid,
-			   (i_segment)_init->kcode,
-			   LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
-			   REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
-			   REGION_OPTION_GLOBAL,
-			   LINKER_SYMBOL(_handler_data_begin),
-			   LINKER_SYMBOL(_handler_data_end) -
-			   LINKER_SYMBOL(_handler_data_begin),
-			   &reg) != ERROR_OK)
-	  return (ERROR_KO);
+	 if (region_reserve(asid,
+	 (i_segment)_init->kcode,
+	 LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
+	 REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
+	 REGION_OPTION_GLOBAL,
+	 LINKER_SYMBOL(_handler_data_begin),
+	 LINKER_SYMBOL(_handler_data_end) -
+	 LINKER_SYMBOL(_handler_data_begin),
+	 &reg) != ERROR_OK)
+	 return (ERROR_KO);
+      */
 
-	break;
-      }
-    case TASK_CLASS_KERNEL:
-    default:
-      {
-	// nothing to do
-	break;
-      }
+      i_region	region;
+
+      if (region_reserve(asid,
+			 (i_segment)_init->kcode,
+			 0,
+			 REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
+			 _init->kcode,
+			 _init->kcodesz,
+			 &region) != ERROR_OK)
+	return (ERROR_KO);
+
+      if (region_reserve(asid,
+			 (i_segment)_init->kstack,
+			 0,
+			 REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
+			 (t_vaddr)_init->kstack,
+			 _init->kstacksz,
+			 &region) != ERROR_OK)
+	return (ERROR_KO);
     }
 
   return (ERROR_OK);

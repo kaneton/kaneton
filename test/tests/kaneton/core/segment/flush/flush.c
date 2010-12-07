@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...tests/kaneton/core/segment/flush/flush.c
+ * file          /home/mycure/kane...tests/kaneton/core/segment/flush/flush.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:54:19 2010]
+ * updated       julien quintard   [sun dec  5 14:00:04 2010]
  */
 
 /*
@@ -35,8 +35,10 @@ void			test_core_segment_flush(void)
 
   TEST_ENTER();
 
-  if (task_reserve(TASK_CLASS_GUEST, TASK_BEHAVIOUR_INTERACTIVE,
-		   TASK_PRIORITY_INTERACTIVE, &task) != ERROR_OK)
+  if (task_reserve(TASK_CLASS_GUEST,
+		   TASK_BEHAVIOUR_INTERACTIVE,
+		   TASK_PRIORITY_INTERACTIVE,
+		   &task) != ERROR_OK)
     TEST_ERROR("[task_reserve] error");
 
   if (as_reserve(task, &as) != ERROR_OK)

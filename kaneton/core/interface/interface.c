@@ -805,23 +805,6 @@ t_error		interface_segment_attribute_permissions(o_syscall*	message)
 }
 
 /*
- * this function launchs the task_current() function.
- */
-
-t_error		interface_task_current(o_syscall*	message)
-{
-  t_error	error;
-  i_task	result1;
-
-  error = task_current(&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.task_current.result1 = result1;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the task_reserve() function.
  */
 
@@ -1444,7 +1427,6 @@ t_interface_dispatch dispatch[] =
   interface_segment_attribute_address,
   interface_segment_attribute_size,
   interface_segment_attribute_permissions,
-  interface_task_current,
   interface_task_reserve,
   interface_task_release,
   interface_task_priority,

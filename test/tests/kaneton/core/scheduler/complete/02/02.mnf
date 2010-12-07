@@ -3,3 +3,4 @@ description: This test creates two tasks which share a segment with the kernel. 
 symbol: test_core_scheduler_complete_02
 signature: 23rfjsovcewrnbe04zdvcowejfwegbeihbe0
 output:
+points: 5

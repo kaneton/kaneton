@@ -3,3 +3,4 @@ description: This test reserves a set, pushes many objects and verifies that the
 symbol: test_core_set_stack_08
 signature: slvdlvk43gh43
 output: "80 elements: \n"
+points: 2

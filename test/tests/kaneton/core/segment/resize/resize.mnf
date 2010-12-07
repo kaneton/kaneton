@@ -3,3 +3,4 @@ description: This test allocates a segment, resizes it and verifies that everyth
 symbol: test_core_segment_resize
 signature: ergklzdkg4g34h
 output:
+points: 3

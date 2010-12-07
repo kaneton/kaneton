@@ -8,17 +8,23 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/suites/kaneton.suite
 #
 # created       julien quintard   [tue nov  2 07:34:08 2010]
-# updated       julien quintard   [sun nov 21 00:26:41 2010]
+# updated       julien quintard   [sun dec  5 20:29:32 2010]
 #
 
 name: kaneton
 description: This test suite triggers all the tests.
 components:
   id:
-    - kaneton/core/id
+    - kaneton/core/id/
 
   set:
-    - kaneton/core/set
+    - kaneton/core/set/
+
+  event:
+    - kaneton/machine/architecture/ia32/event/
+
+  time:
+    - kaneton/core/time/
 
   segment:
     - kaneton/core/segment/
@@ -34,15 +40,12 @@ components:
     - kaneton/core/as/
     - kaneton/machine/architecture/ia32/as/
 
-  event:
-    - kaneton/machine/glue/ibm-pc.ia32/event/
-    - kaneton/machine/architecture/ia32/event/
-
-  time:
-    - kaneton/machine/glue/ibm-pc.ia32/time/
-
   task:
-    - kaneton/machine/glue/ibm-pc.ia32/task/
+    - kaneton/core/task/
 
-#  scheduler:
-#    - XXX ia32
+  thread:
+    - kaneton/core/thread/
+
+  scheduler:
+    - kaneton/core/scheduler/
+    - kaneton/machine/architecture/ia32/scheduler/

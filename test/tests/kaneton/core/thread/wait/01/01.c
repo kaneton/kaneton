@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:09:22 2010]
+ * updated       julien quintard   [sun dec  5 00:40:54 2010]
  */
 
 /*
@@ -40,7 +40,7 @@ void			test_core_thread_wait_01_thread_01(void)
 {
   t_wait		wait;
 
-  if (thread_wait(WAIT_STATE_DEATH, thread2, &wait) != ERROR_OK)
+  if (thread_wait(thread1, WAIT_STATE_DEATH, thread2, &wait) != ERROR_OK)
     TEST_HANG("[thread_wait] error");
 
   if (WAIT_THREAD(&wait) != thread2)
@@ -64,7 +64,7 @@ void			test_core_thread_wait_01_thread_02(void)
 {
   TEST_SIGNATURE(wee3ri20raopr9823);
 
-  if (thread_sleep(3000) != ERROR_OK)
+  if (thread_sleep(thread2, 3000) != ERROR_OK)
     TEST_HANG("[thread_sleep] error");
 
   if (thread_exit(thread2, 42) != ERROR_OK)

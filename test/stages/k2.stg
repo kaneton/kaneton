@@ -5,12 +5,14 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/grades/k2.grd
+# file          /home/mycure/KANETON-TEST-SYSTEM/stages/k2.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [tue nov  2 22:23:41 2010]
+# updated       julien quintard   [sun dec  5 21:00:24 2010]
 #
 
+name: k2
+description: This stage evaluates the kaneton's memory management.
 configurations:
   - name: QEMU
     platform: ibm-pc
@@ -28,6 +30,3 @@ configurations:
       stress: xen
     suite: k2
     weight: 0.8
-points:
-  - k1
-  - k2

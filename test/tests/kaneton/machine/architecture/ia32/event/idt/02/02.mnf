@@ -3,3 +3,4 @@ description: This test reserves an event and verifies that every IDT entry is va
 symbol: test_architecture_event_idt_02
 signature: acdjif0wv94eg3h34h
 output:
+points: 2

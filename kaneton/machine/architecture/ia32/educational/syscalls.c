@@ -64,9 +64,12 @@ void			ia32_syshandler_register(void)
   t_type		type;
   t_vsize		size;
   t_ia32_context	ctx;
+  o_thread*		othread;
 
   assert(scheduler_current(&caller) == ERROR_OK);
-  assert(task_current(&task) == ERROR_OK);
+  assert(thread_get(caller, &othread) == ERROR_OK);
+
+  task = othread->task;
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -94,9 +97,12 @@ void			ia32_syshandler_size(void)
   t_type		type;
   t_vsize		size;
   t_ia32_context	ctx;
+  o_thread*		othread;
 
   assert(scheduler_current(&caller) == ERROR_OK);
-  assert(task_current(&task) == ERROR_OK);
+  assert(thread_get(caller, &othread) == ERROR_OK);
+
+  task = othread->task;
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -128,9 +134,12 @@ void			ia32_syshandler_send(void)
     i_node		node;
     t_uint32		reg[4];
   }			u;
+  o_thread*		othread;
 
   assert(scheduler_current(&caller) == ERROR_OK);
-  assert(task_current(&task) == ERROR_OK);
+  assert(thread_get(caller, &othread) == ERROR_OK);
+
+  task = othread->task;
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -167,9 +176,12 @@ void			ia32_syshandler_transmit(void)
     i_node		node;
     t_uint32		reg[4];
   }			u;
+  o_thread*		othread;
 
   assert(scheduler_current(&caller) == ERROR_OK);
-  assert(task_current(&task) == ERROR_OK);
+  assert(thread_get(caller, &othread) == ERROR_OK);
+
+  task = othread->task;
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -206,9 +218,12 @@ void			ia32_syshandler_receive(void)
     i_node		node;
     t_uint32		reg[4];
   }			u;
+  o_thread*		othread;
 
   assert(scheduler_current(&caller) == ERROR_OK);
-  assert(task_current(&task) == ERROR_OK);
+  assert(thread_get(caller, &othread) == ERROR_OK);
+
+  task = othread->task;
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -249,9 +264,12 @@ void			ia32_syshandler_poll(void)
     i_node		node;
     t_uint32		reg[4];
   }			u;
+  o_thread*		othread;
 
   assert(scheduler_current(&caller) == ERROR_OK);
-  assert(task_current(&task) == ERROR_OK);
+  assert(thread_get(caller, &othread) == ERROR_OK);
+
+  task = othread->task;
 
   assert(ia32_get_context(caller, &ctx));
 

@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/library/include/alloc.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/library/include/alloc.h
  *
  * created       julien quintard   [sun jun 10 17:33:03 2007]
- * updated       matthieu bucchianeri   [sat sep  1 13:00:54 2007]
+ * updated       julien quintard   [sun dec  5 15:55:46 2010]
  */
 
-#ifndef LIBC_LIBDATA_ALLOC_H
-#define LIBC_LIBDATA_ALLOC_H       	1
+#ifndef LIBRARY_ALLOC_H
+#define LIBRARY_ALLOC_H       	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

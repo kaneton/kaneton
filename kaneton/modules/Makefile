@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.NEW/kaneton/modules/Makefile
+# file          /home/mycure/kaneton.STABLE/kaneton/modules/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       julien quintard   [tue nov 23 10:29:38 2010]
+# updated       julien quintard   [tue dec  7 22:30:25 2010]
 #
 
 #
@@ -33,7 +33,8 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		console				\
+SUBDIRS			:=		bundle				\
+					console				\
 					forward				\
 					report				\
 					test				

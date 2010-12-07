@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/kaneton/core/time/clock.c
  *
  * created       julien quintard   [wed nov 24 18:40:55 2010]
- * updated       julien quintard   [wed dec  1 07:18:20 2010]
+ * updated       julien quintard   [sat dec  4 22:50:13 2010]
  */
 
 /*
@@ -45,34 +45,34 @@ m_clock*		_clock = NULL;
 
 t_error			clock_show(t_clock*			clock)
 {
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping the clock:\n");
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  millisecond: %u\n",
 	      clock->millisecond);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  second: %u\n",
 	      clock->second);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  minute: %u\n",
 	      clock->minute);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  hours: %u\n",
 	      clock->hour);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  day: %u\n",
 	      clock->day);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  month: %u\n",
 	      clock->month);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  year: %u\n",
 	      clock->year);
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/scheduler/complete/complete.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 22:12:56 2010]
+ * updated       julien quintard   [sun dec  5 00:56:27 2010]
  */
 
 /*
@@ -24,15 +24,16 @@
  */
 
 extern m_kernel*		_kernel;
-extern t_init*			_init;
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
 
+static volatile i_thread	thread_01;
 static volatile t_vaddr		share_01;
 
 static volatile i_task		task_02;
+static volatile i_thread	thread_02;
 static volatile t_vaddr		share_02;
 
 /*
@@ -45,7 +46,7 @@ void			test_architecture_scheduler_complete_thread_01(void)
    * sleep
    */
 
-  if (thread_sleep(3000) != ERROR_OK)
+  if (thread_sleep(thread_01, 3000) != ERROR_OK)
     TEST_HANG("[thread_sleep] error");
 
   /*
@@ -84,7 +85,6 @@ void			test_architecture_scheduler_complete_thread_02(void)
 
 void			test_architecture_scheduler_complete(void)
 {
-  i_thread		thread;
   i_as			as;
   i_region		region;
   i_segment		segment;
@@ -119,25 +119,27 @@ void			test_architecture_scheduler_complete(void)
 
   memset((void*)share_01, 0x0, PAGESZ);
 
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_01) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 
   stack.base = 0;
   stack.size = THREAD_STACKSZ_LOW;
 
-  if (thread_stack(thread, stack) != ERROR_OK)
+  if (thread_stack(thread_01, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error");
 
-  if (thread_get(thread, &t) != ERROR_OK)
+  if (thread_get(thread_01, &t) != ERROR_OK)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = t->stack + t->stacksz - 16;
   ctx.pc = (t_vaddr)test_architecture_scheduler_complete_thread_01;
 
-  if (thread_load(thread, ctx) != ERROR_OK)
+  if (thread_load(thread_01, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread_01) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
   /*
@@ -154,15 +156,6 @@ void			test_architecture_scheduler_complete(void)
     TEST_ERROR("[as_reserve] error");
 
   if (region_reserve(as,
-                     (i_segment)_init->kcode,
-                     0,
-                     REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
-                     _init->kcode,
-                     _init->kcodesz,
-                     &region) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error");
-
-  if (region_reserve(as,
 		     segment,
 		     0,
 		     REGION_OPTION_NONE,
@@ -176,25 +169,27 @@ void			test_architecture_scheduler_complete(void)
 
   share_02 = r->address;
 
-  if (thread_reserve(task_02, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(task_02,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_02) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 
   stack.base = 0;
   stack.size = THREAD_STACKSZ_LOW;
 
-  if (thread_stack(thread, stack) != ERROR_OK)
+  if (thread_stack(thread_02, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error");
 
-  if (thread_get(thread, &t) != ERROR_OK)
+  if (thread_get(thread_02, &t) != ERROR_OK)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = t->stack + t->stacksz - 16;
   ctx.pc = (t_vaddr)test_architecture_scheduler_complete_thread_02;
 
-  if (thread_load(thread, ctx) != ERROR_OK)
+  if (thread_load(thread_02, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread_02) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
   if (task_start(task_02) != ERROR_OK)

@@ -3,3 +3,4 @@ description: This test reserves a segment. A serie of invalid calls are performe
 symbol: test_core_segment_readwrite_02
 signature: 0r320afkeoaweigj3g43
 output:
+points: 2

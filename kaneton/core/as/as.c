@@ -78,7 +78,7 @@ t_error			as_show(i_as				id)
   if (as_get(id, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  address space %qu in task %qu:\n",
 	      id,
 	      o->task);
@@ -87,7 +87,7 @@ t_error			as_show(i_as				id)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "    segments:\n");
 
   set_foreach(SET_OPTION_FORWARD, o->segments, &i, st)
@@ -131,7 +131,7 @@ t_error			as_show(i_as				id)
       if (seg->permissions & PERMISSION_EXEC)
 	perms[2] = 'x';
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "      %qu %s [0x%x - 0x%x] (%u bytes) %s\n",
 		  seg->id,
 		  type,
@@ -145,7 +145,7 @@ t_error			as_show(i_as				id)
    * 3)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "    regions:\n");
 
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
@@ -153,7 +153,7 @@ t_error			as_show(i_as				id)
       if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "      %qu [0x%x - 0x%x] (%u bytes) targets "
 		  "segment %qu\n",
 		  region->id,
@@ -201,7 +201,7 @@ t_error			as_dump(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qu address space(s):\n", size);
 
   set_foreach(SET_OPTION_FORWARD, _as->ass, &i, st)

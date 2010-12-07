@@ -43,15 +43,17 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab,
     {
       if (tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USED)
 	{
-	  printf(" sub-entry %d: ", i);
-	  printf("0x%x -> base 0x%x, rw %d, usr %d, a %d d %d\n",
-		 pde * IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ +
-		 i * PAGESZ,
-		 IA32_BASE(tab[i]),
-		 !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_RW),
-		 !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USER),
-		 !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_A),
-		 !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_D));
+	  module_call(console, print,
+		      " sub-entry %d: ", i);
+	  module_call(console, print,
+		      "0x%x -> base 0x%x, rw %d, usr %d, a %d d %d\n",
+		      pde * IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ +
+		      i * PAGESZ,
+		      IA32_BASE(tab[i]),
+		      !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_RW),
+		      !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USER),
+		      !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_A),
+		      !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_D));
 	}
     }
 
@@ -141,7 +143,8 @@ t_error			ia32_pt_add_page(t_ia32_table*		tab,
   if (page.present)
     opts |= IA32_PAGE_TABLE_ENTRY_FLAG_P;
   else
-    printf("warning: adding non-present page\n");
+    module_call(console, print,
+		"warning: adding non-present page\n");
 
   if (page.cached == IA32_PAGE_NOTCACHED)
     opts |= IA32_PAGE_DIRECTORY_ENTRY_FLAG_CD;

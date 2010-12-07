@@ -3,3 +3,4 @@ description: This test reserves a set, adds many objects and display the set.
 symbol: test_core_set_array_07
 signature: ssfwi3v0934h
 output: "0 elements: \n3 elements: 18 3 8\n"
+points: 3

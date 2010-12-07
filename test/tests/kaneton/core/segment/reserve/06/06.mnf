@@ -3,3 +3,4 @@ description: This test creates a task and address space before reserving several
 symbol: test_core_segment_reserve_06
 signature: 230i0f9i32qgi3g34
 output:
+points: 3

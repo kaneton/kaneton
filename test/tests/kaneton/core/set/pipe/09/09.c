@@ -60,7 +60,7 @@ void			test_core_set_pipe_09(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   st = 0;
   for (i = 0; i < sz; i++)
     {
@@ -68,14 +68,14 @@ void			test_core_set_pipe_09(void)
         TEST_ERROR("[set_pick] error");
 
       if (!st++)
-        printf("%qd", *obj);
+        TEST_PRINT("%qd", *obj);
       else
-        printf(" %qd", *obj);
+        TEST_PRINT(" %qd", *obj);
 
       if (set_pop(id) != ERROR_OK)
 	TEST_ERROR("[set_pop] error");
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   /*
    * release

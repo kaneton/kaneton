@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [sat nov  6 09:37:17 2010]
+# updated       julien quintard   [tue dec  7 15:22:41 2010]
 #
 
 #
@@ -68,16 +68,18 @@ StoreDirectory = TestDirectory + "/store"
 # stores
 BundleStore = StoreDirectory + "/bundle"
 
-# environments
-XenEnvironment = "xen"
-QEMUEnvironment = "qemu"
+# indexes
+QEMUIndex = 0
+XenIndex = 1
 
-# timeout in seconds.
-XenTimeout = 100
-QEMUTimeout = 1000
+# environments: qemu/xen
+Environments = [ "qemu", "xen" ]
+
+# timeout in seconds: qemu/xen.
+Timeouts = [ 1000, 100 ]
 
 # disk size in mega bytes.
-DiskSize = 5
+DiskSize = 10
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -218,7 +220,7 @@ def                     QEMU(namespace):
 
   # set the alarm signal
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(QEMUTimeout)
+  signal.alarm(Timeouts[QEMUIndex])
 
   try:
     # launch QEMU active logging in background in order to retrieve
@@ -350,7 +352,7 @@ serial = "pty"\
 
   # set the alarm signal
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(XenTimeout)
+  signal.alarm(Timeouts[XenIndex])
 
   try:
     # launch the xen virtual machine.
@@ -573,10 +575,10 @@ def                     Main():
   Disk(namespace)
 
   # launch the compilation process according to the environment.
-  if namespace.environment == XenEnvironment:
-    Xen(namespace)
-  elif namespace.environment == QEMUEnvironment:
+  if namespace.environment == Environments[QEMUIndex]:
     QEMU(namespace)
+  elif namespace.environment == Environments[XenIndex]:
+    Xen(namespace)
   else:
     Error(namespace,
           "unknown environment '" + namespace.environment + "'")

@@ -197,21 +197,23 @@ t_error			thread_exit(i_thread			id,
 void			thread_bury(i_timer			timer,
 				    t_vaddr			address);
 
-t_error			thread_wait(t_state			state,
-				    i_thread			id,
+t_error			thread_wait(i_thread			id,
+				    t_state			state,
+				    i_thread			target,
 				    t_wait*			wait);
 
 t_error			thread_stack(i_thread			threadid,
 				     t_stack			stack);
 
 t_error			thread_args(i_thread			threadid,
-				    const void*			args,
+				    void*			args,
 				    t_vsize			size);
 
 void			thread_sleep_handler(i_timer		timer,
 					     t_vaddr		address);
 
-t_error			thread_sleep(t_uint32			milliseconds);
+t_error			thread_sleep(i_thread			id,
+				     t_uint32			milliseconds);
 
 t_error			thread_flush(i_task			taskid);
 

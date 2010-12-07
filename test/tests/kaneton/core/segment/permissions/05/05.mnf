@@ -3,3 +3,4 @@ description: This test reserves segments, writes and copies data before releasin
 symbol: test_core_segment_permissions_05
 signature: riafe93gh09i4h
 output:
+points: 3

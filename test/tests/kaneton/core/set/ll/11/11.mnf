@@ -3,3 +3,4 @@ description: This test reserves a set, adds many objects and display the content
 symbol: test_core_set_ll_11
 signature: sdlvkksamw3jfg349g
 output: "130 elements: \n"
+points: 3

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...LE/kaneton/machine/platform/ibm-pc/rtc.c
  *
  * created       julien quintard   [wed nov 24 10:17:08 2010]
- * updated       julien quintard   [fri dec  3 22:03:32 2010]
+ * updated       julien quintard   [sat dec  4 22:56:43 2010]
  */
 
 /*
@@ -50,42 +50,42 @@ m_platform_rtc		_platform_rtc;
 
 void			platform_rtc_dump(t_platform_rtc*	rtc)
 {
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping the RTC structure:\n");
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  millisecond: %u\n",
 	      rtc->millisecond);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  second: %u\n",
 	      rtc->second);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  minute: %u\n",
 	      rtc->minute);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  hour: %u\n",
 	      rtc->hour);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  day: %u\n",
 	      rtc->day);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  month: %u\n",
 	      rtc->month);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  year: %u\n",
 	      rtc->year);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  week day: %u\n",
 	      rtc->weekday);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  century: %u\n",
 	      rtc->century);
 }

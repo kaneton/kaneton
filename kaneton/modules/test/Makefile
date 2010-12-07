@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/kaneton/modules/test/Makefile
 #
 # created       julien quintard   [wed apr 15 07:00:50 2009]
-# updated       julien quintard   [mon oct 25 20:30:49 2010]
+# updated       julien quintard   [sun dec  5 16:58:08 2010]
 #
 
 #
@@ -48,10 +48,10 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(TEST_LO)
 
-$(TEST_LO):		$(TEST_O) $(_TEST_STORE_BUNDLE_KANETON_LO_)
+$(TEST_LO):		$(TEST_O)
 	$(call env_remove,$(TEST_LO),)
 
-	$(call env_archive,$(TEST_LO),$(TEST_O) $(_TEST_STORE_BUNDLE_KANETON_LO_),)
+	$(call env_archive,$(TEST_LO),$(TEST_O),)
 
 clear:
 	$(call env_remove,$(TEST_O),)

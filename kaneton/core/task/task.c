@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [fri dec  3 21:52:27 2010]
+ * updated       julien quintard   [sat dec  4 22:49:57 2010]
  */
 
 /*
@@ -76,35 +76,6 @@ m_task*			_task = NULL;
  */
 
 /*
- * this function returns the current task.
- */
-
-t_error			task_current(i_task*			tsk)
-{
-  i_thread		current;
-  o_thread*		o;
-
-  assert(tsk != NULL);
-
-  if (_scheduler == NULL)
-    {
-      *tsk = _kernel->task;
-
-      CORE_LEAVE();
-    }
-
-  if (scheduler_current(&current) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the currently scheduled thread");
-
-  if (thread_get(current, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the thread object");
-
-  *tsk = o->task;
-
-  CORE_LEAVE();
-}
-
-/*
  * this function shows a precise task.
  */
 
@@ -153,7 +124,7 @@ t_error			task_show(i_task			id)
 		  o->state);
     }
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  task %qu on cpu %qd is %s\n",
 	      id, o->cpu, state);
 
@@ -190,7 +161,7 @@ t_error			task_dump(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qu task(s):\n", size);
 
   set_foreach(SET_OPTION_FORWARD, _task->tasks, &i, state)
@@ -342,8 +313,16 @@ t_error			task_reserve(t_class			class,
 
   if (_kernel->task != ID_UNUSED)
     {
-      if (task_current(&o.parent) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the currently scheduled task");
+      i_thread		thread;
+      o_thread*		p;
+
+      if (scheduler_current(&thread) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the currently scheduled thread");
+
+      if (thread_get(thread, &p) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the thread object");
+
+      o.parent = p->task;
 
       if (task_get(o.parent, &parent) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the task object");

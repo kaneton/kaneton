@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...ries/kaneton.STABLE/test/engine/engine.h
+ * file          /home/mycure/kaneton.STABLE/test/engine/engine.h
  *
  * created       julien quintard   [sun oct 17 15:43:58 2010]
- * updated       julien quintard   [wed dec  1 23:36:36 2010]
+ * updated       julien quintard   [sun dec  5 16:49:00 2010]
  */
 
 #ifndef TEST_ENGINE_ENGINE_H
@@ -31,6 +31,17 @@
 #define TEST_ENTER()
 
 /*
+ * this macro-function prints information.
+ */
+
+#define TEST_PRINT(_format_, _arguments_...)				\
+  do									\
+    {									\
+      module_call(console, print,					\
+		  _format_, ##_arguments_);				\
+    } while (0)
+
+/*
  * this macro-function can be called multiple times in order to transmit
  * the test system a signature string.
  *
@@ -42,9 +53,11 @@
  */
 
 #define TEST_SIGNATURE(_signature_)					\
-  {									\
-    module_call(test, test_issue, "[signature] " #_signature_);		\
-  }
+  do									\
+    {									\
+      module_call(test, issue,						\
+		  "[signature] " #_signature_);				\
+    } while (0)
 
 /*
  * this macro-function is called whenever an error occurs in a test.
@@ -58,9 +71,11 @@
 #define TEST_ERROR(_format_, _arguments_...)				\
   do									\
     {									\
-      module_call(report, report_dump);					\
+      module_call(report, dump);					\
 									\
-      printf(_format_ "\n", ##_arguments_);				\
+      module_call(console, message,					\
+		  '!', _format_ "\n",					\
+		  ##_arguments_);					\
 									\
       TEST_LEAVE();							\
     } while (0)
@@ -73,9 +88,11 @@
 #define TEST_HANG(_format_, _arguments_...)				\
   do									\
     {									\
-      module_call(report, report_dump);					\
+      module_call(report, dump);					\
 									\
-      printf(_format_ "\n", ##_arguments_);				\
+      module_call(console, message,					\
+		  '!', _format_ "\n",					\
+		  ##_arguments_);					\
 									\
       while (1)								\
 	;								\

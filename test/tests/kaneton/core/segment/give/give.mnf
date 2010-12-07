@@ -3,3 +3,4 @@ description: This test creates two tasks and address spaces, reserves a segment 
 symbol: test_core_segment_give
 signature: 34i90iaopwrkrekhgoph349
 output:
+points: 4

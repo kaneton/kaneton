@@ -3,3 +3,4 @@ description: This test reserves and releases an event and checks the PIC's mask 
 symbol: test_architecture_event_pic_01
 signature: zxcmewoiveroiger
 output:
+points: 1

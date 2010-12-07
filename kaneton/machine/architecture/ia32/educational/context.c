@@ -174,6 +174,8 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   o_task*		o;
   i_task		current;
   t_uint8		i;
+  i_thread		ithread;
+  o_thread*		othread;
 
   (void) io_bitmap_isset;
 
@@ -202,8 +204,13 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
    * 4)
    */
 
-  if (task_current(&current) != ERROR_OK)
+  if (scheduler_current(&ithread) != ERROR_OK)
     return (ERROR_KO);
+
+  if (thread_get(ithread, &othread) != ERROR_OK)
+    return (ERROR_KO);
+
+  current = othread->task;
 
   if (current == tskid)
     memcpy((t_uint8*)_thread->machine.tss + _thread->machine.tss->io,
@@ -825,13 +832,14 @@ t_error                 ia32_print_context(i_thread             thread)
 
     ia32_get_context(thread, &ctxt);
 
-    printf("Context:\n"
-           "eax: 0x%08x   ebx: 0x%08x   ecx: 0x%08x\n"
-           "edx: 0x%08x   esi: 0x%08x   edi: 0x%08x\n"
-           "ebp: 0x%08x   esp: 0x%08x   eip: 0x%08x\n",
-           ctxt.eax, ctxt.ebx, ctxt.ecx,
-           ctxt.edx, ctxt.esi, ctxt.edi,
-           ctxt.ebp, ctxt.orig_esp, ctxt.eip);
+    module_call(console, print,
+		"Context:\n"
+		"eax: 0x%08x   ebx: 0x%08x   ecx: 0x%08x\n"
+		"edx: 0x%08x   esi: 0x%08x   edi: 0x%08x\n"
+		"ebp: 0x%08x   esp: 0x%08x   eip: 0x%08x\n",
+		ctxt.eax, ctxt.ebx, ctxt.ecx,
+		ctxt.edx, ctxt.esi, ctxt.edi,
+		ctxt.ebp, ctxt.orig_esp, ctxt.eip);
 
     return (ERROR_OK);
 }

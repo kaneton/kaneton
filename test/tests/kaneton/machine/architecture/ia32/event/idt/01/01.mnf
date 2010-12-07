@@ -3,3 +3,4 @@ description: This test retrieves the IDT register and verifies its consistency.
 symbol: test_architecture_event_idt_01
 signature: 0cvwe0fkwiofj2ig
 output:
+points: 1

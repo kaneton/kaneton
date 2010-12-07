@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/priority/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 22:07:29 2010]
+ * updated       julien quintard   [sun dec  5 00:52:50 2010]
  */
 
 /*
@@ -24,7 +24,6 @@
  */
 
 extern m_kernel*		_kernel;
-extern t_init*			_init;
 
 /*
  * ---------- globals ---------------------------------------------------------

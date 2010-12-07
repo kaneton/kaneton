@@ -3,3 +3,4 @@ description: This test creates a thread which starts by sleeping. This test then
 symbol: test_core_thread_sleep
 signature: 34fwop843otj12sakpow3208adrf3r3kfwef0
 output:
+points: 2

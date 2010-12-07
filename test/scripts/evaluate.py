@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/evaluate.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [thu nov 18 18:25:53 2010]
+# updated       julien quintard   [tue dec  7 16:52:40 2010]
 #
 
 #
@@ -17,8 +17,8 @@
 #
 # this script evaluates the kaneton snapshots having been submitted.
 #
-# the script starts by loading the grading system's file associated with
-# the --grade option's argument. this file contains the set of emulated
+# the script starts by loading the stage system's file associated with
+# the --stage option's argument. this file contains the set of emulated
 # configurations in which the snapshots should be stressed against a specific
 # test suite.
 #
@@ -67,11 +67,10 @@ import ktp
 
 # directories
 StoreDirectory = TestDirectory + "/store"
-GradesDirectory = TestDirectory + "/grades"
-HooksDirectory = TestDirectory + "/hooks"
-PointsDirectory = TestDirectory + "/points"
+StagesDirectory = TestDirectory + "/stages"
 SuitesDirectory = TestDirectory + "/suites"
 TestsDirectory = TestDirectory + "/tests"
+ScriptsDirectory = TestDirectory + "/scripts"
 
 # stores
 DatabaseStore = StoreDirectory + "/database"
@@ -80,10 +79,8 @@ SnapshotStore = StoreDirectory + "/snapshot"
 ReportStore = StoreDirectory + "/report"
 StatementStore = StoreDirectory + "/statement"
 
-
-# hooks
-ConstructHook = "construct.py"
-StressHook = "stress.py"
+# scripts
+TestScript = ScriptsDirectory + "/test.py"
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -97,233 +94,218 @@ g_parser = None
 #
 
 #
+# this function displays an error message, cleans the script before
+# exiting.
+#
+def                     Error(namespace, message):
+  # print the message.
+  if message:
+    print(message)
+
+  # clean the script.
+  Clean(namespace)
+
+  # exit with an error code.
+  sys.exit(42)
+
+#
 # this function tests the given snapshot according to the configuration.
 #
-def                     Test(namespace,
-                             snapshot,
-                             configuration):
+def                     Test(namespace, snapshot, configuration):
   identifier = None
   date = None
-  image = None
-  bulletin = None
   status = None
   output = None
   report = None
+  stream = None
 
   try:
     # create a unique identifier for the test context.
-    identifier = time.strftime("%Y%m%d-%H%M%S")
+    identifier = time.strftime("%Y%m%d:%H%M%S")
 
     # retrieve the current data.
     date = time.strftime("%Y/%m/%d %H:%M:%S")
 
-    # create a temporary files for the received snapshot, the about-to-be
-    # generated image etc.
-    image = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-    bulletin = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
     # initialize the report.
-    report = { "meta":
-                 { "identifier": identifier,
+    report = {
+               "meta":
+                 {
+                   "identifier": identifier,
                    "date": date,
                    "environments":
-                     { "construct": configuration["environments"]["construct"],
-                       "stress":  configuration["environments"]["stress"] },
+                     {
+                       "construct": configuration["environments"]["construct"],
+                       "stress":  configuration["environments"]["stress"]
+                     },
                    "platform": configuration["platform"],
                    "architecture": configuration["architecture"],
                    "suite": configuration["suite"],
-                   "duration": None },
+                   "duration": None
+                 },
                "data":
-                 None }
-
-    # retrieve the current time.
-    start = time.time()
-
-    # launch the build hook which generates a bootable image.
-    status =                                                            \
-      ktp.process.Invoke(HooksDirectory +                               \
-                           "/" +                                        \
-                           configuration["environments"]["construct"] + \
-                           "/" +                                        \
-                           configuration["platform"] +                  \
-                           "." +                                        \
-                           configuration["architecture"] +              \
-                           "/" +                                        \
-                           configuration["suite"] +                     \
-                           "/" +                                        \
-                           ConstructHook,
-                         [ "--name", identifier,
-                           "--snapshot", SnapshotStore + "/" +          \
-                                           snapshot + ktp.snapshot.Extension,
-                           "--image", image,
-                           "--environment",
-                             configuration["environments"]["construct"],
-                           "--platform", configuration["platform"],
-                           "--architecture", configuration["architecture"] ],
-                         stream = stream,
-                         option = ktp.process.OptionNone)
-
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
-
-    # test the success of the construct hook invocation.
-    if status == ktp.StatusError:
-      raise Exception(output)
-
-    # launch the build hook which generates a bootable image.
-    status =                                                            \
-      ktp.process.Invoke(HooksDirectory +                               \
-                           "/" +                                        \
-                           configuration["environments"]["stress"] +    \
-                           "/" +                                        \
-                           configuration["platform"] +                  \
-                           "." +                                        \
-                           configuration["architecture"] +              \
-                           "/" +                                        \
-                           configuration["suite"] +                     \
-                           "/" +                                        \
-                           StressHook,
-                         [ "--name", identifier,
-                           "--image", image,
-                           "--environment",
-                             configuration["environments"]["stress"],
-                           "--suite", configuration["suite"],
-                           "--bulletin", bulletin ],
-                         stream = stream,
-                         option = ktp.process.OptionNone)
-
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
-
-    # test the success of the construct hook invocation.
-    if status == ktp.StatusError:
-      raise Exception(output)
-
-    # retrieve the current time.
-    end = time.time()
-
-    # set the duration.
-    report["meta"]["duration"] = "%.3f" % (end - start)
-
-    # set the data.
-    report["data"] = ktp.bulletin.Load(bulletin)
-  except Exception, exception:
-    # display the error, if verbose has been activated.
-    if namespace.verbose:
-      print("  " + ktp.trace.Generate())
-  finally:
-    # remove the temporary files.
-    if stream:
-      ktp.miscellaneous.Remove(stream)
-    if bulletin:
-      ktp.miscellaneous.Remove(bulletin)
-    if image:
-      ktp.miscellaneous.Remove(image)
+                 None
+             }
 
     # store the report.
     ktp.report.Store(report,
                      ReportStore + "/" + identifier + ktp.report.Extension)
 
+    # store the snapshot has being to one related to the report.
+    ktp.miscellaneous.Copy(SnapshotStore + "/" +                        \
+                             snapshot + ktp.snapshot.Extension,
+                           SnapshotStore + "/" +                        \
+                             identifier + ktp.snapshot.Extension)
+
+    # generate a temporary file.
+    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+    # launch the test script.
+    status =                                                            \
+      ktp.process.Invoke(TestScript,
+                         [ "--report", identifier ],
+                         stream = stream,
+                         option = ktp.process.OptionNone)
+
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
+
+    # test the success of the stress script invocation.
+    if status == ktp.StatusError:
+      raise Exception(output)
+  except Exception, exception:
+    # display the error, if verbose has been activated.
+    if namespace.verbose:
+      print("[trace] " + ktp.trace.Generate())
+      print("[exception] " + str(exception))
+  finally:
+    # remove the temporary files.
+    if stream:
+      ktp.miscellaneous.Remove(stream)
+
+  # load the final report in order to send it back to the client.
+  report = ktp.report.Load(ReportStore + "/" + identifier +             \
+                             ktp.report.Extension)
+
   return (report)
 
 #
-# this function takes a report and counts the points according to the
-# given report and grade system.
+# this function returns the maximum number of points associated with
+# a given set of tests.
 #
-def                     Rate(namespace, configuration, report):
-  score = None
-  notch = None
-  stream = None
-  component = None
-  manifests = None
+def                     Points(namespace, manifests):
   manifest = None
-  test = None
-  name = None
+  points = None
 
-  # read the suite file.
-  stream = ktp.suite.Load(SuitesDirectory + "/" +                       \
-                            configuration["suite"] + ktp.suite.Extension)
+  # initialize the points to zero.
+  points = 0
 
-  # initialize the notch and score.
+  # go through the manifests.
+  for manifest in manifests:
+    points += manifests[manifest]["points"]
+
+  return points
+
+#
+# this function returns the number of points acquired by passing
+# the tests recorded in the report.
+#
+def                     Score(namespace, manifests, report):
+  score = None
+
+  # initialize the score.
   score = 0
-  notch = 0
 
-  # load the manifests.
-  if "components" in stream:
-    for component in stream["components"]:
-      for path in stream["components"][component]:
-        # search for manifest files.
-        manifests = ktp.miscellaneous.Search(TestsDirectory + "/" +       \
-                                               path,
-                                             "^.*\.mnf$",
-                                             ktp.miscellaneous.OptionFile |
-                                             ktp.miscellaneous.OptionRecursive)
+  # go through the report.
+  if "data" in report:
+    for component in report["data"]:
+      for test in report["data"][component]:
+        # has this test been passed?
+        if report["data"][component][test]["status"] == True:
+          # add the points associated with this test.
+          score += manifests[test]["points"]
 
-        for manifest in manifests:
-          # load the manifest.
-          test = ktp.manifest.Load(manifest)
-
-          # compute the proper name according to the defined component:
-          # for instance, given the "segment" component, the test name
-          # segment/permissions/01 will be transformed into permissions/01
-          if component == test["name"][:len(component)]:
-            name = test["name"][len(component) + 1:]
-          else:
-            name = test["name"]
-
-          # add the points related to this test.
-          notch += namespace.points[component + "/" + name]
-
-  # return zero points should the test have failed.
-  if not report["data"]:
-    return (score, notch)
-
-  # go through the components and tests composing the report.
-  for component in  report["data"]:
-    for test in report["data"][component]:
-      if report["data"][component][test]["status"] == True:
-        score += namespace.points[component + "/" + test]
-
-  return (score, notch)
+  return score
 
 #
-# this function evaluates the students' snapshots.
+# this function returns true if the given delivery has reached to
+# deadline.
 #
-def                     Evaluate(namespace, statement):
+def                     Dead(namespace, delivery):
+  submission = None
+  deadline = None
+
+  # if not deadline has been provided, everything is alright.
+  if not namespace.deadline:
+    return False
+
+  # retrieve the submission date.
+  submission = time.strptime(delivery["date"], "%Y/%m/%d %H:%M:%S")
+
+  # retrieve the deadline.
+  deadline = time.strptime(namespace.deadline, "%Y/%m/%d %H:%M:%S")
+
+  # if the delivery occured before the deadline, return OK.
+  if submission < deadline:
+    return False
+
+  # verbose messaging.
+  if namespace.verbose:
+    print("  [deadline] reached")
+
+  return True
+
+#
+# this function stores the submitted snapshot in the history directory,
+# should this functionality have been activated.
+#
+def                     History(namespace, name, delivery):
+  path = None
+
+  # if no history directory has been provided, ignore this functionality.
+  if not namespace.history:
+    return
+
+  # compute the destination path.
+  path = os.path.abspath(namespace.history) + "/" +                     \
+           name.replace("::", "/") + "/" +                              \
+           "sources/" +                                                 \
+           namespace.stage + ".tar.bz2"
+
+  # create the directories to the destination path.
+  ktp.miscellaneous.Dig(path)
+
+  # copy the snapshot.
+  ktp.miscellaneous.Copy(SnapshotStore + "/" +                          \
+                           delivery["snapshot"] +                       \
+                           ktp.snapshot.Extension,
+                         path)
+
+  # verbose messaging.
+  if namespace.verbose:
+    print("  [history] saved")
+
+#
+# this function evaluates the students' deliveries.
+#
+def                     Evaluate(namespace):
+  statement = {}
+  stage = None
   names = None
   name = None
   match = None
   capability = None
   database = None
   configuration = None
+  suite = None
+  manifests = None
   report = None
-  points = None
-  point = None
-  symbol = None
-  path = None
-  submission = None
-  deadline = None
 
-  # load the grade file.
-  namespace.grade = ktp.grade.Load(GradesDirectory + "/" +              \
-                                     namespace.stage + ktp.grade.Extension)
-
-  # initialize the points.
-  namespace.points = {}
-
-  # retrieve the deadline.
-  deadline = time.strptime(namespace.deadline, "%Y/%m/%d %H:%M:%S")
-
-  # load the points associated with this grading system.
-  for point in namespace.grade["points"]:
-    # load the points file.
-    points = ktp.point.Load(PointsDirectory + "/" + point +             \
-                              ktp.point.Extension)
-
-    # merge the points with the global data structure.
-    for symbol in points:
-      namespace.points[symbol] = points[symbol]
+  # load the stage file.
+  stage = ktp.stage.Load(StagesDirectory + "/" +                        \
+                           namespace.stage + ktp.stage.Extension)
 
   # retrieve the capability names.
   names = ktp.capability.List(CapabilityStore)
@@ -337,100 +319,97 @@ def                     Evaluate(namespace, statement):
     if not match:
       continue
 
+    # verbose messaging.
+    if namespace.verbose:
+      print("[name] " + name)
+
     # load the capability.
     capability = ktp.capability.Load(CapabilityStore + "/" +            \
-                                       name + ktp.capability.Extension)
+                                       name +                           \
+                                       ktp.capability.Extension)
 
     # load the database.
     database = ktp.database.Load(DatabaseStore + "/" +                  \
                                    capability["identifier"] +           \
                                    ktp.database.Extension)
 
-    # initialize the student's statement.
+    # if no deliveries, continue.
+    if not "deliveries" in database:
+      continue
+
+    # initialize the statement.
     statement[capability["identifier"]] =                               \
-        { "members": capability["members"],
-          "date": database["deliveries"][namespace.stage]["date"],
-          "snapshot": database["deliveries"][namespace.stage]["snapshot"],
-          "configurations": {},
-          "grade": 0.0 }
+      {
+        "members": capability["members"],
+        "date": database["deliveries"][namespace.stage]["date"],
+        "snapshot": database["deliveries"][namespace.stage]["snapshot"],
+        "configurations": {},
+        "grade": 0.0
+      }
 
-    # retrieve the submission date.
-    submission = time.strptime(database["deliveries"][namespace.stage]["date"],
-                               "%Y/%m/%d %H:%M:%S")
+    # store the snapshot in the history, if required.
+    History(namespace, name, database["deliveries"][namespace.stage])
 
-    # verbose messaging.
-    if namespace.verbose:
-      print(capability["identifier"] + ":")
+    # has the deadline been reached?
+    if Dead(namespace, database["deliveries"][namespace.stage]) == True:
+      continue
 
-    # if the deadline has been reached, consider the submission has null,
-    # otherwise, treat it.
-    if submission < deadline:
-      # store the snapshot in the history, if required.
-      if namespace.history:
-        # compute the destination path.
-        path = os.path.abspath(namespace.history) + "/" +               \
-                 name.replace("::", "/") + "/" +                        \
-                 "sources/" +                                           \
-                 namespace.stage + ".tar.bz2"
-
-        # create the directories to the destination path.
-        ktp.miscellaneous.Dig(path)
-
-        # copy the snapshot.
-        ktp.miscellaneous.Copy(                                         \
-          SnapshotStore + "/" +                                         \
-            database["deliveries"][namespace.stage]["snapshot"] +       \
-            ktp.snapshot.Extension,
-          path)
-
-      # for every grade configuration, test the snapshot.
-      for configuration in namespace.grade["configurations"]:
-        # verbose messaging.
-        if namespace.verbose:
-          print("  " + configuration["name"])
-
-        # initialize this configuration.
-        statement[capability["identifier"]]["configurations"][          \
-          configuration["name"]] = { "report": None,
-                                     "score": None,
-                                     "notch": None }
-
-        # launch the test.
-        report = Test(namespace,
-                      database["deliveries"][namespace.stage]["snapshot"],
-                      configuration)
-
-        # set the report in the statement.
-        statement[capability["identifier"]]["configurations"][          \
-          configuration["name"]]["report"] = report["meta"]["identifier"]
-
-        # compute the score.
-        (statement[capability["identifier"]]["configurations"][         \
-           configuration["name"]]["score"],
-         statement[capability["identifier"]]["configurations"][         \
-           configuration["name"]]["notch"]) =                           \
-             Rate(namespace, configuration, report)
-
-        # add some points to the grade according to the weight
-        # of the configuration.
-        statement[capability["identifier"]]["grade"] +=                 \
-          statement[capability["identifier"]]["configurations"][        \
-            configuration["name"]]["score"] *                           \
-          (namespace.reference * configuration["weight"]) /             \
-           statement[capability["identifier"]]["configurations"][       \
-             configuration["name"]]["notch"]
-    else:
+    # for every stage configuration, test the snapshot.
+    for configuration in stage["configurations"]:
       # verbose messaging.
       if namespace.verbose:
-        print("  (deadline)")
+        print("  [configuration] " + configuration["name"])
+
+      # load the suite associated with this configuration.
+      suite = ktp.suite.Load(SuitesDirectory + "/" +                    \
+                             configuration["suite"] +                   \
+                             ktp.suite.Extension)
+
+      # load all the manifests related to this suite.
+      manifests = ktp.suite.Manifests(suite)
+
+      # launch the test.
+      report = Test(namespace,
+                    database["deliveries"][namespace.stage]["snapshot"],
+                    configuration)
+
+      # initialize this statement's configuration.
+      statement[capability["identifier"]][                              \
+        "configurations"][configuration["name"]] =                      \
+          {
+            "report": report["meta"]["identifier"],
+            "score": Score(namespace, manifests, report),
+            "points": Points(namespace, manifests)
+          }
+
+      # add some points to the grade according to the weight
+      # of the configuration.
+      statement[capability["identifier"]]["grade"] +=                   \
+        statement[capability["identifier"]][                            \
+          "configurations"][configuration["name"]]["score"] *           \
+        (namespace.cap * configuration["weight"]) /                     \
+          statement[capability["identifier"]][                          \
+            "configurations"][configuration["name"]]["points"]
+
+  return statement
+
+#
+# this function initializes the script.
+#
+def                     Initialize(namespace):
+  pass
+
+#
+# this function cleans the script.
+#
+def                     Clean(namespace):
+  pass
 
 #
 # this is the main function
 #
 def                     Main():
   global g_parser
-
-  statement = {}
 
   # create a new parser.
   g_parser = argparse.ArgumentParser(description="This script "         \
@@ -460,11 +439,11 @@ def                     Main():
                         action = "store_true",
                         help = "activate the verbose messaging",
                         dest = "verbose")
-  g_parser.add_argument("--reference", '-r',
+  g_parser.add_argument("--cap", '-c',
                         default = 20.0,
                         type = float,
-                        help = "the grading reference",
-                        dest = "reference")
+                        help = "the grading cap",
+                        dest = "cap")
   g_parser.add_argument("--history", '-y',
                         default = None,
                         help = "the path to a history directory "       \
@@ -479,17 +458,31 @@ def                     Main():
   # parse the arguments.
   namespace = g_parser.parse_args()
 
-  # evaluate the work of the students matching the pattern.
-  Evaluate(namespace, statement)
+  # initialize the script.
+  Initialize(namespace)
+
+  # display a message.
+  print("WARNING! the server should be stopped in order to prevent "    \
+          "virtual machines to be run concurrently")
+
+  # evaluate the submissions.
+  statement = Evaluate(namespace)
 
   # store the generated statement.
-  ktp.statement.Store({ "meta":
-                          { "stage": namespace.stage,
-                            "reference": namespace.reference,
-                            "deadline": namespace.deadline },
+  ktp.statement.Store({
+                        "meta":
+                          {
+                            "stage": namespace.stage,
+                            "cap": namespace.cap,
+                            "deadline": namespace.deadline
+                          },
                         "data":
-                          statement },
+                          statement
+                      },
                       namespace.statement)
+
+  # clean the script.
+  Clean(namespace)
 
   # display a message.
   print("the statement has been saved in '" + namespace.statement + "'")

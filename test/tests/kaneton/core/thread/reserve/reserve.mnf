@@ -3,3 +3,4 @@ description: This test simply reserves a thread without scheduling it.
 symbol: test_core_thread_reserve
 signature: r2390fiw390ggh4r
 output:
+points: 1

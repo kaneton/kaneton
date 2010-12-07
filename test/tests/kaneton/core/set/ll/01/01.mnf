@@ -3,3 +3,4 @@ description: This test reserves a basic set, releases it and then reserves anoth
 symbol: test_core_set_ll_01
 signature: xclkv3pog3h
 output:
+points: 1

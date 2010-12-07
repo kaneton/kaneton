@@ -3,3 +3,4 @@ description: This test reserves a segment and three regions which maps portions 
 symbol: test_core_region_reserve_03
 signature: taf9ewi0g23r92tg
 output:
+points: 3

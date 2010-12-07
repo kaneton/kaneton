@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...est/tests/kaneton/core/set/stack/07/07.c
+ * file          /home/mycure/kane...est/tests/kaneton/core/set/stack/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2070]
- * updated       julien quintard   [mon nov 29 19:19:31 2010]
+ * updated       julien quintard   [sun dec  5 16:27:22 2010]
  */
 
 /*
@@ -73,7 +73,7 @@ void			test_core_set_stack_07(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
@@ -81,13 +81,13 @@ void			test_core_set_stack_07(void)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
-        printf("%qd",
-	       *((t_id*)pdata));
+        TEST_PRINT("%qd",
+		   *((t_id*)pdata));
       else
-        printf(" %qd",
-	       *((t_id*)pdata));
+        TEST_PRINT(" %qd",
+		   *((t_id*)pdata));
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   /*
    * release

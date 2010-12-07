@@ -50,7 +50,7 @@ void			test_core_set_stack_02(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
@@ -58,11 +58,11 @@ void			test_core_set_stack_02(void)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
-        printf("%qd", *((i_set*)pdata));
+        TEST_PRINT("%qd", *((i_set*)pdata));
       else
-	printf(" %qd", *((i_set*)pdata));
+	TEST_PRINT(" %qd", *((i_set*)pdata));
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error");

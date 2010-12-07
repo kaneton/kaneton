@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/statement.py
 #
 # created       julien quintard   [mon oct 25 20:23:05 2010]
-# updated       julien quintard   [mon nov  1 17:52:13 2010]
+# updated       julien quintard   [mon dec  6 07:45:36 2010]
 #
 
 #
@@ -23,7 +23,7 @@ import re
 # ---------- definitions ------------------------------------------------------
 #
 
-Extension = ".db"
+Extension = ".stm"
 
 #
 # ---------- functions --------------------------------------------------------

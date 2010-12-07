@@ -93,7 +93,7 @@ t_error			module_test_issue(char*			command);
 
 t_error			module_test_flush(void);
 
-int			module_test_write(char			c);
+void			module_test_character(char			c);
 
 t_error			module_test_locate(char*		symbol,
 					   f_module_test*	function);
@@ -103,6 +103,10 @@ t_error			module_test_call(char*			symbol);
 void			module_test_dump(void);
 
 t_error			module_test_run(void);
+
+t_error			module_test_load(void);
+
+t_error			module_test_unload(void);
 
 
 /*

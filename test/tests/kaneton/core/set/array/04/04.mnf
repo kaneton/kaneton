@@ -3,3 +3,4 @@ description: This test reserves a set, adds objects, removes some, adds more, di
 symbol: test_core_set_array_04
 signature: zsdkv34hg34hh3
 output: "5 elements: 80 98654 122 45 64\n8 elements: 98654 122 45 64 987 2 123 123\n"
+points: 2

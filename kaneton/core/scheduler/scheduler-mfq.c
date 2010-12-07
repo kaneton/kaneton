@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...E/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sat dec  4 00:55:52 2010]
+ * updated       julien quintard   [sun dec  5 15:20:17 2010]
  */
 
 /*
@@ -137,14 +137,14 @@ t_error			scheduler_dump(void)
       if (scheduler_get(&scheduler) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "cpu %qd\n", scheduler->cpu);
 
       /*
        * 1)
        */
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "  current: %qu (%u, %u ms)\n",
 		  scheduler->thread,
 		  scheduler->priority,
@@ -154,10 +154,10 @@ t_error			scheduler_dump(void)
        * 2)
        */
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "  queues:\n");
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "    active:\n");
 
       priority = 0;
@@ -174,7 +174,7 @@ t_error			scheduler_dump(void)
 		CORE_ESCAPE("unable to retrieve the thread identifier "
 			    "from the queue");
 
-	      module_call(console, console_message,
+	      module_call(console, message,
 			  '#', "      %qu (%u, %u ms)\n",
 			  entity->thread,
 			  priority,
@@ -188,7 +188,7 @@ t_error			scheduler_dump(void)
        * 3)
        */
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "    expired:\n");
 
       priority = 0;
@@ -205,7 +205,7 @@ t_error			scheduler_dump(void)
 		CORE_ESCAPE("unable to retrieve the thread identifier "
 			    "from the queue");
 
-	      module_call(console, console_message,
+	      module_call(console, message,
 			  '#', "      %qu (%u, %u ms)\n",
 			  entity->thread,
 			  priority,
@@ -870,13 +870,6 @@ t_error			scheduler_add(i_thread			id)
 
   if (scheduler_get(&scheduler) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
-
-  /*
-   * XXX
-   */
-
-  if (id == _kernel->thread)
-    printf("THIS SHOULD NEVER OCCUR\n");
 
   /*
    * 3)

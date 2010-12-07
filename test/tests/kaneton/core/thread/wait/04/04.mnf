@@ -3,3 +3,4 @@ description: This test creates three threads. The first one waits for the second
 symbol: test_core_thread_wait_04
 signature: 0ir32qeiojdgreh39ut90tgiesswe40r23ur90a0fewgug2309fwe90gie09g
 output:
+points: 3

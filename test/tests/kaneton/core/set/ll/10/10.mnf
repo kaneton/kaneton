@@ -3,3 +3,4 @@ description: This test reserves a set, tries to locate and remove non-existent i
 symbol: test_core_set_ll_10
 signature: sldkvklm332qqhh
 output: "1 elements: 42\n"
+points: 3

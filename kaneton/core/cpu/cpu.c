@@ -68,7 +68,7 @@ t_error			cpu_show(i_cpu				id)
   if (cpu_get(id, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the CPU object");
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  cpu %qd: execution time %qd ms\n", id,
 	      o->efficiency);
 
@@ -100,7 +100,7 @@ t_error			cpu_dump(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qu cpu(s):\n", size);
 
   set_foreach(SET_OPTION_FORWARD, _cpu->cpus, &i, st)
@@ -319,10 +319,10 @@ t_error			cpu_initialize(void)
     }
 
   if (_cpu->ncpus == 1)
-    module_call(console, console_message,
+    module_call(console, message,
 		'#', " system is running in mono-processor mode\n");
   else
-    module_call(console, console_message,
+    module_call(console, message,
 		'#', " system is running in multi-processor mode\n");
 
   /*

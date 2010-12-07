@@ -8,26 +8,22 @@
 # file          /home/mycure/kaneton.STABLE/test/configuration/README
 #
 # created       julien quintard   [tue nov  2 05:51:26 2010]
-# updated       julien quintard   [tue nov  2 07:40:31 2010]
+# updated       julien quintard   [mon dec  6 07:05:03 2010]
 #
 
 The configuration files contain a configuration which will be used in order
 to generate the initial user's database.
 
-These files contain a set of settings which is composed of various
-test configuration. every test configuration is identified through its
+These files contain a set of quota which is composed of various test
+configuration. Every test configuration is identified through its
 environment (qemu, xen etc.), the platform/architecture couple, often
 referred to as the machine (ibm-pc.ia32/educational etc.) and the test
 suite the user is allowed to trigger in this test configuration (k1, k2
 etc.).
 
-Note that a quota of -1 indicates an infinite number of requests allowed.
-
 The user is allowed to trigger the test suite of a given configuration a
-limited number of times, given by the _quota_. The _requests_ attribute
-contains the current number of times this suite has been triggered.
-This number evolves in the user's database though always set to zero in
-such a configuration file.
+limited number of times, given by the quota. Note that a quota of -1
+indicates an infinite number of requests allowed.
 
 The _reports_ section will contain, in the database, the reports associated
 with a test suite having been triggered.

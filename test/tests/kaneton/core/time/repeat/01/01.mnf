@@ -3,3 +3,4 @@ description: This test creates a thread, sets a repeating timer and verifies tha
 symbol: test_core_time_repeat_01
 signature: 90sf09isck3t32sdiocvjigi4h4h3
 output:
+points: 2

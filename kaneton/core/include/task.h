@@ -169,8 +169,6 @@ typedef struct
  * ../../core/task/task.c
  */
 
-t_error			task_current(i_task*			tsk);
-
 t_error			task_show(i_task			id);
 
 t_error			task_dump(void);

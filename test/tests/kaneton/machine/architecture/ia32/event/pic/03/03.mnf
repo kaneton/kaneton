@@ -3,3 +3,4 @@ description: This test reserves an event and checks the PIC's mask to verify tha
 symbol: test_architecture_event_pic_03
 signature: mzsdqwdwfjwgomre
 output:
+points: 1

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:21:12 2010]
+ * updated       julien quintard   [sun dec  5 00:55:45 2010]
  */
 
 /*
@@ -23,7 +23,6 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern t_init*		_init;
 extern m_kernel*	_kernel;
 
 /*
@@ -57,25 +56,6 @@ void			test_architecture_as_switch(void)
 
   if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error");
-
-  if (region_reserve(as,
-		     (i_segment)_init->kcode,
-		     0,
-		     REGION_OPTION_FORCE,
-		     _init->kcode,
-		     _init->kcodesz,
-		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error");
-
-  if (region_reserve(as,
-		     (i_segment)_init->kstack,
-		     0,
-		     REGION_OPTION_FORCE,
-		     (t_vaddr)_init->kstack,
-		     _init->kstacksz,
-		     &reg) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error: unable to map the kstack segment "
-	       "at a precise address");
 
   if (segment_reserve(as,
 		      PAGESZ,

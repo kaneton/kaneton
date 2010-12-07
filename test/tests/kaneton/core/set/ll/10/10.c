@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...E/test/tests/kaneton/core/set/ll/10/10.c
+ * file          /home/mycure/kane...E/test/tests/kaneton/core/set/ll/10/10.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2100]
- * updated       julien quintard   [mon nov 29 19:23:36 2010]
+ * updated       julien quintard   [sun dec  5 16:22:08 2010]
  */
 
 /*
@@ -80,7 +80,7 @@ void			test_core_set_ll_10(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
@@ -88,13 +88,13 @@ void			test_core_set_ll_10(void)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
-        printf("%qd",
-	       *((t_id*)pdata));
+        TEST_PRINT("%qd",
+		   *((t_id*)pdata));
       else
-        printf(" %qd",
-	       *((t_id*)pdata));
+        TEST_PRINT(" %qd",
+		   *((t_id*)pdata));
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   /*
    * release

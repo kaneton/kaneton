@@ -137,7 +137,7 @@ t_error			set_show_ll(i_set			setid)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  %qd node(s) from the linked-list set %qd\n",
 	      o->size,
 	      setid);
@@ -146,7 +146,7 @@ t_error			set_show_ll(i_set			setid)
     {
       t_set_ll_node*	n = i.u.ll.node;
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "    %qd <0x%x, 0x%x, 0x%x>\n",
 		  *((t_id*)n->data), n->previous, n, n->next);
     }

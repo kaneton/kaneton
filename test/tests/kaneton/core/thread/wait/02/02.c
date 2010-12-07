@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:09:29 2010]
+ * updated       julien quintard   [sat dec  4 17:13:02 2010]
  */
 
 /*
@@ -40,10 +40,10 @@ void			test_core_thread_wait_02_thread_01(void)
 {
   t_wait		wait;
 
-  if (thread_sleep(3000) != ERROR_OK)
+  if (thread_sleep(thread1, 3000) != ERROR_OK)
     TEST_HANG("[thread_sleep] error");
 
-  if (thread_wait(WAIT_STATE_DEATH, thread2, &wait) != ERROR_OK)
+  if (thread_wait(thread1, WAIT_STATE_DEATH, thread2, &wait) != ERROR_OK)
     TEST_HANG("[thread_wait] error");
 
   if (WAIT_THREAD(&wait) != thread2)

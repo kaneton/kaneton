@@ -3,3 +3,4 @@ description: This test creates a thread which spawns many threads.
 symbol: test_core_scheduler_flood_01
 signature: r29mnsdv2w3030h09fw23r2nmwivcw3g93
 output:
+points: 4

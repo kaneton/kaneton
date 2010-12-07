@@ -120,18 +120,10 @@ typedef BPT_FLAGS_T		t_bpt_flags;
 #define BPT_TYPE_LEAF		0x02
 
 /*
- * debug macro
+ * debug
  */
 
-#ifdef BPT_DEBUG
-# define	bpt_debug(_stream_, _fmt_...)                                 \
-  {                                                                           \
-    fprintf((_stream_), "[%s:%u] ", __FILE__, __LINE__);                      \
-    fprintf((_stream_), _fmt_);                                               \
-  }
-#else
-# define	bpt_debug(_stream_, _fmt_...)
-#endif
+#define	bpt_debug(_stream_, _fmt_...)
 
 /*
  * macros that indicate the number of array's entries the programmer has to

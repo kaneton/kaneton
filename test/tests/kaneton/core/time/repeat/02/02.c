@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/time/repeat/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [sat dec  4 12:20:57 2010]
+ * updated       julien quintard   [sun dec  5 22:52:20 2010]
  */
 
 /*

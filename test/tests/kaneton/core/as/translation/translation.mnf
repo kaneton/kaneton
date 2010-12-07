@@ -3,3 +3,4 @@ description: This test reserves a segment/region couple and verifies that the in
 symbol: test_core_as_translation
 signature: r3289u9idsjjsfwe9tg9
 output:
+points: 3

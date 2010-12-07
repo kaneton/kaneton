@@ -3,3 +3,4 @@ description: This test reserves an event, taking care to provide a data address.
 symbol: test_architecture_event_data
 signature: v09iwij90ig4ghh
 output:
+points: 2

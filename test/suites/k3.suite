@@ -8,14 +8,18 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/suites/k3.suite
 #
 # created       julien quintard   [tue nov  2 07:34:01 2010]
-# updated       julien quintard   [sun nov 21 10:16:37 2010]
+# updated       julien quintard   [sun dec  5 20:28:59 2010]
 #
 
 name: k3
 description: This test suite contains tests related to the execution.
 components:
-#  task:
-#    - kaneton/machine/glue/ibm-pc.ia32/task/
+  task:
+    - kaneton/core/task/
+
+  thread:
+    - kaneton/core/thread/
 
   scheduler:
-    - kaneton/machine/glue/ibm-pc.ia32/scheduler/
+    - kaneton/core/scheduler/
+    - kaneton/machine/architecture/ia32/scheduler/

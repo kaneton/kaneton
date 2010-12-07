@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/scripts/README
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/README
 #
 # created       julien quintard   [mon nov  1 21:45:10 2010]
-# updated       julien quintard   [mon nov  1 21:45:14 2010]
+# updated       julien quintard   [mon dec  6 16:24:27 2010]
 #
 
 This directory contains standalone scripts for performing various
@@ -81,3 +81,12 @@ The dump script takes any YAML-based file such as databases, statements,
 reports etc. and displays its inner data fields in a hierarchised way.
 
   $> ./ dump --path ../store/statement/20101101-181637.db
+
+#
+# ---------- test -------------------------------------------------------------
+#
+
+The test script takes a report, potentially new, tests it and completes it
+with the results.
+
+  $> ./test.py --report 20101205:224913

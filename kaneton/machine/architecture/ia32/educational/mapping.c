@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo.../architecture/ia32/educational/mapping.c
+ * file          /home/mycure/kane.../architecture/ia32/educational/mapping.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:26:06 2007]
- * updated       julien quintard   [wed dec  1 23:50:19 2010]
+ * updated       julien quintard   [sun dec  5 16:14:08 2010]
  */
 
 /*
@@ -413,7 +413,8 @@ t_error			ia32_map_region(i_as		asid,
 	   pte++)
 	{
 	  if (((t_ia32_pte*)pt.vaddr)[pte] & IA32_PAGE_TABLE_ENTRY_FLAG_USED)
-	    printf("warning: adding already-in-use page\n");
+	    module_call(console, print,
+			"warning: adding already-in-use page\n");
 
 	  /*
 	   * d)

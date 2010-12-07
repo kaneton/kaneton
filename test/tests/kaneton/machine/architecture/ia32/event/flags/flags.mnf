@@ -3,3 +3,4 @@ description: This test creates a thread, reserves an event and manually triggers
 symbol: test_architecture_event_flags
 signature: 09i2309if09jgjhh3vsmnefi90g4h00
 output: "[isr] eflags: disabled\n[content] eflags: enabled\n"
+points: 3

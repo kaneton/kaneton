@@ -82,7 +82,7 @@ t_error			region_show(i_as			asid,
   if (region_get(asid, regid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the region object");
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  region %qd in address space %qd:\n",
 	      regid,
 	      asid);
@@ -91,7 +91,7 @@ t_error			region_show(i_as			asid,
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "    0x%08x - 0x%08x [%qd] (%u bytes) %c\n",
 	      o->address,
 	      o->address + o->size - 1,
@@ -152,7 +152,7 @@ t_error			region_dump(i_as		asid)
    * 3)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qu regions(s) from the region set:\n", size);
 
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, state)

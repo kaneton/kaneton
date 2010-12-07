@@ -3,3 +3,4 @@ description: This test reserves a segment, mapped through a region. The test the
 symbol: test_core_region_write
 signature: 0t09i490eirgi340g
 output:
+points: 1

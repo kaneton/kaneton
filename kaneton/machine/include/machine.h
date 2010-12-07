@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...STABLE/kaneton/machine/include/machine.h
  *
  * created       julien quintard   [thu jun  7 12:46:25 2007]
- * updated       julien quintard   [wed nov 24 13:39:19 2010]
+ * updated       julien quintard   [sat dec  4 23:06:46 2010]
  */
 
 #ifndef MACHINE_H
@@ -27,23 +27,12 @@
  */
 
 /*
- * notify
- */
-
-#define MACHINE_NOTIFY(_format_, _arguments_...)			\
-  {									\
-    module_call(report, report_record,					\
-		_format_ " (%s:%u)",					\
-		##_arguments_, __FUNCTION__, __LINE__);			\
-  }
-
-/*
  * escape
  */
 
 #define MACHINE_ESCAPE(_format_, _arguments_...)			\
   {									\
-    module_call(report, report_record,					\
+    module_call(report, record,						\
 		_format_ " (%s:%u)",					\
 		##_arguments_, __FUNCTION__, __LINE__);			\
 									\

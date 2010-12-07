@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...ine/glue/ibm-pc.ia32/educational/event.c
+ * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [wed dec  1 23:54:53 2010]
+ * updated       julien quintard   [sun dec  5 16:11:45 2010]
  */
 
 /*
@@ -142,12 +142,13 @@ void			pf_handler(t_id				id,
 
   SCR2(addr);
 
-  printf("error: page fault !\n"
-         "  0x%x trying to %s at the address 0x%x requires %s\n",
-	 ctx.eip,
-         (error_code & 2) ? "write" : "read",
-         addr,
-         (error_code & 1) ? "a lower DPL" : "the page to be present");
+  module_call(console, print,
+	      "error: page fault !\n"
+	      "  0x%x trying to %s at the address 0x%x requires %s\n",
+	      ctx.eip,
+	      (error_code & 2) ? "write" : "read",
+	      addr,
+	      (error_code & 1) ? "a lower DPL" : "the page to be present");
 
   ia32_print_context(th);
 

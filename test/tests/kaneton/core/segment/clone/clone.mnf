@@ -3,3 +3,4 @@ description: This test reserves a segment, write data to this segment before clo
 symbol: test_core_segment_clone
 signature: 09tgi30g9a9wegoh
 output:
+points: 2

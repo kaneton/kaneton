@@ -3,3 +3,4 @@ description: This test creates a task and address space, allocates several non-a
 symbol: test_core_as_readwrite
 signature: 03ri290saoigfeio0032
 output:
+points: 3

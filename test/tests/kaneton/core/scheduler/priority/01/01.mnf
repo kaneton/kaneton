@@ -3,3 +3,4 @@ description: This test creates a thread which spawns two thread with different p
 symbol: test_core_scheduler_priority_01
 signature: nsdv09wi23f0w9gvmvnweifjq2309gi34g
 output:
+points: 2

@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/library/include/library.h
+ * file          /home/mycure/kane...STABLE/kaneton/library/include/library.h
  *
  * created       julien quintard   [sun jun 10 17:31:41 2007]
- * updated       matthieu bucchianeri   [fri sep  7 16:52:36 2007]
+ * updated       julien quintard   [sun dec  5 15:56:29 2010]
  */
 
-#ifndef LIBC_LIBC_H
-#define LIBC_LIBC_H			1
+#ifndef LIBRARY_LIBRARY_H
+#define LIBRARY_LIBRARY_H			1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -36,13 +36,7 @@
 
 #include <library/types.h>
 #include <library/stdarg.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef int			(*t_printf_char_fn)(char	c);
-typedef void			(*t_printf_attr_fn)(u_int8_t	attr);
+#include <library/format.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -51,7 +45,7 @@ typedef void			(*t_printf_attr_fn)(u_int8_t	attr);
  *	../memcpy.c
  *	../memcmp.c
  *	../memset.c
- *	../printf.c
+ *	../format.c
  *	../strchr.c
  *	../strcmp.c
  *	../strcpy.c
@@ -118,29 +112,29 @@ void*			memset(void*				s,
 
 
 /*
- * ../printf.c
+ * ../format.c
  */
 
-int			printf_string(char*			string,
+int			format_string(t_format_character_fn	character,
+				      t_format_attribute_fn	attribute,
+				      char*			string,
 				      unsigned int		flags,
 				      int			len1,
 				      int			len2);
 
-int			printf_quad(quad_t			value,
+int			format_quad(t_format_character_fn	character,
+				    t_format_attribute_fn	attribute,
+				    quad_t			value,
 				    int				base,
 				    int				hdl_sign,
 				    unsigned int		flags,
 				    int				len1,
 				    int				len2);
 
-int			vprintf(const char*			fmt,
-				va_list				args);
-
-int			printf_init(t_printf_char_fn		pc,
-				    t_printf_attr_fn		pa);
-
-int			printf(char*				fmt,
-			       ...);
+int			format(t_format_character_fn		character,
+			       t_format_attribute_fn		attribute,
+			       const char*			fmt,
+			       va_list				args);
 
 
 /*

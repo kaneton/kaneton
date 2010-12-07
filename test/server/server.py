@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/server/server.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [tue nov 23 23:02:37 2010]
+# updated       julien quintard   [tue dec  7 21:54:22 2010]
 #
 
 #
@@ -32,11 +32,25 @@
 # and saved but also sent back to the client.
 #
 # the submit command takes a snapshot and saves it as the final work of the
-# student. later on, the administrator will be able to use scripts/evaluate.py
-# in order to generate the students' grades for a specific stage.
+# student. later on, the administrator will be able to use the
+# 'scripts/evaluate.py' script in order to generate the students' grades for
+# a specific stage.
 #
-# for more information about the scripts called from the server, please refer
-# to the scripts/ directory.
+# for more information about the scripts called from the server's internals,
+# please refer to the scripts/ directory.
+#
+# IMPORTANT! should the server fail to produce relevant reports, the
+#   administrator should look for two possible explanations:
+#     1) there are too many mounted loop devices.
+#        one can detect these temporary mounts through either:
+#          $> mount
+#        or:
+#          $> losetup -a
+#     2) there already is a virtual machine running, being Xen or QEMU
+#        for QEMU, once can detect such running virtual machine through:
+#          $> ps aux | grep -i qemu
+#        for Xen, the following command must only return the Domain-0:
+#          $> xm list
 #
 
 #
@@ -72,20 +86,18 @@ import ktp
 #
 
 # directories
-HooksDirectory = TestDirectory + "/hooks"
 ScriptsDirectory = TestDirectory + "/scripts"
 ServerDirectory = TestDirectory + "/server"
 StoreDirectory = TestDirectory + "/store"
 SuitesDirectory = TestDirectory + "/suites"
-TestsDirectory = TestDirectory + "/tests"
-GradesDirectory = TestDirectory + "/grades"
+StagesDirectory = TestDirectory + "/stages"
+EnvironmentsDirectory = TestDirectory + "/environments"
 
 # stores
 DatabaseStore = StoreDirectory + "/database"
 KeyStore = StoreDirectory + "/key"
 CodeStore = StoreDirectory + "/code"
 CertificateStore = StoreDirectory + "/certificate"
-BundleStore = StoreDirectory + "/bundle"
 ReportStore = StoreDirectory + "/report"
 SnapshotStore = StoreDirectory + "/snapshot"
 
@@ -99,18 +111,24 @@ ServerCertificate = CertificateStore + "/server" + ktp.certificate.Extension
 ServerKey = KeyStore + "/server" + ktp.key.Extension
 ServerCode = CodeStore + "/server" + ktp.code.Extension
 
-# hooks
-ConstructHook = "construct.py"
-StressHook = "stress.py"
+# scripts
+TestScript = ScriptsDirectory + "/test.py"
 
 # maintenance
 MaintenanceLock = TestDirectory + "/.maintenance"
 
-# environments.
+# indexes
+QEMUIndex = 0
+XenIndex = 1
+
+# environments: qemu/xen.
 Environments = [ "qemu", "xen" ]
 
 # test construct environment
-TestConstructEnvironment = "xen"
+TestConstructEnvironment = Environments[QEMUIndex]
+
+# the contributors community.
+ContributorsCommunity = "contributors"
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -230,6 +248,12 @@ def                     Information(capability):
   stream = None
   profile = None
   database = None
+  suites = None
+  suite = None
+  stages = None
+  stage = None
+  environments = None
+  environment = None
 
   print("[routine] Information()")
 
@@ -263,15 +287,37 @@ def                     Information(capability):
     information["database"] = database
 
     # add the set of of suites.
-    information["suites"] = ktp.suite.List(SuitesDirectory)
+    information["suites"] = {}
+
+    suites = ktp.suite.List(SuitesDirectory)
+    for suite in suites:
+      stream = ktp.suite.Load(SuitesDirectory + "/" +                   \
+                                suite + ktp.suite.Extension)
+      information["suites"][stream["name"]] = stream["description"]
 
     # add the set of stages.
-    information["stages"] = ktp.grade.List(GradesDirectory)
+    information["stages"] = {}
+
+    stages = ktp.stage.List(StagesDirectory)
+    for stage in stages:
+      stream = ktp.stage.Load(StagesDirectory + "/" +                   \
+                                stage + ktp.stage.Extension)
+
+      information["stages"][stream["name"]] = stream["description"]
 
     # add the set of environments.
-    information["environments"] = Environments
+    information["environments"] = {}
+
+    environments = ktp.environment.List(EnvironmentsDirectory)
+    for environment in environments:
+      stream = ktp.environment.Load(EnvironmentsDirectory + "/" +       \
+                                      environment + ktp.environment.Extension)
+
+      information["environments"][stream["name"]] = stream["description"]
   except Exception, exception:
     return (ktp.StatusError, ktp.trace.Generate())
+
+  print("[/routine] Information()")
 
   return (ktp.StatusOk, information)
 
@@ -289,14 +335,10 @@ def                     Test(capability,
   database = None
   identifier = None
   date = None
-  image = None
-  bulletin = None
   report = None
-  stream = None
   status = None
-  start = None
-  end = None
   output = None
+  stream = None
 
   print("[routine] Test()")
 
@@ -322,146 +364,175 @@ def                     Test(capability,
                                    ktp.database.Extension)
 
     # verify the database consistency.
-    if (not "settings" in                                               \
-          database) or                                                  \
-       (not environment in                                              \
-         database["settings"]) or                                       \
-         (not machine in                                                \
-         database["settings"][environment]) or                          \
-       (not suite in                                                    \
-         database["settings"][environment][machine]):
+    if (not "quotas" in database) or                                    \
+       (not environment in database["quotas"]) or                       \
+       (not machine in database["quotas"][environment]) or              \
+       (not suite in database["quotas"][environment][machine]):
       return (ktp.StatusError, "the action does not seem to be "        \
                 "allowed for your profile")
- 
+
     # check that the quota has not been reached.
-    if (database["settings"][environment][machine][suite]["requests"] ==\
-          database["settings"][environment][machine][suite]["quota"]):
+    if (len(database["reports"][environment][machine][suite]) ==        \
+          database["quotas"][environment][machine][suite]):
       return (ktp.StatusError, "the tests quota seems to have been reached")
 
     # create a unique identifier for the test context.
     identifier = time.strftime("%Y%m%d:%H%M%S")
 
-    # retrieve the current data.
+    # retrieve the current date.
     date = time.strftime("%Y/%m/%d %H:%M:%S")
 
-    # create a temporary files for the received snapshot, the about-to-be
-    # generated image etc.
-    image = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-    bulletin = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-    # update the user's database by incrementing the number of requests.
-    database["settings"][environment][machine][suite]["requests"] += 1
-
-    # update the database by setting the test identifier.
+    # update the database by recording the test identifier.
     database["reports"][environment][machine][suite] += [ identifier ]
+
+    # store the database.
+    ktp.database.Store(database,
+                       DatabaseStore + "/" + profile["identifier"] +    \
+                         ktp.database.Extension)
 
     # store the snapshot.
     ktp.miscellaneous.Push(str(snapshot),
                            SnapshotStore + "/" + identifier +           \
                              ktp.snapshot.Extension)
 
-    # retrieve the current time.
-    start = time.time()
-
-    # launch the build hook which generates a bootable image.
-    status =                                                            \
-      ktp.process.Invoke(HooksDirectory +                               \
-                           "/" +                                        \
-                           TestConstructEnvironment +                   \
-                           "/" +                                        \
-                           machine +                                    \
-                           "/" +                                        \
-                           suite +                                      \
-                           "/" +                                        \
-                           ConstructHook,
-                         [ "--name", identifier,
-                           "--snapshot", SnapshotStore + "/" +          \
-                             identifier + ktp.snapshot.Extension,
-                           "--image", image,
-                           "--environment", TestConstructEnvironment,
-                           "--platform", platform,
-                           "--architecture", architecture ],
-                         stream = stream,
-                         option = ktp.process.OptionNone)
-
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
-
-    # test the success of the construct hook invocation.
-    if status == ktp.StatusError:
-      return (ktp.StatusError, ktp.miscellaneous.Binary(output))
-
-    # launch the build hook which generates a bootable image.
-    status =                                                            \
-      ktp.process.Invoke(HooksDirectory +                               \
-                           "/" +                                        \
-                           environment +                                \
-                           "/" +                                        \
-                           machine +                                    \
-                           "/" +                                        \
-                           suite +                                      \
-                           "/" +                                        \
-                           StressHook,
-                         [ "--name", identifier,
-                           "--image", image,
-                           "--environment", environment,
-                           "--suite", suite,
-                           "--bulletin", bulletin,
-                           "--verbose" ],
-                         stream = stream,
-                         option = ktp.process.OptionNone)
-
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
-
-    # test the success of the construct hook invocation.
-    if status == ktp.StatusError:
-      return (ktp.StatusError, ktp.miscellaneous.Binary(output))
-
-    # retrieve the current time.
-    end = time.time()
-
-    # build the report based on the bulletin.
-    report = { "meta":
-                 { "identifier": identifier,
+    # build the initial report.
+    report = {
+               "meta":
+                 {
+                   "user": profile["identifier"],
+                   "identifier": identifier,
                    "date": date,
                    "environments":
-                     { "construct": TestConstructEnvironment,
-                       "stress": environment },
+                     {
+                       "construct": TestConstructEnvironment,
+                       "stress": environment
+                     },
                    "platform": platform,
                    "architecture": architecture,
                    "suite": suite,
-                   "duration": "%.3f" % (end - start) },
+                   "duration": None
+                 },
                "data":
-                 ktp.bulletin.Load(bulletin) }
+                 None
+             }
 
-    # store the report.
+    # store the initial report.
     ktp.report.Store(report,
                      ReportStore + "/" + identifier + ktp.report.Extension)
+
+    # generate a temporary file.
+    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+    # launch the test script.
+    status =                                                            \
+      ktp.process.Invoke(TestScript,
+                         [ "--report", identifier ],
+                         stream = stream,
+                         option = ktp.process.OptionNone)
+
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
+
+    # test the success of the stress script invocation.
+    if status == ktp.StatusError:
+      return (ktp.StatusError, ktp.miscellaneous.Binary(output))
   except Exception, exception:
     return (ktp.StatusError, ktp.trace.Generate())
   finally:
-    # store the database.
-    if database:
-      ktp.database.Store(database, DatabaseStore + "/" +                \
-                           profile["identifier"] + ktp.database.Extension)
-
-    # remove the temporary files.
+    # remove temporary files.
     if stream:
       ktp.miscellaneous.Remove(stream)
-    if bulletin:
-      ktp.miscellaneous.Remove(bulletin)
-    if image:
-      ktp.miscellaneous.Remove(image)
+
+  # load the final report in order to send it back to the client.
+  report = ktp.report.Load(ReportStore + "/" + identifier +             \
+                             ktp.report.Extension)
+
+  print("[/routine] Test()")
 
   return (ktp.StatusOk, report)
+
+#
+# this method re-triggers a test suite for the given report.
+#
+def                     Retest(capability,
+                               identifier):
+  profile = None
+  database = None
+  date = None
+  report = None
+  status = None
+  output = None
+  stream = None
+
+  print("[routine] Retest()")
+
+  try:
+    # verify that the maintenance mode has not been activated.
+    if os.path.exists(MaintenanceLock) == True:
+      return (ktp.StatusError, "the system is currently under "         \
+                "maintenance ... please try again later")
+
+    # verify the given capability.
+    if ktp.capability.Validate(g_code, capability) != True:
+      return (ktp.StatusError, "invalid capability")
+
+    # retrieve the profile inside the capability.
+    profile = capability
+
+    # check that the requesting user is a contributor.
+    if profile["community"] != ContributorsCommunity:
+      return (ktp.StatusError, "only a contributor can request "        \
+                "this operation")
+
+    # load the final report in order to send it back to the client.
+    report = ktp.report.Load(ReportStore + "/" + identifier +           \
+                               ktp.report.Extension)
+
+    # retrieve the current date.
+    date = time.strftime("%Y/%m/%d %H:%M:%S")
+
+    # reset some of the report attributes.
+    report["meta"]["date"] = date
+    report["meta"]["duration"] = None
+    report["data"] = None
+
+    # store the initial report.
+    ktp.report.Store(report,
+                     ReportStore + "/" + identifier + ktp.report.Extension)
+
+    # generate a temporary file.
+    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+    # launch the test script.
+    status =                                                            \
+      ktp.process.Invoke(TestScript,
+                         [ "--report", identifier,
+                           "--email" ],
+                         stream = stream,
+                         option = ktp.process.OptionNone)
+
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
+
+    # test the success of the stress script invocation.
+    if status == ktp.StatusError:
+      return (ktp.StatusError, ktp.miscellaneous.Binary(output))
+  except Exception, exception:
+    return (ktp.StatusError, ktp.trace.Generate())
+  finally:
+    # remove temporary files.
+    if stream:
+      ktp.miscellaneous.Remove(stream)
+
+  print("[/routine] Retest()")
+
+  return (ktp.StatusOk, None)
 
 #
 # this method submits a snapshot.
@@ -495,10 +566,8 @@ def                     Submit(capability,
                                    ktp.database.Extension)
 
     # verify the database consistency.
-    if (not "deliveries" in                                             \
-         database) or                                                   \
-       (not stage in                                                    \
-         database["deliveries"]):
+    if (not "deliveries" in database) or                                \
+       (not stage in database["deliveries"]):
       return (ktp.StatusError, "the action does not seem to be "        \
                 "allowed for your profile")
 
@@ -514,20 +583,23 @@ def                     Submit(capability,
     date = time.strftime("%Y/%m/%d %H:%M:%S")
 
     # store the snapshot.
-    ktp.miscellaneous.Push(str(snapshott),
+    ktp.miscellaneous.Push(str(snapshot),
                            SnapshotStore + "/" + identifier +           \
                              ktp.snapshot.Extension)
 
     # set the snapshot identifier in the database.
-    database["deliveries"][stage] = { "snapshot": identifier,
-                                      "date": date }
+    database["deliveries"][stage] = {
+                                      "snapshot": identifier,
+                                      "date": date
+                                    }
+
+    # store the database.
+    ktp.database.Store(database, DatabaseStore + "/" +                  \
+                         profile["identifier"] + ktp.database.Extension)
   except Exception, exception:
     return (ktp.StatusError, ktp.trace.Generate())
-  finally:
-    # store the database.
-    if database:
-      ktp.database.Store(database, DatabaseStore + "/" +                \
-                           profile["identifier"] + ktp.database.Extension)
+
+  print("[/routine] Submit()")
 
   return (ktp.StatusOk, None)
 
@@ -543,6 +615,7 @@ if __name__ == '__main__':
   # register the routines.
   server.register_function(Information)
   server.register_function(Test)
+  server.register_function(Retest)
   server.register_function(Submit)
 
   # print information

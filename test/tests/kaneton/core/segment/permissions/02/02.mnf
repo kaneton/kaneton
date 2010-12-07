@@ -3,3 +3,4 @@ description: This test reserves a segment and changes its permissions before rel
 symbol: test_core_segment_permissions_02
 signature: riggit439hgeogwaf4
 output:
+points: 1

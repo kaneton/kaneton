@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/complete/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 22:07:09 2010]
+ * updated       julien quintard   [sun dec  5 00:54:16 2010]
  */
 
 /*
@@ -24,18 +24,22 @@
  */
 
 extern m_kernel*		_kernel;
-extern t_init*			_init;
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
 
+static volatile i_thread	thread_01;
 static volatile t_vaddr		share_01;
 
-static volatile i_task		task_02;
+static volatile i_task		task_01;
+static volatile i_thread	thread_02;
+static volatile i_thread	thread_03;
 static volatile t_vaddr		share_02;
 
-static volatile i_task		task_03;
+static volatile i_task		task_02;
+static volatile i_thread	thread_04;
+static volatile i_thread	thread_05;
 static volatile t_vaddr		share_03;
 
 /*
@@ -44,7 +48,6 @@ static volatile t_vaddr		share_03;
 
 void			test_core_scheduler_complete_02_thread_01(void)
 {
-  i_thread		thread;
   t_thread_context	ctx;
   t_stack		stack;
   o_thread*		t;
@@ -53,57 +56,61 @@ void			test_core_scheduler_complete_02_thread_01(void)
    * thread
    */
 
-  if (thread_reserve(task_02, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(task_01,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_03) != ERROR_OK)
     TEST_HANG("[thread_reserve] error");
 
   stack.base = 0;
   stack.size = THREAD_STACKSZ_LOW;
 
-  if (thread_stack(thread, stack) != ERROR_OK)
+  if (thread_stack(thread_03, stack) != ERROR_OK)
     TEST_HANG("[thread_stack] error");
 
-  if (thread_get(thread, &t) != ERROR_OK)
+  if (thread_get(thread_03, &t) != ERROR_OK)
     TEST_HANG("[thread_get] error");
 
   ctx.sp = t->stack + t->stacksz - 16;
   ctx.pc = (t_vaddr)test_core_scheduler_complete_02_thread_03;
 
-  if (thread_load(thread, ctx) != ERROR_OK)
+  if (thread_load(thread_03, ctx) != ERROR_OK)
     TEST_HANG("[thread_load] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread_03) != ERROR_OK)
     TEST_HANG("[thread_start] error");
 
   /*
    * thread
    */
 
-  if (thread_reserve(task_03, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(task_02,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_05) != ERROR_OK)
     TEST_HANG("[thread_reserve] error");
 
   stack.base = 0;
   stack.size = THREAD_STACKSZ_LOW;
 
-  if (thread_stack(thread, stack) != ERROR_OK)
+  if (thread_stack(thread_05, stack) != ERROR_OK)
     TEST_HANG("[thread_stack] error");
 
-  if (thread_get(thread, &t) != ERROR_OK)
+  if (thread_get(thread_05, &t) != ERROR_OK)
     TEST_HANG("[thread_get] error");
 
   ctx.sp = t->stack + t->stacksz - 16;
   ctx.pc = (t_vaddr)test_core_scheduler_complete_02_thread_05;
 
-  if (thread_load(thread, ctx) != ERROR_OK)
+  if (thread_load(thread_05, ctx) != ERROR_OK)
     TEST_HANG("[thread_load] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread_05) != ERROR_OK)
     TEST_HANG("[thread_start] error");
 
   /*
    * sleep
    */
 
-  if (thread_sleep(3000) != ERROR_OK)
+  if (thread_sleep(thread_01, 3000) != ERROR_OK)
     TEST_HANG("[thread_sleep] error");
 
   /*
@@ -168,7 +175,6 @@ void			test_core_scheduler_complete_02_thread_05(void)
 
 void			test_core_scheduler_complete_02(void)
 {
-  i_thread		thread;
   i_as			as;
   i_region		region;
   i_segment		segment;
@@ -201,48 +207,41 @@ void			test_core_scheduler_complete_02(void)
 
   share_01 = r->address;
 
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_01) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 
   stack.base = 0;
   stack.size = THREAD_STACKSZ_LOW;
 
-  if (thread_stack(thread, stack) != ERROR_OK)
+  if (thread_stack(thread_01, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error");
 
-  if (thread_get(thread, &t) != ERROR_OK)
+  if (thread_get(thread_01, &t) != ERROR_OK)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = t->stack + t->stacksz - 16;
   ctx.pc = (t_vaddr)test_core_scheduler_complete_02_thread_01;
 
-  if (thread_load(thread, ctx) != ERROR_OK)
+  if (thread_load(thread_01, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread_01) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
   /*
-   * task
+   * task 1
    */
 
   if (task_reserve(TASK_CLASS_KERNEL,
                    TASK_BEHAVIOUR_INTERACTIVE,
                    TASK_PRIORITY_INTERACTIVE,
-                   (i_task*)&task_02) != ERROR_OK)
+                   (i_task*)&task_01) != ERROR_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task_02, &as) != ERROR_OK)
+  if (as_reserve(task_01, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error");
-
-  if (region_reserve(as,
-                     (i_segment)_init->kcode,
-                     0,
-                     REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
-                     _init->kcode,
-                     _init->kcodesz,
-                     &region) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as,
 		     segment,
@@ -258,51 +257,44 @@ void			test_core_scheduler_complete_02(void)
 
   share_02 = r->address;
 
-  if (thread_reserve(task_02, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(task_01,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_02) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 
   stack.base = 0;
   stack.size = THREAD_STACKSZ_LOW;
 
-  if (thread_stack(thread, stack) != ERROR_OK)
+  if (thread_stack(thread_02, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error");
 
-  if (thread_get(thread, &t) != ERROR_OK)
+  if (thread_get(thread_02, &t) != ERROR_OK)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = t->stack + t->stacksz - 16;
   ctx.pc = (t_vaddr)test_core_scheduler_complete_02_thread_02;
 
-  if (thread_load(thread, ctx) != ERROR_OK)
+  if (thread_load(thread_02, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread_02) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (task_start(task_02) != ERROR_OK)
+  if (task_start(task_01) != ERROR_OK)
     TEST_ERROR("[task_start] error");
 
   /*
-   * task
+   * task 3
    */
 
   if (task_reserve(TASK_CLASS_KERNEL,
                    TASK_BEHAVIOUR_INTERACTIVE,
                    TASK_PRIORITY_INTERACTIVE,
-                   (i_task*)&task_03) != ERROR_OK)
+                   (i_task*)&task_02) != ERROR_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task_03, &as) != ERROR_OK)
+  if (as_reserve(task_02, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error");
-
-  if (region_reserve(as,
-                     (i_segment)_init->kcode,
-                     0,
-                     REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
-                     _init->kcode,
-                     _init->kcodesz,
-                     &region) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as,
 		     segment,
@@ -318,28 +310,30 @@ void			test_core_scheduler_complete_02(void)
 
   share_03 = r->address;
 
-  if (thread_reserve(task_03, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(task_02,
+		     THREAD_PRIORITY,
+		     (i_thread*)&thread_04) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 
   stack.base = 0;
   stack.size = THREAD_STACKSZ_LOW;
 
-  if (thread_stack(thread, stack) != ERROR_OK)
+  if (thread_stack(thread_04, stack) != ERROR_OK)
     TEST_ERROR("[thread_stack] error");
 
-  if (thread_get(thread, &t) != ERROR_OK)
+  if (thread_get(thread_04, &t) != ERROR_OK)
     TEST_ERROR("[thread_get] error");
 
   ctx.sp = t->stack + t->stacksz - 16;
   ctx.pc = (t_vaddr)test_core_scheduler_complete_02_thread_04;
 
-  if (thread_load(thread, ctx) != ERROR_OK)
+  if (thread_load(thread_04, ctx) != ERROR_OK)
     TEST_ERROR("[thread_load] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread_04) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (task_start(task_03) != ERROR_OK)
+  if (task_start(task_02) != ERROR_OK)
     TEST_ERROR("[task_start] error");
 
   /*

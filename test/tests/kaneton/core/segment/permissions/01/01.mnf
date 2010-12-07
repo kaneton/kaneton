@@ -3,3 +3,4 @@ description: This test reserves a segment and changes its permissions before rel
 symbol: test_core_segment_permissions_01
 signature: i9awefg94igy3h43h
 output:
+points: 1

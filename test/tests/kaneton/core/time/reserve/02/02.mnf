@@ -3,3 +3,4 @@ description: This test reserves a thread which sets up a single timer. Finally, 
 symbol: test_core_time_reserve_02
 signature: mvvvwjfg390fermsa90gawf90iwvmsd3jfgwg
 output:
+points: 2

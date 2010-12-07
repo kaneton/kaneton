@@ -3,3 +3,4 @@ description: This test reserves several maps. For every map, the test writes dat
 symbol: test_core_map_reserve_02
 signature: i9t04okafk3t4hg3
 output:
+points: 2

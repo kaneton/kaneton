@@ -195,7 +195,7 @@ t_error			set_show_array(i_set			setid)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  %qd node(s) from the array set %qu:\n",
 	      o->size,
 	      setid);
@@ -208,10 +208,10 @@ t_error			set_show_array(i_set			setid)
 	continue;
 
       if (id == ID_UNUSED)
-	module_call(console, console_message,
+	module_call(console, message,
 		    '!', "warning: unused object detected !\n");
 
-      module_call(console, console_message,
+      module_call(console, message,
 		  '#', "  array[%qd] = %qd\n", pos, id);
 
       ++pos;

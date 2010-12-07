@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.TETON/test/client/client.py
+# file          /home/mycure/kaneton.STABLE/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [wed nov 24 09:12:52 2010]
+# updated       julien quintard   [tue dec  7 21:55:08 2010]
 #
 
 #
@@ -355,6 +355,38 @@ def                     Test(server, capability, arguments):
   Summarize(report, "  ")
 
 #
+# this function requests the server for re-testing a snapshot.
+#
+def                     Retest(server, capability, arguments):
+  snapshot = None
+  identifier = None
+
+  # warning
+  Warning()
+
+  # check the arguments
+  if len(arguments) != 1:
+    Usage()
+    sys.exit(42)
+
+  # retrieve the arguments.
+  identifier = arguments[0]
+
+  # display the information by exploring the tree.
+  env.display(env.HEADER_OK,
+              "requesting the server",
+              env.OPTION_NONE)
+
+  # trigger a test.
+  ktp.xmlrpc.Call(server.Retest(capability,
+                                identifier))
+
+  # display a message.
+  env.display(env.HEADER_OK,
+              "the snapshot has been re-tested successfully",
+              env.OPTION_NONE)
+
+#
 # this function submits a snapshot.
 #
 def                     Submit(server, capability, arguments):
@@ -372,19 +404,30 @@ def                     Submit(server, capability, arguments):
   # retrieve the arguments.
   stage = arguments[0]
 
+  # display the information by exploring the tree.
+  env.display(env.HEADER_OK,
+              "generating the kaneton snapshot",
+              env.OPTION_NONE)
+
   # export the current kaneton implementation.
   env.launch(env._EXPORT_SCRIPT_,
              "test:" + capability["identifier"],
              env.OPTION_QUIET)
+
+  # display the information by exploring the tree.
+  env.display(env.HEADER_OK,
+              "loading the kaneton snapshot",
+              env.OPTION_NONE)
 
   # read the snapshot.
   snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                   \
                         "test:" + capability["identifier"] + ".tar.bz2",
                       env.OPTION_NONE)
 
-  # read the snapshot.
-  snapshot = env.pull("/home/mycure/kaneton.STABLE/export/output/test:contributor.tar.bz2",
-                      env.OPTION_NONE)
+  # display the information by exploring the tree.
+  env.display(env.HEADER_OK,
+              "requesting the server",
+              env.OPTION_NONE)
 
   # submit the snapshot.
   ktp.xmlrpc.Call(server.Submit(capability,
@@ -539,6 +582,7 @@ c_commands = {
   "list": List,
   "display-[identifier]": Display,
   "test-[environment]::[suite]": Test,
+  "retest-[identifier]": Retest,
   "submit-[stage]": Submit
 }
 

@@ -3,3 +3,4 @@ description: This test takes all the regions of all the existing address spaces 
 symbol: test_architecture_as_mapping
 signature: 90fi2ksoorpgk3
 output:
+points: 2

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANE...EST-SYSTEM/test/packages/ktp/__init__.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/__init__.py
 #
 # created       julien quintard   [mon oct 25 19:43:41 2010]
-# updated       julien quintard   [thu nov  4 12:03:40 2010]
+# updated       julien quintard   [sun dec  5 22:20:48 2010]
 #
 
 #
@@ -41,7 +41,7 @@ import certificate
 import code
 import configuration
 import database
-import grade
+import environment
 import key
 import manifest
 import miscellaneous
@@ -49,6 +49,7 @@ import point
 import process
 import report
 import snapshot
+import stage
 import statement
 import suite
 import trace

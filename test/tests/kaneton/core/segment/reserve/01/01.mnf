@@ -3,3 +3,4 @@ description: This test reserves a single segment and verifies its validity.
 symbol: test_core_segment_reserve_01
 signature: f90iw3awofhg3
 output:
+points: 1

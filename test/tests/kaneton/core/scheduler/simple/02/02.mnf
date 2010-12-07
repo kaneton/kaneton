@@ -3,3 +3,4 @@ description: This test creates two threads and makes sure the threads get schedu
 symbol: test_core_scheduler_simple_02
 signature: nvwoi23wev0i03f2
 output:
+points: 2

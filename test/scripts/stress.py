@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/scripts/stress.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue nov 23 17:50:20 2010]
+# updated       julien quintard   [tue dec  7 18:35:34 2010]
 #
 
 #
@@ -20,7 +20,7 @@
 #
 # the script then establishes a connection with the emulated environment
 # through a serial port. this connection is used to both trigger the test
-# and retrieve the output.
+# and retrieve the output and signature.
 #
 # upon completion, a list of results is gathered containing the output, status
 # and duration of the test. these results are finally saved in a bulletin
@@ -66,13 +66,15 @@ import ktp
 SuitesDirectory = TestDirectory + "/suites"
 TestsDirectory = TestDirectory + "/tests"
 
-# environments
-XenEnvironment = "xen"
-QEMUEnvironment = "qemu"
+# indexes
+QEMUIndex = 0
+XenIndex = 1
 
-# timeout in seconds.
-XenTimeout = 60
-QEMUTimeout = 60
+# environments: qemu/xen.
+Environments = [ "qemu", "xen" ]
+
+# timeout in seconds: qemu/xen.
+Timeouts = [ 300, 30 ]
 
 # magic number for serial communications.
 Magic = 0xF4859632
@@ -81,6 +83,7 @@ Magic = 0xF4859632
 ReadyToken = "[ready]"
 CallToken = "[call]"
 EnterToken = "[enter]"
+SignatureToken = "[signature]"
 LeaveToken = "[leave]"
 
 # types.
@@ -172,7 +175,7 @@ def                     Handshake(line):
     return (StatusError, message)
 
   if (type != TypeCommand) or (message != ReadyToken):
-    return (StatusError, "invalid message")
+    return (StatusError, "invalid message '" + message + "'")
 
   return (StatusOk, None)
 
@@ -213,6 +216,9 @@ def                     Call(namespace,
   # start the timer.
   start = time.time()
 
+  # initialize the signature.
+  namespace.signature = str()
+
   # read the result.
   while True:
     # wait for the response.
@@ -224,7 +230,12 @@ def                     Call(namespace,
 
     # handle the enter command.
     if (type == TypeCommand) and (message == EnterToken):
-      namespace.test = str()
+      namespace.text = str()
+      continue
+
+    # handle the signature command.
+    if (type == TypeCommand) and (message[:len(SignatureToken)] == SignatureToken):
+      namespace.signature += message[len(SignatureToken) + 1:]
       continue
 
     # handle the leave command.
@@ -232,15 +243,15 @@ def                     Call(namespace,
       break
 
     # treat the test content.
-    if isinstance(namespace.test, str) == True:
-      namespace.test += message
+    if isinstance(namespace.text, str) == True:
+      namespace.text += message
 
   # stop the timer.
   end = time.time()
 
-  # transform the content accordingly.
-  if not namespace.test:
-    namespace.test = str()
+  # transform the text accordingly.
+  if not namespace.text:
+    namespace.text = str()
 
   return (StatusOk, "%.3f" % (end - start))
 
@@ -343,7 +354,7 @@ def                     Results(namespace):
 # this is the alarm handler.
 #
 def                     Handler(signum, frame):
-  raise Exception("[timeout]")
+  raise Exception("[timeout] expired")
 
 #
 # this function runs QEMU.
@@ -359,7 +370,6 @@ def                     QEMU(namespace,
   line = None
   status = None
   message = None
-  port = None
   duration = None
 
   # build a stream file.
@@ -367,7 +377,7 @@ def                     QEMU(namespace,
 
   # set the alarm signal.
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(QEMUTimeout)
+  signal.alarm(Timeouts[QEMUIndex])
 
   try:
     # invoke the qemu virtual machine.
@@ -380,7 +390,7 @@ def                     QEMU(namespace,
                                  option = ktp.process.OptionBackground)
 
     # wait a few seconds to be sure QEMU has started.
-    time.sleep(1)
+    time.sleep(2)
 
     # read the status file.
     content = ktp.miscellaneous.Pull(stream)
@@ -413,7 +423,7 @@ def                     QEMU(namespace,
        Call(namespace, line, symbol)
 
     # set the output
-    output = namespace.test
+    output = namespace.text
 
     # destroy the virtual machine instance.
     try:
@@ -450,7 +460,7 @@ def                     QEMU(namespace,
 %(test)s
 %(exception)s
 """ % { "emulator": ktp.miscellaneous.Pull(stream),
-        "test": namespace.test,
+        "test": namespace.text,
         "exception": str(exception) }
 
     # remove the stream file.
@@ -502,7 +512,7 @@ serial = "pty"
 
   # set the alarm signal.
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(XenTimeout)
+  signal.alarm(Timeouts[XenIndex])
 
   try:
     # invoke the xen virtual machine.
@@ -513,7 +523,7 @@ serial = "pty"
                                  option = ktp.process.OptionBackground)
 
     # wait a few seconds to be sure Xen has started.
-    time.sleep(1)
+    time.sleep(3)
 
     # read the status file.
     content = ktp.miscellaneous.Pull("/var/log/xen/qemu-dm-" +          \
@@ -547,7 +557,7 @@ serial = "pty"
        Call(namespace, line, symbol)
 
     # set the output
-    output = namespace.test
+    output = namespace.text
 
     # destroy the virtual machine instance.
     ktp.process.Invoke("xm",
@@ -571,7 +581,7 @@ serial = "pty"
 %(test)s
 %(exception)s
 """ % { "emulator": ktp.miscellaneous.Pull(stream),
-        "test": namespace.test,
+        "test": namespace.text,
         "exception": str(exception) }
 
     # remove the stream file.
@@ -611,27 +621,34 @@ def                     Suite(namespace):
         print "  " + test,
 
       # launch the testing process according to the environment.
-      if namespace.environment == XenEnvironment:
-        (status, duration, output) =                                    \
-            Xen(namespace,
-                namespace.manifests[component][test]["symbol"])
-      elif namespace.environment == QEMUEnvironment:
+      if namespace.environment == Environments[QEMUIndex]:
         (status, duration, output) =                                    \
             QEMU(namespace,
                  namespace.manifests[component][test]["symbol"])
+      elif namespace.environment == Environments[XenIndex]:
+        (status, duration, output) =                                    \
+            Xen(namespace,
+                namespace.manifests[component][test]["symbol"])
       else:
         Error(namespace,
               "unknown environment '" + namespace.environment + "'")
 
       # fill the results.
+      namespace.results[component][test]["duration"] = duration
+      namespace.results[component][test]["output"] = output
+
       if (status == StatusError) or                                     \
          (output != namespace.manifests[component][test]["output"]):
         namespace.results[component][test]["status"] = False
       else:
         namespace.results[component][test]["status"] = True
 
-      namespace.results[component][test]["duration"] = duration
-      namespace.results[component][test]["output"] = output
+        if namespace.signature !=                                       \
+           namespace.manifests[component][test]["signature"]:
+          namespace.results[component][test]["status"] = False
+          namespace.results[component][test]["output"] += """
+[signature] invalid
+"""
 
       # verbose messaging.
       if namespace.verbose:
@@ -645,7 +662,8 @@ def                     Initialize(namespace):
   # initialize the local variables.
   namespace.iso = None
   namespace.configuration = None
-  namespace.test = None
+  namespace.text = None
+  namespace.signature = None
 
 #
 # this function cleans what has been created by this script.

@@ -43,11 +43,11 @@ t_error			module_forward_send(char*		message,
 
 t_error			module_forward_flush(void);
 
-int			module_forward_write(char			c);
+int			module_forward_print(char			c);
 
-t_error			module_forward_initialize(void);
+t_error			module_forward_load(void);
 
-t_error			module_forward_clean(void);
+t_error			module_forward_unload(void);
 
 
 /*

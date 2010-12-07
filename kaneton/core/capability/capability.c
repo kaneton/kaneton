@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...TON/kaneton/core/capability/capability.c
+ * file          /home/mycure/kane...BLE/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       julien quintard   [sat nov 27 16:40:50 2010]
+ * updated       julien quintard   [sat dec  4 22:47:46 2010]
  */
 
 /*
@@ -107,14 +107,14 @@ t_error			capability_show(t_id			id)
   if (set_get(_capability->descriptors, id, (void**)&descriptor) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  [%8qd] node: %qd object: %qd operations: %024b\n",
 	      descriptor->id,
 	      descriptor->capability.node,
 	      descriptor->capability.object,
 	      descriptor->capability.operations);
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "             check: %qd parent: %qd children:\n",
 	      descriptor->check,
 	      descriptor->parent);
@@ -130,7 +130,7 @@ t_error			capability_show(t_id			id)
 	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_OK)
 	    CORE_ESCAPE("XXX");
 
-	  module_call(console, console_message,
+	  module_call(console, message,
 		      '#', "             [child] %qd\n", *data);
 	}
     }
@@ -165,7 +165,7 @@ t_error			capability_dump(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qu capability descriptor(s) from the "
 	      "capability set:\n", size);
 

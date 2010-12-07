@@ -72,7 +72,7 @@ t_error			event_show(i_event			id)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "  event %qd: task %qd\n", o->id, o->handler.task);
 
   /*
@@ -112,7 +112,7 @@ t_error			event_dump(void)
    * 2)
    */
 
-  module_call(console, console_message,
+  module_call(console, message,
 	      '#', "dumping %qu event(s):\n", size);
 
   set_foreach(SET_OPTION_FORWARD, _event->events, &i, state)

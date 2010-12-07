@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...est/tests/kaneton/core/set/stack/04/04.c
+ * file          /home/mycure/kane...est/tests/kaneton/core/set/stack/04/04.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2040]
- * updated       julien quintard   [mon nov 29 19:18:32 2010]
+ * updated       julien quintard   [sun dec  5 16:26:45 2010]
  */
 
 /*
@@ -52,43 +52,43 @@ void			test_core_set_stack_04(void)
 
   obj = 80LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 98654LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 42LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 122LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 45LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 64LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 90LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 12346LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 67LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 90LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   /*
    * pop
@@ -105,7 +105,7 @@ void			test_core_set_stack_04(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
@@ -113,13 +113,13 @@ void			test_core_set_stack_04(void)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
-        printf("%qd",
-	       *((t_id*)pdata));
+        TEST_PRINT("%qd",
+		   *((t_id*)pdata));
       else
-        printf(" %qd",
-	       *((t_id*)pdata));
+        TEST_PRINT(" %qd",
+		   *((t_id*)pdata));
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   /*
    * push
@@ -127,27 +127,27 @@ void			test_core_set_stack_04(void)
 
   obj = 18LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 2LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 3LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 4LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 8LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   obj = 16LL;
   if (set_push(id, &obj) != ERROR_OK)
-    printf("[set_push] error\n");
+    TEST_PRINT("[set_push] error\n");
 
   /*
    * pop
@@ -164,7 +164,7 @@ void			test_core_set_stack_04(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
@@ -172,13 +172,13 @@ void			test_core_set_stack_04(void)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
-        printf("%qd",
-	       *((t_id*)pdata));
+        TEST_PRINT("%qd",
+		   *((t_id*)pdata));
       else
-        printf(" %qd",
-	       *((t_id*)pdata));
+        TEST_PRINT(" %qd",
+		   *((t_id*)pdata));
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   /*
    * release

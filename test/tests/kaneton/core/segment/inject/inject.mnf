@@ -3,3 +3,4 @@ description: This test creates a task, an address space and allocates and build 
 symbol: test_core_segment_inject
 signature: fg32aaaargkse3gg43
 output:
+points: 3

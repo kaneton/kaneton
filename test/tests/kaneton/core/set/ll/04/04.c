@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...E/test/tests/kaneton/core/set/ll/04/04.c
+ * file          /home/mycure/kane...E/test/tests/kaneton/core/set/ll/04/04.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2040]
- * updated       julien quintard   [mon nov 29 19:21:26 2010]
+ * updated       julien quintard   [sun dec  5 16:20:55 2010]
  */
 
 /*
@@ -51,26 +51,26 @@ void			test_core_set_ll_04(void)
 
   obj = 80LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   obj = 98654LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   obj = 42LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   obj = 122LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   /*
    * remove
    */
 
   if (set_remove(id, 42LL) != ERROR_OK)
-    printf("error in set_remove()\n");
+    TEST_PRINT("error in set_remove()\n");
 
   /*
    * add
@@ -78,11 +78,11 @@ void			test_core_set_ll_04(void)
 
   obj = 45LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   obj = 64LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   /*
    * display
@@ -91,7 +91,7 @@ void			test_core_set_ll_04(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
@@ -99,13 +99,13 @@ void			test_core_set_ll_04(void)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
-        printf("%qd",
-	       *((t_id*)pdata));
+        TEST_PRINT("%qd",
+		   *((t_id*)pdata));
       else
-        printf(" %qd",
-	       *((t_id*)pdata));
+        TEST_PRINT(" %qd",
+		   *((t_id*)pdata));
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   /*
    * add
@@ -113,29 +113,29 @@ void			test_core_set_ll_04(void)
 
   obj = 987LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   obj = 368LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   obj = 2LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   obj = 123LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   /*
    * remove
    */
 
   if (set_remove(id, 368LL) != ERROR_OK)
-    printf("error in set_remove()\n");
+    TEST_PRINT("error in set_remove()\n");
 
   if (set_remove(id, 80LL) != ERROR_OK)
-    printf("error in set_remove()\n");
+    TEST_PRINT("error in set_remove()\n");
 
   /*
    * add
@@ -143,7 +143,7 @@ void			test_core_set_ll_04(void)
 
   obj = 123LL;
   if (set_add(id, &obj) != ERROR_OK)
-    printf("[set_add] error\n");
+    TEST_PRINT("[set_add] error\n");
 
   /*
    * display
@@ -152,7 +152,7 @@ void			test_core_set_ll_04(void)
   if (set_size(id, &sz) != ERROR_OK)
     TEST_ERROR("[set_size] error");
 
-  printf("%qd elements: ", sz);
+  TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
@@ -160,13 +160,13 @@ void			test_core_set_ll_04(void)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
-        printf("%qd",
-	       *((t_id*)pdata));
+        TEST_PRINT("%qd",
+		   *((t_id*)pdata));
       else
-        printf(" %qd",
-	       *((t_id*)pdata));
+        TEST_PRINT(" %qd",
+		   *((t_id*)pdata));
     }
-  printf("\n");
+  TEST_PRINT("\n");
 
   /*
    * release

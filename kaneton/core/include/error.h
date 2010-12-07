@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/error.h
+ * file          /home/mycure/kaneton.STABLE/kaneton/core/include/error.h
  *
  * created       julien quintard   [wed jun  6 13:02:28 2007]
- * updated       julien quintard   [fri nov 26 16:29:37 2010]
+ * updated       julien quintard   [sun dec  5 15:11:53 2010]
  */
 
 #ifndef CORE_ERROR_H
@@ -47,10 +47,11 @@ typedef t_sint32		t_error;
 #define assert(_test_)							\
   if (!(_test_))							\
     {									\
-      module_call(report, report_dump);					\
+      module_call(report, dump);					\
 									\
-      printf("[!] assertion failed in '%s' (%s:%u)\n",			\
-             #_test_, __FUNCTION__, __LINE__);				\
+      module_call(console, message,					\
+		  '!', "assertion failed in '%s' (%s:%u)\n",		\
+		  #_test_, __FUNCTION__, __LINE__);			\
 									\
       while (1)								\
 	;								\

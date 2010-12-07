@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...aneton/core/as/translation/translation.c
+ * file          /home/mycure/kane...aneton/core/as/translation/translation.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:43:37 2010]
+ * updated       julien quintard   [tue dec  7 18:34:52 2010]
  */
 
 /*

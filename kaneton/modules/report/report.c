@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton.STABLE/kaneton/modules/report/report.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec  3 22:57:17 2010]
+ * updated       julien quintard   [mon dec  6 17:27:56 2010]
  */
 
 /*
@@ -19,17 +19,18 @@
  */
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#if !defined(MODULE_console)
+# error "the 'report' module depends upon the 'console' module"
+#endif
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
 #include <kaneton.h>
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-extern t_printf_char_fn		printf_char;
-extern t_printf_attr_fn		printf_attr;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -57,34 +58,45 @@ void			module_report_dump(void)
   if (_module_report.offset == 0)
     return;
 
-  printf("[!] report:\n");
+  module_call(console, message,
+	      '!', "report:\n");
 
   for (i = _module_report.offset - 1, j = i; i >= 0; i--)
     {
       if (_module_report.buffer[i] == '\0' && (j - i) > 0)
 	{
-	  printf("[!]   %s\n", _module_report.buffer + i + 1);
+	  module_call(console, message,
+		      '!', "%s\n",
+		      _module_report.buffer + i + 1);
 
 	  j = i;
 	}
     }
 
   if ((j - i) > 0)
-    printf("[!]   %s\n", _module_report.buffer + i + 1);
+    module_call(console, message,
+		'!', "%s\n",
+		_module_report.buffer + i + 1);
 
   _module_report.offset = 0;
 }
 
 /*
- * this function is called by report_record(), through printf(), and records
- * a single character in the static report buffer.
+ * this function is called by format() and records a single character
+ * in the static report buffer.
  */
 
-int			module_report_character(char		c)
+void			module_report_character(char		c)
 {
   _module_report.buffer[_module_report.offset++] = c;
+}
 
-  return (1);
+/*
+ * this function is called by format() to specify the attribute.
+ */
+
+void			module_report_attribute(t_uint8		attribute)
+{
 }
 
 /*
@@ -92,75 +104,68 @@ int			module_report_character(char		c)
  *
  * steps:
  *
- * 1) save the printf()'s function pointers.
- * 2) initialize printf() with special function pointers.
- * 3) forward the call to vprintf() so that the format and arguments
- *    can be treated.
- * 4) mark the end of the recorded message.
- * 5) restore the printf()'s function pointers.
+ * 1) call format() so that the the arguments can be treated.
+ * 2) mark the end of the recorded message.
  */
 
 void			module_report_record(char*		fmt,
 					     ...)
 {
-  va_list		args;
+  va_list			args;
 
   /*
    * 1)
    */
 
-  _module_report.printf.character = printf_char;
-  _module_report.printf.attribute = printf_attr;
+  va_start(args, fmt);
+
+  format(module_report_character, module_report_attribute,
+	 fmt, args);
+
+  va_end(args);
 
   /*
    * 2)
    */
 
-  printf_init(module_report_character, NULL);
-
-  /*
-   * 3)
-   */
-
-  va_start(args, fmt);
-
-  vprintf(fmt, args);
-
-  va_end(args);
-
-  /*
-   * 4)
-   */
-
   _module_report.buffer[_module_report.offset++] = '\0';
-
-  /*
-   * 5)
-   */
-
-  printf_char = _module_report.printf.character;
-  printf_attr = _module_report.printf.attribute;
 }
 
 /*
- * this function initializes the report module.
+ * this function loads the report module.
+ *
+ * steps:
+ *
+ * 1) display a message.
+ * 2) initialize the report structure.
  */
 
-t_error			module_report_initialize(void)
+t_error			module_report_load(void)
 {
-  module_call(console, console_message,
-	      '+', "report module loaded\n");
+  /*
+   * 1)
+   */
 
-  _module_report.offset = 0;
+  module_call(console, message,
+	      '+', "loading the 'report' module\n");
+
+  /*
+   * 2)
+   */
+
+  memset(&_module_report, 0x0, sizeof (m_module_report));
 
   MODULE_LEAVE();
 }
 
 /*
- * this function cleans everything.
+ * this function unloads the module.
  */
 
-t_error			module_report_clean(void)
+t_error			module_report_unload(void)
 {
+  module_call(console, message,
+	      '+', "unloading the 'report' module\n");
+
   MODULE_LEAVE();
 }

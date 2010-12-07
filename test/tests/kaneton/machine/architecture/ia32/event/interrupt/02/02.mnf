@@ -3,3 +3,4 @@ description: This test reserves three software interrupt events and triggers the
 symbol: test_architecture_event_interrupt_02
 signature: cd09iwfjg9gerkg43hg
 output:
+points: 1

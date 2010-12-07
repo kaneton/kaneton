@@ -1,11 +1,13 @@
------------------------------- buck :: todo -----------------------------------
+#
+# ---------- buck -------------------------------------------------------------
+#
 
---
  cswitch: no io bitmap copy when class < 1
  et puis meme ca s'optimise encore : faire un set de i_port a granter,
 c'est tjs mieux que 8192 bytes a memcpy.
 
 --
+
  un truc qui me parait bizarre dans le bootloader: la stack courant
 elle est pas mappee explicitement !
 
@@ -23,3 +25,60 @@ autre:
   utilisable une fois, ou dans une periode de temps etc.
 
   inclure le nom du process dans la capability pour que ce ne soit pas anonyme?
+
+#
+# ---------- mycure -----------------------------------------------------------
+#
+
+--- ROBOT
+
+- ecrire test/robot/: pomper sur client puisque meme procede
+
+---- IMPLEM SERIEUSE
+
+- commenter modules=fait machine/glue=? machine/plat=? core=?
+- reverifier les protos pour que la target soit toujours en dernier argument: reserve, give etc.
+- bien noter que l'interface ne marche plus.
+- faire marcher les wait et differents etats de task
+- IA32_DEPENDENT (dans architecture.h) a garder? ARCHITECTURE = IA32 ce serait mieux
+- pourquoi le set container n'est pas alloue dans le initialize? d'autant plus qu'il est release dans clean()
+
+--- IA32
+
+- virer les returns dans arch contre des LEAVE (core/glue/platform ont ete verifies)
+- les include guards ainsi que macros et fonction prefixes doivent etre PLATFORM,
+  ARCHITECTURE, GLUE et non IA32. il faut faire ca dans les tests egalement.
+  => surtout dans machine/ia32/ car le reste est fait
+- revoir context.h avec les 2 macros
+- virer mmx, sse et x87? (sinon renommer ia32_*)
+- meme chose avec les CPU?
+- meme chose pour les IPI?
+- dans paging.h, pas clair! on devrait avoir une structure pour: directory entry, table entry. directory et table serait des tableaux de ces structures.
+  au lieu de ca, actuellement on a des structures abstraites qui ne sont utilisees que lorsque l'on a besoin en castant!
+- pt_add_page et pd_add_page: ces fonctions devraient etre donnees car elles n'apportent rien et ca fait juste chier l'etudiant
+- commenter/steps toutes les fonctions
+- spinlock.h a virer?
+- est-ce que ___kaneton$pagesize etc. sont toujours definis car il semble que ce ne soit
+  le cas que dans HOST=linux/ia32.ia32 pas linux/ia32
+- verifier que IA32_ENTRY_ADDRESS prend une pde et pte en arguments car
+  le test kaneton/as/ia32/mapping a l'air de l'utiliser differemment.
+- on peut fournir le boot loader en .lo pour eviter qu'ils grugent libia32
+
+- chercher les XXX dans le code, il ne doit pas en rester
+
+--- WIKI
+
+- section news: nouveau systeme de tests pour cette annee (merci d'etre comprehensif)
+- ajouter osdev.org dans les liens sur le wiki! + SOS
+- limiter l'acces au Wiki pour l'edition finalement.
+- mettre novuelle version de devleopment book sur le site
+
+--- EXPORT
+
+- fini le ARCH=IA32 ce sera tjs IA32/EDUCATIONAL, changer les fichiers
+- bien verifier que ca compiler/clear ie que les Makefiles sont bons
+
+--- EVALUATION
+
+- faire un super test et en 1 semaine faire une tranche de challenge ou ils doivent optimiser kaneton!
+  -> genre lancer tous les tests a la suite sans rebooter

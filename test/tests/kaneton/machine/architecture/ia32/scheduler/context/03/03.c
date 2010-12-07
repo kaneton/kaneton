@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/scheduler/context/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [fri dec  3 22:28:45 2010]
+ * updated       julien quintard   [sun dec  5 00:56:44 2010]
  */
 
 /*
@@ -24,7 +24,6 @@
  */
 
 extern m_kernel*		_kernel;
-extern t_init*			_init;
 
 /*
  * ---------- globals ---------------------------------------------------------
