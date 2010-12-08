@@ -30,6 +30,10 @@ autre:
 # ---------- mycure -----------------------------------------------------------
 #
 
+--- TEST
+
+- dans la doc: commande retest() et dans le README client aussi
+
 --- ROBOT
 
 - ecrire test/robot/: pomper sur client puisque meme procede
