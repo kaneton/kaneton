@@ -30,7 +30,6 @@ include			../../../environment/env.mk
 PAPER			:=		development
 
 SOURCES			:=		asm.tex				\
-					build-farm.tex			\
 					c.tex				\
 					cheat.tex			\
 					community.tex			\
