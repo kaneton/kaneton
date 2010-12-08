@@ -8,13 +8,7 @@
  * file          /home/mycure/kane...on/machine/platform/ibm-pc/include/rtc.h
  *
  * created       julien quintard   [wed nov 24 12:48:27 2010]
- * updated       julien quintard   [wed nov 24 23:31:20 2010]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file contains the definitions related to the RTC - Real-Time Clock.
+ * updated       julien quintard   [wed dec  8 16:27:13 2010]
  */
 
 #ifndef PLATFORM_RTC_H
@@ -41,10 +35,7 @@
 #define PLATFORM_RTC_FORMAT_24H			0x02
 #define PLATFORM_RTC_FORMAT_BCD			0x04
 
-/*
- * DST - Daylight Saving Time
- */
-#define PLATFORM_RTC_OPTION_DST			0x01
+#define PLATFORM_RTC_OPTION_DST			0x01 /* daylight saving time */
 
 #define PLATFORM_RTC_FORMAT			PLATFORM_RTC_FORMAT_BCD
 

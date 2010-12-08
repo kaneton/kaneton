@@ -6,16 +6,22 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/robot/robot.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/robot/robot.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue dec  7 22:05:28 2010]
+# updated       julien quintard   [wed dec  8 20:11:25 2010]
 #
 
 #
 # ---------- information ------------------------------------------------------
 #
-# XXX
+# this script is called on a regular basis in order to test the current
+# kaneton research implementation.
+#
+# the script starts by retrieving the kaneton implementation by checking out
+# the repository. then, several test suites are requested to the server.
+#
+# finally a report is build and sent to the kaneton contributors mailing list.
 #
 
 #
@@ -35,9 +41,7 @@ sys.path.append(TestDirectory + "/packages")
 # ---------- packages ---------------------------------------------------------
 #
 
-import signal
 import time
-import argparse
 
 import ktp
 
@@ -45,29 +49,21 @@ import ktp
 # ---------- constants --------------------------------------------------------
 #
 
-# directories
-StoreDirectory = TestDirectory + "/store"
+# the subversion address to the kaneton repository.
+Repository = "svn+ssh://subversion@repositories.passeism.org/kaneton"
 
-# stores
-BundleStore = StoreDirectory + "/bundle"
+# the email address to which the reports must be sent.
+Email = "contributors@kaneton.opaak.org"
 
-# environments
-XenEnvironment = "xen"
-QEMUEnvironment = "qemu"
-
-# timeout in seconds.
-XenTimeout = 100
-QEMUTimeout = 1000
-
-# disk size in mega bytes.
-DiskSize = 5
+# environments.
+Environments = [ "qemu", "xen" ]
 
 #
 # ---------- globals ----------------------------------------------------------
 #
 
-# the command-line parser.
-g_parser = None
+# the temporary directory.
+g_directory = None
 
 #
 # ---------- functions --------------------------------------------------------
@@ -77,7 +73,7 @@ g_parser = None
 # this function displays an error message, cleans the script before
 # exiting.
 #
-def                     Error(namespace, message):
+def                     Error(message):
   # display the script name.
   print "[construct]"
 
@@ -86,423 +82,358 @@ def                     Error(namespace, message):
     print(message)
 
   # clean the script.
-  Clean(namespace)
+  Clean()
 
   # exit with an error code.
   sys.exit(42)
 
 #
-# this function creates a disk containing the snapshot that will
-# be used by the compile virtual machine as a partition.
+# this function walk through the unit and counts the number of successful
+# tests.
 #
-def                     Disk(namespace):
-  directory = None
-  environment = None
+def                     Count(tests):
+  success = 0
+  total = 0
 
-  # build a temporary file.
-  namespace.disk = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+  # explore the tests.
+  for test in tests:
+    if tests[test]["status"] == True:
+      success += 1
 
-  # initialize the size of the file.
-  if ktp.process.Invoke("dd",
-                        [ "if=/dev/zero",
-                          "of=" + namespace.disk,
-                          "bs=1M",
-                          "count=" + str(DiskSize) ]) == ktp.StatusError:
-    Error(namespace,
-          "unable to create a temporary disk image")
+    total += 1
 
-  # create an ext2 file system for this file.
-  if ktp.process.Invoke("mkfs.ext2",
-                        [ "-F",
-                          "-b 1024",
-                          namespace.disk ]) == ktp.StatusError:
-    Error(namespace,
-          "unable to create a file system on the temporary disk image")
-
-  # build a temporary directory.
-  directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
-
-  # mount the disk into the temporary directory.
-  if ktp.process.Invoke("mount",
-                        [ "-o", "loop",
-                          namespace.disk,
-                          directory ]) == ktp.StatusError:
-    Error(namespace,
-          "unable to mount the temporary disk image")
-
-  # check if the snapshot exists.
-  if not os.path.exists(namespace.snapshot):
-    Error(namespace,
-          "the snapshot does not seem to exist")
-
-  # copy the snapshot into the mounted directory.
-  ktp.miscellaneous.Copy(namespace.snapshot, directory + "/kaneton.tar.bz2")
-
-  # check if the bundle exists.
-  if not os.path.exists(BundleStore + "/" +                             \
-                           namespace.platform + "." +                   \
-                           namespace.architecture + "/kaneton.lo"):
-    Error(namespace,
-          "the kaneton bundle does not seem to be present")
-
-  # copy the kaneton tests bundle.
-  ktp.miscellaneous.Copy(BundleStore + "/" +                            \
-                           namespace.platform + "." +                   \
-                           namespace.architecture + "/kaneton.lo",
-                         directory)
-
-  # generate the environment.
-  environment = """\
-export KANETON_USER='test'
-export KANETON_HOST='%(host)s'
-export KANETON_PYTHON='/usr/bin/python'
-export KANETON_PLATFORM='%(platform)s'
-export KANETON_ARCHITECTURE='%(architecture)s'\
-""" % { "host": namespace.host,
-        "platform": namespace.platform,
-        "architecture": namespace.architecture }
-
-  # save the environment in a file.
-  ktp.miscellaneous.Push(environment, directory + "/environment.sh")
-
-  # umount the temporary directory
-  if ktp.process.Invoke("umount",
-                        [ directory ]) == ktp.StatusError:
-    Error(namespace,
-          "unable to unmount the temporary disk image")
-
-  # remove the directory.
-  ktp.miscellaneous.Remove(directory)
+  return (success, total)
 
 #
-# this is the alarm handler.
+# this function displays a brief summary of the given report.
 #
-def                     Handler(number, frame):
-  raise Exception("[timeout]")
-
-#
-# this function triggers the compilation process
-# through a QEMU virtual machine.
-#
-def                     QEMU(namespace):
-  stream = None
-  monitor = None
-  output = None
+def                     Summarize(report, margin=""):
   content = None
-  match = None
-  port = None
-  redirect = None
 
-  # create a stream file.
-  stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+  success = None
+  total = None
 
-  # create a redirection file.
-  redirect = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-  # set the alarm signal
-  signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(QEMUTimeout)
-
-  try:
-    # launch QEMU active logging in background in order to retrieve
-    # the process handle.
-    monitor = ktp.process.Invoke("qemu",
-                                 [ "-nographic",
-                                   "-serial", "pty",
-                                   "-monitor", "null",
-                                   "-cdrom",
-                                     TestDirectory + "/images/debian.iso",
-                                   "-hdb", namespace.disk,
-                                   "-name", namespace.name],
-                                 stream = stream,
-                                 option = ktp.process.OptionBackground)
-
-    # wait a few seconds to be sure QEMU has started.
-    time.sleep(3)
-
-    # read the status file.
-    content = ktp.miscellaneous.Pull(stream)
-
-    # check if this operation has been successful.
-    if not content:
-      raise Exception("[error] unable to retrieve QEMU's log file")
-
-    # retrieve the serial port.
-    match = re.search("char device redirected to (.*)$", content, re.MULTILINE)
-
-    # check if it was successful.
-    if not match:
-      raise Exception("[error] unable to retrieve the serial port")
-
-    # set the port.
-    port = match.group(1)
-
-    # wait for the virtual machine to terminate.
-    while True:
-      # probe the virtual machine.
-      status = ktp.process.Probe(monitor)
-
-      # check if the machine is still running.
-      if status != ktp.StatusUnknown:
-        break
-
-      # transfer the output content on a regular basis.
-      ktp.miscellaneous.Transfer(port, redirect)
-
-    # retrieve the output.
-    namespace.output = ktp.miscellaneous.Pull(redirect)
-
-    # remove the files.
-    ktp.miscellaneous.Remove(redirect)
-    ktp.miscellaneous.Remove(stream)
-  except Exception, exception:
-    # destroy the virtual machine by terminating
-    # the process.
-    try:
-      os.kill(monitor[0].pid, signal.SIGKILL)
-    except:
-      pass
-
-    # wait for the process to terminate.
-    ktp.process.Wait(monitor)
-
-# XXX[not possible with Python 2.5 since subprocess does not provide this functionality]
-#    [when ready remove: os.kill, Wait and Pull]
-#    output = ktp.process.Terminate(monitor)
-
-    # reset the alarm.
-    signal.alarm(0)
-
-    # wait for a bit.
-    time.sleep(3)
-
-    # retrieve the output.
-    namespace.output = ktp.miscellaneous.Pull(redirect)
-
-    # remove the files.
-    ktp.miscellaneous.Remove(redirect)
-    ktp.miscellaneous.Remove(stream)
-
-    # display the output.
-    if namespace.output:
-      print(namespace.output)
-
-    # stop the script.
-    Error(namespace,
-          str(exception))
-
-  # reset the alarm.
-  signal.alarm(0)
-
-#
-# this function generates a Xen configuration file for
-# the compile virtual machine and runs it.
-#
-def                     Xen(namespace):
-  configuration = None
   status = None
+  length = None
+  count = None
+
+  unit = None
+  tests = None
+
+  # initialize the content
+  content = str()
+
+  # for the units of the report.
+  for unit in report["data"]:
+    # retrieve the tests.
+    tests = report["data"][unit]
+
+    # compute the status of all the tests of the given unit.
+    (success, total) = Count(tests)
+
+    # generate the count.
+    count = " [" + str(success) + "/" + str(total) + "]"
+
+    # generate the unit's status.
+    length = 79 - len(unit) - len(margin) - 4 - len(count)
+    status = length * " " + count
+
+    # display the unit name.
+    content += margin + unit + status + "\n"
+
+  return content
+
+#
+# this function displays a detailed version of the given report.
+#
+def                     Detail(report, margin = ""):
   content = None
-  match = None
-  port = None
+
+  success = None
+  total = None
+
+  status = None
+  length = None
+  count = None
+
+  unit = None
+  tests = None
+  test = None
+
+  # initialize the content.
+  content = str()
+
+  # for the units of the report.
+  for unit in report["data"]:
+    # retrieve the tests.
+    tests = report["data"][unit]
+
+    # compute the status of all the tests of the given unit.
+    (success, total) = Count(tests)
+
+    # generate the count.
+    count = " [" + str(success) + "/" + str(total) + "]"
+
+    # generate the unit's status.
+    length = 79 - len(unit) - len(margin) - 4 - len(count) - 1
+    status = length * " " + count
+
+    # display the unit name.
+    content += """\
+%(margin)s%(unit)s:%(status)s
+""" % { "margin": margin,
+        "unit": unit,
+        "status": status }
+
+    for test in tests:
+      # display name.
+      content += """\
+%(margin)s  %(test)s:
+""" % { "margin": margin,
+        "test": test }
+
+      # display status.
+      content += """\
+%(margin)s    status: %(status)s
+""" % { "margin": margin,
+        "status": tests[test]["status"] }
+
+      # display description.
+      content += """\
+%(margin)s    description: %(description)s
+""" % { "margin": margin,
+        "description": tests[test]["description"] }
+
+      # display duration.
+      content += """\
+%(margin)s    duration: %(duration)s
+""" % { "margin": margin,
+        "duration": tests[test]["duration"] }
+
+      # display output.
+      content += """\
+%(margin)s    output: %(output)s
+""" % { "margin": margin,
+        "output": tests[test]["output"] }
+
+  return content
+
+#
+# this function retrieves the latest kaneton snapshot through
+# Subversion.
+#
+def                     Checkout():
+  # launch Subversion.
+  if ktp.process.Invoke("svn",
+                        [ "co",
+                          Repository,
+                          g_directory]) == ktp.StatusError:
+    Error("unable to check out the kaneton repository")
+
+#
+# this function triggers some test through the kaneton
+# test client.
+#
+def                     Test():
+  report = None
+  summary = None
+  detail = None
+  reports = None
+  report = None
   stream = None
+  status = None
+  output = None
+
+  # set the kaneton environment variables.
+  os.putenv("KANETON_PYTHON", "/usr/bin/python")
+  os.putenv("KANETON_HOST", "linux/ia32")
+  os.putenv("KANETON_USER", "robot")
+  os.putenv("KANETON_PLATFORM", "ibm-pc")
+  os.putenv("KANETON_ARCHITECTURE", "ia32/educational")
+
+  # initialize the summary and detail strings.
+  summary = str()
+  detail = str()
 
   # create a temporary file.
-  namespace.configuration =                                             \
-    ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+  stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
-  # configuration.
-  configuration = """\
-device_model = "/usr/lib/xen/bin/qemu-dm"
-kernel = "/usr/lib/xen/boot/hvmloader"
-builder = "hvm"
-memory = 256
-name = "%(name)s"
-pae = 1
-disk = ["tap:aio:%(root)s/images/debian.iso,hdc:cdrom,r", "tap:aio:%(disk)s,hdb,w"]
-boot = 'd'
-serial = "pty"\
-""" % { "root": TestDirectory,
-        "name": namespace.name,
-        "disk": namespace.disk }
+  # request a test suite through the test client
+  status =                                                              \
+    ktp.process.Invoke("make",
+                       [ "-C", g_directory,
+                         "initialize" ],
+                       stream = stream,
+                       option = ktp.process.OptionNone)
 
-  # save the configuration in a file.
-  ktp.miscellaneous.Push(configuration, namespace.configuration)
+  # retrieve the output.
+  output = ktp.miscellaneous.Pull(stream)
+
+  # remove the stream file.
+  ktp.miscellaneous.Remove(stream)
+
+  # if the construction was successful, exit the loop.
+  if status == ktp.StatusError:
+    Error(output + "\n" +
+          "unable to initialize the kaneton environment")
+
+  # for every environment to test...
+  for environment in Environments:
+    # create a temporary file.
+    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+    # request a test suite through the test client
+    status =                                                            \
+      ktp.process.Invoke("make",
+                         [ "-C", g_directory + "/test/client",
+                           "test-" + environment + "::kaneton" ],
+                         stream = stream,
+                         option = ktp.process.OptionNone)
+
+    # retrieve the output.
+    output = ktp.miscellaneous.Pull(stream)
+
+    # remove the stream file.
+    ktp.miscellaneous.Remove(stream)
+
+    # if the construction was successful, exit the loop.
+    if status == ktp.StatusError:
+      Error(output + "\n" +
+            "unable to test the kaneton research implementation")
+
+    # look for the generated report.
+    paths = ktp.miscellaneous.Search(g_directory + "/test/store/report",
+                                     "^.*\.rpt$",
+                                     ktp.miscellaneous.OptionFile)
+
+    # check the reports.
+    if len(paths) != 1:
+      Error("it seems that more reports than expected are present in the store")
+
+    path = paths[0]
+
+    # load the report.
+    report = ktp.report.Load(path)
+
+    # add to the summary.
+    summary += """\
+environment(%(environment)s) :: platform(%(platform)s) :: architecture(%(architecture)s) :: suite(%(suite)s) :: duration(%(duration)ss)
+%(summary)s
+""" % { "environment": environment,
+        "platform": report["meta"]["platform"],
+        "architecture": report["meta"]["architecture"],
+        "suite": report["meta"]["suite"],
+        "duration": report["meta"]["duration"],
+        "summary": Summarize(report, "    ") }
+
+    # add to the detail.
+    detail += """\
+environment(%(environment)s) :: platform(%(platform)s) :: architecture(%(architecture)s) :: suite(%(suite)s) :: duration(%(duration)ss)
+%(detail)s
+""" % { "environment": environment,
+        "platform": report["meta"]["platform"],
+        "architecture": report["meta"]["architecture"],
+        "suite": report["meta"]["suite"],
+        "duration": report["meta"]["duration"],
+        "detail": Detail(report, "    ") }
+
+    # remove the report.
+    ktp.miscellaneous.Remove(path)
+
+  # build the final report.
+  report = """
+---[ Summary
+
+%(summary)s
+
+---[ Detail
+
+%(detail)s
+""" % { "summary": summary,
+        "detail": detail }
+
+  return report
+
+#
+# this function emails the given report.
+#
+def                     Send(report):
+  configuration = None
+  content = None
+  message = None
+  stream = None
+  date = None
+
+  # create a temporary file.
+  configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+  # create a configuration file.
+  content = """\
+set realname = "opaak admin"
+set from = "admin@opaak.org"
+set use_from = yes\
+"""
+
+  # store the temporary mutt configuration file.
+  ktp.miscellaneous.Push(content, configuration)
+
+  # create a temporary file.
+  message = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+  # store the temporary message.
+  ktp.miscellaneous.Push(report, message)
 
   # create a stream file.
   stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
-  # set the alarm signal
-  signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(XenTimeout)
+  # retrieve the current date.
+  date = time.strftime("%Y/%m/%d %H:%M:%S")
 
-  try:
-    # launch the xen virtual machine.
-    #
-    # note that the 'xm' binary automatically sets the system
-    # in background so there is no choice here but to rely
-    # on the 'xm list' command to know if the process has
-    # finished.
-    ktp.process.Invoke("xm",
-                       [ "create",
-                         namespace.configuration ])
+  # email the capability to the supposed recipient.
+  status = ktp.process.Invoke("mutt",
+                              [ "-F", configuration,
+                                "-s", "'kaneton robot :: " + date + "'",
+                                Email,
+                                "<" + message ])
 
-    # wait a few seconds to be sure Xen has started.
-    time.sleep(3)
+  # retrieve the output.
+  output = ktp.miscellaneous.Pull(stream)
 
-    # read the status file.
-    content = ktp.miscellaneous.Pull("/var/log/xen/qemu-dm-" +          \
-                                       namespace.name + ".log")
+  # remove the stream file.
+  ktp.miscellaneous.Remove(stream)
 
-    # check if this operation has been successful.
-    if not content:
-      raise Exception("[error] unable to retrieve QEMU's log file")
+  # check the status.
+  if status == ktp.StatusError:
+    Error(output + "\n" +
+          "an error occured while sending the report")
 
-    # retrieve the serial port.
-    match = re.search("char device redirected to (.*)$", content, re.MULTILINE)
-
-    # check if it was successful.
-    if not match:
-      raise Exception("[error] unable to retrieve the serial port")
-
-    # set the port.
-    port = match.group(1)
-
-    # wait for the virtual machine to terminate.
-    while True:
-      # check if the machine exists in the list of active VMs.
-      status = ktp.process.Invoke("xm",
-                                  [ "list",
-                                    namespace.name ])
-
-      # if the virtual machine does not appear in the list, it means
-      # that it has terminated.
-      if status == ktp.StatusError:
-        break
-
-      # transfer the output content on a regular basis.
-      ktp.miscellaneous.Transfer(port, stream)
-
-    # read the serial file.
-    namespace.output = ktp.miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
-  except Exception, exception:
-    # destroy the virtual machine
-    ktp.process.Invoke("xm",
-                       [ "destroy",
-                         namespace.name ])
-
-    # read the serial file.
-    namespace.output = ktp.miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
-
-    # display the output.
-    if namespace.output:
-      print(namespace.output)
-
-    # stop the script.
-    Error(namespace,
-          str(exception))
-
-  # reset the alarm.
-  signal.alarm(0)
-
-#
-# this function retrieves both the generated image and the compile log.
-#
-def                     Retrieve(namespace):
-  directory = None
-
-  # create a temporary directory.
-  directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
-
-  # mount the disk.
-  if ktp.process.Invoke("mount",
-                        [ "-o" "loop",
-                          namespace.disk,
-                          directory ]) == ktp.StatusError:
-    Error(namespace,
-          "unable to mount the temporary disk image")
-
-  # check if an error occured. if so, print the log followed
-  # by the error message before existing.
-  if os.path.exists(directory + "/.error"):
-    # print the output.
-    if namespace.output:
-      print(namespace.output)
-
-    # retrieve the error file.
-    error = ktp.miscellaneous.Pull(directory + "/.error")
-
-    # print the error.
-    if error:
-      print(error)
-
-    # retrieve and print the log.
-    if os.path.exists(directory + "/.log"):
-      # read the log file.
-      log = ktp.miscellaneous.Pull(directory + "/.log")
-
-      # print the log.
-      print(log)
-
-    # umount the snapshot.
-    if ktp.process.Invoke("umount",
-                          [ directory ]) == ktp.StatusError:
-      Error(namespace,
-            "unable to unmount the temporary disk image")
-
-    # remove the temporary directory.
-    ktp.miscellaneous.Remove(directory)
-
-    # stop the script.
-    Error(namespace,
-          None)
-  else:
-    # otherwise, no error occured. therefore, copy the image.
-    if not os.path.exists(directory + "/kaneton.img"):
-      Error(namespace,
-            "[error] the kaneton image does not seem to have been generated")
-
-    # copy the generated image to its target.
-    ktp.miscellaneous.Copy(directory + "/kaneton.img", namespace.image)
-
-    # umount the snapshot.
-    if ktp.process.Invoke("umount",
-                          [ directory ]) == ktp.StatusError:
-      Error(namespace,
-            "unable to unmount the temporary disk image")
-
-    # remove the temporary directory.
-    ktp.miscellaneous.Remove(directory)
+  # remove the temporary files.
+  ktp.miscellaneous.Remove(message)
+  ktp.miscellaneous.Remove(configuration)
 
 #
 # this function initializes the script.
 #
-def                     Initialize(namespace):
-  # initialize the variables.
-  namespace.disk = None
-  namespace.configuration = None
+def                     Initialize():
+  global g_directory
+
+  # create a temporary directory.
+  g_directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
 
 #
 # this function cleans what has been created by this script.
 #
-def                     Clean(namespace):
-  # remove the disk file.
-  if namespace.disk:
-    ktp.miscellaneous.Remove(namespace.disk)
-
-  # remove the configuration file.
-  if namespace.configuration:
-    ktp.miscellaneous.Remove(namespace.configuration)
+def                     Clean():
+  # remove the disk directory.
+  if g_directory:
+    ktp.miscellaneous.Remove(g_directory)
 
 #
 # this is the main function
 #
 def                     Main():
+  report = None
+
   # initialize the script.
   Initialize()
 
@@ -510,13 +441,13 @@ def                     Main():
   Checkout()
 
   # trigger the tests.
-  Test()
+  report = Test()
+
+  # email the report.
+  Send(report)
 
   # clean the temporary stuff.
-  Clean(namespace)
-
-  # display a message.
-  print("the kaneton image has been constructed in '" + namespace.image + "'")
+  Clean()
 
 #
 # ---------- entry point ------------------------------------------------------

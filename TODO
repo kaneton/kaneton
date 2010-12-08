@@ -33,10 +33,7 @@ autre:
 --- TEST
 
 - dans la doc: commande retest() et dans le README client aussi
-
---- ROBOT
-
-- ecrire test/robot/: pomper sur client puisque meme procede
+- rajouter le robot dans la doc (chercher farm)
 
 ---- IMPLEM SERIEUSE
 
@@ -73,7 +70,7 @@ autre:
 --- WIKI
 
 - section news: nouveau systeme de tests pour cette annee (merci d'etre comprehensif)
-- ajouter osdev.org dans les liens sur le wiki! + SOS
+- ajouter osdev.org dans les liens sur le wiki! + SOS (lire les articles)
 - limiter l'acces au Wiki pour l'edition finalement.
 - mettre novuelle version de devleopment book sur le site
 

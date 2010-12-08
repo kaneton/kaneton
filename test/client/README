@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton.STABLE/test/client/README
 #
 # created       julien quintard   [tue nov  2 05:48:57 2010]
-# updated       julien quintard   [wed nov 24 09:10:07 2010]
+# updated       julien quintard   [wed dec  8 09:46:30 2010]
 #
 
 The client script provides the user the possibility to request actions
@@ -159,3 +159,16 @@ The syntax for this command is submit::[stage].
 
   $> make submit-k3
   [+] the snapshot has been submitted successfully
+
+#
+# ---------- retest -----------------------------------------------------------
+#
+
+The 'retest' command provides the administrator the possibility to re-launch
+the test suite on the given identified test. This command is useful should
+an unexpected error have occured.
+
+The syntax for this command is retest::[identifier].
+
+  $> make retest-20101027:143529
+  [+] the snapshot has been re-tested successfully

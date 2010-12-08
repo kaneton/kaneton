@@ -1,0 +1,24 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/KANETON-TEST-SYSTEM/robot/robot.cron
+#
+# created       julien quintard   [wed dec  8 19:43:46 2010]
+# updated       julien quintard   [wed dec  8 19:46:41 2010]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+# this cron file triggers the robot script every day at 6 a.m.
+#
+# note that this file assumes that the robot script is located at:
+#
+#   /kaneton/robot/robot.py
+#
+
+0  6  * * *     /kaneton/robot/robot.py

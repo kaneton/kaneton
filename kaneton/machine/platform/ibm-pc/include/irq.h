@@ -9,13 +9,6 @@
  * updated       matthieu bucchianeri   [fri jun 15 01:30:33 2007]
  */
 
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file contains constants about the interrupt controller on
- * ibmpc.
- */
-
 #ifndef PLATFORM_IRQ_H
 #define PLATFORM_IRQ_H	1
 

@@ -9,12 +9,6 @@
  * updated       matthieu bucchianeri   [fri jun 15 01:30:40 2007]
  */
 
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file contains constants about the programmable pit on ibmpc.
- */
-
 #ifndef PLATFORM_PIT_H
 #define PLATFORM_PIT_H	1
 
