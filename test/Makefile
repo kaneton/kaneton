@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/Makefile
+# file          /home/mycure/kaneton/test/Makefile
 #
 # created       julien quintard   [fri jun 29 11:19:40 2007]
-# updated       julien quintard   [sun dec  5 20:06:55 2010]
+# updated       julien quintard   [wed dec  8 22:09:59 2010]
 #
 
 #
@@ -36,12 +36,13 @@ include			../environment/env.mk
 SUBDIRS			:=		client				\
 					configuration			\
 					engine				\
-					grades				\
-					hooks				\
+					environments			\
 					images				\
 					packages			\
+					robot				\
 					scripts				\
 					server				\
+					stages				\
 					store				\
 					suites				\
 					tests				\

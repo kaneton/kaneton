@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 #
 # ---------- header -----------------------------------------------------------
 #
@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/server/server.py
+# file          /home/mycure/kaneton/test/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [tue dec  7 21:54:22 2010]
+# updated       julien quintard   [wed dec  8 22:07:52 2010]
 #
 
 #

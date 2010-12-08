@@ -30,11 +30,6 @@ autre:
 # ---------- mycure -----------------------------------------------------------
 #
 
---- TEST
-
-- dans la doc: commande retest() et dans le README client aussi
-- rajouter le robot dans la doc (chercher farm)
-
 ---- IMPLEM SERIEUSE
 
 - commenter modules=fait machine/glue=? machine/plat=? core=?

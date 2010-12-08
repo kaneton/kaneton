@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 #
 # ---------- header -----------------------------------------------------------
 #
@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/evaluate.py
+# file          /home/mycure/kaneton/test/scripts/evaluate.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue dec  7 16:52:40 2010]
+# updated       julien quintard   [wed dec  8 22:08:20 2010]
 #
 
 #

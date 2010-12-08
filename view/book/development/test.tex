@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton.STABLE/view/book/development/test.tex
+% file          /home/mycure/kaneton/view/book/development/test.tex
 %
 % created       julien quintard   [thu may 24 12:18:23 2007]
-% updated       julien quintard   [sat dec  4 14:26:19 2010]
+% updated       julien quintard   [wed dec  8 22:23:10 2010]
 %
 
 %
@@ -639,8 +639,8 @@ stored report in a very detailed way.
   $> 
 \end{verbatim}
 
-Finally, the \name{submit} command sends the user's snapshot to the server
-so as to be evaluated for the given stage.
+The \name{submit} command sends the user's snapshot to the server so as to
+be evaluated for the given stage.
 
 \begin{verbatim}
   $> make submit-k1
@@ -653,3 +653,61 @@ so as to be evaluated for the given stage.
   [+] the snapshot has been submitted successfully
   $> 
 \end{verbatim}
+
+Finally, the \name{retest} command provides contributors the possibility to
+re-launch the test suite of the given identified test. This command is
+especially useful to re-test a snapshot should an unexpected error occur on
+the test server.
+
+Indeed since test requests are limited for students, it would be unfair for the
+student to be forced to sacrifice a test slot because something went wrong
+on the server-side. By requesting a contributor, the student's snapshot can
+be re-tested. Once the test complete, an email is sent to the student along
+with the attached report.
+
+\begin{verbatim}
+  $> make retest-20101103:140601
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] the snapshot has been re-tested successfully
+  $> 
+\end{verbatim}
+
+%
+% robot
+%
+\subsubsection{Robot}
+
+The \name{robot} test tool enables contributors to test the kaneton research
+implementation on a regular basis; hence control the status of the development.
+
+The robot basically retrieves the kaneton implementation by checking out the
+\name{Subversion} repository. Then, several test suites are triggered through
+the test client. Once the reports have been received, a message is built
+summarizing the results. This message is then sent to the kaneton contributors
+mailing-list.
+
+The deployment of the \name{robot} is quite straigthforward. First, the
+\location{test/robot/} directory must be copied to the server. Note that
+the \name{robot.py} script depends upon the \name{ktp} package which must
+therefore be copied as well.
+
+Then, the \name{SSH} configuration file \name{config} must be placed in
+the \location{~/.ssh/} directory. Besides, this file should be edited in
+order to properly reference the \name{SSH} keys since the default configuration
+assumes the kaneton test directory to be located at \location{/kaneton/}.
+
+Finally, the \name{robot.cron} crontab file must be setup through the
+following command in order to trigger the robot every night:
+
+\begin{verbatim}
+  $> crontab robot.cron
+\end{verbatim}
+
+Once again, the administrator should make sure to edit this file should
+the robot files not be located in the default location \ie{}
+\location{/kaneton/}.

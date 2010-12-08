@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 #
 # ---------- header -----------------------------------------------------------
 #
@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/robot/robot.py
+# file          /home/mycure/kaneton/test/robot/robot.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [wed dec  8 20:11:25 2010]
+# updated       julien quintard   [wed dec  8 22:10:18 2010]
 #
 
 #
@@ -74,9 +74,6 @@ g_directory = None
 # exiting.
 #
 def                     Error(message):
-  # display the script name.
-  print "[construct]"
-
   # print the message.
   if message:
     print(message)

@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 #
 # ---------- header -----------------------------------------------------------
 #
@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/scripts/dump.py
+# file          /home/mycure/kaneton/test/scripts/dump.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue nov  2 05:25:52 2010]
+# updated       julien quintard   [wed dec  8 22:08:15 2010]
 #
 
 #

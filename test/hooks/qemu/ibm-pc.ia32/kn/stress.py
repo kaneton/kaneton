@@ -1,1 +1,0 @@
-../../../../scripts/stress.py

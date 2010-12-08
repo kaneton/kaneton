@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/client/README
+# file          /home/mycure/kaneton/test/client/README
 #
 # created       julien quintard   [tue nov  2 05:48:57 2010]
-# updated       julien quintard   [wed dec  8 09:46:30 2010]
+# updated       julien quintard   [wed dec  8 21:44:46 2010]
 #
 
 The client script provides the user the possibility to request actions
@@ -23,6 +23,8 @@ from the test server.
   [!]   test-[environment]::[suite]
   [!]   list
   [!]   display-[identifier]
+  [!]   retest-[identifier]
+  $> 
 
 #
 # ---------- information ------------------------------------------------------

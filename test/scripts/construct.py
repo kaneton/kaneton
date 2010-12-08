@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 #
 # ---------- header -----------------------------------------------------------
 #
@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/construct.py
+# file          /home/mycure/kaneton/test/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue dec  7 15:22:41 2010]
+# updated       julien quintard   [wed dec  8 22:08:04 2010]
 #
 
 #
@@ -98,7 +98,7 @@ g_parser = None
 #
 def                     Error(namespace, message):
   # display the script name.
-  print "[construct]"
+  print("[construct]")
 
   # print the message.
   if message:
