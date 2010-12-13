@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton/test/robot/robot.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [wed dec  8 23:36:15 2010]
+# updated       julien quintard   [mon dec 13 09:25:33 2010]
 #
 
 #
@@ -64,6 +64,9 @@ Environments = [ "qemu", "xen" ]
 
 # the temporary directory.
 g_directory = None
+
+# the message to send as a notification to the contributors.
+g_message = None
 
 #
 # ---------- functions --------------------------------------------------------
@@ -220,18 +223,23 @@ def                     Detail(report, margin = ""):
 # Subversion.
 #
 def                     Checkout():
+  global g_message
+
   # launch Subversion.
   if ktp.process.Invoke("svn",
                         [ "co",
                           Repository,
                           g_directory]) == ktp.StatusError:
-    Error("unable to check out the kaneton repository")
+    # notify the error.
+    g_message = "unable to check out the kaneton repository"
 
 #
 # this function triggers some test through the kaneton
 # test client.
 #
 def                     Test():
+  global g_message
+
   report = None
   summary = None
   detail = None
@@ -271,10 +279,12 @@ def                     Test():
 
   # if the construction was successful, exit the loop.
   if status == ktp.StatusError:
-    if output:
-      print(output)
+    if not output:
+      g_message = "an error occured while initializing the kaneton environment"
+    else:
+      g_message = output
 
-    Error("unable to initialize the kaneton environment")
+    return
 
   # for every environment to test...
   for environment in Environments:
@@ -297,10 +307,12 @@ def                     Test():
 
     # if the construction was successful, exit the loop.
     if status == ktp.StatusError:
-      if output:
-        print(output)
+      if not output:
+        g_message = "an error occured while launching the test client"
+      else:
+        g_message = output
 
-      Error("unable to test the kaneton research implementation")
+      return
 
     # look for the generated report.
     paths = ktp.miscellaneous.Search(g_directory + "/test/store/report",
@@ -309,8 +321,8 @@ def                     Test():
 
     # check the reports.
     if len(paths) != 1:
-      Error("it seems that more reports than expected are present "
-            "in the store")
+      return "it seems that more reports than expected are present "    \
+             "in the store"
 
     path = paths[0]
 
@@ -436,16 +448,24 @@ def                     Clean():
 # this is the main function
 #
 def                     Main():
-  report = None
-
   # initialize the script.
   Initialize()
 
   # checkout the kaneton repository.
   Checkout()
 
+  # if an error occured, report it.
+  if g_message:
+    Send(g_message)
+    Error(g_message)
+
   # trigger the tests.
   report = Test()
+
+  # if an error occured, report it.
+  if g_message:
+    Send(g_message)
+    Error(g_message)
 
   # email the report.
   Send(report)
