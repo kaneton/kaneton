@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/capability.h
+ * file          /home/mycure/kaneton/kaneton/core/include/capability.h
  *
  * created       julien quintard   [wed jun  6 12:44:04 2007]
- * updated       julien quintard   [sat nov 27 06:08:29 2010]
+ * updated       julien quintard   [thu dec  9 15:09:33 2010]
  */
 
 #ifndef CORE_CAPABILITY_H
@@ -50,7 +50,7 @@ typedef struct
   t_id				descriptor;
 
   // machine_data(t_capability);
-}				t_capability;
+}				t_capability; // XXX s_capability
 
 /*
  * a capability descriptor contains the check field of the generated
@@ -68,7 +68,7 @@ typedef struct
 
   t_id				parent;
   i_set				children;
-}				t_capability_descriptor;
+}				t_capability_descriptor; // XXX s_...
 
 /*
  * the capability manager structure

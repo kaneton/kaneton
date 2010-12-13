@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sat dec  4 13:25:07 2010]
+ * updated       julien quintard   [sat dec 11 05:58:29 2010]
  */
 
 /*
@@ -75,7 +75,7 @@ t_error			glue_thread_reserve(i_task		taskid,
  */
 
 t_error			glue_thread_load(i_thread		threadid,
-					 t_thread_context	context)
+					 s_thread_context	context)
 {
   if (ia32_setup_context(threadid, context.pc, context.sp) != ERROR_OK)
     MACHINE_ESCAPE("unable to set up the IA32 context");
@@ -89,7 +89,7 @@ t_error			glue_thread_load(i_thread		threadid,
  */
 
 t_error			glue_thread_store(i_thread		threadid,
-					  t_thread_context*	context)
+					  s_thread_context*	context)
 {
   if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the IA32 context");

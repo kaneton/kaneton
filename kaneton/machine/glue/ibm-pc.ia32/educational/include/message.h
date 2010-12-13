@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...bm-pc.ia32/educational/include/message.h
  *
  * created       julien quintard   [wed jun  6 16:20:48 2007]
- * updated       julien quintard   [wed nov 24 14:17:10 2010]
+ * updated       julien quintard   [fri dec 10 21:19:17 2010]
  */
 
 #ifndef GLUE_MESSAGE_H
@@ -26,8 +26,8 @@
     {									\
       t_error	_r_ = ERROR_OK;						\
 									\
-      if (glue_message_dispatch._function_ != NULL)			\
-        _r_ = glue_message_dispatch._function_(_args_);			\
+      if (glue_message_dispatch.message_ ## _function_ != NULL)		\
+        _r_ = glue_message_dispatch.message_ ## _function_(_args_);	\
 									\
       _r_;								\
     }									\
@@ -49,7 +49,7 @@
  * ../message.c
  */
 
-t_error			glue_message_return(i_thread		thread,
+t_error			glue_message_yield(i_thread		thread,
 					    t_error		code);
 
 t_error			glue_message_return_info(i_thread	thread,
@@ -57,9 +57,9 @@ t_error			glue_message_return_info(i_thread	thread,
 						 t_vsize	size,
 						 i_node		sender);
 
-t_error		glue_message_initialize(void);
+t_error			glue_message_initialize(void);
 
-t_error		glue_message_clean(void);
+t_error			glue_message_clean(void);
 
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sun dec  5 16:11:45 2010]
+ * updated       julien quintard   [sat dec 11 11:48:22 2010]
  */
 
 /*
@@ -37,6 +37,7 @@
 
 d_event			glue_event_dispatch =
   {
+    NULL,
     NULL,
     glue_event_enable,
     glue_event_disable,
@@ -105,7 +106,7 @@ t_error			glue_event_reserve(i_event		id,
 
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
     {
-      if (platform_irq_enable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+      if (platform_pic_enable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
 	MACHINE_ESCAPE("unable to enable the IRQ");
     }
 
@@ -120,7 +121,7 @@ t_error			glue_event_release(i_event		id)
 {
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
     {
-      if (platform_irq_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+      if (platform_pic_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
 	MACHINE_ESCAPE("unable to disable the IRQ");
     }
 
@@ -136,7 +137,7 @@ void			pf_handler(t_id				id,
   t_uint32              addr;
   t_ia32_context	ctx;
 
-  assert(scheduler_current(&th) == ERROR_OK);
+  assert(thread_current(&th) == ERROR_OK);
 
   assert(ia32_get_context(th, &ctx) == ERROR_OK);
 
@@ -165,11 +166,12 @@ t_error			glue_event_initialize(void)
   if (ia32_interrupt_vector_init() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the interrupt table");
 
-  if (platform_irq_initialize() != ERROR_OK)
-    MACHINE_ESCAPE("unable to initialize the IRQs");
+  if (platform_pic_initialize() != ERROR_OK)
+    MACHINE_ESCAPE("unable to initialize the PIC");
 
-  if (event_reserve(14, EVENT_FUNCTION,
-		    EVENT_HANDLER(pf_handler), 0) != ERROR_OK)
+  // XXX ca devrait etre autre part ca!
+  if (event_reserve(14, EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(pf_handler), 0) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the event associated with the "
 		   "page fault exception");
 
@@ -182,8 +184,8 @@ t_error			glue_event_initialize(void)
 
 t_error			glue_event_clean(void)
 {
-  if (platform_irq_clean() != ERROR_KO)
-    MACHINE_ESCAPE("unable to clean the IRQs");
+  if (platform_pic_clean() != ERROR_KO)
+    MACHINE_ESCAPE("unable to clean the PIC");
 
   MACHINE_LEAVE();
 }

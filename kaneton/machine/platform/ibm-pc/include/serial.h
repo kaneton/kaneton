@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...machine/platform/ibm-pc/include/serial.h
  *
  * created       julien quintard   [wed jun  6 14:06:42 2007]
- * updated       julien quintard   [wed nov 24 12:54:21 2010]
+ * updated       julien quintard   [thu dec  9 15:26:34 2010]
  */
 
 #ifndef	PLATFORM_SERIAL_H
@@ -22,6 +22,11 @@
 
 /*
  * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * these macro provide the addresses and options related to the serial
+ * device.
  */
 
 #define PLATFORM_SERIAL_PRIMARY		0x3f8
@@ -55,17 +60,21 @@
  * ../serial.c
  */
 
-void        		platform_serial_read(t_uint32		com_port,
+void        		platform_serial_read(t_uint32		port,
 					     t_uint8*		data,
 					     t_uint32 		size);
 
-void			platform_serial_write(t_uint32		com_port,
+void			platform_serial_write(t_uint32		port,
 					      t_uint8*		data,
 					      t_uint32		size);
 
-t_error			platform_serial_setup(t_uint32		com_port,
-					      t_uint8		baud_rate,
-					      t_uint8		bit_type);
+t_error			platform_serial_setup(t_uint32		port,
+					      t_uint8		rate,
+					      t_uint8		type);
+
+t_error			platform_serial_initialize(void);
+
+t_error			platform_serial_clean(void);
 
 
 /*

@@ -129,8 +129,9 @@
 	 "	iret					\n"		\
 	 ".text						")
 
+// XXX plus utilise! a virer
 #define IA32_CALL_HANDLER(_handler_, ...)				\
-  ((t_ia32_interrupt_handler)((_handler_).function))(__VA_ARGS__)
+  ((t_ia32_interrupt_handler)((_handler_).routine))(__VA_ARGS__)
 
 #define PREHANDLER_PROTOTYPES()						\
   void	prehandler_exception0(void);					\

@@ -40,7 +40,7 @@ extern const char	version[];
  * physical memory layout etc.
  */
 
-t_init*			_init;
+s_init*			_init;
 
 /*
  * this variable is filled by the task manager when it injects the
@@ -79,13 +79,15 @@ i_segment		_system;
  * 12) shutdown the system.
  */
 
-void			kaneton(t_init*				bootloader)
+void			kaneton(s_init*				init)
 {
+  i_cpu			cpu;
+
   /*
    * 1)
    */
 
-  _init = bootloader;
+  _init = init;
 
   /*
    * 2)
@@ -121,6 +123,30 @@ void			kaneton(t_init*				bootloader)
 
   assert(kernel_initialize() == ERROR_OK);
 
+  // XXX
+  {
+    as_dump();
+    cpu_dump();
+    event_dump();
+    extern m_as* _as;
+    id_show(&_as->id, 0);
+    kernel_dump();
+    s_clock clock;
+    clock_current(&clock);
+    clock_show(&clock, 0);
+    module_call(console, print,
+		"[kaneton] %u [page size] %u [endian] %u "
+		"[wordsz] %u [kernel] %u\n",
+		___kaneton,
+		___kaneton$pagesz, ___kaneton$endian,
+		___kaneton$wordsz, ___kaneton$kernel);
+    region_dump(0);
+    scheduler_dump();
+    segment_dump();
+    set_dump();
+  }
+  // XXX
+
   /*
    * 6)
    */
@@ -140,7 +166,9 @@ void			kaneton(t_init*				bootloader)
    * 8)
    */
 
-  assert(scheduler_start() == ERROR_OK);
+  assert(scheduler_current(&cpu) == ERROR_OK);
+
+  assert(scheduler_start(cpu) == ERROR_OK);
 
   /*
    * 9)
@@ -208,9 +236,9 @@ t_error			kaneton_spawn(void)
 {
   i_thread		thread;
   i_region		region;
-  t_stack		stack;
+  s_stack		stack;
   i_task		task;
-  t_thread_context	ctx;
+  s_thread_context	ctx;
   i_as			as;
   o_thread*		o;
   struct

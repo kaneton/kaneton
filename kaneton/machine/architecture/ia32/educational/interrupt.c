@@ -194,6 +194,7 @@ t_error			ia32_interrupt_vector_init(void)
   i_region		reg;
   t_vaddr		vaddr;
   t_ia32_idt		new_idt;
+  o_region*		r;
 
   /*
    * 1)
@@ -217,7 +218,10 @@ t_error			ia32_interrupt_vector_init(void)
 		     &reg) != ERROR_OK)
     return (ERROR_KO);
 
-  vaddr = reg;
+  if (region_get(_kernel->as, reg, &r) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
+
+  vaddr = r->address;
 
   /*
    * 2)
@@ -279,7 +283,6 @@ t_error			ia32_interrupt_vector_init(void)
 static void		spurious_interrupt(i_event			id)
 {
   t_uint32		stack[8];
-  i_task		tsk;
   i_thread		th;
   o_task*		o;
   t_ia32_context	ctx;
@@ -287,7 +290,7 @@ static void		spurious_interrupt(i_event			id)
 
   assert(ia32_context_ring0_stack() == ERROR_OK);
 
-  if (scheduler_current(&th) != ERROR_OK ||
+  if (thread_current(&th) != ERROR_OK ||
       ia32_get_context(th, &ctx) != ERROR_OK)
     {
       module_call(console, print,
@@ -345,7 +348,7 @@ void			ia32_handler_exception(t_uint32			nr,
     {
       assert(event_get(id, &o) == ERROR_OK);
 
-      if (o->type == EVENT_FUNCTION)
+      if (o->type == EVENT_TYPE_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data, code);
       else
 	event_notify(id);
@@ -355,7 +358,7 @@ void			ia32_handler_exception(t_uint32			nr,
       spurious_interrupt(id);
     }
 
-  assert(scheduler_current(&current) == ERROR_OK);
+  assert(thread_current(&current) == ERROR_OK);
 }
 
 /*
@@ -375,11 +378,12 @@ void			ia32_handler_irq(t_uint32			nr)
     {
       assert(event_get(id, &o) == ERROR_OK);
 
-      if (o->type == EVENT_FUNCTION)
+      if (o->type == EVENT_TYPE_FUNCTION)
 	{
 	  IA32_CALL_HANDLER(o->handler, id, o->data);
 
-	  platform_irq_acknowledge(nr);
+	  // XXX rien a foutre la!
+	  platform_pic_acknowledge(nr);
 	}
       else
 	event_notify(id);
@@ -389,7 +393,7 @@ void			ia32_handler_irq(t_uint32			nr)
       spurious_interrupt(id);
     }
 
-  assert(scheduler_current(&current) == ERROR_OK);
+  assert(thread_current(&current) == ERROR_OK);
 }
 
 /*
@@ -411,7 +415,7 @@ void			ia32_handler_ipi(t_uint32			nr)
     {
       assert(event_get(id, &o) == ERROR_OK);
 
-      if (o->type == EVENT_FUNCTION)
+      if (o->type == EVENT_TYPE_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data);
       else
 	event_notify(id);
@@ -421,7 +425,7 @@ void			ia32_handler_ipi(t_uint32			nr)
       spurious_interrupt(id);
     }
 
-  assert(scheduler_current(&current) == ERROR_OK);
+  assert(thread_current(&current) == ERROR_OK);
 }
 
 /*
@@ -441,7 +445,7 @@ void			ia32_handler_syscall(t_uint32			nr)
     {
       assert(event_get(id, &o) == ERROR_OK);
 
-      if (o->type == EVENT_FUNCTION)
+      if (o->type == EVENT_TYPE_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data);
       else
 	event_notify(id);
@@ -451,7 +455,7 @@ void			ia32_handler_syscall(t_uint32			nr)
       spurious_interrupt(id);
     }
 
-  assert(scheduler_current(&current) == ERROR_OK);
+  assert(thread_current(&current) == ERROR_OK);
 }
 
 /*

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/kaneton/core/time/Makefile
+# file          /home/mycure/kaneton/kaneton/core/clock/Makefile
 #
 # created       julien quintard   [sun jun 10 17:11:24 2007]
-# updated       julien quintard   [wed nov 24 18:58:06 2010]
+# updated       julien quintard   [fri dec 10 15:28:04 2010]
 #
 
 #
@@ -33,40 +33,38 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TIME_C			:=		clock.c				\
-					timer.c				
+CLOCK_C			:=		clock.c				
 
-TIME_O			:=		$(TIME_C:.c=.o)
+CLOCK_O			:=		$(CLOCK_C:.c=.o)
 
-TIME_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/clock.h	\
-					$(_CORE_INCLUDE_DIR_)/timer.h	
+CLOCK_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/clock.h	
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies $(_TIME_LO_)
+main:			dependencies $(_CLOCK_LO_)
 
-$(_TIME_LO_):		$(TIME_O)
-	$(call env_remove,$(_TIME_LO_),)
+$(_CLOCK_LO_):		$(CLOCK_O)
+	$(call env_remove,$(_CLOCK_LO_),)
 
-	$(call env_archive,$(_TIME_LO_),$(TIME_O),)
+	$(call env_archive,$(_CLOCK_LO_),$(CLOCK_O),)
 
 clear:
-	$(call env_remove,$(TIME_O),)
+	$(call env_remove,$(CLOCK_O),)
 
-	$(call env_remove,$(_TIME_LO_),)
+	$(call env_remove,$(_CLOCK_LO_),)
 
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,$(TIME_INCLUDE),)
+	$(call env_prototypes,$(CLOCK_INCLUDE),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(TIME_C),)
+	$(call env_headers,$(CLOCK_C),)
 
 dependencies:
 

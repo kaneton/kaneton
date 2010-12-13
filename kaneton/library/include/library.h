@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...STABLE/kaneton/library/include/library.h
+ * file          /home/mycure/kaneton/kaneton/library/include/library.h
  *
  * created       julien quintard   [sun jun 10 17:31:41 2007]
- * updated       julien quintard   [sun dec  5 15:56:29 2010]
+ * updated       julien quintard   [fri dec 10 14:27:00 2010]
  */
 
 #ifndef LIBRARY_LIBRARY_H
@@ -46,6 +46,7 @@
  *	../memcmp.c
  *	../memset.c
  *	../format.c
+ *      ../random.c
  *	../strchr.c
  *	../strcmp.c
  *	../strcpy.c
@@ -135,6 +136,15 @@ int			format(t_format_character_fn		character,
 			       t_format_attribute_fn		attribute,
 			       const char*			fmt,
 			       va_list				args);
+
+
+/*
+ * ../random.c
+ */
+
+void			random_seed(void);
+
+unsigned long		random_generate(void);
 
 
 /*

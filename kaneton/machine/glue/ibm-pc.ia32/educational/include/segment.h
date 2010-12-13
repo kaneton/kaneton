@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...bm-pc.ia32/educational/include/segment.h
  *
  * created       julien quintard   [wed jun  6 16:25:05 2007]
- * updated       julien quintard   [wed nov 24 14:18:15 2010]
+ * updated       julien quintard   [sun dec 12 13:23:25 2010]
  */
 
 #ifndef GLUE_SEGMENT_H
@@ -26,8 +26,8 @@
     {									\
       t_error	_r_ = ERROR_OK;						\
 									\
-      if (glue_segment_dispatch._function_ != NULL)			\
-        _r_ = glue_segment_dispatch._function_(_args_);			\
+      if (glue_segment_dispatch.segment_ ## _function_ != NULL)		\
+        _r_ = glue_segment_dispatch.segment_ ## _function_(_args_);	\
 									\
       _r_;								\
     }									\

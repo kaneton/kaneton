@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [sat dec  4 01:16:52 2010]
+ * updated       julien quintard   [thu dec  9 15:15:58 2010]
  */
 
 #ifndef GLUE_THREAD_H
@@ -80,10 +80,10 @@ t_error			glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid);
 
 t_error			glue_thread_load(i_thread		threadid,
-					 t_thread_context	context);
+					 s_thread_context	context);
 
 t_error			glue_thread_store(i_thread		threadid,
-					  t_thread_context*	context);
+					  s_thread_context*	context);
 
 t_error			glue_thread_args(i_thread		threadid,
 					 const void*	       	args,

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/modules/console/include/console.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [sun dec  5 16:00:28 2010]
+ * updated       julien quintard   [sun dec 12 13:49:44 2010]
  */
 
 #ifndef MODULES_CONSOLE_CONSOLE_H
@@ -22,18 +22,25 @@
  * the print function pointer.
  */
 
-typedef void			(*f_module_console_character)(char);
-typedef void			(*f_module_console_attribute)(t_uint8);
+typedef void			(*mf_console_character)(char);
+typedef void			(*mf_console_attribute)(t_uint8);
 
 /*
- * the module structure
+ * the console manager.
  */
 
 typedef struct
 {
-  f_module_console_character	character;
-  f_module_console_attribute	attribute;
-}				m_module_console;
+  mf_console_character		character;
+  mf_console_attribute		attribute;
+}				mm_console;
+
+/*
+ * this type represent the length of the margin the generate before
+ * displaying some text.
+ */
+
+typedef t_uint8			mt_margin;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -57,8 +64,26 @@ typedef struct
 #define MODULE_CONSOLE_WHITE		PLATFORM_CONSOLE_WHITE
 
 /*
+ * these macro provide (i) the format for generating a variable-length
+ * string of spaces (ii) the default shifting value for hierarchical
+ * display.
+ */
+
+#define MODULE_CONSOLE_MARGIN_FORMAT	"%*s"
+
+#define MODULE_CONSOLE_MARGIN_NONE	0
+#define MODULE_CONSOLE_MARGIN_SHIFT	2
+
+/*
  * ---------- macro functions -------------------------------------------------
  */
+
+/*
+ * this macro-function generates two arguments for a format-based
+ * print function in order to generate a string composed of _values_ spaces.
+ */
+
+#define MODULE_CONSOLE_MARGIN_VALUE(_value_)	_value_, " "
 
 /*
  * since the console module relies on the platform when it comes to the
@@ -78,7 +103,7 @@ typedef struct
  * ../console.c
  */
 
-void			module_console_character(char			c);
+void			module_console_character(char		c);
 
 void			module_console_attribute(t_uint8	attribute);
 
@@ -89,11 +114,11 @@ void			module_console_message(char		indicator,
 void			module_console_print(char*		fmt,
 					     ...);
 
-t_error			module_console_set(f_module_console_character	character,
-					   f_module_console_attribute	attribute);
+t_error			module_console_set(mf_console_character	character,
+					   mf_console_attribute	attribute);
 
-t_error			module_console_get(f_module_console_character*	character,
-					   f_module_console_attribute*	attribute);
+t_error			module_console_get(mf_console_character* character,
+					   mf_console_attribute* attribute);
 
 t_error			module_console_load(void);
 

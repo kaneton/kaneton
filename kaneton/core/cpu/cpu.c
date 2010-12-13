@@ -12,21 +12,23 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this manager is used by the scheduler to perform efficient cpu load
- * balancing of tasks execution for Symmetric MultiProcessing (SMP).
+ * the CPU manager is mainly used by the scheduler to perform efficient
+ * CPU load balancing when it comes to SMP - Symmetric Multi-Processing.
  *
- * the scheduler  must communicate to  the cpu manager  the statistics
- * for each cpus.
+ * the scheduler must communicate to the CPU manager the statistics
+ * regarding the usage of each CPU.
  *
- * then,  each time the  cpu_balance function  is called  (the machine
- * dependent   part   is  responsible   for   calling  this   function
- * periodically), the statistics are compared and the more loaded cpus
- * give some tasks to the less loaded one. the cpu_migrate function is
- * used when such event append.
+ * then, every time the cpu_balance() function is called, the statistics
+ * are compared and the more loaded CPUs give away some tasks to the less
+ * loaded ones. the cpu_migrate() function is used when such an event
+ * occurs, migrating a task and its threads to a specific CPU.
  *
- * the cpu_select function  is called by the task  manager to assign a
- * task to  a cpu.  like the load  balancing algorithm,  the selection
- * must take account cpus load.
+ * the cpu_select() function is called by the task manager to assign a
+ * CPU to a task. like the load balancing algorithm, the selection should
+ * take account of the CPUs loads.
+ *
+ * [XXX:improvements] implement the cpu_balance() function based on the
+ *                    CPUs' statistics.
  */
 
 /*
@@ -35,20 +37,28 @@
 
 #include <kaneton.h>
 
+/*
+ * include the machine-specific definitions required by the core.
+ */
+
 machine_include(cpu);
 
 /*
  * ---------- externs ---------------------------------------------------------
  */
 
-extern t_init*		_init;
+/*
+ * the init structure.
+ */
+
+extern s_init*		_init;
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
 
 /*
- * cpu manager variable.
+ * the cpu manager.
  */
 
 m_cpu*			_cpu = NULL;
@@ -58,36 +68,66 @@ m_cpu*			_cpu = NULL;
  */
 
 /*
- * this function show a cpu given its identifier.
+ * this function shows a given CPU's attributes.
+ *
+ * steps:
+ *
+ * 1) retrieve the CPU object.
+ * 2) display the CPU attributes.
+ * 3) call the machine.
  */
 
-t_error			cpu_show(i_cpu				id)
+t_error			cpu_show(i_cpu				id,
+				 mt_margin			margin)
 {
   o_cpu*		o;
+
+  /*
+   * 1)
+   */
 
   if (cpu_get(id, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the CPU object");
 
+  /*
+   * 2)
+   */
+
   module_call(console, message,
-	      '#', "  cpu %qd: execution time %qd ms\n", id,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "CPU: id(%qu) efficiency(%u)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->id,
 	      o->efficiency);
 
-  if (machine_call(cpu, cpu_show, id) != ERROR_OK)
+  /*
+   * 3)
+   */
+
+  if (machine_call(cpu, show, id, margin) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function dumps the cpu manager.
+ * this function dumps the CPU manager.
+ *
+ * steps:
+ *
+ * 1) retrieve the size of the set of CPUs.
+ * 2) display general information.
+ * 3) show all the CPU objects.
+ * 4) call the machine.
  */
 
 t_error			cpu_dump(void)
 {
-  t_state		st;
   o_cpu*		data;
   t_setsz		size;
-  t_iterator		i;
+  t_state		st;
+  s_iterator		i;
 
   /*
    * 1)
@@ -101,47 +141,103 @@ t_error			cpu_dump(void)
    */
 
   module_call(console, message,
-	      '#', "dumping %qu cpu(s):\n", size);
+	      '#', "CPU manager: #CPUs(%qu)\n",
+	      size);
+
+  /*
+   * 3)
+   */
+
+  module_call(console, message,
+	      '#', "  CPUs:\n");
 
   set_foreach(SET_OPTION_FORWARD, _cpu->cpus, &i, st)
     {
       if (set_object(_cpu->cpus, i, (void**)&data) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the CPU object");
+	CORE_ESCAPE("unable to retrieve the CPU identifier");
 
-      if (cpu_show(data->id) != ERROR_OK)
+      if (cpu_show(data->id, 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the CPU");
     }
 
-  CORE_LEAVE();
-}
+  /*
+   * 4)
+   */
 
-/*
- * this function get the current cpu id.
- */
-
-t_error			cpu_current(i_cpu*			id)
-{
-  if (machine_call(cpu, cpu_current, id) != ERROR_OK)
+  if (machine_call(cpu, dump) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function tells if the kernel is running in multiprocessor mode.
+ * this function retrieves the current CPU identifier.
+ *
+ * note that this functionality is left to the machine to implement.
+ *
+ * 0) verify the arguments.
+ * 1) call the machine.
+ */
+
+t_error			cpu_current(i_cpu*			id)
+{
+  /*
+   * 0)
+   */
+
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (machine_call(cpu, current, id) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the kaneton kernel evolves in a
+ * multiprocessor environment.
+ *
+ * steps:
+ *
+ * 1) retrieve the size of the set of CPUs.
+ * 2) return false if there is a single CPU, true otherwise.
  */
 
 t_error			cpu_multiprocessor(void)
 {
-  if (_cpu->ncpus == 1)
+  t_setsz		size;
+
+  /*
+   * 1)
+   */
+
+  assert(set_size(_cpu->cpus, &size) == ERROR_OK);
+
+  /*
+   * 2)
+   */
+
+  if (size == 1)
     CORE_FALSE();
 
   CORE_TRUE();
 }
 
 /*
- * this function is used to select a cpu when creating a task.
+ * this function returns the identifier of the CPU which has been used
+ * the smallest portion of time.
  *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the size of the set of CPUs.
+ * 2) select a CPU.
+ * 3) call the machine.
  */
 
 t_error			cpu_select(i_cpu*			id)
@@ -149,56 +245,104 @@ t_error			cpu_select(i_cpu*			id)
   static i_cpu		current = 0;
   t_setsz		size;
 
+  /*
+   * 0)
+   */
+
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
+
+  /*
+   * 1)
+   */
+
   if (set_size(_cpu->cpus, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
-  *id = current % size;
+  /*
+   * 2)
+   */
 
-  current++;
+  *id = current++ % size;
+
+  /*
+   * 3)
+   */
+
+  if (machine_call(cpu, select, id) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function count the execution time of useful code.
+ * this function updates the statistics of a given CPU.
  *
+ * steps:
+ *
+ * 1) retrieve the CPU object.
+ * 2) update the CPU statistics.
  */
 
-t_error			cpu_statistics(i_cpu			id,
-				       t_timeslice		time)
+t_error			cpu_update(i_cpu			id,
+				   t_timeslice			timeslice)
 {
   o_cpu*		o;
+
+  /*
+   * 1)
+   */
 
   if (cpu_get(id, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the CPU object");
 
-  o->efficiency += time;
+  /*
+   * 2)
+   */
+
+  o->efficiency += timeslice;
+
+  /*
+   * 3)
+   */
+
+  if (machine_call(cpu, update, id, timeslice) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function is called for load balancing.
+ * this function load-balance the tasks among the CPUs according to the
+ * statistics recorded.
  *
+ * steps:
+ *
+ * 1) call the machine.
  */
 
 t_error			cpu_balance(void)
 {
-  /* XXX */
+  /*
+   * 1)
+   */
+
+  if (machine_call(cpu, balance) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function is used to move a task from one cpu to another.
+ * this function is used to move a task from one CPU to another.
  *
  * steps:
  *
- * 1) stop the task if necessary.
- * 2) change the running cpu.
- * 3) call the dependent code.
- * 4) restart the task if necessary.
- *
+ * 1) retrieve the task object.
+ * 2) if the task is running, stop it the time for it to be migrated.
+ * 3) change the CPU.
+ * 4) call the machine.
+ * 5) is the task was running, re-start it.
  */
 
 t_error			cpu_migrate(i_task			task,
@@ -207,11 +351,15 @@ t_error			cpu_migrate(i_task			task,
   o_task*		o;
   t_state		state;
 
+  /*
+   * 1)
+   */
+
   if (task_get(task, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
-   * 1)
+   * 2)
    */
 
   state = o->state;
@@ -223,21 +371,20 @@ t_error			cpu_migrate(i_task			task,
     }
 
   /*
-   * 2)
+   * 3)
    */
-
 
   o->cpu = cpu;
 
   /*
-   * 3)
+   * 4)
    */
 
-  if (machine_call(cpu, cpu_migrate, task, cpu) != ERROR_OK)
+  if (machine_call(cpu, migrate, task, cpu) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 4)
+   * 5)
    */
 
   if (state == TASK_STATE_START)
@@ -250,39 +397,56 @@ t_error			cpu_migrate(i_task			task,
 }
 
 /*
- * this function returns true if the cpu object exists.
+ * this function returns true if the CPU object exists.
  */
 
 t_error			cpu_exist(i_cpu				id)
 {
   if (set_exist(_cpu->cpus, id) != ERROR_TRUE)
-    CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
+    CORE_FALSE();
 
-  CORE_LEAVE();
+  CORE_TRUE();
 }
 
 /*
- * this function gets a cpu object from the cpu set.
- */
-
-t_error			cpu_get(i_cpu				id,
-				o_cpu**				o)
-{
-  if (set_get(_cpu->cpus, id, (void**)o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function initializes the cpu manager.
+ * this function retrieves a CPU object from the set.
  *
  * steps:
  *
- * 1) allocate some memory for the manager structure.
- * 2) initialize a statistic object.
- * 3) initialize the cpu set.
- * 4) call the machine dependent code.
+ * 0) verify the arguments.
+ * 1) retrieve the object from the set of CPUs.
+ */
+
+t_error			cpu_get(i_cpu				id,
+				o_cpu**				object)
+{
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (set_get(_cpu->cpus, id, (void**)object) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the object from the set of CPUs");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function initializes the CPU manager.
+ *
+ * steps:
+ *
+ * 1) allocate and initialize memory for the manager's structure.
+ * 2) reserve the set of CPUs.
+ * 3) inject every CPU object provided by the boot loader through the
+ *    init structure into the set of CPUs.
+ * 4) call the machine.
  */
 
 t_error			cpu_initialize(void)
@@ -293,17 +457,17 @@ t_error			cpu_initialize(void)
    * 1)
    */
 
-  if ((_cpu = malloc(sizeof(m_cpu))) == NULL)
+  if ((_cpu = malloc(sizeof (m_cpu))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the CPU manager's structure");
 
-  memset(_cpu, 0x0, sizeof(m_cpu));
+  memset(_cpu, 0x0, sizeof (m_cpu));
 
   /*
    * 2)
    */
 
-  if (set_reserve(array, SET_OPTION_ALLOC, _init->ncpus,
-		  sizeof(o_cpu), &_cpu->cpus) != ERROR_OK)
+  if (set_reserve(array, SET_OPTION_ALLOCATE, _init->ncpus,
+		  sizeof (o_cpu), &_cpu->cpus) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of CPUs");
 
   /*
@@ -314,11 +478,9 @@ t_error			cpu_initialize(void)
     {
       if (set_append(_cpu->cpus, &_init->cpus[i]) != ERROR_OK)
 	CORE_ESCAPE("unable to add the object to the set of CPUs");
-
-      _cpu->ncpus++;
     }
 
-  if (_cpu->ncpus == 1)
+  if (i == 1)
     module_call(console, message,
 		'#', " system is running in mono-processor mode\n");
   else
@@ -329,18 +491,18 @@ t_error			cpu_initialize(void)
    * 4)
    */
 
-  if (machine_call(cpu, cpu_initialize) != ERROR_OK)
+  if (machine_call(cpu, initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function cleans the cpu manager.
+ * this function cleans the CPU manager.
  *
  * steps:
  *
- * 1) call the dependent code.
+ * 1) call the machine.
  * 2) free the manager structure.
  */
 
@@ -350,7 +512,7 @@ t_error			cpu_clean(void)
    * 1)
    */
 
-  if (machine_call(cpu, cpu_clean) != ERROR_OK)
+  if (machine_call(cpu, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*

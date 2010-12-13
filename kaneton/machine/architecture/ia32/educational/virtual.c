@@ -25,7 +25,7 @@
  * the init structure.
  */
 
-extern t_init*		_init;
+extern s_init*		_init;
 
 /*
  * the kernel manager.
@@ -100,7 +100,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    */
 
   if (as_get(asid, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
@@ -111,7 +111,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   if (ia32_pd_activate(o->machine.pd,
 		       IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 3)
@@ -119,7 +119,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 
   if (ia32_pt_build((t_paddr)o->machine.pd, &pt) != ERROR_OK)
 
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   pt.present = 1;
   pt.rw = IA32_PAGE_TABLE_WRITABLE;
@@ -130,7 +130,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   if (ia32_pd_add_table(&o->machine.pd,
 			IA32_PAGE_DIRECTORY_MIRROR,
 			pt) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 4)
@@ -140,7 +140,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   // car ils sont dans init segment/regions et seront injectes dans task_initialize()
 
   if ((preg = malloc(sizeof(o_region))) == NULL)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   preg->address = IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR, 0);
   preg->segment = (i_segment)pt.paddr;
@@ -149,7 +149,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   preg->options = REGION_OPTION_NONE;
 
   if (region_inject(asid, preg, &useless) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 5)
@@ -218,7 +218,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 	      if (segment_exist(seg) == ERROR_FALSE)
 		{
 		  if ((pt_seg = malloc(sizeof(o_segment))) == NULL)
-		    return (ERROR_KO);
+		    MACHINE_ESCAPE("XXX");
 
 		  pt_seg->type = SEGMENT_TYPE_SYSTEM;
 		  pt_seg->address = (t_paddr)seg;
@@ -226,7 +226,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 		  pt_seg->permissions = PERMISSION_READ | PERMISSION_WRITE;
 
 		  if (segment_inject(asid, pt_seg, &seg) != ERROR_OK)
-		    return (ERROR_KO);
+		    MACHINE_ESCAPE("XXX");
 		}
 	    }
 	}
@@ -246,9 +246,9 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 		      o->machine.pd,
 		      IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
 		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -260,24 +260,24 @@ t_error			ia32_kernel_as_finalize(void)
 {
   if (segment_type((i_segment)_init->segments[0].address,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (segment_type((i_segment)_init->segments[1].address,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (segment_type((i_segment)_init->segments[11].address,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (_init->segments[12].size != 0)
     {
       if (segment_type((i_segment)_init->segments[12].address,
 		       SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-	return (ERROR_KO);
+	MACHINE_ESCAPE("XXX");
     }
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -306,7 +306,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
    */
 
   if (as_get(asid, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
@@ -316,10 +316,10 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		      PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 3)
@@ -328,7 +328,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
   pd = o->machine.pd = (t_ia32_directory)(t_uint32)seg;
 
   if (ia32_map_pd(&pd) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   memset((void*)pd, 0, PAGESZ);
 
@@ -337,7 +337,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
    */
 
   if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 5)
@@ -346,7 +346,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
   if (region_get(_kernel->as,
 		 (i_region)(t_vaddr)_thread->machine.tss,
 		 &preg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (region_reserve(asid,
 		     preg->id,
@@ -356,7 +356,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     (t_vaddr)_thread->machine.tss,
 		     preg->size,
 		     &reg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (region_reserve(asid,
 		     (i_segment)(t_uint32)ia32_gdt.descriptor,
@@ -366,7 +366,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     (t_vaddr)ia32_gdt.descriptor,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (region_reserve(asid,
 		     (i_segment)(t_uint32)ia32_idt.descriptor,
@@ -376,7 +376,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     (t_vaddr)ia32_idt.descriptor,
 		     PAGESZ,
 		     &reg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * XXX
@@ -403,7 +403,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 	 LINKER_SYMBOL(_handler_end) -
 	 LINKER_SYMBOL(_handler_begin),
 	 &reg) != ERROR_OK)
-	 return (ERROR_KO);
+	 MACHINE_ESCAPE("XXX");
 
 	 if (region_reserve(asid,
 	 (i_segment)_init->kcode,
@@ -414,7 +414,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 	 LINKER_SYMBOL(_handler_data_end) -
 	 LINKER_SYMBOL(_handler_data_begin),
 	 &reg) != ERROR_OK)
-	 return (ERROR_KO);
+	 MACHINE_ESCAPE("XXX");
       */
 
       i_region	region;
@@ -426,7 +426,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 			 _init->kcode,
 			 _init->kcodesz,
 			 &region) != ERROR_OK)
-	return (ERROR_KO);
+	MACHINE_ESCAPE("XXX");
 
       if (region_reserve(asid,
 			 (i_segment)_init->kstack,
@@ -435,10 +435,10 @@ t_error			ia32_task_as_initialize(i_as		asid)
 			 (t_vaddr)_init->kstack,
 			 _init->kstacksz,
 			 &region) != ERROR_OK)
-	return (ERROR_KO);
+	MACHINE_ESCAPE("XXX");
     }
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -471,7 +471,7 @@ t_error			ia32_segmentation_init(void)
   seg.type.user = ia32_type_code;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_KERNEL_CS,
 			   seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -480,7 +480,7 @@ t_error			ia32_segmentation_init(void)
   seg.type.user = ia32_type_data;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_KERNEL_DS,
 			   seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
@@ -493,7 +493,7 @@ t_error			ia32_segmentation_init(void)
   seg.type.user = ia32_type_code;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_DRIVER_CS,
 			   seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -502,7 +502,7 @@ t_error			ia32_segmentation_init(void)
   seg.type.user = ia32_type_data;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_DRIVER_DS,
 			   seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 3)
@@ -515,7 +515,7 @@ t_error			ia32_segmentation_init(void)
   seg.type.user = ia32_type_code;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_SERVICE_CS,
 			   seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -524,7 +524,7 @@ t_error			ia32_segmentation_init(void)
   seg.type.user = ia32_type_data;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_SERVICE_DS,
 			   seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 4)
@@ -537,7 +537,7 @@ t_error			ia32_segmentation_init(void)
   seg.type.user = ia32_type_code;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_GUEST_CS,
 			   seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -546,7 +546,7 @@ t_error			ia32_segmentation_init(void)
   seg.type.user = ia32_type_data;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_GUEST_DS,
 			   seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 5)
@@ -566,5 +566,5 @@ t_error			ia32_segmentation_init(void)
 
   ia32_interrupt_ds = kds;
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }

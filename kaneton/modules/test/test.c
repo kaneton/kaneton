@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/modules/test/test.c
+ * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [mon dec  6 17:28:14 2010]
+ * updated       julien quintard   [fri dec 10 14:15:24 2010]
  */
 
 /*
@@ -48,17 +48,17 @@
  * automatically generated.
  */
 
-extern s_module_test_function	_module_test_functions[];
+extern ms_test_function	_module_test_functions[];
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
 
 /*
- * the module structure.
+ * the module manager.
  */
  
-m_module_test		_module_test;
+mm_test			_module_test;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -271,7 +271,7 @@ t_error			module_test_flush(void)
  * 2) flush if necessary.
  */
 
-void			module_test_character(char			c)
+void			module_test_character(char		c)
 {
   /*
    * 1)
@@ -293,7 +293,7 @@ void			module_test_character(char			c)
  */
 
 t_error			module_test_locate(char*		symbol,
-					   f_module_test*	function)
+					   mf_test*		function)
 {
   unsigned int  i;
 
@@ -321,7 +321,7 @@ t_error			module_test_locate(char*		symbol,
 
 t_error			module_test_call(char*			symbol)
 {
-  f_module_test		function;
+  mf_test		function;
 
   /*
    * 1)
@@ -384,7 +384,7 @@ void			module_test_dump(void)
 
 t_error			module_test_run(void)
 {
-  s_module_test_command	commands[] =
+  s_command		commands[] =
     {
       { "[call] ", module_test_call },
       { NULL, NULL }
@@ -457,24 +457,63 @@ t_error			module_test_run(void)
 
 /*
  * this function loads the module.
+ *
+ * steps:
+ *
+ * 1) display a message.
+ * 2) initialize the manager's structure.
+ * 3) initialize the serial manager.
  */
 
 t_error			module_test_load(void)
 {
+  /*
+   * 1)
+   */
+
   module_call(console, message,
 	      '+', "loading the 'test' module\n");
+
+  /*
+   * 2)
+   */
+
+  memset(&_module_test, 0x0, sizeof (mm_test));
+
+  /*
+   * 3)
+   */
+
+  if (platform_serial_initialize() != ERROR_OK)
+    MODULE_ESCAPE("unable to initialize the serial manager");
 
   MODULE_LEAVE();
 }
 
 /*
  * this function unloads the module.
+ *
+ * steps:
+ *
+ * 1) display a message.
+ * 2) clean the serial manager.
  */
 
 t_error			module_test_unload(void)
 {
+  /*
+   * 1)
+   */
+
   module_call(console, message,
 	      '+', "unloading the 'test' module\n");
+
+  /*
+   * 2)
+   */
+
+  if (platform_serial_clean() != ERROR_OK)
+    MODULE_ESCAPE("unable to clean the serial manager");
 
   MODULE_LEAVE();
 }

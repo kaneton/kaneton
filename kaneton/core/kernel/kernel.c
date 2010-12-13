@@ -12,10 +12,12 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file describes the kernel manager.
+ * this file contains the kernel manager's code.
  *
- * the manager does not manage a specific kaneton object but rather
- * the whole kernel.
+ * this manager, unlike the others, does not manage a specific kaneton
+ * object but rather the whole kernel. indeed, this manager does not provide
+ * any functionality but to initialize and clean the kernel by calling
+ * all the other managers.
  */
 
 /*
@@ -25,22 +27,27 @@
 #include <kaneton.h>
 
 /*
+ * include the machine-specific definitions required by the core.
+ */
+
+machine_include(kernel);
+
+/*
  * ---------- externs ---------------------------------------------------------
  */
 
 /*
- * init variable received from the bootloader specifying segments, regions,
- * physical memory layout etc.
+ * the init structure.
  */
 
-extern t_init*		_init;
+extern s_init*		_init;
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
 
 /*
- * the kernel manager variable.
+ * the kernel manager.
  */
 
 m_kernel*		_kernel = NULL;
@@ -50,31 +57,69 @@ m_kernel*		_kernel = NULL;
  */
 
 /*
- * this function simply initializes the kernel manager by initializing
- * every manager.
+ * this function dumps the kernel manager.
  *
  * steps:
  *
- * 1) allocate and initialize the kernel structure.
- * 2) initialize the id manager.
+ * 1) display information.
+ * 2) call the machine.
+ */
+
+t_error			kernel_dump(void)
+{
+  /*
+   * 1)
+   */
+
+  module_call(console, message,
+	      '#',
+	      "kernel manager: cell(%qu) task(%qu) as(%qu) thread(%qu) "
+	      "node(%qu:%qu)\n",
+	      _kernel->cell,
+	      _kernel->task, _kernel->as, _kernel->thread,
+	      _kernel->node.cell, _kernel->node.task);
+
+  /*
+   * 2)
+   */
+
+  if (machine_call(kernel, dump) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function initializes the kernel manager by initializing every
+ * other manager.
+ *
+ * steps:
+ *
+ * 1) allocate and initialize the kernel structure but also set the
+ *    kernel identifiers---task, as and thread---as being not initialised.
+ * 2) initialize the identifier manager.
  * 3) initialize the set manager.
  * 4) initialize the address space manager.
  * 5) initialize the segment manager.
  * 6) initialize the region manager.
  * 7) initialize the map manager
  * 8) initialize the task manager.
- * 9) now that everything is ready, set up the fine grain memory allocator
- *    in order to work with the kernel managers rather than the
- *    pre-allocated memory area provided by the boot loader.
+ * 9) now that _everything_ related to memory manager is ready, set up
+ *    the fine grain memory allocator in order to work with the kernel
+ *    managers rather than the pre-allocated memory area provided by
+ *    the boot loader.
  * 10) initialize the thread manager.
  * 11) initialize the event manager.
  * 12) initialize the timer manager.
  * 13) initialize the clock manager.
- * 14) initialize the io manager.
- * 15) initialize the message manager.
- * 16) initialize the capability manager.
- * 17) initialize the cpu manager.
- * 18) initialize the scheduler manager.
+ * 14) generate the random kaneton cell identifier and sets up the
+ *     kaneton node identifier.
+ * 15) initialize the I/Oo manager.
+ * 16) initialize the message manager.
+ * 17) initialize the capability manager.
+ * 18) initialize the CPU manager.
+ * 19) initialize the scheduler manager.
+ * 20) call the machine.
  */
 
 t_error			kernel_initialize(void)
@@ -83,19 +128,11 @@ t_error			kernel_initialize(void)
    * 1)
    */
 
-  if ((_kernel = malloc(sizeof(m_kernel))) == NULL)
+  if ((_kernel = malloc(sizeof (m_kernel))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the kernel "
 		"manager structure");
 
-  memset(_kernel, 0x0, sizeof(m_kernel));
-
-  // XXX srand(time(0)) // init from the number of ticks for example
-
-  _kernel->machine = 0;
-  /*rand() %*/ //2^64; // XXX bien sur ca c'est foireux car
-  // rand ne genere pas sur 64-bit
-
-  // XXX kernel->node = ...
+  memset(_kernel, 0x0, sizeof (m_kernel));
 
   _kernel->task = ID_UNUSED;
   _kernel->as = ID_UNUSED;
@@ -138,7 +175,8 @@ t_error			kernel_initialize(void)
   module_call(console, message,
 	      '+', "initializing the segment manager\n");
 
-  if (segment_initialize() != ERROR_OK)
+  if (segment_initialize(_init->mem,
+			 _init->memsz) != ERROR_OK)
     CORE_ESCAPE("unable to initialize the segment manager");
 
   /*
@@ -222,14 +260,25 @@ t_error			kernel_initialize(void)
    * 14)
    */
 
-  module_call(console, message,
-	      '+', "initializing the io manager\n");
+  random_seed();
 
-  if (io_initialize() != ERROR_OK)
-    CORE_ESCAPE("unable to initialize the io manager");
+  _kernel->cell = random_generate();
+
+  _kernel->node.cell = _kernel->cell;
+  _kernel->node.task = _kernel->task;
 
   /*
    * 15)
+   */
+
+  module_call(console, message,
+	      '+', "initializing the I/O manager\n");
+
+  if (io_initialize() != ERROR_OK)
+    CORE_ESCAPE("unable to initialize the I/O manager");
+
+  /*
+   * 16)
    */
 
   module_call(console, message,
@@ -239,7 +288,7 @@ t_error			kernel_initialize(void)
     CORE_ESCAPE("unable to initialize the message manager");
 
   /*
-   * 16)
+   * 17)
    */
 
   module_call(console, message,
@@ -249,17 +298,17 @@ t_error			kernel_initialize(void)
     CORE_ESCAPE("unable to initialize the capability manager");
 
   /*
-   * 17)
+   * 18)
    */
 
   module_call(console, message,
-	      '+', "initializing the cpu manager\n");
+	      '+', "initializing the CPU manager\n");
 
   if (cpu_initialize() != ERROR_OK)
-    CORE_ESCAPE("unable to initialize the cpu manager");
+    CORE_ESCAPE("unable to initialize the CPU manager");
 
   /*
-   * 18)
+   * 19)
    */
 
   module_call(console, message,
@@ -267,6 +316,13 @@ t_error			kernel_initialize(void)
 
   if (scheduler_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the scheduler manager");
+
+  /*
+   * 20)
+   */
+
+  if (machine_call(kernel, initialize) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
@@ -276,29 +332,37 @@ t_error			kernel_initialize(void)
  *
  * steps:
  *
- * 1) cleans the scheduler manager.
- * 2) cleans the capability manager.
- * 3) cleans the message manager.
- * 4) cleans the io manager.
- * 5) cleans the clock manager.
- * 6) cleans the timer manager.
- * 7) cleans the event manager.
- * 8) cleans the cpu manager.
- * 9) cleans the thread manager.
- * 10) cleans the task manager.
- * 11) cleans the map manager.
- * 12) cleans the segment manager.
- * 13) cleans the region manager.
- * 14) cleans the address space manager.
- * 15) cleans the set manager.
- * 16) cleans the identifier manager.
- * 17) frees the kernel manager's structure.
+ * 1) call the machine.
+ * 2) clean the scheduler manager.
+ * 3) clean the capability manager.
+ * 4) clean the message manager.
+ * 5) clean the I/O manager.
+ * 6) clean the clock manager.
+ * 7) clean the timer manager.
+ * 8) clean the event manager.
+ * 9) clean the CPU manager.
+ * 10) clean the thread manager.
+ * 11) clean the task manager.
+ * 12) clean the map manager.
+ * 13) clean the segment manager.
+ * 14) clean the region manager.
+ * 15) clean the address space manager.
+ * 16) clean the set manager.
+ * 17) clean the identifier manager.
+ * 18) free the kernel manager's structure.
  */
 
 t_error			kernel_clean(void)
 {
   /*
    * 1)
+   */
+
+  if (machine_call(kernel, clean) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  /*
+   * 2)
    */
 
   module_call(console, message,
@@ -308,7 +372,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the scheduler manager");
 
   /*
-   * 2)
+   * 3)
    */
 
   module_call(console, message,
@@ -318,7 +382,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the capability manager");
 
   /*
-   * 3)
+   * 4)
    */
 
   module_call(console, message,
@@ -328,17 +392,27 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the message manager");
 
   /*
-   * 4)
+   * 5)
    */
 
   module_call(console, message,
-	      '+', "cleaning the scheduler manager\n");
+	      '+', "cleaning the I/O manager\n");
 
   if (io_clean() != ERROR_OK)
-    CORE_ESCAPE("unable to clean the io manager");
+    CORE_ESCAPE("unable to clean the I/O manager");
 
   /*
-   * 5)
+   * 6)
+   */
+
+  module_call(console, message,
+	      '+', "cleaning the clock manager\n");
+
+  if (clock_clean() != ERROR_OK)
+    CORE_ESCAPE("unable to clean the clock manager");
+
+  /*
+   * 7)
    */
 
   module_call(console, message,
@@ -348,7 +422,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the timer manager");
 
   /*
-   * 6)
+   * 8)
    */
 
   module_call(console, message,
@@ -358,17 +432,17 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the event manager");
 
   /*
-   * 7)
+   * 9)
    */
 
   module_call(console, message,
-	      '+', "cleaning the cpu manager\n");
+	      '+', "cleaning the CPU manager\n");
 
   if (cpu_clean() != ERROR_OK)
-    CORE_ESCAPE("unable to clean the cpu manager");
+    CORE_ESCAPE("unable to clean the CPU manager");
 
   /*
-   * 8)
+   * 10)
    */
 
   module_call(console, message,
@@ -378,7 +452,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the thread manager");
 
   /*
-   * 9)
+   * 11)
    */
 
   module_call(console, message,
@@ -388,7 +462,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the task manager");
 
   /*
-   * 10)
+   * 12)
    */
 
   module_call(console, message,
@@ -398,7 +472,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the map manager");
 
   /*
-   * 11)
+   * 13)
    */
 
   module_call(console, message,
@@ -408,7 +482,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the region manager");
 
   /*
-   * 12)
+   * 14)
    */
 
   module_call(console, message,
@@ -418,7 +492,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the segment manager");
 
   /*
-   * 13)
+   * 15)
    */
 
   module_call(console, message,
@@ -428,7 +502,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the address space manager");
 
   /*
-   * 14)
+   * 16)
    */
 
   module_call(console, message,
@@ -438,7 +512,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the set manager");
 
   /*
-   * 15)
+   * 17)
    */
 
   module_call(console, message,
@@ -448,7 +522,7 @@ t_error			kernel_clean(void)
     CORE_ESCAPE("unable to clean the identifier manager");
 
   /*
-   * 16)
+   * 18)
    */
 
   free(_kernel);

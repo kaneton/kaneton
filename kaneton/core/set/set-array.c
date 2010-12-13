@@ -12,23 +12,26 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this  subpart  of the  set  manager is  used  to  build array  data
- * structures.
+ * this set implementation provides array data structures.
  *
- * there  are two  way  to use  the  arrays :  with  pointers or  with
- * objects.    the  first   method   is  the   default  one   (without
- * SET_OPTION_ALLOC) : it only  stores pointers refering to objects.  The
- * second method (used with  SET_OPTION_ALLOC) makes copies of objects in
- * the set,  using memcpy. with  SET_OPTION_FREE, objects are  freed when
- * they   are  removed   from  the   array  or   when  the   array  is
- * flushed/released.
+ * there are two way to use the arrays: with pointers or with objects. the
+ * first method is the default one (without SET_OPTION_ALLOCATE); it only
+ * stores pointers refering to objects. The second method (used with
+ * SET_OPTION_ALLOCATE) makes copies of objects in the set, using memcpy().
  *
- * the option ORGANISE is used to keep the array as small as possible,
- * but  some operation  requires to  shift entire  parts of  the array
- * (loss of performances).
+ * if the FREE option is activated, objects are freed when they are
+ * removed from the array or when the array is flushed/released.
  *
- * options:    SET_OPTION_CONTAINER,    SET_OPTION_SORT,   SET_OPTION_ORGANISE,
- *   SET_OPTION_ALLOC, SET_OPTION_FREE
+ * the option ORGANISE is used to keep the array as small as possible
+ * by regularly shifting the elements in order to avoid "holes" in the
+ * entries.
+ *
+ * options:
+ *   SET_OPTION_CONTAINER
+ *   SET_OPTION_SORT
+ *   SET_OPTION_ORGANISE
+ *   SET_OPTION_ALLOCATE
+ *   SET_OPTION_FREE
  */
 
 /*
@@ -41,6 +44,10 @@
  * ---------- externs ---------------------------------------------------------
  */
 
+/*
+ * the manager's structure.
+ */
+
 extern m_set*		_set;
 
 /*
@@ -48,46 +55,14 @@ extern m_set*		_set;
  */
 
 /*
- * this function tells if the set object is an array set.
- *
- * steps:
- *
- * 1) gets the descriptor associated with the id.
- * 2) checks the type field.
- */
-
-t_error			set_type_array(i_set			setid)
-{
-  o_set*		o;
-
-  /*
-   * 1)
-   */
-
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the set descriptor");
-
-  /*
-   * 2)
-   */
-
-  if (o->type != SET_TYPE_ARRAY)
-    CORE_ESCAPE("invalid set type");
-
-  CORE_LEAVE();
-}
-
-/*
  * this function tries to find an object with its identifier and returns
  * true or false.
  *
  * steps:
  *
- * 1) checks the given id.
- * 2) gets the descriptor.
- * 3) search for the element.
- *   A) dichotomy lookup. (on sorted array)
- *   B) sequentially searchs for the needed element. (unsorted)
+ * 0) verify the arguments.
+ * 1) retrieve the descriptor.
+ * 2) search sequentially for the element.
  */
 
 t_error			set_exist_array(i_set			setid,
@@ -95,94 +70,56 @@ t_error			set_exist_array(i_set			setid,
 {
   o_set*       		o;
   i_set			i;
-  t_setsz		left;
-  t_setsz		right;
-  t_setsz		dicho;
 
   /*
-   * 1)
+   * 0)
    */
 
   assert(id != ID_UNUSED);
 
   /*
-   * 2)
+   * 1)
    */
 
   assert(set_descriptor(setid, &o) == ERROR_OK);
 
   /*
-   * 3)
+   * 2)
    */
 
-  /* XXX la dicho marche mal */
-  if (0 && (o->options & SET_OPTION_SORT))
+  for (i = 0; i < o->u.array.arraysz; ++i)
     {
-
-      /*
-       * A)
-       */
-
-      left = 0;
-      right = o->u.array.arraysz - 1;
-
-      while (left <= right)
-	{
-	  dicho = left + (right - left) / 2;
-
-	  for (i = dicho; i < right; ++i)
-	    if (o->u.array.array[i])
-	      break;
-
-	  if (*((t_id*)(o->u.array.array[i])) == id)
-	    break;
-
-	  if (i == right || *((t_id*)(o->u.array.array[i])) > id)
-	    {
-	      right = dicho - 1;
-	    }
-	  else
-	    {
-	      left = dicho + 1;
-	    }
-	}
-
-      if (left <= right)
+      if (o->u.array.array[i] &&
+	  *((t_id*)(o->u.array.array[i])) == id)
 	CORE_TRUE();
-    }
-  else
-    {
-
-      /*
-       * B)
-       */
-
-      for (i = 0; i < o->u.array.arraysz; ++i)
-	{
-	  if (o->u.array.array[i] &&
-	      *((t_id*)(o->u.array.array[i])) == id)
-	    CORE_TRUE();
-	}
     }
 
   CORE_FALSE();
 }
 
 /*
- * this function shows set objects contained in a set.
+ * this function shows a set's attributes.
  *
  * steps:
  *
- * 1) retrieves the set associated with the setid.
- * 2) loops through the slots and displays elements.
+ * 1) retrieve the set descriptor.
+ * 2) build the options string.
+ * 3) display information on the set.
+ * 4) go through the set's objects.
+ *   a) retrieve the object's identifier.
+ *   b) warn if an unused identifier has been found though this entry
+ *      is not marked as available.
+ *   c) display the identifier and move on to the next object.
  */
 
-t_error			set_show_array(i_set			setid)
+t_error			set_show_array(i_set			setid,
+				       mt_margin		margin)
 {
   o_set*		o;
   t_setsz		i;
   t_setsz		pos;
   t_id			id;
+  char			options[6];
 
   /*
    * 1)
@@ -195,24 +132,85 @@ t_error			set_show_array(i_set			setid)
    * 2)
    */
 
+  if (o->options & SET_OPTION_CONTAINER)
+    options[0] = 'c';
+  else
+    options[0] = '.';
+
+  if (o->options & SET_OPTION_SORT)
+    options[1] = 's';
+  else
+    options[1] = '.';
+
+  if (o->options & SET_OPTION_ORGANISE)
+    options[2] = 'o';
+  else
+    options[2] = '.';
+
+  if (o->options & SET_OPTION_ALLOCATE)
+    options[3] = 'a';
+  else
+    options[3] = '.';
+
+  if (o->options & SET_OPTION_FREE)
+    options[4] = 'f';
+  else
+    options[4] = '.';
+
+  options[5] = '\0';
+
+  /*
+   * 3)
+   */
+
   module_call(console, message,
-	      '#', "  %qd node(s) from the array set %qu:\n",
-	      o->size,
-	      setid);
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "set: id(%qu) type(array) datasz(%u) options(%s) "
+	      "initsz(%u) array(0x%x) arraysz(%qu) #objects(%qu)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->id,
+	      o->datasz,
+	      options,
+	      o->u.array.initsz,
+	      o->u.array.array,
+	      o->u.array.arraysz,
+	      o->size);
+
+  /*
+   * 4)
+   */
 
   for (i = 0, pos = 0; i < o->u.array.arraysz; ++i)
     {
+      /*
+       * a)
+       */
+
       if (o->u.array.array[i])
 	id = *((t_id*)(o->u.array.array[i]));
       else
 	continue;
 
+      /*
+       * b)
+       */
+
       if (id == ID_UNUSED)
 	module_call(console, message,
 		    '!', "warning: unused object detected !\n");
 
+      /*
+       * c)
+       */
+
       module_call(console, message,
-		  '#', "  array[%qd] = %qd\n", pos, id);
+		  '#',
+		  MODULE_CONSOLE_MARGIN_FORMAT
+		  "  object: id(%qu) slot(%qu)\n",
+		  MODULE_CONSOLE_MARGIN_VALUE(margin),
+		  id,
+		  pos);
 
       ++pos;
     }
@@ -221,21 +219,28 @@ t_error			set_show_array(i_set			setid)
 }
 
 /*
- * this function returns an iterator on the first entry on the array.
- * if there is no element in the array, the function returns ERROR_KO.
+ * this function returns an iterator on the first entry of the array.
+ *
+ * if there is no element in the array, the function returns false.
  *
  * steps:
  *
- * 1) gets descriptor.
- * 2) looks for the first element of the list.
- * 3) updates the iterator.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) if the array is empty, return false.
+ * 3) go through the elements, looking for the first used entry.
+ * 4) set the iterator.
  */
 
 t_error			set_head_array(i_set			setid,
-				       t_iterator*		iterator)
+				       s_iterator*		iterator)
 {
   o_set*		o;
   t_setsz		i;
+
+  /*
+   * 0)
+   */
 
   assert(iterator != NULL);
 
@@ -251,6 +256,10 @@ t_error			set_head_array(i_set			setid,
 
   if (o->size == 0)
     CORE_FALSE();
+
+  /*
+   * 3)
+   */
 
   for (i = 0; i < o->u.array.arraysz; ++i)
     {
@@ -259,10 +268,8 @@ t_error			set_head_array(i_set			setid,
     }
 
   /*
-   * 3)
+   * 4)
    */
-
-  memset(iterator, 0x0, sizeof(t_iterator));
 
   iterator->u.array.i = i;
 
@@ -271,20 +278,27 @@ t_error			set_head_array(i_set			setid,
 
 /*
  * this function returns an iterator on the last entry of the array.
- * if there is no node in the list, the function returns ERROR_KO.
+ *
+ * if there is no node in the list, the function returns false.
  *
  * steps:
  *
- * 1) gets descriptor.
- * 2) looks for the last element of the list.
- * 3) updates the iterator.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) if the array is empty, return false.
+ * 3) go through the elements, looking for the last used entry.
+ * 4) set the iterator.
  */
 
 t_error			set_tail_array(i_set			setid,
-				       t_iterator*		iterator)
+				       s_iterator*		iterator)
 {
   o_set*		o;
   t_setsz		i;
+
+  /*
+   * 0)
+   */
 
   assert(iterator != NULL);
 
@@ -301,6 +315,10 @@ t_error			set_tail_array(i_set			setid,
   if (o->size == 0)
     CORE_FALSE();
 
+  /*
+   * 3)
+   */
+
   for (i = o->u.array.arraysz - 1; i >= 0; --i)
     {
       if (o->u.array.array[i])
@@ -308,10 +326,8 @@ t_error			set_tail_array(i_set			setid,
     }
 
   /*
-   * 3)
+   * 4)
    */
-
-  memset(iterator, 0x0, sizeof(t_iterator));
 
   iterator->u.array.i = i;
 
@@ -319,21 +335,28 @@ t_error			set_tail_array(i_set			setid,
 }
 
 /*
- * this function returns an iterator on the previous entry.
+ * this function returns an iterator on the entry previous to the given
+ * iterator.
  *
  * steps:
  *
- * 1) gets the descriptor.
- * 2) moves to the previous non-empty slot.
- * 3) updates the iterator.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) go through the elements, looking for the previous used entry.
+ * 3) return false if no entry was found.
+ * 4) set the iterator.
  */
 
 t_error			set_previous_array(i_set		setid,
-					   t_iterator		current,
-					   t_iterator*		previous)
+					   s_iterator		current,
+					   s_iterator*		previous)
 {
   o_set*		o;
   t_setsz		i;
+
+  /*
+   * 0)
+   */
 
   assert(previous != NULL);
 
@@ -353,11 +376,15 @@ t_error			set_previous_array(i_set		setid,
 	break;
     }
 
+  /*
+   * 3)
+   */
+
   if (i == -1)
     CORE_FALSE();
 
   /*
-   * 3)
+   * 4)
    */
 
   previous->u.array.i = i;
@@ -366,21 +393,28 @@ t_error			set_previous_array(i_set		setid,
 }
 
 /*
- * this function returns an iterator on the next entry of the array.
+ * this function returns an iterator on the element following the one
+ * pointed by the given iterator.
  *
  * steps:
  *
- * 1) gets the descriptor.
- * 2) moves to the next non-empty slot.
- * 3) updates the iterator.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) go through the elements, looking for the next used entry.
+ * 3) return false if no entry was found.
+ * 4) set the iterator.
  */
 
 t_error			set_next_array(i_set			setid,
-				       t_iterator		current,
-				       t_iterator*		next)
+				       s_iterator		current,
+				       s_iterator*		next)
 {
   o_set*		o;
   t_setsz		i;
+
+  /*
+   * 0)
+   */
 
   assert(next != NULL);
 
@@ -400,11 +434,15 @@ t_error			set_next_array(i_set			setid,
 	break;
     }
 
+  /*
+   * 3)
+   */
+
   if (i >= o->u.array.arraysz)
     CORE_FALSE();
 
   /*
-   * 3)
+   * 4)
    */
 
   next->u.array.i = i;
@@ -413,82 +451,114 @@ t_error			set_next_array(i_set			setid,
 }
 
 /*
- * this  function is  used when  no room  is found  in the  array. it
- * expands the array and copy needed data.
+ * this function is used when no room is found in the array. it expands
+ * the array and copies data, if required.
+ *
+ * note that the given data is inserted in the first new slot.
  *
  * steps:
  *
- * 1) computes the new size for the array
- * 2) expands the array
- * 3) initializes created slots
+ * 0) verify the arguments.
+ * 1) initialize the index with the set's current size.
+ * 2) computes the new size according to the options.
+ * 3) expands the array and set the new size.
+ * 4) insert the data in the new slot i.e at the saved index i.e the end
+ *    of previous array.
+ * 5) initialize the new entries as available i.e unused.
  */
 
-t_error			set_expand_array(o_set			*o,
+t_error			set_expand_array(o_set			*object,
 					 void			*data)
 {
   t_setsz		i;
   t_setsz		sz;
 
-  assert(o != NULL);
+  /*
+   * 0)
+   */
 
-  i = o->u.array.arraysz;
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
   /*
    * 1)
    */
 
-  if (o->options & SET_OPTION_ORGANISE)
-    sz = o->u.array.arraysz + 1;
-  else
-    sz = o->u.array.arraysz * 2;
+  i = object->u.array.arraysz;
 
   /*
    * 2)
    */
 
-  if ((o->u.array.array = realloc(o->u.array.array,
-				  sz * sizeof(void*))) == NULL)
-    CORE_ESCAPE("unable to reallocate memory for the array");
-
-  o->u.array.arraysz = sz;
+  if (object->options & SET_OPTION_ORGANISE)
+    sz = object->u.array.arraysz + 1;
+  else
+    sz = object->u.array.arraysz * 2;
 
   /*
    * 3)
    */
 
-  o->u.array.array[i] = data;
-  for (++i; i < o->u.array.arraysz; ++i)
-    o->u.array.array[i] = NULL;
+  if ((object->u.array.array = realloc(object->u.array.array,
+				       sz * sizeof(void*))) == NULL)
+    CORE_ESCAPE("unable to reallocate memory for the array");
+
+  object->u.array.arraysz = sz;
+
+  /*
+   * 4)
+   */
+
+  object->u.array.array[i] = data;
+
+  /*
+   * 5)
+   */
+
+  for (++i; i < object->u.array.arraysz; ++i)
+    object->u.array.array[i] = NULL;
 
   CORE_LEAVE();
 }
 
 /*
- * this function inserts an element at the specified place.
+ * this function inserts an element at the specified position. this
+ * function is used by many others but is not part of the interface.
  *
  * steps:
  *
- * 1) expands the array if necessary.
- * 2) inserts in its place if this one is empty.
- * 3) inserts just before if possible.
- * 4) shifts right to make some room and inserts.
+ * 0) verify the arguments.
+ * 1) if the position is at the end, expand the array and insert the
+ *    data.
+ * 2) if the entry is available, insert the data and exit.
+ * 3) otherwise, start at the position and walk through the entries trying
+ *    to find a free slot.
+ * 4) if none has been found, expand the array in order to create free slots.
+ * 5) one found, walk back and shift the elements to the right so that
+ *    the entry at the requested position becomes available.
+ * 6) insert the data at the desired position.
  */
 
-t_error			set_insert_array_at(o_set		*o,
+t_error			set_insert_array_at(o_set		*object,
 					    t_setsz		pos,
 					    void		*data)
 {
   t_setsz		limit;
 
-  assert(o != NULL);
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
   /*
    * 1)
    */
 
-  if (o->u.array.arraysz == pos)
+  if (object->u.array.arraysz == pos)
     {
-      if (set_expand_array(o, data) != ERROR_OK)
+      if (set_expand_array(object, data) != ERROR_OK)
 	CORE_ESCAPE("unable to expand the array");
 
       CORE_LEAVE();
@@ -498,9 +568,9 @@ t_error			set_insert_array_at(o_set		*o,
    * 2)
    */
 
-  if (o->u.array.array[pos] == NULL)
+  if (object->u.array.array[pos] == NULL)
     {
-      o->u.array.array[pos] = data;
+      object->u.array.array[pos] = data;
 
       CORE_LEAVE();
     }
@@ -509,38 +579,37 @@ t_error			set_insert_array_at(o_set		*o,
    * 3)
    */
 
-  if (pos > 0 && !(o->options & SET_OPTION_ORGANISE))
+  for (limit = pos; limit < object->u.array.arraysz; ++limit)
     {
-      if (o->u.array.array[pos - 1] == NULL)
-	{
-	  o->u.array.array[pos - 1] = data;
-
-	  CORE_LEAVE();
-	}
+      if (object->u.array.array[limit] == NULL)
+	break;
     }
 
   /*
    * 4)
    */
 
-  for (limit = pos; limit < o->u.array.arraysz; ++limit)
+  if (limit == object->u.array.arraysz)
     {
-      if (o->u.array.array[limit] == NULL)
-	break;
-    }
-
-  if (limit == o->u.array.arraysz)
-    {
-      if (set_expand_array(o, o->u.array.array[limit - 1]) != ERROR_OK)
+      if (set_expand_array(object,
+			   object->u.array.array[limit - 1]) != ERROR_OK)
 	CORE_ESCAPE("unable to expand the array");
     }
 
+  /*
+   * 5)
+   */
+
   for (; limit > pos; --limit)
     {
-      o->u.array.array[limit] = o->u.array.array[limit - 1];
+      object->u.array.array[limit] = object->u.array.array[limit - 1];
     }
 
-  o->u.array.array[pos] = data;
+  /*
+   * 6)
+   */
+
+  object->u.array.array[pos] = data;
 
   CORE_LEAVE();
 }
@@ -549,11 +618,13 @@ t_error			set_insert_array_at(o_set		*o,
  * this function inserts a new entry at the head of the array.
  *
  * steps:
- * 1) gets the descriptor.
- * 2) checks options.
- * 3) copies the element if necessary.
- * 4) inserts the element in its place.
- * 5) updates count.
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) check if this operation can be performed in this set.
+ * 3) if the ALLOCATE option has been activated, clone the object.
+ * 4) insert the element at the head.
+ * 5) update the size of the set.
  */
 
 t_error			set_insert_array(i_set			setid,
@@ -562,7 +633,15 @@ t_error			set_insert_array(i_set			setid,
   o_set*		o;
   void*			cpy;
 
-  assert(data != NULL);
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  if (*((t_id*)data) == ID_UNUSED)
+    CORE_ESCAPE("the object to insert must begin with a valid identifier");
 
   /*
    * 1)
@@ -582,7 +661,7 @@ t_error			set_insert_array(i_set			setid,
    * 3)
    */
 
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if ((cpy = malloc(o->datasz)) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the object's copy");
@@ -598,7 +677,7 @@ t_error			set_insert_array(i_set			setid,
 
   if (set_insert_array_at(o, 0, data) != ERROR_OK)
     {
-      if (o->options & SET_OPTION_ALLOC)
+      if (o->options & SET_OPTION_ALLOCATE)
 	free(data);
 
       CORE_ESCAPE("unable to insert the object in the set");
@@ -617,11 +696,14 @@ t_error			set_insert_array(i_set			setid,
  * this function inserts a new entry at the tail of the array.
  *
  * steps:
- * 1) gets the descriptor.
- * 2) checks options.
- * 3) copies the element if necessary.
- * 4) inserts the element in its place.
- * 5) updates count.
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) check if this operation can be performed in this set.
+ * 3) if the ALLOCATE option has been activated, clone the object.
+ * 4) locate the last available slot.
+ * 5) insert the data at this specific location.
+ * 6) update the size of the set.
  */
 
 t_error			set_append_array(i_set			setid,
@@ -631,7 +713,15 @@ t_error			set_append_array(i_set			setid,
   t_setsz		i;
   void*			cpy;
 
-  assert(data != NULL);
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  if (*((t_id*)data) == ID_UNUSED)
+    CORE_ESCAPE("the object to append must begin with a valid identifier");
 
   /*
    * 1)
@@ -651,7 +741,7 @@ t_error			set_append_array(i_set			setid,
    * 3)
    */
 
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if (!(cpy = malloc(o->datasz)))
 	CORE_ESCAPE("unable to allocate memory for the object's copy");
@@ -665,7 +755,7 @@ t_error			set_append_array(i_set			setid,
    * 4)
    */
 
-  if (o->size)
+  if (o->size > 0)
     {
       for (i = o->u.array.arraysz; i > 0; --i)
 	{
@@ -676,16 +766,20 @@ t_error			set_append_array(i_set			setid,
   else
     i = 0;
 
+  /*
+   * 5)
+   */
+
   if (set_insert_array_at(o, i, data) != ERROR_OK)
     {
-      if (o->options & SET_OPTION_ALLOC)
+      if (o->options & SET_OPTION_ALLOCATE)
 	free(data);
 
       CORE_ESCAPE("unable to insert the object in the set");
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   ++o->size;
@@ -697,22 +791,33 @@ t_error			set_append_array(i_set			setid,
  * this function inserts an object before the one referenced by the iterator.
  *
  * steps:
- * 1) gets the descriptor.
- * 2) checks options.
- * 3) copies the element if necessary.
- * 4) inserts the element in its place.
- * 5) updates item count.
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) check if this operation can be performed in this set.
+ * 3) if the ALLOCATE option has been activated, clone the object.
+ * 4) insert the object at the location pointed to by the iterator, hence
+ *    shifting the following entries to the right.
+ * 5) update the size of the set.
  */
 
 t_error			set_before_array(i_set			setid,
-					 t_iterator		iterator,
+					 s_iterator		iterator,
 					 void*			data)
 {
   o_set*		o;
   t_setsz		i;
   void*			cpy;
 
-  assert(data != NULL);
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  if (*((t_id*)data) == ID_UNUSED)
+    CORE_ESCAPE("the object to insert must begin with a valid identifier");
 
   /*
    * 1)
@@ -732,7 +837,7 @@ t_error			set_before_array(i_set			setid,
    * 3)
    */
 
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if (!(cpy = malloc(o->datasz)))
 	CORE_ESCAPE("unable to allocate memory for the object's copy");
@@ -753,7 +858,7 @@ t_error			set_before_array(i_set			setid,
 
   if (set_insert_array_at(o, i, data) != ERROR_OK)
     {
-      if (o->options & SET_OPTION_ALLOC)
+      if (o->options & SET_OPTION_ALLOCATE)
 	free(data);
 
       CORE_ESCAPE("unable to insert the object in the set");
@@ -769,26 +874,37 @@ t_error			set_before_array(i_set			setid,
 }
 
 /*
- * this function inserts a new object after a existing one referenced
- * by the iterator.
+ * this function inserts a new object after the one referenced by the iterator.
  *
  * steps:
- * 1) gets the descriptor.
- * 2) checks options.
- * 3) copies the element if necessary.
- * 4) inserts the element in its place.
- * 5) updates count.
+ *
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) check if this operation can be performed in this set.
+ * 3) if the ALLOCATE option has been activated, clone the object.
+ * 4) insert the object at the location following the one pointed
+ *    to by the iterator.
+ * 5) update the size of the set.
  */
 
 t_error			set_after_array(i_set			setid,
-					t_iterator		iterator,
+					s_iterator		iterator,
 					void*			data)
 {
   o_set*       		o;
   t_setsz		i;
   void*			cpy;
 
-  assert(data != NULL);
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  if (*((t_id*)data) == ID_UNUSED)
+    CORE_ESCAPE("the object to insert must begin with a valid identifier");
 
   /*
    * 1)
@@ -808,7 +924,7 @@ t_error			set_after_array(i_set			setid,
    * 3)
    */
 
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if (!(cpy = malloc(o->datasz)))
 	CORE_ESCAPE("unable to allocate memory for the object's copy");
@@ -829,7 +945,7 @@ t_error			set_after_array(i_set			setid,
 
   if (set_insert_array_at(o, i, data) != ERROR_OK)
     {
-      if (o->options & SET_OPTION_ALLOC)
+      if (o->options & SET_OPTION_ALLOCATE)
 	free(data);
 
       CORE_ESCAPE("unable to insert the object in the set");
@@ -845,22 +961,22 @@ t_error			set_after_array(i_set			setid,
 }
 
 /*
- * this function adds an object in the array.
+ * this function adds an object to the array.
  *
  * steps:
  *
- * 1) checks the data.
- * 2) get the object associated with the id.
- * 3) copies the object if required.
- * 4) inserts the element.
- *   A) (sorted array)
- *    i) finds the place of the new element.
- *    ii) copies in the right place.
- *    iii) expands the array if necessary.
- *   B) (unsorted array)
- *    i) tries to find a free place.
- *    ii) expands the array if necessary.
- * 5) updates size.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) clone the object if required.
+ * 3) inserts the element depending on the options.
+ *   A) if the SORT option has been activated...
+ *    i) find the place of the new element.
+ *    ii) copy in the right place.
+ *    iii) expand the array if necessary.
+ *   B) otherwise...
+ *    i) try to find a free place.
+ *    ii) expand the array if necessary.
+ * 4) update the set's size.
  */
 
 t_error			set_add_array(i_set			setid,
@@ -874,27 +990,28 @@ t_error			set_add_array(i_set			setid,
   t_uint8		empty;
   t_setsz		last;
 
-  assert(data != NULL);
-
   /*
-   * 1)
+   * 0)
    */
 
-  if (!data || *((t_id*)data) == ID_UNUSED)
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  if (*((t_id*)data) == ID_UNUSED)
     CORE_ESCAPE("the object to add must begin with a valid identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if (!(cpy = malloc(o->datasz)))
 	CORE_ESCAPE("unable to allocate memory for the object's copy");
@@ -905,7 +1022,7 @@ t_error			set_add_array(i_set			setid,
     }
 
   /*
-   * 4)
+   * 3)
    */
 
   if (o->options & SET_OPTION_SORT)
@@ -933,7 +1050,7 @@ t_error			set_add_array(i_set			setid,
 
 	      if (current == id)
 		{
-		  if (o->options & SET_OPTION_ALLOC)
+		  if (o->options & SET_OPTION_ALLOCATE)
 		    free(data);
 
 		  CORE_ESCAPE("identifier collision detected in the set "
@@ -960,7 +1077,7 @@ t_error			set_add_array(i_set			setid,
 	{
 	  if (set_insert_array_at(o, last, data) != ERROR_OK)
 	    {
-	      if (o->options & SET_OPTION_ALLOC)
+	      if (o->options & SET_OPTION_ALLOCATE)
 		free(data);
 
 	      CORE_ESCAPE("unable to insert the object in the set");
@@ -975,7 +1092,7 @@ t_error			set_add_array(i_set			setid,
 	{
 	  if (set_expand_array(o, data) != ERROR_OK)
 	    {
-	      if (o->options & SET_OPTION_ALLOC)
+	      if (o->options & SET_OPTION_ALLOCATE)
 		free(data);
 
 	      CORE_ESCAPE("unable to expand the array");
@@ -1011,7 +1128,7 @@ t_error			set_add_array(i_set			setid,
 	{
 	  if (set_expand_array(o, data) != ERROR_OK)
 	    {
-	      if (o->options & SET_OPTION_ALLOC)
+	      if (o->options & SET_OPTION_ALLOCATE)
 		free(data);
 
 	      CORE_ESCAPE("unable to expand the array");
@@ -1020,7 +1137,7 @@ t_error			set_add_array(i_set			setid,
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   ++o->size;
@@ -1029,16 +1146,19 @@ t_error			set_add_array(i_set			setid,
 }
 
 /*
- * this function removes a object from the array, setting the identifier
+ * this function removes an object from the array, setting the identifier
  * field of the entry as 'unused'.
  *
  * steps:
  *
- * 1) checks the given id.
- * 2) gets object associated to setid.
- * 3) looks for the element, then delete it.
- * 4) re-organises the set if needed.
- * 5) decrements counter.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) if there is no object, return an error.
+ * 3) try to locate the object according to its identifier.
+ * 4) if not found, return an error.
+ * 5) if the ORGANIZE option has been activated, shift the elements to
+ *    the left and re-allocate the array with the necessary memory.
+ * 6) update the set's size.
  */
 
 t_error			set_remove_array(i_set			setid,
@@ -1049,25 +1169,29 @@ t_error			set_remove_array(i_set			setid,
   t_id			current;
 
   /*
-   * 1)
+   * 0)
    */
 
   if (id == ID_UNUSED)
     CORE_ESCAPE("invalid object identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
   if (o->size == 0)
     CORE_ESCAPE("the set is empty");
+
+  /*
+   * 3)
+   */
 
   for (i = 0; i < o->u.array.arraysz; ++i)
     {
@@ -1081,7 +1205,7 @@ t_error			set_remove_array(i_set			setid,
 	  if (current == id)
 	    {
 	      if ((o->options & SET_OPTION_FREE) ||
-		  (o->options & SET_OPTION_ALLOC))
+		  (o->options & SET_OPTION_ALLOCATE))
 		free(o->u.array.array[i]);
 
 	      o->u.array.array[i] = NULL;
@@ -1091,88 +1215,12 @@ t_error			set_remove_array(i_set			setid,
 	}
     }
 
+  /*
+   * 4)
+   */
+
   if (i == o->u.array.arraysz)
     CORE_ESCAPE("unable to locate the given object");
-
-  /*
-   * 4)
-   */
-
-  if (o->options & SET_OPTION_ORGANISE)
-    {
-      for (; i < o->u.array.arraysz - 1; ++i)
-	{
-	  o->u.array.array[i] = o->u.array.array[i + 1];
-	}
-
-      --o->u.array.arraysz;
-
-      if ((o->u.array.array = realloc(o->u.array.array,
-				      o->u.array.arraysz *
-				      sizeof(void*))) == NULL)
-	CORE_ESCAPE("unable to reallocate memory for the array");
-    }
-
-  /*
-   * 5)
-   */
-
-  --o->size;
-
-  CORE_LEAVE();
-}
-
-/*
- * this function deletes an element given an iterator.
- *
- * steps:
- *
- * 1) gets the array.
- * 2) checks bounds.
- * 3) checks if the place isn't already empty.
- * 4) frees the element if necessary, then removes it.
- * 5) organises the set if necessary.
- * 6) updates counter.
- */
-
-t_error			set_delete_array(i_set			setid,
-					 t_iterator		iterator)
-{
-  o_set*		o;
-  t_setsz		i;
-
-  /*
-   * 1)
-   */
-
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the set descriptor");
-
-  /*
-   * 2)
-   */
-
-  i = iterator.u.array.i;
-
-  if (i >= o->u.array.arraysz)
-    CORE_ESCAPE("the given iterator is out of bound");
-
-  /*
-   * 3)
-   */
-
-  if (o->u.array.array[i] == NULL)
-    CORE_ESCAPE("the object the iterator points to does not exist");
-
-  /*
-   * 4)
-   */
-
-  if (o->options & SET_OPTION_ALLOC ||
-      o->options & SET_OPTION_FREE)
-    free(o->u.array.array[i]);
-
-  o->u.array.array[i] = NULL;
 
   /*
    * 5)
@@ -1197,19 +1245,107 @@ t_error			set_delete_array(i_set			setid,
    * 6)
    */
 
+  --o->size;
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function deletes an element given an iterator.
+ *
+ * steps:
+ *
+ * 1) retrieve the set descriptor.
+ * 2) save the iterator's index.
+ * 3) if the iterator is out of bound, return an error.
+ * 4) if the slot is unused, return an error.
+ * 5) if required, free the object and re-initialize its slot
+ *    as being available.
+ * 6) if required, re-organise the array.
+ * 7) update the set's size.
+ */
+
+t_error			set_delete_array(i_set			setid,
+					 s_iterator		iterator)
+{
+  o_set*		o;
+  t_setsz		i;
+
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the set descriptor");
+
+  /*
+   * 2)
+   */
+
+  i = iterator.u.array.i;
+
+  /*
+   * 3)
+   */
+
+  if (i >= o->u.array.arraysz)
+    CORE_ESCAPE("the given iterator is out of bound");
+
+  /*
+   * 4)
+   */
+
+  if (o->u.array.array[i] == NULL)
+    CORE_ESCAPE("the object the iterator points to does not exist");
+
+  /*
+   * 5)
+   */
+
+  if (o->options & SET_OPTION_ALLOCATE ||
+      o->options & SET_OPTION_FREE)
+    free(o->u.array.array[i]);
+
+  o->u.array.array[i] = NULL;
+
+  /*
+   * 6)
+   */
+
+  if (o->options & SET_OPTION_ORGANISE)
+    {
+      for (; i < o->u.array.arraysz - 1; ++i)
+	{
+	  o->u.array.array[i] = o->u.array.array[i + 1];
+	}
+
+      --o->u.array.arraysz;
+
+      if ((o->u.array.array = realloc(o->u.array.array,
+				      o->u.array.arraysz *
+				      sizeof(void*))) == NULL)
+	CORE_ESCAPE("unable to reallocate memory for the array");
+    }
+
+  /*
+   * 7)
+   */
+
   o->size--;
 
   CORE_LEAVE();
 }
 
 /*
- * this function flushes the set, freeing each element.
+ * this function flushes the set, releasing every element.
  *
  * steps:
  *
- * 1) gets descriptor.
- * 2) frees elements if needed.
- * 3) resets the array.
+ * 1) retrieve the set descriptor.
+ * 2) if required, free the memory of every object.
+ * 3) reset the array to its original size and mark every slot as
+ *    being unused.
+ * 4) set the size of the set to zero.
  */
 
 t_error			set_flush_array(i_set			setid)
@@ -1229,7 +1365,7 @@ t_error			set_flush_array(i_set			setid)
    */
 
   if ((o->options & SET_OPTION_FREE) ||
-      (o->options & SET_OPTION_ALLOC))
+      (o->options & SET_OPTION_ALLOCATE))
     {
       for (i = 0; i < o->u.array.arraysz; ++i)
 	{
@@ -1259,111 +1395,69 @@ t_error			set_flush_array(i_set			setid)
 
   o->u.array.arraysz = o->u.array.initsz;
 
+  /*
+   * 4)
+   */
+
   o->size = 0;
 
   CORE_LEAVE();
 }
 
 /*
- * this function tries to find an object with its identifier and build
- * a corresponding identifier.
+ * this function tries to locate an object according to its identifier
+ * and build a corresponding iterator.
  *
  * steps:
  *
- * 1) checks the given id.
- * 2) gets the descriptor.
- * 3) search for the element.
- *   A) dichotomy lookup. (on sorted array)
- *   B) sequentially searchs for the needed element. (unsorted)
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) go through the elements and locate the slot.
+ * 3) if not found, return an error.
  */
 
 t_error			set_locate_array(i_set			setid,
 					 t_id			id,
-					 t_iterator*		iterator)
+					 s_iterator*		iterator)
 {
   o_set*       		o;
   i_set			i;
-  t_setsz		left;
-  t_setsz		right;
-  t_setsz		dicho;
-
-  assert(iterator != NULL);
 
   /*
-   * 1)
+   * 0)
    */
+
+  if (iterator == NULL)
+    CORE_ESCAPE("the 'iterator' argument is null");
 
   if (id == ID_UNUSED)
     CORE_ESCAPE("invalid object identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
-  /* XXX la dicho marche mal */
-  if (0 && (o->options & SET_OPTION_SORT))
+  for (i = 0; i < o->u.array.arraysz; ++i)
     {
-
-      /*
-       * A)
-       */
-
-      left = 0;
-      right = o->u.array.arraysz - 1;
-
-      while (left <= right)
-	{
-	  dicho = left + (right - left) / 2;
-
-	  for (i = dicho; i < right; ++i)
-	    if (o->u.array.array[i])
-	      break;
-
-	  if (*((t_id*)(o->u.array.array[i])) == id)
-	    break;
-
-	  if (i == right || *((t_id*)(o->u.array.array[i])) > id)
-	    {
-	      right = dicho - 1;
-	    }
-	  else
-	    {
-	      left = dicho + 1;
-	    }
-	}
-
-      if (left <= right)
+      if (o->u.array.array[i] &&
+	  *((t_id*)(o->u.array.array[i])) == id)
 	{
 	  iterator->u.array.i = i;
 
 	  CORE_LEAVE();
 	}
     }
-  else
-    {
 
-      /*
-       * B)
-       */
-
-      for (i = 0; i < o->u.array.arraysz; ++i)
-	{
-	  if (o->u.array.array[i] &&
-	      *((t_id*)(o->u.array.array[i])) == id)
-	    {
-	      iterator->u.array.i = i;
-
-	      CORE_LEAVE();
-	    }
-	}
-    }
+  /*
+   * 3)
+   */
 
   CORE_ESCAPE("unable to locate the given identifier in the set");
 }
@@ -1373,18 +1467,25 @@ t_error			set_locate_array(i_set			setid,
  *
  * steps:
  *
- * 1) gets the set object.
- * 2) checks bounds.
- * 3) gets data for given position.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) if the iterator is out of bound, return an error.
+ * 3) if the slot the iterator points to is unused, return an error.
+ * 4) return the object.
  */
 
 t_error			set_object_array(i_set			setid,
-					 t_iterator		iterator,
+					 s_iterator		iterator,
 					 void**			data)
 {
   o_set*       		o;
 
-  assert(data != NULL);
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
 
   /*
    * 1)
@@ -1407,40 +1508,65 @@ t_error			set_object_array(i_set			setid,
   if (o->u.array.array[iterator.u.array.i] == NULL)
     CORE_ESCAPE("the object the iterator points to does not exist");
 
+  /*
+   * 4)
+   */
+
   *data = o->u.array.array[iterator.u.array.i];
 
   CORE_LEAVE();
 }
 
 /*
- * this function reserves a set.
+ * this function reserves a set according to several options, the initial
+ * number of elements in the array and the size of every element.
  *
  * steps:
  *
- * 1) checks options for the array.
- * 2) initializes the set descriptor.
- * 3) if necessary, reserves an unused identifier for this new set.
- * 4) initializes the set fields allocating the array.
- * 5) adds the set descriptor in the set container.
+ * 0) verify the arguments.
+ * 1) assign an identifier, depending on the options: either this is
+ *    the set container or not. if it is, take the set container identifier
+ *    that is in the set manager.
+ * 2) initialize and fill the set descriptor.
+ * 3) allocate and initialize the array data structure.
+ * 4) register the set descriptor.
  */
 
 t_error			set_reserve_array(t_options		options,
 					  t_setsz		initsz,
 					  t_size		datasz,
-					  i_set*		setid)
+					  i_set*		id)
 {
   o_set			o;
   t_setsz		i;
 
-  assert(datasz >= sizeof (t_id));
-  assert(setid != NULL);
+  /*
+   * 0)
+   */
+
+  if (datasz < sizeof (t_id))
+    CORE_ESCAPE("unable to reserve a set for objects smaller than "
+		"an identifier");
+
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
+
+  if ((options & SET_OPTION_ALLOCATE) && (options & SET_OPTION_FREE))
+    CORE_ESCAPE("unable to reserve a set with both alloc and free options");
 
   /*
    * 1)
    */
 
-  if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
-    CORE_ESCAPE("unable to reserve a set with both alloc and free options");
+  if (options & SET_OPTION_CONTAINER)
+    {
+      *id = _set->sets;
+    }
+  else
+    {
+      if (id_reserve(&_set->id, id) != ERROR_OK)
+	CORE_ESCAPE("unable to reserve an identifier");
+    }
 
   /*
    * 2)
@@ -1448,25 +1574,7 @@ t_error			set_reserve_array(t_options		options,
 
   memset(&o, 0x0, sizeof(o_set));
 
-  /*
-   * 3)
-   */
-
-  if (options & SET_OPTION_CONTAINER)
-    {
-      *setid = _set->sets;
-    }
-  else
-    {
-      if (id_reserve(&_set->id, setid) != ERROR_OK)
-	CORE_ESCAPE("unable to reserve an identifier");
-    }
-
-  /*
-   * 4)
-   */
-
-  o.id = *setid;
+  o.id = *id;
   o.size = 0;
   o.type = SET_TYPE_ARRAY;
   o.options = options;
@@ -1474,6 +1582,10 @@ t_error			set_reserve_array(t_options		options,
 
   o.u.array.arraysz = (initsz == 0 ? 1 : initsz);
   o.u.array.initsz = o.u.array.arraysz;
+
+  /*
+   * 3)
+   */
 
   if ((o.u.array.array = malloc(o.u.array.arraysz * sizeof(void*))) == NULL)
     {
@@ -1487,7 +1599,7 @@ t_error			set_reserve_array(t_options		options,
     o.u.array.array[i] = NULL;
 
   /*
-   * 5)
+   * 4)
    */
 
   if (set_new(&o) != ERROR_OK)
@@ -1508,11 +1620,11 @@ t_error			set_reserve_array(t_options		options,
  *
  * steps:
  *
- * 1) gets the set given its set identifier.
- * 2) flushs the set.
- * 3) releases the set identifier.
- * 4) frees the array allocated at the set reservation.
- * 5) then, removes the set from the set container.
+ * 1) retrieve the set descriptor.
+ * 2) flush the set.
+ * 3) release the set identifier.
+ * 4) free the array data structure's memory.
+ * 5) remove the set descriptor from the set container.
  */
 
 t_error			set_release_array(i_set		setid)
@@ -1550,11 +1662,8 @@ t_error			set_release_array(i_set		setid)
    * 5)
    */
 
-  if (!(o->options & SET_OPTION_CONTAINER))
-    {
-      if (set_destroy(o->id) != ERROR_OK)
-	CORE_ESCAPE("unable to destroy the set descriptor");
-    }
+  if (set_destroy(o->id) != ERROR_OK)
+    CORE_ESCAPE("unable to destroy the set descriptor");
 
   CORE_LEAVE();
 }

@@ -12,20 +12,20 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this subpart of the set manager is used to build balanced+ tree data
- * structures.
+ * this set implementation provides a balanced+ tree data structure.
  *
  * this set type is build over the header file bpt.h developed by julien
- * quintard. this header file was develop to provide an easy way to build
- * specific balanced+ trees.
+ * quintard. this header file was developed to provide an easy way to build,
+ * manage and tune balanced+ trees in C.
  *
- * note that the sort option must be provided because a non-sorted tree
- * is not conceivable.
+ * note that the SORT option must be provided because a non-sorted trees
+ * are not conceivable. besides the 'datasz' argument of the set_reserve()
+ * function is needed only if the ALLOCATE option is activated.
  *
- * the datasz argument of the set_reserve() function is needed only if the
- * allocate option is set.
- *
- * options: SET_OPTION_CONTAINER, SET_OPTION_SORT, SET_OPTION_ALLOC,
+ * options:
+ *   SET_OPTION_CONTAINER
+ *   SET_OPTION_SORT
+ *   SET_OPTION_ALLOCATE
  *   SET_OPTION_FREE
  */
 
@@ -39,6 +39,10 @@
  * ---------- externs ---------------------------------------------------------
  */
 
+/*
+ * the set manager's structure.
+ */
+
 extern m_set*		_set;
 
 /*
@@ -46,13 +50,15 @@ extern m_set*		_set;
  */
 
 /*
- * this macro call builds the bpt specific functions.
+ * this macro-function call generates the bpt functions.
  */
 
 bpt_make_functions(set, id, data);
 
 /*
- * this function loads a node from main memory to main memory.
+ * this function loads a bpt node from main memory to main memory.
+ *
+ * in other words this function does nothing but to set the node's attributes.
  */
 
 void			set_load_bpt(t_bpt(set)*		bpt,
@@ -66,19 +72,16 @@ void			set_load_bpt(t_bpt(set)*		bpt,
 /*
  * this function unloads a node.
  *
- * using node storing in main memory, this function finally does nothing.
+ * since nodes are stored in main memory, this function has nothing to do.
  */
 
 void			set_unload_bpt(t_bpt(set)*		bpt,
 				       t_bpt_imm(set)*		node)
 {
-  /*
-   * nothing to do here because we are in main memory
-   */
 }
 
 /*
- * this function compares two addresses.
+ * this function compares two bpt addresses.
  */
 
 int			set_addrcmp_bpt(t_bpt(set)*		bpt,
@@ -95,7 +98,7 @@ int			set_addrcmp_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * this function compares two keys.
+ * this function compares two bpt keys.
  */
 
 int			set_keycmp_bpt(t_bpt(set)*		bpt,
@@ -112,7 +115,7 @@ int			set_keycmp_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * this function compares two values.
+ * this function compares two bpt values.
  */
 
 int			set_valcmp_bpt(t_bpt(set)*		bpt,
@@ -129,44 +132,6 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * this function shows the state of the unused object, in other
- * words the unused nodes contained in the unused object.
- */
-
-t_error			set_show_unused_bpt(o_set*		o)
-{
-  t_bpt_uni(set)	i;
-
-  module_call(console, message,
-	      '#', "showing the unused nodes: %u / %u\n",
-	      o->u.bpt.unused.index + 1,
-	      o->u.bpt.unusedsz);
-
-  for (i = 0; i <= o->u.bpt.unused.index; i++)
-    module_call(console, message,
-		'#', "  [%d] 0x%x\n", i, o->u.bpt.unused.array[i]);
-
-  CORE_LEAVE();
-}
-
-/*
- * this function tells if the set object is a bpt set.
- */
-
-t_error			set_type_bpt(i_set			setid)
-{
-  o_set*		o;
-
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the set descriptor");
-
-  if (o->type != SET_TYPE_BPT)
-    CORE_ESCAPE("invalid set type");
-
-  CORE_LEAVE();
-}
-
-/*
  * this function returns true if the object is present in the set.
  */
 
@@ -176,9 +141,21 @@ t_error			set_exist_bpt(i_set			setid,
   t_bpt_entry(set)	entry;
   o_set*		o;
 
+  /*
+   * 0)
+   */
+
   assert(id != ID_UNUSED);
 
+  /*
+   * 1)
+   */
+
   assert(set_descriptor(setid, &o) == ERROR_OK);
+
+  /*
+   * 2)
+   */
 
   if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
     CORE_FALSE();
@@ -323,11 +300,12 @@ t_error			set_destroy_bpt(o_set*			o)
  * 2) prints a message for each objects of the set.
  */
 
-t_error			set_show_bpt(i_set			setid)
+t_error			set_show_bpt(i_set			setid,
+				     mt_margin			margin)
 {
   t_state		state;
   o_set*		o;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -371,7 +349,7 @@ t_error			set_show_bpt(i_set			setid)
  */
 
 t_error			set_head_bpt(i_set			setid,
-				     t_iterator*		iterator)
+				     s_iterator*		iterator)
 {
   t_bpt_imm(set)	root;
   o_set*		o;
@@ -401,7 +379,7 @@ t_error			set_head_bpt(i_set			setid,
  */
 
 t_error			set_tail_bpt(i_set			setid,
-				     t_iterator*		iterator)
+				     s_iterator*		iterator)
 {
   t_bpt_imm(set)	root;
   o_set*		o;
@@ -430,8 +408,8 @@ t_error			set_tail_bpt(i_set			setid,
  */
 
 t_error			set_previous_bpt(i_set			setid,
-					 t_iterator		current,
-					 t_iterator*		previous)
+					 s_iterator		current,
+					 s_iterator*		previous)
 {
   o_set*		o;
 
@@ -451,8 +429,8 @@ t_error			set_previous_bpt(i_set			setid,
  */
 
 t_error			set_next_bpt(i_set			setid,
-				     t_iterator			current,
-				     t_iterator*		next)
+				     s_iterator			current,
+				     s_iterator*		next)
 {
   o_set*		o;
 
@@ -495,7 +473,7 @@ t_error			set_append_bpt(i_set			setid,
  */
 
 t_error			set_before_bpt(i_set			setid,
-				       t_iterator		iterator,
+				       s_iterator		iterator,
 				       void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -507,7 +485,7 @@ t_error			set_before_bpt(i_set			setid,
  */
 
 t_error			set_after_bpt(i_set			setid,
-				      t_iterator		iterator,
+				      s_iterator		iterator,
 				      void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -561,7 +539,7 @@ t_error			set_add_bpt(i_set			setid,
    * 4)
    */
 
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if ((lfentry.data = malloc(o->datasz)) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the object's copy");
@@ -639,7 +617,7 @@ t_error			set_remove_bpt(i_set			setid,
    * 3)
    */
 
-  if ((o->options & SET_OPTION_ALLOC) ||
+  if ((o->options & SET_OPTION_ALLOCATE) ||
       (o->options & SET_OPTION_FREE))
     {
       if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
@@ -689,7 +667,7 @@ t_error			set_remove_bpt(i_set			setid,
  */
 
 t_error			set_delete_bpt(i_set			setid,
-				       t_iterator		iterator)
+				       s_iterator		iterator)
 {
   t_bpt_imm(set)	node;
   o_set*		o;
@@ -705,7 +683,7 @@ t_error			set_delete_bpt(i_set			setid,
    * 2)
    */
 
-  if (o->options & SET_OPTION_ALLOC ||
+  if (o->options & SET_OPTION_ALLOCATE ||
       o->options & SET_OPTION_FREE)
     {
       BPT_LOAD(&o->u.bpt.bpt, &node, iterator.u.bpt.entry.node);
@@ -762,7 +740,7 @@ t_error			set_flush_bpt(i_set			setid)
 {
   t_bpt_nodesz(set)	nodesz;
   t_state		state;
-  t_iterator		i;
+  s_iterator		i;
   o_set*		o;
 
   /*
@@ -778,7 +756,7 @@ t_error			set_flush_bpt(i_set			setid)
    * 2)
    */
 
-  if ((o->options & SET_OPTION_ALLOC) ||
+  if ((o->options & SET_OPTION_ALLOCATE) ||
       (o->options & SET_OPTION_FREE))
     {
       set_foreach(SET_OPTION_FORWARD, setid, &i, state)
@@ -840,7 +818,7 @@ t_error			set_flush_bpt(i_set			setid)
 
 t_error			set_locate_bpt(i_set			setid,
 				       t_id			id,
-				       t_iterator*		iterator)
+				       s_iterator*		iterator)
 {
   t_bpt_entry(set)	entry;
   o_set*		o;
@@ -866,7 +844,7 @@ t_error			set_locate_bpt(i_set			setid,
  */
 
 t_error			set_object_bpt(i_set			setid,
-				       t_iterator		iterator,
+				       s_iterator		iterator,
 				       void**			data)
 {
   t_bpt_imm(set)	node;
@@ -927,7 +905,7 @@ t_error			set_reserve_bpt(t_options		options,
   if (options & SET_OPTION_ORGANISE)
     CORE_ESCAPE("the organise option is invalid for bpt-based sets");
 
-  if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
+  if ((options & SET_OPTION_ALLOCATE) && (options & SET_OPTION_FREE))
     CORE_ESCAPE("unable to reserve a set with both alloc and free options");
 
   /*
@@ -1065,11 +1043,8 @@ t_error			set_release_bpt(i_set			setid)
    * 5)
    */
 
-  if (!(o->options & SET_OPTION_CONTAINER))
-    {
-      if (set_destroy(o->id) != ERROR_OK)
-	CORE_ESCAPE("unable to destroy the set descriptor");
-    }
+  if (set_destroy(o->id) != ERROR_OK)
+    CORE_ESCAPE("unable to destroy the set descriptor");
 
   CORE_LEAVE();
 }

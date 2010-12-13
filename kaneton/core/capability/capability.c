@@ -5,11 +5,13 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...BLE/kaneton/core/capability/capability.c
+ * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       julien quintard   [sat dec  4 22:47:46 2010]
+ * updated       julien quintard   [sun dec 12 21:51:14 2010]
  */
+
+// XXX THIS MANAGER MUST BE RE-DEVELOPED IN ITS ENTIRETY!!!
 
 /*
  * ---------- information -----------------------------------------------------
@@ -108,9 +110,10 @@ t_error			capability_show(t_id			id)
     CORE_ESCAPE("XXX");
 
   module_call(console, message,
-	      '#', "  [%8qd] node: %qd object: %qd operations: %024b\n",
+	      '#', "  [%8qd] node: %qd:%qd object: %qd operations: %024b\n",
 	      descriptor->id,
-	      descriptor->capability.node,
+	      descriptor->capability.node.cell,
+	      descriptor->capability.node.task,
 	      descriptor->capability.object,
 	      descriptor->capability.operations);
 
@@ -123,7 +126,7 @@ t_error			capability_show(t_id			id)
     {
       t_state			state;
       t_id*			data;
-      t_iterator		i;
+      s_iterator		i;
 
       set_foreach(SET_OPTION_FORWARD, descriptor->children, &i, state)
 	{
@@ -152,7 +155,7 @@ t_error			capability_dump(void)
   t_state			state;
   t_capability_descriptor*	data;
   t_setsz			size;
-  t_iterator			i;
+  s_iterator			i;
 
   /*
    * 1)
@@ -211,7 +214,7 @@ t_error			capability_reserve(t_id			object,
    * 1)
    */
 
-  new->node.machine = _kernel->machine;
+  new->node.cell = _kernel->cell;
   new->node.task = _kernel->task;
   new->object = object;
   new->operations = operations;
@@ -256,7 +259,7 @@ t_error			capability_release(t_id			id)
   t_capability_descriptor*	descriptor;
   t_state			state;
   t_id*				data;
-  t_iterator			i;
+  s_iterator			i;
 
   /*
    * 1)
@@ -351,7 +354,7 @@ t_error			capability_restrict(t_id		id,
    * 4)
    */
   if (parent->children == ID_UNUSED)
-      if (set_reserve(array, SET_OPTION_ALLOC, CAPABILITY_CHILDREN_INITSZ,
+      if (set_reserve(array, SET_OPTION_ALLOCATE, CAPABILITY_CHILDREN_INITSZ,
 		      sizeof(t_id), &parent->children) != ERROR_OK)
 	  CORE_ESCAPE("XXX");
 
@@ -374,7 +377,7 @@ t_error			capability_invalidate(t_id		p,
   t_capability_descriptor*	parent;
   t_state			state;
   t_id*				data;
-  t_iterator			i;
+  s_iterator			i;
 
   if (capability_get(p, &parent) != ERROR_OK)
     CORE_ESCAPE("XXX");
@@ -524,7 +527,7 @@ t_error			capability_initialize(void)
    * 2)
    */
 
-  if (set_reserve(ll, SET_OPTION_ALLOC | SET_OPTION_SORT,
+  if (set_reserve(ll, SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof(t_capability_descriptor),
 		  &_capability->descriptors) != ERROR_OK)
     CORE_ESCAPE("XXX");
@@ -569,7 +572,7 @@ t_error			capability_initialize(void)
 t_error			capability_clean(void)
 {
   t_capability_descriptor*	data;
-  t_iterator			i;
+  s_iterator			i;
 
   /*
    * 1)

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/timer.h
+ * file          /home/mycure/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [sat nov 27 16:05:40 2010]
+ * updated       julien quintard   [fri dec 10 15:26:53 2010]
  */
 
 #ifndef CORE_TIMER_H
@@ -32,8 +32,8 @@
  * timer handling way
  */
 
-#define TIMER_FUNCTION		0
-#define TIMER_MESSAGE		1
+#define TIMER_TYPE_FUNCTION	0
+#define TIMER_TYPE_MESSAGE	1
 
 /*
  * timer options.
@@ -52,8 +52,8 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define TIMER_HANDLER(_function_)					\
-  ((u_timer_handler)(t_timer_handler)(_function_))
+#define TIMER_ROUTINE(_routine_)					\
+  ((u_timer_handler)(t_timer_routine)(_routine_))
 
 #define TIMER_TASK(_task_)						\
   ((u_timer_handler)(i_task)(_task_))
@@ -66,7 +66,8 @@
  * generic timer handler type
  */
 
-typedef t_error			(*t_timer_handler)(i_timer, t_vaddr);
+typedef t_error			(*t_timer_routine)(i_timer,
+						   t_vaddr);
 
 /*
  * timer handler type
@@ -74,7 +75,7 @@ typedef t_error			(*t_timer_handler)(i_timer, t_vaddr);
 
 typedef union
 {
-  t_timer_handler		function;
+  t_timer_routine		routine;
   i_task			task;
 }				u_timer_handler;
 
@@ -154,11 +155,11 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../core/time/timer.c
+ *      ../../core/timer/timer.c
  */
 
 /*
- * ../../core/time/timer.c
+ * ../../core/timer/timer.c
  */
 
 t_error			timer_check(void);

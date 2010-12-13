@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/kernel.h
+ * file          /home/mycure/kaneton/kaneton/core/include/kernel.h
  *
  * created       julien quintard   [wed jun  6 13:27:34 2007]
- * updated       julien quintard   [sat nov 27 13:52:45 2010]
+ * updated       julien quintard   [fri dec 10 21:18:18 2010]
  */
 
 #ifndef CORE_KERNEL_H
@@ -27,42 +27,50 @@
  */
 
 /*
- * kernel manager
+ * the kernel manager's structure.
  *
- * this structure contains the machine identifier and the node identifier.
+ * this structure contains the kernel's machine, task, address space and
+ * thread identifiers. finally the node identifier is also included though
+ * based on the previous identifiers.
  *
- * the machine identifier is a random number generated at the boot time.
- * since this is a 64-bit number, there is no chance that two machines
- * get the same machine identifier.
+ * indeed, the machine identifier is a random number generated at the boot
+ * time. since this is a 64-bit number, the chances of machine identifiers
+ * collisions inside a small distributed system (less than a thousand
+ * machines) are relatively low.
  *
- * the node identifier is used to identify a task which provides capabilities.
- * in other words every microkernel servers will need a node id. we use
- * the term node in reference to the distributed system.
- */
-
-/*
- * the kernel manager structure
+ * the task, address space and thread identifiers are used to retrieve the
+ * respective kernel objects.
+ *
+ * finally, the node identifier is used to identify a task within the
+ * distributed system. this identifier is for instance used to send messages
+ * to task of other machines of the network. in other words, every task
+ * can be identified either by its task identifier on the machine or by
+ * its node identifier in the network. since the kernel is a task very
+ * much like the others, it is also reachable through its node identifier
+ * which is included in the kernel manager's structure below.
  */
 
 typedef struct
 {
-  t_id				machine;
-  /* XXX: node cf: kernel.c */
-
+  i_cell			cell;
   i_task			task;
   i_as				as;
   i_thread			thread;
 
-  /* XXX machine_data(m_kernel); */
+  i_node			node;
+
+  machine_data(m_kernel);
 }				m_kernel;
 
 /*
- * the kernel architecture dependent interface
+ * the kernel dispatcher.
  */
 
 typedef struct
 {
-  /* XXX */
+  t_error			(*kernel_dump)(void);
+  t_error			(*kernel_initialize)(void);
+  t_error			(*kernel_clean)(void);
 }				d_kernel;
 
 /*
@@ -74,6 +82,8 @@ typedef struct
 /*
  * ../../core/kernel/kernel.c
  */
+
+t_error			kernel_dump(void);
 
 t_error			kernel_initialize(void);
 

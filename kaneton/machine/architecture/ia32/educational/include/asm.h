@@ -145,32 +145,32 @@
 #define		OUTB(_port_, _data_)					\
   asm volatile("outb %%al, %%dx\n"					\
 	       :							\
-	       : "d" (_port_), "a" (_data_))
+	       : "d" ((t_uint16)(_port_)), "a" (_data_))
 
 #define		OUTW(_port_, _data_)					\
   asm volatile("outw %%ax, %%dx\n"					\
 	       :							\
-	       : "d" (_port_), "a" (_data_))
+	       : "d" ((t_uint16)(_port_)), "a" (_data_))
 
 #define		OUTL(_port_, _data_)					\
   asm volatile("outl %%eax, %%dx\n"					\
 	       :							\
-	       : "d" (_port_), "a" (_data_))
+	       : "d" ((t_uint16)(_port_)), "a" (_data_))
 
 #define		INB(_port_, _data_)					\
   asm volatile("inb %%dx, %%al\n"					\
 	       : "=a" (_data_)						\
-	       : "d" (_port_))
+	       : "d" ((t_uint16)(_port_)))
 
 #define		INW(_port_, _data_)					\
   asm volatile("inw %%dx, %%ax\n"					\
 	       : "=a" (_data_)						\
-	       : "d" (_port_))
+	       : "d" ((t_uint16)(_port_)))
 
 #define		INL(_port_, _data_)					\
   asm volatile("inl %%dx, %%eax\n"					\
 	       : "=a" (_data_)						\
-	       : "d" (_port_))
+	       : "d" ((t_uint16)(_port_)))
 
 /*
  * aliases for platform.

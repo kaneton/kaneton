@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/kaneton/modules/Makefile
+# file          /home/mycure/kaneton/kaneton/modules/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       julien quintard   [tue dec  7 22:30:25 2010]
+# updated       julien quintard   [fri dec 10 14:25:46 2010]
 #
 
 #
@@ -67,7 +67,7 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	for d in $(_MODULES_) ; do					\
+	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
 	done
 

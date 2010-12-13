@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../kaneton/modules/report/include/report.h
+ * file          /home/mycure/kaneton/kaneton/modules/report/include/report.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [sat dec  4 23:00:06 2010]
+ * updated       julien quintard   [fri dec 10 14:12:51 2010]
  */
 
 #ifndef MODULES_REPORT_REPORT_H
@@ -25,14 +25,14 @@
  */
 
 /*
- * the module structure.
+ * the module manager.
  */
 
 typedef struct
 {
   char			buffer[4096];
   t_uint32		offset;
-}			m_module_report;
+}			mm_report;
 
 /*
  * ---------- prototypes ------------------------------------------------------

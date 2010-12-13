@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/clock.c
  *
  * created       julien quintard   [wed nov 24 19:11:47 2010]
- * updated       julien quintard   [sat nov 27 16:19:33 2010]
+ * updated       julien quintard   [fri dec 10 16:16:48 2010]
  */
 
 /*
@@ -38,6 +38,7 @@
 
 d_clock			glue_clock_dispatch =
   {
+    NULL,
     glue_clock_update,
     glue_clock_current,
     glue_clock_initialize,
@@ -78,15 +79,15 @@ t_error			glue_clock_update(t_uint32		millisecond)
  * 2) fill the clock structure with the RTC.
  */
 
-t_error			glue_clock_current(t_clock*		clock)
+t_error			glue_clock_current(s_clock*		clock)
 {
-  t_platform_rtc*	rtc;
+  ps_rtc_state*		rtc;
 
   /*
    * 1)
    */
 
-  if (platform_rtc_current(&rtc) != ERROR_OK)
+  if (platform_rtc_state(&rtc) != ERROR_OK)
     MACHINE_ESCAPE("unable to load the RTC date/time structure");
 
   /*

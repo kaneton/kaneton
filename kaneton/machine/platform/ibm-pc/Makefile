@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...kaneton/machine/platform/ibm-pc/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [wed nov 24 14:30:33 2010]
+# updated       julien quintard   [thu dec  9 14:37:23 2010]
 #
 
 #
@@ -34,7 +34,7 @@ include			../../../../environment/env.mk
 #
 
 PLATFORM_C		:=	console.c				\
-				irq.c					\
+				pic.c					\
 				pit.c					\
 				rtc.c					\
 				serial.c				
@@ -42,7 +42,7 @@ PLATFORM_C		:=	console.c				\
 PLATFORM_O		:=	$(PLATFORM_C:.c=.o)
 
 PLATFORM_INCLUDE	:=	$(_PLATFORM_INCLUDE_DIR_)/console.h	\
-				$(_PLATFORM_INCLUDE_DIR_)/irq.h		\
+				$(_PLATFORM_INCLUDE_DIR_)/pic.h		\
 				$(_PLATFORM_INCLUDE_DIR_)/pit.h		\
 				$(_PLATFORM_INCLUDE_DIR_)/rtc.h		\
 				$(_PLATFORM_INCLUDE_DIR_)/serial.h	

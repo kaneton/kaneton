@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...glue/ibm-pc.ia32/educational/scheduler.c
+ * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [fri dec  3 16:23:02 2010]
+ * updated       julien quintard   [sat dec 11 20:51:59 2010]
  */
 
 /*
@@ -57,7 +57,9 @@ extern void		glue_scheduler_idle ();
 
 d_scheduler		glue_scheduler_dispatch =
   {
-    glue_scheduler_start,
+    NULL,
+    glue_scheduler_dump,
+    NULL,
     glue_scheduler_stop,
     glue_scheduler_quantum,
     glue_scheduler_yield,
@@ -88,8 +90,13 @@ asm (".text				\n"
  * XXX
  */
 
-t_error			glue_scheduler_start(void)
+t_error			glue_scheduler_dump(void)
 {
+  module_call(console, message,
+	      '#',
+	      "  machine: timer(%qu)\n",
+	      _scheduler->machine.timer);
+
   MACHINE_LEAVE();
 }
 
@@ -98,10 +105,18 @@ t_error			glue_scheduler_start(void)
  * induce an immediate context switch.
  */
 
-t_error			glue_scheduler_stop(void)
+t_error			glue_scheduler_stop(i_cpu		cpu)
 {
-  if (scheduler_yield() != ERROR_OK)
-    MACHINE_ESCAPE("unable to yield the execution");
+  o_scheduler*		scheduler;
+
+  if (scheduler_current(&scheduler) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the current scheduler");
+
+  if (cpu == scheduler->cpu)
+    {
+      if (scheduler_yield() != ERROR_OK)
+	MACHINE_ESCAPE("unable to yield the execution");
+    }
 
   MACHINE_LEAVE();
 }
@@ -118,7 +133,7 @@ void			glue_scheduler_switch_handler(void)
 
   /* XXX */
 
-  assert(scheduler_get(&scheduler) == ERROR_OK);
+  assert(scheduler_current(&scheduler) == ERROR_OK);
 
   /* XXX */
 
@@ -127,10 +142,6 @@ void			glue_scheduler_switch_handler(void)
   /* XXX */
 
   assert(scheduler_elect() == ERROR_OK);
-
-  /* XXX */
-
-  assert(scheduler_get(&scheduler) == ERROR_OK);
 
   /* XXX */
 
@@ -178,20 +189,20 @@ t_error			glue_scheduler_yield(void)
 
 t_error			glue_scheduler_initialize(void)
 {
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		o;
 
-  if (timer_reserve(TIMER_FUNCTION,
-		    TIMER_HANDLER(glue_scheduler_switch_handler),
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+		    TIMER_ROUTINE(glue_scheduler_switch_handler),
 		    0,
 		    _scheduler->quantum,
 		    TIMER_OPTION_REPEAT,
 		    &_scheduler->machine.timer) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the timer");
 
-  if (event_reserve(7, EVENT_FUNCTION,
-		    EVENT_HANDLER(glue_scheduler_switch_extended),
+  if (event_reserve(7, EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(glue_scheduler_switch_extended),
 		    0) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the event assocated with the timer "
 		   "hardware interrupt");
@@ -218,8 +229,8 @@ t_error			glue_scheduler_initialize(void)
   if (thread_load(_scheduler->idle, ctx) != ERROR_OK)
     MACHINE_ESCAPE("unable to load the thread context");
 
-  if (thread_block(_scheduler->idle) != ERROR_OK)
-    MACHINE_ESCAPE("unable to set the thread as blocked");
+  if (thread_start(_scheduler->idle) != ERROR_OK)
+    MACHINE_ESCAPE("unable to set the thread as running");
 
   MACHINE_LEAVE();
 }

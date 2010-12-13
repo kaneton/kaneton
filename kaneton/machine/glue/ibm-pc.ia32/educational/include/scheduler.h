@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...-pc.ia32/educational/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       julien quintard   [wed nov 24 20:42:12 2010]
+ * updated       julien quintard   [sat dec 11 10:27:03 2010]
  */
 
 #ifndef GLUE_SCHEDULER_H
@@ -26,8 +26,8 @@
     {									\
       t_error	_r_ = ERROR_OK;						\
 									\
-      if (glue_scheduler_dispatch._function_ != NULL)			\
-        _r_ = glue_scheduler_dispatch._function_(_args_);		\
+      if (glue_scheduler_dispatch.scheduler_ ## _function_ != NULL)	\
+        _r_ = glue_scheduler_dispatch.scheduler_ ## _function_(_args_);	\
 									\
       _r_;								\
     }									\
@@ -61,9 +61,9 @@
  * ../scheduler.c
  */
 
-t_error			glue_scheduler_start(void);
+t_error			glue_scheduler_dump(void);
 
-t_error			glue_scheduler_stop(void);
+t_error			glue_scheduler_stop(i_cpu		cpu);
 
 void			glue_scheduler_switch_handler(void);
 

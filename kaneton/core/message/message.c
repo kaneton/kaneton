@@ -5,10 +5,16 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/message/message.c
+ * file          /home/mycure/kaneton/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       julien quintard   [sat dec  4 01:02:44 2010]
+ * updated       julien quintard   [sun dec 12 21:51:32 2010]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * [XXX:improvements] the whole manager should be re-developed!
  */
 
 /*
@@ -103,8 +109,8 @@ static t_error		message_box(i_task			task,
  * 5) call the machine dependent code.
  *
  */
-
-t_error			message_register(i_task			task,
+// XXX change name to something else
+t_error			message_record(i_task			task,
 					 t_type			type,
 					 t_vsize		size)
 {
@@ -134,11 +140,11 @@ t_error			message_register(i_task			task,
   msgtype.type = typeid;
   msgtype.size = size;
 
-  if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof (o_message),
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (o_message),
 		  &msgtype.queue) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof (o_message),
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (o_message),
 		  &msgtype.waiters) != ERROR_OK)
     {
       set_release(msgtype.queue);
@@ -162,7 +168,7 @@ t_error			message_register(i_task			task,
    * 5)
    */
 
-  if (machine_call(message, message_register, task, type, size) != ERROR_OK)
+  if (machine_call(message, record, task, type, size) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -205,7 +211,7 @@ t_error			message_flush(i_task			task)
   o_task*		o;
   o_message_type*	otype;
   o_message*		omsg;
-  t_iterator		it;
+  s_iterator		it;
 
   if (task_get(task, &o) != ERROR_OK)
     CORE_ESCAPE("XXX");
@@ -225,7 +231,7 @@ t_error			message_flush(i_task			task)
 
       while (set_pick(otype->waiters, (void**)&omsg) != ERROR_OK)
 	{
-	  if (message_return(omsg->blocked, ERROR_KO) != ERROR_OK)
+	  if (message_yield(omsg->blocked, ERROR_KO) != ERROR_OK)
 	    CORE_ESCAPE("XXX");
 
 	  if (set_pop(otype->waiters) != ERROR_OK)
@@ -243,7 +249,7 @@ t_error			message_flush(i_task			task)
 
 	  if (omsg->as == ID_UNUSED)
 	    {
-	      if (message_return(omsg->blocked, ERROR_KO) != ERROR_OK)
+	      if (message_yield(omsg->blocked, ERROR_KO) != ERROR_OK)
 		CORE_ESCAPE("XXX");
 	    }
 	  else
@@ -268,7 +274,7 @@ t_error			message_flush(i_task			task)
    * 5)
    */
 
-  if (machine_call(message, message_flush, task) != ERROR_OK)
+  if (machine_call(message, flush, task) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -310,7 +316,7 @@ t_error			message_send(i_task			task,
    * 1)
    */
 
-  if (destination.machine != _kernel->machine)
+  if (destination.cell != _kernel->cell)
     {
       /* XXX distr */
       CORE_ESCAPE("XXX");
@@ -342,7 +348,7 @@ t_error			message_send(i_task			task,
       assert(task != _kernel->task);
       assert(size != 0);
 
-      source.machine = _kernel->machine;
+      source.cell = _kernel->cell;
       source.task = task;
 
       if (task_get(task, &otsk) != ERROR_OK)
@@ -427,7 +433,7 @@ t_error			message_send(i_task			task,
 
   msg.as = ID_UNUSED;
   msg.size = size;
-  msg.sender.machine = _kernel->machine;
+  msg.sender.cell = _kernel->cell;
   msg.sender.task = task;
 
   /*
@@ -448,7 +454,7 @@ t_error			message_send(i_task			task,
    * 8)
    */
 
-  if (machine_call(message, message_send, task, destination, type,
+  if (machine_call(message, send, task, destination, type,
 		   data, size) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -492,7 +498,7 @@ t_error			message_transmit(i_task			task,
    * 1)
    */
 
-  if (destination.machine != _kernel->machine)
+  if (destination.cell != _kernel->cell)
     {
       /* XXX distr */
       CORE_ESCAPE("XXX");
@@ -538,7 +544,7 @@ t_error			message_transmit(i_task			task,
 		    size) != ERROR_OK)
 	  CORE_ESCAPE("XXX");
 
-      sender.machine = _kernel->machine;
+      sender.cell = _kernel->cell;
       sender.task = task;
 
       if (message_return_info(pmsg->blocked, ERROR_OK, size,
@@ -554,13 +560,13 @@ t_error			message_transmit(i_task			task,
        * b)
        */
 
-      if (scheduler_current(&thread) != ERROR_OK)
+      if (thread_current(&thread) != ERROR_OK)
 	CORE_ESCAPE("XXX");
 
       msg.as = otsk->as;
       msg.data = (void*)data;
       msg.size = size;
-      msg.sender.machine = _kernel->machine;
+      msg.sender.cell = _kernel->cell;
       msg.sender.task = task;
       msg.blocked = thread;
 
@@ -577,7 +583,7 @@ t_error			message_transmit(i_task			task,
    * 5)
    */
 
-  if (machine_call(message, message_transmit, task, destination, type,
+  if (machine_call(message, transmit, task, destination, type,
 		   data, size) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -599,7 +605,7 @@ t_error			message_throw(i_task			task,
 				      t_type			type,
 				      t_vaddr			data,
 				      t_vsize			size,
-				      t_message_request*	request)
+				      s_message_request*	request)
 {
   assert(request != NULL);
 
@@ -674,7 +680,7 @@ t_error			message_receive(i_task			task,
       if (task_get(task, &otsk) != ERROR_OK)
 	CORE_ESCAPE("XXX");
 
-      if (scheduler_current(&thread) != ERROR_OK)
+      if (thread_current(&thread) != ERROR_OK)
 	CORE_ESCAPE("XXX");
 
       msg.id = o->id++;
@@ -704,7 +710,7 @@ t_error			message_receive(i_task			task,
    * 3)
    */
 
-  if (machine_call(message, message_poll, task, type, data,
+  if (machine_call(message, poll, task, type, data,
 		   size, sender) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -724,7 +730,7 @@ t_error			message_receive(i_task			task,
 t_error			message_grab(i_task			task,
 				     t_type			type,
 				     t_vaddr			data,
-				     t_message_request*		request)
+				     s_message_request*		request)
 {
   if (cpu_multiprocessor() == ERROR_TRUE)
     {
@@ -813,7 +819,7 @@ t_error			message_poll(i_task			task,
 	    CORE_ESCAPE("XXX");
 	}
 
-      if (message_return(msg->blocked, ERROR_OK) != ERROR_OK)
+      if (message_yield(msg->blocked, ERROR_OK) != ERROR_OK)
 	CORE_ESCAPE("XXX");
     }
   else
@@ -858,7 +864,7 @@ t_error			message_poll(i_task			task,
    * 4)
    */
 
-  if (machine_call(message, message_poll, task, type, data,
+  if (machine_call(message, poll, task, type, data,
 		   size, sender) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -872,7 +878,7 @@ t_error			message_poll(i_task			task,
  */
 
 t_error			message_state(i_task			task,
-				      t_message_request		request)
+				      s_message_request		request)
 {
   /* XXX smp */
 
@@ -886,7 +892,7 @@ t_error			message_state(i_task			task,
  */
 
 t_error			message_wait(i_task			task,
-				     t_message_request		request,
+				     s_message_request		request,
 				     t_vsize*			size,
 				     i_node*			sender)
 {
@@ -900,10 +906,10 @@ t_error			message_wait(i_task			task,
  *
  */
 
-t_error			message_return(i_thread			thread,
+t_error			message_yield(i_thread			thread,
 				       t_error			code)
 {
-  if (machine_call(message, message_return, thread, code) != ERROR_OK)
+  if (machine_call(message, yield, thread, code) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   if (thread_start(thread) != ERROR_OK)
@@ -922,7 +928,7 @@ t_error			message_return_info(i_thread		thread,
 					    t_vsize		size,
 					    i_node		sender)
 {
-  if (machine_call(message, message_return_info, thread, code, size,
+  if (machine_call(message, return_info, thread, code, size,
 		   sender) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -950,24 +956,24 @@ t_error			message_initialize(void)
    * 1)
    */
 
-  if ((_message = malloc(sizeof(m_message))) == NULL)
+  if ((_message = malloc(sizeof (m_message))) == NULL)
     CORE_ESCAPE("XXX");
 
-  memset(_message, 0x0, sizeof(m_message));
+  memset(_message, 0x0, sizeof (m_message));
 
   /*
    * 2)
    */
 
-  if (message_register(_kernel->task, MESSAGE_TYPE_INTERFACE,
+  if (message_record(_kernel->task, MESSAGE_TYPE_INTERFACE,
 		       sizeof (o_syscall)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (message_register(_kernel->task, MESSAGE_TYPE_EVENT,
+  if (message_record(_kernel->task, MESSAGE_TYPE_EVENT,
 		       sizeof (o_event_message)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (message_register(_kernel->task, MESSAGE_TYPE_TIMER,
+  if (message_record(_kernel->task, MESSAGE_TYPE_TIMER,
 		       sizeof (o_timer_message)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -975,7 +981,7 @@ t_error			message_initialize(void)
    * 3)
    */
 
-  if (machine_call(message, message_initialize) != ERROR_OK)
+  if (machine_call(message, initialize) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -998,7 +1004,7 @@ t_error			message_clean(void)
    * 1)
    */
 
-  if (machine_call(message, message_clean) != ERROR_OK)
+  if (machine_call(message, clean) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   /*

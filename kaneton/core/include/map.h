@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/map.h
+ * file          /home/mycure/kaneton/kaneton/core/include/map.h
  *
  * created       julien quintard   [wed jun  6 13:31:27 2007]
- * updated       julien quintard   [fri nov 26 19:21:49 2010]
+ * updated       julien quintard   [fri dec 10 21:18:34 2010]
  */
 
 #ifndef CORE_MAP_H
@@ -27,7 +27,7 @@
  */
 
 /*
- * flags
+ * the flags that can be passed at the map reservation time.
  */
 
 #define MAP_OPTION_NONE		0
@@ -42,12 +42,34 @@
  */
 
 /*
- * map manager
+ * the map manager structure.
  */
 
 typedef struct
 {
+  machine_data(m_map);
 }				m_map;
+
+/*
+ * the map dispatcher.
+ */
+
+typedef struct
+{
+  t_error			(*map_reserve)(i_as,
+					       t_options,
+					       t_vsize,
+					       t_permissions,
+					       t_vaddr*);
+  t_error			(*map_release)(i_as,
+					       t_vaddr);
+  t_error			(*map_resize)(i_as,
+					      t_vaddr,
+					      t_vsize,
+					      t_vaddr*);
+  t_error			(*map_initialize)(void);
+  t_error			(*map_clean)(void);
+}				d_map;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -59,19 +81,19 @@ typedef struct
  * ../../core/map/map.c
  */
 
-t_error			map_reserve(i_as		as,
-				    t_options		options,
-				    t_vsize		size,
-				    t_permissions	permissions,
-				    t_vaddr*		address);
+t_error			map_reserve(i_as			as,
+				    t_options			options,
+				    t_vsize			size,
+				    t_permissions		permissions,
+				    t_vaddr*			address);
 
-t_error			map_release(i_as		as,
-				    t_vaddr		address);
+t_error			map_release(i_as			as,
+				    t_vaddr			address);
 
-t_error			map_resize(i_as			as,
-				   t_vaddr		old,
-				   t_vsize		size,
-				   t_vaddr*		new);
+t_error			map_resize(i_as				as,
+				   t_vaddr			old,
+				   t_vsize			size,
+				   t_vaddr*			new);
 
 t_error			map_initialize(void);
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/glue.h
  *
  * created       julien quintard   [mon jun 11 05:57:15 2007]
- * updated       julien quintard   [wed nov 24 20:41:54 2010]
+ * updated       julien quintard   [fri dec 10 17:04:27 2010]
  */
 
 #ifndef GLUE_GLUE_H
@@ -44,6 +44,8 @@
 #include <glue/event.h>
 #include <glue/init.h>
 #include <glue/io.h>
+#include <glue/kernel.h>
+#include <glue/map.h>
 #include <glue/message.h>
 #include <glue/region.h>
 #include <glue/scheduler.h>

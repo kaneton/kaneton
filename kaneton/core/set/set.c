@@ -12,71 +12,87 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * the set manager is used to manage the data structures in order to simplify
- * the other kernel managers. indeed, every kernel manager including the
- * task manager, the thread manager, the segment manager etc. uses the
- * set manager to store the data rather than create themselves data structures
- * by their own.
+ * the set manager is used to manage the various kernel's data structures.
+ * indeed, every kernel manager including the task manager, the thread manager,
+ * the segment manager etc. uses the set manager to store its objects rather
+ * than creating and managing data structures on their own.
  *
- * to add a data structure to the set manager you have to complete
- * the following steps:
+ * in order to add a set implementation, referred to as XXX, to the set
+ * manager, one must complete the following steps:
  *
- *  1) create the kaneton/core/set/set_X.c file and modify the makefile
- *     to add this new file.
- *  2) create the kaneton/include/core/set_X.h file and modify the
- *     set.h to include this new file.
- *  3) add the new data structure to the union contained in the
- *     set object: o_set, in the set.h header file.
- *  4) add the new data structure type in the switch case contained
+ *  1) create the kaneton/core/set/set_XXX.c file and modify the Makefile
+ *     to take this new file in account;
+ *  2) create the kaneton/include/core/set_XXX.h file and modify the
+ *     set.h to include this new file;
+ *  3) add the new set implementation to the union contained in the
+ *     set object: o_set, in the set.h header file;
+ *  4) add the new set implementation type in the switch case contained
  *     in the set_trap() macro, in the set.h header file.
  *
- * X represents the new data structure short name.
+ * the set manager relies on macro-functions to provide the set implementations
+ * with a different number of arguments each with its own type.
  *
- * the implementation uses macros to provide different data structures
- * manipulation with different number of arguments and different
- * type of arguments.
+ * each set implementation provides some options which may vary depending
+ * on the nature of the underlying data structure.
  *
- * note the specific use of the ## in the set header located
- * in kaneton/include/core/.
+ * the most common options are:
+ *   o the ALLOCATE option indicates that the objects to be added must be
+ *     cloned i.e the set implementation must allocate its own copy of
+ *     the object before insertion.
+ *   o the SORT option requests the set implementation to sort the objects
+ *     to be stored. note that this option may render the implementation
+ *     extremely inefficient. besides, note that the identifier collision
+ *     detection can only operate with this option.
+ *   o beware of inserting pre-allocated objects. indeed, considering the
+ *     set_flush() operation, the set manager would clear the data structure
+ *     without releasing the object as it does not know they have been
+ *     pre-allocated with malloc(). to counter this issue, the FREE option
+ *     has been introduced, instructing the set manager to release the
+ *     memory of the object when released.
+ *   o the option CONTAINER is only used internally to build the very
+ *     first set which is the set container i.e the set of sets.
+ *   o the ORGANISE option specifies the set implementation to always try
+ *     to re-organise the objects. this option is used, for example, by
+ *     the 'array' implementation which shifts the objects whenever
+ *     an element is removed .
  *
- * using the ## with variadic macros allows the use of a variable arguments
- * parameter to be empty, deleting the previous comma if needed.
+ * note that the set manager relies on the malloc() and free() functions
+ * when it comes to memory management, including related to the ALLOCATE
+ * and FREE options.
  *
- * note that this advanced feature is only implemented by the gnu
- * c-preprocessor.
+ * every set can store objects which comply to both (i) the definition of
+ * an object and (ii) the set implementation's configuration. first, an
+ * object is a data element which begins with a kaneton identifier (t_id).
+ * this identifier is used to identify the object in the set, hence locate
+ * them for deletion, retrieval, modification etc. second, whenever a set
+ * is reserved, the size of the objects to be stored is provided so that
+ * memory can be optimised.
  *
- * each data structure allows some options to parameterise the data structure
- * wanted. the common ones are: ALLOCATE, SORT etc.
+ * the programmer must take notice of the documentation related to a set
+ * implementation before using it. however, most set implementation comply
+ * with a generic interface. the following detail some of the most fondamental
+ * set operations:
  *
- * the ALLOCATE option may be disabled for certain data structures because
- * of its meaningless for this data structure.
+ * the set_reserve(type, options, datasz, &id) function reserves a set
+ * of the type---i.e set implementation---'type' with some options. the
+ * 'datasz' argument indicates the size of the objects about the be stored
+ * while the 'id' argument is the output set identifier. note that extra
+ * arguments may be required depending on the set implementation.
  *
- * note that the SORT option may become very inefficient for some data
- * structures. moreover the identifier collision detection may only
- * takes place if the SORT option is enabled.
+ * the set_release(id) function releases the set identified by 'id'.
  *
- * be careful with the ALLOCATE option. this option tells the set manager
- * to always allocate memory and to copy into this memory the contents
- * of the given object. think about that, for example, the set_flush()
- * will clear the data structure contents. if the ALLOCATE option is
- * set, the elements will be freed, but if not, the elements will be lost.
+ * the set_object(id, iterator, &object) function takes a set identifier
+ * along with an iterator pointing to an element of the set and returns
+ * the address of the iterator's object in 'object'.
  *
- * for this common problem, a new option was introduced, the FREE option
- * which tells the set manager to call the free() function every time an
- * element is released, for example into the functions set_remove(),
- * set_flush(), set_release() etc.
+ * in addition, objects can be added/removed/pushed/poped/inserted etc.
+ * depending on the set implementation. for example, the set_add(id, object)
+ * add the 'object' to the set 'id'.
  *
- * be careful to never set the FREE option with the ALLOCATE option. the
- * FREE option tells the set manager that the user is using preallocated
- * objects which is the contrary to the allocate option.
- *
- * the option CONTAINER is only used by the set manager to build the very
- * first set which is the set container.
- *
- * the ORGANISE option is used for example by the array data structure. it
- * tells the subpart of the set manager to always organise data in the
- * best way. for the array data structure, this option means that the
- * elements will always be left shifted to fulfill the array by the left.
+ * note that this manager is considered fondamental as every other manager
+ * relies on it. this manager therefore does no relies on the machine,
+ * not mentioning that this functionality provided, i.e data structure
+ * management, has nothing to do with the underlying machine.
  */
 
 /*
@@ -90,7 +106,7 @@
  */
 
 /*
- * the set manager variable.
+ * the set manager.
  */
 
 m_set*			_set = NULL;
@@ -100,9 +116,16 @@ m_set*			_set = NULL;
  */
 
 /*
- * this function dumps the set manager state.
+ * this function dumps the set manager.
  *
- * the set container will be displayed with each set object contained.
+ * steps:
+ *
+ * 1) retrieve the set container's descriptor.
+ * 2) display general information.
+ * 3) show the identifier object.
+ * 4) go through the sets.
+ *   a) retrieve the set descriptor.
+ *   b) show the set.
  */
 
 t_error			set_dump(void)
@@ -110,7 +133,7 @@ t_error			set_dump(void)
   t_state		state;
   o_set*		data;
   o_set*		o;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -124,17 +147,40 @@ t_error			set_dump(void)
    */
 
   module_call(console, message,
-	      '#', "dumping the set container %qd with %qd node(s)\n",
-	      _set->sets,
+	      '#', "set manager: container(%qu) #sets(%qu)\n",
+	      o->id,
 	      o->size);
+
+  /*
+   * 3)
+   */
+
+  if (id_show(&_set->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+    CORE_ESCAPE("unable to show the identifier object");
+
+  /*
+   * 4)
+   */
+
+  module_call(console, message,
+	      '#', "  sets:\n");
 
   set_foreach(SET_OPTION_FORWARD, _set->sets, &i, state)
     {
+      /*
+       * a)
+       */
+
       if (set_object(_set->sets, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the set object corresponding "
 		    "to its identifier");
 
-      if (set_show(data->id) != ERROR_OK)
+      /*
+       * b)
+       */
+
+      if (set_show(data->id,
+		   2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the set");
     }
 
@@ -143,14 +189,27 @@ t_error			set_dump(void)
 
 /*
  * this function returns true if the set is empty.
+ *
+ * steps:
+ *
+ * 1) retrieve the set descriptor.
+ * 2) return false if there is at least an object in the set, true otherwise.
  */
 
 t_error			set_empty(i_set				setid)
 {
   o_set*		o;
 
+  /*
+   * 1)
+   */
+
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
+
+  /*
+   * 2)
+   */
 
   if (o->size > 0)
     CORE_FALSE();
@@ -159,7 +218,13 @@ t_error			set_empty(i_set				setid)
 }
 
 /*
- * this function fills the variable size with the set size.
+ * this function returns the size of the set.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) set the size to return.
  */
 
 t_error			set_size(i_set				setid,
@@ -167,10 +232,23 @@ t_error			set_size(i_set				setid,
 {
   o_set*		o;
 
-  assert(size != NULL);
+  /*
+   * 0)
+   */
+
+  if (size == NULL)
+    CORE_ESCAPE("the 'size' argument is null");
+
+  /*
+   * 1)
+   */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
+
+  /*
+   * 2)
+   */
 
   *size = o->size;
 
@@ -182,35 +260,64 @@ t_error			set_size(i_set				setid,
  *
  * steps:
  *
- * 1) if the descriptor to add is the set which will contain the set objects,
- *    the container, just put it as the set container.
- * 2) otherwise, add this object in the set container.
+ * 0) verify the arguments.
+ * 1) add the object depending on its identifier.
+ *   A) if the object is the very first one, it is considered as being the
+ *       container...
+ *     a) allocate memory for the set container's object because the received
+ *        object has not been dynamically allocated. indeed the set container
+ *        is configured to clone its object i.e the set objects. therefore
+ *        the reserved object must be cloned as well.
+ *     b) copy the object's content.
+ *   B) if not...
+ *     a) add the object into the set container.
  */
 
-t_error			set_new(o_set*				o)
+t_error			set_new(o_set*				object)
 {
-  assert(o != NULL);
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
   /*
    * 1)
    */
 
-  if (o->id == _set->sets)
+  if (object->id == _set->sets)
     {
+      /*
+       * A)
+       */
+
+      /*
+       * a)
+       */
+
       if ((_set->container = malloc(sizeof(o_set))) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the set container");
 
-      memcpy(_set->container, o, sizeof(o_set));
+      /*
+       * b)
+       */
 
-      CORE_LEAVE();
+      memcpy(_set->container, object, sizeof(o_set));
     }
+  else
+    {
+      /*
+       * B)
+       */
 
-  /*
-   * 2)
-   */
+      /*
+       * a)
+       */
 
-  if (set_add(_set->sets, o) != ERROR_OK)
-    CORE_ESCAPE("unable to add the set descriptor to the set container");
+      if (set_add(_set->sets, object) != ERROR_OK)
+	CORE_ESCAPE("unable to add the set descriptor to the set container");
+    }
 
   CORE_LEAVE();
 }
@@ -220,8 +327,11 @@ t_error			set_new(o_set*				o)
  *
  * steps:
  *
- * 1) removes the set container object.
- * 2) removes the set descriptor from the set container.
+ * 1) removes the set depending on its identifier.
+ *   A) the set to remove is the set container...
+ *     a) release the container's memory.
+ *   B) the set is a normal object...
+ *     a) remove it from the set container.
  */
 
 t_error			set_destroy(i_set			setid)
@@ -232,34 +342,60 @@ t_error			set_destroy(i_set			setid)
 
   if (setid == _set->sets)
     {
+      /*
+       * A)
+       */
+
+      /*
+       * a)
+       */
+
       free(_set->container);
-
-      CORE_LEAVE();
     }
+  else
+    {
+      /*
+       * B)
+       */
 
-  /*
-   * 2)
-   */
+      /*
+       * a)
+       */
 
-  if (set_remove(_set->sets, setid) != ERROR_OK)
-    CORE_ESCAPE("unable to remove the descriptor from the set container");
+      if (set_remove(_set->sets, setid) != ERROR_OK)
+	CORE_ESCAPE("unable to remove the descriptor from the set container");
+    }
 
   CORE_LEAVE();
 }
 
 /*
- * this function returns the set descriptor corresponding to a set identifier.
+ * this function returns the set descriptor, i.e set object, corresponding
+ * to a set identifier.
  *
  * steps:
  *
- * 1) if the looked for descriptor is the set container, just return it.
- * 2) otherwise, tries to get the set descriptor in the set container.
+ * 0) verify the arguments.
+ * 1) locate the descriptor depending on the set identifier.
+ *   A) if the set is the container...
+ *     a) return the address of the set container which is located in
+ *        the manager's structure.
+ *   B) otherwise...
+ *     a) retrieve the set object from the set container.
  */
 
 t_error			set_descriptor(i_set			setid,
-				       o_set**			o)
+				       o_set**			object)
 {
-  assert(o != NULL);
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  if (setid == ID_UNUSED)
+    CORE_ESCAPE("invalid set identifier");
 
   /*
    * 1)
@@ -267,39 +403,58 @@ t_error			set_descriptor(i_set			setid,
 
   if (setid == _set->sets)
     {
-      *o = _set->container;
+      /*
+       * A)
+       */
 
-      CORE_LEAVE();
+      /*
+       * a)
+       */
+
+      *object = _set->container;
     }
+  else
+    {
+      /*
+       * B)
+       */
 
-  /*
-   * 2)
-   */
+      /*
+       * a)
+       */
 
-  if (set_get(_set->sets, setid, (void**)o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the descriptor object from "
-		"the set container");
+      if (set_get(_set->sets, setid, (void**)object) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the descriptor object from "
+		    "the set container");
+    }
 
   CORE_LEAVE();
 }
 
 /*
- * this function returns an object given its identifier without being
- * force to deal with iterators.
+ * this function returns an object given its identifier. note that this
+ * function is useful in many cases because the programmer does not
+ * have to perform a manual walk through the set objects.
  *
  * steps:
  *
- * 1) finds the object given its identifier and gets an iterator on it.
- * 2) from the iterator, gets the real object.
+ * 0) verify the arguments.
+ * 1) locate the object in the set according to its identifier.
+ * 2) retrieve the object from its iterator.
  */
 
 t_error			set_get(i_set				setid,
 				t_id				id,
-				void**				o)
+				void**				object)
 {
-  t_iterator		iterator;
+  s_iterator		iterator;
 
-  assert(o != NULL);
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
   /*
    * 1)
@@ -312,7 +467,7 @@ t_error			set_get(i_set				setid,
    * 2)
    */
 
-  if (set_object(setid, iterator, o) != ERROR_OK)
+  if (set_object(setid, iterator, object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object");
 
   CORE_LEAVE();
@@ -321,18 +476,16 @@ t_error			set_get(i_set				setid,
 /*
  * this function initializes the set manager.
  *
- * be careful, the container have to be build using the option SET_OPT_ALLOC.
- * if this option is not set, the entire set manager will not be able
- * to work properly.
+ * be careful, the container have to be build using the options
+ * SET_OPTION_CONTAINER and SET_OPTION_ALLOCATE.
  *
  * steps:
  *
- * 1) allocates and initializes the set manager structure.
- * 2) builds the identifier object used to generate set identifiers.
- * 3) reserves an identifier for the container.
- * 4) reserves the set container which will contain the set descriptors
- *    reserved later. obviously, it will be better to take a powerful
- *    data structure because it will contains millions of objects.
+ * 1) allocate and initialize the set manager's structure.
+ * 2) build the identifier object used to generate set identifiers.
+ * 3) reserve an identifier for the set container.
+ * 4) reserve the set container which will hold the set descriptors i.e
+ *    set objects.
  */
 
 t_error			set_initialize(void)
@@ -343,10 +496,10 @@ t_error			set_initialize(void)
    * 1)
    */
 
-  if ((_set = malloc(sizeof(m_set))) == NULL)
+  if ((_set = malloc(sizeof (m_set))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the set manager's structure");
 
-  memset(_set, 0x0, sizeof(m_set));
+  memset(_set, 0x0, sizeof (m_set));
 
   /*
    * 2)
@@ -366,9 +519,8 @@ t_error			set_initialize(void)
    * 4)
    */
 
-  // XXX ???
   if (set_reserve(bpt,
-		  SET_OPTION_CONTAINER | SET_OPTION_ALLOC | SET_OPTION_SORT,
+		  SET_OPTION_CONTAINER | SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof(o_set),
 		  PAGESZ,
 		  &needless) != ERROR_OK)
@@ -378,19 +530,19 @@ t_error			set_initialize(void)
 }
 
 /*
- * this function just reinitializes the set manager.
+ * this function cleans the set manager.
  *
  * steps:
  *
- * 1) releases each set object the set container still contains.
- * 2) releases the set container.
- * 3) destroys the id object.
- * 4) frees the set manager structure's memory.
+ * 1) release every set object the set container contains.
+ * 2) release the set container.
+ * 3) destroys the identifier object.
+ * 4) free the set manager's structure.
  */
 
 t_error			set_clean(void)
 {
-  t_iterator		iterator;
+  s_iterator		iterator;
 
   /*
    * 1)

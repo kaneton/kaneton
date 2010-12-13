@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/region.h
+ * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [sun nov 28 20:50:35 2010]
+ * updated       julien quintard   [sun dec 12 13:50:24 2010]
  */
 
 #ifndef CORE_REGION_H
@@ -25,11 +25,25 @@
 #include <machine/machine.h>
 
 /*
+ * ---------- algorithms ------------------------------------------------------
+ */
+
+/*
+ * the several algorithms supported by the region manager.
+ *
+ * note that such algorithms can be activated through the REGION_ALGORITHM
+ * macro.
+ */
+
+#define REGION_ALGORITHM_FIT_FIRST	(1 << 0)
+#define REGION_ALGORITHM_FIT_BEST	(1 << 1)
+
+/*
  * ---------- macros ----------------------------------------------------------
  */
 
 /*
- * flags
+ * the flags which can be used for reserving regions.
  */
 
 #define REGION_OPTION_NONE		0
@@ -42,22 +56,33 @@
 #define REGION_OPTION_INVALID		(~((1 << 2) | (1 << 1) | (1 << 0)))
 
 /*
- * ---------- algorithms ------------------------------------------------------
+ * ---------- macro-functions -------------------------------------------------
  */
 
-#define REGION_ALGORITHM_FIT_FIRST	(1 << 0)
-#define REGION_ALGORITHM_FIT_BEST	(1 << 1)
+/*
+ * this macro-function computes a region identifier based on the address.
+ */
+
+#define REGION_IDENTIFIER(_object_)					\
+  (i_region)((_object_)->address / ___kaneton$pagesz)
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * region object
+ * the region object structure.
  *
- * a region object is identified by a regid.
+ * a region represents an area of virtual memory and is identified by
+ * a region identifier.
  *
- * the identifier is in fact identical to the virtual address of the region.
+ * every region maps a _segment_ at a given _offset_ and for a certain
+ * _size_. the resulting virtual address _address_ can then be used to
+ * access the segment through the virtual memory mechanism.
+ *
+ * the _options_ are used to parameterize both the region's behaviour
+ * as well as the way the region is reserved. for more information, please
+ * refer to the region_reserve() function.
  */
 
 typedef struct
@@ -65,9 +90,9 @@ typedef struct
   i_region			id;
 
   i_segment			segment;
+  t_paddr			offset;
 
   t_vaddr			address;
-  t_paddr			offset;
   t_vsize			size;
   t_options			options;
 
@@ -75,13 +100,15 @@ typedef struct
 }				o_region;
 
 /*
- * region manager
+ * the region manager structure.
+ *
+ * the _base_ attribute represents the lower bound virtual address while
+ * the _size_ represents the number of bytes the virtual memory is composed
+ * of.
  */
 
 typedef struct
 {
-  o_id				id;
-
   t_vaddr			base;
   t_vsize			size;
 
@@ -89,13 +116,15 @@ typedef struct
 }				m_region;
 
 /*
- * the region architecture-dependent interface
+ * the region dispatcher.
  */
 
 typedef struct
 {
   t_error			(*region_show)(i_as,
-					       i_region);
+					       i_region,
+					       mt_margin);
+  t_error			(*region_dump)(i_as);
   t_error			(*region_inject)(i_as,
 						 o_region*,
 						 i_region*);
@@ -138,21 +167,22 @@ typedef struct
  */
 
 t_error			region_show(i_as			asid,
-				    i_region			regid);
+				    i_region			regid,
+				    mt_margin			margin);
 
-t_error			region_dump(i_as		asid);
+t_error			region_dump(i_as			asid);
 
 t_error			region_fit_first(i_as			asid,
 					 t_vsize		size,
 					 t_vaddr*		address);
 
-t_error			region_space(i_as		asid,
-				     t_vsize		size,
-				     t_vaddr*		address);
+t_error			region_space(i_as			asid,
+				     t_vsize			size,
+				     t_vaddr*			address);
 
-t_error			region_inject(i_as		asid,
-				      o_region*		o,
-				      i_region*		regid);
+t_error			region_inject(i_as			as,
+				      o_region*			object,
+				      i_region*			id);
 
 t_error			region_split(i_as			asid,
 				     i_region			regid,
@@ -165,10 +195,10 @@ t_error			region_resize(i_as			as,
 				      t_vsize			size,
 				      i_region*			new);
 
-t_error			region_coalesce(i_as		asid,
-					i_region	left,
-					i_region	right,
-					i_region*	regid);
+t_error			region_coalesce(i_as			asid,
+					i_region		left,
+					i_region		right,
+					i_region*		region);
 
 t_error			region_reserve(i_as			asid,
 				       i_segment		segid,
@@ -176,10 +206,14 @@ t_error			region_reserve(i_as			asid,
 				       t_options		options,
 				       t_vaddr			address,
 				       t_vsize			size,
-				       i_region*		regid);
+				       i_region*		region);
 
 t_error			region_release(i_as			asid,
 				       i_region			regid);
+
+t_error			region_locate(i_as			as,
+				      t_vaddr			address,
+				      i_region*			id);
 
 t_error			region_flush(i_as			asid);
 
@@ -188,7 +222,7 @@ t_error			region_exist(i_as			asid,
 
 t_error			region_get(i_as				asid,
 				   i_region			regid,
-				   o_region**			o);
+				   o_region**			object);
 
 t_error			region_initialize(t_vaddr		base,
 					  t_vsize		size);

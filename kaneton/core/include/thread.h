@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/thread.h
+ * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [sat dec  4 13:24:59 2010]
+ * updated       julien quintard   [thu dec  9 15:11:53 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -80,7 +80,7 @@ typedef struct
 {
   t_vaddr			pc;
   t_vaddr			sp;
-}				t_thread_context;
+}				s_thread_context;
 
 /*
  * thread object
@@ -140,9 +140,9 @@ typedef struct
   t_error			(*thread_show)(i_thread);
   t_error			(*thread_flush)(i_task);
   t_error			(*thread_load)(i_thread,
-					       t_thread_context);
+					       s_thread_context);
   t_error			(*thread_store)(i_thread,
-						t_thread_context*);
+						s_thread_context*);
   t_error			(*thread_reserve)(i_task,
 						  i_thread*);
   t_error			(*thread_release)(i_thread);
@@ -154,7 +154,7 @@ typedef struct
   t_error			(*thread_exit)(i_thread,
 					       t_value);
   t_error			(*thread_stack)(i_thread,
-						t_stack);
+						s_stack);
   t_error			(*thread_args)(i_thread,
 					      const void*,
 					      t_size);
@@ -200,10 +200,10 @@ void			thread_bury(i_timer			timer,
 t_error			thread_wait(i_thread			id,
 				    t_state			state,
 				    i_thread			target,
-				    t_wait*			wait);
+				    s_wait*			wait);
 
 t_error			thread_stack(i_thread			threadid,
-				     t_stack			stack);
+				     s_stack			stack);
 
 t_error			thread_args(i_thread			threadid,
 				    void*			args,
@@ -218,10 +218,12 @@ t_error			thread_sleep(i_thread			id,
 t_error			thread_flush(i_task			taskid);
 
 t_error			thread_load(i_thread			threadid,
-				    t_thread_context		context);
+				    s_thread_context		context);
 
 t_error			thread_store(i_thread			threadid,
-				     t_thread_context*		context);
+				     s_thread_context*		context);
+
+t_error			thread_current(i_thread*		thread);
 
 t_error			thread_exist(i_thread			threadid);
 

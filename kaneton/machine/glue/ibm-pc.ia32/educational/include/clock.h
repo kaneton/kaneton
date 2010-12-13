@@ -9,7 +9,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/clock.h
  *
  * created       julien quintard   [wed jun  6 16:29:41 2007]
- * updated       julien quintard   [wed nov 24 20:42:02 2010]
+ * updated       julien quintard   [fri dec 10 21:14:16 2010]
  */
 
 #ifndef GLUE_CLOCK_H
@@ -27,8 +27,8 @@
     {									\
       t_error	_r_ = ERROR_OK;						\
 									\
-      if (glue_clock_dispatch._function_ != NULL)			\
-        _r_ = glue_clock_dispatch._function_(_args_);			\
+      if (glue_clock_dispatch.clock_ ## _function_ != NULL)		\
+        _r_ = glue_clock_dispatch.clock_ ## _function_(_args_);		\
 									\
       _r_;								\
     }									\
@@ -54,7 +54,7 @@
 
 t_error			glue_clock_update(t_uint32		millisecond);
 
-t_error			glue_clock_current(t_clock*		clock);
+t_error			glue_clock_current(s_clock*		clock);
 
 t_error			glue_clock_initialize(void);
 

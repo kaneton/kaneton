@@ -12,8 +12,8 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements the management of the programmable interval
- * PIT (8254) on ibmpc.
+ * this file implements the management of the PIT - Programmable Interval
+ * Timer 8254 on ibmpc.
  */
 
 /*

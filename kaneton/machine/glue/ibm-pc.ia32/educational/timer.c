@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/timer.c
  *
  * created       julien quintard   [mon jun 11 05:41:14 2007]
- * updated       julien quintard   [sat nov 27 16:30:57 2010]
+ * updated       julien quintard   [fri dec 10 10:31:17 2010]
  */
 
 /*
@@ -64,8 +64,8 @@ t_error			glue_timer_initialize(void)
     MACHINE_ESCAPE("unable to initialize the PIT");
 
   if (event_reserve(32,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(timer_handler),
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(timer_handler),
 		    0) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the event corresponding to the hardware "
 		   "timer interrupt");

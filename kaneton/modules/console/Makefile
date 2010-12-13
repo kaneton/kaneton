@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/modules/console/Makefile
 #
 # created       julien quintard   [wed apr 15 07:00:50 2009]
-# updated       julien quintard   [wed may  6 16:24:35 2009]
+# updated       julien quintard   [fri dec 10 14:19:12 2010]
 #
 
 #
@@ -61,7 +61,6 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-
 	$(call env_prototypes,$(CONSOLE_INCLUDE),)
 
 headers:

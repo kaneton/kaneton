@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...neton.STABLE/kaneton/core/include/task.h
+ * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [fri dec  3 16:07:31 2010]
+ * updated       julien quintard   [thu dec  9 15:11:50 2010]
  */
 
 #ifndef CORE_TASK_H
@@ -116,7 +116,7 @@ typedef struct
   t_state			state;
 
   i_set				waits;
-  t_wait			wait;
+  s_wait			wait;
 
   i_set				messages;
 
@@ -194,7 +194,9 @@ t_error			task_exit(i_task			id,
 
 t_error			task_wait(i_task			id,
 				  t_options			opts,
-				  t_wait*			wait);
+				  s_wait*			wait);
+
+t_error			task_current(i_task*			task);
 
 t_error			task_exist(i_task			id);
 

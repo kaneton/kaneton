@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/Makefile
 #
 # created       julien quintard   [tue jun 26 15:39:11 2007]
-# updated       julien quintard   [tue may 11 19:33:44 2010]
+# updated       julien quintard   [fri dec 10 15:25:51 2010]
 #
 
 #
@@ -35,6 +35,7 @@ include			../../environment/env.mk
 
 SUBDIRS			:=		as				\
 					capability			\
+					clock				\
 					cpu				\
 					event				\
 					id				\
@@ -49,12 +50,13 @@ SUBDIRS			:=		as				\
 					set				\
 					task				\
 					thread				\
-					time
+					timer
 
 # kaneton objects
 
 KANETON_LO		:=		$(_AS_LO_)			\
 					$(_CAPABILITY_LO_)		\
+					$(_CLOCK_LO_)			\
 					$(_CPU_LO_)			\
 					$(_DEBUG_LO_)			\
 					$(_EVENT_LO_)			\
@@ -70,7 +72,7 @@ KANETON_LO		:=		$(_AS_LO_)			\
 					$(_SET_LO_)			\
 					$(_TASK_LO_)			\
 					$(_THREAD_LO_)			\
-					$(_TIME_LO_)			
+					$(_TIMER_LO_)			
 
 # core component
 

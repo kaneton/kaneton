@@ -12,13 +12,12 @@
 #ifndef PLATFORM_PIT_H
 #define PLATFORM_PIT_H	1
 
-
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
- * pit ports
+ * PIT ports
  */
 
 #define PLATFORM_PIT_0			0x40
@@ -28,7 +27,7 @@
 #define PLATFORM_PIT_8254_CTRL		0x43
 
 /*
- * pit oscillator frequency
+ * PIT oscillator frequency
  */
 
 #define PLATFORM_PIT_RATE		1193180

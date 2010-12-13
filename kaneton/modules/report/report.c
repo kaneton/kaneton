@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/modules/report/report.c
+ * file          /home/mycure/kaneton/kaneton/modules/report/report.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [mon dec  6 17:27:56 2010]
+ * updated       julien quintard   [fri dec 10 14:12:58 2010]
  */
 
 /*
@@ -37,10 +37,10 @@
  */
 
 /*
- * the module structure.
+ * the module manager.
  */
 
-m_module_report		_module_report;
+mm_report		_module_report;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -66,7 +66,7 @@ void			module_report_dump(void)
       if (_module_report.buffer[i] == '\0' && (j - i) > 0)
 	{
 	  module_call(console, message,
-		      '!', "%s\n",
+		      '!', "  %s\n",
 		      _module_report.buffer + i + 1);
 
 	  j = i;
@@ -75,7 +75,7 @@ void			module_report_dump(void)
 
   if ((j - i) > 0)
     module_call(console, message,
-		'!', "%s\n",
+		'!', "  %s\n",
 		_module_report.buffer + i + 1);
 
   _module_report.offset = 0;
@@ -153,7 +153,7 @@ t_error			module_report_load(void)
    * 2)
    */
 
-  memset(&_module_report, 0x0, sizeof (m_module_report));
+  memset(&_module_report, 0x0, sizeof (mm_report));
 
   MODULE_LEAVE();
 }

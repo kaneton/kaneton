@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/platform/ibm-pc/include/platform.h
  *
  * created       julien quintard   [mon jun 11 05:59:19 2007]
- * updated       julien quintard   [wed nov 24 13:07:19 2010]
+ * updated       julien quintard   [thu dec  9 14:37:15 2010]
  */
 
 /*
@@ -29,7 +29,7 @@
 #include <core/error.h>
 
 #include <platform/console.h>
-#include <platform/irq.h>
+#include <platform/pic.h>
 #include <platform/pit.h>
 #include <platform/rtc.h>
 #include <platform/serial.h>

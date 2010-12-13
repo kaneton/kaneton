@@ -12,27 +12,21 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this subpart of the set manager is used to build linked-list
- * data structures.
+ * this set implementation provides a linked-list data structure. note that
+ * this data structure is in fact a doubly linked-list.
  *
- * note that this data structure is in fact a doubly linked-list.
+ * as for the 'array' implementation, this type of set can be used in
+ * two ways. either objects are cloned and stored, in which case the
+ * ALLOCATE option is required, or pointers to objects are stored directly,
+ * implying that the objects have been allocated beforehand.
  *
- * each set of this type can be used in two ways. the first one ask the
- * set manager to allocate and copy each object to add while the second
- * way tells the set manager to simply include the objects in the set.
+ * note that the 'datasz' argument of the set_reserve() function is
+ * meaningful only if the ALLOCATE option is set.
  *
- * moreover the option free can be used to tell the set manager to call
- * the free() function each time an object is released. this option
- * means that objects passed to the set manager was previously allocated
- * with the malloc() functions suite.
- *
- * moreover, the linked-list data structure can be used either with the
- * sort option or without.
- *
- * the datasz argument of the set_reserve() function is meaningful only in the
- * case the allocate or free options are set.
- *
- * options: SET_OPTION_CONTAINER, SET_OPTION_SORT, SET_OPTION_ALLOC,
+ * options:
+ *   SET_OPTION_CONTAINER
+ *   SET_OPTION_SORT
+ *   SET_OPTION_ALLOCATE
  *   SET_OPTION_FREE
  */
 
@@ -46,6 +40,10 @@
  * ---------- externs ---------------------------------------------------------
  */
 
+/*
+ * the set manager.
+ */
+
 extern m_set*		_set;
 
 /*
@@ -53,53 +51,37 @@ extern m_set*		_set;
  */
 
 /*
- * this function tells if the set object is a linked-list set.
- */
-
-t_error			set_type_ll(i_set			setid)
-{
-  o_set*		o;
-
-  if (set_descriptor(setid, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the set descriptor");
-
-  if (o->type != SET_TYPE_LL)
-    CORE_ESCAPE("invalid set type");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function tries to find an object with its identifier and returns
- * true or false.
+ * this function returns true if the given identifier is registered in
+ * the set.
  *
  * steps:
  *
- * 1) checks if the identifier is a correct one.
- * 2) gets the set object corresponding to the set identifier.
- * 3) tries to find the identifier looked for in the set object's elements.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) walk through the objects and try to locate the object, otherwise
+ *    return false.
  */
 
 t_error			set_exist_ll(i_set			setid,
 				     t_id			id)
 {
-  t_set_ll_node*	tmp;
+  s_set_ll_node*	tmp;
   o_set*		o;
 
   /*
-   * 1)
+   * 0)
    */
 
   assert(id != ID_UNUSED);
 
   /*
-   * 2)
+   * 1)
    */
 
   assert(set_descriptor(setid, &o) == ERROR_OK);
 
   /*
-   * 3)
+   * 2)
    */
 
   for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->next)
@@ -112,19 +94,23 @@ t_error			set_exist_ll(i_set			setid,
 }
 
 /*
- * this function shows set objects contained in a set.
+ * this function shows a set's attributes.
  *
  * steps:
  *
- * 1) gets the set descriptor from its identifier.
- * 2) prints each objects' identifier.
+ * 1) retrieve the set descriptor.
+ * 2) build the options string.
+ * 3) display general information.
+ * 4) go through the objects and display them.
  */
 
-t_error			set_show_ll(i_set			setid)
+t_error			set_show_ll(i_set			setid,
+				    mt_margin			margin)
 {
+  char			options[5];
   t_state		state;
   o_set*		o;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -137,18 +123,63 @@ t_error			set_show_ll(i_set			setid)
    * 2)
    */
 
+  if (o->options & SET_OPTION_CONTAINER)
+    options[0] = 'c';
+  else
+    options[0] = '.';
+
+  if (o->options & SET_OPTION_SORT)
+    options[1] = 's';
+  else
+    options[1] = '.';
+
+  if (o->options & SET_OPTION_ALLOCATE)
+    options[2] = 'a';
+  else
+    options[2] = '.';
+
+  if (o->options & SET_OPTION_FREE)
+    options[3] = 'f';
+  else
+    options[3] = '.';
+
+  options[4] = '\0';
+
+  /*
+   * 3)
+   */
+
   module_call(console, message,
-	      '#', "  %qd node(s) from the linked-list set %qd\n",
-	      o->size,
-	      setid);
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "set: id(%qu) type(ll) datasz(%u) options(%s) "
+	      "head(0x%x) tail(0x%x) #objects(%qu)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->id,
+	      o->datasz,
+	      options,
+	      o->u.ll.head,
+	      o->u.ll.tail,
+	      o->size);
+
+  /*
+   * 4)
+   */
 
   set_foreach(SET_OPTION_FORWARD, setid, &i, state)
     {
-      t_set_ll_node*	n = i.u.ll.node;
+      s_set_ll_node*	n = i.u.ll.node;
 
       module_call(console, message,
-		  '#', "    %qd <0x%x, 0x%x, 0x%x>\n",
-		  *((t_id*)n->data), n->previous, n, n->next);
+		  '#',
+		  MODULE_CONSOLE_MARGIN_FORMAT
+		  "  object: id(%qu) previous(0x%x) "
+		  "current(0x%x) next(0x%x)\n",
+		  MODULE_CONSOLE_MARGIN_VALUE(margin),
+		  *((t_id*)n->data),
+		  n->previous,
+		  n,
+		  n->next);
     }
 
   CORE_LEAVE();
@@ -157,22 +188,41 @@ t_error			set_show_ll(i_set			setid)
 /*
  * this function returns an iterator on the first node of the list.
  *
- * if there is no node in the list, the function returns ERROR_FALSE.
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) if the set is empty, return false.
+ * 3) set the iterator.
  */
 
 t_error			set_head_ll(i_set			setid,
-				    t_iterator*			iterator)
+				    s_iterator*			iterator)
 {
   o_set*		o;
 
+  /*
+   * 0)
+   */
+
   assert(iterator != NULL);
 
-  memset(iterator, 0x0, sizeof(t_iterator));
+  /*
+   * 1)
+   */
 
   assert(set_descriptor(setid, &o) == ERROR_OK);
 
+  /*
+   * 2)
+   */
+
   if (o->size == 0)
     CORE_FALSE();
+
+  /*
+   * 3)
+   */
 
   iterator->u.ll.node = o->u.ll.head;
 
@@ -182,22 +232,41 @@ t_error			set_head_ll(i_set			setid,
 /*
  * this function returns an iterator on the last node of the list.
  *
- * if there is no node in the list, the function returns ERROR_FALSE.
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) if the set is empty, return false.
+ * 3) set the iterator.
  */
 
 t_error			set_tail_ll(i_set			setid,
-				    t_iterator*			iterator)
+				    s_iterator*			iterator)
 {
   o_set*		o;
 
+  /*
+   * 0)
+   */
+
   assert(iterator != NULL);
 
-  memset(iterator, 0x0, sizeof(t_iterator));
+  /*
+   * 1)
+   */
 
   assert(set_descriptor(setid, &o) == ERROR_OK);
 
+  /*
+   * 2)
+   */
+
   if (o->size == 0)
     CORE_FALSE();
+
+  /*
+   * 3)
+   */
 
   iterator->u.ll.node = o->u.ll.tail;
 
@@ -206,23 +275,44 @@ t_error			set_tail_ll(i_set			setid,
 
 /*
  * this function returns an iterator on the previous node.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) if there is no previous object, return false.
+ * 3) set the iterator.
  */
 
 t_error			set_previous_ll(i_set			setid,
-					t_iterator		current,
-					t_iterator*		previous)
+					s_iterator		current,
+					s_iterator*		previous)
 {
-  t_set_ll_node*	c = current.u.ll.node;
+  s_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
+
+  /*
+   * 0)
+   */
 
   assert(previous != NULL);
 
-  memset(previous, 0x0, sizeof(t_iterator));
+  /*
+   * 1)
+   */
 
   assert(set_descriptor(setid, &o) == ERROR_OK);
 
+  /*
+   * 2)
+   */
+
   if (c->previous == NULL)
     CORE_FALSE();
+
+  /*
+   * 3)
+   */
 
   previous->u.ll.node = c->previous;
 
@@ -231,23 +321,44 @@ t_error			set_previous_ll(i_set			setid,
 
 /*
  * this function returns an iterator on the next node of the list.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) if there is no previous object, return false.
+ * 3) set the iterator.
  */
 
 t_error			set_next_ll(i_set			setid,
-				    t_iterator			current,
-				    t_iterator*			next)
+				    s_iterator			current,
+				    s_iterator*			next)
 {
-  t_set_ll_node*	c = current.u.ll.node;
+  s_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
+
+  /*
+   * 0)
+   */
 
   assert(next != NULL);
 
-  memset(next, 0x0, sizeof(t_iterator));
+  /*
+   * 1)
+   */
 
   assert(set_descriptor(setid, &o) == ERROR_OK);
 
+  /*
+   * 2)
+   */
+
   if (c->next == NULL)
     CORE_FALSE();
+
+  /*
+   * 3)
+   */
 
   next->u.ll.node = c->next;
 
@@ -259,58 +370,59 @@ t_error			set_next_ll(i_set			setid,
  *
  * steps:
  *
- * 1) avoids bad identifiers.
- * 2) gets the set descriptor corresponding to the set identifier.
- * 3) if the sort option is enable, this operation is not allowed.
- * 4) allocates and initializes the new node.
- * 5) performs operations from the set options: alloc or not etc.
- * 6) inserts the new node and reorganises the list.
- * 7) increments the number of nodes in the list.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) check that this operation is allowed for this set.
+ * 3) allocate and initialize the new node.
+ * 4) clone the object if required.
+ * 5) insert the new node and arrange the neighbour nodes.
+ * 6) update the set's size.
  */
 
 t_error			set_insert_ll(i_set			setid,
 				      void*			data)
 {
-  t_set_ll_node		*n;
+  s_set_ll_node*	n;
   o_set*		o;
 
-  assert(data != NULL);
-
   /*
-   * 1)
+   * 0)
    */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
 
   if (*((t_id*)data) == ID_UNUSED)
     CORE_ESCAPE("the provided object must begin with a valid identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
   if (o->options & SET_OPTION_SORT)
     CORE_ESCAPE("unable to insert an object in a sorted set");
 
   /*
+   * 3)
+   */
+
+  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
+
+  memset(n, 0x0, sizeof(s_set_ll_node));
+
+  /*
    * 4)
    */
 
-  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the linked-list node");
-
-  memset(n, 0x0, sizeof(t_set_ll_node));
-
-  /*
-   * 5)
-   */
-
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
@@ -327,7 +439,7 @@ t_error			set_insert_ll(i_set			setid,
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   n->previous = NULL;
@@ -342,7 +454,7 @@ t_error			set_insert_ll(i_set			setid,
     o->u.ll.tail = n;
 
   /*
-   * 7)
+   * 6)
    */
 
   o->size++;
@@ -351,62 +463,63 @@ t_error			set_insert_ll(i_set			setid,
 }
 
 /*
- * this function inserts a new node at the tail of the list.
+ * this function inserts a new node at the end of the list.
  *
  * steps:
  *
- * 1) avoid bad identifiers.
- * 2) gets the set descriptor corresponding to the set identifier.
- * 3) if the sort option is enable, this operation is not allowed.
- * 4) allocates and initializes the new node.
- * 5) performs operations from the set options: alloc or not etc.
- * 6) inserts the new node and reorganises the list.
- * 7) increments the number of nodes in the list.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) check that this operation is allowed for this set.
+ * 3) allocate and initialize the new node.
+ * 4) clone the object if required.
+ * 5) insert the new node and arrange the neighbour nodes.
+ * 6) update the set's size.
  */
 
 t_error			set_append_ll(i_set			setid,
 				      void*			data)
 {
-  t_set_ll_node		*n;
+  s_set_ll_node*	n;
   o_set*		o;
 
-  assert(data != NULL);
-
   /*
-   * 1)
+   * 0)
    */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
 
   if (*((t_id*)data) == ID_UNUSED)
     CORE_ESCAPE("the provided object must begin with a valid identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
   if (o->options & SET_OPTION_SORT)
     CORE_ESCAPE("unable to append an object to a sorted set");
 
   /*
+   * 3)
+   */
+
+  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
+
+  memset(n, 0x0, sizeof(s_set_ll_node));
+
+  /*
    * 4)
    */
 
-  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the linked-list node");
-
-  memset(n, 0x0, sizeof(t_set_ll_node));
-
-  /*
-   * 5)
-   */
-
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
@@ -423,7 +536,7 @@ t_error			set_append_ll(i_set			setid,
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   n->previous = o->u.ll.tail;
@@ -438,7 +551,7 @@ t_error			set_append_ll(i_set			setid,
     o->u.ll.head = n;
 
   /*
-   * 7)
+   * 6)
    */
 
   o->size++;
@@ -451,60 +564,61 @@ t_error			set_append_ll(i_set			setid,
  *
  * steps:
  *
- * 1) checks for a bad identifier.
- * 2) gets the descriptor of the set.
- * 3) does not allow this operation if the sort option is not set.
- * 4) allocates a new node and initializes it.
- * 5) if the alloc option is set, allocates space for the object.
- * 6) inserts the node, so reorganises the linked-list.
- * 7) increments the objects counter.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) check that this operation is allowed for this set.
+ * 3) allocate and initialize the new node.
+ * 4) clone the object if required.
+ * 5) insert the new node and arrange the neighbour nodes.
+ * 6) update the set's size.
  */
 
 t_error			set_before_ll(i_set			setid,
-				      t_iterator		iterator,
+				      s_iterator		iterator,
 				      void*			data)
 {
-  t_set_ll_node		*i = iterator.u.ll.node;
-  t_set_ll_node		*n;
+  s_set_ll_node*	i = iterator.u.ll.node;
+  s_set_ll_node*	n;
   o_set*		o;
 
-  assert(data != NULL);
-
   /*
-   * 1)
+   * 0)
    */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
 
   if (*((t_id*)data) == ID_UNUSED)
     CORE_ESCAPE("the provided object must begin with a valid identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
   if (o->options & SET_OPTION_SORT)
     CORE_ESCAPE("unable to insert at a precise location in a sorted set");
 
   /*
+   * 3)
+   */
+
+  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
+
+  memset(n, 0x0, sizeof(s_set_ll_node));
+
+  /*
    * 4)
    */
 
-  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the linked-list node");
-
-  memset(n, 0x0, sizeof(t_set_ll_node));
-
-  /*
-   * 5)
-   */
-
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
@@ -521,7 +635,7 @@ t_error			set_before_ll(i_set			setid,
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   n->previous = i->previous;
@@ -535,7 +649,7 @@ t_error			set_before_ll(i_set			setid,
     o->u.ll.head = n;
 
   /*
-   * 7)
+   * 6)
    */
 
   o->size++;
@@ -549,60 +663,61 @@ t_error			set_before_ll(i_set			setid,
  *
  * steps:
  *
- * 1) checks for a bad identifier.
- * 2) gets the descriptor of the set.
- * 3) does not allow this operation if the sort option is not set.
- * 4) allocates a new node and initializes it.
- * 5) if the alloc option is set, allocates space for the object.
- * 6) inserts the node, so reorganises the linked-list.
- * 7) increments the objects counter.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) check that this operation is allowed for this set.
+ * 3) allocate and initialize the new node.
+ * 4) clone the object if required.
+ * 5) insert the new node and arrange the neighbour nodes.
+ * 6) update the set's size.
  */
 
 t_error			set_after_ll(i_set			setid,
-				     t_iterator			iterator,
+				     s_iterator			iterator,
 				     void*			data)
 {
-  t_set_ll_node		*i = iterator.u.ll.node;
-  t_set_ll_node		*n;
+  s_set_ll_node*	i = iterator.u.ll.node;
+  s_set_ll_node*	n;
   o_set*		o;
 
-  assert(data != NULL);
-
   /*
-   * 1)
+   * 0)
    */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
 
   if (*((t_id*)data) == ID_UNUSED)
     CORE_ESCAPE("the provided object must begin with a valid identifier");
 
  /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
   if (o->options & SET_OPTION_SORT)
     CORE_ESCAPE("unable to insert at a precise location in a sorted set");
 
   /*
+   * 3)
+   */
+
+  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
+
+  memset(n, 0x0, sizeof(s_set_ll_node));
+
+  /*
    * 4)
    */
 
-  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the linked-list node");
-
-  memset(n, 0x0, sizeof(t_set_ll_node));
-
-  /*
-   * 5)
-   */
-
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
@@ -619,7 +734,7 @@ t_error			set_after_ll(i_set			setid,
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   n->next = i->next;
@@ -633,7 +748,7 @@ t_error			set_after_ll(i_set			setid,
     o->u.ll.tail = n;
 
   /*
-   * 7)
+   * 6)
    */
 
   o->size++;
@@ -646,58 +761,61 @@ t_error			set_after_ll(i_set			setid,
  *
  * steps:
  *
- * 1) avoids bad identifiers.
- * 2) gets the set descriptor corresponding to the set identifier.
- * 3) allocates and initializes the new node for the new object.
- * 4) performs operations from the set options: alloc or not etc.
- * 5) inserts the new node in the list.
- *   A) sorts the nodes.
- *     a) inserts the new node in the list.
- *       i) there is an identifier collision so the add operation
- *          is not possible.
- *       ii) inserts the new node in the linked-list.
- *     b) inserts the new node at the end of the list.
- *     c) the list is empty, so the new node becomes the list.
- *   B) does not sort the nodes.
- * 6) increments the number of nodes in the list.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) allocate and initialize the new node.
+ * 3) clone the object if required.
+ * 4) insert the new node and arrange the neighbour nodes depending on
+ *    the options.
+ *   A) if the SORT option has been activated...
+ *     a) insert the new node in the list.
+ *       i) there is an identifier collision; the operation is cancelled.
+ *       ii) try to insert the new node in the list i.e before a node
+ *           with a higher identifier.
+ *     b) if no such node has been found, insert the node at the end
+ *        of the list.
+ *     c) if the list is empty: the new node becomes the list.
+ *   B) otherwise...
+ *     a) insert the node at the head of the list.
+ * 5) update the set's size.
  */
 
 t_error			set_add_ll(i_set			setid,
 				   void*			data)
 {
-  t_set_ll_node*	n;
+  s_set_ll_node*	n;
   o_set*		o;
 
-  assert(data != NULL);
-
   /*
-   * 1)
+   * 0)
    */
+
+  assert(data != NULL);
 
   if (*((t_id*)data) == ID_UNUSED)
     CORE_ESCAPE("the provided object must begin with a valid identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
+   * 2)
+   */
+
+  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the linked-list node");
+
+  memset(n, 0x0, sizeof(s_set_ll_node));
+
+  /*
    * 3)
    */
 
-  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the linked-list node");
-
-  memset(n, 0x0, sizeof(t_set_ll_node));
-
-  /*
-   * 4)
-   */
-
-  if (o->options & SET_OPTION_ALLOC)
+  if (o->options & SET_OPTION_ALLOCATE)
     {
       if ((n->data = malloc(o->datasz)) == NULL)
 	{
@@ -714,7 +832,7 @@ t_error			set_add_ll(i_set			setid,
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   if (o->options & SET_OPTION_SORT)
@@ -725,7 +843,7 @@ t_error			set_add_ll(i_set			setid,
 
       if (o->u.ll.head != NULL)
 	{
-	  t_set_ll_node	*tmp;
+	  s_set_ll_node*	tmp;
 
 	  /*
 	   * a)
@@ -739,7 +857,7 @@ t_error			set_add_ll(i_set			setid,
 		   * i)
 		   */
 
-		  if ((o->options & SET_OPTION_ALLOC) ||
+		  if ((o->options & SET_OPTION_ALLOCATE) ||
 		      (o->options & SET_OPTION_FREE))
 		    free(n->data);
 
@@ -810,6 +928,10 @@ t_error			set_add_ll(i_set			setid,
        * B)
        */
 
+      /*
+       * a)
+       */
+
       n->previous = NULL;
       n->next = o->u.ll.head;
 
@@ -823,7 +945,7 @@ t_error			set_add_ll(i_set			setid,
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   o->size++;
@@ -836,20 +958,29 @@ t_error			set_add_ll(i_set			setid,
  *
  * steps:
  *
- * 1) gets the set descriptor given its set identifier.
- * 2) tries to locate the looked for node given its identifier.
- * 3) reorganises the linked-list.
- * 4) if needed, frees the object's memory.
- * 5) frees the node's memory.
- * 6) decrements the number of nodes in the linked-list data structure.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) locate the object to remove.
+ * 3) save a pointer on the node.
+ * 4) arrange the list so that the node no longer gets referenced.
+ * 5) release the object's memory, if required.
+ * 6) release the node's memory.
+ * 7) update the set's size.
  */
 
 t_error			set_remove_ll(i_set			setid,
 				      t_id			id)
 {
-  t_set_ll_node*	tmp;
+  s_set_ll_node*	tmp;
   o_set*		o;
-  t_iterator		i;
+  s_iterator		i;
+
+  /*
+   * 0)
+   */
+
+  if (id == ID_UNUSED)
+    CORE_ESCAPE("invalid identifier");
 
   /*
    * 1)
@@ -865,10 +996,14 @@ t_error			set_remove_ll(i_set			setid,
   if (set_locate(setid, id, &i) != ERROR_OK)
     CORE_ESCAPE("unable to locate the object in the set");
 
+  /*
+   * 3)
+   */
+
   tmp = i.u.ll.node;
 
   /*
-   * 3)
+   * 4)
    */
 
   if (tmp->previous != NULL)
@@ -882,21 +1017,21 @@ t_error			set_remove_ll(i_set			setid,
     o->u.ll.tail = tmp->previous;
 
   /*
-   * 4)
+   * 5)
    */
 
-  if ((o->options & SET_OPTION_ALLOC) ||
+  if ((o->options & SET_OPTION_ALLOCATE) ||
       (o->options & SET_OPTION_FREE))
     free(tmp->data);
 
   /*
-   * 5)
+   * 6)
    */
 
   free(tmp);
 
   /*
-   * 6)
+   * 7)
    */
 
   o->size--;
@@ -905,22 +1040,23 @@ t_error			set_remove_ll(i_set			setid,
 }
 
 /*
- * this function deletes an element given an iterator.
+ * this function deletes an element whose location is given by the iterator.
  *
  * steps:
  *
- * 1) gets the descriptor by its identifier.
- * 2) checks the iterator.
- * 3) updates the links.
- * 4) frees data if necessary.
- * 5) frees node.
- * 6) updates counter.
+ * 1) retrieve the set descriptor.
+ * 2) save the node's address.
+ * 3) if the iterator is invalid, return an error.
+ * 4) arrange the list so that the node no longer gets referenced.
+ * 5) release the object's memory, if required.
+ * 6) release the node's memory.
+ * 7) update the set's size.
  */
 
 t_error			set_delete_ll(i_set			setid,
-				      t_iterator		iterator)
+				      s_iterator		iterator)
 {
-  t_set_ll_node*	n;
+  s_set_ll_node*	n;
   o_set*		o;
 
   /*
@@ -935,11 +1071,16 @@ t_error			set_delete_ll(i_set			setid,
    */
 
   n = iterator.u.ll.node;
-  if (n == NULL)
-    CORE_ESCAPE("the object the iterator points to does not exist");
 
   /*
    * 3)
+   */
+
+  if (n == NULL)
+    CORE_ESCAPE("the iterator's internal pointer is invalid");
+
+  /*
+   * 4)
    */
 
   if (n->previous)
@@ -953,21 +1094,21 @@ t_error			set_delete_ll(i_set			setid,
     o->u.ll.tail = n->previous;
 
   /*
-   * 4)
+   * 5)
    */
 
   if (o->options & SET_OPTION_FREE ||
-      o->options & SET_OPTION_ALLOC)
+      o->options & SET_OPTION_ALLOCATE)
     free(n->data);
 
   /*
-   * 5)
+   * 6)
    */
 
   free(n);
 
   /*
-   * 6)
+   * 7)
    */
 
   o->size--;
@@ -976,19 +1117,21 @@ t_error			set_delete_ll(i_set			setid,
 }
 
 /*
- * this function flushes the set, freeing each element.
+ * this function flushes the set.
  *
  * steps
  *
- * 1) gets the descriptor given its identifier.
- * 2) frees each object of the set.
- * 3) resets the linked-list variables.
- * 4) resets the linked-list counter.
+ * 1) retrieve the set descriptor.
+ * 2) go through the objects.
+ *   a) if required, release the object's memory.
+ *   b) release the node's memory.
+ * 3) re-initialize the head and tail pointers.
+ * 4) re-set the size to zero.
  */
 
 t_error			set_flush_ll(i_set			setid)
 {
-  t_set_ll_node*	tmp;
+  s_set_ll_node*	tmp;
   o_set*		o;
 
   /*
@@ -1004,9 +1147,9 @@ t_error			set_flush_ll(i_set			setid)
 
   for (tmp = o->u.ll.tail; tmp != NULL; )
     {
-      t_set_ll_node*	t = tmp->previous;
+      s_set_ll_node*	t = tmp->previous;
 
-      if ((o->options & SET_OPTION_ALLOC) ||
+      if ((o->options & SET_OPTION_ALLOCATE) ||
 	  (o->options & SET_OPTION_FREE))
 	free(tmp->data);
 
@@ -1032,41 +1175,43 @@ t_error			set_flush_ll(i_set			setid)
 }
 
 /*
- * this function tries to find an object with its identifier and build
- * a corresponding iterator.
+ * this function tries to locate an object according to its identifier
+ * and build a corresponding iterator.
  *
  * steps:
  *
- * 1) checks if the identifier is a correct one.
- * 2) gets the set object corresponding to the set identifier.
- * 3) tries to find the identifier looked for in the set object's elements.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) go through the objects and return an iterator if found.
+ * 3) otherwise, return an error.
  */
 
 t_error			set_locate_ll(i_set			setid,
 				      t_id			id,
-				      t_iterator*		iterator)
+				      s_iterator*		iterator)
 {
-  t_set_ll_node*	tmp;
+  s_set_ll_node*	tmp;
   o_set*		o;
 
-  assert(iterator != NULL);
-
   /*
-   * 1)
+   * 0)
    */
+
+  if (iterator == NULL)
+    CORE_ESCAPE("the 'iterator' argument is null");
 
   if (id == ID_UNUSED)
     CORE_ESCAPE("invalid object identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
   for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->next)
@@ -1079,18 +1224,47 @@ t_error			set_locate_ll(i_set			setid,
 	}
     }
 
+  /*
+   * 3)
+   */
+
   CORE_ESCAPE("unable to find the given object identifier in the set");
 }
 
 /*
  * this function returns an object given its iterator.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) return the object.
  */
 
 t_error			set_object_ll(i_set			setid,
-				      t_iterator		iterator,
+				      s_iterator		iterator,
 				      void**			data)
 {
-  t_set_ll_node*	n = iterator.u.ll.node;
+  s_set_ll_node*	n = iterator.u.ll.node;
+  o_set*		o;
+
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(setid, &o) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the set descriptor");
+
+  /*
+   * 2)
+   */
 
   *data = n->data;
 
@@ -1098,62 +1272,63 @@ t_error			set_object_ll(i_set			setid,
 }
 
 /*
- * this function reserves a set.
+ * this function reserves a set according to several options.
  *
  * steps:
  *
- * 1) initializes the set descriptor.
- * 2) avoids bad options.
- * 3) if necessary, reserves an unused identifier for this new set.
- * 4) initializes the set descriptor fields.
- * 5) adds the set descriptor to the set container.
+ * 0) verify the arguments.
+ * 1) assign an identifier, depending on the options: either this is
+ *    the set container or not. if it is, take the set container identifier
+ *    that is in the set manager.
+ * 2) initialize and fill the set descriptor.
+ * 3) register the set descriptor.
  */
 
 t_error			set_reserve_ll(t_options		options,
 				       t_size			datasz,
-				       i_set*			setid)
+				       i_set*			id)
 {
   o_set			o;
 
-  assert(datasz >= sizeof (t_id));
-  assert(setid != NULL);
-
   /*
-   * 1)
+   * 0)
    */
 
-  memset(&o, 0x0, sizeof(o_set));
+  if (datasz < sizeof (t_id))
+    CORE_ESCAPE("unable to reserve a set for objects smaller than "
+		"an identifier");
 
-  /*
-   * 2)
-   */
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
 
   if (options & SET_OPTION_ORGANISE)
     CORE_ESCAPE("unable to set the organise option since linked-list sets "
 		"are implicitly organised");
 
-  if ((options & SET_OPTION_ALLOC) && (options & SET_OPTION_FREE))
+  if ((options & SET_OPTION_ALLOCATE) && (options & SET_OPTION_FREE))
     CORE_ESCAPE("unable to reserve a set with both alloc and free options");
 
   /*
-   * 3)
+   * 1)
    */
 
   if (options & SET_OPTION_CONTAINER)
     {
-      *setid = _set->sets;
+      *id = _set->sets;
     }
   else
     {
-      if (id_reserve(&_set->id, setid) != ERROR_OK)
+      if (id_reserve(&_set->id, id) != ERROR_OK)
 	CORE_ESCAPE("unable to reserve the set identifier");
     }
 
   /*
-   * 4)
+   * 2)
    */
 
-  o.id = *setid;
+  memset(&o, 0x0, sizeof(o_set));
+
+  o.id = *id;
   o.size = 0;
   o.type = SET_TYPE_LL;
   o.options = options;
@@ -1163,7 +1338,7 @@ t_error			set_reserve_ll(t_options		options,
   o.u.ll.tail = NULL;
 
   /*
-   * 5)
+   * 3)
    */
 
   if (set_new(&o) != ERROR_OK)
@@ -1182,10 +1357,10 @@ t_error			set_reserve_ll(t_options		options,
  *
  * steps:
  *
- * 1) gets the set given its set identifier.
- * 2) flushs the set to release every objects contained in it.
- * 3) releases the set identifier.
- * 4) then, removes the set from the set container, if possible.
+ * 1) retrieve the set descriptor.
+ * 2) flush the set.
+ * 3) release the set identifier.
+ * 4) remove the set descriptor from the set container.
  */
 
 t_error			set_release_ll(i_set			setid)
@@ -1217,11 +1392,8 @@ t_error			set_release_ll(i_set			setid)
    * 4)
    */
 
-  if (!(o->options & SET_OPTION_CONTAINER))
-    {
-      if (set_destroy(o->id) != ERROR_OK)
-	CORE_ESCAPE("unable to destroy the set descriptor");
-    }
+  if (set_destroy(o->id) != ERROR_OK)
+    CORE_ESCAPE("unable to destroy the set descriptor");
 
   CORE_LEAVE();
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...STABLE/kaneton/modules/console/console.c
+ * file          /home/mycure/kaneton/kaneton/modules/console/console.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sun dec  5 16:36:28 2010]
+ * updated       julien quintard   [fri dec 10 14:12:23 2010]
  */
 
 /*
@@ -30,7 +30,11 @@
  * ---------- globals ---------------------------------------------------------
  */
 
-m_module_console	_module_console;
+/*
+ * the console module manager.
+ */
+
+mm_console		_module_console;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -40,7 +44,7 @@ m_module_console	_module_console;
  * this function is called by format() for displaying a character.
  */
 
-void			module_console_character(char			c)
+void			module_console_character(char		c)
 {
   if (_module_console.character == NULL)
     return;
@@ -166,8 +170,8 @@ void			module_console_print(char*		fmt,
  * this function sets the console configuration pointers.
  */
 
-t_error			module_console_set(f_module_console_character	character,
-					   f_module_console_attribute	attribute)
+t_error			module_console_set(mf_console_character	character,
+					   mf_console_attribute	attribute)
 {
   _module_console.character = character;
   _module_console.attribute = attribute;
@@ -179,8 +183,8 @@ t_error			module_console_set(f_module_console_character	character,
  * this function returns the console configuration pointers.
  */
 
-t_error			module_console_get(f_module_console_character*	character,
-					   f_module_console_attribute*	attribute)
+t_error			module_console_get(mf_console_character* character,
+					   mf_console_attribute* attribute)
 {
   *character = _module_console.character;
   *attribute = _module_console.attribute;
@@ -207,7 +211,7 @@ t_error			module_console_load(void)
    * 1)
    */
 
-  memset(&_module_console, 0x0, sizeof (m_module_console));
+  memset(&_module_console, 0x0, sizeof (mm_console));
 
   /*
    * 2)

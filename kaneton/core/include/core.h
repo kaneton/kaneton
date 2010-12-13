@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/core.h
+ * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [sat dec  4 23:05:04 2010]
+ * updated       julien quintard   [fri dec 10 11:30:51 2010]
  */
 
 #ifndef CORE_CORE_H
@@ -111,10 +111,10 @@
 #include <core/task.h>
 #include <core/cpu.h>
 #include <core/scheduler.h>
+
+// [XXX:improvements] re-develop everything below
 #include <core/message.h>
 #include <core/capability.h>
-
-/* XXX badly generated: rethink the syntax */
 #include <core/interface.h>
 
 /*
@@ -127,7 +127,7 @@
  * ../../core/core.c
  */
 
-void			kaneton(t_init*				bootloader);
+void			kaneton(s_init*				init);
 
 t_error			kaneton_spawn(void);
 

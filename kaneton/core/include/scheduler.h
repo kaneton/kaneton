@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo....STABLE/kaneton/core/include/scheduler.h
+ * file          /home/mycure/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [fri dec  3 16:19:13 2010]
+ * updated       julien quintard   [sun dec 12 13:43:42 2010]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -25,11 +25,21 @@
 #include <machine/machine.h>
 
 /*
+ * ---------- algorithms ------------------------------------------------------
+ */
+
+/*
+ * the supported scheduler algorithms.
+ */
+
+#define SCHEDULER_ALGORITHM_MFQ		(1 << 0)
+
+/*
  * ---------- macros ----------------------------------------------------------
  */
 
 /*
- * the scheduler state.
+ * the scheduler state either started or stopped.
  */
 
 #define SCHEDULER_STATE_START		1
@@ -47,28 +57,27 @@
  * the number of priority levels for the scheduler.
  */
 
-#define SCHEDULER_N_PRIORITY_QUEUE	40
+#define SCHEDULER_NPRIORITIES		40
 
 /*
- * timeslice constants.
+ * timeslice bounds.
  */
 
-#define SCHEDULER_TIMESLICE_MIN		20
-#define SCHEDULER_TIMESLICE_MAX		200
-#define SCHEDULER_TIMESLICE_GRANULARITY	_scheduler->quantum
+#define SCHEDULER_TIMESLICE_HIGH	200
+#define SCHEDULER_TIMESLICE_LOW		20
 
 /*
- * scheduling priorities
+ * the timeslice granularity.
+ */
+
+#define SCHEDULER_GRANULARITY		_scheduler->quantum
+
+/*
+ * scheduling priorities.
  */
 
 #define SCHEDULER_PRIORITY_HIGH		0
-#define SCHEDULER_PRIORITY_LOW		SCHEDULER_N_PRIORITY_QUEUE - 1
-
-/*
- * ---------- algorithms ------------------------------------------------------
- */
-
-#define SCHEDULER_ALGORITHM_MFQ		(1 << 0)
+#define SCHEDULER_PRIORITY_LOW		SCHEDULER_NPRIORITIES - 1
 
 /*						[endblock::macro::constants] */
 
@@ -79,80 +88,192 @@
 /*						   [block::macro::functions] */
 
 /*
- * this macro function computes the  global priority of a thread.  the
- * global  priority is  an high  precision measurement  of  a thread's
- * priority. used for timeslice computation.
+ * this macro-function computes the thread's character i.e global priority.
+ * the character is a high precision measurement of a thread's priority which
+ * is used for timeslice computation.
  */
 
-#define SCHEDULER_COMPUTE_GLOBAL_PRIORITY(_thread_)			\
-  ({									\
-    o_thread*		oth;						\
-    o_task*		otsk;						\
-    t_priority		task_prior;					\
-    t_priority		thread_prior;					\
+#define SCHEDULER_CHARACTER(_thread_)					\
+  (									\
+    {									\
+      o_thread*		_oth_;						\
+      o_task*		_otsk_;						\
+      t_priority	_task_prior_;					\
+      t_priority	_thread_prior_;					\
 									\
-    if (thread_get((_thread_), &oth) != ERROR_OK)			\
-      CORE_ESCAPE("unable to retrieve the thread object");		\
+      if (thread_get((_thread_), &_oth_) != ERROR_OK)			\
+        CORE_ESCAPE("unable to retrieve the thread object");		\
 									\
-    if (task_get(oth->task, &otsk) != ERROR_OK)				\
-      CORE_ESCAPE("unable to retrieve the task object");		\
+      if (task_get(_oth_->task, &_otsk_) != ERROR_OK)			\
+        CORE_ESCAPE("unable to retrieve the task object");		\
 									\
-    task_prior = ((otsk->priority - TASK_PRIORITY_BACKGROUND_LOW) *	\
-		  SCHEDULER_N_PRIORITY_QUEUE) /				\
-      (TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW);	\
+      _task_prior_ =							\
+	((_otsk_->priority - TASK_PRIORITY_BACKGROUND_LOW) *		\
+	 SCHEDULER_NPRIORITIES) /					\
+	(TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW);	\
 									\
-    thread_prior = ((oth->priority - THREAD_PRIORITY_LOW) *		\
-		    SCHEDULER_N_PRIORITY_QUEUE) /			\
-      (THREAD_PRIORITY_HIGH - THREAD_PRIORITY_LOW);			\
+      _thread_prior_ =							\
+	((_oth_->priority - THREAD_PRIORITY_LOW) *			\
+	 SCHEDULER_NPRIORITIES) /					\
+	(THREAD_PRIORITY_HIGH - THREAD_PRIORITY_LOW);			\
 									\
-    (task_prior * thread_prior);					\
-  })
+      (_task_prior_ * _thread_prior_);					\
+    }									\
+  )
 
 /*
- * this  macro function  computes priority  queue index  of  a thread.
- * this is  a low precision  measurement of a thread's  priority. used
- * for queue index computation.
+ * this macro-function computes the priority queue index for a give
+ * thread. this is a low precision measurement of a thread's priority
+ * which is used for queue index computation.
  */
 
-#define SCHEDULER_COMPUTE_PRIORITY(_thread_)				\
-  ({									\
-    t_priority		global_prior;					\
+#define SCHEDULER_PRIORITY(_thread_)					\
+  (									\
+    {									\
+      t_priority	_character_;					\
 									\
-    global_prior = SCHEDULER_COMPUTE_GLOBAL_PRIORITY((_thread_));	\
+      _character_ = SCHEDULER_CHARACTER((_thread_));			\
 									\
-    (SCHEDULER_N_PRIORITY_QUEUE - global_prior /			\
-        SCHEDULER_N_PRIORITY_QUEUE);					\
-  })
+      (SCHEDULER_NPRIORITIES - _character_ / SCHEDULER_NPRIORITIES);	\
+    }									\
+  )
 
 /*
- * this macro compute a ceil timeslice taking account of granularity.
+ * this macro-function computes a ceil timeslice taking into account
+ * the granularity that may have been changed.
  */
 
-#define SCHEDULER_SCALE_TIMESLICE(_t_)					\
-  ((_t_) % SCHEDULER_TIMESLICE_GRANULARITY ?				\
-   (_t_) + SCHEDULER_TIMESLICE_GRANULARITY -				\
-   (_t_) % SCHEDULER_TIMESLICE_GRANULARITY				\
+#define SCHEDULER_SCALE(_t_)						\
+  ((_t_) % SCHEDULER_GRANULARITY ?					\
+   (_t_) + SCHEDULER_GRANULARITY -					\
+   (_t_) % SCHEDULER_GRANULARITY					\
    : (_t_))
 
 /*
- * this macro function computes the timeslice given by the kernel to a
- * thread based on its global priority.
+ * this macro-function computes the timeslice given by the kernel to a
+ * thread based on its character i.e global priority.
  */
 
-#define SCHEDULER_COMPUTE_TIMESLICE(_thread_)				\
-  ({									\
-    t_priority		global_prior;					\
-    t_timeslice		t;						\
+#define SCHEDULER_TIMESLICE(_thread_)					\
+  (									\
+    {									\
+      t_priority		_character_;				\
+      t_timeslice		_timeslice_;				\
 									\
-    global_prior = SCHEDULER_COMPUTE_GLOBAL_PRIORITY((_thread_));	\
+      _character_ = SCHEDULER_CHARACTER((_thread_));			\
 									\
-    t = SCHEDULER_TIMESLICE_MIN;					\
-    t += ((SCHEDULER_TIMESLICE_MAX - SCHEDULER_TIMESLICE_MIN) *		\
-            global_prior) /						\
-            (SCHEDULER_N_PRIORITY_QUEUE * SCHEDULER_N_PRIORITY_QUEUE);	\
+      _timeslice_ = SCHEDULER_TIMESLICE_LOW;				\
+      _timeslice_ +=							\
+	((SCHEDULER_TIMESLICE_HIGH - SCHEDULER_TIMESLICE_LOW) *		\
+	 _character_) / (SCHEDULER_NPRIORITIES * SCHEDULER_NPRIORITIES);\
 									\
-    SCHEDULER_SCALE_TIMESLICE(t);					\
-  })
+      SCHEDULER_SCALE(_timeslice_);					\
+    }									\
+  )
+
+/*
+ * this macro-function takes a set---active or expired---and store the
+ * given candidate in the queue identified by the priority.
+ */
+
+#define SCHEDULER_QUEUE(_set_, _candidate_, _priority_)			\
+  {									\
+    i_set*		_queue_;					\
+    s_iterator		_i_;						\
+    t_state		_s_;						\
+    t_priority		_p_;						\
+									\
+    _p_ = 0;								\
+									\
+    set_foreach(SET_OPTION_FORWARD, (_set_), &_i_, _s_)			\
+      {									\
+        if (_p_ == _priority_)						\
+	  {								\
+	    if (set_object((_set_),					\
+			   _i_,						\
+                           (void**)&_queue_) != ERROR_OK)		\
+	      CORE_ESCAPE("unable to retrieve one of the queues"	\
+			  "from the scheduler");			\
+									\
+	    if (set_insert(*_queue_, &(_candidate_)) != ERROR_OK)	\
+	      CORE_ESCAPE("unable to insert the thread candidate "	\
+			  "in the queue");				\
+									\
+	    break;							\
+	  }								\
+									\
+	_p_++;								\
+      }									\
+    }
+
+/*
+ * this macro-function takes a thread identifer representing a candidate
+ * to remove from the scheduler, no matter its state: active or expired.
+ */
+#define SCHEDULER_UNQUEUE(_scheduler_, _id_, _label_)			\
+  {									\
+    t_priority		_priority_;					\
+    t_priority		_p_;						\
+    s_iterator		_i_;						\
+    t_state		_s_;						\
+									\
+    _priority_ = SCHEDULER_PRIORITY((_id_));				\
+									\
+    _p_ = 0;								\
+									\
+    set_foreach(SET_OPTION_FORWARD, (_scheduler_)->active, &_i_, _s_)	\
+      {									\
+        if (p == priority)						\
+          {								\
+	    i_set*	_queue_;					\
+									\
+	    if (set_object((_scheduler_)->active,			\
+			   _i_,						\
+			   (void**)&_queue_) != ERROR_OK)		\
+	      CORE_ESCAPE("unable to retrieve one of the queues"	\
+			  "from the scheduler");			\
+									\
+	    if (set_exist(*_queue_, (_id_)) == ERROR_FALSE)		\
+	      continue;							\
+									\
+	    if (set_remove(*_queue_, (_id_)) != ERROR_OK)		\
+	      CORE_ESCAPE("unable to remove the thread from the set");	\
+									\
+	    goto _label_;						\
+	  }								\
+									\
+	_p_++;								\
+      }									\
+									\
+    _p_ = 0;								\
+									\
+    set_foreach(SET_OPTION_FORWARD, (_scheduler_)->expired, &_i_, _s_)	\
+      {									\
+        if (p == priority)						\
+          {								\
+	    i_set*	_queue_;					\
+									\
+	    if (set_object((_scheduler_)->expired,			\
+			   _i_,						\
+			   (void**)&_queue_) != ERROR_OK)		\
+	      CORE_ESCAPE("unable to retrieve one of the queues"	\
+			  "from the scheduler");			\
+									\
+	    if (set_exist(*_queue_, (_id_)) == ERROR_FALSE)		\
+	      continue;							\
+									\
+	    if (set_remove(*_queue_, (_id_)) != ERROR_OK)		\
+	      CORE_ESCAPE("unable to remove the thread from the set");	\
+									\
+	    goto _label_;						\
+	  }								\
+									\
+	_p_++;								\
+      }									\
+									\
+    CORE_ESCAPE("the thread to remove has not been found in any of "	\
+		"the scheduler's queues");				\
+  }
 
 /*						[endblock::macro::functions] */
 
@@ -163,7 +284,7 @@
 /*							[block::t_scheduled] */
 
 /*
- * a schedule queue element.
+ * this structure represents a scheduler's queue element.
  */
 
 typedef struct
@@ -171,12 +292,25 @@ typedef struct
   i_thread			thread;
 
   t_timeslice			timeslice;
-}				o_scheduled;
+}				o_scheduler_candidate;
 
 /*						     [endblock::t_scheduled] */
 
 /*
- * cpu scheduling environment for one processor.
+ * the scheduler object which managers thread candidates for a
+ * given CPU specified by _cpu_.
+ *
+ * the _thread_ attribute represents the currently scheduled thread
+ * which operates at the priority _priority_. this thread stil has
+ * _timeslice_ milliseconds of execution time before a context switch
+ * occurs.
+ *
+ * the _active_ and _expired_ sets contain the scheduler candidates being
+ * active i.e ready to be scheduled with a timeslice higher than zero or
+ * expired i.e having been scheduled until their timeslice reached zero.
+ *
+ * the _state_ attribute represents the scheduler's current state, either
+ * started or stopped.
  */
 
 typedef struct
@@ -203,7 +337,9 @@ typedef struct
 }				o_scheduler;
 
 /*
- * scheduler manager
+ * the scheduler manager's structure which contains the quantum _quantum_
+ * i.e the smaller unit of execution time, the idle thread's identifier _idle_
+ * and the sets of schedulers, one scheduler per CPU.
  */
 
 typedef struct
@@ -212,25 +348,28 @@ typedef struct
 
   i_thread			idle;
 
-  i_set				cpus;
+  i_set				schedulers;
 
   machine_data(m_scheduler);
 }				m_scheduler;
 
 /*
- * the scheduler architecture-dependent interface
+ * the scheduler dispatcher.
  */
 
 typedef struct
 {
-  t_error			(*scheduler_start)(void);
-  t_error			(*scheduler_stop)(void);
+  t_error			(*scheduler_show)(i_cpu,
+						  mt_margin);
+  t_error			(*scheduler_dump)(void);
+  t_error			(*scheduler_start)(i_cpu);
+  t_error			(*scheduler_stop)(i_cpu);
   t_error			(*scheduler_quantum)(t_quantum);
   t_error			(*scheduler_yield)(void);
+  t_error			(*scheduler_elect)(void);
   t_error			(*scheduler_add)(i_thread);
   t_error			(*scheduler_remove)(i_thread);
   t_error			(*scheduler_update)(i_thread);
-  t_error			(*scheduler_elect)(void);
   t_error			(*scheduler_initialize)(void);
   t_error			(*scheduler_clean)(void);
 }				d_scheduler;
@@ -245,27 +384,33 @@ typedef struct
  * ../../core/scheduler/scheduler-mfq.c
  */
 
+t_error			scheduler_show(i_cpu			id,
+				       mt_margin		margin);
+
 t_error			scheduler_dump(void);
 
-t_error			scheduler_start(void);
+t_error			scheduler_start(i_cpu			id);
 
-t_error			scheduler_stop(void);
+t_error			scheduler_stop(i_cpu			id);
 
 t_error			scheduler_quantum(t_quantum		quantum);
 
 t_error			scheduler_yield(void);
 
-t_error			scheduler_current(i_thread*			thread);
-
 t_error			scheduler_elect(void);
-
-t_error			scheduler_get(o_scheduler**		scheduler);
 
 t_error			scheduler_add(i_thread			id);
 
 t_error			scheduler_remove(i_thread		id);
 
-t_error			scheduler_update(i_thread			thread);
+t_error			scheduler_update(i_thread		id);
+
+t_error			scheduler_exist(i_cpu			id);
+
+t_error			scheduler_get(i_cpu			id,
+				      o_scheduler**		object);
+
+t_error			scheduler_current(o_scheduler**		scheduler);
 
 t_error			scheduler_initialize(void);
 

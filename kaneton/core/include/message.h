@@ -5,10 +5,16 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/message.h
+ * file          /home/mycure/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [sat nov 27 13:59:30 2010]
+ * updated       julien quintard   [fri dec 10 21:18:52 2010]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * [XXX:improvements] the whole manager should be re-developed!
  */
 
 #ifndef CORE_MESSAGE_H
@@ -60,7 +66,7 @@
 typedef struct
 {
   t_status		completed;
-}			t_message_request;
+}			s_message_request;
 
 /*
  * message object
@@ -112,7 +118,7 @@ typedef struct
 
 typedef struct
 {
-  t_error		(*message_register)(i_task,
+  t_error		(*message_record)(i_task,
 					    t_type,
 					    t_vsize);
   t_error		(*message_flush)(i_task);
@@ -131,7 +137,7 @@ typedef struct
 					 t_type,
 					 t_vaddr,
 					 t_vsize,
-					 t_message_request*);
+					 s_message_request*);
   t_error		(*message_receive)(i_task,
 					   t_type,
 					   t_vaddr,
@@ -140,19 +146,19 @@ typedef struct
   t_error		(*message_grab)(i_task,
 					t_type,
 				       t_vaddr,
-				       t_message_request*);
+				       s_message_request*);
   t_error		(*message_poll)(i_task,
 					t_type,
 					t_vaddr,
 					t_vsize*,
 					i_node*);
   t_error		(*message_state)(i_task,
-					 t_message_request);
+					 s_message_request);
   t_error		(*message_wait)(i_task,
-					t_message_request,
+					s_message_request,
 					t_vsize*,
 					i_node*);
-  t_error		(*message_return)(i_thread,
+  t_error		(*message_yield)(i_thread,
 					  t_error);
   t_error		(*message_return_info)(i_thread,
 					       t_error,
@@ -172,7 +178,7 @@ typedef struct
  * ../../core/message/message.c
  */
 
-t_error			message_register(i_task			task,
+t_error			message_record(i_task			task,
 					 t_type			type,
 					 t_vsize		size);
 
@@ -199,7 +205,7 @@ t_error			message_throw(i_task			task,
 				      t_type			type,
 				      t_vaddr			data,
 				      t_vsize			size,
-				      t_message_request*	request);
+				      s_message_request*	request);
 
 t_error			message_receive(i_task			task,
 					t_type			type,
@@ -210,7 +216,7 @@ t_error			message_receive(i_task			task,
 t_error			message_grab(i_task			task,
 				     t_type			type,
 				     t_vaddr			data,
-				     t_message_request*		request);
+				     s_message_request*		request);
 
 t_error			message_poll(i_task			task,
 				     t_type			type,
@@ -219,14 +225,14 @@ t_error			message_poll(i_task			task,
 				     i_node*			sender);
 
 t_error			message_state(i_task			task,
-				      t_message_request		request);
+				      s_message_request		request);
 
 t_error			message_wait(i_task			task,
-				     t_message_request		request,
+				     s_message_request		request,
 				     t_vsize*			size,
 				     i_node*			sender);
 
-t_error			message_return(i_thread			thread,
+t_error			message_yield(i_thread			thread,
 				       t_error			code);
 
 t_error			message_return_info(i_thread		thread,

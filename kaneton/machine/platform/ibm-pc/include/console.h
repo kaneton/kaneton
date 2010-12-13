@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/platform/ibm-pc/include/console.h
  *
  * created       julien quintard   [wed jun  6 15:53:35 2007]
- * updated       julien quintard   [sun dec  5 14:59:10 2010]
+ * updated       julien quintard   [thu dec  9 15:20:37 2010]
  */
 
 #ifndef PLATFORM_CONSOLE_H
@@ -24,6 +24,10 @@
 
 /*
  * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * definitions related to the hardware console.
  */
 
 #define PLATFORM_CONSOLE_ADDRESS	0xb8000
@@ -49,11 +53,19 @@
  * ---------- macro functions -------------------------------------------------
  */
 
+/*
+ * macro-functions for easily setting the front and background colors.
+ */
+
 #define PLATFORM_CONSOLE_FRONT(_color_)	(_color_)
 #define PLATFORM_CONSOLE_BACK(_color_)	(_color_ << 4)
 
 /*
  * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * the console manager.
  */
 
 typedef struct
@@ -62,7 +74,7 @@ typedef struct
   t_uint16		column;
   t_uint8		attribute;
   char*			vga;
-}			m_platform_console;
+}			pm_console;
 
 /*
  * ---------- prototypes ------------------------------------------------------

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/set-array.h
  *
  * created       julien quintard   [wed jun  6 14:13:43 2007]
- * updated       julien quintard   [wed jun  6 23:39:05 2007]
+ * updated       julien quintard   [sun dec 12 22:44:06 2010]
  */
 
 /*
@@ -25,7 +25,8 @@
  */
 
 /*
- * specific array data
+ * this structure is included in the set descriptor and provides
+ * specific information for the set implementation.
  */
 
 typedef struct
@@ -34,15 +35,15 @@ typedef struct
 
   void**			array;
   t_setsz			arraysz;
-}				t_set_array;
+}				s_set_array;
 
 /*
- * array iterator
+ * the implementation-specific iterator.
  */
 
 typedef struct
 {
   t_setsz			i;
-}				t_iterator_array;
+}				s_iterator_array;
 
 #endif

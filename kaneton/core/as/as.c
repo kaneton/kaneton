@@ -12,16 +12,25 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * the address space manager manages address spaces.
+ * the address space manager provides functions for manipulating address
+ * spaces i.e adding/removing segments and regions etc.
  *
- * an address space describes process' useable memory. each address space
+ * an address space describes a process' useable memory. each address space
  * is composed of two sets.
  *
- * the first describes the segments held by this address space, in other
- * words the physical memory.
+ * the first set describes the segments held by this address space, in other
+ * words the physical memory. note that since every segment is unique to
+ * the whole system, the first set actually contains the identifiers of
+ * the segments belonging to this address space. therefore, whenever a
+ * segment is reserved for this address space, the segment manager
+ * automatically adds the segment identifiers to the address space's set
+ * of segments.
  *
- * the latter describes the regions, the virtual areas which reference
- * some segments.
+ * the second set describes the regions, the virtual areas which reference
+ * some, or all, of the address space's segments. unlike segments, regions
+ * live in a specific address space and have no meaning for other address
+ * spaces or the system itself. therefore, the address space's set of
+ * regions contains the actual region objects.
  */
 
 /*
@@ -30,10 +39,18 @@
 
 #include <kaneton.h>
 
+/*
+ * include the machine-specific definitions required by the core.
+ */
+
 machine_include(as);
 
 /*
  * ---------- externs ---------------------------------------------------------
+ */
+
+/*
+ * the kernel manager.
  */
 
 extern m_kernel*	_kernel;
@@ -43,7 +60,7 @@ extern m_kernel*	_kernel;
  */
 
 /*
- * the address space manager variable.
+ * the address space manager.
  */
 
 m_as*			_as = NULL;
@@ -53,22 +70,26 @@ m_as*			_as = NULL;
  */
 
 /*
- * this function shows a precise address space.
+ * this function shows a precise address space by displaying its segments
+ * and regions.
  *
  * steps:
  *
- * 1) get the address space object from its identifier.
- * 2) display the segments held by the address space.
- * 3) display the regions held by the address space.
- * 4) call machine dependent code.
+ * 1) retrieve the address space object.
+ * 2) display general information such as the task the address space
+ *    lives in, the address space id etc.
+ * 3) display the segments held by the address space.
+ * 4) display the regions held by the address space.
+ * 5) call machine.
  */
 
-t_error			as_show(i_as				id)
+t_error			as_show(i_as				id,
+				mt_margin			margin)
 {
   i_segment*		segment;
   o_region*		region;
   t_state		st;
-  t_iterator		i;
+  s_iterator		i;
   o_as*			o;
 
   /*
@@ -78,109 +99,78 @@ t_error			as_show(i_as				id)
   if (as_get(id, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
-  module_call(console, message,
-	      '#', "  address space %qu in task %qu:\n",
-	      id,
-	      o->task);
-
   /*
    * 2)
    */
 
   module_call(console, message,
-	      '#', "    segments:\n");
-
-  set_foreach(SET_OPTION_FORWARD, o->segments, &i, st)
-    {
-      o_segment*	seg;
-      char*		type;
-      char		perms[4];
-
-      if (set_object(o->segments, i, (void**)&segment) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the segment identifier");
-
-      if (segment_get(*segment, &seg) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the segment object");
-
-      switch (seg->type)
-	{
-	case SEGMENT_TYPE_MEMORY:
-	  type = "memory";
-	  break;
-	case SEGMENT_TYPE_CATCH:
-	  type = "catch";
-	  break;
-	case SEGMENT_TYPE_SYSTEM:
-	  type = "system";
-	  break;
-	default:
-	  type = "(unknown)";
-	  break;
-	}
-
-      memset(perms, '.', 3);
-
-      perms[3] = 0;
-
-      if (seg->permissions & PERMISSION_READ)
-	perms[0] = 'r';
-
-      if (seg->permissions & PERMISSION_WRITE)
-	perms[1] = 'w';
-
-      if (seg->permissions & PERMISSION_EXEC)
-	perms[2] = 'x';
-
-      module_call(console, message,
-		  '#', "      %qu %s [0x%x - 0x%x] (%u bytes) %s\n",
-		  seg->id,
-		  type,
-		  seg->address,
-		  seg->address + seg->size - 1,
-		  seg->size,
-		  perms);
-    }
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "address space: id(%qu) task(%qu)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->id, o->task);
 
   /*
    * 3)
    */
 
   module_call(console, message,
-	      '#', "    regions:\n");
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  segments:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
 
-  set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
+  set_foreach(SET_OPTION_FORWARD, o->segments, &i, st)
     {
-      if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the region object");
+      if (set_object(o->segments, i, (void**)&segment) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the segment identifier");
 
-      module_call(console, message,
-		  '#', "      %qu [0x%x - 0x%x] (%u bytes) targets "
-		  "segment %qu\n",
-		  region->id,
-		  region->address,
-		  region->address + region->size - 1,
-		  region->size,
-		  region->segment);
+      if (segment_show(*segment,
+		       margin + 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+	CORE_ESCAPE("unable to show the segment");
     }
 
   /*
    * 4)
    */
 
-  if (machine_call(as, as_show, id) != ERROR_OK)
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  regions:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
+    {
+      if (set_object(o->regions, i, (void**)&region) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the region object");
+
+      if (region_show(o->id,
+		      region->id,
+		      margin + 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+	CORE_ESCAPE("unable to show the region");
+    }
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(as, show, id, margin) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function dumps the address spaces managed by the kernel.
+ * this function dumps the address spaces manager.
  *
  * steps:
  *
- * 1) gets the set's size.
- * 2) for each address space hold by the address space set, dumps
- *    the address space identifier.
+ * 1) retrieve the set's size.
+ * 2) display general information.
+ * 3) show the identifier object.
+ * 4) for each address space held by the manager, show it.
+ * 5) call the machine.
  */
 
 t_error			as_dump(void)
@@ -188,7 +178,7 @@ t_error			as_dump(void)
   t_setsz		size;
   o_as*			o;
   t_state		st;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -202,36 +192,74 @@ t_error			as_dump(void)
    */
 
   module_call(console, message,
-	      '#', "dumping %qu address space(s):\n", size);
+	      '#', "address space manager: #address spaces(%qu)\n",
+	      size);
+
+  /*
+   * 3)
+   */
+
+  if (id_show(&_as->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+    CORE_ESCAPE("unable to show the identifier object");
+
+  /*
+   * 4)
+   */
+
+  module_call(console, message,
+	      '#', "  address spaces:\n");
 
   set_foreach(SET_OPTION_FORWARD, _as->ass, &i, st)
     {
       if (set_object(_as->ass, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the address space object");
 
-      if (as_show(o->id) != ERROR_OK)
+      if (as_show(o->id, 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the address space object");
     }
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(as, dump) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function translate a physical address to its virtual address.
+ * this function translates a physical address into its virtual counterpart
+ * according to the address space's mappings.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) go through the regions in order to locate the mapped segment in which
+ *    the given physical address lies.
+ * 3) compute the physical address according to the region's offset and
+ *    segment's address.
+ * 4) call the machine.
  */
 
-t_error			as_vaddr(i_as				id,
-				 t_paddr			physical,
-				 t_vaddr*			virtual)
+t_error			as_virtual(i_as				id,
+				   t_paddr			physical,
+				   t_vaddr*			virtual)
 {
   o_as*			o;
   o_region*		region;
   o_segment*		segment;
   t_boolean		found;
   t_state		st;
-  t_iterator		i;
+  s_iterator		i;
 
-  assert(virtual != NULL);
+  /*
+   * 0)
+   */
+
+  if (virtual == NULL)
+    CORE_ESCAPE("the 'virtual' argument is null");
 
   /*
    * 1)
@@ -254,8 +282,8 @@ t_error			as_vaddr(i_as				id,
       if (segment_get(region->segment, &segment) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the segment object");
 
-      if (segment->address + region->offset <= physical &&
-	  physical < segment->address + region->offset + region->size)
+      if ((segment->address + region->offset) <= physical &&
+	  physical < (segment->address + region->offset + region->size))
 	{
 	  found = BOOLEAN_TRUE;
 
@@ -263,54 +291,58 @@ t_error			as_vaddr(i_as				id,
 	}
     }
 
-  /*
-   * 3)
-   */
-
   if (found == BOOLEAN_FALSE)
     CORE_ESCAPE("unable to locate the segment corresponding to the given "
 		"physical address");
 
   /*
+   * 3)
+   */
+
+  *virtual = region->address +
+    (physical - (segment->address + region->offset));
+
+  /*
    * 4)
    */
 
-  *virtual = region->address - region->offset + (physical - segment->address);
-
-  /*
-   * 5)
-   */
-
-  if (machine_call(as, as_vaddr, id, physical, virtual) != ERROR_OK)
+  if (machine_call(as, virtual, id, physical, virtual) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function translate a virtual address to its physical one.
+ * this function translates a virtual address into its physical counterpart
+ * according to the given address space mappings.
  *
  * steps:
  *
- * 1) get the region object.
- * 2) look for the good region.
- * 3) check if the region was found.
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) locate the region in which the given virtual address lies.
+ * 3) retrieve the segment that the located region maps.
  * 4) compute the physical address.
- * 5) call dependent code.
+ * 5) call the machine.
  */
 
-t_error			as_paddr(i_as				id,
-				 t_vaddr			virtual,
-				 t_paddr*			physical)
+t_error			as_physical(i_as			id,
+				    t_vaddr			virtual,
+				    t_paddr*			physical)
 {
   o_region*		region;
   o_segment*		segment;
   t_uint32		found;
   o_as*			o;
-  t_iterator		i;
+  s_iterator		i;
   t_state		st;
 
-  assert(physical != NULL);
+  /*
+   * 0)
+   */
+
+  if (physical == NULL)
+    CORE_ESCAPE("the 'physical' argument is null");
 
   /*
    * 1)
@@ -331,7 +363,7 @@ t_error			as_paddr(i_as				id,
 	CORE_ESCAPE("unable to retrieve the region object");
 
       if (region->address <= virtual &&
-	  virtual < region->address + region->size)
+	  virtual < (region->address + region->size))
 	{
 	  found = BOOLEAN_TRUE;
 
@@ -343,20 +375,20 @@ t_error			as_paddr(i_as				id,
 		    "virtual address");
     }
 
-  /*
-   * 3)
-   */
-
   if (found == BOOLEAN_FALSE)
     CORE_ESCAPE("unable to locate the region corresponding to the given "
 		"virtual address");
 
   /*
-   * 4)
+   * 3)
    */
 
   if (segment_get(region->segment, &segment) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
+
+  /*
+   * 4)
+   */
 
   *physical = segment->address + region->offset + (virtual - region->address);
 
@@ -364,27 +396,29 @@ t_error			as_paddr(i_as				id,
    * 5)
    */
 
-  if (machine_call(as, as_paddr, id, virtual, physical) != ERROR_OK)
+  if (machine_call(as, physical, id, virtual, physical) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * read data from an as. this function supports contiguous regions
- * mapped on non-contiguous segments.
+ * this function reads data from a virtual location in the address space.
  *
  * steps:
  *
- * 1) get the address space object.
- * 2) get the first region of the as.
- * 3) look for the first region to copy.
- * 4) compute the offset and size.
- * 5) read data from the segment.
- * 6) loop throught the remaining regions (if needed).
- * 7) get the next region (contiguously).
- * 8) compute the offset and size.
- * 9) read data from the segment.
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) retrieve the first region of the address space.
+ * 3) locate the first region to read from according to the source virtual
+ *    address.
+ * 4) compute the offset and size to read from this first region.
+ * 5) read data directly from the region's segment.
+ * 6) loop throught the remaining regions, if required.
+ *   a) retrieve the following region.
+ *   b) compute the offset and size for this new region.
+ *   c) read data directly from the region's segment.
+ * 7) call the machine.
  */
 
 t_error			as_read(i_as				id,
@@ -396,12 +430,20 @@ t_error			as_read(i_as				id,
   o_region*		region;
   o_region*		previous;
   t_paddr		offset;
-  t_iterator		next;
+  s_iterator		next;
   t_psize		copy;
   o_as*			o;
-  t_iterator		i;
+  s_iterator		i;
 
-  assert(size != 0);
+  /*
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_LEAVE();
+
+  if (destination == NULL)
+    CORE_ESCAPE("the 'destination' argument is null");
 
   /*
    * 1)
@@ -432,7 +474,7 @@ t_error			as_read(i_as				id,
       if (set_object(o->regions, next, (void**)&region) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
 
-      memcpy(&i, &next, sizeof (t_iterator));
+      memcpy(&i, &next, sizeof (s_iterator));
     }
 
   if (region->address > source)
@@ -474,7 +516,7 @@ t_error			as_read(i_as				id,
       previous = region;
 
       /*
-       * 7)
+       * a)
        */
 
       if (set_next(o->regions, next, &i) != ERROR_TRUE)
@@ -487,7 +529,7 @@ t_error			as_read(i_as				id,
 	CORE_ESCAPE("unable to read from non-adjacent regions");
 
       /*
-       * 8)
+       * b)
        */
 
       offset = region->offset;
@@ -498,7 +540,7 @@ t_error			as_read(i_as				id,
 	copy = size;
 
       /*
-       * 9)
+       * c)
        */
 
       if (segment_read(region->segment, offset, buffer, copy) != ERROR_OK)
@@ -510,27 +552,35 @@ t_error			as_read(i_as				id,
       if (size == 0)
 	break;
 
-      memcpy(&next, &i, sizeof (t_iterator));
+      memcpy(&next, &i, sizeof (s_iterator));
     }
+
+  /*
+   * 7)
+   */
+
+  if (machine_call(as, read, id, source, size, destination) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * write data to an as. this function supports contiguous regions
- * mapped on non-contiguous segments.
+ * this function writes data to an address space.
  *
  * steps:
  *
- * 1) get the address space object.
- * 2) get the first region of the as.
- * 3) look for the first region to copy.
- * 4) compute the offset and size.
- * 5) write data to the segment.
- * 6) loop throught the remaining regions (if needed).
- * 7) get the next region (contiguously).
- * 8) compute the offset and size.
- * 9) write data to the segment.
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) retrieve the first region of the adress space.
+ * 3) locate the the first region to write data to.
+ * 4) compute the offset and size for this first region.
+ * 5) write data to the underlying segment.
+ * 6) loop throught the remaining regions, if required.
+ *   a) retrieve the following region.
+ *   b) compute the offset and size for this new region.
+ *   c) write data to the region's segment.
+ * 7) call the machine.
  */
 
 t_error			as_write(i_as				id,
@@ -542,12 +592,20 @@ t_error			as_write(i_as				id,
   o_region*		region;
   o_region*		previous;
   t_paddr		offset;
-  t_iterator		next;
+  s_iterator		next;
   t_psize		copy;
   o_as*			o;
-  t_iterator		i;
+  s_iterator		i;
 
-  assert(size != 0);
+  /*
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_LEAVE();
+
+  if (source == NULL)
+    CORE_ESCAPE("the 'source' argument is null");
 
   /*
    * 1)
@@ -578,7 +636,7 @@ t_error			as_write(i_as				id,
       if (set_object(o->regions, next, (void**)&region) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
 
-      memcpy(&i, &next, sizeof (t_iterator));
+      memcpy(&i, &next, sizeof (s_iterator));
     }
 
   if (region->address > destination)
@@ -620,7 +678,7 @@ t_error			as_write(i_as				id,
       previous = region;
 
       /*
-       * 7)
+       * a)
        */
 
       if (set_next(o->regions, next, &i) != ERROR_TRUE)
@@ -633,7 +691,7 @@ t_error			as_write(i_as				id,
 	CORE_ESCAPE("unable to write to non-adjacent regions");
 
       /*
-       * 8)
+       * b)
        */
 
       offset = region->offset;
@@ -644,7 +702,7 @@ t_error			as_write(i_as				id,
 	copy = size;
 
       /*
-       * 9)
+       * c)
        */
 
       if (segment_write(region->segment, offset, buffer, copy) != ERROR_OK)
@@ -656,25 +714,34 @@ t_error			as_write(i_as				id,
       if (size == 0)
 	break;
 
-      memcpy(&next, &i, sizeof (t_iterator));
+      memcpy(&next, &i, sizeof (s_iterator));
     }
+
+  /*
+   * 7)
+   */
+
+  if (machine_call(as, write, id, source, size, destination) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function copies from an as to another. this function supports
- * contiguous regions mapped on non-contiguous segments.
+ * this function copies data from an address space to another.
  *
  * steps:
  *
- * 1) get address space object.
- * 2) look for the first region of the source area.
- * 3) look for the first region of the destination area.
- * 4) compute start offsets and size to copy.
- * 5) do the copy.
- * 6) goto the next source region if necessary.
- * 7) goto the next destination region if necessary.
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) locate the first region to copy data from.
+ * 3) locate the first region to copy data to.
+ * 4) compute the start offsets and sizes for both the source and
+ *    destination regions.
+ *   a) perform the copy.
+ *   b) proceed to the following source region, if necessary.
+ *   c) proceed to the followgin destination region, if necessary.
+ * 5) call the machine.
  */
 
 t_error			as_copy(i_as			source_id,
@@ -689,20 +756,24 @@ t_error			as_copy(i_as			source_id,
   o_as*			destination_o;
   o_region*		destination_region;
   o_segment*		destination_segment;
-  t_iterator		source_i;
-  t_iterator		source_next;
-  t_iterator		destination_i;
-  t_iterator		destination_next;
+  s_iterator		source_i;
+  s_iterator		source_next;
+  s_iterator		destination_i;
+  s_iterator		destination_next;
   t_paddr		source_offset;
   t_paddr		destination_offset;
   t_psize		copy;
   t_psize		source_copy;
   t_psize		destination_copy;
   o_region*		previous;
-  t_iterator		next;
+  s_iterator		next;
 
-  assert(size != 0);
-  assert(source_id != destination_id);
+  /*
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_LEAVE();
 
   /*
    * 1)
@@ -738,7 +809,7 @@ t_error			as_copy(i_as			source_id,
 		     (void**)&source_region) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
 
-      memcpy(&source_i, &source_next, sizeof (t_iterator));
+      memcpy(&source_i, &source_next, sizeof (s_iterator));
     }
 
   if (source_region->address > source_address)
@@ -773,7 +844,7 @@ t_error			as_copy(i_as			source_id,
 		     (void**)&destination_region) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
 
-      memcpy(&destination_i, &destination_next, sizeof (t_iterator));
+      memcpy(&destination_i, &destination_next, sizeof (s_iterator));
     }
 
   if (destination_region->address > destination_address)
@@ -808,7 +879,7 @@ t_error			as_copy(i_as			source_id,
 	copy = size;
 
       /*
-       * 5)
+       * a)
        */
 
       if (segment_copy(destination_region->segment,
@@ -830,7 +901,7 @@ t_error			as_copy(i_as			source_id,
 	break;
 
       /*
-       * 6)
+       * b)
        */
 
       if (source_copy == 0)
@@ -848,7 +919,7 @@ t_error			as_copy(i_as			source_id,
 	  if (source_region->address != previous->address + previous->size)
 	    CORE_ESCAPE("unable to copy from non-adjacent regions");
 
-	  memcpy(&source_i, &next, sizeof (t_iterator));
+	  memcpy(&source_i, &next, sizeof (s_iterator));
 
 	  if (segment_get(source_region->segment,
 			  &source_segment) != ERROR_OK)
@@ -860,7 +931,7 @@ t_error			as_copy(i_as			source_id,
 	}
 
       /*
-       * 7)
+       * c)
        */
 
 
@@ -882,7 +953,7 @@ t_error			as_copy(i_as			source_id,
 	      previous->address + previous->size)
 	    CORE_ESCAPE("unable to copy to non-adjacent regions");
 
-	  memcpy(&destination_i, &next, sizeof (t_iterator));
+	  memcpy(&destination_i, &next, sizeof (s_iterator));
 
 	  if (segment_get(destination_region->segment,
 			  &destination_segment) != ERROR_OK)
@@ -893,22 +964,35 @@ t_error			as_copy(i_as			source_id,
 	}
     }
 
+  /*
+   * 5)
+   */
+
+  if (machine_call(as, copy,
+		   source_id, source_address,
+		   destination_id, destination_address,
+		   size) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
   CORE_LEAVE();
 }
 
 /*
- * this function reserves an address space.
+ * this function reserves an address space for the given task and returns
+ * the freshly created address space's identifier.
  *
  * steps:
  *
- * 1) gets the task object.
- * 2) initializes the address space object.
- * 3) reserves an identifier for the address space object.
- * 4) reserves the set of segments for the new address space object.
- * 5) reserves the set of regions for the new address space object.
- * 6) adds the new address space object in the address space set.
- * 7) sets the address space into the task object.
- * 8) calls the machine-dependent code.
+ * 0) verify the arguments.
+ * 1) retrieve the task object and verify that the task does not have
+ *    an address space already.
+ * 2) initialize the address space object.
+ * 3) reserve an identifier for the address space object.
+ * 4) reserve a set of segments.
+ * 5) reserve a set of regions.
+ * 6) add the new address space object into the set of address spaces
+ * 7) set the address space into the task object.
+ * 8) call the machine.
  */
 
 t_error			as_reserve(i_task			task,
@@ -917,7 +1001,12 @@ t_error			as_reserve(i_task			task,
   o_task*		target;
   o_as			o;
 
-  assert(id != NULL);
+  /*
+   * 0)
+   */
+
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
 
   /*
    * 1)
@@ -933,7 +1022,7 @@ t_error			as_reserve(i_task			task,
    * 2)
    */
 
-  memset(&o, 0x0, sizeof(o_as));
+  memset(&o, 0x0, sizeof (o_as));
 
   o.task = task;
 
@@ -954,9 +1043,9 @@ t_error			as_reserve(i_task			task,
    */
 
   if (set_reserve(array,
-		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  AS_SEGMENTS_INITSZ,
-		  sizeof(i_segment),
+		  sizeof (i_segment),
 		  &o.segments) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of segments");
 
@@ -967,7 +1056,7 @@ t_error			as_reserve(i_task			task,
   if (set_reserve(array,
 		  SET_OPTION_SORT | SET_OPTION_FREE,
 		  AS_REGIONS_INITSZ,
-		  sizeof(o_region),
+		  sizeof (o_region),
 		  &o.regions) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of regions");
 
@@ -988,7 +1077,7 @@ t_error			as_reserve(i_task			task,
    * 8)
    */
 
-  if (machine_call(as, as_reserve, task, id) != ERROR_OK)
+  if (machine_call(as, reserve, task, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -999,16 +1088,17 @@ t_error			as_reserve(i_task			task,
  *
  * steps:
  *
- * 1) gets the address space object given its identifier.
- * 2) gets the task object and removes the address space from it.
- * 3) releases the address space object identifier.
- * 4) releases the address space object's set of regions.
- * 5) releases the address space object's set of segments.
- * 6) calls the machine-dependent code.
+ * 1) call the machine.
+ * 2) retrieve the address space object.
+ * 3) retrieve the address space's task object and reset the task's
+ *    address space.
+ * 4) release the address space object identifier.
+ * 5) flush and release the set of regions.
+ * 6) flush and release the set of segments.
  * 7) removes the address space object from the address space set.
  */
 
-t_error			as_release(i_as			id)
+t_error			as_release(i_as				id)
 {
   o_task*		task;
   o_as*			o;
@@ -1017,11 +1107,18 @@ t_error			as_release(i_as			id)
    * 1)
    */
 
+  if (machine_call(as, release, id) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  /*
+   * 2)
+   */
+
   if (as_get(id, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
-   * 2)
+   * 3)
    */
 
   if (task_get(o->task, &task) != ERROR_OK)
@@ -1030,14 +1127,14 @@ t_error			as_release(i_as			id)
   task->as = ID_UNUSED;
 
   /*
-   * 3)
+   * 4)
    */
 
   if (id_release(&_as->id, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to release the identifier");
 
   /*
-   * 4)
+   * 5)
    */
 
   if (region_flush(o->id) != ERROR_OK)
@@ -1047,7 +1144,7 @@ t_error			as_release(i_as			id)
     CORE_ESCAPE("unable to release the set of regions");
 
   /*
-   * 5)
+   * 6)
    */
 
   if (segment_flush(o->id) != ERROR_OK)
@@ -1055,13 +1152,6 @@ t_error			as_release(i_as			id)
 
   if (set_release(o->segments) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of segments");
-
-  /*
-   * 6)
-   */
-
-  if (machine_call(as, as_release, id) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 7)
@@ -1086,16 +1176,30 @@ t_error			as_exist(i_as				id)
 }
 
 /*
- * this function gets an address space object from the address space
- * set according to its identifier.
+ * this function retrieves an address space object from the set of
+ * address spaces.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the object from the set of address spaces.
  */
 
 t_error			as_get(i_as				id,
-			       o_as**				o)
+			       o_as**				object)
 {
-  assert(o != NULL);
+  /*
+   * 0)
+   */
 
-  if (set_get(_as->ass, id, (void**)o) != ERROR_OK)
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (set_get(_as->ass, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of "
 		"address spaces");
 
@@ -1105,17 +1209,13 @@ t_error			as_get(i_as				id,
 /*
  * this function initializes the address space manager.
  *
- * this function takes care of initializing and builing the kernel
- * address space.
- *
  * steps:
  *
- * 1) allocates and initializes the address space manager structure.
- * 2) initializes the identifier object to be able to generate
- *    the address space identifiers.
- * 3) reserves the addres space set which will contain the address space
- *    built later.
- * 4) calls the machine-dependent code.
+ * 1) allocate and initialize the address space manager's structure.
+ * 2) initialize the identifier object in order to be able to generate
+ *    the address spaces' identifier.
+ * 3) reserve the set which will contain the future address spaces.
+ * 4) calls the machine.
  */
 
 t_error			as_initialize(void)
@@ -1124,11 +1224,11 @@ t_error			as_initialize(void)
    * 1)
    */
 
-  if ((_as = malloc(sizeof(m_as))) == NULL)
+  if ((_as = malloc(sizeof (m_as))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the address space "
 		"manager's structure");
 
-  memset(_as, 0x0, sizeof(m_as));
+  memset(_as, 0x0, sizeof (m_as));
 
   /*
    * 2)
@@ -1142,8 +1242,8 @@ t_error			as_initialize(void)
    */
 
   if (set_reserve(ll,
-		  SET_OPTION_ALLOC | SET_OPTION_SORT,
-		  sizeof(o_as),
+		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
+		  sizeof (o_as),
 		  &_as->ass) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of address spaces");
 
@@ -1151,33 +1251,34 @@ t_error			as_initialize(void)
    * 4)
    */
 
-  if (machine_call(as, as_initialize) != ERROR_OK)
+  if (machine_call(as, initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function just reinitializes the address space manager.
+ * this function cleans the address space manager.
  *
  * steps:
  *
- * 1) calls the machine-dependent code.
- * 2) releases the address space's set.
- * 3) destroys the id object.
+ * 1) call the machine.
+ * 2) flush and release the set of address spaces. note that the kernel
+ *    address space is never released in order to keep the kernel running.
+ * 3) destroy the identifier object.
  * 4) frees the address space manager structure's memory.
  */
 
 t_error			as_clean(void)
 {
   o_as*			o;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
    */
 
-  if (machine_call(as, as_clean) != ERROR_OK)
+  if (machine_call(as, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -1191,10 +1292,16 @@ t_error			as_clean(void)
 		    "address spaces");
 
       if (o->id == _kernel->as)
-	set_remove(_as->ass, o->id);
+	{
+	  if (set_remove(_as->ass, o->id) != ERROR_OK)
+	    CORE_ESCAPE("unable to remove the kernel address space identifier "
+			"from the set of address spaces");
+	}
       else
-	if (as_release(o->id) != ERROR_OK)
-	  CORE_ESCAPE("unable to release the address space object");
+	{
+	  if (as_release(o->id) != ERROR_OK)
+	    CORE_ESCAPE("unable to release the address space object");
+	}
     }
 
   if (set_release(_as->ass) != ERROR_OK)

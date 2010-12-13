@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/init.h
  *
  * created       julien quintard   [wed jun  6 16:16:48 2007]
- * updated       julien quintard   [wed nov 24 13:23:34 2010]
+ * updated       julien quintard   [thu dec  9 14:08:20 2010]
  */
 
 #ifndef GLUE_INIT_H
@@ -64,7 +64,7 @@
  * machine traps
  */
 
-#define		machine_data_init()					\
+#define		machine_data_s_init()					\
   struct								\
   {									\
     t_ia32_gdt			gdt;					\

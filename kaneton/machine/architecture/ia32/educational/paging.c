@@ -34,7 +34,7 @@
  * the init structure.
  */
 
-extern t_init*		_init;
+extern s_init*		_init;
 
 /*
  * the page directory.

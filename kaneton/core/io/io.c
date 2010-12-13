@@ -12,14 +12,11 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * the I/O  manager is  designed to grant  or deny  low-level hardware
- * accesses to tasks.
+ * the I/O manager provides functionalities for grant and denying access
+ * to low-level hardware i.e referred to as ports.
  *
- * the only available operation is allowing or denying the access of a
- * given hardware address (called a port) to a task.
- *
- * as low-level I/O are hardware specific, the manager only does calls
- * to the architecture dependent code.
+ * since low-level I/O are hardware-specific, the manager relies on the
+ * machine for implementating most of the manager's functionalities.
  */
 
 /*
@@ -28,6 +25,10 @@
 
 #include <kaneton.h>
 
+/*
+ * include the machine-specific definitions required by the core.
+ */
+
 machine_include(io);
 
 /*
@@ -35,7 +36,7 @@ machine_include(io);
  */
 
 /*
- * io manager variable.
+ * I/O manager structure.
  */
 
 m_io*			_io = NULL;
@@ -45,164 +46,265 @@ m_io*			_io = NULL;
  */
 
 /*
- * this function grant I/O to a given port for a task.
- */
-
-t_error			io_grant(i_port				id,
-				 i_task				task,
-				 t_uint8			width)
-{
-  assert(width > 0 && width <= 8);
-
-  if (machine_call(io, io_grant, id, task, width) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function deny I/O to a given port for a task.
- */
-
-t_error			io_deny(i_port				id,
-				i_task				task,
-				t_uint8				width)
-{
-  assert(width > 0 && width <= 8);
-
-  if (machine_call(io, io_deny, id, task, width) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function read a byte from an I/O port or memory-mapped I/O.
- */
-
-t_error			io_read_8(i_task			task,
-				  i_port			id,
-				  t_uint8*			data)
-{
-  assert(data != NULL);
-
-  if (machine_call(io, io_read_8, task, id, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function read a 16 bits word from an I/O port or memory-mapped I/O.
- */
-
-t_error			io_read_16(i_task			task,
-				   i_port			id,
-				   t_uint16*			data)
-{
-  assert(data != NULL);
-
-  if (machine_call(io, io_read_16, task, id, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function read a 32 bits word from an I/O port or memory-mapped I/O.
- */
-
-t_error			io_read_32(i_task			task,
-				   i_port			id,
-				   t_uint32*			data)
-{
-  assert(data != NULL);
-
-  if (machine_call(io, io_read_32, task, id, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function read a 64 bits word from an I/O port or memory-mapped I/O.
- */
-
-t_error			io_read_64(i_task			task,
-				   i_port			id,
-				   t_uint64*			data)
-{
-  assert(data != NULL);
-
-  if (machine_call(io, io_read_64, task, id, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function write a byte to an I/O port or memory-mapped I/O.
- */
-
-t_error			io_write_8(i_task			task,
-				   i_port			id,
-				   t_uint8			data)
-{
-  if (machine_call(io, io_write_8, task, id, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function write a 16 bits word to an I/O port or memory-mapped I/O.
- */
-
-t_error			io_write_16(i_task			task,
-				    i_port			id,
-				    t_uint16			data)
-{
-  if (machine_call(io, io_write_16, task, id, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function write a 32 bits word to an I/O port or memory-mapped I/O.
- */
-
-t_error			io_write_32(i_task			task,
-				    i_port			id,
-				    t_uint32			data)
-{
-  if (machine_call(io, io_write_32, task, id, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function write a 64 bits word to an I/O port or memory-mapped I/O.
- */
-
-t_error			io_write_64(i_task			task,
-				    i_port			id,
-				    t_uint64			data)
-{
-  if (machine_call(io, io_write_64, task, id, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function initializes the io manager.
+ * this function grants access on the given port and width to the
+ * identified task.
  *
  * steps:
  *
- * 1) allocate some memory for the manager structure.
- * 2) call the machine dependent code.
+ * 1) call the machine.
+ */
+
+t_error			io_grant(i_task				task,
+				 i_port				port,
+				 t_uint8			width)
+{
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, grant, task, port, width) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function denies access on a given port to the task.
+ *
+ * steps:
+ *
+ * 1) call the machine.
+ */
+
+t_error			io_deny(i_task				task,
+				i_port				port,
+				t_uint8				width)
+{
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, deny, task, port, width) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function reads a byte from an I/O port.
+ *
+ * steps:
+ *
+ * 0) verify the arguments
+ * 1) call the machine.
+ */
+
+t_error			io_read_8(i_task			task,
+				  i_port			port,
+				  t_uint8*			data)
+{
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, read_8, task, port, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function reads a 16-bit word from an I/O port.
+ *
+ * steps:
+ *
+ * 0) verify the arguments
+ * 1) call the machine.
+ */
+
+t_error			io_read_16(i_task			task,
+				   i_port			port,
+				   t_uint16*			data)
+{
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, read_16, task, port, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function reads a 32-bit word from an I/O port.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) call the machine.
+ */
+
+t_error			io_read_32(i_task			task,
+				   i_port			port,
+				   t_uint32*			data)
+{
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, read_32, task, port, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function reads a 64-bit word from an I/O port.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) call the machine.
+ */
+
+t_error			io_read_64(i_task			task,
+				   i_port			port,
+				   t_uint64*			data)
+{
+  /*
+   * 0)
+   */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, read_64, task, port, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function writes a byte to an I/O port.
+ *
+ * steps:
+ *
+ * 1) call the machine.
+ */
+
+t_error			io_write_8(i_task			task,
+				   i_port			port,
+				   t_uint8			data)
+{
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, write_8, task, port, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function writes a 16-bit word to an I/O port.
+ *
+ * steps:
+ *
+ * 1) call the machine.
+ */
+
+t_error			io_write_16(i_task			task,
+				    i_port			port,
+				    t_uint16			data)
+{
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, write_16, task, port, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function writes a 32-bit word to an I/O port.
+ *
+ * steps:
+ *
+ * 1) call the machine.
+ */
+
+t_error			io_write_32(i_task			task,
+				    i_port			port,
+				    t_uint32			data)
+{
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, write_32, task, port, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function writes a 64-bit word to an I/O port.
+ *
+ * steps:
+ *
+ * 1) call the machine.
+ */
+
+t_error			io_write_64(i_task			task,
+				    i_port			port,
+				    t_uint64			data)
+{
+  /*
+   * 1)
+   */
+
+  if (machine_call(io, write_64, task, port, data) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function initializes the I/O manager.
+ *
+ * steps:
+ *
+ * 1) allocate and initialize memory for the manager structure.
+ * 2) call the machine.
  */
 
 t_error			io_initialize(void)
@@ -211,27 +313,27 @@ t_error			io_initialize(void)
    * 1)
    */
 
-  if ((_io = malloc(sizeof(m_io))) == NULL)
+  if ((_io = malloc(sizeof (m_io))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the IO manager's structure");
 
-  memset(_io, 0x0, sizeof(m_io));
+  memset(_io, 0x0, sizeof (m_io));
 
   /*
    * 2)
    */
 
-  if (machine_call(io, io_initialize) != ERROR_OK)
+  if (machine_call(io, initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function cleans the io manager.
+ * this function cleans the I/O manager.
  *
  * steps:
  *
- * 1) call the dependent code.
+ * 1) call the machine.
  * 2) free the manager structure.
  */
 
@@ -241,7 +343,7 @@ t_error			io_clean(void)
    * 1)
    */
 
-  if (machine_call(io, io_clean) != ERROR_OK)
+  if (machine_call(io, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*

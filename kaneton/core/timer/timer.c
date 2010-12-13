@@ -30,16 +30,6 @@
 machine_include(timer);
 
 /*
- * ---------- globals ---------------------------------------------------------
- */
-
-/*
- * the timer manager variable.
- */
-
-m_timer*		_timer = NULL;
-
-/*
  * ---------- externs ---------------------------------------------------------
  */
 
@@ -48,6 +38,16 @@ m_timer*		_timer = NULL;
  */
 
 extern m_kernel*	_kernel;
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+/*
+ * the timer manager variable.
+ */
+
+m_timer*		_timer = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -67,7 +67,7 @@ extern m_kernel*	_kernel;
 t_error			timer_check(void)
 {
   o_timer*		o;
-  t_iterator		i;
+  s_iterator		i;
 
   while (set_head(_timer->timers, &i) == ERROR_TRUE)
     {
@@ -90,14 +90,24 @@ t_error			timer_check(void)
        * 3)
        */
 
-      if (o->type == EVENT_MESSAGE)
+      switch (o->type)
 	{
-	  if (timer_notify(o->id) != ERROR_OK)
-	    CORE_ESCAPE("unable to notify the task of the timer's expiration");
-	}
-      else
-	{
-	  o->handler.function(o->id, o->data);
+	  // XXX ce serait surement plus propre d'appeller un truc genre
+	  // timer_notifyd() ici
+	case TIMER_TYPE_FUNCTION:
+	  {
+	    o->handler.routine(o->id, o->data);
+
+	    break;
+	  }
+	case TIMER_TYPE_MESSAGE:
+	  {
+	    if (timer_notify(o->id) != ERROR_OK)
+	      CORE_ESCAPE("unable to notify the task of the "
+			  "timer's expiration");
+
+	    break;
+	  }
 	}
 
       /*
@@ -198,7 +208,7 @@ t_error			timer_dump(void)
   t_state		state;
   o_timer*		data;
   t_setsz		size;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -257,7 +267,7 @@ t_error			timer_notify(i_timer			id)
 
   msg.id = id;
   msg.data = o->data;
-  node.machine = _kernel->machine;
+  node.cell = _kernel->cell;
   node.task = o->handler.task;
 
   if (message_send(_kernel->task, node, MESSAGE_TYPE_TIMER, (t_vaddr)&msg,
@@ -287,7 +297,7 @@ t_error			timer_insert(o_timer*			o)
 {
   t_state		state;
   o_timer*		o_tmp;
-  t_iterator		i;
+  s_iterator		i;
 
   assert(o != NULL);
 
@@ -340,7 +350,7 @@ t_error			timer_reserve(t_type			type,
 {
   o_timer		o;
 
-  assert((type == EVENT_FUNCTION) || (type == EVENT_MESSAGE));
+  assert((type == TIMER_TYPE_FUNCTION) || (type == TIMER_TYPE_MESSAGE));
   assert(id != NULL);
 
   /*
@@ -623,10 +633,10 @@ t_error			timer_initialize(void)
    * 1)
    */
 
-  if ((_timer = malloc(sizeof(m_timer))) == NULL)
+  if ((_timer = malloc(sizeof (m_timer))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the timer manger's structure");
 
-  memset(_timer, 0x0, sizeof(m_timer));
+  memset(_timer, 0x0, sizeof (m_timer));
 
   /*
    * 2)
@@ -641,7 +651,7 @@ t_error			timer_initialize(void)
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPTION_ALLOC,
+  if (set_reserve(ll, SET_OPTION_ALLOCATE,
                   sizeof(o_timer), &_timer->timers) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of timers");
 

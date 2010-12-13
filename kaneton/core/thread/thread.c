@@ -143,7 +143,7 @@ t_error			thread_dump(void)
   t_state		st;
   o_thread*		data;
   t_setsz		size;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -232,7 +232,7 @@ t_error			thread_reserve(i_task			taskid,
    */
 
   if (set_reserve(array,
-		  SET_OPTION_ALLOC,
+		  SET_OPTION_ALLOCATE,
 		  THREAD_WAITS_INITSZ,
 		  sizeof (i_thread),
 		  &o.waits) != ERROR_OK)
@@ -417,7 +417,7 @@ t_error			thread_start(i_thread			id)
   o_thread*		object;
   o_task*		task;
   t_state		st;
-  t_iterator		it;
+  s_iterator		it;
 
   /*
    * 2)
@@ -515,7 +515,7 @@ t_error			thread_stop(i_thread			id)
   o_thread*		object;
   t_state		state;
   t_state		st;
-  t_iterator		it;
+  s_iterator		it;
 
   /*
    * 2)
@@ -690,7 +690,7 @@ t_error			thread_exit(i_thread			id,
   o_thread*		object;
   t_state		state;
   t_state		st;
-  t_iterator		it;
+  s_iterator		it;
   t_boolean		w;
 
   /*
@@ -795,8 +795,8 @@ t_error			thread_exit(i_thread			id,
        * XXX
        */
 
-      if (timer_reserve(TIMER_FUNCTION,
-			TIMER_HANDLER(thread_bury),
+      if (timer_reserve(TIMER_TYPE_FUNCTION,
+			TIMER_ROUTINE(thread_bury),
 			(t_vaddr)data,
 			THREAD_DELAY_BURY,
 			TIMER_OPTION_NONE,
@@ -874,7 +874,7 @@ void			thread_bury(i_timer			timer,
 t_error			thread_wait(i_thread			id,
 				    t_state			state,
 				    i_thread			target,
-				    t_wait*			wait)
+				    s_wait*			wait)
 {
   o_thread*		object;
   o_thread*		o;
@@ -959,8 +959,8 @@ t_error			thread_wait(i_thread			id,
        * XXX
        */
 
-      if (timer_reserve(TIMER_FUNCTION,
-			TIMER_HANDLER(thread_bury),
+      if (timer_reserve(TIMER_TYPE_FUNCTION,
+			TIMER_ROUTINE(thread_bury),
 			(t_vaddr)data,
 			5000,
 			TIMER_OPTION_NONE,
@@ -1021,7 +1021,7 @@ t_error			thread_wait(i_thread			id,
  */
 
 t_error			thread_stack(i_thread			threadid,
-				     t_stack			stack)
+				     s_stack			stack)
 {
   o_thread*		o;
   o_task*		task;
@@ -1149,8 +1149,8 @@ t_error			thread_sleep(i_thread			id,
    *
    */
 
-  if (timer_reserve(TIMER_FUNCTION,
-                    TIMER_HANDLER(thread_sleep_handler),
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+                    TIMER_ROUTINE(thread_sleep_handler),
                     (t_vaddr)data,
                     milliseconds,
                     TIMER_OPTION_NONE,
@@ -1181,7 +1181,7 @@ t_error			thread_flush(i_task			taskid)
 {
   i_thread*		data;
   o_task*		task;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -1218,7 +1218,7 @@ t_error			thread_flush(i_task			taskid)
  */
 
 t_error			thread_load(i_thread			threadid,
-				    t_thread_context		context)
+				    s_thread_context		context)
 {
   if (machine_call(thread, thread_load, threadid, context) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
@@ -1231,10 +1231,26 @@ t_error			thread_load(i_thread			threadid,
  */
 
 t_error			thread_store(i_thread			threadid,
-				     t_thread_context*		context)
+				     s_thread_context*		context)
 {
   if (machine_call(thread, thread_store, threadid, context) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * XXX
+ */
+
+t_error			thread_current(i_thread*		thread)
+{
+  o_scheduler*		scheduler;
+
+  // XXX
+  scheduler_current(&scheduler);
+
+  *thread = scheduler->thread;
 
   CORE_LEAVE();
 }
@@ -1283,11 +1299,11 @@ t_error			thread_initialize(void)
    * 1)
    */
 
-  if ((_thread = malloc(sizeof(m_thread))) == NULL)
+  if ((_thread = malloc(sizeof (m_thread))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the thread manager's "
 		"structure");
 
-  memset(_thread, 0x0, sizeof(m_thread));
+  memset(_thread, 0x0, sizeof (m_thread));
 
   /*
    * 2)
@@ -1301,7 +1317,7 @@ t_error			thread_initialize(void)
    */
 
   if (set_reserve(ll,
-		  SET_OPTION_ALLOC,
+		  SET_OPTION_ALLOCATE,
 		  sizeof(o_thread),
 		  &_thread->threads) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of threads");

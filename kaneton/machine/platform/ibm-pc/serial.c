@@ -10,6 +10,13 @@
  */
 
 /*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file provides functionalities for sending and receiving data
+ * to/from a serial line.
+ */
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
@@ -22,22 +29,41 @@
  */
 
 /*
- * this function read on the serial device
+ * this function reads on the given serial device.
+ *
+ * steps:
+ *
+ * 1) until enough bytes have been read.
+ *   a) read the status register.
+ *   b) if the data is ready to be read, read the register.
  */
 
-void        		platform_serial_read(t_uint32		com_port,
+void        		platform_serial_read(t_uint32		port,
 					     t_uint8*		data,
 					     t_uint32 		size)
 {
+  t_uint8		status;
+
+  /*
+   * 1)
+   */
 
   while (size)
     {
-      ARCHITECTURE_IO_IN_8(com_port + 5,
-			   *data);
+      /*
+       * a)
+       */
 
-      if (*data & 1)
+      ARCHITECTURE_IO_IN_8(port + 5,
+			   status);
+
+      /*
+       * b)
+       */
+
+      if (status & 1)
 	{
-	  ARCHITECTURE_IO_IN_8(com_port,
+	  ARCHITECTURE_IO_IN_8(port,
 			       *data++);
 
 	  size--;
@@ -46,23 +72,39 @@ void        		platform_serial_read(t_uint32		com_port,
 }
 
 /*
- * this function writes on the serial device
+ * this function writes on the serial device.
+ *
+ * 1) until enough bytes have been written.
+ *   a) read the status register.
+ *   b) if the register is ready to be written, write it.
  */
 
-void			platform_serial_write(t_uint32		com_port,
+void			platform_serial_write(t_uint32		port,
 					      t_uint8*		data,
 					      t_uint32		size)
 {
-  char			ch;
+  t_uint8		status;
+
+  /*
+   * 1)
+   */
 
   while(size)
     {
-      ARCHITECTURE_IO_IN_8(com_port + 5,
-			   ch);
+      /*
+       * a)
+       */
 
-      if (ch & 0x20)
+      ARCHITECTURE_IO_IN_8(port + 5,
+			   status);
+
+      /*
+       * b)
+       */
+
+      if (status & 0x20)
 	{
-	  ARCHITECTURE_IO_OUT_8(com_port,
+	  ARCHITECTURE_IO_OUT_8(port,
 				*data++);
 
 	  size--;
@@ -71,33 +113,85 @@ void			platform_serial_write(t_uint32		com_port,
 }
 
 /*
- * this function initializes the serial port.
+ * this function sets up the serial port.
+ *
+ * steps:
+ *
+ * 1) disable IRQs.
+ * 2) enable the baud rate divisor.
+ * 3) set the baude rate divisor.
+ * 4) set the serial type such as 8 bits, no parity and one bit stop which
+ *    is referred to as 8N1.
+ * 5) enable the FIFO.
+ * 6) re-enable IRQs.
  */
 
-t_error			platform_serial_setup(t_uint32		com_port,
-					      t_uint8		baud_rate,
-					      t_uint8		bit_type)
+t_error			platform_serial_setup(t_uint32		port,
+					      t_uint8		rate,
+					      t_uint8		type)
 {
-  ARCHITECTURE_IO_OUT_8(com_port + 1,
+  /*
+   * 1)
+   */
+
+  ARCHITECTURE_IO_OUT_8(port + 1,
 			0x00);
 
-  ARCHITECTURE_IO_OUT_8(com_port + 3,
+  /*
+   * 2)
+   */
+
+  ARCHITECTURE_IO_OUT_8(port + 3,
 			0x80);
 
-  ARCHITECTURE_IO_OUT_8(com_port + 0,
-			baud_rate);
+  /*
+   * 3)
+   */
 
-  ARCHITECTURE_IO_OUT_8(com_port + 1,
+  ARCHITECTURE_IO_OUT_8(port + 0,
+			rate);
+
+  ARCHITECTURE_IO_OUT_8(port + 1,
 			0x00);
 
-  ARCHITECTURE_IO_OUT_8(com_port + 3,
-			bit_type);
+  /*
+   * 4)
+   */
 
-  ARCHITECTURE_IO_OUT_8(com_port + 2,
+  ARCHITECTURE_IO_OUT_8(port + 3,
+			type);
+
+  /*
+   * 5)
+   */
+
+  ARCHITECTURE_IO_OUT_8(port + 2,
 			PLATFORM_SERIAL_FIFO_8);
 
-  ARCHITECTURE_IO_OUT_8(com_port + 4,
+  /*
+   * 6)
+   */
+
+  ARCHITECTURE_IO_OUT_8(port + 4,
 			0x08);
 
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function initializes the serial manager.
+ */
+
+t_error			platform_serial_initialize(void)
+{
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function cleans the serial manager.
+ */
+
+t_error			platform_serial_clean(void)
+{
   MACHINE_LEAVE();
 }

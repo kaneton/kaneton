@@ -8,13 +8,13 @@
  * file          /home/mycure/kane...chine/glue/ibm-pc.ia32/educational/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       julien quintard   [sat nov 27 16:19:49 2010]
+ * updated       julien quintard   [thu dec  9 21:40:52 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * the file provides the machine-specific CPU functions.
  */
 
 /*
@@ -31,7 +31,7 @@
  * the init structure.
  */
 
-extern t_init*		_init;
+extern s_init*		_init;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -44,7 +44,11 @@ extern t_init*		_init;
 d_cpu			glue_cpu_dispatch =
   {
     NULL,
+    NULL,
     glue_cpu_current,
+    NULL,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL
@@ -55,13 +59,15 @@ d_cpu			glue_cpu_dispatch =
  */
 
 /*
- * identifies the  current cpu. for  non-mp, the current cpu  is the
- * boot processor.
+ * this function returns the current CPU.
+ *
+ * since the ia32/educational implementation assumes a single processor,
+ * the current CPU remains the BSP, the only processor.
  */
 
-t_error			glue_cpu_current(i_cpu*			cpuid)
+t_error			glue_cpu_current(i_cpu*			cpu)
 {
-  *cpuid = _init->bsp;
+  *cpu = _init->bsp;
 
   MACHINE_LEAVE();
 }

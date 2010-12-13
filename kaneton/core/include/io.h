@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/io.h
+ * file          /home/mycure/kaneton/kaneton/core/include/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [sat nov 27 06:19:59 2010]
+ * updated       julien quintard   [fri dec 10 21:18:08 2010]
  */
 
 #ifndef CORE_IO_H
@@ -29,7 +29,7 @@
  */
 
 /*
- * io manager
+ * the I/O manager structure.
  */
 
 typedef struct
@@ -38,16 +38,16 @@ typedef struct
 }				m_io;
 
 /*
- * the io architecture-dependent interface
+ * the I/O dispatcher.
  */
 
 typedef struct
 {
-  t_error			(*io_grant)(i_port,
-					    i_task,
+  t_error			(*io_grant)(i_task,
+					    i_port,
 					    t_uint8);
-  t_error			(*io_deny)(i_port,
-					   i_task,
+  t_error			(*io_deny)(i_task,
+					   i_port,
 					   t_uint8);
   t_error			(*io_read_8)(i_task,
 					     i_port,
@@ -87,44 +87,44 @@ typedef struct
  * ../../core/io/io.c
  */
 
-t_error			io_grant(i_port				id,
-				 i_task				task,
+t_error			io_grant(i_task				task,
+				 i_port				port,
 				 t_uint8			width);
 
-t_error			io_deny(i_port				id,
-				i_task				task,
+t_error			io_deny(i_task				task,
+				i_port				port,
 				t_uint8				width);
 
 t_error			io_read_8(i_task			task,
-				  i_port			id,
+				  i_port			port,
 				  t_uint8*			data);
 
 t_error			io_read_16(i_task			task,
-				   i_port			id,
+				   i_port			port,
 				   t_uint16*			data);
 
 t_error			io_read_32(i_task			task,
-				   i_port			id,
+				   i_port			port,
 				   t_uint32*			data);
 
 t_error			io_read_64(i_task			task,
-				   i_port			id,
+				   i_port			port,
 				   t_uint64*			data);
 
 t_error			io_write_8(i_task			task,
-				   i_port			id,
+				   i_port			port,
 				   t_uint8			data);
 
 t_error			io_write_16(i_task			task,
-				    i_port			id,
+				    i_port			port,
 				    t_uint16			data);
 
 t_error			io_write_32(i_task			task,
-				    i_port			id,
+				    i_port			port,
 				    t_uint32			data);
 
 t_error			io_write_64(i_task			task,
-				    i_port			id,
+				    i_port			port,
 				    t_uint64			data);
 
 t_error			io_initialize(void);

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/event.h
  *
  * created       julien quintard   [wed jun  6 16:15:26 2007]
- * updated       julien quintard   [wed nov 24 14:16:21 2010]
+ * updated       julien quintard   [fri dec 10 21:14:55 2010]
  */
 
 #ifndef GLUE_EVENT_H
@@ -26,8 +26,8 @@
     {									\
       t_error	_r_ = ERROR_OK;						\
 									\
-      if (glue_event_dispatch._function_ != NULL)			\
-        _r_ = glue_event_dispatch._function_(_args_);			\
+      if (glue_event_dispatch.event_ ## _function_ != NULL)		\
+        _r_ = glue_event_dispatch.event_ ## _function_(_args_);		\
 									\
       _r_;								\
     }									\
@@ -36,6 +36,8 @@
 #define		machine_data_m_event()
 
 #define		machine_data_o_event()
+
+#define		machine_data_o_event_message()
 
 /*
  * ---------- dependencies ----------------------------------------------------

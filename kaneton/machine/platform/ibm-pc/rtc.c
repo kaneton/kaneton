@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...LE/kaneton/machine/platform/ibm-pc/rtc.c
+ * file          /home/mycure/kaneton/kaneton/machine/platform/ibm-pc/rtc.c
  *
  * created       julien quintard   [wed nov 24 10:17:08 2010]
- * updated       julien quintard   [sat dec  4 22:56:43 2010]
+ * updated       julien quintard   [fri dec 10 16:21:09 2010]
  */
 
 /*
@@ -38,7 +38,7 @@
  * the RTC variable.
  */
 
-m_platform_rtc		_platform_rtc;
+pm_rtc			_platform_rtc;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -48,7 +48,7 @@ m_platform_rtc		_platform_rtc;
  * this function dumps the RTC structure's attributes.
  */
 
-void			platform_rtc_dump(t_platform_rtc*	rtc)
+void			platform_rtc_dump(ps_rtc_state*		rtc)
 {
   module_call(console, message,
 	      '#', "dumping the RTC structure:\n");
@@ -138,7 +138,8 @@ t_error			platform_rtc_extract(t_uint8		address,
     case PLATFORM_RTC_FORMAT_24H:
     default:
       {
-	MACHINE_ESCAPE("the 24-hour RTC format is not supported");
+	MACHINE_ESCAPE("unsupported format '%u'",
+		       PLATFORM_RTC_FORMAT);
       }
     }
 
@@ -148,9 +149,12 @@ t_error			platform_rtc_extract(t_uint8		address,
 /*
  * this function reads all the registers composing the RTC
  * structure.
+ *
+ * note however that since the RTC does not handle milliseconds, the
+ * milliseconds attribute is initially set to zero.
  */
 
-t_error			platform_rtc_load(t_platform_rtc*	rtc)
+t_error			platform_rtc_load(ps_rtc_state*		rtc)
 {
   rtc->millisecond = 0;
 
@@ -182,20 +186,12 @@ t_error			platform_rtc_load(t_platform_rtc*	rtc)
 }
 
 /*
- * this function returns the current RTC structure.
- *
- * steps:
- *
- * 1) return the pointer on the internal RTC structure.
+ * this function returns a pointer on the current RTC state structure.
  */
 
-t_error			platform_rtc_current(t_platform_rtc**	rtc)
+t_error			platform_rtc_state(ps_rtc_state**	rtc)
 {
-  /*
-   * 1)
-   */
-
-  *rtc = &_platform_rtc.rtc;
+  *rtc = &_platform_rtc.state;
 
   MACHINE_LEAVE();
 }
@@ -206,10 +202,10 @@ t_error			platform_rtc_current(t_platform_rtc**	rtc)
  *
  * steps:
  *
- * 1) increase the number of ticks.
+ * 1) increase the number of milliseconds.
  * 2) adjust the attributes since the number of seconds
  *    can exceed 60 for instance, and so on for the other
- *    values.
+ *    attributes.
  */
 
 t_error			platform_rtc_update(t_uint32		millisecond)
@@ -218,53 +214,59 @@ t_error			platform_rtc_update(t_uint32		millisecond)
    * 1)
    */
 
-  _platform_rtc.rtc.millisecond += millisecond;
+  _platform_rtc.state.millisecond += millisecond;
 
   /*
    * 2)
    */
 
-  if (_platform_rtc.rtc.millisecond > 1000)
+  if (_platform_rtc.state.millisecond > 1000)
     {
-      _platform_rtc.rtc.second += _platform_rtc.rtc.millisecond / 1000;
-      _platform_rtc.rtc.millisecond = _platform_rtc.rtc.millisecond % 1000;
+      _platform_rtc.state.second += _platform_rtc.state.millisecond / 1000;
+      _platform_rtc.state.millisecond = _platform_rtc.state.millisecond % 1000;
     }
 
-  if (_platform_rtc.rtc.second > 60)
+  if (_platform_rtc.state.second > 60)
     {
-      _platform_rtc.rtc.minute += _platform_rtc.rtc.second / 60;
-      _platform_rtc.rtc.second = _platform_rtc.rtc.second % 60;
+      _platform_rtc.state.minute += _platform_rtc.state.second / 60;
+      _platform_rtc.state.second = _platform_rtc.state.second % 60;
     }
 
-  if (_platform_rtc.rtc.minute > 60)
+  if (_platform_rtc.state.minute > 60)
     {
-      _platform_rtc.rtc.hour += _platform_rtc.rtc.minute / 60;
-      _platform_rtc.rtc.minute = _platform_rtc.rtc.minute % 60;
+      _platform_rtc.state.hour += _platform_rtc.state.minute / 60;
+      _platform_rtc.state.minute = _platform_rtc.state.minute % 60;
     }
 
-  if (_platform_rtc.rtc.hour > 24)
+  if (_platform_rtc.state.hour > 24)
     {
-      _platform_rtc.rtc.day += _platform_rtc.rtc.hour / 24;
-      _platform_rtc.rtc.hour = _platform_rtc.rtc.hour % 24;
+      _platform_rtc.state.day += _platform_rtc.state.hour / 24;
+      _platform_rtc.state.hour = _platform_rtc.state.hour % 24;
     }
 
   MACHINE_LEAVE();
 }
 
 /*
- * this function initializes the RTC with several
- * options.
+ * this function initializes the RTC with several options.
  *
  * steps:
  *
- * 1) activate the BCD format.
- * 2) load the initial RTC.
+ * 1) initialize the manager's structure.
+ * 2) activate the BCD format.
+ * 3) load the initial RTC.
  */
 
 t_error			platform_rtc_initialize(void)
 {
   /*
    * 1)
+   */
+
+  memset(&_platform_rtc, 0x0, sizeof (pm_rtc));
+
+  /*
+   * 2)
    */
 
   platform_rtc_write(PLATFORM_RTC_REGISTER_STATUS_B,
@@ -275,7 +277,7 @@ t_error			platform_rtc_initialize(void)
    * 2)
    */
 
-  if (platform_rtc_load(&_platform_rtc.rtc) != ERROR_OK)
+  if (platform_rtc_load(&_platform_rtc.state) != ERROR_OK)
     MACHINE_ESCAPE("unable to load the initial RTC");
 
   MACHINE_LEAVE();

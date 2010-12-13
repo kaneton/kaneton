@@ -12,24 +12,32 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * the region manager manages mapping of segments.
+ * the region manager provides functionalities for mapping segments through
+ * so called 'regions'. therefore the terms "mapping" and "reserving a
+ * region" can be interchangeably used.
  *
- * reserving a region means to map virtual addresses to a segment.
+ * unlike segments, regions live in an address space. therefore a region 
+ * itself is meanginless outside its address space. besides, there is no
+ * global set of regions as there is for segments. instead, the address
+ * space maintains a set containing its region objects.
+ */
+
+/*
+ * ---------- algorithm -------------------------------------------------------
  *
- * like for  segment, region identifiers are the  virtual address they
- * maps.
+ * this implementation has a specificity regarding region identifiers. indeed,
+ * like for segments, region identifiers are based on the object's address.
+ * a region's identifier represents the page number in the virtual space,
+ * starting at one. in other words: id = address / page size. regions
+ * are identified this way in order to ensure that the regions are always
+ * sorted in their set.
  *
- * unlike segments, regions  are proper to an address  space: there is
- * one set of region objects for each address space to prevent collisions.
+ * this implementation relies on the fit algorithm though this algorithm can
+ * be further configured through the REGION_FIT macro:
  *
- * this file implements simple  fitting algorithms for virtual memory
- * management.
- *
- * you can define which algorithm to use with the macro REGION_FIT.
- *
- *  - FIT_FIRST: first fit algorithm - the first large enough space is taken
- *  - FIT_BEST: best fit algorithm - the smaller space is taken
- *  - ...
+ *  o FIT_FIRST: first fit algorithm - the first large enough space is used.
+ *  o FIT_BEST: best fit algorithm - the smaller space is used.
+ *  o etc.
  */
 
 #if (REGION_ALGORITHM == REGION_ALGORITHM_FIT)
@@ -39,6 +47,10 @@
  */
 
 #include <kaneton.h>
+
+/*
+ * include the machine-specific definitions required by the core.
+ */
 
 machine_include(region);
 
@@ -57,23 +69,26 @@ m_region*		_region = NULL;
  */
 
 /*
- * this function shows a region.
+ * this function shows a region's attributes.
  *							 [block::show::comment]
  *
  * steps:
  *
- * 1) get the region object.
- * 2) display the entry.
- * 3) call machine dependent code.
+ * 1) retrieve the region object.
+ * 2) build the options string.
+ * 3) display the attributes.
+ * 4) call the machine.
  *						      [endblock::show::comment]
  */
 
 t_error			region_show(i_as			asid,
-				    i_region			regid)
+				    i_region			regid,
+				    mt_margin			margin)
 {
   /*							       [block::show] */
 
   o_region*		o;
+  char			options[4];
 
   /*
    * 1)
@@ -82,28 +97,51 @@ t_error			region_show(i_as			asid,
   if (region_get(asid, regid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the region object");
 
-  module_call(console, message,
-	      '#', "  region %qd in address space %qd:\n",
-	      regid,
-	      asid);
-
   /*
    * 2)
    */
 
-  module_call(console, message,
-	      '#', "    0x%08x - 0x%08x [%qd] (%u bytes) %c\n",
-	      o->address,
-	      o->address + o->size - 1,
-	      o->segment,
-	      o->size,
-	      (o->options & REGION_OPTION_PRIVILEGED) ? 'S' : 'U');
+  memset(options, 0x0, sizeof (options));
+
+  if (o->options & REGION_OPTION_FORCE)
+    options[0] = 'f';
+  else
+    options[0] = '.';
+
+  if (o->options & REGION_OPTION_PRIVILEGED)
+    options[1] = 'p';
+  else
+    options[1] = 'u';
+
+  if (o->options & REGION_OPTION_GLOBAL)
+    options[2] = 'g';
+  else
+    options[2] = 'l';
 
   /*
    * 3)
    */
 
-  if (machine_call(region, region_show, asid, regid) != ERROR_OK)
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "region: id(%qu) range(0x%08x - 0x%08x) segment(%qu) "
+	      "offset(0x%x) size(0x%x) options(%s) as(%qu)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->id,
+	      o->address,
+	      o->address + o->size - 1,
+	      o->segment,
+	      o->offset,
+	      o->size,
+	      options,
+	      asid);
+
+  /*
+   * 3)
+   */
+
+  if (machine_call(region, show, asid, regid, margin) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*							    [endblock::show] */
@@ -112,18 +150,20 @@ t_error			region_show(i_as			asid,
 }
 
 /*
- * this function dumps the regions.
+ * this function dumps all the regions of the given address space.
  *							 [block::dump::comment]
  *
  * steps:
  *
- * 1) gets the size of the region set.
- * 2) prints the header message.
- * 3) for each entry in the region set, calls the region_show function.
+ * 1) retrieve the address space object.
+ * 2) retrieve the size of the address space's set of regions.
+ * 3) display general information.
+ * 4) show every region.
+ * 5) call the machine.
  *						      [endblock::dump::comment]
  */
 
-t_error			region_dump(i_as		asid)
+t_error			region_dump(i_as			asid)
 {
   /*							       [block::dump] */
 
@@ -131,7 +171,7 @@ t_error			region_dump(i_as		asid)
   o_as*			o;
   o_region*		data;
   t_setsz		size;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -153,7 +193,15 @@ t_error			region_dump(i_as		asid)
    */
 
   module_call(console, message,
-	      '#', "dumping %qu regions(s) from the region set:\n", size);
+	      '#', "region manager: #regions(%qu):\n",
+	      size);
+
+  /*
+   * 4)
+   */
+
+  module_call(console, message,
+	      '#', "  regions:\n");
 
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, state)
     {
@@ -161,9 +209,18 @@ t_error			region_dump(i_as		asid)
 	CORE_ESCAPE("unable to retrieve the region object corresponding "
 		    "to its identifier");
 
-      if (region_show(asid, data->id) != ERROR_OK)
+      if (region_show(asid,
+		      data->id,
+		      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the region");
     }
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(region, dump, asid) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   /*							    [endblock::dump] */
 
@@ -176,11 +233,20 @@ t_error			region_dump(i_as		asid)
  *
  * steps:
  *
- * 1) gets the first region.
- * 2) tries to find space before the first region.
- * 3) for each region, tries to find space after it.
- * 4) gets the last region.
- * 5) tries to find space after the last region.
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) if there is no region yet, verify that the whole region space is
+ *    large enough to satisfy the request.
+ * 3) otherwise, retrieve the very first region object.
+ * 4) perhaps there is enough space between the beginning of the virtual
+ *    space and the first region's address.
+ * 5) go through the regions of the address space.
+ *   a) retrieve the region object.
+ *   b) try to retrieve the following region object, or escape otherwise.
+ *   c) if there is space between the two regions, return this address.
+ * 6) retrieve the last region.
+ * 7) try to find space between the last region and the end of the virtual
+ *    space.
  */
 
 t_error			region_fit_first(i_as			asid,
@@ -192,17 +258,27 @@ t_error			region_fit_first(i_as			asid,
   o_region*		head;
   o_region*		tail;
   o_as*			as;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
-   * XXX
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_ESCAPE("unable to find space for zero bytes");
+
+  if (address == NULL)
+    CORE_ESCAPE("the 'address' argument is null");
+
+  /*
+   * 1)
    */
 
   if (as_get(asid, &as) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
-   * 1)
+   * 2)
    */
 
   if (set_head(as->regions, &i) != ERROR_TRUE)
@@ -216,11 +292,15 @@ t_error			region_fit_first(i_as			asid,
       CORE_LEAVE();
     }
 
+  /*
+   * 3)
+   */
+
   if (set_object(as->regions, i, (void**)&head) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space's very first region");
 
   /*
-   * 2)
+   * 4)
    */
 
   if ((head->address - _region->base) >= size)
@@ -231,22 +311,34 @@ t_error			region_fit_first(i_as			asid,
     }
 
   /*
-   * 3)
+   * 5)
    */
 
   set_foreach(SET_OPTION_FORWARD, as->regions, &i, state)
     {
       o_region*		next;
-      t_iterator	j;
+      s_iterator	j;
+
+      /*
+       * a)
+       */
 
       if (set_object(as->regions, i, (void**)&current) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
+
+      /*
+       * b)
+       */
 
       if (set_next(as->regions, i, &j) != ERROR_TRUE)
 	break;
 
       if (set_object(as->regions, j, (void**)&next) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the next region object");
+
+      /*
+       * c)
+       */
 
       if ((next->address - (current->address + current->size)) >= size)
 	{
@@ -257,7 +349,7 @@ t_error			region_fit_first(i_as			asid,
     }
 
   /*
-   * 4)
+   * 6)
    */
 
   if (set_tail(as->regions, &i) != ERROR_TRUE)
@@ -267,7 +359,7 @@ t_error			region_fit_first(i_as			asid,
     CORE_ESCAPE("unable to retrieve the region object");
 
   /*
-   * 5)
+   * 7)
    */
 
   if (((_region->base + _region->size) -
@@ -283,15 +375,34 @@ t_error			region_fit_first(i_as			asid,
 }
 
 /*
- * this function calls the good algorithm.
+ * this function tries to find available space in the address space.
+ *
+ * note that this function is a wrapper over the several fit algorithms
+ * provided.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) forward the call to the right algorithm.
  */
 
-t_error			region_space(i_as		asid,
-				     t_vsize		size,
-				     t_vaddr*		address)
+t_error			region_space(i_as			asid,
+				     t_vsize			size,
+				     t_vaddr*			address)
 {
-  assert(size != 0);
-  assert(address != NULL);
+  /*
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_ESCAPE("unable to find space for zero bytes");
+
+  if (address == NULL)
+    CORE_ESCAPE("the 'address' argument is null");
+
+  /*
+   * 1)
+   */
 
   switch (REGION_FIT)
     {
@@ -304,7 +415,7 @@ t_error			region_space(i_as		asid,
 	break;
       }
     default:
-      CORE_ESCAPE("unknown region algorithm '%u'",
+      CORE_ESCAPE("unknown region's fit algorithm '%u'",
 		  REGION_FIT);
     }
 
@@ -312,52 +423,69 @@ t_error			region_space(i_as		asid,
 }
 
 /*
- * this function injects a region into an address space.
+ * this function injects a region object into the address space.
+ *
+ * note that the object must already be ready for insertion in the set
+ * of regions. therefore if the set has not be configured to clone the
+ * objects to add, the object should have been pre-allocated.
+ *
  *						       [block::inject::comment]
  *
  * steps:
  *
- * 1) get the as object.
- * 2) fill the region id field.
- * 3) add the region to the set.
- * 4) call machine code.
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) fill the remaining region attributes, especially the identifier.
+ * 3) add the object to the address space's set of regions.
+ * 4) call the machine.
  *						    [endblock::inject::comment]
  */
 
-t_error			region_inject(i_as		asid,
-				      o_region*		o,
-				      i_region*		regid)
+t_error			region_inject(i_as			as,
+				      o_region*			object,
+				      i_region*			id)
 {
   /*							     [block::inject] */
 
-  o_as*			as;
+  o_as*			o;
 
-  assert(o != NULL);
-  assert(regid != NULL);
-  assert((o->options & REGION_OPTION_INVALID) == 0);
-  assert(o->size != 0);
+  /*
+   * 0)
+   */
+
+  if (o == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
+
+  if (object->options & REGION_OPTION_INVALID)
+    CORE_ESCAPE("the object's options are invalid");
+
+  if (object->size == 0)
+    CORE_ESCAPE("the object's size is zero");
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_OK)
+  if (as_get(as, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
-  o->id = (i_region)o->address;
-  o->options &= REGION_OPTION_FORCE;
+  object->id = REGION_IDENTIFIER(object);
+  object->options |= REGION_OPTION_FORCE;
 
-  *regid = o->id;
+  *id = object->id;
 
   /*
    * 3)
    */
 
-  if (set_add(as->regions, o) != ERROR_OK)
+  if (set_add(o->regions, object) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the address space's set of "
 		"regions");
 
@@ -365,7 +493,7 @@ t_error			region_inject(i_as		asid,
    * 4)
    */
 
-  if (machine_call(region, region_inject, asid, o, regid) != ERROR_OK)
+  if (machine_call(region, inject, as, object, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*							  [endblock::inject] */
@@ -376,17 +504,19 @@ t_error			region_inject(i_as		asid,
 /*							      [block::split] */
 
 /*
- * this function splits a region in two regions.
+ * this function splits a region into two regions according to the
+ * splitting size.
  *
  * steps:
  *
- * 1) get the region object and the associated segment.
- * 2) check if the sizes are correct.
- * 3) check if a valid segment exists and can be used.
- * 4) build the new region.
- * 5) adjust the old region size.
+ * 0) verify the arguments.
+ * 1) retrieve the region object and its associated segment.
+ * 2) verify that the the splitting size fits the region.
+ * 3) build the new future-'right' region.
+ * 4) inject the new region in the address space's set of regions.
+ * 5) adjust the old future-'left' region size.
  * 6) set the new left and right identifiers.
- * 7) call the dependent code.
+ * 7) call the machine.
  */
 
 t_error			region_split(i_as			asid,
@@ -400,9 +530,18 @@ t_error			region_split(i_as			asid,
   o_segment*		seg;
   o_region*		new;
 
-  assert(size != 0);
-  assert(left != NULL);
-  assert(right != NULL);
+  /*
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_ESCAPE("unable to split to a size of zero");
+
+  if (left == NULL)
+    CORE_ESCAPE("the 'left' argument is null");
+
+  if (right == NULL)
+    CORE_ESCAPE("the 'right' argument is null");
 
   /*
    * 1)
@@ -425,7 +564,7 @@ t_error			region_split(i_as			asid,
    * 3)
    */
 
-  if ((new = malloc(sizeof(o_region))) == NULL)
+  if ((new = malloc(sizeof (o_region))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the region object");
 
   new->segment = reg->segment;
@@ -434,7 +573,7 @@ t_error			region_split(i_as			asid,
   new->options = reg->options;
   new->size = reg->size - size;
 
-  new->id = (i_region)new->address;
+  new->id = REGION_IDENTIFIER(new);
 
   /*
    * 4)
@@ -461,8 +600,7 @@ t_error			region_split(i_as			asid,
    * 7)
    */
 
-  if (machine_call(region,
-		   region_split,
+  if (machine_call(region, split,
 		   asid,
 		   regid,
 		   size,
@@ -478,21 +616,39 @@ t_error			region_split(i_as			asid,
 /*							     [block::resize] */
 
 /*
- * this function resizes a region.
+ * this function resizes a region according to the given size which can be
+ * smaller or larger than the current size.
  *
  * steps:
  *
- * 1) check if there is enough space in the address space.
- * 2) check if the segment is large enough.
- * 3) the destination region is the same as the original one.
- * 4) call the machine dependent code.
- *   a) if the region is being expanded, a temporary region is injected so
- *      that the machine-dependent code does not reserve the expanded
- *      part of the future region. then the machine-dependent code is
- *      invoked and finally the temporary region is manually removed from
- *      the set of regions.
- *   b) otherwise, do nothing special.
- * 5) set the new size.
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) retrieve the region object to resize.
+ * 3) set the future identifier since it will always be the same.
+ * 4) resize the region depending on the future size.
+ *   A) if the future size is smaller than the current size...
+ *     a) call the machine.
+ *   B) if the future size is larger than the current size...
+ *     a) try to locate the following region.
+ *       i) if such a region exist...
+ *         #1) retrieve the following region object.
+ *         #2) verify that there is enough space between the current region
+ *             and the following one to resize i.e resizing will not make
+ *             the current region overlap the following one.
+ *       ii) if the current region is the last one...
+ *         #1) verify that there is enough space between the current region
+ *             and the end of the virtual space to accept the resizing.
+ *     b) retrieve the segment object mapped by the region.
+ *     c) verify that the region's future size will not be larger than the
+ *        segment's.
+ *     d) build a temporary region so that the machine does not reserve the
+ *        expanded part of the future region for its internal use.
+ *     e) inject this temporary region in the address space's set of regions.
+ *     f) call the machine.
+ *     g) remove the temporary region now that it is safe.
+ *   C) if the future size is identical to the current one...
+ *     a) nothing to do in this case.
+ * 5) update the region's size with the resized size.
  */
 
 t_error			region_resize(i_as			as,
@@ -505,11 +661,18 @@ t_error			region_resize(i_as			as,
   o_region*		next_reg;
   o_segment*		seg;
   o_as*			oas;
-  t_iterator		i;
-  t_iterator		next;
+  s_iterator		i;
+  s_iterator		next;
 
-  assert(size != 0);
-  assert(new != NULL);
+  /*
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_ESCAPE("unable to resize to a size of zero");
+
+  if (new == NULL)
+    CORE_ESCAPE("the 'new' argument is null");
 
   /*
    * 1)
@@ -518,48 +681,16 @@ t_error			region_resize(i_as			as,
   if (as_get(as, &oas) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
+  /*
+   * 2)
+   */
+
   if (set_locate(oas->regions, old, &i) != ERROR_OK)
     CORE_ESCAPE("unable to locate the object in the address space's "
 		"set of regions");
 
   if (set_object(oas->regions, i, (void**)&reg) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the region object");
-
-  if (reg->size == size)
-    {
-      *new = old;
-
-      CORE_LEAVE();
-    }
-
-  if (set_next(oas->regions, i, &next) == ERROR_TRUE)
-    {
-      if (set_object(oas->regions, next, (void**)&next_reg) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the next region object");
-
-      if (reg->address + size >= next_reg->address)
-	CORE_ESCAPE("unable to resize the region since it would overlap with "
-		    "the next region");
-    }
-  else
-    {
-      if (reg->address + size >= _region->base + _region->size)
-	CORE_ESCAPE("unable to resize the region since it would reach the "
-		    "end of the available region space");
-    }
-
-  /*
-   * 2)
-   */
-
-  if (segment_get(reg->segment, &seg) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the segment object");
-
-  if (size == 0)
-    CORE_ESCAPE("unable to resize to a null size");
-
-  if (size > seg->size)
-    CORE_ESCAPE("unable to resize a region to a size larger than its segment");
 
   /*
    * 3)
@@ -571,16 +702,92 @@ t_error			region_resize(i_as			as,
    * 4)
    */
 
-  if (reg->size < size)
+  if (size < reg->size)
     {
       /*
+       * A)
+       */
+
+      /*
        * a)
+       */
+
+      if (machine_call(region, resize,
+		       as,
+		       old,
+		       size,
+		       new) != ERROR_OK)
+	CORE_ESCAPE("an error occured in the machine");
+    }
+  else if (size > reg->size)
+    {
+      /*
+       * C)
        */
 
       o_region*		temporary;
       i_region		id;
 
-      if ((temporary = malloc(sizeof(o_region))) == NULL)
+      /*
+       * a)
+       */
+
+      if (set_next(oas->regions, i, &next) == ERROR_TRUE)
+	{
+	  /*
+	   * i)
+	   */
+
+	  /*
+	   * #1)
+	   */
+
+	  if (set_object(oas->regions, next, (void**)&next_reg) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the next region object");
+
+	  /*
+	   * #2)
+	   */
+
+	  if ((reg->address + size) >= next_reg->address)
+	    CORE_ESCAPE("unable to resize the region since it would "
+			"overlap with the next region");
+	}
+      else
+	{
+	  /*
+	   * ii)
+	   */
+
+	  /*
+	   * #1)
+	   */
+
+	  if (reg->address + size >= _region->base + _region->size)
+	    CORE_ESCAPE("unable to resize the region since it would reach the "
+			"end of the available region space");
+	}
+
+      /*
+       * b)
+       */
+
+      if (segment_get(reg->segment, &seg) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the segment object");
+
+      /*
+       * c)
+       */
+
+      if (size > seg->size)
+	CORE_ESCAPE("unable to resize a region to a size larger than "
+		    "its segment");
+
+      /*
+       * d)
+       */
+
+      if ((temporary = malloc(sizeof (o_region))) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the region");
 
       temporary->segment = reg->segment;
@@ -589,17 +796,28 @@ t_error			region_resize(i_as			as,
       temporary->size = size - reg->size;
       temporary->options = reg->options;
 
+      /*
+       * e)
+       */
+
       if (region_inject(as, temporary, &id) != ERROR_OK)
 	CORE_ESCAPE("unable to inject the temporary region in the "
 		    "address space's set of regions");
 
-      if (machine_call(region,
-		       region_resize,
+      /*
+       * f)
+       */
+
+      if (machine_call(region, resize,
 		       as,
 		       old,
 		       size,
 		       new) != ERROR_OK)
 	CORE_ESCAPE("an error occured in the machine");
+
+      /*
+       * g)
+       */
 
       if (set_remove(oas->regions, id) != ERROR_OK)
 	CORE_ESCAPE("unable to remove the temporary region fro the address "
@@ -608,16 +826,12 @@ t_error			region_resize(i_as			as,
   else
     {
       /*
-       * b)
+       * C)
        */
 
-      if (machine_call(region,
-		       region_resize,
-		       as,
-		       old,
-		       size,
-		       new) != ERROR_OK)
-	CORE_ESCAPE("an error occured in the machine");
+      /*
+       * a)
+       */
     }
 
   /*
@@ -634,29 +848,39 @@ t_error			region_resize(i_as			as,
 /*							   [block::coalesce] */
 
 /*
- * this function merges two adjacent regions.
+ * this function merges two adjacent regions into a single one.
  *
  * steps:
  *
- * 1) get both region objets.
- * 2) check if the operation is correct.
- * 3) get the as object.
- * 4) update the region size.
- * 5) remove the right region from the address space.
- * 6) call the machine dependent code.
+ * 0) verify the arguments.
+ * 1) retrieve both region objects.
+ * 2) verify that the regions are adjacents but also that they have
+ *    the same privileges.
+ * 3) retrieve the address space object.
+ * 4) set the final region size.
+ * 5) remove the 'right' region from the address space's set of regions.
+ * 6) call the machine.
+ * 7) return the new region identifier.
  */
 
-t_error			region_coalesce(i_as		asid,
-					i_region	left,
-					i_region	right,
-					i_region*	regid)
+t_error			region_coalesce(i_as			asid,
+					i_region		left,
+					i_region		right,
+					i_region*		region)
 {
   o_as*			as;
   o_region*		oleft;
   o_region*		oright;
 
-  assert(left != right);
-  assert(regid != NULL);
+  /*
+   * 0)
+   */
+
+  if (left == right)
+    CORE_ESCAPE("unable to coalesce the two same regions");
+
+  if (region == NULL)
+    CORE_ESCAPE("the 'region' argument is null");
 
   /*
    * 1)
@@ -677,8 +901,8 @@ t_error			region_coalesce(i_as		asid,
       oleft->offset + oleft->size != oright->offset ||
       (oleft->options & REGION_OPTION_PRIVILEGED) !=
       (oright->options & REGION_OPTION_PRIVILEGED))
-    CORE_ESCAPE("unable to coalesce non-adjacent regions and/or privileged "
-		"regions");
+    CORE_ESCAPE("unable to coalesce non-adjacent regions and/or regions "
+		"with different privileges");
 
   /*
    * 3)
@@ -705,15 +929,18 @@ t_error			region_coalesce(i_as		asid,
    * 6)
    */
 
-  if (machine_call(region,
-		   region_coalesce,
+  if (machine_call(region, coalesce,
 		   asid,
 		   left,
 		   right,
-		   regid) != ERROR_OK)
+		   region) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  *regid = left;
+  /*
+   * 7)
+   */
+
+  *region = left;
 
   CORE_LEAVE();
 }
@@ -721,15 +948,30 @@ t_error			region_coalesce(i_as		asid,
 /*							[endblock::coalesce] */
 
 /*
- * this function reserves a region given the desired segment.
+ * this function reserves a region in order to map the given segment
+ * at a precise offset, for a specific size and according to several options.
+ *
  *						      [block::reserve::comment]
  *
  * steps:
  *
- * 1) gets the address space object given its identifier.
- * 2) find some place.
- * 3) builds the region.
- * 4) calls the machine dependent code.
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) retrieve the segment object.
+ * 3) verify that the region does not map outside the segment.
+ * 4) compute the future region's address depending on the options.
+ *   A) if the region has been request to be located at a precise address...
+ *     a) verify that the address lies in the virtual space.
+ *     b) go through the existing regions and verify that this address is
+ *        not already in use.
+ *   B) if the region can be reserved anywhere...
+ *     a) look for available space in the address space's set of regions.
+ * 5) allocate the object.
+ * 6) fill the object's attributes.
+ * 7) add the object to the address space's set of regions.
+ * 8) call the machine.
+ * 9) return the region's identifier.
+ *
  *						   [endblock::reserve::comment]
  */
 
@@ -739,7 +981,7 @@ t_error			region_reserve(i_as			asid,
 				       t_options		options,
 				       t_vaddr			address,
 				       t_vsize			size,
-				       i_region*		regid)
+				       i_region*		region)
 {
   /*							    [block::reserve] */
 
@@ -747,12 +989,21 @@ t_error			region_reserve(i_as			asid,
   o_as*			as;
   o_region*		o;
   t_state		state;
-  t_iterator		i;
+  s_iterator		i;
   o_region*		data;
 
-  assert((options & REGION_OPTION_INVALID) == 0);
-  assert(size != 0);
-  assert(regid != NULL);
+  /*
+   * 0)
+   */
+
+  if (options & REGION_OPTION_INVALID)
+    CORE_ESCAPE("the options seem to be invalid");
+
+  if (size == 0)
+    CORE_ESCAPE("unable to reserve a region with a zero size");
+
+  if (region == NULL)
+    CORE_ESCAPE("the 'region' argument is null");
 
   /*
    * 1)
@@ -761,24 +1012,41 @@ t_error			region_reserve(i_as			asid,
   if (as_get(asid, &as) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
-  if (segment_get(segid, &segment) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the segment object");
-
-  if (segment->size < (offset + size))
-    CORE_ESCAPE("out-of-bound operation");
-
-  if ((o = malloc(sizeof(o_region))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the region object");
-
   /*
    * 2)
    */
 
+  if (segment_get(segid, &segment) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the segment object");
+
+  /*
+   * 3)
+   */
+
+  if (segment->size < (offset + size))
+    CORE_ESCAPE("out-of-bound operation");
+
+  /*
+   * 4)
+   */
+
   if (options & REGION_OPTION_FORCE)
     {
+      /*
+       * A)
+       */
+
+      /*
+       * a)
+       */
+
       if (address < _region->base ||
 	  address >= _region->base + _region->size)
 	CORE_ESCAPE("the provided address is either too low or too high");
+
+      /*
+       * b)
+       */
 
       set_foreach(SET_OPTION_FORWARD, as->regions, &i, state)
 	{
@@ -790,41 +1058,62 @@ t_error			region_reserve(i_as			asid,
 			"location 0x%x: seems to be already taken",
 			address);
 	}
-
-      o->address = address;
     }
   else
     {
-      if (region_space(asid, size, &o->address) != ERROR_OK)
+      /*
+       * B)
+       */
+
+      /*
+       * a)
+       */
+
+      if (region_space(asid, size, &address) != ERROR_OK)
 	CORE_ESCAPE("unable to find available space for the region "
 		    "reservation");
     }
 
   /*
-   * 3)
+   * 5)
    */
 
-  address = o->address;
+  if ((o = malloc(sizeof (o_region))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the region object");
 
-  o->id = (i_region)o->address;
+  /*
+   * 6)
+   */
+
+  o->address = address;
+  o->id = REGION_IDENTIFIER(o);
   o->segment = segid;
   o->size = size;
   o->offset = offset;
   o->options = options;
 
-  *regid = o->id;
+  /*
+   * 7)
+   */
 
   if (set_add(as->regions, o) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the address space's set of "
 		"regions");
 
   /*
-   * 4)
+   * 8)
    */
 
-  if (machine_call(region, region_reserve, asid, segid, offset,
-		   options, address, size, regid) != ERROR_OK)
+  if (machine_call(region, reserve,
+		   asid, segid, offset, options,
+		   address, size, region) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
+
+  /*
+   * 9)
+   */
+
+  *region = o->id;
 
   /*							 [endblock::reserve] */
 
@@ -832,16 +1121,17 @@ t_error			region_reserve(i_as			asid,
 }
 
 /*
- * this function releases a region.
+ * this function releases an existing region from the given address space.
+ *
  *						      [block::release::comment]
  *
  * steps:
  *
- * 1) calls the machine dependent code.
- * 2) gets the region object.
- * 3) gets the as object from its identifier.
- * 4) removes the region from the address space.
- * 5) removes the region from the region set.
+ * 1) call the machine.
+ * 2) retrieve the address space object.
+ * 3) retrieve the region object.
+ * 4) remove the region from the address space's set of regions.
+ *
  *						   [endblock::release::comment]
  */
 
@@ -856,7 +1146,7 @@ t_error			region_release(i_as			asid,
    * 1)
    */
 
-  if (machine_call(region, region_release, asid, regid) != ERROR_OK)
+  if (machine_call(region, release, asid, regid) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -880,15 +1170,86 @@ t_error			region_release(i_as			asid,
 }
 
 /*
- * this function removes every region that belongs to the address space
- * specified.
+ * this function locates the region in which the given address lies.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) go through the regions.
+ *   a) retrieve the region object.
+ *   b) check that the address resides in this region.
+ * 3) if no region has been found, return an error.
+ */
+
+t_error			region_locate(i_as			as,
+				      t_vaddr			address,
+				      i_region*			id)
+{
+  o_as*			o;
+  t_state		state;
+  s_iterator		i;
+
+  /*
+   * 0)
+   */
+
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (as_get(as, &o) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the address space object");
+
+  /*
+   * 2)
+   */
+
+  set_foreach(SET_OPTION_FORWARD, o->regions, &i, state)
+    {
+      o_region*		r;
+
+      /*
+       * a)
+       */
+
+      if (set_object(o->regions, i, (void**)&r) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the region object corresponding "
+		    "to its identifier");
+
+      /*
+       * b)
+       */
+
+      if ((r->address <= address) && (address <= (r->address + r->size - 1)))
+	{
+	  *id = r->id;
+
+	  CORE_LEAVE();
+	}
+    }
+
+  /*
+   * 3)
+   */
+
+  CORE_ESCAPE("there does not seem to be a region in which this address lies");
+}
+
+/*
+ * this function removes every region that belongs to the give address space.
+ *
  *							[block::flush::comment]
  *
  * steps:
  *
- * 1) gets the address space object.
- * 2) releases each region in the set.
- * 3) calls the machine dependent code.
+ * 1) call the machine.
+ * 2) retrieve the address space object.
+ * 3) go through the existing regions and release them all.
+ *
  *						     [endblock::flush::comment]
  */
 
@@ -897,8 +1258,96 @@ t_error			region_flush(i_as			asid)
   /*							      [block::flush] */
 
   o_as*			as;
-  t_iterator		it;
+  s_iterator		it;
   i_region*		obj;
+
+  /*
+   * 1)
+   */
+
+  if (machine_call(region, flush, asid) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  /*
+   * 2)
+   */
+
+  if (as_get(asid, &as) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the address space object");
+
+  /*
+   * 3)
+   */
+
+  while (set_head(as->regions, &it) == ERROR_TRUE)
+    {
+      if (set_object(as->regions, it, (void**)&obj) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the region object");
+
+      if (region_release(asid, *obj) != ERROR_OK)
+	CORE_ESCAPE("unable to release the region");
+    }
+
+  /*							   [endblock::flush] */
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the region object exists.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) check if the region identifier can be located in the address space's
+ *    set of regions.
+ */
+
+t_error			region_exist(i_as			asid,
+				     i_region			regid)
+{
+  o_as*			as;
+
+  /*
+   * 0)
+   */
+
+  assert(as_get(asid, &as) == ERROR_OK);
+
+  /*
+   * 1)
+   */
+
+  if (set_exist(as->regions, regid) != ERROR_TRUE)
+    CORE_FALSE();
+
+  CORE_TRUE();
+}
+
+/*
+ * this function returns a region object from the given address space.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the address space object.
+ * 2) retrieve the object from the address space's set of regions.
+ */
+
+t_error			region_get(i_as				asid,
+				   i_region			regid,
+				   o_region**			object)
+{
+  /*								[block::get] */
+
+  o_as*			as;
+
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
   /*
    * 1)
@@ -911,62 +1360,7 @@ t_error			region_flush(i_as			asid)
    * 2)
    */
 
-  while (set_head(as->regions, &it) == ERROR_TRUE)
-    {
-      if (set_object(as->regions, it, (void**)&obj) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the region object");
-
-      if (region_release(asid, *obj) != ERROR_OK)
-	CORE_ESCAPE("unable to release the region");
-    }
-
-  /*
-   * 3)
-   */
-
-  if (machine_call(region, region_flush, asid) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  /*							   [endblock::flush] */
-
-  CORE_LEAVE();
-}
-
-/*
- * this function returns true if the region object exists.
- */
-
-t_error			region_exist(i_as			asid,
-				     i_region			regid)
-{
-  o_as*			as;
-
-  assert(as_get(asid, &as) == ERROR_OK);
-
-  if (set_exist(as->regions, regid) != ERROR_TRUE)
-    CORE_FALSE();
-
-  CORE_TRUE();
-}
-
-/*
- * this function returns a region object.
- */
-
-t_error			region_get(i_as				asid,
-				   i_region			regid,
-				   o_region**			o)
-{
-  /*								[block::get] */
-
-  o_as*			as;
-
-  assert(o != NULL);
-
-  if (as_get(asid, &as) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the address space object");
-
-  if (set_get(as->regions, regid, (void**)o) != ERROR_OK)
+  if (set_get(as->regions, regid, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the region from the address space's set "
 		"of regions");
 
@@ -976,16 +1370,19 @@ t_error			region_get(i_as				asid,
 }
 
 /*
- * this function initializes the region manager from the init
- * variable containing regions to keep safe.
+ * this function initializes the region manager.
+ *
+ * the _base_ and _size_ arguments represents the virtual space i.e its
+ * base address and available size.
+ *
  *						   [block::initialize::comment]
  *
  * steps:
  *
- * 1) allocates and initializes the region manager structure.
- * 2) initializes the region manager structure fields from the init
- *    structure.
- * 3) calls the machine-dependent code.
+ * 0) verify the arguments.
+ * 1) allocate and initialize the region manager's structure.
+ * 2) set the base and size attributes.
+ * 3) calls the machine.
  *						[endblock::initialize::comment]
  */
 
@@ -995,16 +1392,21 @@ t_error			region_initialize(t_vaddr		base,
   /*							 [block::initialize] */
 
   /*
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_ESCAPE("unable to initialize the region manager with a size of zero");
+
+  /*
    * 1)
    */
 
-  assert(size != 0);
-
-  if ((_region = malloc(sizeof(m_region))) == NULL)
+  if ((_region = malloc(sizeof (m_region))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the region manager's "
 		"structure");
 
-  memset(_region, 0x0, sizeof(m_region));
+  memset(_region, 0x0, sizeof (m_region));
 
   /*
    * 2)
@@ -1017,7 +1419,7 @@ t_error			region_initialize(t_vaddr		base,
    * 3)
    */
 
-  if (machine_call(region, region_initialize, base, size) != ERROR_OK)
+  if (machine_call(region, initialize, base, size) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*						      [endblock::initialize] */
@@ -1026,13 +1428,14 @@ t_error			region_initialize(t_vaddr		base,
 }
 
 /*
- * this function just reinitializes the region manager.
+ * this function cleans the region manager.
+ *
  *							[block::clean::comment]
  *
  * steps:
  *
- * 1) calls the machine-dependent code.
- * 2) releases the region set.
+ * 1) call the machine.
+ * 2) free the manager's structure.
  *
  *						     [endblock::clean::comment]
  */
@@ -1045,7 +1448,7 @@ t_error			region_clean(void)
    * 1)
    */
 
-  if (machine_call(region, region_clean) != ERROR_OK)
+  if (machine_call(region, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -1053,7 +1456,6 @@ t_error			region_clean(void)
    */
 
   free(_region);
-
 
   /*							   [endblock::clean] */
 

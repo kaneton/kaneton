@@ -8,13 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/region.h
  *
  * created       julien quintard   [wed jun  6 16:22:05 2007]
- * updated       julien quintard   [sat nov 27 16:37:11 2010]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file supposes it is included by core.h so that PAGESZ is defined.
+ * updated       julien quintard   [sat dec 11 10:26:44 2010]
  */
 
 #ifndef GLUE_REGION_H
@@ -32,8 +26,8 @@
     {									\
       t_error	_r_ = ERROR_OK;						\
 									\
-      if (glue_region_dispatch._function_ != NULL)			\
-        _r_ = glue_region_dispatch._function_(_args_);			\
+      if (glue_region_dispatch.region_ ## _function_ != NULL)		\
+        _r_ = glue_region_dispatch.region_ ## _function_(_args_);	\
 									\
       _r_;								\
     }									\

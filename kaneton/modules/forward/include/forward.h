@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/modules/forward/include/forward.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [wed nov 24 13:44:24 2010]
+ * updated       julien quintard   [fri dec 10 14:12:31 2010]
  */
 
 #ifndef MODULES_FORWARD_FORWARD_H
@@ -19,14 +19,14 @@
  */
 
 /*
- * the module structure.
+ * the module manager.
  */
 
 typedef struct
 {
   char			buffer[128];
   t_uint32		size;
-}			m_module_forward;
+}			mm_forward;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -43,7 +43,7 @@ t_error			module_forward_send(char*		message,
 
 t_error			module_forward_flush(void);
 
-int			module_forward_print(char			c);
+int			module_forward_character(char		c);
 
 t_error			module_forward_load(void);
 

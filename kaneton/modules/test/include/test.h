@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ABLE/kaneton/modules/test/include/test.h
+ * file          /home/mycure/kaneton/kaneton/modules/test/include/test.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [mon nov 29 12:20:35 2010]
+ * updated       julien quintard   [fri dec 10 14:13:18 2010]
  */
 
 #ifndef MODULES_TEST_TEST_H
@@ -22,7 +22,7 @@
  * this type represents a test function pointer.
  */
 
-typedef				void (*f_module_test)(void);
+typedef				void (*mf_test)(void);
 
 /*
  * the tests inventory.
@@ -33,24 +33,28 @@ typedef				void (*f_module_test)(void);
 typedef struct
 {
   char*			symbol;
-  f_module_test		function;
-}			s_module_test_function;
+  mf_test		function;
+}			ms_test_function;
+
+/*
+ * a test command associated with its function pointer.
+ */
 
 typedef struct
 {
   char*			command;
   t_error		(*function)(char*);
-}			s_module_test_command;
+}			ms_test_command;
 
 /*
- * the module structure.
+ * the module manager.
  */
 
 typedef struct
 {
   char			buffer[128];
   t_uint32		size;
-}			m_module_test;
+}			mm_test;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -93,10 +97,10 @@ t_error			module_test_issue(char*			command);
 
 t_error			module_test_flush(void);
 
-void			module_test_character(char			c);
+void			module_test_character(char		c);
 
 t_error			module_test_locate(char*		symbol,
-					   f_module_test*	function);
+					   mf_test*		function);
 
 t_error			module_test_call(char*			symbol);
 

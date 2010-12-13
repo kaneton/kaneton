@@ -30,6 +30,58 @@ autre:
 # ---------- mycure -----------------------------------------------------------
 #
 
+DISPATCHER/MACHINE
+ - ajuster le dispatcher + rajouter des machine_call + mettre a jour glue
+   (attention exist, get etc. ne doivent pas etre inclus dans le dispatch)
+ - verifier que les machine_call sont biens places: tout ce qui modifie c'est
+   a la fin, tout ce qui detruit c'est au debut.
+ - dispatcher comment
+
+MACHINE
+ - est-ce que chaque object/manager appelle machine_data()
+
+ARGUMENTS
+ - verifier que les arguments sont dans le bon ordre: target en dernier
+
+ALIGNMENT
+ - aligner les prototypes
+
+SIZEOF
+ - checker les sizeof() => sizeof ()
+
+ASSERT
+ - il ne doit pas rester d'assert i.e verifier les arguments
+   + verifier que tous argument ecrit (pointeur) est verifie.
+
+SHOW
+ - dans show montrer les infos dependentes o_ et dans dump m_
+ - margin pour le show
+
+CODE
+ - commenter tout le code
+
+--- BUGS?
+
+- j'ai change dans regions: object->options &= REGION_OPTION_FORCE; en |=
+  dans inject()
+- dans region, les ids sont id = address / PAGESZ - 1
+- meme chose dans segment.
+
+- s'assurer que PAGESZ n'est pas utilise mais kaneton$pagesz
+- changer ces definitions en: $kaneton, $kernel, $server, $driver, $service,
+  $guest, $pagesz, $wordsz, $endian -> a mettre dans les layout
+
+--- GLUE
+
+- verifier que les donnees dependantes sont displayed dans show
+- verifier que les tailles/adresses sont alignees dans core (region/segment..)
+
+---- TESTS
+
+- recompiler les tests vu qu'on a changer quelques trucs
+  - checker les warnings a la fois dans kaneton et tests
+- dissocier les tests timer et clock
+
 ---- IMPLEM SERIEUSE
 
 - commenter modules=fait machine/glue=? machine/plat=? core=?
@@ -38,8 +90,16 @@ autre:
 - faire marcher les wait et differents etats de task
 - IA32_DEPENDENT (dans architecture.h) a garder? ARCHITECTURE = IA32 ce serait mieux
 - pourquoi le set container n'est pas alloue dans le initialize? d'autant plus qu'il est release dans clean()
+- les types de glue (g_) et de arch (a_)
 
 --- IA32
+
+- dans interrupt, on trigger des events (soit on appelle la fonction a la main
+  soit on utiliser event_notify) -> deja ca ca pue, ca devrait etre unifie
+- de plus, on passe un code a la fonction alors que ce n'est pas prevu! pour
+  faire ca il suffit d'ajouter un code dans la partie machine de l'event!
+  -> chercher tous les event_notify et verifier que c'est propre
+     puis corriger event_notify dans event si besoin
 
 - virer les returns dans arch contre des LEAVE (core/glue/platform ont ete verifies)
 - les include guards ainsi que macros et fonction prefixes doivent etre PLATFORM,
@@ -78,3 +138,11 @@ autre:
 
 - faire un super test et en 1 semaine faire une tranche de challenge ou ils doivent optimiser kaneton!
   -> genre lancer tous les tests a la suite sans rebooter
+
+--- FUTURE
+
+- changer tous les types de core en prefixant avec c_ pour core.
+  t_options deviendrait ct_options, m_scheduler, cm_scheduler, i_task, ci_task
+  etc.
+  -> ensuite on definierait l'interface kernel qui elle definierait des
+     aliases: ci_task -> i_task etc.

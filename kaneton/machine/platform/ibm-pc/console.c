@@ -12,11 +12,9 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements a basic console management for kernel bootup.
- *
- * in the  future, the console control  will be passed  to a dedicated
- * server.
- *
+ * this file implements basic console functionalities. these functionalities
+ * are mainly use during the kernel boot though a dedicated console service
+ * will be launched by the 'system' initial service.
  */
 
 /*
@@ -32,10 +30,10 @@
  */
 
 /*
- * the console variable.
+ * the console manager.
  */
 
-m_platform_console	_platform_console;
+pm_console		_platform_console;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -60,7 +58,11 @@ void			platform_console_clear(void)
 }
 
 /*
- * this function scrolls the screen.
+ * this function scrolls the screen by copying the given number of lines
+ * from the bottom to the top.
+ *
+ * finally the function reinitializes the attributes to reflect the
+ * scrolling.
  */
 
 void			platform_console_scroll(t_uint16	lines)
@@ -87,7 +89,7 @@ void			platform_console_scroll(t_uint16	lines)
 }
 
 /*
- * this function is called to change the current console attributes.
+ * this function changes the current console attributes.
  */
 
 void			platform_console_attribute(t_uint8	attribute)
@@ -96,15 +98,40 @@ void			platform_console_attribute(t_uint8	attribute)
 }
 
 /*
- * this function is called to print a single character.
+ * this function prints a single character.
+ *
+ * first, should the number of lines exceed the maximum capacity, the screen
+ * is scrolled for a single line.
+ *
+ * the character is recorded at the cursor's current location while the
+ * following byte is filled with the current console's attributes.
+ *
+ * steps:
+ *
+ * 1) scroll the screen if necessary.
+ * 2) handle the '\n' character.
+ * 3) handle the '\r' character.
+ * 4) handle the '\t' character.
+ * 5) insert the character in the console's mapped buffer.
  */
 
 void			platform_console_character(char			c)
 {
   t_uint16		pos;
 
+  /*
+   * 1)
+   */
+
   if (_platform_console.line >= PLATFORM_CONSOLE_LINES)
-    platform_console_scroll(1);
+    {
+      platform_console_scroll(1);
+    }
+
+  /*
+   * 2)
+   */
+
   if (c == '\n')
     {
       _platform_console.line++;
@@ -113,6 +140,10 @@ void			platform_console_character(char			c)
       return;
     }
 
+  /*
+   * 3)
+   */
+
   if (c == '\r')
     {
       _platform_console.column = 0;
@@ -120,19 +151,30 @@ void			platform_console_character(char			c)
       return;
     }
 
+  /*
+   * 4)
+   */
+
   if (c == '\t')
     {
       _platform_console.column += 8;
+
       if (_platform_console.column & 0x7)
 	_platform_console.column = _platform_console.column & ~0x7;
 
       return;
     }
 
+  /*
+   * 5)
+   */
+
   if (_platform_console.column >= PLATFORM_CONSOLE_COLUMNS)
     {
       _platform_console.column = 0;
+
       ++_platform_console.line;
+
       if (_platform_console.line >= PLATFORM_CONSOLE_LINES)
 	platform_console_scroll(1);
     }
@@ -148,17 +190,42 @@ void			platform_console_character(char			c)
 }
 
 /*
- * this function just initializes the bootloader console.
+ * this function just initializes the console.
+ *
+ * steps:
+ *
+ * 1) initialize the manager's structure memory.
+ * 2) set the default attributes.
+ * 3) points the internal buffer to the device's mapped memory.
+ * 4) to start with, clear the console.
  */
 
 t_error			platform_console_initialize(void)
 {
+  /*
+   * 1)
+   */
+
+  memset(&_platform_console, 0x0, sizeof (pm_console));
+
+  /*
+   * 2)
+   */
+
   _platform_console.attribute =
     PLATFORM_CONSOLE_FRONT(PLATFORM_CONSOLE_WHITE) |
     PLATFORM_CONSOLE_BACK(PLATFORM_CONSOLE_BLACK) |
     PLATFORM_CONSOLE_BRIGHT;
 
+  /*
+   * 3)
+   */
+
   _platform_console.vga = (char*)PLATFORM_CONSOLE_ADDRESS;
+
+  /*
+   * 4)
+   */
 
   platform_console_clear();
 

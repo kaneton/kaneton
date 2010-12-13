@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [tue may 20 17:03:43 2008]
+% updated       julien quintard   [fri dec 10 14:07:00 2010]
 %
 
 %
@@ -196,29 +196,39 @@ Firstly, structures, unions and enumerations must not be directly used.
 Instead, a type must be defined. In order to indicate the entity class a type
 represents, prefixes are used.
 
-Below are listed the different prefix groups:
+Note that the core elements do not need prefixing since considered as the
+most fondamental elements of the kaneton microkernel. However, several
+element markers are used to distinguish the different kaneton types:
 
 \begin{itemize}
   \item
-    Manager types are prefixed by \code{m\_};
+    Managers are prefixed by \code{m\_}.
   \item
-    kaneton object types are prefixed by \code{o\_};
+    Identifiers are prefixed by \code{i\_}.
   \item
-    Dispatch interfaces are prefixed by \code{d\_};
+    Object types are prefixed by \code{o\_};
   \item
-    Architecture-dependent types are prefixed by \code{a\_};
-  \item
-    Platform-dependent types are prefixed by \code{p\_};
-  \item
-    kaneton identifiers are prefixed by \code{i\_}.
+    Dispatch tables are prefixed by \code{d\_};
 \end{itemize}
 
-Note that group prefixes can be combined in several ways. For instance,
-the prefix \code{ao\_} represents the architecture-dependent part of
-an object.
+Then, the other components must rely on namespace prefixes in order
+to avoid conflicts:
 
-If a type does not fit into on of these groups, then it can be considered as a
-general purpose type. In this case, the following prefixes are used:
+\begin{itemize}
+  \item
+    The glue component's types are prefixed by \code{g\_};
+  \item
+    The platform-dependent component's types are prefixed by \code{p\_};
+  \item
+    The architecture-dependent component's types are prefixed by \code{a\_};
+  \item
+    The module-dependent component's types are prefixed by \code{m\_};
+  \item
+    The library-dependent component's types are prefixed by \code{l\_};
+\end{itemize}
+
+Finally, should none of the above definitions match the defined
+type, the general purpose types listed below can be used:
 
 \begin{itemize}
   \item
@@ -233,22 +243,21 @@ general purpose type. In this case, the following prefixes are used:
     General purpose aliased-types are prefixed by \code{t\_}.
 \end{itemize}
 
+Note that prefixes can be combined in several ways. For instance, the prefix
+\code{ao\_} represents an architecture-dependent object while the \code{lt\_}
+represents a library type.
+
 The example below illustrates this rule:
 
 \begin{verbatim}
+  typedef void                  (*mf_console_character)(char);
+  typedef void                  (*mf_console_attribute)(t_uint8);
+
   typedef struct
   {
-    i_segment                     id;
-
-    i_as                          as;
-
-    t_type                        type;
-
-    t_paddr                       address;
-    t_psize                       size;
-
-    t_perms                       perms;
-  }                               o_segment;
+    mf_console_character        character;
+    mf_console_attribute        attribute;
+  }                             mm_console;
 \end{verbatim}
 
 The use of \name{C} standard types like \code{int}, \code{long long}

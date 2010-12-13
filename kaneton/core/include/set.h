@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/set.h
+ * file          /home/mycure/kaneton/kaneton/core/include/set.h
  *
  * created       julien quintard   [wed jun  6 11:56:46 2007]
- * updated       julien quintard   [sun dec  5 16:03:37 2010]
+ * updated       julien quintard   [sun dec 12 21:48:11 2010]
  */
 
 #ifndef CORE_SET_H
@@ -27,7 +27,7 @@
  */
 
 /*
- * set size
+ * the size of a set i.e the number of objects a set contains.
  */
 
 typedef t_sint64		t_setsz;
@@ -45,14 +45,14 @@ typedef t_sint64		t_setsz;
  */
 
 /*
- * iterator's state
+ * iterator's state.
  */
 
 #define ITERATOR_STATE_USED	0x01
 #define ITERATOR_STATE_UNUSED	0x02
 
 /*
- * types
+ * types i.e set implementations.
  */
 
 #define SET_TYPE_ARRAY		0x01
@@ -62,48 +62,49 @@ typedef t_sint64		t_setsz;
 #define SET_TYPE_STACK		0x05
 
 /*
- * options
+ * options.
  */
 
 #define SET_OPTION_NONE		(0 << 0)
 #define SET_OPTION_FORWARD	(1 << 0)
 #define SET_OPTION_BACKWARD	(1 << 1)
 #define SET_OPTION_CONTAINER	(1 << 2)
-#define SET_OPTION_ALLOC	(1 << 3)
+#define SET_OPTION_ALLOCATE	(1 << 3)
 #define SET_OPTION_FREE		(1 << 4)
 #define SET_OPTION_SORT		(1 << 5)
 #define SET_OPTION_ORGANISE	(1 << 6)
-
-/*
- * trap debug
- */
-
-#undef SET_DEBUG_TRAP
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * iterator
+ * the iterator type.
  */
 
 typedef struct
 {
   union
   {
-    t_iterator_array		array;
-    t_iterator_bpt		bpt;
-    t_iterator_ll		ll;
+    s_iterator_array		array;
+    s_iterator_bpt		bpt;
+    s_iterator_ll		ll;
   }				u;
-}				t_iterator;
+}				s_iterator;
 
 /*
- * set object
+ * the set object.
  *
- * the id field represent the set identifier used to retrieve the set
- * data structure. the union is composed of subparts dependending of the
- * set type.
+ * the 'id' field identifies uniquely the set. the number of elements
+ * contained in a set is given by 'size'. likewise, 'datasz' records the
+ * size of the objects being stored in this set.
+ *
+ * the 'type' attribute provides the set implementation and is used
+ * by set_trap() to forward the call the the apporpriate set implementation:
+ * bpt, ll, array etc. the 'options' attribute contains the options associated
+ * with the set.
+ *
+ * finally the union 'u' includes some set-implementation-specific data.
  */
 
 typedef struct
@@ -119,21 +120,30 @@ typedef struct
 
   union
   {
-    t_set_array			array;
-    t_set_bpt			bpt;
-    t_set_ll			ll;
+    s_set_array			array;
+    s_set_bpt			bpt;
+    s_set_ll			ll;
   }				u;
 }				o_set;
 
 /*
- * set manager
+ * the set manager.
+ *
+ * the 'id' attribute is an identifier object which is used for generating
+ * set identifiers.
+ *
+ * the 'sets' attribute contains the set identifier of the container i.e
+ * the set which contains the other sets. indeed, every set is also stored
+ * in a set since sets are objects. the 'container' attribute represents
+ * the so-called container which holds all the set objects.
  */
 
 typedef struct
 {
   o_id				id;
 
-  t_id				sets;
+  i_set				sets;
+
   o_set*			container;
 }				m_set;
 
@@ -142,22 +152,36 @@ typedef struct
  */
 
 /*
- * debug
- */
-
-#if (DEBUG & DEBUG_SET) && defined(SET_DEBUG_TRAP)
-# define set_debug(_func_, _id_, _args_...)				\
-  module_call(console, print,						\
-	      "[setd] trap: %s(%qu, %s)\n",				\
-	      #_func_,							\
-	      _id_,							\
-	      #_args_);
-#else
-# define set_debug(_func_, _id_, _args_...)
-#endif
-
-/*
- * traps
+ * these macro-functions are wrapper which forward the call to the
+ * appopriate set implementation, taking care to provide all the
+ * arguments.
+ *
+ * since the number of arguments is not constrained by these macro-functions
+ * a set implementation can accept two arguments for a function while
+ * another implementation could accept nine. obviously this means that
+ * changing the set type implies updating the source code to adapt
+ * such calls but in practice there are not many differences between
+ * the implementations as they all comply with the generic set interface.
+ *
+ * note the specific use of the ## in this macro-function. using the ##
+ * with variadic macros enables the use of a variable number of arguments,
+ * this number being twelve, three, or even zero.
+ *
+ * indeed, let us consider the following example
+ *
+ *   #define printf(_format_, _args_...)				\
+ *     module_call(console, print, _format_, _args_)
+ *
+ *   printf("kaneton\n");
+ *
+ * this macro function could not work with an empty set or arguments
+ * _args_ because the c-preprocess would expand the macro-function to:
+ *
+ *   module_call(console, print, "kaneton\n", );
+ *
+ * one can notice that the comma following the format string remains. using
+ * the GNU pre-processor specific ##, the comma is removed should the
+ * following variadic argument be empty.
  */
 
 #define set_trap(_func_, _id_, _args_...)				\
@@ -165,8 +189,6 @@ typedef struct
     {									\
       t_error		_r_ = ERROR_KO;					\
       o_set*		_set_;						\
-									\
-      set_debug(_func_, _id_, _args_);					\
 									\
       if (set_descriptor((_id_), &_set_) == ERROR_OK)			\
         {								\
@@ -193,9 +215,6 @@ typedef struct
       _r_;								\
     }									\
   )
-
-#define set_type(_type_, _id_)						\
-  set_type_##_type_(_id_)
 
 #define set_reserve(_type_, _args_...)					\
   set_reserve_##_type_(_args_)
@@ -261,7 +280,21 @@ typedef struct
   set_trap(set_pick, _id_, ##_args_)
 
 /*
- * foreach
+ * the foreach() macro-function enables the programmer to easily
+ * walk through a set.
+ *
+ * for instance, the following explore a set in the forward way:
+ *
+ *   i_set	myset;
+ *   s_iterator	myiterator;
+ *   t_state	mystate;
+ *
+ *   [...]
+ *
+ *   set_foreach(SET_OPTION_FORWARD, myset, myiterator, mystate)
+ *     {
+ *       [...]
+ *     }
  */
 
 #define set_foreach(_opt_, _id_, _iterator_, _state_)			\
@@ -300,16 +333,16 @@ t_error			set_empty(i_set				setid);
 t_error			set_size(i_set				setid,
 				 t_setsz*			size);
 
-t_error			set_new(o_set*				o);
+t_error			set_new(o_set*				object);
 
 t_error			set_destroy(i_set			setid);
 
 t_error			set_descriptor(i_set			setid,
-				       o_set**			o);
+				       o_set**			object);
 
 t_error			set_get(i_set				setid,
 				t_id				id,
-				void**				o);
+				void**				object);
 
 t_error			set_initialize(void);
 
@@ -320,31 +353,30 @@ t_error			set_clean(void);
  * ../../core/set/set-array.c
  */
 
-t_error			set_type_array(i_set			setid);
-
 t_error			set_exist_array(i_set			setid,
 					t_id			id);
 
-t_error			set_show_array(i_set			setid);
+t_error			set_show_array(i_set			setid,
+				       mt_margin		margin);
 
 t_error			set_head_array(i_set			setid,
-				       t_iterator*		iterator);
+				       s_iterator*		iterator);
 
 t_error			set_tail_array(i_set			setid,
-				       t_iterator*		iterator);
+				       s_iterator*		iterator);
 
 t_error			set_previous_array(i_set		setid,
-					   t_iterator		current,
-					   t_iterator*		previous);
+					   s_iterator		current,
+					   s_iterator*		previous);
 
 t_error			set_next_array(i_set			setid,
-				       t_iterator		current,
-				       t_iterator*		next);
+				       s_iterator		current,
+				       s_iterator*		next);
 
-t_error			set_expand_array(o_set			*o,
+t_error			set_expand_array(o_set			*object,
 					 void			*data);
 
-t_error			set_insert_array_at(o_set		*o,
+t_error			set_insert_array_at(o_set		*object,
 					    t_setsz		pos,
 					    void		*data);
 
@@ -355,11 +387,11 @@ t_error			set_append_array(i_set			setid,
 					 void*			data);
 
 t_error			set_before_array(i_set			setid,
-					 t_iterator		iterator,
+					 s_iterator		iterator,
 					 void*			data);
 
 t_error			set_after_array(i_set			setid,
-					t_iterator		iterator,
+					s_iterator		iterator,
 					void*			data);
 
 t_error			set_add_array(i_set			setid,
@@ -369,22 +401,22 @@ t_error			set_remove_array(i_set			setid,
 					 t_id			id);
 
 t_error			set_delete_array(i_set			setid,
-					 t_iterator		iterator);
+					 s_iterator		iterator);
 
 t_error			set_flush_array(i_set			setid);
 
 t_error			set_locate_array(i_set			setid,
 					 t_id			id,
-					 t_iterator*		iterator);
+					 s_iterator*		iterator);
 
 t_error			set_object_array(i_set			setid,
-					 t_iterator		iterator,
+					 s_iterator		iterator,
 					 void**			data);
 
 t_error			set_reserve_array(t_options		options,
 					  t_setsz		initsz,
 					  t_size		datasz,
-					  i_set*		setid);
+					  i_set*		id);
 
 t_error			set_release_array(i_set		setid);
 
@@ -401,26 +433,25 @@ t_error			set_pick_array(i_set			setid,
  * ../../core/set/set-ll.c
  */
 
-t_error			set_type_ll(i_set			setid);
-
 t_error			set_exist_ll(i_set			setid,
 				     t_id			id);
 
-t_error			set_show_ll(i_set			setid);
+t_error			set_show_ll(i_set			setid,
+				    mt_margin			margin);
 
 t_error			set_head_ll(i_set			setid,
-				    t_iterator*			iterator);
+				    s_iterator*			iterator);
 
 t_error			set_tail_ll(i_set			setid,
-				    t_iterator*			iterator);
+				    s_iterator*			iterator);
 
 t_error			set_previous_ll(i_set			setid,
-					t_iterator		current,
-					t_iterator*		previous);
+					s_iterator		current,
+					s_iterator*		previous);
 
 t_error			set_next_ll(i_set			setid,
-				    t_iterator			current,
-				    t_iterator*			next);
+				    s_iterator			current,
+				    s_iterator*			next);
 
 t_error			set_insert_ll(i_set			setid,
 				      void*			data);
@@ -429,11 +460,11 @@ t_error			set_append_ll(i_set			setid,
 				      void*			data);
 
 t_error			set_before_ll(i_set			setid,
-				      t_iterator		iterator,
+				      s_iterator		iterator,
 				      void*			data);
 
 t_error			set_after_ll(i_set			setid,
-				     t_iterator			iterator,
+				     s_iterator			iterator,
 				     void*			data);
 
 t_error			set_add_ll(i_set			setid,
@@ -443,16 +474,16 @@ t_error			set_remove_ll(i_set			setid,
 				      t_id			id);
 
 t_error			set_delete_ll(i_set			setid,
-				      t_iterator		iterator);
+				      s_iterator		iterator);
 
 t_error			set_flush_ll(i_set			setid);
 
 t_error			set_locate_ll(i_set			setid,
 				      t_id			id,
-				      t_iterator*		iterator);
+				      s_iterator*		iterator);
 
 t_error			set_object_ll(i_set			setid,
-				      t_iterator		iterator,
+				      s_iterator		iterator,
 				      void**			data);
 
 t_error			set_reserve_ll(t_options		options,
@@ -495,8 +526,6 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
 
 t_error			set_show_unused_bpt(o_set*		o);
 
-t_error			set_type_bpt(i_set			setid);
-
 t_error			set_exist_bpt(i_set			setid,
 				      t_id			id);
 
@@ -509,21 +538,22 @@ t_error			set_adjust_bpt(o_set*			o,
 
 t_error			set_destroy_bpt(o_set*			o);
 
-t_error			set_show_bpt(i_set			setid);
+t_error			set_show_bpt(i_set			setid,
+				     mt_margin			margin);
 
 t_error			set_head_bpt(i_set			setid,
-				     t_iterator*		iterator);
+				     s_iterator*		iterator);
 
 t_error			set_tail_bpt(i_set			setid,
-				     t_iterator*		iterator);
+				     s_iterator*		iterator);
 
 t_error			set_previous_bpt(i_set			setid,
-					 t_iterator		current,
-					 t_iterator*		previous);
+					 s_iterator		current,
+					 s_iterator*		previous);
 
 t_error			set_next_bpt(i_set			setid,
-				     t_iterator			current,
-				     t_iterator*		next);
+				     s_iterator			current,
+				     s_iterator*		next);
 
 t_error			set_insert_bpt(i_set			setid,
 				       void*			data);
@@ -532,11 +562,11 @@ t_error			set_append_bpt(i_set			setid,
 				       void*			data);
 
 t_error			set_before_bpt(i_set			setid,
-				       t_iterator		iterator,
+				       s_iterator		iterator,
 				       void*			data);
 
 t_error			set_after_bpt(i_set			setid,
-				      t_iterator		iterator,
+				      s_iterator		iterator,
 				      void*			data);
 
 t_error			set_add_bpt(i_set			setid,
@@ -546,16 +576,16 @@ t_error			set_remove_bpt(i_set			setid,
 				       t_id			id);
 
 t_error			set_delete_bpt(i_set			setid,
-				       t_iterator		iterator);
+				       s_iterator		iterator);
 
 t_error			set_flush_bpt(i_set			setid);
 
 t_error			set_locate_bpt(i_set			setid,
 				       t_id			id,
-				       t_iterator*		iterator);
+				       s_iterator*		iterator);
 
 t_error			set_object_bpt(i_set			setid,
-				       t_iterator		iterator,
+				       s_iterator		iterator,
 				       void**			data);
 
 t_error			set_reserve_bpt(t_options		options,
@@ -578,8 +608,6 @@ t_error			set_pick_bpt(i_set			setid,
  * ../../core/set/set-pipe.c
  */
 
-t_error			set_type_pipe(i_set			setid);
-
 t_error			set_reserve_pipe(t_options		options,
 					 t_size			datasz,
 					 i_set*			setid);
@@ -587,7 +615,8 @@ t_error			set_reserve_pipe(t_options		options,
 t_error			set_exist_pipe(i_set			setid,
 				       t_id			id);
 
-t_error			set_show_pipe(i_set			setid);
+t_error			set_show_pipe(i_set			setid,
+				      mt_margin			margin);
 
 t_error			set_release_pipe(i_set		setid);
 
@@ -602,18 +631,18 @@ t_error			set_pick_pipe(i_set			setid,
 t_error			set_pop_pipe(i_set			setid);
 
 t_error			set_head_pipe(i_set			setid,
-				      t_iterator*		iterator);
+				      s_iterator*		iterator);
 
 t_error			set_tail_pipe(i_set			setid,
-				      t_iterator*		iterator);
+				      s_iterator*		iterator);
 
 t_error			set_previous_pipe(i_set			setid,
-					  t_iterator		current,
-					  t_iterator*		previous);
+					  s_iterator		current,
+					  s_iterator*		previous);
 
 t_error			set_next_pipe(i_set			setid,
-				      t_iterator		current,
-				      t_iterator*		next);
+				      s_iterator		current,
+				      s_iterator*		next);
 
 t_error			set_insert_pipe(i_set			setid,
 					void*			data);
@@ -622,11 +651,11 @@ t_error			set_append_pipe(i_set			setid,
 					void*			data);
 
 t_error			set_before_pipe(i_set			setid,
-					t_iterator		iterator,
+					s_iterator		iterator,
 					void*			data);
 
 t_error			set_after_pipe(i_set			setid,
-				       t_iterator		iterator,
+				       s_iterator		iterator,
 				       void*			data);
 
 t_error			set_add_pipe(i_set			setid,
@@ -636,22 +665,20 @@ t_error			set_remove_pipe(i_set			setid,
 					t_id			id);
 
 t_error			set_delete_pipe(i_set			setid,
-					t_iterator		iterator);
+					s_iterator		iterator);
 
 t_error			set_locate_pipe(i_set			setid,
 					t_id			id,
-					t_iterator*		iterator);
+					s_iterator*		iterator);
 
 t_error			set_object_pipe(i_set			setid,
-					t_iterator		iterator,
+					s_iterator		iterator,
 					void**			data);
 
 
 /*
  * ../../core/set/set-stack.c
  */
-
-t_error			set_type_stack(i_set			setid);
 
 t_error			set_reserve_stack(t_options		options,
 					  t_size		datasz,
@@ -660,7 +687,8 @@ t_error			set_reserve_stack(t_options		options,
 t_error			set_exist_stack(i_set			setid,
 					t_id			id);
 
-t_error			set_show_stack(i_set			setid);
+t_error			set_show_stack(i_set			setid,
+				       mt_margin		margin);
 
 t_error			set_release_stack(i_set			setid);
 
@@ -675,18 +703,18 @@ t_error			set_pick_stack(i_set			setid,
 t_error			set_pop_stack(i_set			setid);
 
 t_error			set_head_stack(i_set			setid,
-				       t_iterator*		iterator);
+				       s_iterator*		iterator);
 
 t_error			set_tail_stack(i_set			setid,
-				       t_iterator*		iterator);
+				       s_iterator*		iterator);
 
 t_error			set_previous_stack(i_set		setid,
-					   t_iterator		current,
-					   t_iterator*		previous);
+					   s_iterator		current,
+					   s_iterator*		previous);
 
 t_error			set_next_stack(i_set			setid,
-				       t_iterator		current,
-				       t_iterator*		next);
+				       s_iterator		current,
+				       s_iterator*		next);
 
 t_error			set_insert_stack(i_set			setid,
 					 void*			data);
@@ -695,11 +723,11 @@ t_error			set_append_stack(i_set			setid,
 					 void*			data);
 
 t_error			set_before_stack(i_set			setid,
-					 t_iterator		iterator,
+					 s_iterator		iterator,
 					 void*			data);
 
 t_error			set_after_stack(i_set			setid,
-					t_iterator		iterator,
+					s_iterator		iterator,
 					void*			data);
 
 t_error			set_add_stack(i_set			setid,
@@ -709,14 +737,14 @@ t_error			set_remove_stack(i_set			setid,
 					 t_id			id);
 
 t_error			set_delete_stack(i_set			setid,
-					 t_iterator		iterator);
+					 s_iterator		iterator);
 
 t_error			set_locate_stack(i_set			setid,
 					 t_id			id,
-					 t_iterator*		iterator);
+					 s_iterator*		iterator);
 
 t_error			set_object_stack(i_set			setid,
-					 t_iterator		iterator,
+					 s_iterator		iterator,
 					 void**			data);
 
 

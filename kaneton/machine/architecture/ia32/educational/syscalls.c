@@ -66,17 +66,15 @@ void			ia32_syshandler_register(void)
   t_ia32_context	ctx;
   o_thread*		othread;
 
-  assert(scheduler_current(&caller) == ERROR_OK);
-  assert(thread_get(caller, &othread) == ERROR_OK);
-
-  task = othread->task;
+  assert(task_current(&task) == ERROR_OK);
+  assert(thread_current(&caller) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
   type = ctx.eax;
   size = ctx.ebx;
 
-  res = message_register(task, type, size);
+  res = message_record(task, type, size);
 
   ctx.eax = res;
 
@@ -99,10 +97,8 @@ void			ia32_syshandler_size(void)
   t_ia32_context	ctx;
   o_thread*		othread;
 
-  assert(scheduler_current(&caller) == ERROR_OK);
-  assert(thread_get(caller, &othread) == ERROR_OK);
-
-  task = othread->task;
+  assert(task_current(&task) == ERROR_OK);
+  assert(thread_current(&caller) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -136,10 +132,8 @@ void			ia32_syshandler_send(void)
   }			u;
   o_thread*		othread;
 
-  assert(scheduler_current(&caller) == ERROR_OK);
-  assert(thread_get(caller, &othread) == ERROR_OK);
-
-  task = othread->task;
+  assert(task_current(&task) == ERROR_OK);
+  assert(thread_current(&caller) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -178,10 +172,8 @@ void			ia32_syshandler_transmit(void)
   }			u;
   o_thread*		othread;
 
-  assert(scheduler_current(&caller) == ERROR_OK);
-  assert(thread_get(caller, &othread) == ERROR_OK);
-
-  task = othread->task;
+  assert(task_current(&task) == ERROR_OK);
+  assert(thread_current(&caller) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -220,10 +212,8 @@ void			ia32_syshandler_receive(void)
   }			u;
   o_thread*		othread;
 
-  assert(scheduler_current(&caller) == ERROR_OK);
-  assert(thread_get(caller, &othread) == ERROR_OK);
-
-  task = othread->task;
+  assert(task_current(&task) == ERROR_OK);
+  assert(thread_current(&caller) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -266,10 +256,8 @@ void			ia32_syshandler_poll(void)
   }			u;
   o_thread*		othread;
 
-  assert(scheduler_current(&caller) == ERROR_OK);
-  assert(thread_get(caller, &othread) == ERROR_OK);
-
-  task = othread->task;
+  assert(task_current(&task) == ERROR_OK);
+  assert(thread_current(&caller) == ERROR_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -352,35 +340,35 @@ t_error			ia32_syscall_set_info(i_thread		thread,
 
 t_error			ia32_syscalls_init(void)
 {
-  if (event_reserve(56, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_register), 0) != ERROR_OK)
+  if (event_reserve(56, EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(ia32_syshandler_register), 0) != ERROR_OK)
     return (ERROR_KO);
 
-  if (event_reserve(57, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_send), 0) != ERROR_OK)
+  if (event_reserve(57, EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(ia32_syshandler_send), 0) != ERROR_OK)
     return (ERROR_KO);
 
-  if (event_reserve(58, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_transmit), 0) != ERROR_OK)
+  if (event_reserve(58, EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(ia32_syshandler_transmit), 0) != ERROR_OK)
     return (ERROR_KO);
 
   /* XXX 59 */
 
-  if (event_reserve(60, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_receive), 0) != ERROR_OK)
+  if (event_reserve(60, EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(ia32_syshandler_receive), 0) != ERROR_OK)
     return (ERROR_KO);
 
   /* XXX 61 */
 
-  if (event_reserve(62, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_poll), 0) != ERROR_OK)
+  if (event_reserve(62, EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(ia32_syshandler_poll), 0) != ERROR_OK)
     return (ERROR_KO);
 
   /* XXX 63 */
   /* XXX 64 */
 
-  if (event_reserve(65, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_size), 0) != ERROR_OK)
+  if (event_reserve(65, EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(ia32_syshandler_size), 0) != ERROR_OK)
     return (ERROR_KO);
 
   return (ERROR_OK);

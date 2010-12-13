@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/time/clock.c
+ * file          /home/mycure/kaneton/kaneton/core/clock/clock.c
  *
  * created       julien quintard   [wed nov 24 18:40:55 2010]
- * updated       julien quintard   [sat dec  4 22:50:13 2010]
+ * updated       julien quintard   [fri dec 10 16:16:30 2010]
  */
 
 /*
@@ -22,6 +22,10 @@
  */
 
 #include <kaneton.h>
+
+/*
+ * include the machine-specific definitions required by the core.
+ */
 
 machine_include(clock);
 
@@ -40,48 +44,59 @@ m_clock*		_clock = NULL;
  */
 
 /*
- * this function displays the attributes of the given clock.
+ * this function displays the attributes of the given clock's state.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) display the clock's attributes.
+ * 2) call the machine.
  */
 
-t_error			clock_show(t_clock*			clock)
+t_error			clock_show(s_clock*			clock,
+				   mt_margin			margin)
 {
-  module_call(console, message,
-	      '#', "dumping the clock:\n");
+  /*
+   * 0)
+   */
+
+  if (clock == NULL)
+    CORE_ESCAPE("the 'clock' argument is null");
+
+  /*
+   * 1)
+   */
 
   module_call(console, message,
-	      '#', "  millisecond: %u\n",
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "clock: year(%u) month(%u) day(%u) hour(%u) minute(%u) "
+	      "second(%u) millisecond(%u)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      clock->year,
+	      clock->month,
+	      clock->day,
+	      clock->hour,
+	      clock->minute,
+	      clock->second,
 	      clock->millisecond);
 
-  module_call(console, message,
-	      '#', "  second: %u\n",
-	      clock->second);
+  /*
+   * 2)
+   */
 
-  module_call(console, message,
-	      '#', "  minute: %u\n",
-	      clock->minute);
-
-  module_call(console, message,
-	      '#', "  hours: %u\n",
-	      clock->hour);
-
-  module_call(console, message,
-	      '#', "  day: %u\n",
-	      clock->day);
-
-  module_call(console, message,
-	      '#', "  month: %u\n",
-	      clock->month);
-
-  module_call(console, message,
-	      '#', "  year: %u\n",
-	      clock->year);
+  if (machine_call(clock, show, clock, margin) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function must be called in order to update the clock by
- * the given milliseconds.
+ * this function must be called in order to update the clock by the given
+ * number of milliseconds.
+ *
+ * this is the reponsability of the timer manager to update the clock on
+ * a regular basis.
  *
  * steps:
  *
@@ -90,7 +105,11 @@ t_error			clock_show(t_clock*			clock)
 
 t_error			clock_update(t_uint32			millisecond)
 {
-  if (machine_call(clock, clock_update, millisecond) != ERROR_OK)
+  /*
+   * 1)
+   */
+
+  if (machine_call(clock, update, millisecond) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -100,19 +119,29 @@ t_error			clock_update(t_uint32			millisecond)
  * this function returns, through the given clock structure, the current
  * date and time.
  *
+ * since this functionality depends on the hardware internals, this
+ * operation is left to the machine.
+ *
  * steps:
  *
- * 1) since this functionality depends on the hardware internals, this
- *    function simply calls the machine.
+ * 0) verify the arguments.
+ * 1) call the machine.
  */
 
-t_error			clock_current(t_clock*			clock)
+t_error			clock_current(s_clock*			clock)
 {
+  /*
+   * 0)
+   */
+
+  if (clock == NULL)
+    CORE_ESCAPE("the 'clock' argument is null");
+
   /*
    * 1)
    */
 
-  if (machine_call(clock, clock_current, clock) != ERROR_OK)
+  if (machine_call(clock, current, clock) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -133,17 +162,17 @@ t_error			clock_initialize(void)
    * 1)
    */
 
-  if ((_clock = malloc(sizeof(m_clock))) == NULL)
+  if ((_clock = malloc(sizeof (m_clock))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the clock manager's "
 		"structure");
 
-  memset(_clock, 0x0, sizeof(m_clock));
+  memset(_clock, 0x0, sizeof (m_clock));
 
   /*
    * 2)
    */
 
-  if (machine_call(clock, clock_initialize) != ERROR_OK)
+  if (machine_call(clock, initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -164,7 +193,7 @@ t_error			clock_clean(void)
    * 1)
    */
 
-  if (machine_call(clock, clock_clean) != ERROR_OK)
+  if (machine_call(clock, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*

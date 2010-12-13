@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/types.h
+ * file          /home/mycure/kaneton/kaneton/core/include/types.h
  *
  * created       julien quintard   [wed jun  6 22:38:37 2007]
- * updated       julien quintard   [mon nov 29 09:26:49 2010]
+ * updated       julien quintard   [fri dec 10 11:38:07 2010]
  */
 
 #ifndef CORE_TYPES_H
@@ -25,7 +25,7 @@
  */
 
 /*
- * register types
+ * register types: 8-/16-/32- and 64-bit.
  */
 
 typedef t_uint8			t_reg8;
@@ -34,25 +34,29 @@ typedef t_uint32		t_reg32;
 typedef t_uint64		t_reg64;
 
 /*
- * memory types
+ * the physical address and size types.
  */
 
 typedef t_uint32		t_paddr;
 typedef t_uint32		t_psize;
+
+/*
+ * the virtual address and size types.
+ */
+
 typedef t_uint32		t_vaddr;
 typedef t_uint32		t_vsize;
+
+/*
+ * the general-purpose size and offset types.
+ */
 
 typedef t_uint32		t_size;
 typedef t_uint32		t_offset;
 
-typedef struct
-{
-  t_vaddr			base;
-  t_vsize			size;
-}				t_stack;
-
 /*
- * special types
+ * the types below are used in a variety of situations. however their
+ * names are pretty clear about their usage.
  */
 
 typedef t_uint8			t_boolean;
@@ -68,5 +72,15 @@ typedef t_uint32		t_quantum;
 typedef t_uint32		t_operations;
 typedef t_uint32		t_timeslice;
 typedef t_sint32		t_value;
+
+/*
+ * this stack type.
+ */
+
+typedef struct
+{
+  t_vaddr			base;
+  t_vsize			size;
+}				s_stack;
 
 #endif

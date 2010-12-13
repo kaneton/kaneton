@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton/test/robot/robot.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [wed dec  8 22:10:18 2010]
+# updated       julien quintard   [wed dec  8 23:36:15 2010]
 #
 
 #
@@ -271,8 +271,10 @@ def                     Test():
 
   # if the construction was successful, exit the loop.
   if status == ktp.StatusError:
-    Error(output + "\n" +
-          "unable to initialize the kaneton environment")
+    if output:
+      print(output)
+
+    Error("unable to initialize the kaneton environment")
 
   # for every environment to test...
   for environment in Environments:
@@ -295,8 +297,10 @@ def                     Test():
 
     # if the construction was successful, exit the loop.
     if status == ktp.StatusError:
-      Error(output + "\n" +
-            "unable to test the kaneton research implementation")
+      if output:
+        print(output)
+
+      Error("unable to test the kaneton research implementation")
 
     # look for the generated report.
     paths = ktp.miscellaneous.Search(g_directory + "/test/store/report",
@@ -305,7 +309,8 @@ def                     Test():
 
     # check the reports.
     if len(paths) != 1:
-      Error("it seems that more reports than expected are present in the store")
+      Error("it seems that more reports than expected are present "
+            "in the store")
 
     path = paths[0]
 
@@ -401,8 +406,10 @@ set use_from = yes\
 
   # check the status.
   if status == ktp.StatusError:
-    Error(output + "\n" +
-          "an error occured while sending the report")
+    if output:
+      print(output)
+
+    Error("an error occured while sending the report")
 
   # remove the temporary files.
   ktp.miscellaneous.Remove(message)

@@ -87,7 +87,7 @@ t_error			ia32_extended_context_init(void)
       ia32_cpucaps |= IA32_CAPS_SSE;
     }
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -99,11 +99,11 @@ t_error			ia32_clear_io_bitmap(i_task		tskid)
   o_task*		o;
 
   if (task_get(tskid, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   memset(&o->machine.iomap, 0xFF, 8192);
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -117,11 +117,11 @@ t_error			ia32_duplicate_io_bitmap(i_task		old,
   o_task*		to;
 
   if (task_get(old, &from) != ERROR_OK || task_get(new, &to) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   memcpy(to->machine.iomap, from->machine.iomap, 8192);
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -174,8 +174,6 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   o_task*		o;
   i_task		current;
   t_uint8		i;
-  i_thread		ithread;
-  o_thread*		othread;
 
   (void) io_bitmap_isset;
 
@@ -184,14 +182,14 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
    */
 
   if (id + width >= 65536)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
    */
 
   if (task_get(tskid, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 3)
@@ -204,13 +202,8 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
    * 4)
    */
 
-  if (scheduler_current(&ithread) != ERROR_OK)
-    return (ERROR_KO);
-
-  if (thread_get(ithread, &othread) != ERROR_OK)
-    return (ERROR_KO);
-
-  current = othread->task;
+  if (task_current(&current) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
 
   if (current == tskid)
     memcpy((t_uint8*)_thread->machine.tss + _thread->machine.tss->io,
@@ -219,7 +212,7 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   else
     o->machine.ioflush = 1;
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -232,7 +225,7 @@ t_error			ia32_reset_iopl(void)
 	       "andl $0xFFFFCFFF, %ss:(%esp)\n\t"
 	       "popf");
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -260,14 +253,14 @@ t_error			ia32_init_context(i_task		taskid,
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
    */
  
   if (task_get(taskid, &task) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 3)
@@ -278,7 +271,7 @@ t_error			ia32_init_context(i_task		taskid,
 		  PAGESZ,
 		  PERMISSION_READ | PERMISSION_WRITE,
 		  &o->machine.interrupt_stack) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   o->machine.interrupt_stack += (PAGESZ - 16);
 
@@ -314,7 +307,7 @@ t_error			ia32_init_context(i_task		taskid,
     }
 
   if (ia32_set_context(threadid, &ctx, IA32_CONTEXT_FULL) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 5)
@@ -335,7 +328,7 @@ t_error			ia32_init_context(i_task		taskid,
       o->machine.u.x87.ftw = 0xffff;
     }
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 
@@ -352,18 +345,18 @@ t_error			ia32_duplicate_context(i_thread		old,
 
   if (thread_get(old, &from) != ERROR_OK ||
       thread_get(new, &to) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (ia32_get_context(old, &ctx) != ERROR_OK ||
       ia32_set_context(new, &ctx, IA32_CONTEXT_FULL) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
     memcpy(&to->machine.u.sse, &from->machine.u.sse, sizeof(t_sse_state));
   else
     memcpy(&to->machine.u.x87, &from->machine.u.x87, sizeof(t_x87_state));
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -399,12 +392,12 @@ t_error			ia32_status_context(i_thread		threadid,
   assert(sp != NULL);
 
   if (ia32_get_context(threadid, &ctx) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   *pc = ctx.eip;
   *sp = ctx.esp;
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -426,13 +419,14 @@ t_error			ia32_init_switcher(void)
   i_segment		seg;
   i_region		reg;
   t_vaddr		int_stack;
+  o_region*		r;
 
   /*
    * 1)
    */
 
   if (as_get(_kernel->as, &as) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
@@ -442,10 +436,10 @@ t_error			ia32_init_switcher(void)
 		      3 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (region_reserve(_kernel->as,
 		     seg,
@@ -454,9 +448,12 @@ t_error			ia32_init_switcher(void)
 		     0,
 		     3 * PAGESZ,
 		     &reg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  _thread->machine.tss = (t_ia32_tss*)(t_vaddr)reg;
+  if (region_get(_kernel->as, reg, &r) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
+
+  _thread->machine.tss = (t_ia32_tss*)r->address;
 
   memset(_thread->machine.tss, 0x0, sizeof(t_ia32_tss));
 
@@ -468,10 +465,10 @@ t_error			ia32_init_switcher(void)
 		      2 * PAGESZ,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (region_reserve(_kernel->as,
 		     seg,
@@ -480,9 +477,12 @@ t_error			ia32_init_switcher(void)
 		     0,
 		     2 * PAGESZ,
 		     &reg) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  int_stack = (t_vaddr)reg;
+  if (region_get(_kernel->as, reg, &r) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
+
+  int_stack = r->address;
 
   /*
    * 4)
@@ -493,7 +493,7 @@ t_error			ia32_init_switcher(void)
 					  IA32_PRIVILEGE_RING0),
 		    int_stack + 2 * PAGESZ - 16,
 		    0x68) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   ia32_cpu_local_set(&ia32_local_interrupt_stack, int_stack + 2 * PAGESZ - 16);
 
@@ -502,7 +502,7 @@ t_error			ia32_init_switcher(void)
    */
 
   if (ia32_tss_init(_thread->machine.tss) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    *
@@ -525,7 +525,7 @@ t_error			ia32_init_switcher(void)
   ia32_gdt_build_selector(IA32_PMODE_GDT_GUEST_DS, ia32_privilege_guest,
 			  &_thread->machine.guest_ds);
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -535,25 +535,28 @@ t_error			ia32_init_switcher(void)
 t_error			ia32_context_ring0_stack(void)
 {
   i_thread		current;
-  o_thread*		o;
+  o_thread*		othread;
   o_task*		otask;
 
-  if (scheduler_current(&current) != ERROR_OK)
-    return (ERROR_KO);
+  if (thread_current(&current) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
 
-  if (thread_get(current, &o) != ERROR_OK)
-    return (ERROR_KO);
+  if (thread_get(current, &othread) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
 
-  if (task_get(o->task, &otask) != ERROR_OK)
-    return (ERROR_KO);
+  if (task_get(othread->task, &otask) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
 
   if (otask->class == TASK_CLASS_KERNEL)
     {
-      o->machine.interrupt_stack = ia32_cpu_local_get(ia32_local_jump_stack);
-      o->machine.interrupt_stack += sizeof (t_ia32_context);
+      othread->machine.interrupt_stack =
+	ia32_cpu_local_get(ia32_local_jump_stack);
+
+      othread->machine.interrupt_stack +=
+	sizeof (t_ia32_context);
     }
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -583,26 +586,23 @@ t_error			ia32_context_switch(i_thread		current,
    */
 
   if (current == elected)
-    return (ERROR_OK);
+    MACHINE_LEAVE();
 
   /*
    * 2)
    */
 
   if (thread_get(current, &from) != ERROR_OK)
-    return (ERROR_KO);
-
-  //thread_dump();
-  //scheduler_dump();
+    MACHINE_ESCAPE("XXX");
 
   if (thread_get(elected, &to) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (task_get(to->task, &task) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (as_get(task->as, &as) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 3)
@@ -612,7 +612,7 @@ t_error			ia32_context_switch(i_thread		current,
 		      as->machine.pd,
 		      IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
 		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   ia32_cpu_local_set(&ia32_local_jump_pdbr, cr3);
 
@@ -624,7 +624,7 @@ t_error			ia32_context_switch(i_thread		current,
 					  IA32_PRIVILEGE_RING0),
 		    to->machine.interrupt_stack,
 		    0x68) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 4)
@@ -647,7 +647,7 @@ t_error			ia32_context_switch(i_thread		current,
 
   STS();
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -678,17 +678,17 @@ t_error			ia32_extended_context_switch(i_thread	current,
   CLTS();
 
   if (current == elected)
-    return (ERROR_OK);
+    MACHINE_LEAVE();
 
   /*
    * 2)
    */
 
   if (thread_get(elected, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (thread_get(current, &old) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
     {
@@ -727,7 +727,7 @@ t_error			ia32_extended_context_switch(i_thread	current,
       FRSTOR(o->machine.u.x87);
     }
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -747,24 +747,24 @@ t_error			ia32_push_args(i_thread			threadid,
 {
   o_thread*		o;
   o_task*		otask;
-  t_thread_context	context;
+  s_thread_context	context;
 
   /*
    * 1)
    */
 
   if (thread_get(threadid, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (task_get(o->task, &otask) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
    */
 
   if (thread_store(threadid, &context) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   context.sp -= size;
 
@@ -773,16 +773,16 @@ t_error			ia32_push_args(i_thread			threadid,
    */
 
   if (as_write(otask->as, args, size, context.sp) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 4)
    */
 
   if (thread_load(threadid, context) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -805,10 +805,10 @@ t_error			ia32_get_context(i_thread		thread,
    */
 
   if (thread_get(thread, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (task_get(o->task, &otask) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
@@ -818,9 +818,9 @@ t_error			ia32_get_context(i_thread		thread,
 	      o->machine.interrupt_stack - sizeof (t_ia32_context),
 	      sizeof (t_ia32_context),
 	      context) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -841,7 +841,7 @@ t_error                 ia32_print_context(i_thread             thread)
 		ctxt.edx, ctxt.esi, ctxt.edi,
 		ctxt.ebp, ctxt.orig_esp, ctxt.eip);
 
-    return (ERROR_OK);
+    MACHINE_LEAVE();
 }
 
 /*
@@ -869,10 +869,10 @@ t_error			ia32_set_context(i_thread		thread,
    */
 
   if (thread_get(thread, &o) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   if (task_get(o->task, &otask) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 2)
@@ -882,7 +882,7 @@ t_error			ia32_set_context(i_thread		thread,
 	      o->machine.interrupt_stack - sizeof (t_ia32_context),
 	      sizeof (t_ia32_context),
 	      &temp) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
   /*
    * 3)
@@ -924,7 +924,7 @@ t_error			ia32_set_context(i_thread		thread,
 	       (t_ia32_context),
 	       o->machine.interrupt_stack -
 	         sizeof (t_ia32_context)) != ERROR_OK)
-    return (ERROR_KO);
+    MACHINE_ESCAPE("XXX");
 
-  return (ERROR_OK);
+  MACHINE_LEAVE();
 }

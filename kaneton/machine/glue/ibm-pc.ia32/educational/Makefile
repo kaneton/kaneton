@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       julien quintard   [wed nov 24 19:30:07 2010]
+# updated       julien quintard   [fri dec 10 17:04:34 2010]
 #
 
 #
@@ -38,6 +38,8 @@ GLUE_C			:=		as.c				\
 					cpu.c				\
 					event.c				\
 					io.c				\
+					kernel.c			\
+					map.c				\
 					message.c			\
 					region.c			\
 					scheduler.c			\

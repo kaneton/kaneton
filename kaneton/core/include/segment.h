@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/segment.h
+ * file          /home/mycure/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [sat dec  4 13:23:36 2010]
+ * updated       julien quintard   [sun dec 12 16:05:18 2010]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -25,35 +25,60 @@
 #include <machine/machine.h>
 
 /*
+ * ---------- algorithms ------------------------------------------------------
+ */
+
+/*
+ * the support segment algorithms.
+ */
+
+#define SEGMENT_ALGORITHM_FIT		(1 << 0)
+
+/*
  * ---------- macros ----------------------------------------------------------
  */
 
 /*
- * set parameters
+ * options.
  */
 
-#define SEGMENT_BPT_NODESZ	4096
+#define SEGMENT_OPTION_NONE		(1 << 0)
+#define SEGMENT_OPTION_NORELOCATE	(1 << 1)
 
 /*
- * segment types
+ * the default size of the bpt nodes.
  */
 
-#define SEGMENT_TYPE_MEMORY	(1 << 0)
-#define SEGMENT_TYPE_CATCH	(1 << 1)
-#define SEGMENT_TYPE_SYSTEM	(1 << 2)
+#define SEGMENT_BPT_NODESZ		4096
 
 /*
- * ---------- algorithms ------------------------------------------------------
+ * the types of segments.
  */
 
-#define SEGMENT_ALGORITHM_FIT	(1 << 0)
+#define SEGMENT_TYPE_MEMORY		(1 << 0)
+#define SEGMENT_TYPE_SYSTEM		(1 << 1)
+
+/*
+ * ---------- macro-functions -------------------------------------------------
+ */
+
+/*
+ * this macro-function computes a segment identifier based on the address.
+ */
+
+#define SEGMENT_IDENTIFIER(_object_)					\
+  (i_segment)((_object_)->address / ___kaneton$framesz)
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * segment object
+ * the segment object is identified by a unique identifier 'id' and
+ * belongs to an address space 'as'.
+ *
+ * in addition, every segment has a type 'type', a start address 'address'
+ * and a size 'size' along with a set of permissions 'permissions'.
  */
 
 typedef struct
@@ -73,14 +98,15 @@ typedef struct
 }				o_segment;
 
 /*
- * segment manager
+ * the segment manager.
+ *
+ * the 'base' and 'size' attributes represent the start and size of
+ * the segment space i.e the available physical memory.
  */
 
 typedef struct
 {
-  o_id				id;
-
-  t_paddr			start;
+  t_paddr			base;
   t_psize			size;
 
   i_set				segments;
@@ -89,12 +115,14 @@ typedef struct
 }				m_segment;
 
 /*
- * the segment architecture-dependent interface
+ * the segment dispatcher.
  */
 
 typedef struct
 {
-  t_error			(*segment_show)(i_segment);
+  t_error			(*segment_show)(i_segment,
+						mt_margin);
+  t_error			(*segment_dump)(void);
   t_error			(*segment_clone)(i_as,
 						 i_segment,
 						 i_segment*);
@@ -131,8 +159,6 @@ typedef struct
 						   t_permissions,
 						   i_segment*);
   t_error			(*segment_release)(i_segment);
-  t_error			(*segment_catch)(i_as,
-						 i_segment);
   t_error			(*segment_permissions)(i_segment,
 						       t_permissions);
   t_error			(*segment_type)(i_segment,
@@ -152,7 +178,8 @@ typedef struct
  * ../../core/segment/segment-fit.c
  */
 
-t_error			segment_show(i_segment			segid);
+t_error			segment_show(i_segment			segid,
+				     mt_margin			margin);
 
 t_error			segment_dump(void);
 
@@ -168,54 +195,49 @@ t_error			segment_clone(i_as			asid,
 				      i_segment			old,
 				      i_segment*		new);
 
-t_error			segment_inject(i_as		asid,
-				       o_segment*	o,
-				       i_segment*	segid);
+t_error			segment_inject(i_as			asid,
+				       o_segment*		object,
+				       i_segment*		id);
 
 t_error			segment_give(i_segment			segid,
 				     i_as			asid);
 
-t_error			segment_locate(t_paddr		address,
-				       i_segment*	id);
+t_error			segment_resize(i_segment		old,
+				       t_psize			size,
+				       t_options		options,
+				       i_segment*		new);
 
-t_error			segment_resize(i_segment	old,
-				       t_psize		size,
-				       i_segment*	new);
+t_error			segment_split(i_segment			segid,
+				      t_psize			size,
+				      i_segment*		left,
+				      i_segment*		right);
 
-t_error			segment_split(i_segment		segid,
-				      t_psize		size,
-				      i_segment*	left,
-				      i_segment*	right);
+t_error			segment_coalesce(i_segment		left,
+					 i_segment		right,
+					 i_segment*		id);
 
-t_error			segment_coalesce(i_segment	left,
-					 i_segment	right,
-					 i_segment*	segid);
+t_error			segment_read(i_segment			segid,
+				     t_paddr			offs,
+				     void*			buffer,
+				     t_psize			sz);
 
-t_error			segment_read(i_segment		segid,
-				     t_paddr		offs,
-				     void*		buff,
-				     t_psize		sz);
+t_error			segment_write(i_segment			segid,
+				      t_paddr			offs,
+				      const void*		buffer,
+				      t_psize			sz);
 
-t_error			segment_write(i_segment		segid,
-				      t_paddr		offs,
-				      const void*	buff,
-				      t_psize		sz);
-
-t_error			segment_copy(i_segment		dst,
-				     t_paddr		offsd,
-				     i_segment		src,
-				     t_paddr		offss,
-				     t_psize		sz);
+t_error			segment_copy(i_segment			dst,
+				     t_paddr			offsd,
+				     i_segment			src,
+				     t_paddr			offss,
+				     t_psize			sz);
 
 t_error			segment_reserve(i_as			asid,
 					t_psize			size,
 					t_permissions		perms,
-					i_segment*		segid);
+					i_segment*		id);
 
 t_error			segment_release(i_segment		segid);
-
-t_error			segment_catch(i_as			asid,
-				      i_segment			segid);
 
 t_error			segment_permissions(i_segment		segid,
 					    t_permissions	perms);
@@ -225,12 +247,16 @@ t_error			segment_type(i_segment			segid,
 
 t_error			segment_flush(i_as			asid);
 
+t_error			segment_locate(t_paddr			address,
+				       i_segment*		id);
+
 t_error			segment_exist(i_segment			segid);
 
 t_error			segment_get(i_segment			segid,
-				    o_segment**			o);
+				    o_segment**			object);
 
-t_error			segment_initialize(void);
+t_error			segment_initialize(t_paddr		base,
+					   t_psize		size);
 
 t_error			segment_clean(void);
 

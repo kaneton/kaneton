@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [sat dec  4 22:49:57 2010]
+ * updated       julien quintard   [sun dec 12 21:52:16 2010]
  */
 
 /*
@@ -46,7 +46,7 @@ extern m_kernel*	_kernel;
  * the list of segments to mark used.
  */
 
-extern t_init*		_init;
+extern s_init*		_init;
 
 /*
  * the scheduler manager.
@@ -148,7 +148,7 @@ t_error			task_dump(void)
   t_state		state;
   o_task*		data;
   t_setsz		size;
-  t_iterator		i;
+  s_iterator		i;
 
   /*
    * 1)
@@ -313,16 +313,8 @@ t_error			task_reserve(t_class			class,
 
   if (_kernel->task != ID_UNUSED)
     {
-      i_thread		thread;
-      o_thread*		p;
-
-      if (scheduler_current(&thread) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the currently scheduled thread");
-
-      if (thread_get(thread, &p) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the thread object");
-
-      o.parent = p->task;
+      if (task_current(&o.parent) != ERROR_OK)
+	CORE_ESCAPE("XXX");
 
       if (task_get(o.parent, &parent) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
@@ -341,7 +333,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (set_reserve(array,
-		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  TASK_THREADS_INITSZ,
 		  sizeof (i_thread),
 		  &o.threads) != ERROR_OK)
@@ -352,7 +344,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (set_reserve(array,
-		  SET_OPTION_ALLOC,
+		  SET_OPTION_ALLOCATE,
 		  TASK_WAITS_INITSZ,
 		  sizeof (i_task),
 		  &o.waits) != ERROR_OK)
@@ -363,7 +355,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (set_reserve(ll,
-		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof (i_task),
 		  &o.children) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a set for the children tasks");
@@ -372,7 +364,7 @@ t_error			task_reserve(t_class			class,
    * 8)
    */
 
-  if (set_reserve(bpt, SET_OPTION_SORT | SET_OPTION_ALLOC,
+  if (set_reserve(bpt, SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof (o_message_type),
 		  MESSAGE_BPT_NODESZ,
 		  &o.messages) != ERROR_OK)
@@ -398,18 +390,18 @@ t_error			task_reserve(t_class			class,
 
   if (o.id != _kernel->task)
     {
-      if (message_register(o.id, MESSAGE_TYPE_INTERFACE,
-			   sizeof (o_syscall)) != ERROR_OK)
+      if (message_record(o.id, MESSAGE_TYPE_INTERFACE,
+			 sizeof (o_syscall)) != ERROR_OK)
 	CORE_ESCAPE("unable to register the message channel for the "
 		    "kernel interface");
 
-      if (message_register(o.id, MESSAGE_TYPE_EVENT,
-			   sizeof (o_event_message)) != ERROR_OK)
+      if (message_record(o.id, MESSAGE_TYPE_EVENT,
+			 sizeof (o_event_message)) != ERROR_OK)
 	CORE_ESCAPE("unable to register the message channel for notifying "
 		    "events");
 
-      if (message_register(o.id, MESSAGE_TYPE_TIMER,
-			   sizeof (o_timer_message)) != ERROR_OK)
+      if (message_record(o.id, MESSAGE_TYPE_TIMER,
+			 sizeof (o_timer_message)) != ERROR_OK)
 	CORE_ESCAPE("unable to register the message channel for triggering "
 		    "timers");
     }
@@ -522,7 +514,7 @@ t_error			task_priority(i_task			id,
 				      t_priority		prior)
 {
   o_task*		o;
-  t_iterator		i;
+  s_iterator		i;
   t_state		state;
 
   /*
@@ -644,7 +636,7 @@ t_error			task_priority(i_task			id,
 t_error			task_start(i_task			id)
 {
   o_task*		o;
-  t_iterator		i;
+  s_iterator		i;
   t_state		st;
 
   /*
@@ -730,7 +722,7 @@ t_error			task_stop(i_task			id)
 {
   t_state		state;
   o_task*		o;
-  t_iterator		i;
+  s_iterator		i;
   t_state		st;
 
   /*
@@ -829,7 +821,7 @@ t_error			task_block(i_task			id)
 {
   t_state		state;
   o_task*		o;
-  t_iterator		i;
+  s_iterator		i;
   t_state		st;
 
   /*
@@ -980,7 +972,7 @@ t_error			task_exit(i_task			id,
 
 t_error			task_wait(i_task			id,
 				  t_options			opts,
-				  t_wait*			wait)
+				  s_wait*			wait)
 {
   /*
   o_task*		o;
@@ -1031,6 +1023,25 @@ t_error			task_wait(i_task			id,
   CORE_ESCAPE("unable to wait for the entity");
   */
   CORE_ESCAPE("XXX");
+}
+
+/*
+ * XXX
+ */
+
+t_error			task_current(i_task*			task)
+{
+  o_scheduler*		scheduler;
+  o_thread*		thread;
+
+  // XXX
+  scheduler_current(&scheduler);
+
+  thread_get(scheduler->thread, &thread);
+
+  *task = thread->task;
+
+  CORE_LEAVE();
 }
 
 /*
@@ -1092,10 +1103,10 @@ t_error			task_initialize(void)
    * 1)
    */
 
-  if ((_task = malloc(sizeof(m_task))) == NULL)
+  if ((_task = malloc(sizeof (m_task))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the task manager's structure");
 
-  memset(_task, 0x0, sizeof(m_task));
+  memset(_task, 0x0, sizeof (m_task));
 
   /*
    * 2)
@@ -1108,7 +1119,7 @@ t_error			task_initialize(void)
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPTION_ALLOC | SET_OPTION_SORT,
+  if (set_reserve(ll, SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof(o_task), &_task->tasks) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of tasks");
 
@@ -1195,7 +1206,7 @@ t_error			task_initialize(void)
 
 t_error			task_clean(void)
 {
-  t_iterator		i;
+  s_iterator		i;
   i_task		*data;
 
   /*

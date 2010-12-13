@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.TETON/kaneton/core/include/cpu.h
+ * file          /home/mycure/kaneton/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [sat nov 27 06:11:21 2010]
+ * updated       julien quintard   [fri dec 10 21:17:08 2010]
  */
 
 #ifndef CORE_CPU_H
@@ -29,7 +29,7 @@
  */
 
 /*
- * cpu object
+ * the structure for a CPU object.
  */
 
 typedef struct
@@ -42,26 +42,30 @@ typedef struct
 }				o_cpu;
 
 /*
- * cpu manager
+ * the CPU manager.
  */
 
 typedef struct
 {
-  t_setsz			ncpus;
-
   i_set				cpus;
 
   machine_data(m_cpu);
 }				m_cpu;
 
 /*
- * the cpu architecture-dependent interface
+ * the CPU dispatcher.
  */
 
 typedef struct
 {
-  t_error			(*cpu_show)(i_cpu);
+  t_error			(*cpu_show)(i_cpu,
+					    mt_margin);
+  t_error			(*cpu_dump)(void);
   t_error			(*cpu_current)(i_cpu*);
+  t_error			(*cpu_select)(i_cpu*);
+  t_error			(*cpu_update)(i_cpu,
+					      t_timeslice);
+  t_error			(*cpu_balance)(void);
   t_error			(*cpu_migrate)(i_task,
 					       i_cpu);
   t_error			(*cpu_initialize)(void);
@@ -78,7 +82,8 @@ typedef struct
  * ../../core/cpu/cpu.c
  */
 
-t_error			cpu_show(i_cpu				id);
+t_error			cpu_show(i_cpu				id,
+				 mt_margin			margin);
 
 t_error			cpu_dump(void);
 
@@ -88,8 +93,8 @@ t_error			cpu_multiprocessor(void);
 
 t_error			cpu_select(i_cpu*			id);
 
-t_error			cpu_statistics(i_cpu			id,
-				       t_timeslice		time);
+t_error			cpu_update(i_cpu			id,
+				   t_timeslice			timeslice);
 
 t_error			cpu_balance(void);
 
@@ -99,7 +104,7 @@ t_error			cpu_migrate(i_task			task,
 t_error			cpu_exist(i_cpu				id);
 
 t_error			cpu_get(i_cpu				id,
-				o_cpu**				o);
+				o_cpu**				object);
 
 t_error			cpu_initialize(void);
 

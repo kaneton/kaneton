@@ -12,13 +12,22 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * the kaneton kernel uses 64-bit identifier.
+ * the identifier manager provides functions for managing identifier objects
+ * which are capable to generate identifiers used to identify the
+ * different kaneton objects.
  *
- * from this fact, we do not care about identifier recycling.
+ * note that the kaneton kernel uses 64-bit identifier and that every
+ * manager relies on its specific identifier object meaning that the
+ * identifier, say 42, can be used for a task, a thread, a segment and so
+ * forth. therefore an identifier alone is meaningless as it must always
+ * be known which manager it belongs to.
  *
- * the best example of this fact is located in the id_release()
- * function. indeed the function does nothing, meaning that the
- * identifier released will not be recycled.
+ * the use of manager-specific identifier objects and 64-bit identifiers
+ * imply that identifiers do not need to be recycled.
+ *
+ * finally, note that unlike other managers, the identifier manager does
+ * not rely on an hypothetical machine complementary implementation since
+ * this manager is at the heart of the kaneton microkernel.
  */
 
 /*
@@ -32,7 +41,7 @@
  */
 
 /*
- * the id manager structure.
+ * the identifier manager structure.
  */
 
 m_id*			_id = NULL;
@@ -42,108 +51,164 @@ m_id*			_id = NULL;
  */
 
 /*
- * this function shows the id object's state.
+ * this function shows the given object's attributes and state.
  */
 
-t_error			id_show(o_id*				o)
+t_error			id_show(o_id*				object,
+				mt_margin			margin)
 {
   module_call(console, message,
-	      '#', "    id object's state: %qu\n", o->id);
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "identifier: id(%qu)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      object->id);
 
   CORE_LEAVE();
 }
 
 /*
- * this function clones an identifier meaning that a new identifier
- * is reserved with same properties.
+ * this function generates an identifier from the given identifier object.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) generate the identifier.
  */
 
-t_error			id_clone(o_id*				o,
-				 t_id				old,
-				 t_id*				new)
+t_error			id_reserve(o_id*			object,
+				   t_id*			id)
 {
-  t_error		r;
+  /*
+   * 0)
+   */
 
-  assert(o != NULL);
-  assert(new != NULL);
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
-  r = id_reserve(o, new);
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
 
-  CORE_LEAVE();
-}
+  /*
+   * 1)
+   */
 
-/*
- * this function reserves an identifier in an identifier object
- */
-
-t_error			id_reserve(o_id*			o,
-				   t_id*			i)
-{
-  assert(o != NULL);
-  assert(i != NULL);
-
-  *i = o->id++;
+  *id = object->id++;
 
   CORE_LEAVE();
 }
 
 /*
  * this function releases an identifier from an identifier object.
+ *
+ * note that since the identifiers are not recycled, there is nothing to
+ * do here.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
  */
 
-t_error			id_release(o_id*			o,
-				   t_id				i)
+t_error			id_release(o_id*			object,
+				   t_id				id)
 {
-  assert(o != NULL);
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
   CORE_LEAVE();
 }
 
 /*
- * this function initializes an id object.
+ * this function builds an identifier object.
+ *
+ * steps:
+ *
+ * 0) verify the arguments
+ * 1) initialize the identifier object's structure.
  */
 
-t_error			id_build(o_id*				o)
+t_error			id_build(o_id*				object)
 {
-  assert(o != NULL);
+  /*
+   * 0)
+   */
 
-  memset(o, 0x0, sizeof(o_id));
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  /*
+   * 1)
+   */
+
+  memset(object, 0x0, sizeof (o_id));
 
   CORE_LEAVE();
 }
 
 /*
- * this function cleans an id object.
+ * this function destroys an identifier object.
+ *
+ * 0) verify the arguments.
+ * 1) re-initialize the object's structure.
  */
 
-t_error			id_destroy(o_id*			o)
+t_error			id_destroy(o_id*			object)
 {
-  assert(o != NULL);
+  /*
+   * 0)
+   */
 
-  memset(o, 0x0, sizeof(o_id));
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  /*
+   * 1)
+   */
+
+  memset(object, 0x0, sizeof (o_id));
 
   CORE_LEAVE();
 }
 
 /*
- * this function must initialize the id manager.
+ * this function initialize the identifier manager.
+ *
+ * steps:
+ *
+ * 1) allocate and initialize the manager's structure.
  */
 
 t_error			id_initialize(void)
 {
-  if ((_id = malloc(sizeof(m_id))) == NULL)
+  /*
+   * 1)
+   */
+
+  if ((_id = malloc(sizeof (m_id))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the identifier mananger's "
 		"structure");
+
+  memset(_id, 0x0, sizeof (m_id));
 
   CORE_LEAVE();
 }
 
 /*
- * this function cleans the id manager.
+ * this function cleans the identifier manager.
+ *
+ * 1) free the mananger structure's memory.
  */
 
 t_error			id_clean(void)
 {
+  /*
+   * 1)
+   */
+
   free(_id);
 
   CORE_LEAVE();

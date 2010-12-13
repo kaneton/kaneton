@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.NEW/kaneton/core/include/init.h
+ * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [mon nov 22 11:31:42 2010]
+ * updated       julien quintard   [fri dec 10 11:35:32 2010]
  */
 
 #ifndef CORE_INIT_H
@@ -29,26 +29,26 @@
  */
 
 /*
- * input
+ * the structure for an input i.e a server that must be launched at startup.
  */
 
 typedef struct
 {
   char*				name;
   t_psize			size;
-}				t_input;
+}				s_init_input;
 
 /*
- * inputs
+ * the header of the inputs array containing the number of entries.
  */
 
 typedef struct
 {
   t_uint32			ninputs;
-}				t_inputs;
+}				s_init_inputs;
 
 /*
- * segment structure description
+ * the segment structure description.
  */
 
 typedef struct
@@ -56,10 +56,10 @@ typedef struct
   t_paddr			address;
   t_psize			size;
   t_permissions			permissions;
-}				s_segment;
+}				s_init_segment;
 
 /*
- * region structure description
+ * the region structure description.
  *
  * the 'segment' field represents an index in the array of segments.
  */
@@ -72,23 +72,22 @@ typedef struct
   t_paddr			offset;
   t_vsize			size;
   t_options			options;
-}				s_region;
+}				s_init_region;
 
 /*
- * cpu structure description
+ * the CPU structure description.
  */
 
 typedef struct
 {
   i_cpu				cpu;
-}				s_cpu;
+}				s_init_cpu;
 
 /*
- * the init structure
+ * the init structure.
  *
- * note that concerning the segments and the regions, the kernel waits
- * for sorted segments and regions the segment[0] being the lowest in
- * memory.
+ * note that the kernel expects to receive a sorted array of segments and
+ * regions, the segment[0] and region[0] being the lowest in memory.
  *
  * note that the size fields represent sizes aligned on PAGESZ.
  */
@@ -109,19 +108,19 @@ typedef struct
   t_paddr			init;
   t_psize			initsz;
 
-  t_inputs*			inputs;
+  s_init_inputs*		inputs;
   t_psize			inputssz;
 
   t_uint32			nsegments;
-  s_segment*			segments;
+  s_init_segment*		segments;
   t_psize			segmentssz;
 
   t_uint32			nregions;
-  s_region*			regions;
+  s_init_region*		regions;
   t_psize			regionssz;
 
   t_uint32			ncpus;
-  s_cpu*			cpus;
+  s_init_cpu*			cpus;
   t_psize			cpussz;
   i_cpu				bsp;
 
@@ -131,7 +130,7 @@ typedef struct
   t_paddr			alloc;
   t_psize			allocsz;
 
-  machine_data(init);
-}				t_init;
+  machine_data(s_init);
+}				s_init;
 
 #endif

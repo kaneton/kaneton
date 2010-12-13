@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...on/machine/platform/ibm-pc/include/rtc.h
  *
  * created       julien quintard   [wed nov 24 12:48:27 2010]
- * updated       julien quintard   [wed dec  8 16:27:13 2010]
+ * updated       julien quintard   [thu dec  9 15:22:26 2010]
  */
 
 #ifndef PLATFORM_RTC_H
@@ -16,6 +16,11 @@
 
 /*
  * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * these macros provides the address, registers, options and flags
+ * related to the RTC.
  */
 
 #define PLATFORM_RTC_ADDRESS			0x70
@@ -43,6 +48,10 @@
  * ---------- types -----------------------------------------------------------
  */
 
+/*
+ * this structure represents the current state of the RTC.
+ */
+
 typedef struct
 {
   t_uint32		millisecond;
@@ -57,12 +66,16 @@ typedef struct
 
   t_uint8		weekday;
   t_uint8		century;
-}			t_platform_rtc;
+}			ps_rtc_state;
+
+/*
+ * the RTC manager.
+ */
 
 typedef struct
 {
-  t_platform_rtc	rtc;
-}			m_platform_rtc;
+  ps_rtc_state		state;
+}			pm_rtc;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -75,7 +88,7 @@ typedef struct
  * ../rtc.c
  */
 
-void			platform_rtc_dump(t_platform_rtc*	rtc);
+void			platform_rtc_dump(ps_rtc_state*		rtc);
 
 void			platform_rtc_write(t_uint8		address,
 					   t_uint8		value);
@@ -85,9 +98,9 @@ t_uint8			platform_rtc_read(t_uint8		address);
 t_error			platform_rtc_extract(t_uint8		address,
 					     t_uint8*		value);
 
-t_error			platform_rtc_load(t_platform_rtc*	rtc);
+t_error			platform_rtc_load(ps_rtc_state*		rtc);
 
-t_error			platform_rtc_current(t_platform_rtc**	rtc);
+t_error			platform_rtc_state(ps_rtc_state**	rtc);
 
 t_error			platform_rtc_update(t_uint32		millisecond);
 

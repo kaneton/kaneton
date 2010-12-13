@@ -9,7 +9,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/timer.h
  *
  * created       julien quintard   [wed jun  6 16:29:41 2007]
- * updated       julien quintard   [wed nov 24 19:29:19 2010]
+ * updated       julien quintard   [thu dec  9 15:16:01 2010]
  */
 
 #ifndef GLUE_TIMER_H

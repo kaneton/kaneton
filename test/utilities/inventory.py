@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/utilities/inventory.py
+# file          /home/mycure/kaneton/test/utilities/inventory.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [wed nov 24 14:42:16 2010]
+# updated       julien quintard   [thu dec  9 15:04:52 2010]
 #
 
 #
@@ -108,7 +108,7 @@ def                     generate(functions,
 
 %(prototypes)s
 
-s_module_test_function _module_test_functions[] =
+ls_test_function        _module_test_functions[] =
 {
 %(tests)s
   { NULL, NULL }

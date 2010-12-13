@@ -12,7 +12,22 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements the event manager.
+ * the event managers provides the possibility to generate a notification
+ * every time a given hardware event occurs.
+ *
+ * note that the event identifiers are machine-specific. therefore, such
+ * events should not be reserved from the core since such events may make
+ * no sense on another machine.
+ *
+ * the notification can be delivered in two forms. either a function can be
+ * directly called, form which is especially useful for the kernel or a
+ * message can be sent to a task. this last form of notification is interesting
+ * should a server be interested in receiving specific hardware events. for
+ * example, the ATA server may be interested in being notified of every
+ * hardware interrupt related to the ATA devices.
+ *
+ * [XXX:improvements] provide the possibility for multiple handlers on a
+ *                    the same event.
  */
 
 /*
@@ -20,6 +35,10 @@
  */
 
 #include <kaneton.h>
+
+/*
+ * include the machine-specific definitions required by the core.
+ */
 
 machine_include(event);
 
@@ -38,7 +57,7 @@ extern m_kernel*	_kernel;
  */
 
 /*
- * the event manager variable.
+ * the event manager.
  */
 
 m_event*		_event = NULL;
@@ -48,16 +67,17 @@ m_event*		_event = NULL;
  */
 
 /*
- * this function shows a given event.
+ * this function shows a given event's attributes.
  *
  * steps:
  *
- * 1) get the event object from its identifier.
- * 2) display the tasks which have subscribed to this event.
- * 3) call the machine0dependent code.
+ * 1) retrieve the event object.
+ * 2) display the event's attributes depending on the type of notification.
+ * 3) call the machine.
  */
 
-t_error			event_show(i_event			id)
+t_error			event_show(i_event			id,
+				   mt_margin			margin)
 {
   o_event*		o;
 
@@ -72,34 +92,65 @@ t_error			event_show(i_event			id)
    * 2)
    */
 
-  module_call(console, message,
-	      '#', "  event %qd: task %qd\n", o->id, o->handler.task);
+  switch (o->type)
+    {
+    case EVENT_TYPE_FUNCTION:
+      {
+	module_call(console, message,
+		    '#',
+		    MODULE_CONSOLE_MARGIN_FORMAT
+		    "event: id(%qu) type(function) routine(0x%x)\n",
+		    MODULE_CONSOLE_MARGIN_VALUE(margin),
+		    o->id,
+		    o->handler.routine);
+
+	break;
+      }
+    case EVENT_TYPE_MESSAGE:
+      {
+	module_call(console, message,
+		    '#',
+		    MODULE_CONSOLE_MARGIN_FORMAT
+		    "event: id(%qu) type(message) task(%qu)\n",
+		    MODULE_CONSOLE_MARGIN_VALUE(margin),
+		    o->id,
+		    o->handler.task);
+
+	break;
+      }
+    default:
+      CORE_ESCAPE("unknown event type '%u'",
+		  o->type);
+    }
 
   /*
    * 3)
    */
 
-  if (machine_call(event, event_show, id) != ERROR_OK)
+  if (machine_call(event, show, id, margin) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function dumps the events.
+ * this function dumps the event manager.
  *
  * steps:
  *
- * 1) get the set size.
- * 2) show each event.
+ * 1) retrieve the number of registered events.
+ * 2) display general information.
+ * 3) show the identifier object.
+ * 4) show every event.
+ * 5) call the machine.
  */
 
 t_error			event_dump(void)
 {
-  t_state		state;
   o_event*		data;
   t_setsz		size;
-  t_iterator		i;
+  t_state		state;
+  s_iterator		i;
 
   /*
    * 1)
@@ -113,16 +164,39 @@ t_error			event_dump(void)
    */
 
   module_call(console, message,
-	      '#', "dumping %qu event(s):\n", size);
+	      '#', "event manager: #events(%qu)\n",
+	      size);
+
+  /*
+   * 3)
+   */
+
+  if (id_show(&_event->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+    CORE_ESCAPE("unable to show the identifier object");
+
+  /*
+   * 4)
+   */
+
+  module_call(console, message,
+	      '#', "  events:\n",
+	      size);
 
   set_foreach(SET_OPTION_FORWARD, _event->events, &i, state)
     {
       if (set_object(_event->events, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object from the set of events");
 
-      if (event_show(data->id) != ERROR_OK)
+      if (event_show(data->id, 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the object");
     }
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(event, dump) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
@@ -132,16 +206,19 @@ t_error			event_dump(void)
  *
  * steps:
  *
- * 1) get the event object from the set.
- * 2) notify the task its event has occured.
- * 3) call machine.
+ * 1) retrieve the event object.
+ * 2) notify the target of the event depending on the type of notification
+ *    set up at the reservation.
+ *   a) call the routine, taking to pass both the event identifier and
+ *      the data provided at the reservation.
+ *   b) send a message to the target task
+ *   c) return an error since the type of notification is not supported.
+ * 3) call the machine.
  */
 
 t_error			event_notify(i_event			id)
 {
   o_event*              o;
-  o_event_message	msg;
-  i_node		node;
 
   /*
    * 1)
@@ -154,28 +231,66 @@ t_error			event_notify(i_event			id)
    * 2)
    */
 
-  msg.id = id;
-  msg.data = o->data;
+  switch (o->type)
+    {
+      /*
+       * a)
+       */
 
-  node.machine = _kernel->machine;
-  node.task = o->handler.task;
+    case EVENT_TYPE_FUNCTION:
+      {
+	o->handler.routine(o->id, o->data);
 
-  if (message_send(_kernel->task, node, MESSAGE_TYPE_EVENT, (t_vaddr)&msg,
-		   sizeof (o_event_message)) != ERROR_OK)
-    CORE_ESCAPE("unable to send a message to the destination task");
+	break;
+      }
+
+      /*
+       * b)
+       */
+
+    case EVENT_TYPE_MESSAGE:
+      {
+	o_event_message	msg;
+	i_node		node;
+
+	msg.id = id;
+	msg.data = o->data;
+
+	node.cell = _kernel->cell;
+	node.task = o->handler.task;
+
+	if (message_send(_kernel->task,
+			 node,
+			 MESSAGE_TYPE_EVENT,
+			 (t_vaddr)&msg,
+			 sizeof (o_event_message)) != ERROR_OK)
+	  CORE_ESCAPE("unable to send a message to the destination task");
+
+	break;
+      }
+
+      /*
+       * c)
+       */
+
+    default:
+      CORE_ESCAPE("unknown event type '%u'",
+		  o->type);
+    }
 
   /*
    * 3)
    */
 
-  if (machine_call(event, event_notify, id) != ERROR_OK)
+  if (machine_call(event, notify, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function activates the event processing.
+ * this function activates the event processing. note that this operation
+ * is left to the machine.
  *
  * steps:
  *
@@ -188,14 +303,15 @@ t_error			event_enable(void)
    * 1)
    */
 
-  if (machine_call(event, event_enable) != ERROR_OK)
+  if (machine_call(event, enable) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function deactivates the event processing.
+ * this function deactivates the event processing. note that this operation
+ * is left to the machine.
  *
  * steps:
  *
@@ -208,21 +324,27 @@ t_error			event_disable(void)
    * 1)
    */
 
-  if (machine_call(event, event_disable) != ERROR_OK)
+  if (machine_call(event, disable) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * reserve an event.
+ * this function reserves an event that must be notified by the given
+ * method: intra-kernel function call or via a message.
+ *
+ * note that the macro-functions EVENT_TYPE_FUNCTION/EVENT_TYPE_MESSAGE
+ * and EVENT_ROUTINE()/EVENT_TASK() are provide to make reservation
+ * easier.
  *
  * steps:
  *
+ * 0) verify the arguments.
  * 1) check that the event has not been already reserved.
- * 2) create a new event object and give it its arch dependent id.
- * 3) add the new event to the event manager.
- * 4) call the machine dependent code.
+ * 2) create and initialize a new event object.
+ * 3) add the object to the set of events.
+ * 4) call the machine.
  */
 
 t_error			event_reserve(i_event			id,
@@ -232,20 +354,27 @@ t_error			event_reserve(i_event			id,
 {
   o_event		o;
 
-  assert(type == EVENT_FUNCTION || type == EVENT_MESSAGE);
+  /*
+   * 0)
+   */
+
+  if ((type != EVENT_TYPE_FUNCTION) &&
+      (type != EVENT_TYPE_MESSAGE))
+    CORE_ESCAPE("unknown event type '%u'",
+		type);
 
   /*
    * 1)
    */
 
   if (event_exist(id) == ERROR_TRUE)
-    CORE_ESCAPE("unable to retrieve the event object");
+    CORE_ESCAPE("this event has already been reserved");
 
   /*
    * 2)
    */
 
-  memset(&o, 0x0, sizeof(o_event));
+  memset(&o, 0x0, sizeof (o_event));
 
   o.id = id;
   o.type = type;
@@ -263,8 +392,7 @@ t_error			event_reserve(i_event			id,
    * 4)
    */
 
-  if (machine_call(event, event_reserve, id, type, handler,
-		   data) != ERROR_OK)
+  if (machine_call(event, reserve, id, type, handler, data) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -275,41 +403,31 @@ t_error			event_reserve(i_event			id,
  *
  * steps:
  *
- * 1) get the event object from its identifier.
- * 2) remove the object from the event set.
- * 3) call the machine dependent code.
+ * 1) call the machine.
+ * 2) remove the object from the set of events.
  */
 
 t_error			event_release(i_event			id)
 {
-  o_event*		o;
-
   /*
    * 1)
    */
 
-  if (event_get(id, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the event object");
+  if (machine_call(event, release, id) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  if (set_remove(_event->events, o->id) != ERROR_OK)
+  if (set_remove(_event->events, id) != ERROR_OK)
     CORE_ESCAPE("unable to remove the object from the set of events");
-
-  /*
-   * 3)
-   */
-
-  if (machine_call(event, event_release, o->id) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function returns true if the event exists.
+ * this function returns true if the event exists i.e has been reserved.
  */
 
 t_error			event_exist(i_event			id)
@@ -321,29 +439,43 @@ t_error			event_exist(i_event			id)
 }
 
 /*
- * this function gets an event object from the event set.
+ * this function retrieves the object from the set of events.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the object from the set.
  */
 
 t_error			event_get(i_event			id,
-				  o_event**			o)
+				  o_event**			object)
 {
-  assert(o != NULL);
+  /*
+   * 0)
+   */
 
-  if (set_get(_event->events, id, (void**)o) != ERROR_OK)
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (set_get(_event->events, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the event object from the set");
 
   CORE_LEAVE();
 }
 
 /*
- * initialize the event manager.
+ * this function initializes the event manager.
  *
  * steps:
  *
- * 1) allocate and initialize the event manager.
+ * 1) allocate and initialize the event manager's structure.
  * 2) initialize the object identifier.
- * 3) reserve the event set.
- * 4) call the machine dependent code.
+ * 3) reserve the set of events.
+ * 4) call the machine.
  */
 
 t_error			event_initialize(void)
@@ -352,10 +484,10 @@ t_error			event_initialize(void)
    * 1)
    */
 
-  if ((_event = malloc(sizeof(m_event))) == NULL)
+  if ((_event = malloc(sizeof (m_event))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the event manager's structure");
 
-  memset(_event, 0x0, sizeof(m_event));
+  memset(_event, 0x0, sizeof (m_event));
 
   /*
    * 2)
@@ -368,42 +500,44 @@ t_error			event_initialize(void)
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPTION_ALLOC | SET_OPTION_SORT,
-		  sizeof(o_event), &_event->events) != ERROR_OK)
+  if (set_reserve(ll,
+		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
+		  sizeof (o_event),
+		  &_event->events) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of events");
 
   /*
    * 4)
    */
 
-  if (machine_call(event, event_initialize) != ERROR_OK)
+  if (machine_call(event, initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * destroy the event manager.
+ * this function cleans the event manager.
  *
  * steps:
  *
- * 1) call the machine-dependent code.
+ * 1) call the machine.
  * 2) release every event object.
- * 3) release the event set.
+ * 3) release the set of events.
  * 4) destroy the identifier object.
- * 5) free the event manager's structure memory.
+ * 5) free the event manager's structure.
  */
 
 t_error			event_clean(void)
 {
-  t_iterator		i;
+  s_iterator		i;
   o_event*		o;
 
   /*
    * 1)
    */
 
-  if (machine_call(event, event_clean) != ERROR_OK)
+  if (machine_call(event, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/task.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [wed nov 24 14:18:39 2010]
+ * updated       julien quintard   [thu dec  9 15:15:55 2010]
  */
 
 #ifndef GLUE_TASK_H

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/core/include/as.h
+ * file          /home/mycure/kaneton/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [sat dec  4 13:27:51 2010]
+ * updated       julien quintard   [fri dec 10 21:16:27 2010]
  */
 
 #ifndef CORE_AS_H
@@ -52,8 +52,6 @@ typedef struct
   i_set				segments;
   i_set				regions;
 
-  t_options			options;
-
   machine_data(o_as);
 }				o_as;
 
@@ -72,18 +70,33 @@ typedef struct
 }				m_as;
 
 /*
- * the as architecture dependent interface
+ * the address space dispatcher.
  */
 
 typedef struct
 {
-  t_error			(*as_show)(i_as);
-  t_error			(*as_vaddr)(i_as,
-					    t_paddr,
-					    t_vaddr*);
-  t_error			(*as_paddr)(i_as,
+  t_error			(*as_show)(i_as,
+					   mt_margin);
+  t_error			(*as_dump)(void);
+  t_error			(*as_virtual)(i_as,
+					      t_paddr,
+					      t_vaddr*);
+  t_error			(*as_physical)(i_as,
+					       t_vaddr,
+					       t_paddr*);
+  t_error			(*as_read)(i_as,
+					   t_vaddr,
+					   t_vsize,
+					   void*);
+  t_error			(*as_write)(i_as,
+					    const void*,
 					    t_vaddr,
-					    t_paddr*);
+					    t_vsize);
+  t_error			(*as_copy)(i_as,
+					   t_vaddr,
+					   i_as,
+					   t_vaddr,
+					   t_vsize);
   t_error			(*as_reserve)(i_task,
 					      i_as*);
   t_error			(*as_release)(i_as);
@@ -101,17 +114,18 @@ typedef struct
  * ../../core/as/as.c
  */
 
-t_error			as_show(i_as				id);
+t_error			as_show(i_as				id,
+				mt_margin			margin);
 
 t_error			as_dump(void);
 
-t_error			as_vaddr(i_as				id,
-				 t_paddr			physical,
-				 t_vaddr*			virtual);
+t_error			as_virtual(i_as				id,
+				   t_paddr			physical,
+				   t_vaddr*			virtual);
 
-t_error			as_paddr(i_as				id,
-				 t_vaddr			virtual,
-				 t_paddr*			physical);
+t_error			as_physical(i_as			id,
+				    t_vaddr			virtual,
+				    t_paddr*			physical);
 
 t_error			as_read(i_as				id,
 				t_vaddr				source,
@@ -132,12 +146,12 @@ t_error			as_copy(i_as			source_id,
 t_error			as_reserve(i_task			task,
 				   i_as*			id);
 
-t_error			as_release(i_as			id);
+t_error			as_release(i_as				id);
 
 t_error			as_exist(i_as				id);
 
 t_error			as_get(i_as				id,
-			       o_as**				o);
+			       o_as**				object);
 
 t_error			as_initialize(void);
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/architecture/ia32/educational/local.c
  *
  * created       matthieu bucchianeri   [mon dec 10 13:54:28 2007]
- * updated       julien quintard   [mon nov 15 09:02:42 2010]
+ * updated       julien quintard   [thu dec  9 13:30:07 2010]
  */
 
 /*
@@ -38,7 +38,7 @@ static t_vaddr		cpu_local_current = 1;
  * ---------- externs ---------------------------------------------------------
  */
 
-extern t_init*		init;
+extern s_init*		init;
 
 /*
  * ---------- functions -------------------------------------------------------

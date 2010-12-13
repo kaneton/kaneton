@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...STABLE/kaneton/modules/forward/forward.c
+ * file          /home/mycure/kaneton/kaneton/modules/forward/forward.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sun dec  5 15:51:03 2010]
+ * updated       julien quintard   [fri dec 10 14:12:41 2010]
  */
 
 /*
@@ -44,10 +44,10 @@
  */
 
 /*
- * the module structure.
+ * the module manager.
  */
 
-m_module_forward	_module_forward;
+mm_forward		_module_forward;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -140,7 +140,7 @@ t_error			module_forward_flush(void)
  *    buffer is flushed into a text message.
  */
 
-int			module_forward_character(char			c)
+int			module_forward_character(char		c)
 {
   /*
    * 1)
@@ -165,8 +165,9 @@ int			module_forward_character(char			c)
  * steps:
  *
  * 1) display a message.
- * 2) initialize the platform serial line.
- * 3) initialize the console module in order to receive everything.
+ * 2) initialize the manager's structure.
+ * 3) initialize the platform serial line.
+ * 4) initialize the console module in order to receive everything.
  */
 
 t_error			module_forward_load(void)
@@ -182,12 +183,18 @@ t_error			module_forward_load(void)
    * 2)
    */
 
+  memset(&_module_forward, 0x0, sizeof (mm_forward));
+
+  /*
+   * 3)
+   */
+
   platform_serial_setup(PLATFORM_SERIAL_PRIMARY,
 			PLATFORM_SERIAL_BR57600,
 			PLATFORM_SERIAL_8N1);
 
   /*
-   * 3)
+   * 4)
    */
 
   module_call(console, set,
