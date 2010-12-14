@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...bm-pc.ia32/educational/include/message.h
  *
  * created       julien quintard   [wed jun  6 16:20:48 2007]
- * updated       julien quintard   [fri dec 10 21:19:17 2010]
+ * updated       julien quintard   [mon dec 13 11:14:34 2010]
  */
 
 #ifndef GLUE_MESSAGE_H
@@ -16,6 +16,12 @@
 
 /*
  * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * these macro-function redirect the calls from the core to the appropriate
+ * glue function but also provide the machine-specific data to include
+ * in the core managers, objects etc.
  */
 
 #define		machine_include_message()				\
@@ -49,7 +55,7 @@
  * ../message.c
  */
 
-t_error			glue_message_yield(i_thread		thread,
+t_error			glue_message_return(i_thread		thread,
 					    t_error		code);
 
 t_error			glue_message_return_info(i_thread	thread,

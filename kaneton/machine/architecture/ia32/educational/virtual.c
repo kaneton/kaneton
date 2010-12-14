@@ -258,6 +258,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 
 t_error			ia32_kernel_as_finalize(void)
 {
+  // XXX locate puis type pour eviter le cast
   if (segment_type((i_segment)_init->segments[0].address,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -382,6 +383,8 @@ t_error			ia32_task_as_initialize(i_as		asid)
    * XXX
    */
 
+  // XXX ce if() est inutile pourqu'on est dans la fonction d'init
+  // des as de taches non-kernel :)
   if (asid != _kernel->as)
     {
       // XXX on map le kernel code/data car lors d'une interruption,

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/library/include/types.h
+ * file          /home/mycure/kaneton/kaneton/library/include/types.h
  *
  * created       julien quintard   [sun jun 10 17:37:19 2007]
- * updated       julien quintard   [sun dec  5 15:59:22 2010]
+ * updated       julien quintard   [mon dec 13 15:42:59 2010]
  */
 
 #ifndef LIBRARY_TYPES_H
@@ -37,13 +37,13 @@ typedef u_int			psize_t;
 typedef u_int			vaddr_t;
 typedef u_int			vsize_t;
 
-typedef u_char			int8_t;
+typedef char			int8_t;
 typedef u_char			u_int8_t;
-typedef u_short			int16_t;
+typedef short			int16_t;
 typedef u_short			u_int16_t;
-typedef u_int			int32_t;
+typedef int			int32_t;
 typedef u_int			u_int32_t;
-typedef u_long			int64_t;
+typedef long long int		int64_t;
 typedef u_long			u_int64_t;
 
 typedef u_int8_t		uint8_t;

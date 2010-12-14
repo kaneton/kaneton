@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...lue/ibm-pc.ia32/educational/include/io.h
  *
  * created       julien quintard   [wed jun  6 16:19:54 2007]
- * updated       julien quintard   [fri dec 10 21:15:15 2010]
+ * updated       julien quintard   [mon dec 13 11:13:35 2010]
  */
 
 #ifndef GLUE_IO_H
@@ -16,6 +16,12 @@
 
 /*
  * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * these macro-function redirect the calls from the core to the appropriate
+ * glue function but also provide the machine-specific data to include
+ * in the core managers, objects etc.
  */
 
 #define		machine_include_io()					\

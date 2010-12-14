@@ -1426,7 +1426,7 @@ t_error			interface_notify(t_uint8*		buffer,
 
 t_error			interface_initialize(void)
 {
-  if (message_record(_kernel->task, 0, sizeof (o_syscall)) != ERROR_OK)
+  if (message_register(_kernel->task, 0, sizeof (o_syscall)) != ERROR_OK)
     return (ERROR_KO);
 
   return (ERROR_OK);

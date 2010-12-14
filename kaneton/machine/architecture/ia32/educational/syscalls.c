@@ -74,7 +74,7 @@ void			ia32_syshandler_register(void)
   type = ctx.eax;
   size = ctx.ebx;
 
-  res = message_record(task, type, size);
+  res = message_register(task, type, size);
 
   ctx.eax = res;
 

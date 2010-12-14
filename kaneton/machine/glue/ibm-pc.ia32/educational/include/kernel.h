@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/kernel.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [fri dec 10 21:15:31 2010]
+ * updated       julien quintard   [mon dec 13 11:14:10 2010]
  */
 
 #ifndef GLUE_KERNEL_H

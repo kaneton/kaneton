@@ -60,7 +60,7 @@ t_error			id_show(o_id*				object,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "identifier: id(%qu)\n",
+	      "identifier: id(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      object->id);
 
@@ -179,13 +179,21 @@ t_error			id_destroy(o_id*			object)
  *
  * steps:
  *
- * 1) allocate and initialize the manager's structure.
+ * 1) display a message.
+ * 2) allocate and initialize the manager's structure.
  */
 
 t_error			id_initialize(void)
 {
   /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "initializing the identifier manager\n");
+
+  /*
+   * 2)
    */
 
   if ((_id = malloc(sizeof (m_id))) == NULL)
@@ -200,13 +208,21 @@ t_error			id_initialize(void)
 /*
  * this function cleans the identifier manager.
  *
- * 1) free the mananger structure's memory.
+ * 1) display a message.
+ * 2) free the mananger structure's memory.
  */
 
 t_error			id_clean(void)
 {
   /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "cleaning the identifier manager\n");
+
+  /*
+   * 2)
    */
 
   free(_id);

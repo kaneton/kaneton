@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [thu dec  9 15:11:53 2010]
+ * updated       julien quintard   [tue dec 14 13:40:53 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -106,11 +106,7 @@ typedef struct
     t_value			value;
   }				wait;
 
-  struct
-  {
-    t_state			cause;
-    t_value			value;
-  }				status;
+  t_value			value;
 
   t_vaddr			stack;
   t_vsize			stacksz;
@@ -198,8 +194,8 @@ void			thread_bury(i_timer			timer,
 				    t_vaddr			address);
 
 t_error			thread_wait(i_thread			id,
-				    t_state			state,
 				    i_thread			target,
+				    t_state			state,
 				    s_wait*			wait);
 
 t_error			thread_stack(i_thread			threadid,

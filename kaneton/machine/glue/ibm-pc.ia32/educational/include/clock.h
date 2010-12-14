@@ -9,7 +9,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/clock.h
  *
  * created       julien quintard   [wed jun  6 16:29:41 2007]
- * updated       julien quintard   [fri dec 10 21:14:16 2010]
+ * updated       julien quintard   [mon dec 13 11:14:22 2010]
  */
 
 #ifndef GLUE_CLOCK_H
@@ -17,6 +17,12 @@
 
 /*
  * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * these macro-function redirect the calls from the core to the appropriate
+ * glue function but also provide the machine-specific data to include
+ * in the core managers, objects etc.
  */
 
 #define		machine_include_clock()					\

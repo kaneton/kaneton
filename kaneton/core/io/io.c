@@ -303,8 +303,9 @@ t_error			io_write_64(i_task			task,
  *
  * steps:
  *
- * 1) allocate and initialize memory for the manager structure.
- * 2) call the machine.
+ * 1) display a message.
+ * 2) allocate and initialize memory for the manager structure.
+ * 3) call the machine.
  */
 
 t_error			io_initialize(void)
@@ -313,13 +314,20 @@ t_error			io_initialize(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "initializing the I/O manager\n");
+
+  /*
+   * 2)
+   */
+
   if ((_io = malloc(sizeof (m_io))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the IO manager's structure");
 
   memset(_io, 0x0, sizeof (m_io));
 
   /*
-   * 2)
+   * 3)
    */
 
   if (machine_call(io, initialize) != ERROR_OK)
@@ -333,8 +341,9 @@ t_error			io_initialize(void)
  *
  * steps:
  *
- * 1) call the machine.
- * 2) free the manager structure.
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) free the manager structure.
  */
 
 t_error			io_clean(void)
@@ -343,11 +352,18 @@ t_error			io_clean(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "cleaning the I/O manager\n");
+
+  /*
+   * 2)
+   */
+
   if (machine_call(io, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
    */
 
   free(_io);

@@ -99,7 +99,7 @@ t_error			event_show(i_event			id,
 	module_call(console, message,
 		    '#',
 		    MODULE_CONSOLE_MARGIN_FORMAT
-		    "event: id(%qu) type(function) routine(0x%x)\n",
+		    "event: id(%qd) type(function) routine(0x%x)\n",
 		    MODULE_CONSOLE_MARGIN_VALUE(margin),
 		    o->id,
 		    o->handler.routine);
@@ -111,7 +111,7 @@ t_error			event_show(i_event			id,
 	module_call(console, message,
 		    '#',
 		    MODULE_CONSOLE_MARGIN_FORMAT
-		    "event: id(%qu) type(message) task(%qu)\n",
+		    "event: id(%qd) type(message) task(%qd)\n",
 		    MODULE_CONSOLE_MARGIN_VALUE(margin),
 		    o->id,
 		    o->handler.task);
@@ -140,9 +140,8 @@ t_error			event_show(i_event			id,
  *
  * 1) retrieve the number of registered events.
  * 2) display general information.
- * 3) show the identifier object.
- * 4) show every event.
- * 5) call the machine.
+ * 3) show every event.
+ * 4) call the machine.
  */
 
 t_error			event_dump(void)
@@ -164,22 +163,16 @@ t_error			event_dump(void)
    */
 
   module_call(console, message,
-	      '#', "event manager: #events(%qu)\n",
-	      size);
+	      '#', "event manager: events(%qd)\n",
+	      _event->events);
 
   /*
    * 3)
    */
 
-  if (id_show(&_event->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
-    CORE_ESCAPE("unable to show the identifier object");
-
-  /*
-   * 4)
-   */
-
   module_call(console, message,
-	      '#', "  events:\n",
+	      '#', "  events: id(%qd) size(%qd)\n",
+	      _event->events,
 	      size);
 
   set_foreach(SET_OPTION_FORWARD, _event->events, &i, state)
@@ -192,7 +185,7 @@ t_error			event_dump(void)
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   if (machine_call(event, dump) != ERROR_OK)
@@ -472,8 +465,8 @@ t_error			event_get(i_event			id,
  *
  * steps:
  *
- * 1) allocate and initialize the event manager's structure.
- * 2) initialize the object identifier.
+ * 1) display a message.
+ * 2) allocate and initialize the event manager's structure.
  * 3) reserve the set of events.
  * 4) call the machine.
  */
@@ -484,17 +477,17 @@ t_error			event_initialize(void)
    * 1)
    */
 
-  if ((_event = malloc(sizeof (m_event))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the event manager's structure");
-
-  memset(_event, 0x0, sizeof (m_event));
+  module_call(console, message,
+	      '+', "initializing the event manager\n");
 
   /*
    * 2)
    */
 
-  if (id_build(&_event->id) != ERROR_OK)
-    CORE_ESCAPE("unable to initialize the identifier object");
+  if ((_event = malloc(sizeof (m_event))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the event manager's structure");
+
+  memset(_event, 0x0, sizeof (m_event));
 
   /*
    * 3)
@@ -521,10 +514,10 @@ t_error			event_initialize(void)
  *
  * steps:
  *
- * 1) call the machine.
- * 2) release every event object.
- * 3) release the set of events.
- * 4) destroy the identifier object.
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) release every event object.
+ * 4) release the set of events.
  * 5) free the event manager's structure.
  */
 
@@ -537,11 +530,18 @@ t_error			event_clean(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "cleaning the event manager\n");
+
+  /*
+   * 2)
+   */
+
   if (machine_call(event, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
    */
 
   while (set_head(_event->events, &i) == ERROR_TRUE)
@@ -555,18 +555,11 @@ t_error			event_clean(void)
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_release(_event->events) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of events");
-
-  /*
-   * 4)
-   */
-
-  if (id_destroy(&_event->id) != ERROR_OK)
-    CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
    * 5)

@@ -190,6 +190,18 @@ void			platform_console_character(char			c)
 }
 
 /*
+ * this function displays a string, character by character.
+ */
+
+void			platform_console_string(char*		string)
+{
+  t_uint32		i;
+
+  for (i = 0; string[i] != '\0'; i++)
+    platform_console_character(string[i]);
+}
+
+/*
  * this function just initializes the console.
  *
  * steps:

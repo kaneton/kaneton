@@ -143,7 +143,12 @@ void			kaneton(s_init*				init)
     region_dump(0);
     scheduler_dump();
     segment_dump();
-    set_dump();
+    //set_dump();
+    //extern m_set* _set;
+    //set_show(_set->sets, 0);
+    task_dump();
+    thread_dump();
+    timer_dump();
   }
   // XXX
 
@@ -166,7 +171,7 @@ void			kaneton(s_init*				init)
    * 8)
    */
 
-  assert(scheduler_current(&cpu) == ERROR_OK);
+  assert(cpu_current(&cpu) == ERROR_OK);
 
   assert(scheduler_start(cpu) == ERROR_OK);
 

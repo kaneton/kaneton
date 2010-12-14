@@ -613,6 +613,9 @@ void			alloc_setup(void)
  * kernel memory manager is installed yet. so this area will be used in a
  * very special way.
  *
+ * [XXX] although this function receives a physical address, it is assumed
+ *       to be mapped though this should be verified!
+ *
  * steps:
  *
  * 1) initialize the allocator global structure.
@@ -620,8 +623,8 @@ void			alloc_setup(void)
  * 3) create the first area and put the first chunk in.
  */
 
-int			alloc_init(vaddr_t			addr,
-				   vsize_t			size)
+int			alloc_init(paddr_t			addr,
+				   psize_t			size)
 {
   t_area*		first_area;
   t_chunk*		first_chunk;

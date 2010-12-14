@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/region.h
  *
  * created       julien quintard   [wed jun  6 16:22:05 2007]
- * updated       julien quintard   [sat dec 11 10:26:44 2010]
+ * updated       julien quintard   [mon dec 13 11:51:08 2010]
  */
 
 #ifndef GLUE_REGION_H
@@ -16,6 +16,12 @@
 
 /*
  * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * these macro-function redirect the calls from the core to the appropriate
+ * glue function but also provide the machine-specific data to include
+ * in the core managers, objects etc.
  */
 
 #define		machine_include_region()				\
@@ -36,13 +42,6 @@
 #define		machine_data_m_region()
 
 #define		machine_data_o_region()
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define GLUE_REGION_BASE	PAGESZ // XXX a changer en 0 peut etre?
-#define GLUE_REGION_SIZE	0xffffffffU - GLUE_REGION_BASE
 
 /*
  * ---------- prototypes ------------------------------------------------------

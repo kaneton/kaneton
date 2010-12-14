@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...bm-pc.ia32/educational/include/segment.h
  *
  * created       julien quintard   [wed jun  6 16:25:05 2007]
- * updated       julien quintard   [sun dec 12 13:23:25 2010]
+ * updated       julien quintard   [mon dec 13 11:16:10 2010]
  */
 
 #ifndef GLUE_SEGMENT_H
@@ -16,6 +16,12 @@
 
 /*
  * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * these macro-function redirect the calls from the core to the appropriate
+ * glue function but also provide the machine-specific data to include
+ * in the core managers, objects etc.
  */
 
 #define		machine_include_segment()				\

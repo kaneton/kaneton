@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/types.h
  *
  * created       julien quintard   [wed jun  6 22:38:37 2007]
- * updated       julien quintard   [fri dec 10 11:38:07 2010]
+ * updated       julien quintard   [mon dec 13 13:39:03 2010]
  */
 
 #ifndef CORE_TYPES_H
@@ -70,7 +70,7 @@ typedef t_uint32		t_behaviour;
 typedef t_uint32		t_priority;
 typedef t_uint32		t_quantum;
 typedef t_uint32		t_operations;
-typedef t_uint32		t_timeslice;
+typedef t_uint64		t_timeslice;
 typedef t_sint32		t_value;
 
 /*

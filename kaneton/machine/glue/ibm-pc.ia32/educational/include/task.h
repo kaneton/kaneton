@@ -8,20 +8,20 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/task.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [thu dec  9 15:15:55 2010]
+ * updated       julien quintard   [mon dec 13 11:16:30 2010]
  */
 
 #ifndef GLUE_TASK_H
 #define GLUE_TASK_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
-#include <core/types.h>
-
 /*
- * ---------- macro functions -------------------------------------------------
+ * these macro-function redirect the calls from the core to the appropriate
+ * glue function but also provide the machine-specific data to include
+ * in the core managers, objects etc.
  */
 
 #define		machine_include_task()					\
@@ -32,8 +32,8 @@
     {									\
       t_error	_r_ = ERROR_OK;						\
 									\
-      if (glue_task_dispatch._function_ != NULL)			\
-        _r_ = glue_task_dispatch._function_(_args_);			\
+      if (glue_task_dispatch.task_ ## _function_ != NULL)		\
+        _r_ = glue_task_dispatch.task_ ## _function_(_args_);		\
 									\
       _r_;								\
     }									\
@@ -47,6 +47,12 @@
     t_uint8			iomap[8192];				\
     t_uint8			ioflush;				\
   }				machine;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

@@ -94,6 +94,8 @@ void			platform_console_attribute(t_uint8	attribute);
 
 void			platform_console_character(char			c);
 
+void			platform_console_string(char*		string);
+
 t_error			platform_console_initialize(void);
 
 t_error			platform_console_clean(void);

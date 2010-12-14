@@ -633,6 +633,13 @@ t_error			timer_initialize(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "initializing the timer manager\n");
+
+  /*
+   * XXX
+   */
+
   if ((_timer = malloc(sizeof (m_timer))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the timer manger's structure");
 
@@ -681,6 +688,13 @@ t_error			timer_clean(void)
 {
   /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "cleaning the timer manager\n");
+
+  /*
+   * XXX
    */
 
   if (machine_call(timer, timer_clean) != ERROR_OK)

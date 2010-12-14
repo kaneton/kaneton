@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sat dec 11 11:48:22 2010]
+ * updated       julien quintard   [tue dec 14 17:00:34 2010]
  */
 
 /*
@@ -39,9 +39,9 @@ d_event			glue_event_dispatch =
   {
     NULL,
     NULL,
+    NULL,
     glue_event_enable,
     glue_event_disable,
-    NULL,
     glue_event_reserve,
     glue_event_release,
     glue_event_initialize,
@@ -169,12 +169,12 @@ t_error			glue_event_initialize(void)
   if (platform_pic_initialize() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the PIC");
 
-  // XXX ca devrait etre autre part ca!
+  // XXX ca devrait etre autre part ca! quoi que! 14 = specifique a la
+  // architecture donc c'est bien ici en fait
   if (event_reserve(14, EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(pf_handler), 0) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the event associated with the "
 		   "page fault exception");
-
   MACHINE_LEAVE();
 }
 

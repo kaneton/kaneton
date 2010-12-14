@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ot/loader/ibm-pc.ia32/educational/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       julien quintard   [tue nov 23 10:22:41 2010]
+ * updated       julien quintard   [mon dec 13 11:48:02 2010]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -108,8 +108,11 @@ typedef struct
 
 typedef struct
 {
-  t_paddr			mem;
-  t_psize			memsz;
+  t_paddr			pbase;
+  t_psize			psize;
+
+  t_vaddr			vbase;
+  t_vsize			vsize;
 
   t_paddr			kcode;
   t_psize			kcodesz;

@@ -418,8 +418,9 @@ t_error			map_resize(i_as				as,
  *
  * steps:
  *
- * 1) allocate and initialize the map manager's structure.
- * 2) call the machine.
+ * 1) display a message.
+ * 2) allocate and initialize the map manager's structure.
+ * 3) call the machine.
  */
 
 t_error			map_initialize(void)
@@ -428,13 +429,20 @@ t_error			map_initialize(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "initializing the map manager\n");
+
+  /*
+   * 2)
+   */
+
   if ((_map = malloc(sizeof (m_map))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the map manager's structure");
 
   memset(_map, 0x0, sizeof (m_map));
 
   /*
-   * 2)
+   * 3)
    */
 
   if (machine_call(map, initialize) != ERROR_OK)
@@ -448,8 +456,9 @@ t_error			map_initialize(void)
  *
  * steps:
  *
- * 1) call the machine.
- * 2) free the manager's structure.
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) free the manager's structure.
  */
 
 t_error			map_clean(void)
@@ -458,11 +467,18 @@ t_error			map_clean(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "cleaning the map manager\n");
+
+  /*
+   * 2)
+   */
+
   if (machine_call(map, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
    */
 
   free(_map);

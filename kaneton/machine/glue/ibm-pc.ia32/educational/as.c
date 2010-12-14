@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sat dec 11 10:27:57 2010]
+ * updated       julien quintard   [tue dec 14 15:50:22 2010]
  */
 
 /*
@@ -109,7 +109,7 @@ t_error			glue_as_show(i_as			id,
 t_error			glue_as_reserve(i_task			tskid,
 					i_as*			asid)
 {
-  if (tskid == _kernel->task)
+  if (*asid == _kernel->as)
     {
       if (ia32_kernel_as_initialize(*asid) != ERROR_OK)
 	MACHINE_ESCAPE("unable to initialize the kernel's address space");

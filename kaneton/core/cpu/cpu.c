@@ -96,7 +96,7 @@ t_error			cpu_show(i_cpu				id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "CPU: id(%qu) efficiency(%u)\n",
+	      "CPU: id(%qd) efficiency(%qu)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
 	      o->efficiency);
@@ -141,15 +141,17 @@ t_error			cpu_dump(void)
    */
 
   module_call(console, message,
-	      '#', "CPU manager: #CPUs(%qu)\n",
-	      size);
+	      '#', "CPU manager: cpus(%qd)\n",
+	      _cpu->cpus);
 
   /*
    * 3)
    */
 
   module_call(console, message,
-	      '#', "  CPUs:\n");
+	      '#', "  CPUs: id(%qd) size(%qd)\n",
+	      _cpu->cpus,
+	      size);
 
   set_foreach(SET_OPTION_FORWARD, _cpu->cpus, &i, st)
     {
@@ -442,11 +444,12 @@ t_error			cpu_get(i_cpu				id,
  *
  * steps:
  *
- * 1) allocate and initialize memory for the manager's structure.
- * 2) reserve the set of CPUs.
- * 3) inject every CPU object provided by the boot loader through the
+ * 1) display a message.
+ * 2) allocate and initialize memory for the manager's structure.
+ * 3) reserve the set of CPUs.
+ * 4) inject every CPU object provided by the boot loader through the
  *    init structure into the set of CPUs.
- * 4) call the machine.
+ * 5) call the machine.
  */
 
 t_error			cpu_initialize(void)
@@ -457,21 +460,31 @@ t_error			cpu_initialize(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "initializing the CPU manager\n");
+
+  /*
+   * 2)
+   */
+
   if ((_cpu = malloc(sizeof (m_cpu))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the CPU manager's structure");
 
   memset(_cpu, 0x0, sizeof (m_cpu));
 
   /*
-   * 2)
+   * 3)
    */
 
-  if (set_reserve(array, SET_OPTION_ALLOCATE, _init->ncpus,
-		  sizeof (o_cpu), &_cpu->cpus) != ERROR_OK)
+  if (set_reserve(array,
+		  SET_OPTION_ALLOCATE,
+		  _init->ncpus,
+		  sizeof (o_cpu),
+		  &_cpu->cpus) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of CPUs");
 
   /*
-   * 3)
+   * 4)
    */
 
   for (i = 0; i < _init->ncpus; i++)
@@ -488,7 +501,7 @@ t_error			cpu_initialize(void)
 		'#', " system is running in multi-processor mode\n");
 
   /*
-   * 4)
+   * 5)
    */
 
   if (machine_call(cpu, initialize) != ERROR_OK)
@@ -502,8 +515,9 @@ t_error			cpu_initialize(void)
  *
  * steps:
  *
- * 1) call the machine.
- * 2) free the manager structure.
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) free the manager structure.
  */
 
 t_error			cpu_clean(void)
@@ -512,11 +526,18 @@ t_error			cpu_clean(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "cleaning the CPU manager\n");
+
+  /*
+   * 2)
+   */
+
   if (machine_call(cpu, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
    */
 
   free(_cpu);

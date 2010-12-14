@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [fri dec 10 15:26:53 2010]
+ * updated       julien quintard   [tue dec 14 15:05:27 2010]
  */
 
 #ifndef CORE_TIMER_H
@@ -57,6 +57,9 @@
 
 #define TIMER_TASK(_task_)						\
   ((u_timer_handler)(i_task)(_task_))
+
+#define TIMER_DATA(_data_)						\
+  (t_vaddr)((_data_))
 
 /*
  * ---------- types -----------------------------------------------------------

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/message.c
  *
  * created       matthieu bucchianeri   [sun jun 17 18:16:18 2007]
- * updated       julien quintard   [fri dec 10 21:19:27 2010]
+ * updated       julien quintard   [mon dec 13 10:55:50 2010]
  */
 
 /*
@@ -48,7 +48,7 @@ d_message		glue_message_dispatch =
     NULL,
     NULL,
     NULL,
-    glue_message_yield,
+    glue_message_return,
     glue_message_return_info,
     glue_message_initialize,
     glue_message_clean
@@ -62,7 +62,7 @@ d_message		glue_message_dispatch =
  * set return code for a blocked syscall.
  */
 
-t_error			glue_message_yield(i_thread		thread,
+t_error			glue_message_return(i_thread		thread,
 					    t_error		code)
 {
   if (ia32_syscall_set_code(thread, code) != ERROR_OK)

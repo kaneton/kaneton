@@ -88,6 +88,7 @@ t_error			as_show(i_as				id,
 {
   i_segment*		segment;
   o_region*		region;
+  t_setsz		size;
   t_state		st;
   s_iterator		i;
   o_as*			o;
@@ -106,19 +107,27 @@ t_error			as_show(i_as				id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "address space: id(%qu) task(%qu)\n",
+	      "address space: id(%qd) task(%qd) segments(%qd) regions(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
-	      o->id, o->task);
+	      o->id,
+	      o->task,
+	      o->segments,
+	      o->regions);
 
   /*
    * 3)
    */
 
+  if (set_size(o->segments, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of segments");
+
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  segments:\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+	      "  segments: id(%qd) size(%qd)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->segments,
+	      size);
 
   set_foreach(SET_OPTION_FORWARD, o->segments, &i, st)
     {
@@ -134,11 +143,16 @@ t_error			as_show(i_as				id,
    * 4)
    */
 
+  if (set_size(o->regions, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of regions");
+
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  regions:\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+	      "  regions: id(%qd) size(%qd)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->regions,
+	      size);
 
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, st)
     {
@@ -192,8 +206,8 @@ t_error			as_dump(void)
    */
 
   module_call(console, message,
-	      '#', "address space manager: #address spaces(%qu)\n",
-	      size);
+	      '#', "address space manager: ass(%qd)\n",
+	      _as->ass);
 
   /*
    * 3)
@@ -207,7 +221,9 @@ t_error			as_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  address spaces:\n");
+	      '#', "  address spaces: id(%qd) size(%qd)\n",
+	      _as->ass,
+	      size);
 
   set_foreach(SET_OPTION_FORWARD, _as->ass, &i, st)
     {
@@ -216,6 +232,7 @@ t_error			as_dump(void)
 
       if (as_show(o->id, 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the address space object");
+
     }
 
   /*
@@ -984,15 +1001,15 @@ t_error			as_copy(i_as			source_id,
  * steps:
  *
  * 0) verify the arguments.
- * 1) retrieve the task object and verify that the task does not have
- *    an address space already.
- * 2) initialize the address space object.
- * 3) reserve an identifier for the address space object.
- * 4) reserve a set of segments.
- * 5) reserve a set of regions.
- * 6) add the new address space object into the set of address spaces
- * 7) set the address space into the task object.
- * 8) call the machine.
+ * 1) reserve an identifier for the address space object.
+ * 2) retrieve the task object.
+ * 3) return an error if the task already possesses an address space.
+ * 4) assign the address space to the task.
+ * 5) initialize the address space object.
+ * 6) reserve a set of segments.
+ * 7) reserve a set of regions.
+ * 8) add the new address space object into the set of address spaces
+ * 9) call the machine.
  */
 
 t_error			as_reserve(i_task			task,
@@ -1012,34 +1029,40 @@ t_error			as_reserve(i_task			task,
    * 1)
    */
 
-  if (task_get(task, &target) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the task object");
-
-  if (target->as != ID_UNUSED)
-    CORE_ESCAPE("the task alread possesses an address space");
+  if (id_reserve(&_as->id, id) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve an identifier");
 
   /*
    * 2)
    */
 
-  memset(&o, 0x0, sizeof (o_as));
-
-  o.task = task;
-
-  o.segments = ID_UNUSED;
-  o.regions = ID_UNUSED;
+  if (task_get(task, &target) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 3)
    */
 
-  if (id_reserve(&_as->id, id) != ERROR_OK)
-    CORE_ESCAPE("unable to reserve an identifier");
-
-  o.id = *id;
+  if (target->as != ID_UNUSED)
+    CORE_ESCAPE("the task already possesses an address space");
 
   /*
    * 4)
+   */
+
+  target->as = *id;
+
+  /*
+   * 5)
+   */
+
+  memset(&o, 0x0, sizeof (o_as));
+
+  o.id = *id;
+  o.task = target->id;
+
+  /*
+   * 6)
    */
 
   if (set_reserve(array,
@@ -1050,7 +1073,7 @@ t_error			as_reserve(i_task			task,
     CORE_ESCAPE("unable to reserve the set of segments");
 
   /*
-   * 5)
+   * 7)
    */
 
   if (set_reserve(array,
@@ -1061,20 +1084,14 @@ t_error			as_reserve(i_task			task,
     CORE_ESCAPE("unable to reserve the set of regions");
 
   /*
-   * 6)
+   * 8)
    */
 
   if (set_add(_as->ass, &o) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of address spaces");
 
   /*
-   * 7)
-   */
-
-  target->as = *id;
-
-  /*
-   * 8)
+   * 9)
    */
 
   if (machine_call(as, reserve, task, id) != ERROR_OK)
@@ -1211,17 +1228,25 @@ t_error			as_get(i_as				id,
  *
  * steps:
  *
- * 1) allocate and initialize the address space manager's structure.
- * 2) initialize the identifier object in order to be able to generate
+ * 1) display a message.
+ * 2) allocate and initialize the address space manager's structure.
+ * 3) initialize the identifier object in order to be able to generate
  *    the address spaces' identifier.
- * 3) reserve the set which will contain the future address spaces.
- * 4) calls the machine.
+ * 4) reserve the set which will contain the future address spaces.
+ * 5) calls the machine.
  */
 
 t_error			as_initialize(void)
 {
   /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "initializing the address space manager\n");
+
+  /*
+   * 2)
    */
 
   if ((_as = malloc(sizeof (m_as))) == NULL)
@@ -1231,14 +1256,14 @@ t_error			as_initialize(void)
   memset(_as, 0x0, sizeof (m_as));
 
   /*
-   * 2)
+   * 3)
    */
 
   if (id_build(&_as->id) != ERROR_OK)
     CORE_ESCAPE("unable to initialize the identifier object");
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_reserve(ll,
@@ -1248,7 +1273,7 @@ t_error			as_initialize(void)
     CORE_ESCAPE("unable to reserve the set of address spaces");
 
   /*
-   * 4)
+   * 5)
    */
 
   if (machine_call(as, initialize) != ERROR_OK)
@@ -1262,11 +1287,13 @@ t_error			as_initialize(void)
  *
  * steps:
  *
- * 1) call the machine.
- * 2) flush and release the set of address spaces. note that the kernel
- *    address space is never released in order to keep the kernel running.
- * 3) destroy the identifier object.
- * 4) frees the address space manager structure's memory.
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) flush the address spaces. note that the kernel address space is
+ *    never released in order to keep the kernel running.
+ * 4) release the set of address spaces.
+ * 5) destroy the identifier object.
+ * 6) frees the address space manager structure's memory.
  */
 
 t_error			as_clean(void)
@@ -1278,11 +1305,18 @@ t_error			as_clean(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "cleaning the address space manager\n");
+
+  /*
+   * 2)
+   */
+
   if (machine_call(as, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
    */
 
   while (set_head(_as->ass, &i) == ERROR_TRUE)
@@ -1304,18 +1338,22 @@ t_error			as_clean(void)
 	}
     }
 
+  /*
+   * 4)
+   */
+
   if (set_release(_as->ass) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of address spaces");
 
   /*
-   * 3)
+   * 5)
    */
 
   if (id_destroy(&_as->id) != ERROR_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
-   * 4)
+   * 6)
    */
 
   free(_as);

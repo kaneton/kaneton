@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [fri dec 10 21:18:52 2010]
+ * updated       julien quintard   [mon dec 13 10:55:58 2010]
  */
 
 /*
@@ -118,7 +118,7 @@ typedef struct
 
 typedef struct
 {
-  t_error		(*message_record)(i_task,
+  t_error		(*message_register)(i_task,
 					    t_type,
 					    t_vsize);
   t_error		(*message_flush)(i_task);
@@ -158,7 +158,7 @@ typedef struct
 					s_message_request,
 					t_vsize*,
 					i_node*);
-  t_error		(*message_yield)(i_thread,
+  t_error		(*message_return)(i_thread,
 					  t_error);
   t_error		(*message_return_info)(i_thread,
 					       t_error,
@@ -178,7 +178,7 @@ typedef struct
  * ../../core/message/message.c
  */
 
-t_error			message_record(i_task			task,
+t_error			message_register(i_task			task,
 					 t_type			type,
 					 t_vsize		size);
 
@@ -232,7 +232,7 @@ t_error			message_wait(i_task			task,
 				     t_vsize*			size,
 				     i_node*			sender);
 
-t_error			message_yield(i_thread			thread,
+t_error			message_return(i_thread			thread,
 				       t_error			code);
 
 t_error			message_return_info(i_thread		thread,

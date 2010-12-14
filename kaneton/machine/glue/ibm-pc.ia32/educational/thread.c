@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sat dec 11 05:58:29 2010]
+ * updated       julien quintard   [tue dec 14 20:41:47 2010]
  */
 
 /*
@@ -120,8 +120,10 @@ t_error			glue_thread_args(i_thread		threadid,
 
 t_error			glue_thread_initialize(void)
 {
-  if (ia32_init_switcher() != ERROR_OK)
-    MACHINE_ESCAPE("unable to initialize the context switcher");
+  // XXX mieux dans scheduler: ici il y avait ia32_init_switcher()
+
 
   MACHINE_LEAVE();
 }
+
+// XXX dans show et dump, afficher infos machine-specific

@@ -147,9 +147,8 @@ t_error			set_dump(void)
    */
 
   module_call(console, message,
-	      '#', "set manager: container(%qu) #sets(%qu)\n",
-	      o->id,
-	      o->size);
+	      '#', "set manager: sets(%qd)\n",
+	      _set->sets);
 
   /*
    * 3)
@@ -163,15 +162,17 @@ t_error			set_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  sets:\n");
+	      '#', "  sets: id(%qd) size(%qd)\n",
+	      o->id,
+	      o->size);
 
-  set_foreach(SET_OPTION_FORWARD, _set->sets, &i, state)
+  set_foreach(SET_OPTION_FORWARD, o->id, &i, state)
     {
       /*
        * a)
        */
 
-      if (set_object(_set->sets, i, (void**)&data) != ERROR_OK)
+      if (set_object(o->id, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the set object corresponding "
 		    "to its identifier");
 
@@ -481,10 +482,11 @@ t_error			set_get(i_set				setid,
  *
  * steps:
  *
- * 1) allocate and initialize the set manager's structure.
- * 2) build the identifier object used to generate set identifiers.
- * 3) reserve an identifier for the set container.
- * 4) reserve the set container which will hold the set descriptors i.e
+ * 1) display a message.
+ * 2) allocate and initialize the set manager's structure.
+ * 3) build the identifier object used to generate set identifiers.
+ * 4) reserve an identifier for the set container.
+ * 5) reserve the set container which will hold the set descriptors i.e
  *    set objects.
  */
 
@@ -496,27 +498,34 @@ t_error			set_initialize(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "initializing the set manager\n");
+
+  /*
+   * 2)
+   */
+
   if ((_set = malloc(sizeof (m_set))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the set manager's structure");
 
   memset(_set, 0x0, sizeof (m_set));
 
   /*
-   * 2)
+   * 3)
    */
 
   if (id_build(&_set->id) != ERROR_OK)
     CORE_ESCAPE("unable to build the identifier object");
 
   /*
-   * 3)
+   * 4)
    */
 
   if (id_reserve(&_set->id, &_set->sets) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the identifier for the set container");
 
   /*
-   * 4)
+   * 5)
    */
 
   if (set_reserve(bpt,
@@ -534,10 +543,11 @@ t_error			set_initialize(void)
  *
  * steps:
  *
- * 1) release every set object the set container contains.
- * 2) release the set container.
- * 3) destroys the identifier object.
- * 4) free the set manager's structure.
+ * 1) display a message.
+ * 2) release every set object the set container contains.
+ * 3) release the set container.
+ * 4) destroys the identifier object.
+ * 5) free the set manager's structure.
  */
 
 t_error			set_clean(void)
@@ -546,6 +556,13 @@ t_error			set_clean(void)
 
   /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "cleaning the set manager\n");
+
+  /*
+   * 2)
    */
 
   while (set_head(_set->sets, &iterator) == ERROR_TRUE)
@@ -560,21 +577,21 @@ t_error			set_clean(void)
     }
 
   /*
-   * 2)
+   * 3)
    */
 
   if (set_release(_set->sets) != ERROR_OK)
     CORE_ESCAPE("unable to release the set container");
 
   /*
-   * 3)
+   * 4)
    */
 
   if (id_destroy(&_set->id) != ERROR_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
-   * 4)
+   * 5)
    */
 
   free(_set);

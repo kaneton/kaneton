@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       julien quintard   [sun dec 12 21:51:14 2010]
+ * updated       julien quintard   [tue dec 14 22:30:48 2010]
  */
 
 // XXX THIS MANAGER MUST BE RE-DEVELOPED IN ITS ENTIRETY!!!
@@ -169,7 +169,7 @@ t_error			capability_dump(void)
    */
 
   module_call(console, message,
-	      '#', "dumping %qu capability descriptor(s) from the "
+	      '#', "dumping %qd capability descriptor(s) from the "
 	      "capability set:\n", size);
 
   /*
@@ -518,6 +518,13 @@ t_error			capability_initialize(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "initializing the capability manager\n");
+
+  /*
+   * XXX
+   */
+
   if ((_capability = malloc(sizeof(m_capability))) == NULL)
     CORE_ESCAPE("XXX");
 
@@ -573,6 +580,13 @@ t_error			capability_clean(void)
 {
   t_capability_descriptor*	data;
   s_iterator			i;
+
+  /*
+   * XXX
+   */
+
+  module_call(console, message,
+	      '+', "cleaning the capability manager\n");
 
   /*
    * 1)

@@ -81,8 +81,8 @@ void*			realloc(void* 				ptr,
 
 void			alloc_setup(void);
 
-int			alloc_init(vaddr_t			addr,
-				   vsize_t			size);
+int			alloc_init(paddr_t			addr,
+				   psize_t			size);
 
 
 /*

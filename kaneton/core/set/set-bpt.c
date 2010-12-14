@@ -133,6 +133,12 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
 
 /*
  * this function returns true if the object is present in the set.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) search for the identifier in the tree and return false if not found.
  */
 
 t_error			set_exist_bpt(i_set			setid,
@@ -164,41 +170,61 @@ t_error			set_exist_bpt(i_set			setid,
 }
 
 /*
- * this function builds an unused object.
+ * this function builds the initial version of the array of unused blocks.
  *
  * steps:
  *
- * 1) allocates and initializes the unused object.
- * 2) builds the needed number of elements.
+ * 0) verify the arguments.
+ * 1) initialize the array's size in order to initialize (init operation)
+ *    the tree.
+ * 2) allocate the array.
+ * 3) initialize the array's content.
+ * 4) fill the required number of entries with blocks allocated in
+ *    main memory.
  */
 
-t_error			set_build_bpt(o_set*			o,
+t_error			set_build_bpt(o_set*			object,
 				      BPT_NODESZ_T		nodesz)
 {
-  o->u.bpt.unusedsz = BPT_INIT_SIZE();
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
   /*
    * 1)
    */
 
-  if ((o->u.bpt.unused.array = malloc(o->u.bpt.unusedsz *
-				      sizeof(t_bpt_addr(set)))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the array of unused blocks");
-
-  memset(o->u.bpt.unused.array, 0x0,
-	 o->u.bpt.unusedsz * sizeof(t_bpt_addr(set)));
-
-  o->u.bpt.unused.index = -1;
+  object->u.bpt.unusedsz = BPT_INIT_SIZE();
 
   /*
    * 2)
    */
 
+  if ((object->u.bpt.unused.array = malloc(object->u.bpt.unusedsz *
+					   sizeof(t_bpt_addr(set)))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the array of unused blocks");
+
+  /*
+   * 3)
+   */
+
+  memset(object->u.bpt.unused.array, 0x0,
+	 object->u.bpt.unusedsz * sizeof(t_bpt_addr(set)));
+
+  object->u.bpt.unused.index = -1;
+
+  /*
+   * 4)
+   */
+
   for (;
-       (o->u.bpt.unused.index + 1) < o->u.bpt.unusedsz;
-       o->u.bpt.unused.index++)
+       (object->u.bpt.unused.index + 1) < object->u.bpt.unusedsz;
+       object->u.bpt.unused.index++)
     {
-      if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
+      if ((object->u.bpt.unused.array[(object->u.bpt.unused.index + 1)] =
 	   malloc(nodesz)) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the unused block");
     }
@@ -207,54 +233,67 @@ t_error			set_build_bpt(o_set*			o,
 }
 
 /*
- * this function adjust the size and contents of the unused object, allocating
- * or freeing some elements.
+ * this function adjusts the size and content of the array of unused
+ * blocks, hence possibly allocating additional blocks or releasing others.
  *
  * steps:
  *
- * 1) if the size of the current unused object is not large enough, resize
- *    it to be able to contain the desired elements.
- * 2) if there is not enough elements in the array, fills in with
- *    new ones calling the malloc() function.
+ * 0) verify the arguments.
+ * 1) if the size of the current array is not large enough, resize it.
+ * 2) if there is not enough elements in the array, fill it with
+ *    additional ones.
  */
 
-t_error			set_adjust_bpt(o_set*			o,
+t_error			set_adjust_bpt(o_set*			object,
 				       t_bpt_uni(set)		alloc,
 				       t_bpt_uni(set)		size)
 {
   /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  /*
    * 1)
    */
 
-  if (o->u.bpt.unusedsz < size)
+  if (object->u.bpt.unusedsz < size)
     {
-      if ((o->u.bpt.unused.array =
-	   realloc(o->u.bpt.unused.array, size *
+      if ((object->u.bpt.unused.array =
+	   realloc(object->u.bpt.unused.array, size *
 		   sizeof(t_bpt_addr(set)))) == NULL)
 	CORE_ESCAPE("unable to reallocate memory for the array of unused "
 		    "blocks");
 
-      o->u.bpt.unusedsz = size;
+      object->u.bpt.unusedsz = size;
     }
 
   /*
    * 2)
    */
 
-  if ((o->u.bpt.unused.index + 1) > alloc)
+  if ((object->u.bpt.unused.index + 1) > alloc)
     {
-      for (; (o->u.bpt.unused.index + 1) > alloc; o->u.bpt.unused.index--)
+      for (;
+	   (object->u.bpt.unused.index + 1) > alloc;
+	   object->u.bpt.unused.index--)
 	{
-	  free(o->u.bpt.unused.array[o->u.bpt.unused.index]);
-	  o->u.bpt.unused.array[o->u.bpt.unused.index] = SET_BPT_UADDR;
+	  free(object->u.bpt.unused.array[object->u.bpt.unused.index]);
+
+	  object->u.bpt.unused.array[object->u.bpt.unused.index] =
+	    SET_BPT_UADDR;
 	}
     }
   else
     {
-      for (; (o->u.bpt.unused.index + 1) < alloc; o->u.bpt.unused.index++)
+      for (;
+	   (object->u.bpt.unused.index + 1) < alloc;
+	   object->u.bpt.unused.index++)
 	{
-	  if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
-	       malloc(o->u.bpt.bpt.nodesz)) == NULL)
+	  if ((object->u.bpt.unused.array[(object->u.bpt.unused.index + 1)] =
+	       malloc(object->u.bpt.bpt.nodesz)) == NULL)
 	    CORE_ESCAPE("unable to allocate memory for the unused block");
 	}
     }
@@ -263,36 +302,44 @@ t_error			set_adjust_bpt(o_set*			o,
 }
 
 /*
- * this function destroys the unused object.
+ * this function destroys an array of unused blocks.
  *
  * steps:
  *
- * 1) frees each unused element of the unused object.
- * 2) frees the unused object itself.
+ * 0) verify the arguments.
+ * 1) free each block from the array.
+ * 2) free the array itself.
  */
 
-t_error			set_destroy_bpt(o_set*			o)
+t_error			set_destroy_bpt(o_set*			object)
 {
   t_bpt_uni(set)	i;
+
+  /*
+   * 0)
+   */
+
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
 
   /*
    * 1)
    */
 
-  for (i = 0; i <= o->u.bpt.unused.index; i++)
-    free(o->u.bpt.unused.array[i]);
+  for (i = 0; i <= object->u.bpt.unused.index; i++)
+    free(object->u.bpt.unused.array[i]);
 
   /*
    * 2)
    */
 
-  free(o->u.bpt.unused.array);
+  free(object->u.bpt.unused.array);
 
   CORE_LEAVE();
 }
 
 /*
- * this function shows the set objects.
+ * this function shows the set's attributes.
  *
  * steps:
  *
@@ -303,6 +350,7 @@ t_error			set_destroy_bpt(o_set*			o)
 t_error			set_show_bpt(i_set			setid,
 				     mt_margin			margin)
 {
+  char			options[5];
   t_state		state;
   o_set*		o;
   s_iterator		i;
@@ -318,10 +366,49 @@ t_error			set_show_bpt(i_set			setid,
    * 2)
    */
 
+  if (o->options & SET_OPTION_CONTAINER)
+    options[0] = 'c';
+  else
+    options[0] = '.';
+
+  if (o->options & SET_OPTION_SORT)
+    options[1] = 's';
+  else
+    options[1] = '.';
+
+  if (o->options & SET_OPTION_ALLOCATE)
+    options[2] = 'a';
+  else
+    options[2] = '.';
+
+  if (o->options & SET_OPTION_FREE)
+    options[3] = 'f';
+  else
+    options[3] = '.';
+
+  options[4] = '\0';
+
+  /*
+   * 3)
+   */
+
   module_call(console, message,
-	      '#', "  %qd node(s) from the balanced+ tree set %qu:\n",
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "set: id(%qd) type(bpt) size(%qd) datasz(%u) options(%s) "
+	      "array(0x%x:%u) arraysz(%d)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->id,
 	      o->size,
-	      setid);
+	      o->datasz,
+	      options,
+	      o->u.bpt.unused.array,
+	      o->u.bpt.unused.index,
+	      o->u.bpt.unusedsz);
+
+  /*
+   * 4)
+   */
 
   set_foreach(SET_OPTION_FORWARD, setid, &i, state)
     {
@@ -333,9 +420,14 @@ t_error			set_show_bpt(i_set			setid,
       leaf = BPT_LFENTRY(set, &node, i.u.bpt.entry.ndi);
 
       module_call(console, message,
-		  '#', "    %qu <%qu 0x%x> [0x%x:%u]\n",
-		  leaf->id, *((t_id*)leaf->data), leaf->data,
-		  i.u.bpt.entry.node, i.u.bpt.entry.ndi);
+		  '#',
+		  MODULE_CONSOLE_MARGIN_FORMAT
+		  "  object: id(%qd) entry(0x%x:%u) data(0x%x)\n",
+		  MODULE_CONSOLE_MARGIN_VALUE(margin),
+		  leaf->id,
+		  i.u.bpt.entry.node,
+		  i.u.bpt.entry.ndi,
+		  leaf->data);
 
       BPT_UNLOAD(&o->u.bpt.bpt, &node);
     }
@@ -344,8 +436,18 @@ t_error			set_show_bpt(i_set			setid,
 }
 
 /*
- * this function gets the first object of the set using the bpt_list()
- * function with the BPT_OPT_HEAD option.
+ * this function returns an iterator on the first object.
+ *
+ * this function relies on th bpt_list() function with the BPT_OPT_HEAD option
+ * to walk through the objects in a sequentially manner.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) load the node.
+ * 3) look for the first entry and return true if found.
+ * 4) unload the node.
  */
 
 t_error			set_head_bpt(i_set			setid,
@@ -354,11 +456,27 @@ t_error			set_head_bpt(i_set			setid,
   t_bpt_imm(set)	root;
   o_set*		o;
 
+  /*
+   * 0)
+   */
+
   assert(iterator != NULL);
+
+  /*
+   * 1)
+   */
 
   assert(set_descriptor(setid, &o) == ERROR_OK);
 
+  /*
+   * 2)
+   */
+
   BPT_LOAD(&o->u.bpt.bpt, &root, o->u.bpt.bpt.root);
+
+  /*
+   * 3)
+   */
 
   if (bpt_list(set, &o->u.bpt.bpt, &root,
 	       &iterator->u.bpt.entry, BPT_OPT_HEAD) != 0)
@@ -368,14 +486,26 @@ t_error			set_head_bpt(i_set			setid,
       CORE_FALSE();
     }
 
+  /*
+   * 4)
+   */
+
   BPT_UNLOAD(&o->u.bpt.bpt, &root);
 
   CORE_TRUE();
 }
 
 /*
- * this function gets the last object of the set using the bpt_list()
- * function with the BPT_OPT_TAIL option.
+ * this function looks for the last entry.
+ *
+ * this function relies on th bpt_list() function with the BPT_OPT_TAIL option
+ * to walk through the objects in a sequentially manner.
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) load the node.
+ * 3) look for the first entry and return true if found.
+ * 4) unload the node.
  */
 
 t_error			set_tail_bpt(i_set			setid,
@@ -384,11 +514,27 @@ t_error			set_tail_bpt(i_set			setid,
   t_bpt_imm(set)	root;
   o_set*		o;
 
+  /*
+   * 0)
+   */
+
   assert(iterator != NULL);
+
+  /*
+   * 1)
+   */
 
   assert(set_descriptor(setid, &o) == ERROR_OK);
 
+  /*
+   * 2)
+   */
+
   BPT_LOAD(&o->u.bpt.bpt, &root, o->u.bpt.bpt.root);
+
+  /*
+   * 3)
+   */
 
   if (bpt_list(set, &o->u.bpt.bpt, &root,
 	       &iterator->u.bpt.entry, BPT_OPT_TAIL) != 0)
@@ -398,13 +544,23 @@ t_error			set_tail_bpt(i_set			setid,
       CORE_FALSE();
     }
 
+  /*
+   * 4)
+   */
+
   BPT_UNLOAD(&o->u.bpt.bpt, &root);
 
   CORE_TRUE();
 }
 
 /*
- * this function returns the previous node of the current iterator.
+ * this function returns an iterator on the previous node.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) retrieve the previous entry.
  */
 
 t_error			set_previous_bpt(i_set			setid,
@@ -413,9 +569,21 @@ t_error			set_previous_bpt(i_set			setid,
 {
   o_set*		o;
 
+  /*
+   * 0)
+   */
+
   assert(previous != NULL);
 
+  /*
+   * 1)
+   */
+
   assert(set_descriptor(setid, &o) == ERROR_OK);
+
+  /*
+   * 2)
+   */
 
   if (bpt_prev_entry(set, &o->u.bpt.bpt, current.u.bpt.entry,
 		     &previous->u.bpt.entry, BPT_OPT_TREE) != 0)
@@ -425,7 +593,13 @@ t_error			set_previous_bpt(i_set			setid,
 }
 
 /*
- * this function returns the next node of the current iterator.
+ * this function returns an iterator on the next node.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) retrieve the previous entry.
  */
 
 t_error			set_next_bpt(i_set			setid,
@@ -434,9 +608,21 @@ t_error			set_next_bpt(i_set			setid,
 {
   o_set*		o;
 
+  /*
+   * 0)
+   */
+
   assert(next != NULL);
 
+  /*
+   * 1)
+   */
+
   assert(set_descriptor(setid, &o) == ERROR_OK);
+
+  /*
+   * 2)
+   */
 
   if (bpt_next_entry(set, &o->u.bpt.bpt, current.u.bpt.entry,
 		     &next->u.bpt.entry, BPT_OPT_TREE) != 0)
@@ -492,17 +678,18 @@ t_error			set_after_bpt(i_set			setid,
 }
 
 /*
- * this function builds a leaf entry to add the user object.
+ * this function adds the given object to the tree.
  *
  * steps:
  *
- * 1) checks for non-valid identifiers.
- * 2) gets the set descriptor object from its identifier.
- * 3) initializes the leaf entry.
- * 4) handles the options: allocate or not the object.
- * 5) adjusts the bpt unused object to perform the next operation.
- * 6) adds the built leaf entry to the tree.
- * 7) updates the set counter.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) initialize the leaf entry.
+ * 3) complete the leaf entry depending on the options i.e clone the
+ *    object if necessary.
+ * 4) adjust the size and filling of the array of unused blocks.
+ * 5) add the entry to the tree.
+ * 6) update the set's size.
  */
 
 t_error			set_add_bpt(i_set			setid,
@@ -511,24 +698,25 @@ t_error			set_add_bpt(i_set			setid,
   t_bpt_lfentry(set)	lfentry;
   o_set*		o;
 
-  assert(data != NULL);
-
   /*
-   * 1)
+   * 0)
    */
+
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
 
   if (*(t_id*)data == ID_UNUSED)
     CORE_ESCAPE("the object must begin with a valid identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
   memset(&lfentry, 0x0, sizeof(t_bpt_lfentry(set)));
@@ -536,7 +724,7 @@ t_error			set_add_bpt(i_set			setid,
   lfentry.id = *((t_id*)data);
 
   /*
-   * 4)
+   * 3)
    */
 
   if (o->options & SET_OPTION_ALLOCATE)
@@ -552,22 +740,23 @@ t_error			set_add_bpt(i_set			setid,
     }
 
   /*
-   * 5)
+   * 4)
    */
 
-  if (set_adjust_bpt(o, BPT_ADD_ALLOC(&o->u.bpt.bpt),
+  if (set_adjust_bpt(o,
+		     BPT_ADD_ALLOC(&o->u.bpt.bpt),
 		     BPT_ADD_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   /*
-   * 6)
+   * 5)
    */
 
   if (bpt_add(set, &o->u.bpt.bpt, &lfentry, &o->u.bpt.unused) != 0)
     CORE_ESCAPE("unable to add the object to the tree");
 
   /*
-   * 7)
+   * 6)
    */
 
   o->size++;
@@ -578,18 +767,18 @@ t_error			set_add_bpt(i_set			setid,
 /*
  * this function removes an object from the tree.
  *
- * the leaf entry has to be retrieved before to release it because
- * the data may be need to be freed.
+ * note that the leaf entry may have to be retrieved in order to release
+ * the object's memory.
  *
  * steps:
  *
- * 1) checks for bad identifiers.
- * 2) gets the set descriptor.
- * 3) if the alloc option was set, locates the leaf entry holding
- *    the object and frees the object.
- * 4) adjusts the bpt unused object.
- * 5) removes the leaf entry given the identifier.
- * 6) updates the set counter.
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) depending on the options, retrieve the entry and release the object's
+ *    memory.
+ * 3) adjust the size and filling of the array of unused blocks.
+ * 4) remove the object from the tree.
+ * 5) update the set's size.
  */
 
 t_error			set_remove_bpt(i_set			setid,
@@ -600,21 +789,21 @@ t_error			set_remove_bpt(i_set			setid,
   o_set*		o;
 
   /*
-   * 1)
+   * 0)
    */
 
   if (id == ID_UNUSED)
     CORE_ESCAPE("invalid object identifier");
 
   /*
-   * 2)
+   * 1)
    */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
-   * 3)
+   * 2)
    */
 
   if ((o->options & SET_OPTION_ALLOCATE) ||
@@ -631,22 +820,23 @@ t_error			set_remove_bpt(i_set			setid,
     }
 
   /*
-   * 4)
+   * 3)
    */
 
-  if (set_adjust_bpt(o, BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
+  if (set_adjust_bpt(o,
+		     BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
 		     BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   /*
-   * 5)
+   * 4)
    */
 
   if (bpt_remove(set, &o->u.bpt.bpt, id, &o->u.bpt.unused) != 0)
     CORE_ESCAPE("unable to remove the object from the tree");
 
   /*
-   * 6)
+   * 5)
    */
 
   o->size--;
@@ -655,15 +845,15 @@ t_error			set_remove_bpt(i_set			setid,
 }
 
 /*
- * this function deletes an element given an iterator.
+ * this function deletes the object referenced by the given iterator.
  *
  * steps:
  *
- * 1) gets the set descriptor.
- * 2) frees element if necessary
- * 3) adjusts the bpt unused object.
- * 4) removes the leaf entry given the bpt entry.
- * 5) decrements the number of elements in the set.
+ * 1) retrieve the set descriptor.
+ * 2) if necessary, retrieve the object and release its memory.
+ * 3) adjusts the size and filling of the array of unused blocks.
+ * 4) removes the object from the tree.
+ * 5) update the set's size.
  */
 
 t_error			set_delete_bpt(i_set			setid,
@@ -697,7 +887,8 @@ t_error			set_delete_bpt(i_set			setid,
    * 3)
    */
 
- if (set_adjust_bpt(o, BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
+ if (set_adjust_bpt(o,
+		    BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
 		    BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
    CORE_ESCAPE("unable to adjust the array of unused blocks");
 
@@ -719,21 +910,22 @@ t_error			set_delete_bpt(i_set			setid,
 }
 
 /*
- * this function flushs the contents of the bpt set.
+ * this function flushes the contents of the tree.
  *
- * this action results in the destruction of the bpt internal data structure,
- * so we have to call bpt_init() to rebuild the tree data structure.
+ * this action results in the destruction of the bpt internal data structure.
+ * therefore, the function ends by calling the bpt_init() function in order
+ * to rebuild the tree data structure.
  *
  * steps:
  *
- * 1) gets the set descriptor from the given identifier.
- * 2) for each elements of the tree, frees the data and resets the
- *    element.
- * 3) adjusts the unused object to be usable with the bpt functions.
- *    then, calls the bpt_clean() function to destroy the tree.
- * 4) adjusts the unused object and calls the bpt_init() function to
- *    rebuild the tree data structure.
- * 5) resets the size of the data structure.
+ * 1) retrieve the set descriptor.
+ * 2) save the size of the nodes from the current tree configuration.
+ * 3) if necessary, walk through the objects and release their memory.
+ * 4) adjust the size and filling of the array of unused objects and
+ *    clean the tree data structure.
+ * 5) re-adjusts the array of unused blocks for the next operation and
+ *    re-initialize the tree.
+ * 6) resets the set's size to zero.
  */
 
 t_error			set_flush_bpt(i_set			setid)
@@ -750,10 +942,14 @@ t_error			set_flush_bpt(i_set			setid)
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
+  /*
+   * 2)
+   */
+
   nodesz = o->u.bpt.bpt.nodesz;
 
   /*
-   * 2)
+   * 3)
    */
 
   if ((o->options & SET_OPTION_ALLOCATE) ||
@@ -777,10 +973,11 @@ t_error			set_flush_bpt(i_set			setid)
     }
 
   /*
-   * 3)
+   * 4)
    */
 
-  if (set_adjust_bpt(o, BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
+  if (set_adjust_bpt(o,
+		     BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
 		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
@@ -788,10 +985,11 @@ t_error			set_flush_bpt(i_set			setid)
     CORE_ESCAPE("unable to clean the tree of all the elements");
 
   /*
-   * 4)
+   * 5)
    */
 
-  if (set_adjust_bpt(o, BPT_INIT_ALLOC(),
+  if (set_adjust_bpt(o,
+		     BPT_INIT_ALLOC(),
 		     BPT_INIT_SIZE()) != ERROR_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
@@ -803,7 +1001,7 @@ t_error			set_flush_bpt(i_set			setid)
     CORE_ESCAPE("unable to re-initialize the tree");
 
   /*
-   * 5)
+   * 6)
    */
 
   o->size = 0;
@@ -813,7 +1011,14 @@ t_error			set_flush_bpt(i_set			setid)
 
 /*
  * this function locates the leaf entry corresponding to the given
- * identifier, then builds an iterator for it.
+ * identifier, then returns an iterator for it.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) search the entry with the given identifier.
+ * 3) set the iterator.
  */
 
 t_error			set_locate_bpt(i_set			setid,
@@ -823,24 +1028,49 @@ t_error			set_locate_bpt(i_set			setid,
   t_bpt_entry(set)	entry;
   o_set*		o;
 
-  assert(iterator != NULL);
+  /*
+   * 0)
+   */
+
+  if (iterator == NULL)
+    CORE_ESCAPE("the 'iterator' argument is null");
 
   if (id == ID_UNUSED)
     CORE_ESCAPE("invalid object identifier");
 
+  /*
+   * 1)
+   */
+
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
+
+  /*
+   * 2)
+   */
 
   if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
     CORE_ESCAPE("unable to locate the element in the tree");
 
-  memcpy(iterator, &entry, sizeof(t_bpt_entry(set)));
+  /*
+   * 3)
+   */
+
+  memcpy(&iterator->u.bpt.entry, &entry, sizeof(t_bpt_entry(set)));
 
   CORE_LEAVE();
 }
 
 /*
- * this function returns the object from its iterator.
+ * this function returns the object from the given iterator.
+ *
+ * steps:
+ *
+ * 1) verify the arguments.
+ * 1) retrieve the set descriptor.
+ * 2) load the node.
+ * 3) retrieve the data from the node's entry.
+ * 4) unload the node.
  */
 
 t_error			set_object_bpt(i_set			setid,
@@ -850,14 +1080,34 @@ t_error			set_object_bpt(i_set			setid,
   t_bpt_imm(set)	node;
   o_set*		o;
 
+  /*
+   * 0)
+   */
+
   assert(data != NULL);
+
+  /*
+   * 1)
+   */
 
   if (set_descriptor(setid, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
+  /*
+   * 2)
+   */
+
   BPT_LOAD(&o->u.bpt.bpt, &node, iterator.u.bpt.entry.node);
 
+  /*
+   * 3)
+   */
+
   *data = BPT_GET_LFENTRY(set, &node, iterator.u.bpt.entry.ndi, data);
+
+  /*
+   * 4)
+   */
 
   BPT_UNLOAD(&o->u.bpt.bpt, &node);
 
@@ -865,38 +1115,42 @@ t_error			set_object_bpt(i_set			setid,
 }
 
 /*
- * this function reserves a set.
+ * this function reserves a set according to the given options.
+ *
+ * note that while the 'datasz' argument specifies the size of the objects
+ * to be stored, the 'nodesz' indicates the size of the internal and leaf
+ * nodes.
  *
  * steps:
  *
- * 1) initializes the set object.
- * 2) checks for the options.
- * 3) reserves a identifier for the new set.
- * 4) initializes the set object.
- * 5) builds the unused object for the bpt calls.
- * 6) calls the bpt_init() function which initializes the tree data structure.
- * 7) adds the new set object to the set container.
+ * 0) verify the arguments.
+ * 1) assign an identifier, depending on the options: either this is
+ *    the set container or not. if it is, take the set container identifier
+ *    that is in the set manager.
+ * 2) initialize and fill the set descriptor.
+ * 3) build the initial array of unused blocks with enough filling to
+ *    satisfy the bpt_init() operation.
+ * 4) set up the tree data structure.
+ * 5) register the set descriptor.
  */
 
 t_error			set_reserve_bpt(t_options		options,
 					t_size			datasz,
 					t_bpt_nodesz(set)	nodesz,
-					i_set*			setid)
+					i_set*			id)
 {
   o_set			o;
 
-  assert(datasz >= sizeof (t_id));
-  assert(setid != NULL);
-
   /*
-   * 1)
+   * 0)
    */
 
-  memset(&o, 0x0, sizeof(o_set));
+  if (datasz < sizeof (t_id))
+    CORE_ESCAPE("unable to reserve a set for objects smaller than "
+		"an identifier");
 
-  /*
-   * 2)
-   */
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
 
   if (!(options & SET_OPTION_SORT))
     CORE_ESCAPE("the sort option cannot be provided since bpt-based are "
@@ -909,31 +1163,33 @@ t_error			set_reserve_bpt(t_options		options,
     CORE_ESCAPE("unable to reserve a set with both alloc and free options");
 
   /*
-   * 3)
+   * 1)
    */
 
   if (options & SET_OPTION_CONTAINER)
     {
-      *setid = _set->sets;
+      *id = _set->sets;
     }
   else
     {
-      if (id_reserve(&_set->id, setid) != ERROR_OK)
+      if (id_reserve(&_set->id, id) != ERROR_OK)
 	CORE_ESCAPE("unable to reserve an identifier");
     }
 
   /*
-   * 4)
+   * 2)
    */
 
-  o.id = *setid;
+  memset(&o, 0x0, sizeof(o_set));
+
+  o.id = *id;
   o.size = 0;
   o.type = SET_TYPE_BPT;
   o.options = options;
   o.datasz = datasz;
 
   /*
-   * 5)
+   * 3)
    */
 
   if (set_build_bpt(&o, nodesz) != ERROR_OK)
@@ -947,7 +1203,7 @@ t_error			set_reserve_bpt(t_options		options,
     }
 
   /*
-   * 6)
+   * 4)
    */
 
   if (bpt_init(set, &o.u.bpt.bpt, nodesz,
@@ -963,12 +1219,13 @@ t_error			set_reserve_bpt(t_options		options,
     }
 
   /*
-   * 7)
+   * 5)
    */
 
   if (set_new(&o) != ERROR_OK)
     {
-      set_adjust_bpt(&o, BPT_CLEAN_ALLOC(&o.u.bpt.bpt),
+      set_adjust_bpt(&o,
+		     BPT_CLEAN_ALLOC(&o.u.bpt.bpt),
 		     BPT_CLEAN_SIZE(&o.u.bpt.bpt));
 
       bpt_clean(set, &o.u.bpt.bpt, &o.u.bpt.unused);
@@ -985,19 +1242,17 @@ t_error			set_reserve_bpt(t_options		options,
 }
 
 /*
- * this function releases the bpt set.
+ * this function releases the set.
  *
  * steps:
  *
- * 1) gets the set descriptor from the given identifier.
- * 2) flushs the set's contents.
- * 3) builds a unused object to be able to call the bpt_clean() function.
- *    in fact we call the bpt_clean() function even after calling the
- *    set_flush() function because after the flush the tree still contains
- *    an allocated node so this one has to be released with the bpt_clean()
- *    call.
- * 4) releases the set identifier.
- * 5) removes the set object from the set container.
+ * 1) retrieve the set descriptor.
+ * 2) flush the set's content.
+ * 3) adjust the size and filling of the array of unused blocks and
+ *    clean the tree data structure.
+ * 4) destroy the array of unused blocks.
+ * 5) release the set identifier.
+ * 6) remove the set descriptor from the set container.
  */
 
 t_error			set_release_bpt(i_set			setid)
@@ -1022,25 +1277,30 @@ t_error			set_release_bpt(i_set			setid)
    * 3)
    */
 
-  if (set_adjust_bpt(o, BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
+  if (set_adjust_bpt(o,
+		     BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
 		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   if (bpt_clean(set, &o->u.bpt.bpt, &o->u.bpt.unused) != 0)
     CORE_ESCAPE("unable to clean the tree");
 
+  /*
+   * 4)
+   */
+
   if (set_destroy_bpt(o) != ERROR_OK)
     CORE_ESCAPE("unable to destroy the set");
 
   /*
-   * 4)
+   * 5)
    */
 
   if (id_release(&_set->id, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to release the set identifier");
 
   /*
-   * 5)
+   * 6)
    */
 
   if (set_destroy(o->id) != ERROR_OK)

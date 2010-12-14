@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/clock/clock.c
  *
  * created       julien quintard   [wed nov 24 18:40:55 2010]
- * updated       julien quintard   [fri dec 10 16:16:30 2010]
+ * updated       julien quintard   [tue dec 14 21:27:53 2010]
  */
 
 /*
@@ -152,14 +152,22 @@ t_error			clock_current(s_clock*			clock)
  *
  * steps:
  *
- * 1) allocate and initialize memory for the manager's structure.
- * 2) call the machine.
+ * 1) display a message.
+ * 2) allocate and initialize memory for the manager's structure.
+ * 3) call the machine.
  */
 
 t_error			clock_initialize(void)
 {
   /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "initializing the clock manager\n");
+
+  /*
+   * 2)
    */
 
   if ((_clock = malloc(sizeof (m_clock))) == NULL)
@@ -169,7 +177,7 @@ t_error			clock_initialize(void)
   memset(_clock, 0x0, sizeof (m_clock));
 
   /*
-   * 2)
+   * 3)
    */
 
   if (machine_call(clock, initialize) != ERROR_OK)
@@ -183,8 +191,9 @@ t_error			clock_initialize(void)
  *
  * steps:
  *
- * 1) call the machine.
- * 2) release the manager's structure memory.
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) release the manager's structure memory.
  */
 
 t_error			clock_clean(void)
@@ -193,11 +202,18 @@ t_error			clock_clean(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "cleaning the clock manager\n");
+
+  /*
+   * 2)
+   */
+
   if (machine_call(clock, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
    */
 
   free(_clock);

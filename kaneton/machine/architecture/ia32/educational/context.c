@@ -258,7 +258,7 @@ t_error			ia32_init_context(i_task		taskid,
   /*
    * 2)
    */
- 
+
   if (task_get(taskid, &task) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 

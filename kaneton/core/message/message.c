@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       julien quintard   [sun dec 12 21:51:32 2010]
+ * updated       julien quintard   [tue dec 14 21:31:13 2010]
  */
 
 /*
@@ -109,8 +109,8 @@ static t_error		message_box(i_task			task,
  * 5) call the machine dependent code.
  *
  */
-// XXX change name to something else
-t_error			message_record(i_task			task,
+
+t_error			message_register(i_task			task,
 					 t_type			type,
 					 t_vsize		size)
 {
@@ -168,7 +168,7 @@ t_error			message_record(i_task			task,
    * 5)
    */
 
-  if (machine_call(message, record, task, type, size) != ERROR_OK)
+  if (machine_call(message, register, task, type, size) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -231,7 +231,7 @@ t_error			message_flush(i_task			task)
 
       while (set_pick(otype->waiters, (void**)&omsg) != ERROR_OK)
 	{
-	  if (message_yield(omsg->blocked, ERROR_KO) != ERROR_OK)
+	  if (message_return(omsg->blocked, ERROR_KO) != ERROR_OK)
 	    CORE_ESCAPE("XXX");
 
 	  if (set_pop(otype->waiters) != ERROR_OK)
@@ -249,7 +249,7 @@ t_error			message_flush(i_task			task)
 
 	  if (omsg->as == ID_UNUSED)
 	    {
-	      if (message_yield(omsg->blocked, ERROR_KO) != ERROR_OK)
+	      if (message_return(omsg->blocked, ERROR_KO) != ERROR_OK)
 		CORE_ESCAPE("XXX");
 	    }
 	  else
@@ -819,7 +819,7 @@ t_error			message_poll(i_task			task,
 	    CORE_ESCAPE("XXX");
 	}
 
-      if (message_yield(msg->blocked, ERROR_OK) != ERROR_OK)
+      if (message_return(msg->blocked, ERROR_OK) != ERROR_OK)
 	CORE_ESCAPE("XXX");
     }
   else
@@ -906,10 +906,10 @@ t_error			message_wait(i_task			task,
  *
  */
 
-t_error			message_yield(i_thread			thread,
+t_error			message_return(i_thread			thread,
 				       t_error			code)
 {
-  if (machine_call(message, yield, thread, code) != ERROR_OK)
+  if (machine_call(message, return, thread, code) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   if (thread_start(thread) != ERROR_OK)
@@ -953,6 +953,13 @@ t_error			message_return_info(i_thread		thread,
 t_error			message_initialize(void)
 {
   /*
+   * XXX
+   */
+
+  module_call(console, message,
+	      '+', "initializing the message manager\n");
+
+  /*
    * 1)
    */
 
@@ -965,15 +972,15 @@ t_error			message_initialize(void)
    * 2)
    */
 
-  if (message_record(_kernel->task, MESSAGE_TYPE_INTERFACE,
+  if (message_register(_kernel->task, MESSAGE_TYPE_INTERFACE,
 		       sizeof (o_syscall)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (message_record(_kernel->task, MESSAGE_TYPE_EVENT,
+  if (message_register(_kernel->task, MESSAGE_TYPE_EVENT,
 		       sizeof (o_event_message)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (message_record(_kernel->task, MESSAGE_TYPE_TIMER,
+  if (message_register(_kernel->task, MESSAGE_TYPE_TIMER,
 		       sizeof (o_timer_message)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -1000,6 +1007,13 @@ t_error			message_initialize(void)
 
 t_error			message_clean(void)
 {
+  /*
+   * XXX
+   */
+
+  module_call(console, message,
+	      '+', "cleaning the message manager\n");
+
   /*
    * 1)
    */

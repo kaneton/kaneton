@@ -43,7 +43,7 @@ t_error			module_forward_send(char*		message,
 
 t_error			module_forward_flush(void);
 
-int			module_forward_character(char		c);
+void			module_forward_character(char		c);
 
 t_error			module_forward_load(void);
 

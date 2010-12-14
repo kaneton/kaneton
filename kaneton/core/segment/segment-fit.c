@@ -129,11 +129,17 @@ t_error			segment_show(i_segment			segid,
   switch (o->type)
     {
     case SEGMENT_TYPE_MEMORY:
-      type = "memory";
-      break;
+      {
+	type = "memory";
+
+	break;
+      }
     case SEGMENT_TYPE_SYSTEM:
-      type = "system";
-      break;
+      {
+	type = "system";
+
+	break;
+      }
     default:
       CORE_ESCAPE("unknown segment type '%u'",
 		  o->type);
@@ -142,8 +148,6 @@ t_error			segment_show(i_segment			segid,
   /*
    * 3)
    */
-
-  memset(perms, 0x0, sizeof (perms));
 
   if (o->permissions & PERMISSION_READ)
     perms[0] = 'r';
@@ -160,6 +164,8 @@ t_error			segment_show(i_segment			segid,
   else
     perms[2] = '.';
 
+  perms[3] = '\0';
+
   /*
    * 4)
    */
@@ -167,8 +173,8 @@ t_error			segment_show(i_segment			segid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  segment: id(%qu) range(0x%08x - 0x%08x) type(%s) "
-	      "permissions(%s) size(0x%x) as(%qu)\n",
+	      "  segment: id(%qd) range(0x%08x - 0x%08x) type(%s) "
+	      "permissions(%s) size(0x%x) as(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
 	      o->address,
@@ -218,17 +224,20 @@ t_error			segment_dump(void)
    */
 
   module_call(console, message,
-	      '#', "segment manager: base(0x%x) size(0x%x) #segments(%qu)\n",
+	      '#', "segment manager: base(0x%08x) size(0x%08x) "
+	      "segments(%qd)\n",
 	      _segment->base,
 	      _segment->size,
-	      size);
+	      _segment->segments);
 
   /*
    * 3)
    */
 
   module_call(console, message,
-	      '#', "  segments:\n");
+	      '#', "  segments: id(%qd) size(%qd)\n",
+	      _segment->segments,
+	      size);
 
   set_foreach(SET_OPTION_FORWARD, _segment->segments, &i, s)
     {
@@ -1768,17 +1777,33 @@ t_error			segment_get(i_segment			segid,
  *
  * steps:
  *
- * 1) allocate and initialize the segment manager's structure.
- * 2) record the base and size in the manager's structure.
- * 3) reserve the set of segments which will contain the system's segments.
- * 4) call the machine.
+ * 1) display a message.
+ * 2) allocate and initialize the segment manager's structure.
+ * 3) record the base and size in the manager's structure.
+ * 4) reserve the set of segments which will contain the system's segments.
+ * 5) call the machine.
  */
 
 t_error			segment_initialize(t_paddr		base,
 					   t_psize		size)
 {
   /*
+   * 0)
+   */
+
+  if (size == 0)
+    CORE_ESCAPE("unable to initialize the segment manager with a "
+		"size of zero");
+
+  /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "initializing the segment manager\n");
+
+  /*
+   * 2)
    */
 
   if ((_segment = malloc(sizeof (m_segment))) == NULL)
@@ -1788,14 +1813,14 @@ t_error			segment_initialize(t_paddr		base,
   memset(_segment, 0x0, sizeof (m_segment));
 
   /*
-   * 2)
+   * 3)
    */
 
   _segment->base = base;
   _segment->size = size;
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_reserve(bpt,
@@ -1806,7 +1831,7 @@ t_error			segment_initialize(t_paddr		base,
     CORE_ESCAPE("unable to reserve the segments set");
 
   /*
-   * 4)
+   * 5)
    */
 
   if (machine_call(segment, initialize) != ERROR_OK)
@@ -1820,12 +1845,13 @@ t_error			segment_initialize(t_paddr		base,
  *
  * steps:
  *
- * 1) call the machine.
- * 2) release all the segments.
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) release all the segments.
  *   a) retrieve the segment object.
  *   b) release the segment.
- * 3) release the set of segments.
- * 3) free the segment manager's structure.
+ * 4) release the set of segments.
+ * 5) free the segment manager's structure.
  */
 
 t_error			segment_clean(void)
@@ -1837,11 +1863,18 @@ t_error			segment_clean(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "cleaning the segment manager\n");
+
+  /*
+   * 2)
+   */
+
   if (machine_call(segment, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
    */
 
   while (set_head(_segment->segments, &i) == ERROR_TRUE)
@@ -1863,14 +1896,14 @@ t_error			segment_clean(void)
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_release(_segment->segments) != ERROR_OK)
     CORE_ESCAPE("unable to release the segments set");
 
   /*
-   * 4)
+   * 5)
    */
 
   free(_segment);

@@ -166,16 +166,16 @@ t_error			set_show_array(i_set			setid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "set: id(%qu) type(array) datasz(%u) options(%s) "
-	      "initsz(%u) array(0x%x) arraysz(%qu) #objects(%qu)\n",
+	      "set: id(%qd) type(array) size(%qd) datasz(%u) options(%s) "
+	      "initsz(%u) array(0x%x) arraysz(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
+	      o->size,
 	      o->datasz,
 	      options,
 	      o->u.array.initsz,
 	      o->u.array.array,
-	      o->u.array.arraysz,
-	      o->size);
+	      o->u.array.arraysz);
 
   /*
    * 4)
@@ -207,7 +207,7 @@ t_error			set_show_array(i_set			setid,
       module_call(console, message,
 		  '#',
 		  MODULE_CONSOLE_MARGIN_FORMAT
-		  "  object: id(%qu) slot(%qu)\n",
+		  "  object: id(%qd) slot(%qd)\n",
 		  MODULE_CONSOLE_MARGIN_VALUE(margin),
 		  id,
 		  pos);
@@ -1054,7 +1054,7 @@ t_error			set_add_array(i_set			setid,
 		    free(data);
 
 		  CORE_ESCAPE("identifier collision detected in the set "
-			      "%qu on the object identifier %qu",
+			      "%qd on the object identifier %qd",
 			      o->id, id);
 		}
 	      if (current > id)

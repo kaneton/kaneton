@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...hine/glue/ibm-pc.ia32/educational/task.c
+ * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [thu dec  2 16:19:30 2010]
+ * updated       julien quintard   [tue dec 14 20:07:34 2010]
  */
 
 /*
@@ -39,7 +39,9 @@
 d_task			glue_task_dispatch =
   {
     NULL,
+    NULL,
     glue_task_reserve,
+    NULL,
     NULL,
     NULL,
     NULL,
@@ -88,9 +90,11 @@ t_error			glue_task_initialize(void)
     MACHINE_ESCAPE("unable to initialize the IA32 context");
 
   if (ia32_kernel_as_finalize() != ERROR_OK)
-    MACHINE_ESCAPE("unable to finilize the address space");
+    MACHINE_ESCAPE("unable to finalize the address space");
 
   MACHINE_LEAVE();
 }
 
 // XXX context_init -> setup
+
+// XXX dans dump afficher les infos de machine

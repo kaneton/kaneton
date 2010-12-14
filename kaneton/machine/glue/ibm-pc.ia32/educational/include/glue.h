@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/glue.h
  *
  * created       julien quintard   [mon jun 11 05:57:15 2007]
- * updated       julien quintard   [fri dec 10 17:04:27 2010]
+ * updated       julien quintard   [mon dec 13 11:14:02 2010]
  */
 
 #ifndef GLUE_GLUE_H
@@ -19,7 +19,7 @@
  */
 
 /*
- * machine transparent traps
+ * these machine traps redirect the call to the proper manager.
  */
 
 #define		machine_include(_manager_)				\

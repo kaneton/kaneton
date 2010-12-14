@@ -71,6 +71,19 @@ CODE
 - changer ces definitions en: $kaneton, $kernel, $server, $driver, $service,
   $guest, $pagesz, $wordsz, $endian -> a mettre dans les layout
 
+- changer le scheduler et utiliser un set indexe par la priorite
+- delete les macro QUEUE et UNQUEUE
+
+- coder un morgue/mortuary/cremation/mortician/undertaker/burier qui, regulierement, enterre les morts
+
+- attention thread_wait() les args ont change d'ordre
+
+- mettre en place le timer pour la morgue de task et thread
+
+- reorganiser kernel_clean comme l'init
+
+- transformer les %qu en %qd
+
 --- GLUE
 
 - verifier que les donnees dependantes sont displayed dans show
@@ -78,6 +91,7 @@ CODE
 
 ---- TESTS
 
+- tester le nouveau robot
 - recompiler les tests vu qu'on a changer quelques trucs
   - checker les warnings a la fois dans kaneton et tests
 - dissocier les tests timer et clock

@@ -116,7 +116,7 @@ t_error			thread_show(i_thread			threadid)
     }
 
   module_call(console, message,
-	      '#', "  thread %qu from task %qu is %s with a priority of %u\n",
+	      '#', "  thread %qd from task %qd is %s with a priority of %u\n",
 	      threadid, o->task, state, o->priority);
 
   /*
@@ -157,7 +157,7 @@ t_error			thread_dump(void)
    */
 
   module_call(console, message,
-	      '#', "dumping %qu thread(s):\n", size);
+	      '#', "dumping %qd thread(s):\n", size);
 
   set_foreach(SET_OPTION_FORWARD, _thread->threads, &i, st)
     {
@@ -202,7 +202,7 @@ t_error			thread_reserve(i_task			taskid,
     CORE_ESCAPE("invalid priority");
 
   /*
-   * 2)
+   * XXX
    */
 
   if (task_get(taskid, &task) != ERROR_OK)
@@ -220,6 +220,10 @@ t_error			thread_reserve(i_task			taskid,
    */
 
   memset(&o, 0x0, sizeof(o_thread));
+
+  /*
+   * 2)
+   */
 
   o.id = *threadid;
   o.task = taskid;
@@ -440,13 +444,6 @@ t_error			thread_start(i_thread			id)
   object->state = THREAD_STATE_START;
 
   /*
-   * XXX
-   */
-
-  object->status.cause = WAIT_STATE_START;
-  object->status.value = WAIT_VALUE_UNKNOWN;
-
-  /*
    * 4)
    */
 
@@ -464,14 +461,14 @@ t_error			thread_start(i_thread			id)
 
       if (o->wait.state & WAIT_STATE_START)
 	{
-	  o->wait.cause = object->status.cause;
-	  o->wait.value = object->status.value;
+	  o->wait.cause = WAIT_STATE_START;
+	  o->wait.value = WAIT_VALUE_UNKNOWN;
 
 	  if (thread_start(o->id) != ERROR_OK)
 	    CORE_ESCAPE("unable to start the waiting thread");
 
-	  if (set_remove(object->waits, o->id) != ERROR_OK)
-	    CORE_ESCAPE("unable to remove the thread from the waiting list");
+	  if (set_delete(object->waits, it) != ERROR_OK)
+	    CORE_ESCAPE("unable to delete the thread from the waiting list");
 
 	  goto try;
 	}
@@ -547,13 +544,6 @@ t_error			thread_stop(i_thread			id)
   object->state = THREAD_STATE_STOP;
 
   /*
-   * XXX
-   */
-
-  object->status.cause = WAIT_STATE_STOP;
-  object->status.value = WAIT_VALUE_UNKNOWN;
-
-  /*
    * 4)
    */
 
@@ -571,14 +561,14 @@ t_error			thread_stop(i_thread			id)
 
       if (o->wait.state & WAIT_STATE_STOP)
 	{
-	  o->wait.cause = object->status.cause;
-	  o->wait.value = object->status.value;
+	  o->wait.cause = WAIT_STATE_STOP;
+	  o->wait.value = WAIT_VALUE_UNKNOWN;
 
 	  if (thread_start(o->id) != ERROR_OK)
 	    CORE_ESCAPE("unable to start the waiting thread");
 
-	  if (set_remove(object->waits, o->id) != ERROR_OK)
-	    CORE_ESCAPE("unable to remove the thread from the waiting list");
+	  if (set_delete(object->waits, it) != ERROR_OK)
+	    CORE_ESCAPE("unable to delete the thread from the waiting list");
 
 	  goto try;
 	}
@@ -726,8 +716,7 @@ t_error			thread_exit(i_thread			id,
    * XXX
    */
 
-  object->status.cause = WAIT_STATE_DEATH;
-  object->status.value = value;
+  object->value = value;
 
   /*
    * 4)
@@ -749,14 +738,14 @@ t_error			thread_exit(i_thread			id,
 
       if (o->wait.state & WAIT_STATE_DEATH)
 	{
-	  o->wait.cause = object->status.cause;
-	  o->wait.value = object->status.value;
+	  o->wait.cause = WAIT_STATE_DEATH;
+	  o->wait.value = object->value;
 
 	  if (thread_start(o->id) != ERROR_OK)
 	    CORE_ESCAPE("unable to start the waiting thread");
 
-	  if (set_remove(object->waits, o->id) != ERROR_OK)
-	    CORE_ESCAPE("unable to remove the thread from the waiting list");
+	  if (set_delete(object->waits, it) != ERROR_OK)
+	    CORE_ESCAPE("unable to delete the thread from the waiting list");
 
 	  w = BOOLEAN_TRUE;
 
@@ -815,6 +804,10 @@ t_error			thread_exit(i_thread			id,
 	CORE_ESCAPE("unable to remove the thread from the scheduler");
     }
 
+  // XXX
+  // si task n'est pas zombie ni morte et que c'est le dernier thread
+  // -> task_exit alors (ptet mettre ca plus haut)
+
   CORE_LEAVE();
 }
 
@@ -872,8 +865,8 @@ void			thread_bury(i_timer			timer,
  */
 
 t_error			thread_wait(i_thread			id,
-				    t_state			state,
 				    i_thread			target,
+				    t_state			state,
 				    s_wait*			wait)
 {
   o_thread*		object;
@@ -937,8 +930,8 @@ t_error			thread_wait(i_thread			id,
 
       wait->id.thread = target;
       wait->state = state;
-      wait->cause = o->status.cause;
-      wait->value = o->status.value;
+      wait->cause = WAIT_STATE_DEATH;
+      wait->value = o->value;
 
       /*
        * XXX
@@ -1291,12 +1284,29 @@ t_error			thread_get(i_thread			threadid,
  * 2) initialize the object identifier.
  * 3) reserve the thread set.
  * 4) call the machine-dependent code.
+
+XXX
+
+ * 9) reserve the kernel thread.
+ * 10) block the kernel thread. indeed this thread is special and is never
+ *     scheduled. therefore it is marked as blocked in order to make things
+ *     crystal clear.
+
+    XXX reserver puis ce sera attache plus tard.
+
  */
 
 t_error			thread_initialize(void)
 {
   /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "initializing the thread manager\n");
+
+  /*
+   * XXX
    */
 
   if ((_thread = malloc(sizeof (m_thread))) == NULL)
@@ -1326,13 +1336,7 @@ t_error			thread_initialize(void)
    * 4)
    */
 
-  if (thread_reserve(_kernel->task,
-		     THREAD_PRIORITY,
-		     &_kernel->thread) != ERROR_OK)
-    CORE_ESCAPE("unable to reserve the kernel thread");
-
-  if (thread_block(_kernel->thread) != ERROR_OK)
-    CORE_ESCAPE("unable to block the kernel thread");
+  // XXX
 
   /*
    * 5)
@@ -1340,6 +1344,14 @@ t_error			thread_initialize(void)
 
   if (machine_call(thread, thread_initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
+
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     &_kernel->thread) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve the kernel thread");
+
+  if (thread_block(_kernel->thread) != ERROR_OK)
+    CORE_ESCAPE("unable to block the kernel thread");
 
   CORE_LEAVE();
 }
@@ -1359,6 +1371,13 @@ t_error			thread_clean(void)
 {
   /*
    * 1)
+   */
+
+  module_call(console, message,
+	      '+', "cleaning the thread manager\n");
+
+  /*
+   * XXX
    */
 
   if (machine_call(thread, thread_clean) != ERROR_OK)

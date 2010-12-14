@@ -152,15 +152,15 @@ t_error			set_show_ll(i_set			setid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "set: id(%qu) type(ll) datasz(%u) options(%s) "
-	      "head(0x%x) tail(0x%x) #objects(%qu)\n",
+	      "set: id(%qd) type(ll) size(%qd) datasz(%u) options(%s) "
+	      "head(0x%x) tail(0x%x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
+	      o->size,
 	      o->datasz,
 	      options,
 	      o->u.ll.head,
-	      o->u.ll.tail,
-	      o->size);
+	      o->u.ll.tail);
 
   /*
    * 4)
@@ -173,7 +173,7 @@ t_error			set_show_ll(i_set			setid,
       module_call(console, message,
 		  '#',
 		  MODULE_CONSOLE_MARGIN_FORMAT
-		  "  object: id(%qu) previous(0x%x) "
+		  "  object: id(%qd) previous(0x%x) "
 		  "current(0x%x) next(0x%x)\n",
 		  MODULE_CONSOLE_MARGIN_VALUE(margin),
 		  *((t_id*)n->data),
@@ -864,7 +864,7 @@ t_error			set_add_ll(i_set			setid,
 		  free(n);
 
 		  CORE_ESCAPE("identifier collision detected in the set "
-			      "%qu on the object identifier %qu",
+			      "%qd on the object identifier %qd",
 			      o->id,
 			      *((t_id*)n->data));
 		}

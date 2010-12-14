@@ -51,7 +51,7 @@ extern m_set*		_set;
 
 t_error			set_reserve_stack(t_options		options,
 					  t_size		datasz,
-					  i_set*		setid)
+					  i_set*		id)
 {
   o_set			o;
 
@@ -79,7 +79,7 @@ t_error			set_reserve_stack(t_options		options,
    * 1)
    */
 
-  if (id_reserve(&_set->id, setid) != ERROR_OK)
+  if (id_reserve(&_set->id, id) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set identifier");
 
   /*
@@ -88,7 +88,7 @@ t_error			set_reserve_stack(t_options		options,
 
   memset(&o, 0x0, sizeof(o_set));
 
-  o.id = *setid;
+  o.id = *id;
   o.size = 0;
   o.type = SET_TYPE_STACK;
   o.options = options;

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/library/include/format.h
+ * file          /home/mycure/kaneton/kaneton/library/include/format.h
  *
  * created       julien quintard   [sun dec  5 15:04:58 2010]
- * updated       julien quintard   [sun dec  5 16:35:21 2010]
+ * updated       julien quintard   [mon dec 13 14:39:10 2010]
  */
 
 #ifndef LIBRARY_FORMAT_H

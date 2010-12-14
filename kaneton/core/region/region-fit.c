@@ -125,8 +125,8 @@ t_error			region_show(i_as			asid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "region: id(%qu) range(0x%08x - 0x%08x) segment(%qu) "
-	      "offset(0x%x) size(0x%x) options(%s) as(%qu)\n",
+	      "region: id(%qd) range(0x%08x - 0x%08x) segment(%qd) "
+	      "offset(0x%x) size(0x%x) options(%s)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
 	      o->address,
@@ -134,8 +134,7 @@ t_error			region_show(i_as			asid,
 	      o->segment,
 	      o->offset,
 	      o->size,
-	      options,
-	      asid);
+	      options);
 
   /*
    * 3)
@@ -193,15 +192,23 @@ t_error			region_dump(i_as			asid)
    */
 
   module_call(console, message,
-	      '#', "region manager: #regions(%qu):\n",
-	      size);
+	      '#', "region manager: base(0x%08x) size(0x%08x)\n",
+	      _region->base,
+	      _region->size);
+
+  module_call(console, message,
+	      '#', "  address space: id(%qd) regions(%qd)\n",
+	      o->id,
+	      o->regions);
 
   /*
    * 4)
    */
 
   module_call(console, message,
-	      '#', "  regions:\n");
+	      '#', "    regions: id(%qd) size(%qd)\n",
+	      o->regions,
+	      size);
 
   set_foreach(SET_OPTION_FORWARD, o->regions, &i, state)
     {
@@ -211,7 +218,7 @@ t_error			region_dump(i_as			asid)
 
       if (region_show(asid,
 		      data->id,
-		      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		      3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the region");
     }
 
@@ -1380,9 +1387,14 @@ t_error			region_get(i_as				asid,
  * steps:
  *
  * 0) verify the arguments.
- * 1) allocate and initialize the region manager's structure.
- * 2) set the base and size attributes.
- * 3) calls the machine.
+ * 1) display a message.
+ * 2) allocate and initialize the region manager's structure.
+ * 3) set the base and size attributes. note that the base address is
+ *    incremented by the page size. this is done in order to render the
+ *    first page unuseable. this has the impact to produce a page fault
+ *    every time the first page is referenced. this is a common practice
+ *    since most pointers are manually initialised by programmers to NULL.
+ * 4) calls the machine.
  *						[endblock::initialize::comment]
  */
 
@@ -1402,6 +1414,13 @@ t_error			region_initialize(t_vaddr		base,
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "initializing the region manager\n");
+
+  /*
+   * 2)
+   */
+
   if ((_region = malloc(sizeof (m_region))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the region manager's "
 		"structure");
@@ -1409,14 +1428,14 @@ t_error			region_initialize(t_vaddr		base,
   memset(_region, 0x0, sizeof (m_region));
 
   /*
-   * 2)
+   * 3)
    */
 
-  _region->base = base;
+  _region->base = base + ___kaneton$pagesz;
   _region->size = size;
 
   /*
-   * 3)
+   * 4)
    */
 
   if (machine_call(region, initialize, base, size) != ERROR_OK)
@@ -1434,8 +1453,9 @@ t_error			region_initialize(t_vaddr		base,
  *
  * steps:
  *
- * 1) call the machine.
- * 2) free the manager's structure.
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) free the manager's structure.
  *
  *						     [endblock::clean::comment]
  */
@@ -1448,11 +1468,18 @@ t_error			region_clean(void)
    * 1)
    */
 
+  module_call(console, message,
+	      '+', "cleaning the region manager\n");
+
+  /*
+   * 2)
+   */
+
   if (machine_call(region, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
    */
 
   free(_region);

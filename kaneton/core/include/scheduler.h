@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [sun dec 12 13:43:42 2010]
+ * updated       julien quintard   [mon dec 13 18:06:51 2010]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -54,7 +54,7 @@
 #define SCHEDULER_QUANTUM		TIMER_DELAY
 
 /*
- * the number of priority levels for the scheduler.
+ * the number of priorities i.e the number of queues.
  */
 
 #define SCHEDULER_NPRIORITIES		40
@@ -171,110 +171,6 @@
     }									\
   )
 
-/*
- * this macro-function takes a set---active or expired---and store the
- * given candidate in the queue identified by the priority.
- */
-
-#define SCHEDULER_QUEUE(_set_, _candidate_, _priority_)			\
-  {									\
-    i_set*		_queue_;					\
-    s_iterator		_i_;						\
-    t_state		_s_;						\
-    t_priority		_p_;						\
-									\
-    _p_ = 0;								\
-									\
-    set_foreach(SET_OPTION_FORWARD, (_set_), &_i_, _s_)			\
-      {									\
-        if (_p_ == _priority_)						\
-	  {								\
-	    if (set_object((_set_),					\
-			   _i_,						\
-                           (void**)&_queue_) != ERROR_OK)		\
-	      CORE_ESCAPE("unable to retrieve one of the queues"	\
-			  "from the scheduler");			\
-									\
-	    if (set_insert(*_queue_, &(_candidate_)) != ERROR_OK)	\
-	      CORE_ESCAPE("unable to insert the thread candidate "	\
-			  "in the queue");				\
-									\
-	    break;							\
-	  }								\
-									\
-	_p_++;								\
-      }									\
-    }
-
-/*
- * this macro-function takes a thread identifer representing a candidate
- * to remove from the scheduler, no matter its state: active or expired.
- */
-#define SCHEDULER_UNQUEUE(_scheduler_, _id_, _label_)			\
-  {									\
-    t_priority		_priority_;					\
-    t_priority		_p_;						\
-    s_iterator		_i_;						\
-    t_state		_s_;						\
-									\
-    _priority_ = SCHEDULER_PRIORITY((_id_));				\
-									\
-    _p_ = 0;								\
-									\
-    set_foreach(SET_OPTION_FORWARD, (_scheduler_)->active, &_i_, _s_)	\
-      {									\
-        if (p == priority)						\
-          {								\
-	    i_set*	_queue_;					\
-									\
-	    if (set_object((_scheduler_)->active,			\
-			   _i_,						\
-			   (void**)&_queue_) != ERROR_OK)		\
-	      CORE_ESCAPE("unable to retrieve one of the queues"	\
-			  "from the scheduler");			\
-									\
-	    if (set_exist(*_queue_, (_id_)) == ERROR_FALSE)		\
-	      continue;							\
-									\
-	    if (set_remove(*_queue_, (_id_)) != ERROR_OK)		\
-	      CORE_ESCAPE("unable to remove the thread from the set");	\
-									\
-	    goto _label_;						\
-	  }								\
-									\
-	_p_++;								\
-      }									\
-									\
-    _p_ = 0;								\
-									\
-    set_foreach(SET_OPTION_FORWARD, (_scheduler_)->expired, &_i_, _s_)	\
-      {									\
-        if (p == priority)						\
-          {								\
-	    i_set*	_queue_;					\
-									\
-	    if (set_object((_scheduler_)->expired,			\
-			   _i_,						\
-			   (void**)&_queue_) != ERROR_OK)		\
-	      CORE_ESCAPE("unable to retrieve one of the queues"	\
-			  "from the scheduler");			\
-									\
-	    if (set_exist(*_queue_, (_id_)) == ERROR_FALSE)		\
-	      continue;							\
-									\
-	    if (set_remove(*_queue_, (_id_)) != ERROR_OK)		\
-	      CORE_ESCAPE("unable to remove the thread from the set");	\
-									\
-	    goto _label_;						\
-	  }								\
-									\
-	_p_++;								\
-      }									\
-									\
-    CORE_ESCAPE("the thread to remove has not been found in any of "	\
-		"the scheduler's queues");				\
-  }
-
 /*						[endblock::macro::functions] */
 
 /*
@@ -293,6 +189,22 @@ typedef struct
 
   t_timeslice			timeslice;
 }				o_scheduler_candidate;
+
+/*
+ * this structure represents a queue of threads for a specific priority.
+ *
+ * note that identifiers must be 64-bit numbers but a priority is only
+ * 32-bit long. therefore, priorities are converted into identifiers.
+ */
+
+typedef struct
+{
+  t_id				id;
+
+  t_priority			priority;
+
+  i_set				candidates;
+}				o_scheduler_queue;
 
 /*						     [endblock::t_scheduled] */
 

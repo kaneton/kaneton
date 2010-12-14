@@ -488,7 +488,7 @@ t_error			set_object_ll(i_set			setid,
 
 t_error			set_reserve_ll(t_options		options,
 				       t_size			datasz,
-				       i_set*			setid);
+				       i_set*			id);
 
 t_error			set_release_ll(i_set			setid);
 
@@ -524,19 +524,17 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
 				       t_bpt_value(set)		value1,
 				       t_bpt_value(set)		value2);
 
-t_error			set_show_unused_bpt(o_set*		o);
-
 t_error			set_exist_bpt(i_set			setid,
 				      t_id			id);
 
-t_error			set_build_bpt(o_set*			o,
+t_error			set_build_bpt(o_set*			object,
 				      BPT_NODESZ_T		nodesz);
 
-t_error			set_adjust_bpt(o_set*			o,
+t_error			set_adjust_bpt(o_set*			object,
 				       t_bpt_uni(set)		alloc,
 				       t_bpt_uni(set)		size);
 
-t_error			set_destroy_bpt(o_set*			o);
+t_error			set_destroy_bpt(o_set*			object);
 
 t_error			set_show_bpt(i_set			setid,
 				     mt_margin			margin);
@@ -591,7 +589,7 @@ t_error			set_object_bpt(i_set			setid,
 t_error			set_reserve_bpt(t_options		options,
 					t_size			datasz,
 					t_bpt_nodesz(set)	nodesz,
-					i_set*			setid);
+					i_set*			id);
 
 t_error			set_release_bpt(i_set			setid);
 
@@ -610,7 +608,7 @@ t_error			set_pick_bpt(i_set			setid,
 
 t_error			set_reserve_pipe(t_options		options,
 					 t_size			datasz,
-					 i_set*			setid);
+					 i_set*			id);
 
 t_error			set_exist_pipe(i_set			setid,
 				       t_id			id);
@@ -682,7 +680,7 @@ t_error			set_object_pipe(i_set			setid,
 
 t_error			set_reserve_stack(t_options		options,
 					  t_size		datasz,
-					  i_set*		setid);
+					  i_set*		id);
 
 t_error			set_exist_stack(i_set			setid,
 					t_id			id);

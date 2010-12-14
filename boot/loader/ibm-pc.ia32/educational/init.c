@@ -54,9 +54,9 @@ void			bootloader_init_dump(void)
 
   bootloader_cons_msg('#', "dumping memory structure\n");
 
-  bootloader_cons_msg('#', " memory: 0x%x - %u bytes\n",
-		      init->mem,
-		      init->memsz);
+  bootloader_cons_msg('#', " physical memory: 0x%x - %u bytes\n",
+		      init->pbase,
+		      init->psize);
 
   bootloader_cons_msg('#', " kernel code: 0x%x - %u bytes\n",
 		      init->kcode,
@@ -547,8 +547,10 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 4)
    */
 
-  init->mem = 0;
-  init->memsz = mbi->mem_upper * 1024;
+  init->pbase = 0x0;
+  init->psize = mbi->mem_upper * 1024;
+  init->vbase = 0x0;
+  init->vsize = 0xffffffffU;
   init->init = (t_paddr)init;
   init->initsz = initsz;
   init->kcode = kcode;

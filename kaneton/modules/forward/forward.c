@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/forward/forward.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec 10 14:12:41 2010]
+ * updated       julien quintard   [tue dec 14 15:11:55 2010]
  */
 
 /*
@@ -140,7 +140,7 @@ t_error			module_forward_flush(void)
  *    buffer is flushed into a text message.
  */
 
-int			module_forward_character(char		c)
+void			module_forward_character(char		c)
 {
   /*
    * 1)
@@ -155,8 +155,6 @@ int			module_forward_character(char		c)
   if ((_module_forward.size >= (sizeof(_module_forward.buffer) - 1)) ||
       (c == '\n'))
     module_forward_flush();
-
-  return (1);
 }
 
 /*
