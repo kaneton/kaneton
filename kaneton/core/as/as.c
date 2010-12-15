@@ -180,9 +180,9 @@ t_error			as_show(i_as				id,
  *
  * steps:
  *
- * 1) retrieve the set's size.
- * 2) display general information.
- * 3) show the identifier object.
+ * 1) display general information.
+ * 2) show the identifier object.
+ * 3) retrieve the set's size.
  * 4) for each address space held by the manager, show it.
  * 5) call the machine.
  */
@@ -198,23 +198,23 @@ t_error			as_dump(void)
    * 1)
    */
 
-  if (set_size(_as->ass, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set");
-
-  /*
-   * 2)
-   */
-
   module_call(console, message,
 	      '#', "address space manager: ass(%qd)\n",
 	      _as->ass);
 
   /*
-   * 3)
+   * 2)
    */
 
   if (id_show(&_as->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
+
+  /*
+   * 3)
+   */
+
+  if (set_size(_as->ass, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set");
 
   /*
    * 4)

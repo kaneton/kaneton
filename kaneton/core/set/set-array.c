@@ -1627,7 +1627,7 @@ t_error			set_reserve_array(t_options		options,
  * 5) remove the set descriptor from the set container.
  */
 
-t_error			set_release_array(i_set		setid)
+t_error			set_release_array(i_set			setid)
 {
   o_set*       		o;
 

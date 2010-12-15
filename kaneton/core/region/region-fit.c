@@ -155,8 +155,8 @@ t_error			region_show(i_as			asid,
  * steps:
  *
  * 1) retrieve the address space object.
- * 2) retrieve the size of the address space's set of regions.
- * 3) display general information.
+ * 2) display general information.
+ * 3) retrieve the size of the address space's set of regions.
  * 4) show every region.
  * 5) call the machine.
  *						      [endblock::dump::comment]
@@ -183,14 +183,6 @@ t_error			region_dump(i_as			asid)
    * 2)
    */
 
-  if (set_size(o->regions, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the address space's set "
-		"of regions");
-
-  /*
-   * 3)
-   */
-
   module_call(console, message,
 	      '#', "region manager: base(0x%08x) size(0x%08x)\n",
 	      _region->base,
@@ -200,6 +192,14 @@ t_error			region_dump(i_as			asid)
 	      '#', "  address space: id(%qd) regions(%qd)\n",
 	      o->id,
 	      o->regions);
+
+  /*
+   * 3)
+   */
+
+  if (set_size(o->regions, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the address space's set "
+		"of regions");
 
   /*
    * 4)

@@ -17,12 +17,12 @@
  * the segment manager etc. uses the set manager to store its objects rather
  * than creating and managing data structures on their own.
  *
- * in order to add a set implementation, referred to as XXX, to the set
+ * in order to add a set implementation, referred to as XYZ, to the set
  * manager, one must complete the following steps:
  *
- *  1) create the kaneton/core/set/set_XXX.c file and modify the Makefile
+ *  1) create the kaneton/core/set/set_XYZ.c file and modify the Makefile
  *     to take this new file in account;
- *  2) create the kaneton/include/core/set_XXX.h file and modify the
+ *  2) create the kaneton/include/core/set_XYZ.h file and modify the
  *     set.h to include this new file;
  *  3) add the new set implementation to the union contained in the
  *     set object: o_set, in the set.h header file;
@@ -531,7 +531,7 @@ t_error			set_initialize(void)
   if (set_reserve(bpt,
 		  SET_OPTION_CONTAINER | SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof(o_set),
-		  PAGESZ,
+		  ___kaneton$pagesz,
 		  &needless) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set container");
 

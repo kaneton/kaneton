@@ -116,8 +116,8 @@ t_error			cpu_show(i_cpu				id,
  *
  * steps:
  *
- * 1) retrieve the size of the set of CPUs.
- * 2) display general information.
+ * 1) display general information.
+ * 2) retrieve the size of the set of CPUs.
  * 3) show all the CPU objects.
  * 4) call the machine.
  */
@@ -133,16 +133,16 @@ t_error			cpu_dump(void)
    * 1)
    */
 
-  if (set_size(_cpu->cpus, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
+  module_call(console, message,
+	      '#', "CPU manager: cpus(%qd)\n",
+	      _cpu->cpus);
 
   /*
    * 2)
    */
 
-  module_call(console, message,
-	      '#', "CPU manager: cpus(%qd)\n",
-	      _cpu->cpus);
+  if (set_size(_cpu->cpus, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
   /*
    * 3)
@@ -495,10 +495,10 @@ t_error			cpu_initialize(void)
 
   if (i == 1)
     module_call(console, message,
-		'#', " system is running in mono-processor mode\n");
+		'#', "  mode: mono-processor\n");
   else
     module_call(console, message,
-		'#', " system is running in multi-processor mode\n");
+		'#', "  mode: multi-processor\n");
 
   /*
    * 5)

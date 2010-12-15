@@ -138,8 +138,8 @@ t_error			event_show(i_event			id,
  *
  * steps:
  *
- * 1) retrieve the number of registered events.
- * 2) display general information.
+ * 1) display general information.
+ * 2) retrieve the number of registered events.
  * 3) show every event.
  * 4) call the machine.
  */
@@ -155,16 +155,16 @@ t_error			event_dump(void)
    * 1)
    */
 
-  if (set_size(_event->events, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set of events");
+  module_call(console, message,
+	      '#', "event manager: events(%qd)\n",
+	      _event->events);
 
   /*
    * 2)
    */
 
-  module_call(console, message,
-	      '#', "event manager: events(%qd)\n",
-	      _event->events);
+  if (set_size(_event->events, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of events");
 
   /*
    * 3)

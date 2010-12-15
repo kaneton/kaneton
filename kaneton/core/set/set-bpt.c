@@ -1084,7 +1084,8 @@ t_error			set_object_bpt(i_set			setid,
    * 0)
    */
 
-  assert(data != NULL);
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
 
   /*
    * 1)

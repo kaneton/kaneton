@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [tue dec 14 15:03:26 2010]
+ * updated       julien quintard   [wed dec 15 18:01:50 2010]
  */
 
 #ifndef CORE_TASK_H
@@ -264,8 +264,8 @@ t_error			task_block(i_task			id);
 t_error			task_exit(i_task			id,
 				  t_value			value);
 
-void			task_morgue(i_timer			timer,
-				    t_vaddr			data);
+void			task_bury(i_timer			timer,
+				  t_vaddr			data);
 
 t_error			task_wait(i_thread			id,
 				  i_task			target,

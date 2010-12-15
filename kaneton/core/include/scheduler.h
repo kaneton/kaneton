@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [mon dec 13 18:06:51 2010]
+ * updated       julien quintard   [wed dec 15 17:04:01 2010]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -57,14 +57,14 @@
  * the number of priorities i.e the number of queues.
  */
 
-#define SCHEDULER_NPRIORITIES		40
+#define SCHEDULER_NPRIORITIES		60
 
 /*
  * timeslice bounds.
  */
 
-#define SCHEDULER_TIMESLICE_HIGH	200
-#define SCHEDULER_TIMESLICE_LOW		20
+#define SCHEDULER_TIMESLICE_HIGH	250
+#define SCHEDULER_TIMESLICE_LOW		10
 
 /*
  * the timeslice granularity.
@@ -76,8 +76,8 @@
  * scheduling priorities.
  */
 
-#define SCHEDULER_PRIORITY_HIGH		0
-#define SCHEDULER_PRIORITY_LOW		SCHEDULER_NPRIORITIES - 1
+#define SCHEDULER_PRIORITY_HIGH		SCHEDULER_NPRIORITIES - 1
+#define SCHEDULER_PRIORITY_LOW		0
 
 /*						[endblock::macro::constants] */
 
@@ -88,43 +88,34 @@
 /*						   [block::macro::functions] */
 
 /*
- * this macro-function computes the thread's character i.e global priority.
- * the character is a high precision measurement of a thread's priority which
- * is used for timeslice computation.
+ * this macro-function computes the thread's high precision character
+ * by taking into account both the task's and thread's priorities.
  */
 
-#define SCHEDULER_CHARACTER(_thread_)					\
+#define SCHEDULER_CHARACTER(_id_)					\
   (									\
     {									\
-      o_thread*		_oth_;						\
-      o_task*		_otsk_;						\
-      t_priority	_task_prior_;					\
-      t_priority	_thread_prior_;					\
+      o_task*		_task_;						\
+      o_thread*		_thread_;					\
 									\
-      if (thread_get((_thread_), &_oth_) != ERROR_OK)			\
+      if (thread_get((_id_), &_thread_) != ERROR_OK)			\
         CORE_ESCAPE("unable to retrieve the thread object");		\
 									\
-      if (task_get(_oth_->task, &_otsk_) != ERROR_OK)			\
+      if (task_get(_thread_->task, &_task_) != ERROR_OK)		\
         CORE_ESCAPE("unable to retrieve the task object");		\
 									\
-      _task_prior_ =							\
-	((_otsk_->priority - TASK_PRIORITY_BACKGROUND_LOW) *		\
-	 SCHEDULER_NPRIORITIES) /					\
-	(TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW);	\
-									\
-      _thread_prior_ =							\
-	((_oth_->priority - THREAD_PRIORITY_LOW) *			\
-	 SCHEDULER_NPRIORITIES) /					\
-	(THREAD_PRIORITY_HIGH - THREAD_PRIORITY_LOW);			\
-									\
-      (_task_prior_ * _thread_prior_);					\
+      ((_task_->priority - TASK_PRIORITY_BACKGROUND_LOW) *		\
+       (_thread_->priority - THREAD_PRIORITY_LOW));			\
     }									\
   )
 
 /*
- * this macro-function computes the priority queue index for a give
- * thread. this is a low precision measurement of a thread's priority
- * which is used for queue index computation.
+ * this macro-function computes the priority for a giver thread. this
+ * is a low precision measurement of a thread's priority which is used
+ * for locating the proper scheduling queue.
+ *
+ * indeed, while the character lies in a large range, it is then
+ * reduced within the range [SCHEDULER_PRIORITY_LOW, SCHEDULER_PRIORITY_HIGH].
  */
 
 #define SCHEDULER_PRIORITY(_thread_)					\
@@ -134,24 +125,39 @@
 									\
       _character_ = SCHEDULER_CHARACTER((_thread_));			\
 									\
-      (SCHEDULER_NPRIORITIES - _character_ / SCHEDULER_NPRIORITIES);	\
+      SCHEDULER_PRIORITY_LOW +						\
+	((_character_ *							\
+	  (SCHEDULER_PRIORITY_HIGH - SCHEDULER_PRIORITY_LOW)) /		\
+	 ((TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW) *	\
+	  (THREAD_PRIORITY_HIGH - THREAD_PRIORITY_LOW)));		\
     }									\
   )
 
 /*
- * this macro-function computes a ceil timeslice taking into account
- * the granularity that may have been changed.
+ * this macro-function takes a number of milliseconds and turns it
+ * into a valid timeslice according to the scheduler quantum.
+ *
+ * for example, with a quantum of 25ms and a given number of 264 milliseconds,
+ * this macro-function would return 275ms, the upper rounded number.
  */
 
-#define SCHEDULER_SCALE(_t_)						\
-  ((_t_) % SCHEDULER_GRANULARITY ?					\
-   (_t_) + SCHEDULER_GRANULARITY -					\
-   (_t_) % SCHEDULER_GRANULARITY					\
-   : (_t_))
+#define SCHEDULER_SCALE(_timeslice_)					\
+  ((((_timeslice_) % SCHEDULER_GRANULARITY) != 0) ?			\
+   (((_timeslice_) + SCHEDULER_GRANULARITY) -				\
+    (_timeslice_) % SCHEDULER_GRANULARITY)				\
+   : (_timeslice_))
 
 /*
  * this macro-function computes the timeslice given by the kernel to a
- * thread based on its character i.e global priority.
+ * thread based on its character.
+ *
+ * the character basically returns task->priority * thread->priority.
+ *
+ * this number is then turned into a timeslice i.e within the timeslice
+ * range [SCHEDULER_TIMESLICE_LOW, SCHEDULER_TIMESLICE_HIGH].
+ *
+ * finally, the timeslice is scaled i.e rounded up in order to fit the
+ * scheduling unit known as the quantum.
  */
 
 #define SCHEDULER_TIMESLICE(_thread_)					\
@@ -162,10 +168,12 @@
 									\
       _character_ = SCHEDULER_CHARACTER((_thread_));			\
 									\
-      _timeslice_ = SCHEDULER_TIMESLICE_LOW;				\
-      _timeslice_ +=							\
-	((SCHEDULER_TIMESLICE_HIGH - SCHEDULER_TIMESLICE_LOW) *		\
-	 _character_) / (SCHEDULER_NPRIORITIES * SCHEDULER_NPRIORITIES);\
+      _timeslice_ =							\
+	SCHEDULER_TIMESLICE_LOW +					\
+	((_character_ *							\
+	  (SCHEDULER_TIMESLICE_HIGH - SCHEDULER_TIMESLICE_LOW)) /	\
+	 ((TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW) *	\
+	  (THREAD_PRIORITY_HIGH - THREAD_PRIORITY_LOW)));		\
 									\
       SCHEDULER_SCALE(_timeslice_);					\
     }									\

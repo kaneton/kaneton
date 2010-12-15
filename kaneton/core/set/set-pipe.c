@@ -138,7 +138,7 @@ t_error			set_show_pipe(i_set			setid,
  * this function releases a set.
  */
 
-t_error			set_release_pipe(i_set		setid)
+t_error			set_release_pipe(i_set			setid)
 {
   if (set_release_ll(setid) != ERROR_OK)
     CORE_ESCAPE("unable to release the linked-list set");

@@ -199,8 +199,8 @@ t_error			segment_show(i_segment			segid,
  *
  * steps:
  *
- * 1) retrieve the size of the set of segments.
- * 2) display general information.
+ * 1) display general information.
+ * 2) retrieve the size of the set of segments.
  * 3) show every segment object.
  * 4) call the machine.
  */
@@ -216,19 +216,19 @@ t_error			segment_dump(void)
    * 1)
    */
 
-  if (set_size(_segment->segments, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set of segments");
-
-  /*
-   * 2)
-   */
-
   module_call(console, message,
 	      '#', "segment manager: base(0x%08x) size(0x%08x) "
 	      "segments(%qd)\n",
 	      _segment->base,
 	      _segment->size,
 	      _segment->segments);
+
+  /*
+   * 2)
+   */
+
+  if (set_size(_segment->segments, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of segments");
 
   /*
    * 3)

@@ -123,37 +123,6 @@ void			kaneton(s_init*				init)
 
   assert(kernel_initialize() == ERROR_OK);
 
-  // XXX
-  {
-    /*
-    as_dump();
-    cpu_dump();
-    event_dump();
-    extern m_as* _as;
-    id_show(&_as->id, 0);
-    kernel_dump();
-    s_clock clock;
-    clock_current(&clock);
-    clock_show(&clock, 0);
-    module_call(console, print,
-		"[kaneton] %u [page size] %u [endian] %u "
-		"[wordsz] %u [kernel] %u\n",
-		___kaneton,
-		___kaneton$pagesz, ___kaneton$endian,
-		___kaneton$wordsz, ___kaneton$kernel);
-    region_dump(0);
-    scheduler_dump();
-    segment_dump();
-    //set_dump();
-    //extern m_set* _set;
-    //set_show(_set->sets, 0);
-    task_dump();
-    timer_dump();
-    */
-    thread_dump();
-  }
-  // XXX
-
   /*
    * 6)
    */

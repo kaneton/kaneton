@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [wed dec 15 14:25:18 2010]
+ * updated       julien quintard   [wed dec 15 23:07:00 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -41,9 +41,9 @@
  * the stack sizes.
  */
 
-#define THREAD_STACKSZ		500 * PAGESZ
-#define THREAD_STACKSZ_HIGH	1000 * PAGESZ
-#define THREAD_STACKSZ_LOW	1 * PAGESZ
+#define THREAD_STACKSZ		500 * ___kaneton$pagesz
+#define THREAD_STACKSZ_HIGH	1000 * ___kaneton$pagesz
+#define THREAD_STACKSZ_LOW	1 * ___kaneton$pagesz
 
 /*
  * some initial size for the sets.
@@ -70,9 +70,15 @@
 /*
  * the delay in milliseconds until the morgue runs and releases the
  * resources associated to the dead threads.
+ *
+ * note that this delay is based on the task's because, whenever a task
+ * exits, the threads are asked to exit as well. however, the threads
+ * must be buried before the task. otherwise, at the thread burial, the
+ * thread's task would be retrieved, but since the task has already been
+ * buried, an error would occur.
  */
 
-#define THREAD_MORGUE_DELAY	10000
+#define THREAD_MORGUE_DELAY	TASK_MORGUE_DELAY / 2
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -110,6 +116,10 @@ typedef struct
  * the 'value' contains the thread's exit value, when it exits!
  *
  * finally the 'stack' and 'stacksz' reference the thread's stack.
+ *
+ * note that a timer is provided should the thread need to trigger an
+ * action. for instance the timer is used for the thread to sleep for some
+ * time.
  */
 
 typedef struct
@@ -137,6 +147,8 @@ typedef struct
   t_vaddr			stack;
   t_vsize			stacksz;
 
+  i_timer			timer;
+
   machine_data(o_thread);
 }				o_thread;
 
@@ -150,6 +162,12 @@ typedef struct
   o_id				id;
 
   i_set				threads;
+
+  struct
+  {
+    i_set			field;
+    i_timer			timer;
+  }				morgue;
 
   machine_data(m_thread);
 }				m_thread;
@@ -210,7 +228,7 @@ t_error			thread_dump(void);
 
 t_error			thread_reserve(i_task			taskid,
 				       t_priority		prior,
-				       i_thread*		threadid);
+				       i_thread*		id);
 
 t_error			thread_release(i_thread			threadid);
 
@@ -227,7 +245,7 @@ t_error			thread_exit(i_thread			id,
 				    t_value			value);
 
 void			thread_bury(i_timer			timer,
-				    t_vaddr			address);
+				    t_vaddr			data);
 
 t_error			thread_wait(i_thread			id,
 				    i_thread			target,
@@ -241,8 +259,8 @@ t_error			thread_args(i_thread			threadid,
 				    void*			args,
 				    t_vsize			size);
 
-void			thread_sleep_handler(i_timer		timer,
-					     t_vaddr		address);
+void			thread_wakeup(i_timer			timer,
+				      t_vaddr			data);
 
 t_error			thread_sleep(i_thread			id,
 				     t_uint32			milliseconds);
@@ -259,8 +277,8 @@ t_error			thread_current(i_thread*		thread);
 
 t_error			thread_exist(i_thread			threadid);
 
-t_error			thread_get(i_thread			threadid,
-				   o_thread**			o);
+t_error			thread_get(i_thread			id,
+				   o_thread**			object);
 
 t_error			thread_initialize(void);
 

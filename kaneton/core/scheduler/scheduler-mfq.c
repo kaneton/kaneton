@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [wed dec 15 10:33:09 2010]
+ * updated       julien quintard   [wed dec 15 23:13:11 2010]
  */
 
 /*
@@ -25,9 +25,6 @@
  * the core function is the scheduler_elect() function which chooses
  * the next thread to execute, though the current thread may be selected
  * to continue its execution.
- *
- * [XXX:improvement] the tasks' behaviour are not taken into account
- *                   for computing the scheduling priority.
  */
 
 /*
@@ -226,7 +223,7 @@ t_error			scheduler_show(i_cpu			id,
 	      scheduler->active,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, scheduler->active, &i, s)
+  set_foreach(SET_OPTION_BACKWARD, scheduler->active, &i, s)
     {
       o_scheduler_queue*	queue;
       s_iterator		j;
@@ -315,7 +312,7 @@ t_error			scheduler_show(i_cpu			id,
 	      scheduler->expired,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, scheduler->expired, &i, s)
+  set_foreach(SET_OPTION_BACKWARD, scheduler->expired, &i, s)
     {
       o_scheduler_queue*	queue;
       s_iterator		j;
@@ -406,10 +403,11 @@ t_error			scheduler_show(i_cpu			id,
  * steps:
  *
  * 1) display general information on the scheduler manager.
- * 2) go through the schedulers and show them.
+ * 2) retrieve the size of the set of schedulers.
+ * 3) go through the schedulers and show them.
  *   a) retrieve the scheduler object.
  *   b) show the scheduler object.
- * 3) call the machine.
+ * 4) call the machine.
  *						      [endblock::dump::comment]
  */
 
@@ -430,19 +428,19 @@ t_error			scheduler_dump(void)
    * 1)
    */
 
-  if (set_size(_scheduler->schedulers, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set of schedulers");
-
-  /*
-   * 2)
-   */
-
   module_call(console, message,
 	      '#',
 	      "scheduler manager: quantum(%u) idle(%qd) schedulers(%qd)\n",
 	      _scheduler->quantum,
 	      _scheduler->idle,
 	      _scheduler->schedulers);
+
+  /*
+   * 2)
+   */
+
+  if (set_size(_scheduler->schedulers, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of schedulers");
 
   /*
    * 3)
@@ -1002,7 +1000,7 @@ t_error			scheduler_elect(void)
 
  try:
 
-  set_foreach(SET_OPTION_FORWARD, scheduler->active, &i, s)
+  set_foreach(SET_OPTION_BACKWARD, scheduler->active, &i, s)
     {
       o_scheduler_queue*	queue;
 
@@ -1018,7 +1016,7 @@ t_error			scheduler_elect(void)
        */
 
       if ((current_timeslice != 0) &&
-	  (queue->priority > current_priority) &&
+	  (queue->priority < current_priority) &&
 	  (task->state == TASK_STATE_START) &&
 	  (thread->state == THREAD_STATE_START))
 	{
@@ -2018,7 +2016,7 @@ t_error			scheduler_initialize(void)
        * d)
        */
 
-      for (i = 0; i < SCHEDULER_NPRIORITIES; i++)
+      for (i = SCHEDULER_PRIORITY_LOW; i <= SCHEDULER_PRIORITY_HIGH; i++)
 	{
 	  o_scheduler_queue	queue;
 
@@ -2066,7 +2064,7 @@ t_error			scheduler_initialize(void)
        * f)
        */
 
-      for (i = 0; i < SCHEDULER_NPRIORITIES; i++)
+      for (i = SCHEDULER_PRIORITY_LOW; i <= SCHEDULER_PRIORITY_HIGH; i++)
 	{
 	  o_scheduler_queue	queue;
 

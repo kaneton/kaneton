@@ -418,7 +418,7 @@ t_error			set_reserve_array(t_options		options,
 					  t_size		datasz,
 					  i_set*		id);
 
-t_error			set_release_array(i_set		setid);
+t_error			set_release_array(i_set			setid);
 
 t_error			set_push_array(i_set			setid,
 				       void*			data);
@@ -616,7 +616,7 @@ t_error			set_exist_pipe(i_set			setid,
 t_error			set_show_pipe(i_set			setid,
 				      mt_margin			margin);
 
-t_error			set_release_pipe(i_set		setid);
+t_error			set_release_pipe(i_set			setid);
 
 t_error			set_flush_pipe(i_set			setid);
 

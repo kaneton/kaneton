@@ -305,9 +305,9 @@ t_error			timer_show(i_timer			id,
  *
  * steps:
  *
- * 1) retrieve the size of the set of timers.
- * 2) display general information on the manager.
- * 3) show the identifier object.
+ * 1) display general information on the manager.
+ * 2) show the identifier object.
+ * 3) retrieve the size of the set of timers.
  * 4) display the timers.
  *   a) retrieve the timer object.
  *   b) show the timer.
@@ -324,23 +324,23 @@ t_error			timer_dump(void)
    * 1)
    */
 
-  if (set_size(_timer->timers, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set of timers");
-
-  /*
-   * 2)
-   */
-
   module_call(console, message,
 	      '#', "timer manager: timers(%qd)\n",
 	      _timer->timers);
 
   /*
-   * 3)
+   * 2)
    */
 
   if (id_show(&_timer->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
+
+  /*
+   * 3)
+   */
+
+  if (set_size(_timer->timers, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of timers");
 
   /*
    * 4)

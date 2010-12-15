@@ -30,59 +30,14 @@ autre:
 # ---------- mycure -----------------------------------------------------------
 #
 
-DISPATCHER/MACHINE
- - ajuster le dispatcher + rajouter des machine_call + mettre a jour glue
-   (attention exist, get etc. ne doivent pas etre inclus dans le dispatch)
- - verifier que les machine_call sont biens places: tout ce qui modifie c'est
-   a la fin, tout ce qui detruit c'est au debut.
- - dispatcher comment
-
-MACHINE
- - est-ce que chaque object/manager appelle machine_data()
-
-ARGUMENTS
- - verifier que les arguments sont dans le bon ordre: target en dernier
-
-ALIGNMENT
- - aligner les prototypes
-
-SIZEOF
- - checker les sizeof() => sizeof ()
-
-ASSERT
- - il ne doit pas rester d'assert i.e verifier les arguments
-   + verifier que tous argument ecrit (pointeur) est verifie.
-
-SHOW
- - dans show montrer les infos dependentes o_ et dans dump m_
- - margin pour le show
-
-CODE
- - commenter tout le code
-
 --- BUGS?
 
+- attention thread_wait() les args ont change d'ordre
 - j'ai change dans regions: object->options &= REGION_OPTION_FORCE; en |=
   dans inject()
 - dans region, les ids sont id = address / PAGESZ - 1
-- meme chose dans segment.
-
-- s'assurer que PAGESZ n'est pas utilise mais kaneton$pagesz
 - changer ces definitions en: $kaneton, $kernel, $server, $driver, $service,
   $guest, $pagesz, $wordsz, $endian -> a mettre dans les layout
-
-- changer le scheduler et utiliser un set indexe par la priorite
-- delete les macro QUEUE et UNQUEUE
-
-- coder un morgue/mortuary/cremation/mortician/undertaker/burier qui, regulierement, enterre les morts
-
-- attention thread_wait() les args ont change d'ordre
-
-- mettre en place le timer pour la morgue de task et thread
-
-- reorganiser kernel_clean comme l'init
-
-- transformer les %qu en %qd
 
 --- GLUE
 

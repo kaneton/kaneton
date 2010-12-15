@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [wed dec 15 10:39:31 2010]
+ * updated       julien quintard   [wed dec 15 22:56:04 2010]
  */
 
 /*
@@ -209,8 +209,10 @@ t_error			glue_scheduler_initialize(void)
 
   // XXX ici on fait en sorte que la priorite ne soit pas la plus faible pour
   // que le yield fonctionne mais qu'elle soit assez basse tout de meme.
+  //
+  // on pourrait faire une macro opur la priorite avec une fonction math.
   if (thread_reserve(_kernel->task,
-		     (THREAD_PRIORITY - THREAD_PRIORITY_LOW) / 5,
+		     THREAD_PRIORITY_LOW + 10,
 		     &_scheduler->idle) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the idle thread");
 

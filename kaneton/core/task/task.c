@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [tue dec 14 22:31:06 2010]
+ * updated       julien quintard   [wed dec 15 22:42:32 2010]
  */
 
 /*
@@ -358,42 +358,42 @@ t_error			task_show(i_task			id,
  *
  * steps:
  *
- * 1) retrieve the size of the set of tasks.
- * 2) display general informatin on the manager.
- * 3) show the identifier object.
+ * 1) display general informatin on the manager.
+ * 2) show the identifier object.
+ * 3) retrieve the size of the set of tasks.
  * 4) go through the manager's tasks and show them.
- * 5) call the machine.
+ * 5) retrieve the size of the set of dead tasks.
+ * 6) go through the set of dead tasks and display their identifiers.
+ * 7) call the machine.
  */
 
 t_error			task_dump(void)
 {
-  t_state		state;
-  o_task*		data;
   t_setsz		size;
   s_iterator		i;
+  t_state		s;
 
   /*
    * 1)
-   */
-
-  if (set_size(_task->tasks, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the set of tasks");
-
-  /*
-   * 2)
    */
 
   module_call(console, message,
 	      '#', "task manager: tasks(%qd)\n",
 	      _task->tasks);
 
-
   /*
-   * 3)
+   * 2)
    */
 
   if (id_show(&_task->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
+
+ /*
+   * 3)
+   */
+
+  if (set_size(_task->tasks, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of tasks");
 
   /*
    * 4)
@@ -404,18 +404,53 @@ t_error			task_dump(void)
 	      _task->tasks,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _task->tasks, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _task->tasks, &i, s)
     {
-      if (set_object(_task->tasks, i, (void**)&data) != ERROR_OK)
+      o_task*		o;
+
+      if (set_object(_task->tasks, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
 
-      if (task_show(data->id,
+      if (task_show(o->id,
 		    2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the task");
     }
 
-  /*
+ /*
    * 5)
+   */
+
+  if (set_size(_task->morgue.field, &size) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the size of the set of dead tasks");
+
+  /*
+   * 6)
+   */
+
+  module_call(console, message,
+	      '#', "  morgue: field(%qd) timer(%qd)\n",
+	      _task->morgue.field,
+	      _task->morgue.timer);
+
+  module_call(console, message,
+	      '#', "    field: id(%qd) size(%qd)\n",
+	      _task->morgue.field,
+	      size);
+
+  set_foreach(SET_OPTION_FORWARD, _task->morgue.field, &i, s)
+    {
+      i_task*		id;
+
+      if (set_object(_task->tasks, i, (void**)&id) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the task object");
+
+      module_call(console, message,
+		  '#', "      task: id(%qd)\n",
+		  *id);
+    }
+
+  /*
+   * 7)
    */
 
   if (machine_call(task, dump) != ERROR_OK)
@@ -536,11 +571,8 @@ t_error			task_reserve(t_class			class,
   o.class = class;
   o.behaviour = behav;
   o.priority = prior;
-
   o.as = ID_UNUSED;
-
   o.state = TASK_STATE_STOP;
-
   o.value = WAIT_VALUE_UNKNOWN;
 
   /*
@@ -1376,7 +1408,7 @@ t_error			task_exit(i_task			id,
   if (_task->morgue.timer == ID_UNUSED)
     {
       if (timer_reserve(TIMER_TYPE_FUNCTION,
-			TIMER_ROUTINE(task_morgue),
+			TIMER_ROUTINE(task_bury),
 			TIMER_DATA(NULL),
 			TASK_MORGUE_DELAY,
 			TIMER_OPTION_REPEAT,
@@ -1638,8 +1670,8 @@ t_error			task_exit(i_task			id,
  *   c) release the task.
  */
 
-void			task_morgue(i_timer			timer,
-				    t_vaddr			data)
+void			task_bury(i_timer			timer,
+				  t_vaddr			data)
 {
   s_iterator		i;
   t_state		s;
@@ -1668,7 +1700,7 @@ void			task_morgue(i_timer			timer,
       assert(object->state == TASK_STATE_DEAD);
 
       /*
-       * *c)
+       * c)
        */
 
       assert(task_release(object->id) == ERROR_OK);
@@ -1689,6 +1721,10 @@ void			task_morgue(i_timer			timer,
  *    stopped, fill and return the information.
  * 4) if the thread is waiting for the task to exit and the task is already
  *    dying, fill and return the information.
+ *   a) fill the waiting thread's wait structure.
+ *   b) set the task as being dead now that someone has taken notice
+ *      of its death.
+ *   c) add the task to the morgue.
  * 5) if the task is already dead, there is nothing to wait for, return an
  *    error as it is too late.
  * 6) set the thread's waiting state as the one provided. it is necessary
@@ -1739,10 +1775,6 @@ t_error			task_wait(i_thread			id,
   if ((state & WAIT_STATE_START) &&
       (o->state == TASK_STATE_START))
     {
-      /*
-       * a)
-       */
-
       wait->id.task = target;
       wait->state = state;
       wait->cause = WAIT_STATE_START;
@@ -1758,10 +1790,6 @@ t_error			task_wait(i_thread			id,
   if ((state & WAIT_STATE_STOP) &&
       (o->state == TASK_STATE_STOP))
     {
-      /*
-       * a)
-       */
-
       wait->id.task = target;
       wait->state = state;
       wait->cause = WAIT_STATE_STOP;
@@ -1798,6 +1826,8 @@ t_error			task_wait(i_thread			id,
 
       if (set_add(_task->morgue.field, &o->id) != ERROR_OK)
 	CORE_ESCAPE("unable to add the task to the morgue");
+
+      CORE_LEAVE();
     }
 
   /*

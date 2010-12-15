@@ -790,7 +790,8 @@ t_error			set_add_ll(i_set			setid,
    * 0)
    */
 
-  assert(data != NULL);
+  if (data == NULL)
+    CORE_ESCAPE("the 'data' argument is null");
 
   if (*((t_id*)data) == ID_UNUSED)
     CORE_ESCAPE("the provided object must begin with a valid identifier");
