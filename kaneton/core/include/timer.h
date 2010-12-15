@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [tue dec 14 15:05:27 2010]
+ * updated       julien quintard   [wed dec 15 10:39:51 2010]
  */
 
 #ifndef CORE_TIMER_H
@@ -29,21 +29,26 @@
  */
 
 /*
- * timer handling way
+ * the different types of timers: either a function is called within the
+ * kernel or a message is sent to a task.
  */
 
 #define TIMER_TYPE_FUNCTION	0
 #define TIMER_TYPE_MESSAGE	1
 
 /*
- * timer options.
+ * the timer options.
+ *
+ * the 'repeat' option makes the timer go repeatdly.
  */
 
 #define TIMER_OPTION_NONE	0
 #define TIMER_OPTION_REPEAT	1
 
 /*
- * number of millisecond between each tick.
+ * the number of millisecond between each tick: the timers are checked
+ * after this delay. in other words this is the base unit for times but
+ * also for the scheduler.
  */
 
 #define TIMER_DELAY		25
@@ -52,11 +57,25 @@
  * ---------- macro functions -------------------------------------------------
  */
 
+/*
+ * this macro-function casts a function pointer into a proper timer
+ * handler.
+ */
+
 #define TIMER_ROUTINE(_routine_)					\
   ((u_timer_handler)(t_timer_routine)(_routine_))
 
+/*
+ * this macro-function casts a task identifier into a proper timer
+ * handler.
+ */
+
 #define TIMER_TASK(_task_)						\
   ((u_timer_handler)(i_task)(_task_))
+
+/*
+ * this macro-function casts an arbitrary data into a valid timer data.
+ */
 
 #define TIMER_DATA(_data_)						\
   (t_vaddr)((_data_))
@@ -66,14 +85,14 @@
  */
 
 /*
- * generic timer handler type
+ * this type represents a routine-specific timer handler.
  */
 
 typedef t_error			(*t_timer_routine)(i_timer,
 						   t_vaddr);
 
 /*
- * timer handler type
+ * this type is the generic timer handler.
  */
 
 typedef union
@@ -83,19 +102,24 @@ typedef union
 }				u_timer_handler;
 
 /*
- * timer object
+ * the timer object which is identifier by 'id'.
+ *
+ * the 'delay' indicates after how many milliseconds the associated
+ * 'handler' of type 'type' must be triggered. note that some arbitrary
+ * data 'data' are passed to the handler. these data are provided by
+ * the user when the timer is reserved.
  */
 
 typedef struct
 {
   i_timer			id;
 
-  t_uint64			delay;
+  t_type			type;
+
+  t_delay			delay;
 
   t_options			options;
-  t_uint64			repeat;
-
-  t_type			type;
+  t_delay			repeat;
 
   u_timer_handler		handler;
   t_vaddr			data;
@@ -104,7 +128,7 @@ typedef struct
 }				o_timer;
 
 /*
- * message object for event
+ * the message object for message-based events.
  */
 
 typedef struct
@@ -115,14 +139,17 @@ typedef struct
 }				o_timer_message;
 
 /*
- * timer manager
+ * the timer manager.
+ *
+ * the 'reference' is the number of milliseconds elapsed since the
+ * timer manager initialisation. each tick triggers the timer manager's
+ * handler which increases the reference. then, for every expired timer,
+ * its associated handler is triggered.
  */
 
 typedef struct
 {
   o_id				id;
-
-  t_uint64			reference;
 
   i_set				timers;
 
@@ -130,27 +157,24 @@ typedef struct
 }				m_timer;
 
 /*
- * the timer architecture dependent interface
+ * the timer dispatcher.
  */
 
 typedef struct
 {
-  t_error			(*timer_show)(i_timer);
-  t_error			(*timer_delay)(i_timer,
-					       t_uint32);
-  t_error			(*timer_repeat)(i_timer,
-						t_uint32);
-  t_error			(*timer_modify)(i_timer,
-						t_uint32,
-						t_uint32);
+  t_error			(*timer_show)(i_timer,
+					      mt_margin);
+  t_error			(*timer_dump)(void);
   t_error			(*timer_notify)(i_timer);
   t_error			(*timer_reserve)(t_type,
 						 u_timer_handler,
 						 t_vaddr,
-						 t_uint32,
-						 t_uint32,
+						 t_delay,
+						 t_options,
 						 i_timer*);
   t_error			(*timer_release)(i_timer);
+  t_error			(*timer_update)(i_timer,
+						t_delay);
   t_error			(*timer_initialize)(void);
   t_error			(*timer_clean)(void);
 }				d_timer;
@@ -165,41 +189,36 @@ typedef struct
  * ../../core/timer/timer.c
  */
 
+void			timer_handler(i_event			event,
+				      t_vaddr			data);
+
 t_error			timer_check(void);
 
-void			timer_handler(t_id			id);
-
-t_error			timer_show(i_timer			id);
+t_error			timer_show(i_timer			id,
+				   mt_margin			margin);
 
 t_error			timer_dump(void);
 
 t_error			timer_notify(i_timer			id);
 
-t_error			timer_insert(o_timer*			o);
-
 t_error			timer_reserve(t_type			type,
 				      u_timer_handler		handler,
 				      t_vaddr			data,
-				      t_uint32			delay,
+				      t_delay			delay,
 				      t_options			options,
 				      i_timer*			id);
 
 t_error			timer_release(i_timer			id);
 
-t_error			timer_delay(i_timer			id,
-				    t_uint32			delay);
+t_error			timer_update(i_timer			id,
+				     t_delay			delay);
 
-t_error			timer_repeat(i_timer			id,
-				     t_uint64			repeat);
-
-t_error			timer_modify(i_timer			id,
-				     t_uint64			delay,
-				     t_options			options);
+t_error			timer_flush(void);
 
 t_error			timer_exist(i_timer			id);
 
 t_error			timer_get(i_timer			id,
-				  o_timer**			o);
+				  o_timer**			object);
 
 t_error			timer_initialize(void);
 

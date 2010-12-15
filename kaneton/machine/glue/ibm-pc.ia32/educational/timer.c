@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/timer.c
  *
  * created       julien quintard   [mon jun 11 05:41:14 2007]
- * updated       julien quintard   [fri dec 10 10:31:17 2010]
+ * updated       julien quintard   [tue dec 14 23:23:27 2010]
  */
 
 /*
@@ -38,7 +38,6 @@
 
 d_timer			glue_timer_dispatch =
   {
-    NULL,
     NULL,
     NULL,
     NULL,

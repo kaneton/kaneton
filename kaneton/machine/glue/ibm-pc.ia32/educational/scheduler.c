@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [tue dec 14 15:20:33 2010]
+ * updated       julien quintard   [wed dec 15 10:39:31 2010]
  */
 
 /*
@@ -161,7 +161,7 @@ void			glue_scheduler_switch_handler(void)
 
 t_error			glue_scheduler_quantum(t_quantum	quantum)
 {
-  if (timer_delay(_scheduler->machine.timer, quantum) != ERROR_OK)
+  if (timer_update(_scheduler->machine.timer, quantum) != ERROR_OK)
     MACHINE_ESCAPE("unable to adjust the timer's delay to the "
 		   "scheduler's quantum");
 
@@ -195,7 +195,7 @@ t_error			glue_scheduler_initialize(void)
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
 		    TIMER_ROUTINE(glue_scheduler_switch_handler),
-		    0,
+		    TIMER_DATA(NULL),
 		    _scheduler->quantum,
 		    TIMER_OPTION_REPEAT,
 		    &_scheduler->machine.timer) != ERROR_OK)

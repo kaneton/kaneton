@@ -12,12 +12,23 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements the thread manager.
- * a thread objecct contains:
- *  - an execution context (architecture-depedent)
- *  - information relevant to its own stack
- *  - scheduling information (state, priority within the task)
+ * the thread manager provides functionalities for creating, destorying
+ * and controlling the active scheduling entites known as _thread_s.
  *
+ * a thread contains an execution context composed of several machine-dependent
+ * registers which capture the state of a state so that the thread's
+ * execution can be resumed later.
+ *
+ * note that every task possesses its own stack i.e a personal memory area
+ * which is used to store local information such as arguments and local
+ * variables.
+ *
+ * the thread manager, in addition to creating and destroying threads,
+ * provides functions for controlling the state of these objects. thus,
+ * one may want to start a thread so that its code start executing,
+ * block a thread until some event wakes it up or even exit a thread,
+ * hence actually destroying the object and return a value to other threads
+ * which may have been waiting for the thread to do so.
  */
 
 /*
@@ -25,6 +36,10 @@
  */
 
 #include <kaneton.h>
+
+/*
+ * include the machine-specific definitions required by the core.
+ */
 
 machine_include(thread);
 
@@ -62,7 +77,8 @@ m_thread*		_thread = NULL;
  * 3) call the machine-dependent code.
  */
 
-t_error			thread_show(i_thread			threadid)
+t_error			thread_show(i_thread			threadid,
+				    mt_margin			margin)
 {
   char*			state;
   o_thread*		o;
@@ -123,7 +139,7 @@ t_error			thread_show(i_thread			threadid)
    * 3)
    */
 
-  if (machine_call(thread, thread_show, threadid) != ERROR_OK)
+  if (machine_call(thread, show, threadid, margin) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -164,9 +180,12 @@ t_error			thread_dump(void)
       if (set_object(_thread->threads, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
-      if (thread_show(data->id) != ERROR_OK)
+      if (thread_show(data->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the thread");
     }
+
+  if (machine_call(thread, dump) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
@@ -256,7 +275,7 @@ t_error			thread_reserve(i_task			taskid,
    * 6)
    */
 
-  if (machine_call(thread, thread_reserve, taskid, threadid) != ERROR_OK)
+  if (machine_call(thread, reserve, taskid, threadid) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -285,7 +304,7 @@ t_error			thread_release(i_thread			threadid)
    * 1)
    */
 
-  if (machine_call(thread, thread_release, threadid) != ERROR_OK)
+  if (machine_call(thread, release, threadid) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -386,7 +405,7 @@ t_error			thread_priority(i_thread		threadid,
    * 4)
    */
 
-  if (machine_call(thread, thread_priority, threadid, prior) != ERROR_OK)
+  if (machine_call(thread, priority, threadid, prior) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -474,7 +493,7 @@ t_error			thread_start(i_thread			id)
 	}
     }
 
-  if (machine_call(thread, thread_start, id) != ERROR_OK)
+  if (machine_call(thread, start, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -574,7 +593,7 @@ t_error			thread_stop(i_thread			id)
 	}
     }
 
-  if (machine_call(thread, thread_stop, id) != ERROR_OK)
+  if (machine_call(thread, stop, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -643,7 +662,7 @@ t_error			thread_block(i_thread			id)
    * 5)
    */
 
-  if (machine_call(thread, thread_block, id) != ERROR_OK)
+  if (machine_call(thread, block, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -753,7 +772,7 @@ t_error			thread_exit(i_thread			id,
 	}
     }
 
-  if (machine_call(thread, thread_exit, id, value) != ERROR_OK)
+  if (machine_call(thread, exit, id, value) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -787,7 +806,7 @@ t_error			thread_exit(i_thread			id,
       if (timer_reserve(TIMER_TYPE_FUNCTION,
 			TIMER_ROUTINE(thread_bury),
 			(t_vaddr)data,
-			THREAD_DELAY_BURY,
+			THREAD_MORGUE_DELAY,
 			TIMER_OPTION_NONE,
 			&useless) != ERROR_OK)
 	CORE_ESCAPE("unable to reserve a timer");
@@ -1064,7 +1083,7 @@ t_error			thread_stack(i_thread			threadid,
    * 5)
    */
 
-  if (machine_call(thread, thread_stack, threadid, stack) != ERROR_OK)
+  if (machine_call(thread, stack, threadid, stack) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1078,7 +1097,7 @@ t_error			thread_args(i_thread			threadid,
 				    void*			args,
 				    t_vsize			size)
 {
-  if (machine_call(thread, thread_args, threadid, args, size) != ERROR_OK)
+  if (machine_call(thread, args, threadid, args, size) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1180,7 +1199,7 @@ t_error			thread_flush(i_task			taskid)
    * 1)
    */
 
-  if (machine_call(thread, thread_flush, taskid) != ERROR_OK)
+  if (machine_call(thread, flush, taskid) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -1213,7 +1232,7 @@ t_error			thread_flush(i_task			taskid)
 t_error			thread_load(i_thread			threadid,
 				    s_thread_context		context)
 {
-  if (machine_call(thread, thread_load, threadid, context) != ERROR_OK)
+  if (machine_call(thread, load, threadid, context) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1226,7 +1245,7 @@ t_error			thread_load(i_thread			threadid,
 t_error			thread_store(i_thread			threadid,
 				     s_thread_context*		context)
 {
-  if (machine_call(thread, thread_store, threadid, context) != ERROR_OK)
+  if (machine_call(thread, store, threadid, context) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1342,7 +1361,7 @@ t_error			thread_initialize(void)
    * 5)
    */
 
-  if (machine_call(thread, thread_initialize) != ERROR_OK)
+  if (machine_call(thread, initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   if (thread_reserve(_kernel->task,
@@ -1380,7 +1399,7 @@ t_error			thread_clean(void)
    * XXX
    */
 
-  if (machine_call(thread, thread_clean) != ERROR_OK)
+  if (machine_call(thread, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*

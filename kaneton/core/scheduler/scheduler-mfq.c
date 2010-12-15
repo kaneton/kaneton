@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [tue dec 14 22:35:42 2010]
+ * updated       julien quintard   [wed dec 15 10:33:09 2010]
  */
 
 /*

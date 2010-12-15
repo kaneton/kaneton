@@ -98,6 +98,10 @@ t_error			kernel_dump(void)
  * the kernel task is reserve in task_initialize() along with the address
  * space. however the kernel thread is reserved in thread_initialize().
  *
+ * in addition, the task_initialize() function injects the pre-reserved
+ * segments and regions passed by the boot loaded through the 'init'
+ * structure.
+ *
  * steps:
  *
  * 1) allocate and initialize the kernel structure but also set the

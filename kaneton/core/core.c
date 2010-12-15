@@ -125,6 +125,7 @@ void			kaneton(s_init*				init)
 
   // XXX
   {
+    /*
     as_dump();
     cpu_dump();
     event_dump();
@@ -147,8 +148,9 @@ void			kaneton(s_init*				init)
     //extern m_set* _set;
     //set_show(_set->sets, 0);
     task_dump();
-    thread_dump();
     timer_dump();
+    */
+    thread_dump();
   }
   // XXX
 

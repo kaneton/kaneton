@@ -80,9 +80,6 @@
 #define INTERFACE_THREAD_ATTRIBUTE_STACKSZ 75
 #define INTERFACE_TIMER_RESERVE 76
 #define INTERFACE_TIMER_RELEASE 77
-#define INTERFACE_TIMER_DELAY 78
-#define INTERFACE_TIMER_REPEAT 79
-#define INTERFACE_TIMER_MODIFY 80
 #define INTERFACE_TIMER_ATTRIBUTE_DELAY 81
 #define INTERFACE_TIMER_ATTRIBUTE_REPEAT 82
 #define INTERFACE_TIMER_ATTRIBUTE_TYPE 83
@@ -406,22 +403,6 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_uint32	arg2;
-	}		timer_delay;
-	struct
-	{
-	  t_id	arg1;
-	  t_uint32	arg2;
-	}		timer_repeat;
-	struct
-	{
-	  t_id	arg1;
-	  t_uint32	arg2;
-	  t_uint32	arg3;
-	}		timer_modify;
-	struct
-	{
-	  t_id	arg1;
 	}		timer_attribute_delay;
 	struct
 	{
@@ -735,12 +716,6 @@ t_error		interface_thread_attribute_stacksz(o_syscall*	message);
 t_error		interface_timer_reserve(o_syscall*	message);
 
 t_error		interface_timer_release(o_syscall*	message);
-
-t_error		interface_timer_delay(o_syscall*	message);
-
-t_error		interface_timer_repeat(o_syscall*	message);
-
-t_error		interface_timer_modify(o_syscall*	message);
 
 t_error		interface_timer_attribute_delay(o_syscall*	message);
 

@@ -9,7 +9,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/timer.h
  *
  * created       julien quintard   [wed jun  6 16:29:41 2007]
- * updated       julien quintard   [mon dec 13 11:17:26 2010]
+ * updated       julien quintard   [tue dec 14 22:49:08 2010]
  */
 
 #ifndef GLUE_TIMER_H
@@ -33,8 +33,8 @@
     {									\
       t_error	_r_ = ERROR_OK;						\
 									\
-      if (glue_timer_dispatch._function_ != NULL)			\
-        _r_ = glue_timer_dispatch._function_(_args_);			\
+      if (glue_timer_dispatch.timer_ ## _function_ != NULL)		\
+        _r_ = glue_timer_dispatch.timer_ ## _function_(_args_);		\
 									\
       _r_;								\
     }									\

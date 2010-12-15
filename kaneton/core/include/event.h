@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [mon dec 13 13:14:03 2010]
+ * updated       julien quintard   [wed dec 15 10:40:16 2010]
  */
 
 #ifndef CORE_EVENT_H
@@ -54,6 +54,13 @@
 
 #define EVENT_TASK(_task_)						\
   ((u_event_handler)(i_task)(_task_))
+
+/*
+ * this macro-function casts an arbitrary data into a valid event data.
+ */
+
+#define EVENT_DATA(_data_)						\
+  (t_vaddr)((_data_))
 
 /*
  * ---------- types -----------------------------------------------------------

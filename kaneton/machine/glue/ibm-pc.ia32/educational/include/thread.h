@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [mon dec 13 11:17:02 2010]
+ * updated       julien quintard   [wed dec 15 14:06:44 2010]
  */
 
 #ifndef GLUE_THREAD_H
@@ -32,8 +32,8 @@
     {									\
       t_error   _r_ = ERROR_OK;						\
 									\
-      if (glue_thread_dispatch._function_ != NULL)			\
-        _r_ = glue_thread_dispatch._function_(_args_);			\
+      if (glue_thread_dispatch.thread_ ## _function_ != NULL)		\
+        _r_ = glue_thread_dispatch.thread_ ## _function_(_args_);	\
 									\
       _r_;								\
     }									\

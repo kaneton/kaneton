@@ -12,13 +12,42 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements the timer manager.
- * a timer is parameterised around three properties: the task it belongs to,
- * its delay and its repeat mode. When its delay (in 1/100 of sec) has expired,
- * a message is sent to the task taskid before behaving as follow:
- * a) if the timer options are set to TIMER_OPTION_ENABLE, the timer is
- *    automaticaly reset to its original delay.
- * b) if not, the timer is released.
+ * the timer manager provides functionalities for triggering functions, or
+ * sending message notifications, after some time has passed.
+ *
+ * note that timer objects are kept in an ordered list, with the
+ * about-to-be-triggered timers first. therefore, whenever the manager
+ * wants to check whether some timers have expired, it just checks if
+ * the object's delay has expired. if so the timer's expiration is notified
+ * while the next timer is checked until a timer is detected as not having
+ * expired in which case, since the timers are ordered according to their
+ * delay, all the following timers do not need to be checked.
+ *
+ * also, the timer's delay are relative to each other. for instance considering
+ * the following set of delays (15, 20, 28, 38, 40, 40 and 100) would be
+ * stored in the sorted set as follows:
+ *
+ *   15, 5, 8, 10, 2, 0, 60
+ *
+ * note that the first timer keeps its absolute value while the others
+ * are relative to the previous one.
+ *
+ * since timers can have the same delay, mapping the timer identifier on
+ * the delay would incurr identifier collisions. an identifier is thus
+ * generated. this implies that the sorting cannot be left to the set
+ * manager since the identifiers sorting does not reflect the timers
+ * sorting. therefore, the manager itself handles both the objects' memory
+ * and their placement in the list.
+ *
+ * in addition, note that a timer can be either internal or external. the
+ * first type is associated with an internal kernel function which is called
+ * on expiration while the second generates a message which is sent to the
+ * destination task.
+ *
+ * finally, timers can be configured, through the REPEAT option, in order
+ * to be triggered on a regular basis, every 'delay' milliseconds. therefore,
+ * once such a timer has expired, its delay is re-initialised to its original
+ * value and the timer is re-located in the list, according to its new delay.
  */
 
 /*
@@ -26,6 +55,10 @@
  */
 
 #include <kaneton.h>
+
+/*
+ * include the machine-specific definitions required by the core.
+ */
 
 machine_include(timer);
 
@@ -44,7 +77,7 @@ extern m_kernel*	_kernel;
  */
 
 /*
- * the timer manager variable.
+ * the timer manager.
  */
 
 m_timer*		_timer = NULL;
@@ -54,126 +87,145 @@ m_timer*		_timer = NULL;
  */
 
 /*
- * check timer expiration.
+ * this function is triggered by the hardware timer event on a regular
+ * basis.
+ *
+ * note that since the hardware timer event is, obviously, machine-dependent,
+ * it is the machine's reponsability to reserve this event so that this
+ * function gets triggered.
  *
  * steps:
  *
- * 1) get the timer with the closest expiration date.
- * 2) return if this timer has not expired yet.
- * 3) otherwise, notify the task its timer has expired.
- * 4) release the timer, or re-initialize it if repeat mode is enabled.
+ * 1) update the clock.
+ * 2) check the timers' expiration.
  */
 
-t_error			timer_check(void)
-{
-  o_timer*		o;
-  s_iterator		i;
-
-  while (set_head(_timer->timers, &i) == ERROR_TRUE)
-    {
-
-      /*
-       * 1)
-       */
-
-      if (set_object(_timer->timers, i, (void**)&o) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the timer");
-
-      /*
-       * 2)
-       */
-
-      if (_timer->reference < o->delay)
-        break;
-
-      /*
-       * 3)
-       */
-
-      switch (o->type)
-	{
-	  // XXX ce serait surement plus propre d'appeller un truc genre
-	  // timer_notifyd() ici
-	case TIMER_TYPE_FUNCTION:
-	  {
-	    o->handler.routine(o->id, o->data);
-
-	    break;
-	  }
-	case TIMER_TYPE_MESSAGE:
-	  {
-	    if (timer_notify(o->id) != ERROR_OK)
-	      CORE_ESCAPE("unable to notify the task of the "
-			  "timer's expiration");
-
-	    break;
-	  }
-	}
-
-      /*
-       * 4)
-       */
-
-      if (o->options & TIMER_OPTION_REPEAT)
-        {
-	  if (timer_modify(o->id, o->repeat, o->options) != ERROR_OK)
-	    CORE_ESCAPE("unable to modify the timer");
-        }
-      else
-        {
-          if (timer_release(o->id) != ERROR_OK)
-	    CORE_ESCAPE("unable to release the timer");
-        }
-    }
-
-  CORE_LEAVE();
-}
-
-/*
- * this is the handler triggers whenever a timer event occurs. this is
- * used to keep track of time and trigger the registered timers.
- *
- * steps:
- *
- * 1) update the elapsed time.
- * 2) update the clock.
- * 3) trigger the expired timers.
- */
-
-void			timer_handler(t_id			id)
+void			timer_handler(i_event			event,
+				      t_vaddr			data)
 {
   /*
    * 1)
    */
 
-  _timer->reference += TIMER_DELAY;
-
-  /*
-   * 2)
-   */
-
   assert(clock_update(TIMER_DELAY));
 
   /*
-   * 3)
+   * 2)
    */
 
   assert(timer_check());
 }
 
 /*
- * this function shows a given timer.
+ * this function is called on a regular basis and check whether the
+ * timers have expired or not. if so, the expiration is notified to its
+ * associated target.
  *
  * steps:
  *
- * 1) get the timer object from its identifier.
- * 2) display its delay.
- *
+ * 1) go through the timers.
+ *   a) retrieve the timer object.
+ *   b) if the timer still needs to wait to be triggered, decrease it by
+ *      the amount of time that has passed and exit the loop since, if
+ *      this timer has not expired, none of the following has.
+ *   c) since this timer has expired, substract its delay to the amount
+ *      of time that needs to be substracted from all the expiring timers.
+ *   d) update the timer's delay to zero since it has expired.
+ *   e) notify of the timer's expiration.
+ *   f) if the timer must be repeated, update it so that it gets re-inserted
+ *      in the list. otherwise, release the timer since no longer used.
+ *   g) finally move on to the next timer which may also have expired.
  */
 
-t_error			timer_show(i_timer			id)
+t_error			timer_check(void)
+{
+  t_delay		reference = TIMER_DELAY;
+  s_iterator		i;
+
+  /*
+   * 1)
+   */
+
+  while (set_head(_timer->timers, &i) == ERROR_TRUE)
+    {
+      o_timer*		o;
+
+      /*
+       * a)
+       */
+
+      if (set_object(_timer->timers, i, (void**)&o) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the timer");
+
+      /*
+       * b)
+       */
+
+      if (o->delay > reference)
+	{
+	  o->delay -= reference;
+
+	  break;
+	}
+
+      /*
+       * c)
+       */
+
+      reference -= o->delay;
+
+      /*
+       * d)
+       */
+
+      o->delay = 0;
+
+      /*
+       * e)
+       */
+
+      if (timer_notify(o->id) != ERROR_OK)
+	CORE_ESCAPE("unable to notify of the timer's expiration");
+
+      /*
+       * f)
+       */
+
+      if (o->options & TIMER_OPTION_REPEAT)
+        {
+	  if (timer_update(o->id, o->repeat) != ERROR_OK)
+	    CORE_ESCAPE("unable to update the timer");
+        }
+      else
+        {
+          if (timer_release(o->id) != ERROR_OK)
+	    CORE_ESCAPE("unable to release the timer");
+        }
+
+      /*
+       * g)
+       */
+    }
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function shows a timer's attributes.
+ *
+ * steps:
+ *
+ * 1) retrieve the timer object.
+ * 2) build the options string.
+ * 3) depending on the timer type, display its attributes.
+ * 4) call the machine.
+ */
+
+t_error			timer_show(i_timer			id,
+				   mt_margin			margin)
 {
   o_timer*		o;
+  char			options[2];
 
   /*
    * 1)
@@ -186,29 +238,87 @@ t_error			timer_show(i_timer			id)
    * 2)
    */
 
-  module_call(console, message,
-	      '#', "  timer %qd: delay = %qu\n",
-	      o->id, o->delay - _timer->reference);
+  if (o->options & TIMER_OPTION_REPEAT)
+    options[0] = 'r';
+  else
+    options[0] = '.';
+
+  options[1] = '\0';
+
+  /*
+   * 3)
+   */
+
+  switch (o->type)
+    {
+    case TIMER_TYPE_FUNCTION:
+      {
+	module_call(console, message,
+		    '#',
+		    MODULE_CONSOLE_MARGIN_FORMAT
+		    "timer: id(%qd) type(function) delay(%qd) options(%s) "
+		    "repeat(%qd) routine(0x%x) data(0x%x)\n",
+		    MODULE_CONSOLE_MARGIN_VALUE(margin),
+		    o->id,
+		    o->delay,
+		    options,
+		    o->repeat,
+		    o->handler.routine,
+		    o->data);
+
+	break;
+      }
+    case TIMER_TYPE_MESSAGE:
+      {
+	module_call(console, message,
+		    '#',
+		    MODULE_CONSOLE_MARGIN_FORMAT
+		    "timer: id(%qd) type(message) delay(%qd) options(%s) "
+		    "repeat(%qd) task(%qd) data(0x%x)\n",
+		    MODULE_CONSOLE_MARGIN_VALUE(margin),
+		    o->id,
+		    o->delay,
+		    options,
+		    o->repeat,
+		    o->handler.task,
+		    o->data);
+
+	break;
+      }
+    default:
+      CORE_ESCAPE("unknown timer type '%u'",
+		  o->type);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(timer, show, id, margin) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function dumps the timers managed by the kernel.
+ * this function dumps the timer manager.
  *
  * steps:
  *
- * 1) get the size of the timer set.
- * 2) display information about every timer.
- *
+ * 1) retrieve the size of the set of timers.
+ * 2) display general information on the manager.
+ * 3) show the identifier object.
+ * 4) display the timers.
+ *   a) retrieve the timer object.
+ *   b) show the timer.
+ * 5) call the machine.
  */
 
 t_error			timer_dump(void)
 {
-  t_state		state;
-  o_timer*		data;
   t_setsz		size;
   s_iterator		i;
+  t_state		s;
 
   /*
    * 1)
@@ -217,42 +327,80 @@ t_error			timer_dump(void)
   if (set_size(_timer->timers, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of timers");
 
-  module_call(console, message,
-	      '#', "dumping %qd timer(s):\n",
-	      size);
-
   /*
-   *  2)
+   * 2)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _timer->timers, &i, state)
+  module_call(console, message,
+	      '#', "timer manager: timers(%qd)\n",
+	      _timer->timers);
+
+  /*
+   * 3)
+   */
+
+  if (id_show(&_timer->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+    CORE_ESCAPE("unable to show the identifier object");
+
+  /*
+   * 4)
+   */
+
+  module_call(console, message,
+	      '#', "  timers: id(%qd) size(%qd)\n",
+	      _timer->timers,
+	      size);
+
+  set_foreach(SET_OPTION_FORWARD, _timer->timers, &i, s)
     {
-      if (set_object(_timer->timers, i, (void**)&data) != ERROR_OK)
+      o_timer*		o;
+
+      /*
+       * a)
+       */
+
+      if (set_object(_timer->timers, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the timer");
 
-      if (timer_show(data->id) != ERROR_OK)
+      /*
+       * b)
+       */
+
+      if (timer_show(o->id,
+		     2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the timer");
     }
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(timer, dump) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * notify a task that one of its timers expired.
+ * this function notifies the destination, i.e depending on the timer type,
+ * of the timer's expiration.
  *
  * steps:
  *
- * 1) get the timer object from the set.
- * 2) notify the task for its timer expiration.
- * 3) call the machine-dependent code.
- *
+ * 1) retrieve the timer object.
+ * 2) depending on the timer type.
+ *   A) if the timer target is a function...
+ *     a) call the associated routine.
+ *   B) if the timer target is a message...
+ *     a) build the destination node.
+ *     b) build the notification message.
+ *     c) send the message.
+ * 3) call the machine.
  */
 
 t_error			timer_notify(i_timer			id)
 {
   o_timer*		o;
-  o_timer_message	msg;
-  i_node		node;
 
   /*
    * 1)
@@ -265,93 +413,137 @@ t_error			timer_notify(i_timer			id)
    * 2)
    */
 
-  msg.id = id;
-  msg.data = o->data;
-  node.cell = _kernel->cell;
-  node.task = o->handler.task;
+  switch (o->type)
+    {
+    case TIMER_TYPE_FUNCTION:
+      {
+	/*
+	 * A)
+	 */
 
-  if (message_send(_kernel->task, node, MESSAGE_TYPE_TIMER, (t_vaddr)&msg,
-		   sizeof (o_timer_message)) != ERROR_OK)
-    CORE_ESCAPE("unable to send a message to the task");
+	/*
+	 * a)
+	 */
+
+	o->handler.routine(o->id, o->data);
+
+	break;
+      }
+    case TIMER_TYPE_MESSAGE:
+      {
+	/*
+	 * B)
+	 */
+
+	o_timer_message	message;
+	i_node		node;
+
+	/*
+	 * a)
+	 */
+
+	node.cell = _kernel->cell;
+	node.task = o->handler.task;
+
+	/*
+	 * b)
+	 */
+
+	message.id = id;
+	message.data = o->data;
+
+	/*
+	 * c)
+	 */
+
+	if (message_send(_kernel->task,
+			 node,
+			 MESSAGE_TYPE_TIMER,
+			 (t_vaddr)&message,
+			 sizeof (o_timer_message)) != ERROR_OK)
+	  CORE_ESCAPE("unable to send a message to the task");
+      }
+    default:
+      CORE_ESCAPE("unknown timer type '%u'",
+		  o->type);
+    }
 
   /*
    * 3)
    */
 
-  if (machine_call(timer, timer_notify, id) != ERROR_OK)
+  if (machine_call(timer, notify, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * insert a timer in the timer set.
+ * this function reserves a timer.
  *
  * steps:
  *
- * 1) insert the timer before the first which has a greater expiration date.
- * 2) if there is no timer or every timer expire sooner, insert it at the end.
- */
-
-t_error			timer_insert(o_timer*			o)
-{
-  t_state		state;
-  o_timer*		o_tmp;
-  s_iterator		i;
-
-  assert(o != NULL);
-
-  /*
-   * 1)
-   */
-
-  set_foreach(SET_OPTION_FORWARD, _timer->timers, &i, state)
-    {
-      if (set_object(_timer->timers, i, (void**)&o_tmp) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the timer");
-
-      if (o_tmp->delay >= o->delay)
-	{
-	  if (set_before(_timer->timers, i, o) != ERROR_OK)
-	    CORE_ESCAPE("unable to insert the timer in the set");
-
-	  CORE_LEAVE();
-	}
-    }
-
-  /*
-   * 2)
-   */
-
-  if (set_append(_timer->timers, o) != ERROR_OK)
-    CORE_ESCAPE("unable to append the timer object at the end of the set");
-
-  CORE_LEAVE();
-}
-
-/*
- * reserve a timer.
- *
- * steps:
- *
- * 1) create a new timer object and give it an identifier.
- * 2) setup delay and repeat mode.
- * 3) add the new timer to the timer manager.
- * 4) call the machine-dependent code.
- *
+ * 0) verify the arguments.
+ * 1) reserve a timer identifier.
+ * 2) allocate memory for the timer object.
+ * 3) initialize and fill the object.
+ * 4) if the repeat option has been activated, save the original delay.
+ * 5) insert the object in the set, according to its state:
+ *   A) if the set is empty...
+ *     a) since this is the only timer, set the relative delay to the
+ *        absolute's size.
+ *     b) add the timer.
+ *   B) if there already is a timer, or more...
+ *     a) initialize the absolute reference delay.
+ *     b) go through the timers.
+ *       i) retrieve the timer object.
+ *       ii) add the timer's relative delay to the absolute delay.
+ *       iii) if the absolute delay of the reserved timer is larger than
+ *            the absolute delay of the timer being handled in the loop, this
+ *            means that the timer must be stored further in the set; continue
+ *            with the next timer.
+ *       iv) compute the reserved timer's delay depending on its position i.e
+ *           first or following another timer.
+ *         #1) if the timer is the first one, the object's relative delay
+ *             equals the absolute one.
+ *         #2) if the timer is preceded by another time, the absolute value
+ *             given through timer_reserve() must be converted in a delay
+ *             relative to the previous timer's: difference between the
+ *             absolute delays of the reserved and previous timers.
+ *       v) update the current timer since its relative delay must be adjusted
+ *          to the reserved timer which will soon precede it.
+ *       vi) insert the new timer before the current one.
+ *       vii) the timer has been inserted properly, exit the loop.
+ *     c) if the function reaches this point, no timer with a higher delay
+ *        was found. therefore, set the object's relative delay as being
+ *        the absolute provided through timer_reserve() minus the sum
+ *        of all the timers i.e _reference_.
+ *     d) add the timer after the last timer i.e at the end.
+ * 6) call the machine.
  */
 
 t_error			timer_reserve(t_type			type,
 				      u_timer_handler		handler,
 				      t_vaddr			data,
-				      t_uint32			delay,
+				      t_delay			delay,
 				      t_options			options,
 				      i_timer*			id)
 {
-  o_timer		o;
+  t_delay		reference;
+  o_timer*		o;
+  s_iterator		i;
+  t_state		s;
 
-  assert((type == TIMER_TYPE_FUNCTION) || (type == TIMER_TYPE_MESSAGE));
-  assert(id != NULL);
+  /*
+   * 0)
+   */
+
+  if ((type != TIMER_TYPE_FUNCTION) &&
+      (type != TIMER_TYPE_MESSAGE))
+    CORE_ESCAPE("invalid type");
+
+  if (id == NULL)
+    CORE_ESCAPE("the 'id' argument is null");
 
   /*
    * 1)
@@ -360,36 +552,158 @@ t_error			timer_reserve(t_type			type,
   if (id_reserve(&_timer->id, id) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a timer identifier");
 
-  memset(&o, 0x0, sizeof(o_timer));
-
-  o.id = *id;
-  o.type = type;
-  o.handler = handler;
-  o.data = data;
-  o.options = options;
-
   /*
    * 2)
    */
 
-  if (o.options & TIMER_OPTION_REPEAT)
-    o.repeat = delay;
-
-  o.delay = _timer->reference + delay;
+  if ((o = malloc(sizeof (o_timer))) == NULL)
+    CORE_ESCAPE("unable to allocate memory for the timer object");
 
   /*
    * 3)
    */
 
-  if (timer_insert(&o) != ERROR_OK)
-    CORE_ESCAPE("unable to insert the object in the set of timers");
+  memset(o, 0x0, sizeof (o_timer));
+
+  o->id = *id;
+  o->type = type;
+  o->handler = handler;
+  o->data = data;
+  o->options = options;
 
   /*
    * 4)
    */
 
-  if (machine_call(timer,
-		   timer_reserve,
+  if (o->options & TIMER_OPTION_REPEAT)
+    o->repeat = delay;
+
+  /*
+   * 5)
+   */
+
+  if (set_empty(_timer->timers) == ERROR_TRUE)
+    {
+      /*
+       * A)
+       */
+
+      /*
+       * a)
+       */
+
+      o->delay = delay;
+
+      /*
+       * b)
+       */
+
+      if (set_add(_timer->timers, o) != ERROR_OK)
+	CORE_ESCAPE("unable to append the timer object at the end of the set");
+    }
+  else
+    {
+      /*
+       * B)
+       */
+
+      /*
+       * a)
+       */
+
+      reference = 0;
+
+      /*
+       * b)
+       */
+
+      set_foreach(SET_OPTION_FORWARD, _timer->timers, &i, s)
+	{
+	  o_timer*	n;
+	  s_iterator	j;
+
+	  /*
+	   * i)
+	   */
+
+	  if (set_object(_timer->timers, i, (void**)&n) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the timer");
+
+	  /*
+	   * ii)
+	   */
+
+	  reference += n->delay;
+
+	  /*
+	   * iii)
+	   */
+
+	  if (delay >= reference)
+	    continue;
+
+	  /*
+	   * iv)
+	   */
+
+	  if (set_previous(_timer->timers, i, &j) == ERROR_FALSE)
+	    {
+	      /*
+	       * #1)
+	       */
+
+	      o->delay = delay;
+	    }
+	  else
+	    {
+	      /*
+	       * #2)
+	       */
+
+	      o->delay = delay - (reference - n->delay);
+	    }
+
+	  /*
+	   * v)
+	   */
+
+	  n->delay = n->delay - o->delay;
+
+	  /*
+	   * vi)
+	   */
+
+	  if (set_before(_timer->timers, i, o) != ERROR_OK)
+	    CORE_ESCAPE("unable to insert the timer in the set");
+
+	  /*
+	   * vii)
+	   */
+
+	  goto inserted;
+	}
+
+      /*
+       * c)
+       */
+
+      o->delay = delay - reference;
+
+      /*
+       * d)
+       */
+
+      if (set_after(_timer->timers, i, o) != ERROR_OK)
+	CORE_ESCAPE("unable to insert the timer in the set");
+    }
+
+ inserted:
+
+  /*
+   * 6)
+   */
+
+  if (machine_call(timer, reserve,
 		   type,
 		   handler,
 		   data,
@@ -406,189 +720,335 @@ t_error			timer_reserve(t_type			type,
  *
  * steps:
  *
- * 1) check that the timer exists.
- * 2) call the machine dependant code.
- * 3) destroy the identifier object.
- * 4) remove the timer object from the timer set.
- *
+ * 1) call the machine.
+ * 2) release the timer identifier.
+ * 3) locate and retrieve the timer object.
+ * 4) update the following timer's relative delay.
+ *   a) retrieve the next timer, if there is one.
+ *   b) re-compute its delay since its previous timer just got released.
+ * 5) release the object's memory.
+ * 6) delete the timer from the list.
  */
 
 t_error			timer_release(i_timer			id)
 {
   o_timer*		o;
+  s_iterator		i;
+  s_iterator		j;
 
   /*
    * 1)
    */
 
-  /*
-   * 2)
-   */
-
-  if (machine_call(timer, timer_release, id) != ERROR_OK)
+  if (machine_call(timer, release, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  if (timer_get(id, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the timer object");
-
   /*
-   * 3)
+   * 2)
    */
 
   if (id_release(&_timer->id, id) != ERROR_OK)
     CORE_ESCAPE("unable to release the timer identifier");
 
   /*
-   * 4)
-   */
-
-  if (set_remove(_timer->timers, id) != ERROR_OK)
-    CORE_ESCAPE("unable to remove the object from the set of timers");
-
-  CORE_LEAVE();
-}
-
-/*
- * set the timer delay.
- *
- * steps:
- *
- * 1) get the timer object.
- * 2) set the delay.
- # 3) call the machine-dependent code.
- *
- */
-
-t_error			timer_delay(i_timer			id,
-				    t_uint32			delay)
-{
-  o_timer*		o;
-
-  /*
-   * 1)
-   */
-
-  if (timer_get(id, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the timer object");
-
-  /*
-   * 2)
-   */
-
-  o->delay = delay;
-
-  /*
    * 3)
    */
 
-  if (machine_call(timer, timer_delay, id, delay) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
+  if (set_locate(_timer->timers, id, &i) != ERROR_OK)
+    CORE_ESCAPE("unable to locate the timer object");
 
-  CORE_LEAVE();
-}
-
-/*
- * set the timer repeat mode.
- *
- * steps:
- *
- * 1) get the timer object.
- * 2) set the repeat mode.
- * 3) call the machine-dependent code.
- *
- */
-
-t_error			timer_repeat(i_timer			id,
-				     t_uint64			repeat)
-{
-  o_timer*		o;
-
-  /*
-   * 1)
-   */
-
-  if (timer_get(id, &o) != ERROR_OK)
+  if (set_object(_timer->timers, i, (void**)&o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the timer object");
-
-  /*
-   * 2)
-   */
-
-  o->options |= TIMER_OPTION_REPEAT;
-  o->repeat = repeat;
-
-  /*
-   * 3)
-   */
-
-  if (machine_call(timer, timer_repeat, id, repeat) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * modify a timer attributes.
- *
- * steps:
- *
- * 1) check if the timer exists and get it.
- * 2) call the machine code.
- * 3) clone the timer and update its delay and repeat mode.
- * 4) reorganize the timer position within the set.
- *
- */
-
-t_error			timer_modify(i_timer			id,
-				     t_uint64			delay,
-				     t_options			options)
-{
-  o_timer		o;
-  o_timer*		old;
-
-  /*
-   * 1)
-   */
-
-  if (timer_get(id, &old) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the timer object");
-
-  /*
-   * 2)
-   */
-
-  if (machine_call(timer, timer_modify, id, delay, options) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  /*
-   * 3)
-   */
-
-  memcpy(&o, old, sizeof(o_timer));
-
-  o.options = options;
-
-  if (o.options & TIMER_OPTION_REPEAT)
-    o.repeat = delay;
-
-  o.delay = _timer->reference + delay;
 
   /*
    * 4)
    */
 
-  if (timer_release(id) != ERROR_OK)
-    CORE_ESCAPE("unable to release the timer");
+  if (set_next(_timer->timers, i, &j) == ERROR_TRUE)
+    {
+      o_timer*		t;
 
-  if (timer_insert(&o) != ERROR_OK)
-    CORE_ESCAPE("unable to insert the object in the set of timers");
+      /*
+       * a)
+       */
+
+      if (set_object(_timer->timers, j, (void**)&t) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the timer object");
+
+      /*
+       * b)
+       */
+
+      t->delay += o->delay;
+    }
+
+  /*
+   * 5)
+   */
+
+  free(o);
+
+  /*
+   * 6)
+   */
+
+  if (set_delete(_timer->timers, i) != ERROR_OK)
+    CORE_ESCAPE("unable to delete the object from the set of timers");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function updates the timer's delay.
+ *
+ * note that should the timer be repeated, its repeat delay is also
+ * updated.
+ *
+ * steps:
+ *
+ * 1) locate and retrieve the timer object.
+ * 2) delete the object from the list.
+ * 3) if the timer is being repeated, update its repeat delay.
+ * 4) insert the object in the set, according to its state:
+ *   A) if the set is empty...
+ *     a) since this is the only timer, set the relative delay to the
+ *        absolute's size.
+ *     b) add the timer.
+ *   B) if there already is a timer, or more...
+ *     a) initialize the absolute reference delay.
+ *     b) go through the timers.
+ *       i) retrieve the timer object.
+ *       ii) add the timer's relative delay to the absolute delay.
+ *       iii) if the absolute delay of the updated timer is larger than
+ *            the absolute delay of the timer being handled in the loop, this
+ *            means that the timer must be stored further in the set; continue
+ *            with the next timer.
+ *       iv) compute the updated timer's delay depending on its position i.e
+ *           first or following another timer.
+ *         #1) if the timer is the first one, the object's relative delay
+ *             equals the absolute one.
+ *         #2) if the timer is preceded by another time, the absolute value
+ *             given through timer_update() must be converted in a delay
+ *             relative to the previous timer's: difference between the
+ *             absolute delays of the updated and previous timers.
+ *       v) update the current timer since its relative delay must be adjusted
+ *          to the updated timer which will soon precede it.
+ *       vi) insert the new timer before the current one.
+ *       vii) the timer has been inserted properly, exit the loop.
+ *     c) if the function reaches this point, no timer with a higher delay
+ *        was found. therefore, set the object's relative delay as being
+ *        the absolute provided through timer_update() minus the sum
+ *        of all the timers i.e _reference_.
+ *     d) add the timer after the last timer i.e at the end.
+ * 5) call the machine.
+ */
+
+t_error			timer_update(i_timer			id,
+				     t_delay			delay)
+{
+  t_delay		reference;
+  o_timer*		o;
+  s_iterator		i;
+  t_state		s;
+
+  /*
+   * 1)
+   */
+
+  if (set_locate(_timer->timers, id, &i) != ERROR_OK)
+    CORE_ESCAPE("unable to locate the timer object");
+
+  if (set_object(_timer->timers, i, (void**)&o) != ERROR_OK)
+    CORE_ESCAPE("unable to retrieve the timer object");
+
+  /*
+   * 2)
+   */
+
+  if (set_delete(_timer->timers, i) != ERROR_OK)
+    CORE_ESCAPE("unable to delete the object from the set of timers");
+
+  /*
+   * 3)
+   */
+
+  if (o->options & TIMER_OPTION_REPEAT)
+    o->repeat = delay;
+
+  /*
+   * 4)
+   */
+
+  if (set_empty(_timer->timers) == ERROR_TRUE)
+    {
+      /*
+       * A)
+       */
+
+      /*
+       * a)
+       */
+
+      o->delay = delay;
+
+      /*
+       * b)
+       */
+
+      if (set_add(_timer->timers, o) != ERROR_OK)
+	CORE_ESCAPE("unable to append the timer object at the end of the set");
+    }
+  else
+    {
+      /*
+       * B)
+       */
+
+      /*
+       * a)
+       */
+
+      reference = 0;
+
+      /*
+       * b)
+       */
+
+      set_foreach(SET_OPTION_FORWARD, _timer->timers, &i, s)
+	{
+	  o_timer*	n;
+	  s_iterator	j;
+
+	  /*
+	   * i)
+	   */
+
+	  if (set_object(_timer->timers, i, (void**)&n) != ERROR_OK)
+	    CORE_ESCAPE("unable to retrieve the timer");
+
+	  /*
+	   * ii)
+	   */
+
+	  reference += n->delay;
+
+	  /*
+	   * iii)
+	   */
+
+	  if (delay >= reference)
+	    continue;
+
+	  /*
+	   * iv)
+	   */
+
+	  if (set_previous(_timer->timers, i, &j) == ERROR_FALSE)
+	    {
+	      /*
+	       * #1)
+	       */
+
+	      o->delay = delay;
+	    }
+	  else
+	    {
+	      /*
+	       * #2)
+	       */
+
+	      o->delay = delay - (reference - n->delay);
+	    }
+
+	  /*
+	   * v)
+	   */
+
+	  n->delay = n->delay - o->delay;
+
+	  /*
+	   * vi)
+	   */
+
+	  if (set_before(_timer->timers, i, o) != ERROR_OK)
+	    CORE_ESCAPE("unable to insert the timer in the set");
+
+	  /*
+	   * vii)
+	   */
+
+	  goto inserted;
+	}
+
+      /*
+       * c)
+       */
+
+      o->delay = delay - reference;
+
+      /*
+       * d)
+       */
+
+      if (set_after(_timer->timers, i, o) != ERROR_OK)
+	CORE_ESCAPE("unable to insert the timer in the set");
+    }
+
+ inserted:
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(timer, update, id, delay) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function releases all the timers.
+ *
+ * steps:
+ *
+ * 1) go through the timers.
+ *   a) retrieve the timer object.
+ *   b) release the timer.
+ */
+
+t_error			timer_flush(void)
+{
+  s_iterator		i;
+  t_state		s;
+
+  /*
+   * 1)
+   */
+
+  set_foreach(SET_OPTION_FORWARD, _timer->timers, &i, s)
+    {
+      o_timer*		o;
+
+      /*
+       * a)
+       */
+
+      if (set_object(_timer->timers, i, (void**)&o) != ERROR_OK)
+	CORE_ESCAPE("unable to retrieve the timer object");
+
+      /*
+       * b)
+       */
+
+      if (timer_release(o->id) != ERROR_OK)
+	CORE_ESCAPE("unable to release the timer");
+    }
 
   CORE_LEAVE();
 }
 
 /*
  * this function returns true if the timer object exists.
- *
  */
 
 t_error			timer_exist(i_timer			id)
@@ -600,31 +1060,44 @@ t_error			timer_exist(i_timer			id)
 }
 
 /*
- * this function finds a timer object in the timer set.
+ * this function retrieves a timer object from the set of timers.
  *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the object from the set.
  */
 
 t_error			timer_get(i_timer			id,
-				  o_timer**			o)
+				  o_timer**			object)
 {
-  assert(o != NULL);
+  /*
+   * 0)
+   */
 
-  if (set_get(_timer->timers, id, (void**)o) != ERROR_OK)
+  if (object == NULL)
+    CORE_ESCAPE("the 'object' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (set_get(_timer->timers, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of timers");
 
   CORE_LEAVE();
 }
 
 /*
- * initialize the timer manager.
+ * this function initializes the timer manager.
  *
  * steps:
  *
- * 1) allocate and initialize the timer manager.
- * 2) initialize the object identifier.
- * 3) reserve the timer set.
- * 4) call the machine dependent code.
- *
+ * 1) display a message.
+ * 2) allocate and initialize the timer manager's structure.
+ * 3) initialize the object identifier.
+ * 4) reserve the set of timers.
+ * 5) call the machine.
  */
 
 t_error			timer_initialize(void)
@@ -637,7 +1110,7 @@ t_error			timer_initialize(void)
 	      '+', "initializing the timer manager\n");
 
   /*
-   * XXX
+   * 2)
    */
 
   if ((_timer = malloc(sizeof (m_timer))) == NULL)
@@ -646,42 +1119,43 @@ t_error			timer_initialize(void)
   memset(_timer, 0x0, sizeof (m_timer));
 
   /*
-   * 2)
+   * 3)
    */
 
   if (id_build(&_timer->id) != ERROR_OK)
     CORE_ESCAPE("unable to build the identifier object");
 
-  _timer->reference = 100;
-
-  /*
-   * 3)
-   */
-
-  if (set_reserve(ll, SET_OPTION_ALLOCATE,
-                  sizeof(o_timer), &_timer->timers) != ERROR_OK)
-    CORE_ESCAPE("unable to reserve the set of timers");
-
   /*
    * 4)
    */
 
-  if (machine_call(timer, timer_initialize) != ERROR_OK)
+  if (set_reserve(ll,
+		  SET_OPTION_NONE,
+                  sizeof (o_timer),
+		  &_timer->timers) != ERROR_OK)
+    CORE_ESCAPE("unable to reserve the set of timers");
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(timer, initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * destroy the timer manager.
+ * this function cleans the timer manager.
  *
  * steps:
  *
- * 1) call the machine dependent code.
- * 2) release the timer set.
- * 3) destroy the identifier object.
- * 4) free the timer manager's structure memory.
- *
+ * 1) display a message.
+ * 2) call the machine.
+ * 3) flush the timers.
+ * 3) release the set of timers.
+ * 5) destroy the identifier object.
+ * 6) release the timer manager's structure.
  */
 
 t_error			timer_clean(void)
@@ -694,28 +1168,35 @@ t_error			timer_clean(void)
 	      '+', "cleaning the timer manager\n");
 
   /*
-   * XXX
+   * 2)
    */
 
-  if (machine_call(timer, timer_clean) != ERROR_OK)
+  if (machine_call(timer, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 2)
+   * 3)
+   */
+
+  if (timer_flush() != ERROR_OK)
+    CORE_ESCAPE("unable to flush the timer");
+
+  /*
+   * 4)
    */
 
   if (set_release(_timer->timers) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of timers");
 
   /*
-   * 3)
+   * 5)
    */
 
   if (id_destroy(&_timer->id) != ERROR_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
 
   /*
-   * 4)
+   * 6)
    */
 
   free(_timer);

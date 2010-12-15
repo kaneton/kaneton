@@ -1139,55 +1139,6 @@ t_error		interface_timer_release(o_syscall*	message)
 }
 
 /*
- * this function launchs the timer_delay() function.
- */
-
-t_error		interface_timer_delay(o_syscall*	message)
-{
-  t_error	error;
-
-  error = timer_delay(message->u.request.u.timer_delay.arg1,
-			message->u.request.u.timer_delay.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
- * this function launchs the timer_repeat() function.
- */
-
-t_error		interface_timer_repeat(o_syscall*	message)
-{
-  t_error	error;
-
-  error = timer_repeat(message->u.request.u.timer_repeat.arg1,
-			message->u.request.u.timer_repeat.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
- * this function launchs the timer_modify() function.
- */
-
-t_error		interface_timer_modify(o_syscall*	message)
-{
-  t_error	error;
-
-  error = timer_modify(message->u.request.u.timer_modify.arg1,
-			message->u.request.u.timer_modify.arg2,
-			message->u.request.u.timer_modify.arg3);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function get the delay attribute of the o_timer object.
  */
 
@@ -1360,9 +1311,6 @@ t_interface_dispatch dispatch[] =
   interface_thread_attribute_stacksz,
   interface_timer_reserve,
   interface_timer_release,
-  interface_timer_delay,
-  interface_timer_repeat,
-  interface_timer_modify,
   interface_timer_attribute_delay,
   interface_timer_attribute_repeat,
   interface_timer_attribute_type,
