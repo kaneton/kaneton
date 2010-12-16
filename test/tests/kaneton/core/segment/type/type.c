@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...t/tests/kaneton/core/segment/type/type.c
+ * file          /home/mycure/kane...t/tests/kaneton/core/segment/type/type.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 19:02:04 2010]
+ * updated       julien quintard   [thu dec 16 11:59:44 2010]
  */
 
 /*
@@ -45,7 +45,7 @@ void			test_core_segment_type(void)
   if (segment_permissions(seg, PERMISSION_READ | PERMISSION_WRITE) != ERROR_OK)
     TEST_ERROR("[segment_permissions] error");
 
-  if (segment_type(seg, SEGMENT_TYPE_CATCH) != ERROR_OK)
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     TEST_ERROR("[segment_type] error");
 
   if (segment_get(seg, &o) != ERROR_OK)
@@ -54,7 +54,7 @@ void			test_core_segment_type(void)
   if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))
     TEST_ERROR("invalid segment's permissions");
 
-  if (o->type != SEGMENT_TYPE_CATCH)
+  if (o->type != SEGMENT_TYPE_SYSTEM)
     TEST_ERROR("invalid segment's type");
 
   if (segment_permissions(seg,

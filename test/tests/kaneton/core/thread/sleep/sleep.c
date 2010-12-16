@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../tests/kaneton/core/thread/sleep/sleep.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 17:07:42 2010]
+ * updated       julien quintard   [thu dec 16 12:23:40 2010]
  */
 
 /*
@@ -37,9 +37,10 @@ static volatile i_thread	thread;
 
 void			test_core_thread_sleep_content(void)
 {
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		past;
   t_uint64		current;
+  i_cpu			cpu;
 
   if (clock_current(&clock) != ERROR_OK)
     TEST_HANG("[clock_current] error");
@@ -63,7 +64,10 @@ void			test_core_thread_sleep_content(void)
 
   TEST_SIGNATURE(12sakpow3208);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -72,8 +76,9 @@ void			test_core_thread_sleep_content(void)
 void			test_core_thread_sleep(void)
 {
   o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
+  i_cpu			cpu;
 
   TEST_ENTER();
 
@@ -100,7 +105,10 @@ void			test_core_thread_sleep(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

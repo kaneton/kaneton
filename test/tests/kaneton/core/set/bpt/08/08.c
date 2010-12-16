@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../test/tests/kaneton/core/set/bpt/08/08.c
+ * file          /home/mycure/kaneton/test/tests/kaneton/core/set/bpt/08/08.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2080]
- * updated       julien quintard   [sun dec  5 16:23:32 2010]
+ * updated       julien quintard   [thu dec 16 12:18:37 2010]
  */
 
 /*
@@ -27,7 +27,7 @@ void			test_core_set_bpt_08(void)
 {
   t_id			objs[10];
   i_set			id;
-  t_iterator		it;
+  s_iterator		it;
   t_id			obj;
   t_state		state;
   t_setsz		sz;
@@ -42,7 +42,7 @@ void			test_core_set_bpt_08(void)
    */
 
   if (set_reserve(bpt,
-		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof(t_id),
 		  PAGESZ,
 		  &id) != ERROR_OK)
@@ -134,7 +134,7 @@ void			test_core_set_bpt_08(void)
    */
 
   if (set_reserve(bpt,
-		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof(t_id),
 		  PAGESZ,
 		  &id) != ERROR_OK)

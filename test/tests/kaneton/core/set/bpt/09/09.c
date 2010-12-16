@@ -27,7 +27,7 @@ void			test_core_set_bpt_09(void)
 {
   t_id			objs[64];
   i_set			id;
-  t_iterator		it;
+  s_iterator		it;
   t_state		state;
   t_setsz		sz;
   t_id*			pdata;

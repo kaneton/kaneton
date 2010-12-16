@@ -26,7 +26,7 @@
 void			test_core_set_bpt_06(void)
 {
   i_set			id;
-  t_iterator		it;
+  s_iterator		it;
   t_id			obj;
   t_state		state;
   t_setsz		sz;
@@ -40,7 +40,7 @@ void			test_core_set_bpt_06(void)
    */
 
   if (set_reserve(bpt,
-		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof(t_id),
 		  PAGESZ,
 		  &id) != ERROR_OK)

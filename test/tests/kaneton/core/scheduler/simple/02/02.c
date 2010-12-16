@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ts/kaneton/core/scheduler/simple/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 00:54:55 2010]
+ * updated       julien quintard   [thu dec 16 12:12:28 2010]
  */
 
 /*
@@ -46,8 +46,9 @@ void			test_core_scheduler_simple_02_thread_01(void)
 
 void			test_core_scheduler_simple_02_thread_02(void)
 {
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		start;
+  i_cpu			cpu;
 
   executed_02 = 1;
 
@@ -77,7 +78,10 @@ void			test_core_scheduler_simple_02_thread_02(void)
    * stop
    */
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -86,9 +90,10 @@ void			test_core_scheduler_simple_02_thread_02(void)
 void			test_core_scheduler_simple_02(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
+  i_cpu			cpu;
 
   /*
    * thread 1
@@ -144,7 +149,10 @@ void			test_core_scheduler_simple_02(void)
    * scheduler
    */
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

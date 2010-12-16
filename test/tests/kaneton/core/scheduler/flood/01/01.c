@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/scheduler/flood/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 00:52:37 2010]
+ * updated       julien quintard   [thu dec 16 12:04:10 2010]
  */
 
 /*
@@ -55,12 +55,13 @@ void			test_core_scheduler_flood_01_thread(void)
 void			test_core_scheduler_flood_01_content(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
   t_uint32		i;
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		start;
+  i_cpu			cpu;
 
   /*
    * threads
@@ -125,7 +126,10 @@ void			test_core_scheduler_flood_01_content(void)
 
   TEST_SIGNATURE(r29mnsdv2w3030h);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -134,9 +138,10 @@ void			test_core_scheduler_flood_01_content(void)
 void			test_core_scheduler_flood_01(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
+  i_cpu			cpu;
 
   if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
@@ -159,7 +164,10 @@ void			test_core_scheduler_flood_01(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

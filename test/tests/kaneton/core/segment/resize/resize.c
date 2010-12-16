@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...sts/kaneton/core/segment/resize/resize.c
+ * file          /home/mycure/kane...sts/kaneton/core/segment/resize/resize.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 19:01:10 2010]
+ * updated       julien quintard   [thu dec 16 11:59:07 2010]
  */
 
 /*
@@ -45,7 +45,7 @@ void			test_core_segment_resize(void)
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_resize(seg, PAGESZ, &seg) != ERROR_OK)
+  if (segment_resize(seg, PAGESZ, SEGMENT_OPTION_NONE, &seg) != ERROR_OK)
     TEST_ERROR("[segment_resize] error");
 
   if (segment_get(seg, &o) != ERROR_OK)
@@ -99,7 +99,7 @@ void			test_core_segment_resize(void)
     TEST_ERROR("unable to allocate a segment following a previously "
 	       "reserved one");
 
-  if (segment_resize(seg, 10 * PAGESZ, &seg3) != ERROR_OK)
+  if (segment_resize(seg, 10 * PAGESZ, SEGMENT_OPTION_NONE, &seg3) != ERROR_OK)
     TEST_ERROR("[segment_resize] error");
 
   if (seg3 == seg)

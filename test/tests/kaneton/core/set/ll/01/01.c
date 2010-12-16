@@ -35,7 +35,7 @@ void			test_core_set_ll_01(void)
   if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error");
 
-  if (set_reserve(ll, SET_OPTION_ALLOC | SET_OPTION_FREE,
+  if (set_reserve(ll, SET_OPTION_ALLOCATE | SET_OPTION_FREE,
                   sizeof(t_id), &id) == ERROR_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments");
 

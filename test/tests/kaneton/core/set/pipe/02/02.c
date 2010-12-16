@@ -28,7 +28,7 @@ void			test_core_set_pipe_02(void)
   i_set			id;
   t_id			objs[64];
   t_setsz		i;
-  t_iterator		it;
+  s_iterator		it;
   t_state		state;
   t_setsz		sz;
   void*			pdata;

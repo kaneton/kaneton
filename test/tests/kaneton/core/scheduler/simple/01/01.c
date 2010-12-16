@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ts/kaneton/core/scheduler/simple/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 00:54:51 2010]
+ * updated       julien quintard   [thu dec 16 12:11:49 2010]
  */
 
 /*
@@ -37,9 +37,14 @@ static volatile t_uint32	executed = 1;
 
 void			test_core_scheduler_simple_01_content(void)
 {
+  i_cpu			cpu;
+
   executed = 1;
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -48,9 +53,10 @@ void			test_core_scheduler_simple_01_content(void)
 void			test_core_scheduler_simple_01(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
+  i_cpu			cpu;
 
   /*
    * thread
@@ -81,7 +87,10 @@ void			test_core_scheduler_simple_01(void)
    * scheduler
    */
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

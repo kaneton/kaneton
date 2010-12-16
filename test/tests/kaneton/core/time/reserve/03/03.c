@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../tests/kaneton/core/time/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:20:21 2010]
+ * updated       julien quintard   [thu dec 16 13:16:51 2010]
  */
 
 /*
@@ -58,36 +58,37 @@ void			test_core_time_reserve_03_handler_04(void)
 void			test_core_time_reserve_03_content(void)
 {
   i_timer		tid;
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		start;
+  i_cpu			cpu;
 
-  if (timer_reserve(TIMER_FUNCTION,
-		    TIMER_HANDLER(test_core_time_reserve_03_handler_01),
-		    0,
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+		    TIMER_ROUTINE(test_core_time_reserve_03_handler_01),
+		    TIMER_DATA(NULL),
 		    1000,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
     TEST_HANG("[event_reserve] error");
 
-  if (timer_reserve(TIMER_FUNCTION,
-		    TIMER_HANDLER(test_core_time_reserve_03_handler_02),
-		    0,
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+		    TIMER_ROUTINE(test_core_time_reserve_03_handler_02),
+		    TIMER_DATA(NULL),
 		    200,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
     TEST_HANG("[event_reserve] error");
 
-  if (timer_reserve(TIMER_FUNCTION,
-		    TIMER_HANDLER(test_core_time_reserve_03_handler_03),
-		    0,
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+		    TIMER_ROUTINE(test_core_time_reserve_03_handler_03),
+		    TIMER_DATA(NULL),
 		    500,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
     TEST_HANG("[event_reserve] error");
 
-  if (timer_reserve(TIMER_FUNCTION,
-		    TIMER_HANDLER(test_core_time_reserve_03_handler_04),
-		    0,
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+		    TIMER_ROUTINE(test_core_time_reserve_03_handler_04),
+		    TIMER_DATA(NULL),
 		    700,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
@@ -116,7 +117,10 @@ void			test_core_time_reserve_03_content(void)
 
   TEST_SIGNATURE(3r9w230ai9ekf923it);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -126,8 +130,9 @@ void			test_core_time_reserve_03(void)
 {
   i_thread		thread;
   o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
+  i_cpu			cpu;
 
   TEST_ENTER();
 
@@ -152,7 +157,10 @@ void			test_core_time_reserve_03(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

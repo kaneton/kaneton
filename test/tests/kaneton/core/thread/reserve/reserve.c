@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ts/kaneton/core/thread/reserve/reserve.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 13:18:58 2010]
+ * updated       julien quintard   [thu dec 16 12:22:56 2010]
  */
 
 /*
@@ -34,8 +34,8 @@ void			test_core_thread_reserve(void)
 {
   i_thread		thread;
   o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
 
   TEST_ENTER();
 

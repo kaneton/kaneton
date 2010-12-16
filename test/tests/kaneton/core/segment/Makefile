@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...test/tests/kaneton/core/segment/Makefile
+# file          /home/mycure/kane...test/tests/kaneton/core/segment/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [tue nov 30 16:08:05 2010]
+# updated       julien quintard   [thu dec 16 11:57:45 2010]
 #
 
 #
@@ -33,8 +33,7 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		catch				\
-					clone				\
+SUBDIRS			:=		clone				\
 					coalesce			\
 					copy				\
 					flush				\

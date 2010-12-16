@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 17:13:25 2010]
+ * updated       julien quintard   [thu dec 16 13:07:25 2010]
  */
 
 /*
@@ -38,9 +38,10 @@ static volatile i_thread	thread2;
 
 void			test_core_thread_wait_05_thread_01(void)
 {
-  t_wait		wait;
+  s_wait		wait;
+  i_cpu			cpu;
 
-  if (thread_wait(thread1, WAIT_STATE_STOP, thread2, &wait) != ERROR_OK)
+  if (thread_wait(thread1, thread2, WAIT_STATE_STOP, &wait) != ERROR_OK)
     TEST_HANG("[thread_wait] error");
 
   if (WAIT_THREAD(&wait) != thread2)
@@ -54,7 +55,11 @@ void			test_core_thread_wait_05_thread_01(void)
   if (thread_sleep(thread1, 3000) != ERROR_OK)
     TEST_HANG("[thread_sleep] error");
 
-  if (scheduler_stop() != ERROR_OK)
+
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -76,8 +81,9 @@ void			test_core_thread_wait_05_thread_02(void)
 void			test_core_thread_wait_05(void)
 {
   o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
+  i_cpu			cpu;
 
   TEST_ENTER();
 
@@ -139,7 +145,11 @@ void			test_core_thread_wait_05(void)
    * scheduler
    */
 
-  if (scheduler_start() != ERROR_OK)
+
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

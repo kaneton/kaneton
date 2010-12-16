@@ -26,7 +26,7 @@
 void			test_core_set_bpt_10(void)
 {
   i_set			id;
-  t_iterator		it;
+  s_iterator		it;
   t_id			obj;
   t_state		state;
   t_setsz		sz;

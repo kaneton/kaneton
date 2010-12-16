@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/core/time/precision/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [sat dec  4 12:20:28 2010]
+ * updated       julien quintard   [thu dec 16 13:10:41 2010]
  */
 
 /*
@@ -41,7 +41,7 @@ static volatile t_uint64	end = 0;
 void			test_core_time_precision_01_handler(t_id	id,
 							    t_vaddr	data)
 {
-  t_clock		clock;
+  s_clock		clock;
 
   timed = 1;
 
@@ -53,18 +53,19 @@ void			test_core_time_precision_01_handler(t_id	id,
 
 void			test_core_time_precision_01_content(void)
 {
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		start;
   i_timer		tid;
+  i_cpu			cpu;
 
   if (clock_current(&clock) != ERROR_OK)
     TEST_HANG("[clock_current] error");
 
   begin = CLOCK_UNIQUE(&clock);
 
-  if (timer_reserve(TIMER_FUNCTION,
-		    TIMER_HANDLER(test_core_time_precision_01_handler),
-		    0,
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+		    TIMER_ROUTINE(test_core_time_precision_01_handler),
+		    TIMER_DATA(NULL),
 		    500,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
@@ -96,7 +97,10 @@ void			test_core_time_precision_01_content(void)
 
   TEST_SIGNATURE(t3490gjsdof29);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -106,8 +110,9 @@ void			test_core_time_precision_01(void)
 {
   i_thread		thread;
   o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
+  i_cpu			cpu;
 
   TEST_ENTER();
 
@@ -132,7 +137,10 @@ void			test_core_time_precision_01(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

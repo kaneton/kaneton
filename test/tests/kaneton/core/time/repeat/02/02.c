@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/time/repeat/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [sun dec  5 22:52:20 2010]
+ * updated       julien quintard   [thu dec 16 13:14:08 2010]
  */
 
 /*
@@ -43,13 +43,14 @@ void			test_core_time_repeat_02_handler(t_id		id,
 
 void			test_core_time_repeat_02_content(void)
 {
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		start;
   i_timer		tid;
+  i_cpu			cpu;
 
-  if (timer_reserve(TIMER_FUNCTION,
-		    TIMER_HANDLER(test_core_time_repeat_02_handler),
-		    0,
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+		    TIMER_ROUTINE(test_core_time_repeat_02_handler),
+		    TIMER_DATA(NULL),
 		    1000,
 		    TIMER_OPTION_REPEAT,
 		    &tid) != ERROR_OK)
@@ -79,7 +80,10 @@ void			test_core_time_repeat_02_content(void)
 
   TEST_SIGNATURE(90cfir32f93g894g);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -89,8 +93,9 @@ void			test_core_time_repeat_02(void)
 {
   i_thread		thread;
   o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
+  i_cpu			cpu;
 
   TEST_ENTER();
 
@@ -115,7 +120,10 @@ void			test_core_time_repeat_02(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

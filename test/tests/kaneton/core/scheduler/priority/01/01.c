@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/priority/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 00:52:50 2010]
+ * updated       julien quintard   [thu dec 16 12:10:38 2010]
  */
 
 /*
@@ -55,11 +55,12 @@ void			test_core_scheduler_priority_01_thread_02(void)
 void			test_core_scheduler_priority_01_content(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		start;
+  i_cpu			cpu;
 
   /*
    * thread 1
@@ -151,7 +152,10 @@ void			test_core_scheduler_priority_01_content(void)
 
   TEST_SIGNATURE(nsdv09wi23f0w9gv);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -160,9 +164,10 @@ void			test_core_scheduler_priority_01_content(void)
 void			test_core_scheduler_priority_01(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
+  i_cpu			cpu;
 
   if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
@@ -185,7 +190,10 @@ void			test_core_scheduler_priority_01(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

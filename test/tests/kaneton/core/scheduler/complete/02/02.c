@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/complete/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 00:54:16 2010]
+ * updated       julien quintard   [thu dec 16 12:03:22 2010]
  */
 
 /*
@@ -48,9 +48,10 @@ static volatile t_vaddr		share_03;
 
 void			test_core_scheduler_complete_02_thread_01(void)
 {
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
+  i_cpu			cpu;
 
   /*
    * thread
@@ -135,7 +136,10 @@ void			test_core_scheduler_complete_02_thread_01(void)
 
   TEST_SIGNATURE(23rfjsovcewrnbe04);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -178,10 +182,11 @@ void			test_core_scheduler_complete_02(void)
   i_as			as;
   i_region		region;
   i_segment		segment;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
   o_region*		r;
+  i_cpu			cpu;
 
   /*
    * kernel
@@ -340,7 +345,10 @@ void			test_core_scheduler_complete_02(void)
    * scheduler
    */
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

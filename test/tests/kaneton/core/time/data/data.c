@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/core/time/data/data.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec  3 20:20:22 2010]
+ * updated       julien quintard   [thu dec 16 13:09:36 2010]
  */
 
 /*
@@ -50,12 +50,13 @@ void			test_core_time_data_handler(t_id	id,
  
 void			test_core_time_data_content(void)
 {
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		start;
+  i_cpu			cpu;
 
-  if (timer_reserve(TIMER_FUNCTION,
-                    TIMER_HANDLER(test_core_time_data_handler),
-                    0x41414141,
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+                    TIMER_ROUTINE(test_core_time_data_handler),
+                    TIMER_DATA(0x41414141),
                     1000,
                     TIMER_OPTION_NONE,
                     (i_timer*)&tid) != ERROR_OK)
@@ -84,7 +85,11 @@ void			test_core_time_data_content(void)
 
   TEST_SIGNATURE(3i2afowjg9g489hj);
 
-  if (scheduler_stop() != ERROR_OK)
+
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -94,8 +99,9 @@ void			test_core_time_data(void)
 {
   i_thread		thread;
   o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
+  i_cpu			cpu;
 
   TEST_ENTER();
 
@@ -120,7 +126,10 @@ void			test_core_time_data(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

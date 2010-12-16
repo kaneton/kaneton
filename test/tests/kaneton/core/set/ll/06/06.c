@@ -26,7 +26,7 @@
 void			test_core_set_ll_06(void)
 {
   i_set			id;
-  t_iterator		it;
+  s_iterator		it;
   t_id			obj;
   t_state		state;
   t_setsz		sz;
@@ -39,7 +39,7 @@ void			test_core_set_ll_06(void)
    * reserve
    */
 
-  if (set_reserve(ll, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(ll, SET_OPTION_ALLOCATE, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*

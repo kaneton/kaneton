@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...test/tests/kaneton/core/set/pipe/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [sun dec  5 16:25:04 2010]
+ * updated       julien quintard   [thu dec 16 12:19:39 2010]
  */
 
 /*
@@ -27,7 +27,7 @@ void			test_core_set_pipe_06(void)
 {
   t_id			objs[10];
   i_set			id;
-  t_iterator		it;
+  s_iterator		it;
   t_id			obj;
   t_state		state;
   t_setsz		sz;
@@ -41,7 +41,7 @@ void			test_core_set_pipe_06(void)
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -129,7 +129,7 @@ void			test_core_set_pipe_06(void)
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_ALLOC, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof(t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*

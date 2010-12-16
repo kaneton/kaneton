@@ -29,7 +29,7 @@ void			test_core_set_bpt_03(void)
   t_setsz		i;
   t_test_object		obj1;
   t_test_object*	obj2;
-  t_iterator		it;
+  s_iterator		it;
   t_state		state;
   t_setsz		sz;
   void*			pdata;
@@ -42,7 +42,7 @@ void			test_core_set_bpt_03(void)
    */
 
   if (set_reserve(bpt,
-		  SET_OPTION_SORT | SET_OPTION_ALLOC,
+		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof(t_test_object),
 		  PAGESZ,
 		  &id) != ERROR_OK)
