@@ -5,23 +5,23 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/tests/kaneton/core/Makefile
+# file          /home/mycure/kane...ts/kaneton/core/timer/precision/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu dec 16 13:18:37 2010]
+# updated       julien quintard   [thu dec 16 13:19:40 2010]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		test/tests/kaneton/core
+component		:=		test/tests/kaneton/core/timer/precision
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -33,41 +33,32 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-UNITS			:=		as				\
-					id				\
-					map				\
-					region				\
-					segment				\
-					scheduler			\
-					set				\
-					task				\
-					thread				\
-					timer				
+SUBDIRS			:=		01				\
+					02				\
+					03				
 
-SUBDIRS			:=		$(_TEST_ENGINE_DIR_)		\
-					$(UNITS)
+MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 
-MODULES			:=		$(_TEST_ENGINE_LO_)		\
-					$(foreach s,$(UNITS),${s}/${s}.lo)
-
-COMPONENT_LO		:=		core.lo
+PRECISION_LO		:=		precision.lo
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies
-	$(call env_remove,$(COMPONENT_LO),)
+main:			dependencies $(PRECISION_LO)
 
-	$(call env_archive,$(COMPONENT_LO),$(MODULES),)
+$(PRECISION_LO):		$(MODULES)
+	$(call env_remove,$(PRECISION_LO),)
+
+	$(call env_archive,$(PRECISION_LO),$(MODULES),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
-	$(call env_remove,$(COMPONENT_LO),)
+	$(call env_remove,$(PRECISION_LO),)
 
 	$(call env_purge,)
 
@@ -80,6 +71,8 @@ headers:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,headers,)			; \
 	done
+
+	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 dependencies:
 	for d in $(SUBDIRS) ; do					\

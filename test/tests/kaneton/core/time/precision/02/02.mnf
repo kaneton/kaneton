@@ -1,6 +1,0 @@
-name: core/time/precision/02
-description: This test creates a thread, sets up a timer and verifies its precision.
-symbol: test_core_time_precision_02
-signature: d0329erop9fg0292cvmw0293g3ghh
-output:
-points: 4

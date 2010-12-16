@@ -1,0 +1,6 @@
+name: core/timer/data
+description: This test creates a thread which sets up a timer. The test verifies that the timer is triggered once.
+symbol: test_core_timer_data
+signature: 3i2afowjg9g489hjweojrgfq290349
+output:
+points: 2

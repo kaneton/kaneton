@@ -1,0 +1,6 @@
+name: core/timer/precision/01
+description: This test creates a thread, sets a timer and verifies that the timer has been triggerd after a precise delay.
+symbol: test_core_timer_precision_01
+signature: t3490gjsdof29sdff3f0jg4g0934
+output:
+points: 3

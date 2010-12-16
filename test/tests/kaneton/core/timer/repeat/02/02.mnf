@@ -1,0 +1,6 @@
+name: core/timer/repeat/02
+description: This test creates a thread, sets up a repeat timer and verifies that it has been triggered properly.
+symbol: test_core_timer_repeat_02
+signature: 90cfir32f93g894gzxccnw32r32g
+output:
+points: 3
