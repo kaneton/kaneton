@@ -273,6 +273,8 @@ t_error			ia32_init_context(i_task		taskid,
 		  &o->machine.interrupt_stack) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
+  //printf("INTERRUPT STACK: 0x%x\n", o->machine.interrupt_stack);
+
   o->machine.interrupt_stack += (PAGESZ - 16);
 
   /*
@@ -455,6 +457,8 @@ t_error			ia32_init_switcher(void)
 
   _thread->machine.tss = (t_ia32_tss*)r->address;
 
+  //printf("TSS 0x%x\n", _thread->machine.tss);
+
   memset(_thread->machine.tss, 0x0, sizeof(t_ia32_tss));
 
   /*
@@ -483,6 +487,8 @@ t_error			ia32_init_switcher(void)
     MACHINE_ESCAPE("XXX");
 
   int_stack = r->address;
+
+  //printf("INT STACK 0x%x\n", int_stack);
 
   /*
    * 4)
@@ -538,6 +544,8 @@ t_error			ia32_context_ring0_stack(void)
   o_thread*		othread;
   o_task*		otask;
 
+  //printf("[XXX] ia32_context_ring0_stack()\n");
+
   if (thread_current(&current) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
@@ -555,6 +563,8 @@ t_error			ia32_context_ring0_stack(void)
       othread->machine.interrupt_stack +=
 	sizeof (t_ia32_context);
     }
+
+  //printf("[XXX] /ia32_context_ring0_stack()\n");
 
   MACHINE_LEAVE();
 }
@@ -610,14 +620,26 @@ t_error			ia32_context_switch(i_thread		current,
 
   if (ia32_pd_get_cr3(&cr3,
 		      as->machine.pd,
-		      IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
+		      IA32_PAGE_DIRECTORY_CACHED,
 		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
+  /* XXX
+  printf("CONTEXT SWITCH: [cr3] 0x%x 0x%x\n",
+	 ia32_local_jump_pdbr,
+	 cr3);
+  */
+
   ia32_cpu_local_set(&ia32_local_jump_pdbr, cr3);
 
-  ia32_cpu_local_set(&ia32_local_jump_stack, to->machine.interrupt_stack -
-		     sizeof (t_ia32_context));
+  /* XXX
+  printf("CONTEXT SWITCH: [interrupt stack] 0x%x 0x%x\n",
+	 ia32_local_jump_stack,
+	 to->machine.interrupt_stack - sizeof (t_ia32_context));
+  */
+
+  ia32_cpu_local_set(&ia32_local_jump_stack,
+		     to->machine.interrupt_stack - sizeof (t_ia32_context));
 
   if (ia32_tss_load(_thread->machine.tss,
 		    IA32_SEGMENT_SELECTOR(IA32_PMODE_GDT_KERNEL_DS,
@@ -630,7 +652,7 @@ t_error			ia32_context_switch(i_thread		current,
    * 4)
    */
 
-  if (current == ID_UNUSED ||
+  if (current == ID_UNUSED || // XXX impossible kernel ou idle ou autre
       (from->task != to->task && (task->class == TASK_CLASS_SERVICE ||
 				  task->class == TASK_CLASS_GUEST)) ||
       task->machine.ioflush)
@@ -800,6 +822,8 @@ t_error			ia32_get_context(i_thread		thread,
   o_thread*		o;
   o_task*		otask;
 
+  //printf("[XXX] ia32_get_context(%qd, 0x%x)\n", thread, context);
+
   /*
    * 1)
    */
@@ -819,6 +843,8 @@ t_error			ia32_get_context(i_thread		thread,
 	      sizeof (t_ia32_context),
 	      context) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
+
+  //printf("[XXX] /ia32_get_context(%qd, 0x%x)\n", thread, context);
 
   MACHINE_LEAVE();
 }

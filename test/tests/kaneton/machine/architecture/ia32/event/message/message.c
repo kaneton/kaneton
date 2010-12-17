@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/message/message.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:21:45 2010]
+ * updated       julien quintard   [thu dec 16 13:33:58 2010]
  */
 
 /*
@@ -38,9 +38,9 @@ void			test_architecture_event_message(void)
   TEST_ENTER();
 
   if (event_reserve(3,
-		    EVENT_MESSAGE,
+		    EVENT_TYPE_MESSAGE,
 		    EVENT_TASK(_kernel->task),
-		    0x42424242) != ERROR_OK)
+		    EVENT_DATA(0x42424242)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
   asm volatile("int $3");

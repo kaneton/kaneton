@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [tue dec 14 20:07:34 2010]
+ * updated       julien quintard   [thu dec 16 21:05:25 2010]
  */
 
 /*

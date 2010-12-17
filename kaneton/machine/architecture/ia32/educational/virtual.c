@@ -82,7 +82,6 @@ extern t_vaddr		_handler_data_end;
 t_error			ia32_kernel_as_initialize(i_as		asid)
 {
   o_as*			o;
-  i_segment	        seg;
   o_segment*		pt_seg;
   o_region*		preg;
   t_ia32_table		pt;
@@ -109,7 +108,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   memcpy(&o->machine.pd, &_init->machine.pd, sizeof(t_ia32_directory));
 
   if (ia32_pd_activate(o->machine.pd,
-		       IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
+		       IA32_PAGE_DIRECTORY_CACHED,
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
@@ -118,13 +117,12 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    */
 
   if (ia32_pt_build((t_paddr)o->machine.pd, &pt) != ERROR_OK)
-
     MACHINE_ESCAPE("XXX");
 
   pt.present = 1;
   pt.rw = IA32_PAGE_TABLE_WRITABLE;
   pt.user = IA32_PAGE_TABLE_PRIVILEGED;
-  pt.cached = IA32_PAGE_TABLE_CACHED; // XXX CACHED
+  pt.cached = IA32_PAGE_TABLE_CACHED;
   pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
 
   if (ia32_pd_add_table(&o->machine.pd,
@@ -143,7 +141,10 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
     MACHINE_ESCAPE("XXX");
 
   preg->address = IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR, 0);
-  preg->segment = (i_segment)pt.paddr;
+  preg->segment = (i_segment)pt.paddr; // XXX !!!WARNING!!! ici on devrait
+                                       // pouvoir recupere le vrai segment
+                                       // pour extraire l'id ou le generer
+                                       // avec SEGMENT_IDENTIFIER() au pire!
   preg->offset = 0;
   preg->size = IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ; // XXX
   preg->options = REGION_OPTION_NONE;
@@ -213,19 +214,19 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 	{
 	  if (ia32_pd_get_table(&o->machine.pd, pde, &pt) == ERROR_OK)
 	    {
-	      seg = pt.paddr;
+	      i_segment		s;
 
-	      if (segment_exist(seg) == ERROR_FALSE)
+	      if (segment_locate(pt.paddr, &s) == ERROR_FALSE)
 		{
 		  if ((pt_seg = malloc(sizeof(o_segment))) == NULL)
 		    MACHINE_ESCAPE("XXX");
 
 		  pt_seg->type = SEGMENT_TYPE_SYSTEM;
-		  pt_seg->address = (t_paddr)seg;
+		  pt_seg->address = pt.paddr;
 		  pt_seg->size = PAGESZ;
 		  pt_seg->permissions = PERMISSION_READ | PERMISSION_WRITE;
 
-		  if (segment_inject(asid, pt_seg, &seg) != ERROR_OK)
+		  if (segment_inject(asid, pt_seg, &s) != ERROR_OK)
 		    MACHINE_ESCAPE("XXX");
 		}
 	    }
@@ -258,7 +259,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 
 t_error			ia32_kernel_as_finalize(void)
 {
-  // XXX locate puis type pour eviter le cast
+  // XXX locate puis type pour eviter le cast: !!!WARNING!!!
   if (segment_type((i_segment)_init->segments[0].address,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -301,6 +302,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
   i_region		reg;
   o_region*		preg;
   t_ia32_directory	pd;
+  o_segment*		s;
 
   /*
    * 1)
@@ -322,11 +324,14 @@ t_error			ia32_task_as_initialize(i_as		asid)
   if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
+  if (segment_get(seg, &s) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
+
   /*
    * 3)
    */
 
-  pd = o->machine.pd = (t_ia32_directory)(t_uint32)seg;
+  pd = o->machine.pd = (t_ia32_directory)s->address;
 
   if (ia32_map_pd(&pd) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -344,13 +349,19 @@ t_error			ia32_task_as_initialize(i_as		asid)
    * 5)
    */
 
+  if (region_locate(_kernel->as,
+		    (t_vaddr)_thread->machine.tss,
+		    &reg) == ERROR_FALSE)
+    MACHINE_ESCAPE("XXX");
+
   if (region_get(_kernel->as,
-		 (i_region)(t_vaddr)_thread->machine.tss,
+		 reg,
 		 &preg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
+  // XXX on mappe le TSS en recuperant son address physique via l'as kernel.
   if (region_reserve(asid,
-		     preg->id,
+		     preg->segment,
 		     0,
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
@@ -359,8 +370,14 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
+  //printf("GDT: 0x%x\n", ia32_gdt.descriptor);
+
+  if (segment_locate((t_paddr)ia32_gdt.descriptor, &seg) == ERROR_FALSE)
+    MACHINE_ESCAPE("XXX");
+
+  // XXX identity mapping for the GDT
   if (region_reserve(asid,
-		     (i_segment)(t_uint32)ia32_gdt.descriptor,
+		     (i_segment)seg,
 		     0,
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
@@ -369,8 +386,14 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
+  //printf("IDT: 0x%x\n", ia32_idt.descriptor);
+
+  if (segment_locate((t_paddr)ia32_idt.descriptor, &seg) == ERROR_FALSE)
+    MACHINE_ESCAPE("XXX");
+
+  // XXX identity mapping for the IDT
   if (region_reserve(asid,
-		     (i_segment)(t_uint32)ia32_idt.descriptor,
+		     (i_segment)seg,
 		     0,
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
@@ -422,21 +445,31 @@ t_error			ia32_task_as_initialize(i_as		asid)
 
       i_region	region;
 
+      if (segment_locate(_init->kcode, &seg) == ERROR_FALSE)
+	MACHINE_ESCAPE("XXX");
+
+      // XXX identity mapping for the kernel code.
       if (region_reserve(asid,
-			 (i_segment)_init->kcode,
+			 seg,
 			 0,
 			 REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
-			 _init->kcode,
-			 _init->kcodesz,
+			 // XXX ??? REGION_OPTION_PRIVILEGED,
+			 (t_vaddr)_init->kcode,
+			 (t_vsize)_init->kcodesz,
 			 &region) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
 
+      if (segment_locate(_init->kstack, &seg) == ERROR_FALSE)
+	MACHINE_ESCAPE("XXX");
+
+      // XXX identity mapping for the kernel stack.
       if (region_reserve(asid,
-			 (i_segment)_init->kstack,
+			 seg,
 			 0,
 			 REGION_OPTION_FORCE | REGION_OPTION_GLOBAL,
+			 // XXX ??? REGION_OPTION_PRIVILEGED,
 			 (t_vaddr)_init->kstack,
-			 _init->kstacksz,
+			 (t_vsize)_init->kstacksz,
 			 &region) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
     }

@@ -199,15 +199,12 @@ t_error			kernel_initialize(void)
    * 8)
    */
 
-  if (io_initialize() != ERROR_OK)
-    CORE_ESCAPE("unable to initialize the I/O manager");
+  // XXX
 
   /*
    * 9)
    */
 
-  if (cpu_initialize() != ERROR_OK)
-    CORE_ESCAPE("unable to initialize the CPU manager");
 
   /*
    * 10)
@@ -253,6 +250,12 @@ t_error			kernel_initialize(void)
   /*
    * 16)
    */
+
+  if (io_initialize() != ERROR_OK)
+    CORE_ESCAPE("unable to initialize the I/O manager");
+
+  if (cpu_initialize() != ERROR_OK)
+    CORE_ESCAPE("unable to initialize the CPU manager");
 
   if (scheduler_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the scheduler manager");

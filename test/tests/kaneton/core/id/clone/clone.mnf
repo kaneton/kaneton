@@ -1,6 +1,0 @@
-name: core/id/clone
-description: This test reserves, clones and releases identifiers.
-symbol: test_core_id_clone
-signature: 90wi9ieaiossijf323
-output:
-points: 2

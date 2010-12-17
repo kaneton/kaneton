@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/as/mapping/mapping.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:21:20 2010]
+ * updated       julien quintard   [thu dec 16 13:27:12 2010]
  */
 
 /*
@@ -34,9 +34,9 @@ void			test_architecture_as_mapping(void)
   o_as*			oas;
   o_segment*		oseg;
   o_region*		oreg;
-  t_iterator		it;
+  s_iterator		it;
   t_state		st;
-  t_iterator		it2;
+  s_iterator		it2;
   t_state		st2;
 
   TEST_ENTER();

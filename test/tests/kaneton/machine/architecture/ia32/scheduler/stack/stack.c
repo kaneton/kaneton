@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/scheduler/stack/stack.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 00:56:53 2010]
+ * updated       julien quintard   [thu dec 16 13:40:07 2010]
  */
 
 /*
@@ -55,12 +55,13 @@ asm ("test_architecture_scheduler_stack_thread_02:\n"
 void			test_architecture_scheduler_stack_content(void)
 {
   i_thread		thread;
-  t_thread_context	ctx1;
-  t_thread_context	ctx2;
-  t_stack		stack;
+  s_thread_context	ctx1;
+  s_thread_context	ctx2;
+  s_stack		stack;
   o_thread*		t;
-  t_clock		clock;
+  s_clock		clock;
   t_uint64		start;
+  i_cpu			cpu;
 
   /*
    * thread 1
@@ -152,7 +153,10 @@ void			test_architecture_scheduler_stack_content(void)
 
   TEST_SIGNATURE(f03fj23f09g230g2);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -161,9 +165,10 @@ void			test_architecture_scheduler_stack_content(void)
 void			test_architecture_scheduler_stack(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
+  i_cpu			cpu;
 
   /*
    * thread
@@ -194,7 +199,10 @@ void			test_architecture_scheduler_stack(void)
    * scheduler
    */
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

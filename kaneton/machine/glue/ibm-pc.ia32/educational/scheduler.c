@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [wed dec 15 22:56:04 2010]
+ * updated       julien quintard   [thu dec 16 21:06:07 2010]
  */
 
 /*
@@ -85,6 +85,14 @@ asm (".text				\n"
      "	hlt				\n"
      "	jmp 1b				\n"
      ".text				\n");
+
+/* XXX
+void glue_scheduler_idle(void)
+{
+  while (1)
+    printf("IDLE\n");
+}
+*/
 
 /*
  * XXX
@@ -233,9 +241,6 @@ t_error			glue_scheduler_initialize(void)
 
   if (thread_start(_scheduler->idle) != ERROR_OK)
     MACHINE_ESCAPE("unable to set the thread as running");
-
-  if (ia32_init_switcher() != ERROR_OK)
-    MACHINE_ESCAPE("unable to initialize the context switcher");
 
   MACHINE_LEAVE();
 }

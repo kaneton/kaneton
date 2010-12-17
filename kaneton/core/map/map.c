@@ -177,8 +177,9 @@ t_error			map_reserve(i_as			as,
  * 1) call the machine.
  * 2) locate the region in which the given address lies.
  * 3) retrieve the region object.
- * 4) release the region.
- * 5) release the segment.
+ * 4) save the segment associated with this region.
+ * 5) release the region.
+ * 6) release the segment.
  */
 
 t_error			map_release(i_as			as,
@@ -199,7 +200,7 @@ t_error			map_release(i_as			as,
    * 2)
    */
 
-  if (region_locate(as, address, &region) != ERROR_OK)
+  if (region_locate(as, address, &region) == ERROR_FALSE)
     CORE_ESCAPE("unable to locate the region in which the address lies");
 
   /*
@@ -209,17 +210,21 @@ t_error			map_release(i_as			as,
   if (region_get(as, region, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the region object");
 
+  /*
+   * 4)
+   */
+
   segment = o->segment;
 
   /*
-   * 4)
+   * 5)
    */
 
   if (region_release(as, region) != ERROR_OK)
     CORE_ESCAPE("unable to release the region");
 
   /*
-   * 5)
+   * 6)
    */
 
   if (segment_release(segment) != ERROR_OK)
@@ -283,7 +288,7 @@ t_error			map_resize(i_as				as,
    * 1)
    */
 
-  if (region_locate(as, old, &region) != ERROR_OK)
+  if (region_locate(as, old, &region) == ERROR_FALSE)
     CORE_ESCAPE("unable to locate the region in which the address lies");
 
   /*

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/inventory.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [thu dec  9 15:04:52 2010]
+# updated       julien quintard   [thu dec 16 22:25:12 2010]
 #
 
 #
@@ -104,15 +104,55 @@ def                     generate(functions,
 
   # generate the fil content.
   content = """
-#include <kaneton.h>
+/*
+ * note that should the kaneton bundle be used through the test system,
+ * the bundle must be generated with the _test_ module activated, in addition
+ * to the _bundle_ module.
+ *
+ * the following prevents the generation of the array of tests so that
+ * the test system fails to compile a kaneton snapshot with a bundle
+ * which has not been generated with the _test_ module.
+ *
+ * therefore, using such an invalid bundle should result with an error
+ * similar to the following:
+ *
+ *   [EXECUTABLE]            /home/user/kaneton/kaneton/kaneton
+ *   kaneton/modules/modules.lo: In function `module_test_locate':
+ *   (.text+0x55a1f): undefined reference to `_module_test_functions'
+ *   kaneton/kaneton/modules/modules.lo: In function `module_test_locate':
+ *   (.text+0x55a3c): undefined reference to `_module_test_functions'
+ *   kaneton/kaneton/modules/modules.lo: In function `module_test_locate':
+ *   (.text+0x55a58): undefined reference to `_module_test_functions'
+ *   kaneton/kaneton/modules/modules.lo: In function `module_test_dump':
+ *   (.text+0x55b1c): undefined reference to `_module_test_functions'
+ *   kaneton/kaneton/modules/modules.lo: In function `module_test_dump':
+ *   (.text+0x55b26): undefined reference to `_module_test_functions'
+ *   kaneton/kaneton/modules/modules.lo:(.text+0x55b50): more undefined references to `_module_test_functions' follow
+ *   collect2: ld returned 1 exit status
+ *   make[3]: *** [/home/user/kaneton/kaneton/kaneton] Error 1
+ *   make[2]: *** [_] Error 42
+ *   make[1]: *** [main] Error 42
+ *   make: *** [_] Error 42
+ *
+ * these errors show that the test system has not been able to link the
+ * kaneton snapshot to test with the bundle because a specific definition
+ * is missing: _module_test_functions. this is the test array definied
+ * in this file!
+ */
+
+#ifdef MODULE_test
+
+# include <kaneton.h>
 
 %(prototypes)s
 
-ls_test_function        _module_test_functions[] =
+ms_test_function        _module_test_functions[] =
 {
 %(tests)s
   { NULL, NULL }
 };
+
+#endif
 """ % { "prototypes": "\n".join(prototypes),
         "tests": "\n".join(tests) }
 

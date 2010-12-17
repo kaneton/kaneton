@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [wed dec 15 22:42:32 2010]
+ * updated       julien quintard   [fri dec 17 16:04:53 2010]
  */
 
 /*
@@ -646,10 +646,9 @@ t_error			task_reserve(t_class			class,
    * 8)
    */
 
-  if (set_reserve(bpt,
+  if (set_reserve(ll,
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof (o_message_type),
-		  MESSAGE_BPT_NODESZ,
 		  &o.messages) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a set for the messages");
 
@@ -757,7 +756,7 @@ t_error			task_release(i_task			id)
    * 8)
    */
 
-  if (message_flush(id) != ERROR_OK)
+  if (message_flush(o->id) != ERROR_OK)
     CORE_ESCAPE("unable to flush the messages");
 
   if (set_release(o->messages) != ERROR_OK)

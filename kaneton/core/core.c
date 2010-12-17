@@ -216,6 +216,7 @@ t_error			kaneton_spawn(void)
   i_task		task;
   s_thread_context	ctx;
   i_as			as;
+  i_segment		id;
   o_thread*		o;
   struct
   {
@@ -263,8 +264,11 @@ t_error			kaneton_spawn(void)
    * 4)
    */
 
+  if (segment_locate(_init->inputs, &id) == ERROR_FALSE)
+    CORE_ESCAPE("unable to locate the segment holding the given address");
+
   if (region_reserve(as,
-		     (i_segment)(t_vaddr)_init->inputs,
+		     id,
 		     0,
 		     REGION_OPTION_FORCE,
 		     (t_vaddr)_init->inputs,

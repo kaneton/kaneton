@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec 10 14:15:24 2010]
+ * updated       julien quintard   [fri dec 17 12:05:50 2010]
  */
 
 /*
@@ -26,7 +26,7 @@
  */
 
 #if !defined(MODULE_console)
-# warning "the 'test' module depends upon the 'console' module"
+# error "the 'test' module depends upon the 'console' module"
 #endif
 
 #if defined(MODULE_forward)
@@ -118,19 +118,19 @@ t_error			module_test_send(t_uint8		type,
 
   platform_serial_write(PLATFORM_SERIAL_PRIMARY,
 			(t_uint8*)&magic,
-			sizeof(t_uint32));
+			sizeof (t_uint32));
 
   platform_serial_write(PLATFORM_SERIAL_PRIMARY,
 			(t_uint8*)&type,
-			sizeof(t_uint8));
+			sizeof (t_uint8));
 
   platform_serial_write(PLATFORM_SERIAL_PRIMARY,
 			(t_uint8*)&length,
-			sizeof(t_uint32));
+			sizeof (t_uint32));
 
   platform_serial_write(PLATFORM_SERIAL_PRIMARY,
 			(t_uint8*)&crc,
-			sizeof(t_uint32));
+			sizeof (t_uint32));
 
   platform_serial_write(PLATFORM_SERIAL_PRIMARY,
 			(t_uint8*)message,
@@ -162,7 +162,7 @@ t_error			module_test_receive(t_uint8*		type,
 
   platform_serial_read(PLATFORM_SERIAL_PRIMARY,
 		       (t_uint8*)&magic,
-		       sizeof(t_uint32));
+		       sizeof (t_uint32));
 
   if (magic != MODULE_TEST_MAGIC)
     MODULE_ESCAPE("invalid magic number received");
@@ -173,15 +173,15 @@ t_error			module_test_receive(t_uint8*		type,
 
   platform_serial_read(PLATFORM_SERIAL_PRIMARY,
 		       (t_uint8*)type,
-		       sizeof(t_uint8));
+		       sizeof (t_uint8));
 
   platform_serial_read(PLATFORM_SERIAL_PRIMARY,
 		       (t_uint8*)&length,
-		       sizeof(t_uint32));
+		       sizeof (t_uint32));
 
   platform_serial_read(PLATFORM_SERIAL_PRIMARY,
 		       (t_uint8*)&crc,
-		       sizeof(t_uint32));
+		       sizeof (t_uint32));
 
   platform_serial_read(PLATFORM_SERIAL_PRIMARY,
 		       (t_uint8*)message,
@@ -253,7 +253,7 @@ t_error			module_test_flush(void)
 
   memset(_module_test.buffer,
 	 0x0,
-	 sizeof(_module_test.buffer));
+	 sizeof (_module_test.buffer));
 
   MODULE_LEAVE();
 }
@@ -283,7 +283,7 @@ void			module_test_character(char		c)
    * 2)
    */
 
-  if ((_module_test.size >= (sizeof(_module_test.buffer) - 1)) ||
+  if ((_module_test.size >= (sizeof (_module_test.buffer) - 1)) ||
       (c == '\n'))
     module_test_flush();
 }
@@ -384,7 +384,7 @@ void			module_test_dump(void)
 
 t_error			module_test_run(void)
 {
-  s_command		commands[] =
+  ms_test_command	commands[] =
     {
       { "[call] ", module_test_call },
       { NULL, NULL }
@@ -400,6 +400,8 @@ t_error			module_test_run(void)
   /*
    * 2)
    */
+
+  platform_serial_initialize();
 
   platform_serial_setup(PLATFORM_SERIAL_PRIMARY,
 			PLATFORM_SERIAL_BR57600,
@@ -429,7 +431,7 @@ t_error			module_test_run(void)
       t_uint8		type;
       unsigned int	i;
 
-      memset(message, 0x0, sizeof(message));
+      memset(message, 0x0, sizeof (message));
 
       if (module_test_receive(&type, message) != ERROR_OK)
 	MODULE_ESCAPE("unable to received a test request");

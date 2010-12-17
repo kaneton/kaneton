@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/04/04.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2040]
- * updated       julien quintard   [sat dec  4 12:23:34 2010]
+ * updated       julien quintard   [thu dec 16 13:30:51 2010]
  */
 
 /*
@@ -41,9 +41,9 @@ void			test_architecture_event_exception_04(void)
   TEST_ENTER();
 
   if (event_reserve(0,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(test_architecture_event_exception_04_handler),
-		    0) != ERROR_OK)
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(test_architecture_event_exception_04_handler),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
   asm volatile("mov $1, %%eax\n"

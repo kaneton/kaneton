@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       julien quintard   [fri dec 10 13:49:47 2010]
+ * updated       julien quintard   [thu dec 16 21:05:33 2010]
  */
 
 /*

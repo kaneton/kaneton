@@ -223,6 +223,8 @@ t_error			ia32_interrupt_vector_init(void)
 
   vaddr = r->address;
 
+  //printf("IDT 0x%x\n", vaddr);
+
   /*
    * 2)
    */
@@ -325,9 +327,6 @@ static void		spurious_interrupt(i_event			id)
       module_call(console, print,
 		  "%08x %08x %08x %08x\n", stack[4], stack[5], stack[6], stack[7]);
     }
-
-  while (1)
-    ;
 }
 
 /*
@@ -342,16 +341,30 @@ void			ia32_handler_exception(t_uint32			nr,
   i_event		id = nr;
   i_thread		current;
 
+  //printf("[XXX] ia32_handler_exception(%u, %u)\n", nr, code);
+
   assert(ia32_context_ring0_stack() == ERROR_OK);
 
   if (event_exist(id) == ERROR_TRUE)
     {
       assert(event_get(id, &o) == ERROR_OK);
 
+      /* XXX ici, pour ne pas perdre le code, il faudrait le stocker dans
+       * une variable locale du thread.
       if (o->type == EVENT_TYPE_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data, code);
       else
-	event_notify(id);
+      */
+
+      i_thread		ith;
+      o_thread*		oth;
+
+      assert(thread_current(&ith) == ERROR_OK);
+      assert(thread_get(ith, &oth) == ERROR_OK);
+
+      oth->machine.error = code;
+
+      assert(event_notify(id) == ERROR_OK);
     }
   else
     {
@@ -359,6 +372,8 @@ void			ia32_handler_exception(t_uint32			nr,
     }
 
   assert(thread_current(&current) == ERROR_OK);
+
+  //printf("[XXX] /ia32_handler_exception(%u, %u)\n", nr, code);
 }
 
 /*
@@ -372,21 +387,27 @@ void			ia32_handler_irq(t_uint32			nr)
   i_event		id = IA32_IDT_IRQ_BASE + nr;
   i_thread		current;
 
+  //printf("[XXX] ia32_handler_irq()\n");
+
   assert(ia32_context_ring0_stack() == ERROR_OK);
 
   if (event_exist(id) == ERROR_TRUE)
     {
       assert(event_get(id, &o) == ERROR_OK);
 
+      /* XXX a virer
       if (o->type == EVENT_TYPE_FUNCTION)
 	{
 	  IA32_CALL_HANDLER(o->handler, id, o->data);
 
-	  // XXX rien a foutre la!
-	  platform_pic_acknowledge(nr);
 	}
       else
-	event_notify(id);
+      */
+
+      assert(event_notify(id) == ERROR_OK);
+
+      // XXX rien a foutre la!
+      platform_pic_acknowledge(nr);
     }
   else
     {
@@ -394,6 +415,8 @@ void			ia32_handler_irq(t_uint32			nr)
     }
 
   assert(thread_current(&current) == ERROR_OK);
+
+  //printf("[XXX] /ia32_handler_irq() -> future thread %qd\n", current);
 }
 
 /*
@@ -407,6 +430,8 @@ void			ia32_handler_ipi(t_uint32			nr)
   i_event		id = IA32_IDT_IPI_BASE + nr;
   i_thread		current;
 
+  //printf("[XXX] ia32_handler_ipi(%u)\n", nr);
+
   assert(ia32_context_ring0_stack() == ERROR_OK);
 
   ia32_ipi_acknowledge();
@@ -415,10 +440,13 @@ void			ia32_handler_ipi(t_uint32			nr)
     {
       assert(event_get(id, &o) == ERROR_OK);
 
+      /* XXX
       if (o->type == EVENT_TYPE_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data);
       else
-	event_notify(id);
+      */
+
+      assert(event_notify(id) == ERROR_OK);
     }
   else
     {
@@ -426,6 +454,8 @@ void			ia32_handler_ipi(t_uint32			nr)
     }
 
   assert(thread_current(&current) == ERROR_OK);
+
+  //printf("[XXX] /ia32_handler_ipi(%u)\n", nr);
 }
 
 /*
@@ -445,10 +475,13 @@ void			ia32_handler_syscall(t_uint32			nr)
     {
       assert(event_get(id, &o) == ERROR_OK);
 
+      /* XXX
       if (o->type == EVENT_TYPE_FUNCTION)
 	IA32_CALL_HANDLER(o->handler, id, o->data);
       else
-	event_notify(id);
+      */
+
+      assert(event_notify(id) == ERROR_OK);
     }
   else
     {

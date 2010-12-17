@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...tests/kaneton/core/region/resize/01/01.c
+ * file          /home/mycure/kane...tests/kaneton/core/region/resize/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:49:55 2010]
+ * updated       julien quintard   [fri dec 17 16:38:09 2010]
  */
 
 /*
@@ -71,8 +71,8 @@ void			test_core_region_resize_01(void)
   if (o->size != PAGESZ)
     TEST_ERROR("invalid region's size after resize");
 
-  p = (t_uint8*)(t_vaddr)reg;
-  for (; p < (t_uint8*)(t_vaddr)reg + PAGESZ; p++)
+  p = (t_uint8*)o->address;
+  for (; p < (t_uint8*)o->address + PAGESZ; p++)
     {
       *p = 0x0d;
 

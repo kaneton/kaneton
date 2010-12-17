@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [wed dec 15 14:06:44 2010]
+ * updated       julien quintard   [fri dec 17 14:47:11 2010]
  */
 
 #ifndef GLUE_THREAD_H
@@ -59,6 +59,8 @@
   {									\
     t_vaddr		interrupt_stack;				\
 									\
+    t_uint32		error;						\
+									\
     union								\
     {									\
       t_x87_state	x87;						\
@@ -81,6 +83,9 @@
 /*
  * ../thread.c
  */
+
+t_error			glue_thread_show(i_thread		id,
+					 mt_margin		margin);
 
 t_error			glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid);

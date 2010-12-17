@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [wed dec 15 14:07:54 2010]
+ * updated       julien quintard   [thu dec 16 21:05:29 2010]
  */
 
 /*
@@ -35,7 +35,7 @@
 
 d_thread		glue_thread_dispatch =
   {
-    NULL,
+    glue_thread_show,
     NULL,
     glue_thread_reserve,
     NULL,
@@ -58,6 +58,53 @@ d_thread		glue_thread_dispatch =
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * XXX
+ */
+
+t_error			glue_thread_show(i_thread		id,
+					 mt_margin		margin)
+{
+  o_thread*		thread;
+  t_ia32_context	context;
+
+  if (thread_get(id, &thread) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread object");
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  machine: interrupt-stack(0x%x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      thread->machine.interrupt_stack);
+
+  if (ia32_get_context(id, &context) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread's IA32 context");
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "    context: eax(0x%x) ebx(0x%x) ecx(0x%x) edx(0x%x) "
+	      "esi(0x%x) edi(0x%x) ebp(0x%x) esp(0x%x) eip(0x%x) "
+	      "eflags(0x%x) cs(0x%x) ds(0x%x) ss(0x%x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      context.eax,
+	      context.ebx,
+	      context.ecx,
+	      context.edx,
+	      context.esi,
+	      context.edi,
+	      context.ebp,
+	      context.esp,
+	      context.eip,
+	      context.eflags,
+	      context.cs,
+	      context.ds,
+	      context.ss);
+
+  MACHINE_LEAVE();
+}
 
 /*
  * reserve a thread on the ia32 architecture
@@ -124,7 +171,10 @@ t_error			glue_thread_args(i_thread		threadid,
 t_error			glue_thread_initialize(void)
 {
   // XXX mieux dans scheduler: ici il y avait ia32_init_switcher()
-
+  // XXX finalement on le laisse ici car thread_load() en a besoin
+  // et une tache pourrait etre reservee avant que le sched ne soit init.
+  if (ia32_init_switcher() != ERROR_OK)
+    MACHINE_ESCAPE("unable to initialize the context switcher");
 
   MACHINE_LEAVE();
 }

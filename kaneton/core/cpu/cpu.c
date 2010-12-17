@@ -247,6 +247,11 @@ t_error			cpu_select(i_cpu*			id)
   static i_cpu		current = 0;
   t_setsz		size;
 
+  // XXX to remove
+  id = 0;
+  CORE_LEAVE();
+  // XXX
+
   /*
    * 0)
    */

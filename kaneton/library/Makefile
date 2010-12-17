@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/library/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       julien quintard   [fri dec 10 14:03:40 2010]
+# updated       julien quintard   [thu dec 16 11:42:02 2010]
 #
 
 #
@@ -35,11 +35,14 @@ include			../../environment/env.mk
 
 LIBRARY_C		:=		alloc.c				\
 					ctype.c				\
+					format.c			\
 					memcpy.c			\
 					memcmp.c			\
 					memset.c			\
-					format.c			\
+					printf.c			\
 					random.c			\
+					snprintf.c			\
+					sprintf.c			\
 					strchr.c			\
 					strcmp.c			\
 					strcpy.c			\

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/architecture/ia32/event/map/map.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:24:25 2010]
+ * updated       julien quintard   [thu dec 16 13:37:08 2010]
  */
 
 /*
@@ -35,7 +35,7 @@ void			test_architecture_event_map(void)
   t_ia32_idt_register	idtr;
   t_paddr		paddr;
   t_vaddr		vaddr;
-  t_iterator		it;
+  s_iterator		it;
   t_state		state;
   int			i;
   o_as*			o;
@@ -60,16 +60,16 @@ void			test_architecture_event_map(void)
 
   SIDT(idtr);
 
-  if (as_paddr(_kernel->as, idtr.address, &paddr) != ERROR_OK)
-    TEST_ERROR("[as_paddr] error");
+  if (as_physical(_kernel->as, idtr.address, &paddr) != ERROR_OK)
+    TEST_ERROR("[as_physical] error");
 
   set_foreach(SET_OPTION_FORWARD, _as->ass, &it, state)
     {
       if (set_object(_as->ass, it, (void**)&o) != ERROR_OK)
 	TEST_ERROR("[set_object] error");
 
-      if (as_vaddr(o->id, paddr, &vaddr) != ERROR_OK)
-	TEST_ERROR("[as_vaddr] error: the IDT does not seem to be "
+      if (as_virtual(o->id, paddr, &vaddr) != ERROR_OK)
+	TEST_ERROR("[as_virtual] error: the IDT does not seem to be "
 		   "mapped in this address space");
     }
 

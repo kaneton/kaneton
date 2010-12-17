@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [mon dec 13 10:55:58 2010]
+ * updated       julien quintard   [fri dec 17 16:05:04 2010]
  */
 
 /*
@@ -33,12 +33,6 @@
 /*
  * ---------- macros ----------------------------------------------------------
  */
-
-/*
- * set parameters
- */
-
-#define MESSAGE_BPT_NODESZ	4096
 
 /*
  * values for completed member

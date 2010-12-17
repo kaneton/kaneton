@@ -1693,7 +1693,7 @@ t_error			thread_current(i_thread*		thread)
    * 1)
    */
 
-  if (scheduler_current(&scheduler) == ERROR_OK)
+  if (scheduler_current(&scheduler) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the current scheduler");
 
   /*

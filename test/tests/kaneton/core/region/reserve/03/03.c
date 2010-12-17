@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...ests/kaneton/core/region/reserve/03/03.c
+ * file          /home/mycure/kane...ests/kaneton/core/region/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [mon nov 29 18:49:27 2010]
+ * updated       julien quintard   [fri dec 17 16:35:42 2010]
  */
 
 /*
@@ -37,6 +37,9 @@ void			test_core_region_reserve_03(void)
   i_region		reg2;
   i_region		reg3;
   t_uint8*		p;
+  o_region*		r1;
+  o_region*		r2;
+  o_region*		r3;
 
   TEST_ENTER();
 
@@ -73,16 +76,25 @@ void			test_core_region_reserve_03(void)
                      &reg3) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  p = (t_uint8*)(t_vaddr)reg1;
-  for (; p < (t_uint8*)(t_vaddr)reg1 + 2 * PAGESZ; p++)
+  if (region_get(_kernel->as, reg1, &r1) != ERROR_OK)
+    TEST_ERROR("[region_get] error");
+
+  if (region_get(_kernel->as, reg2, &r2) != ERROR_OK)
+    TEST_ERROR("[region_get] error");
+
+  if (region_get(_kernel->as, reg3, &r3) != ERROR_OK)
+    TEST_ERROR("[region_get] error");
+
+  p = (t_uint8*)r1->address;
+  for (; p < (t_uint8*)r1->address + 2 * PAGESZ; p++)
     *p = 0xaa;
 
-  p = (t_uint8*)(t_vaddr)reg2;
-  for (; p < (t_uint8*)(t_vaddr)reg2 + 2 * PAGESZ; p++)
+  p = (t_uint8*)r2->address;
+  for (; p < (t_uint8*)r2->address + 2 * PAGESZ; p++)
     *p = 0x55;
 
-  p = (t_uint8*)(t_vaddr)reg3;
-  for (; p < (t_uint8*)(t_vaddr)reg3 + 4 * PAGESZ; p++)
+  p = (t_uint8*)r3->address;
+  for (; p < (t_uint8*)r3->address + 4 * PAGESZ; p++)
     *p = 0x0;
 
   if (region_release(_kernel->as, reg1) != ERROR_OK)

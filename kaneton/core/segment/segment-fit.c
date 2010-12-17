@@ -173,7 +173,7 @@ t_error			segment_show(i_segment			segid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  segment: id(%qd) range(0x%08x - 0x%08x) type(%s) "
+	      "segment: id(%qd) range(0x%08x - 0x%08x) type(%s) "
 	      "permissions(%s) size(0x%x) as(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
@@ -244,7 +244,8 @@ t_error			segment_dump(void)
       if (set_object(_segment->segments, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object's identifier from the set");
 
-      if (segment_show(data->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+      if (segment_show(data->id,
+		       2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object");
     }
 
@@ -1674,13 +1675,16 @@ t_error			segment_flush(i_as			asid)
  * this functions takes a physical address and returns the segment which
  * holds this address.
  *
+ * note that this function returns either true or false depending on the
+ * success of the look up.
+ *
  * steps:
  *
  * 0) verify the arguments.
  * 1) go through the segments of the set.
  *   a) retrieve the object.
  *   b) if the address lies in this segment, return its identifier.
- * 2) if no segment has been found, return an error.
+ * 2) if no segment has been found, return false;
  */
 
 t_error			segment_locate(t_paddr			address,
@@ -1694,8 +1698,7 @@ t_error			segment_locate(t_paddr			address,
    * 0)
    */
 
-  if (id == NULL)
-    CORE_ESCAPE("the 'id' argument is null");
+  assert(id != NULL);
 
   /*
    * 1)
@@ -1707,8 +1710,7 @@ t_error			segment_locate(t_paddr			address,
        * a)
        */
 
-      if (set_object(_segment->segments, i, (void**)&object) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the object from the set");
+      assert(set_object(_segment->segments, i, (void**)&object) == ERROR_OK);
 
       /*
        * b)
@@ -1719,7 +1721,7 @@ t_error			segment_locate(t_paddr			address,
 	{
 	  *id = object->id;
 
-	  CORE_LEAVE();
+	  CORE_TRUE();
 	}
     }
 
@@ -1727,7 +1729,7 @@ t_error			segment_locate(t_paddr			address,
    * 2)
    */
 
-  CORE_ESCAPE("unable to locate the given address");
+  CORE_FALSE();
 }
 
 /*

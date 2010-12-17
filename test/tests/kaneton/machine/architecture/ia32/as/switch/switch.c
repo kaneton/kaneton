@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 00:55:45 2010]
+ * updated       julien quintard   [fri dec 17 16:10:15 2010]
  */
 
 /*
@@ -42,6 +42,7 @@ void			test_architecture_as_switch(void)
   t_ia32_directory	kdir;
   int*			ptr1;
   int*			ptr2;
+  o_region*		r;
 
   TEST_ENTER();
 
@@ -72,6 +73,9 @@ void			test_architecture_as_switch(void)
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
+  if (region_get(as, reg, &r) != ERROR_OK)
+    TEST_ERROR("[region_get] error");
+
   if (map_reserve(as,
 		  MAP_OPTION_NONE,
 		  PAGESZ,
@@ -87,7 +91,7 @@ void			test_architecture_as_switch(void)
   if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error");
 
-  ptr1 = (int*)(t_uint32)reg;
+  ptr1 = (int*)r->address;
   ptr2 = (int*)addr;
 
   if (ia32_pd_activate(o->machine.pd,

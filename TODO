@@ -32,10 +32,6 @@ autre:
 
 --- BUGS?
 
-- attention thread_wait() les args ont change d'ordre
-- j'ai change dans regions: object->options &= REGION_OPTION_FORCE; en |=
-  dans inject()
-- dans region, les ids sont id = address / PAGESZ - 1
 - changer ces definitions en: $kaneton, $kernel, $server, $driver, $service,
   $guest, $pagesz, $wordsz, $endian -> a mettre dans les layout
 
@@ -43,13 +39,21 @@ autre:
 
 - verifier que les donnees dependantes sont displayed dans show
 - verifier que les tailles/adresses sont alignees dans core (region/segment..)
+   => on dans segment/region/as dans le core
+
+- chercher les casts pour i_region, i_segment, t_vaddr et t_paddr
+ -> ca peut etre des erreurs (dans core et dans test)
+
+- un make clear dans un snapshot student foire dans le boot car
+  il iterere sur les machines plutot que de prendre que l'actuelle donc
+  forcement il tente null.null et ca n'existe pas
+
+- virer la definition PAGESZ (encore pire, ca ne devrait jamais etre utilise
+  ni dans core ni dans les tests/kaneton/core)
 
 ---- TESTS
 
 - tester le nouveau robot
-- recompiler les tests vu qu'on a changer quelques trucs
-  - checker les warnings a la fois dans kaneton et tests
-- dissocier les tests timer et clock
 
 ---- IMPLEM SERIEUSE
 

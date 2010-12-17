@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton/test/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [wed dec  8 22:08:27 2010]
+# updated       julien quintard   [fri dec 17 13:16:04 2010]
 #
 
 #
@@ -160,26 +160,6 @@ def                     Receive(line):
   return (StatusOk, (type, message))
 
 #
-# this function performs the handshake by waiting for
-# the ready token.
-#
-def                     Handshake(line):
-  status = None
-  type = None
-  message = None
-
-  # read the serial line.
-  (status, (type, message)) = Receive(line)
-
-  if status != StatusOk:
-    return (StatusError, message)
-
-  if (type != TypeCommand) or (message != ReadyToken):
-    return (StatusError, "invalid message '" + message + "'")
-
-  return (StatusOk, None)
-
-#
 # ---------- functions --------------------------------------------------------
 #
 
@@ -227,6 +207,10 @@ def                     Call(namespace,
     # if an error occured, signal it.
     if status != StatusOk:
       return (StatusError, "%.3f" % (end - start))
+
+    # handle and ignore the ready command.
+    if (type == TypeCommand) and (message == ReadyToken):
+      continue
 
     # handle the enter command.
     if (type == TypeCommand) and (message == EnterToken):
@@ -390,7 +374,7 @@ def                     QEMU(namespace,
                                  option = ktp.process.OptionBackground)
 
     # wait a few seconds to be sure QEMU has started.
-    time.sleep(2)
+    time.sleep(3)
 
     # read the status file.
     content = ktp.miscellaneous.Pull(stream)
@@ -412,11 +396,8 @@ def                     QEMU(namespace,
     # initialize the serial line.
     line = serial.Serial(port, 57600)
 
-    # perform the handshake.
-    (status, message) = Handshake(line)
-
-    if status == StatusError:
-      raise Exception("[error] handshake failed '" + message + "'")
+    # wait for the serial handshake to proceed.
+    time.sleep(3)
 
     # trigger the test.
     (status, duration) =                                                \
@@ -546,12 +527,9 @@ serial = "pty"
     # initialize the serial line.
     line = serial.Serial(port, 57600)
 
-    # perform the handshake.
-    (status, message) = Handshake(line)
-
-    if status == StatusError:
-      raise Exception("[error] handshake failed '" + message + "'")
-
+    # wait for the serial handshake to proceed.
+    time.sleep(3)
+    
     # trigger the test.
     (status, duration) =                                                \
        Call(namespace, line, symbol)

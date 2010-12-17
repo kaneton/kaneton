@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/mapping.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:26:06 2007]
- * updated       julien quintard   [sat dec 11 06:04:03 2010]
+ * updated       julien quintard   [thu dec 16 20:57:39 2010]
  */
 
 /*
@@ -61,6 +61,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
   t_ia32_page		pg;
   i_segment		seg;
   o_region*		reg = alloc;
+  o_segment*		s;
 
   assert(!(v % PAGESZ));
   assert(!(p % PAGESZ));
@@ -84,13 +85,16 @@ t_error			ia32_map_chunk(t_vaddr		v,
       if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
 
-      if (ia32_pt_build((t_paddr)seg, &pt) != ERROR_OK)
+      if (segment_get(seg, &s) != ERROR_OK)
+	MACHINE_ESCAPE("XXX");
+
+      if (ia32_pt_build(s->address, &pt) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
 
       pt.rw = IA32_PAGE_TABLE_WRITABLE;
       pt.present = 1;
       pt.user = IA32_PAGE_TABLE_PRIVILEGED;
-      pt.cached = IA32_PAGE_TABLE_CACHED; // XXX CACHED
+      pt.cached = IA32_PAGE_TABLE_CACHED;
       pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
 
       if (ia32_pd_add_table(IA32_PAGE_DIRECTORY_CURRENT,
@@ -117,7 +121,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
   pg.rw = IA32_PAGE_WRITABLE;
   pg.present = 1;
   pg.user = IA32_PAGE_PRIVILEGED;
-  pg.cached = IA32_PAGE_CACHED; // CACHED
+  pg.cached = IA32_PAGE_CACHED;
   pg.writeback = IA32_PAGE_WRITEBACK;
   pg.addr = p;
 
@@ -128,7 +132,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
    * 3)
    */
 
-  reg->segment = p;
+  reg->segment = p; // XXX !!!WARNING!!! locate p's segment identifier
   reg->address = v;
   reg->offset = 0;
   reg->size = PAGESZ;
@@ -192,7 +196,7 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
   if (as_get(_kernel->as, &as) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
-  if (region_locate(as->id, v, &region) != ERROR_OK)
+  if (region_locate(as->id, v, &region) == ERROR_FALSE)
     MACHINE_ESCAPE("XXX");
 
   if (set_remove(as->regions, region) != ERROR_OK)
@@ -570,6 +574,8 @@ t_error			ia32_unmap_region(i_as		asid,
 
       if (pde != pde_start && pde != pde_end)
 	{
+	  i_segment	s;
+
 	  if (ia32_pd_delete_table(&pd, pde) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
 
@@ -577,7 +583,10 @@ t_error			ia32_unmap_region(i_as		asid,
 	    ia32_tlb_invalidate(IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
 						   pde));
 
-	  if (segment_release((i_segment)pt.paddr) != ERROR_OK)
+	  if (segment_locate(pt.paddr, &s) == ERROR_FALSE)
+	    MACHINE_ESCAPE("XXX");
+
+	  if (segment_release(s) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
 	}
     }

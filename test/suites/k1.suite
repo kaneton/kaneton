@@ -5,17 +5,20 @@
 #
 # license       
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/suites/k1.suite
+# file          /home/mycure/kaneton/test/suites/k1.suite
 #
 # created       julien quintard   [tue nov  2 07:33:52 2010]
-# updated       julien quintard   [sun dec  5 20:28:24 2010]
+# updated       julien quintard   [thu dec 16 23:02:35 2010]
 #
 
 name: k1
 description: This test suite focuses on the event processing.
 components:
-  event:
-    - kaneton/machine/architecture/ia32/event/
+#  event:
+#    - kaneton/machine/architecture/ia32/event/
 
-  time:
-    - kaneton/core/time/
+#  timer:
+#    - kaneton/core/time/
+
+  set:
+    - kaneton/core/set/ll/01/

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2050]
- * updated       julien quintard   [sat dec  4 12:23:42 2010]
+ * updated       julien quintard   [thu dec 16 13:31:07 2010]
  */
 
 /*
@@ -47,9 +47,9 @@ void			test_architecture_event_exception_05(void)
     TEST_ERROR("[ia32_gdt_delete_segment] error");
 
   if (event_reserve(13,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(test_architecture_event_exception_05_handler),
-		    0) != ERROR_OK)
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(test_architecture_event_exception_05_handler),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
   asm volatile("movw %0, %%gs"

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/timer/reserve/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [thu dec 16 13:22:55 2010]
+ * updated       julien quintard   [thu dec 16 23:28:27 2010]
  */
 
 /*

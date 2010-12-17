@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/client/client.py
+# file          /home/mycure/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [tue dec  7 21:55:08 2010]
+# updated       julien quintard   [thu dec 16 14:42:19 2010]
 #
 
 #
@@ -225,21 +225,52 @@ def                     Detail(report, margin = ""):
 #
 # this function dumps any Python data structure in a hierarchical way.
 #
+THRESHOLD = 72
 def                     Dump(data, margin = "", alignment = 26):
   key = None
   length = None
   element = None
+  link = None
+  chunk = None
 
   if isinstance(data, dict):
     for key in data:
       if not isinstance(data[key], dict) and not isinstance(data[key], list):
         length = len(margin) + len(str(key)) + 1
 
+        if len(str(data[key])) > (THRESHOLD - alignment):
+          link = "..."
+        else:
+          link = ""
+
         env.display(env.HEADER_OK,
                     margin + str(key) + ":" +
                     (alignment - length) * " " +
-                    str(data[key]),
+                    str(data[key])[:(THRESHOLD - alignment)] + link,
                     env.OPTION_NONE)
+
+        if len(str(data[key])) <= (THRESHOLD - alignment):
+          continue
+
+        index = 0
+
+        while True:
+          index = index + (THRESHOLD - alignment)
+
+          chunk = str(data[key])[index:index + (THRESHOLD - alignment)]
+
+          if len(str(data[key])[index:]) > (THRESHOLD - alignment):
+            link = "..."
+          else:
+            link = ""
+
+          env.display(env.HEADER_OK,
+                      alignment * " " +
+                      str(chunk),
+                      env.OPTION_NONE)
+
+          if len(str(data[key])[index:]) <= (THRESHOLD - alignment):
+            break
       else:
         env.display(env.HEADER_OK,
                     margin + str(key) + ":",
@@ -251,12 +282,25 @@ def                     Dump(data, margin = "", alignment = 26):
       Dump(element, margin)
   else:
     length = len(margin)
+    index = 0
 
-    env.display(env.HEADER_OK,
-                margin +
-                (alignment - length) * " " +
-                str(data),
-                env.OPTION_NONE)
+    while True:
+      chunk = str(data)[index:index + (THRESHOLD - alignment)]
+
+      if len(str(data)[index:]) > (THRESHOLD - alignment):
+        link = "..."
+      else:
+        link = ""
+
+        env.display(env.HEADER_OK,
+                    alignment * " " +
+                    str(chunk),
+                    env.OPTION_NONE)
+
+        if len(str(data)[index:]) <= (THRESHOLD - alignment):
+          break
+
+      index = index + (THRESHOLD - alignment)
 
 #
 # this function asks the server for information related to

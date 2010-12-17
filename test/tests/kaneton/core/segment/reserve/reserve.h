@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...s/kaneton/core/segment/reserve/reserve.h
  *
  * created       julien quintard   [wed oct 20 16:12:39 2010]
- * updated       julien quintard   [wed nov 24 09:43:37 2010]
+ * updated       julien quintard   [fri dec 17 16:12:30 2010]
  */
 
 #ifndef TESTS_KANETON_SEGMENT_RESERVE_RESERVE_H
@@ -27,7 +27,7 @@
 			  (_pages_) * PAGESZ,				\
 			  PERMISSION_READ,				\
 			  (_segment_)) != ERROR_OK)			\
-	TEST_ERROR("[segment_reserve] error");			\
+	TEST_ERROR("[segment_reserve] error");				\
 									\
       if (segment_get(*(_segment_), &o) != ERROR_OK)			\
 	TEST_ERROR("[segment_get] error");				\

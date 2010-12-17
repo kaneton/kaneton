@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       julien quintard   [tue dec 14 21:31:13 2010]
+ * updated       julien quintard   [fri dec 17 16:04:41 2010]
  */
 
 /*
@@ -220,7 +220,7 @@ t_error			message_flush(i_task			task)
    * 1)
    */
 
-  while (set_head(o->messages, &it) != ERROR_TRUE)
+  while (set_head(o->messages, &it) == ERROR_TRUE)
     {
       if (set_object(o->messages, it, (void**)&otype) != ERROR_OK)
 	CORE_ESCAPE("XXX");

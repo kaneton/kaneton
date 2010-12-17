@@ -290,7 +290,7 @@ t_error			region_fit_first(i_as			asid,
 
   if (set_head(as->regions, &i) != ERROR_TRUE)
     {
-      if (_region->size < size)
+      if ((_region->size - _region->base) < size)
 	CORE_ESCAPE("there is not enough memory to satisfy the reservation "
 		    "request");
 
@@ -460,7 +460,7 @@ t_error			region_inject(i_as			as,
    * 0)
    */
 
-  if (o == NULL)
+  if (object == NULL)
     CORE_ESCAPE("the 'object' argument is null");
 
   if (id == NULL)
@@ -770,7 +770,7 @@ t_error			region_resize(i_as			as,
 	   * #1)
 	   */
 
-	  if (reg->address + size >= _region->base + _region->size)
+	  if ((reg->address + size) >= (_region->base + _region->size))
 	    CORE_ESCAPE("unable to resize the region since it would reach the "
 			"end of the available region space");
 	}
@@ -1047,8 +1047,8 @@ t_error			region_reserve(i_as			asid,
        * a)
        */
 
-      if (address < _region->base ||
-	  address >= _region->base + _region->size)
+      if ((address < _region->base) ||
+	  (address >= (_region->base + _region->size)))
 	CORE_ESCAPE("the provided address is either too low or too high");
 
       /*
@@ -1179,6 +1179,9 @@ t_error			region_release(i_as			asid,
 /*
  * this function locates the region in which the given address lies.
  *
+ * note that this function returns either true or false depending on the
+ * success of the look up.
+ *
  * steps:
  *
  * 0) verify the arguments.
@@ -1186,7 +1189,7 @@ t_error			region_release(i_as			asid,
  * 2) go through the regions.
  *   a) retrieve the region object.
  *   b) check that the address resides in this region.
- * 3) if no region has been found, return an error.
+ * 3) if no region has been found, return false;
  */
 
 t_error			region_locate(i_as			as,
@@ -1201,15 +1204,13 @@ t_error			region_locate(i_as			as,
    * 0)
    */
 
-  if (id == NULL)
-    CORE_ESCAPE("the 'id' argument is null");
+  assert(id != NULL);
 
   /*
    * 1)
    */
 
-  if (as_get(as, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the address space object");
+  assert(as_get(as, &o) == ERROR_OK);
 
   /*
    * 2)
@@ -1223,9 +1224,7 @@ t_error			region_locate(i_as			as,
        * a)
        */
 
-      if (set_object(o->regions, i, (void**)&r) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the region object corresponding "
-		    "to its identifier");
+      assert(set_object(o->regions, i, (void**)&r) == ERROR_OK);
 
       /*
        * b)
@@ -1235,7 +1234,7 @@ t_error			region_locate(i_as			as,
 	{
 	  *id = r->id;
 
-	  CORE_LEAVE();
+	  CORE_TRUE();
 	}
     }
 
@@ -1243,7 +1242,7 @@ t_error			region_locate(i_as			as,
    * 3)
    */
 
-  CORE_ESCAPE("there does not seem to be a region in which this address lies");
+  CORE_FALSE();
 }
 
 /*
@@ -1432,7 +1431,7 @@ t_error			region_initialize(t_vaddr		base,
    */
 
   _region->base = base + ___kaneton$pagesz;
-  _region->size = size;
+  _region->size = size - ___kaneton$pagesz;
 
   /*
    * 4)

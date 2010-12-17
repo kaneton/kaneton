@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [sat dec  4 12:22:17 2010]
+ * updated       julien quintard   [thu dec 16 13:34:54 2010]
  */
 
 /*
@@ -39,9 +39,9 @@ void			test_architecture_event_exception_03(void)
   TEST_ENTER();
 
   if (event_reserve(3,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(test_architecture_event_exception_03_handler),
-		    0) != ERROR_OK)
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(test_architecture_event_exception_03_handler),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
   asm volatile("int $3");

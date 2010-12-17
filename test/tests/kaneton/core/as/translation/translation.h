@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/core/as/translation/translation.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [wed nov 24 09:29:37 2010]
+ * updated       julien quintard   [thu dec 16 14:56:34 2010]
  */
 
 #ifndef TESTS_KANETON_CORE_AS_TRANSLATION_TRANSLATION_H
@@ -31,8 +31,8 @@
 									\
     v = (_v_);								\
 									\
-    if (as_paddr(_kernel->as, v, &p) != ERROR_OK)			\
-      TEST_ERROR("[as_paddr] error");					\
+    if (as_physical(_kernel->as, v, &p) != ERROR_OK)			\
+      TEST_ERROR("[as_physical] error");				\
     									\
     if (p != (_p_))							\
       TEST_ERROR("the virtual to physical conversion failed");	\
@@ -45,8 +45,8 @@
 									\
     p = (_p_);								\
 									\
-    if (as_vaddr(_kernel->as, p, &v) != ERROR_OK)			\
-      TEST_ERROR("[as_vaddr] error");					\
+    if (as_virtual(_kernel->as, p, &v) != ERROR_OK)			\
+      TEST_ERROR("[as_virtual] error");					\
 									\
     if (v != (_v_))							\
       TEST_ERROR("the physical to virtual conversion failed");	\

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/forward/forward.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [tue dec 14 15:11:55 2010]
+ * updated       julien quintard   [thu dec 16 23:37:54 2010]
  */
 
 /*
@@ -26,7 +26,7 @@
  */
 
 #if !defined(MODULE_console)
-# warning "the 'forward' module depends upon the 'console' module"
+# error "the 'forward' module depends upon the 'console' module"
 #endif
 
 #if defined(MODULE_test)

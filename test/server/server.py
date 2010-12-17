@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton/test/server/server.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [wed dec  8 22:07:52 2010]
+# updated       julien quintard   [thu dec 16 22:50:49 2010]
 #
 
 #

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo.../test/tests/kaneton/core/as/copy/02/02.c
+ * file          /home/mycure/kaneton/test/tests/kaneton/core/as/copy/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [mon nov 29 18:40:59 2010]
+ * updated       julien quintard   [fri dec 17 16:06:01 2010]
  */
 
 /*

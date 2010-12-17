@@ -31,8 +31,7 @@
  */
 
 void			test_architecture_event_exception_06_handler(t_id id,
-								     t_vaddr address,
-								     t_uint32 error);
+								     t_vaddr data);
 
 void			test_architecture_event_exception_06(void);
 

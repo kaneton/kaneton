@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/interrupt/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [sat dec  4 12:26:44 2010]
+ * updated       julien quintard   [thu dec 16 13:33:09 2010]
  */
 
 /*
@@ -62,21 +62,21 @@ void			test_architecture_event_interrupt_02(void)
   event_release(58);
 
   if (event_reserve(56,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(test_architecture_event_interrupt_02_handler_56),
-		    0) != ERROR_OK)
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(test_architecture_event_interrupt_02_handler_56),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
   if (event_reserve(57,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(test_architecture_event_interrupt_02_handler_57),
-		    0) != ERROR_OK)
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(test_architecture_event_interrupt_02_handler_57),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
   if (event_reserve(58,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(test_architecture_event_interrupt_02_handler_58),
-		    0) != ERROR_OK)
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(test_architecture_event_interrupt_02_handler_58),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
   asm volatile("int $56");

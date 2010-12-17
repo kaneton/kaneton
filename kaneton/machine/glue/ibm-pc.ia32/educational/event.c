@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [tue dec 14 17:00:34 2010]
+ * updated       julien quintard   [thu dec 16 16:19:45 2010]
  */
 
 /*
@@ -137,6 +137,8 @@ void			pf_handler(t_id				id,
   t_uint32              addr;
   t_ia32_context	ctx;
 
+  printf("[XXX] glue_event:pf_handler() by %qd\n", th);
+
   assert(thread_current(&th) == ERROR_OK);
 
   assert(ia32_get_context(th, &ctx) == ERROR_OK);
@@ -171,10 +173,13 @@ t_error			glue_event_initialize(void)
 
   // XXX ca devrait etre autre part ca! quoi que! 14 = specifique a la
   // architecture donc c'est bien ici en fait
-  if (event_reserve(14, EVENT_TYPE_FUNCTION,
-		    EVENT_ROUTINE(pf_handler), 0) != ERROR_OK)
+  if (event_reserve(14,
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(pf_handler),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the event associated with the "
 		   "page fault exception");
+
   MACHINE_LEAVE();
 }
 

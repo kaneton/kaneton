@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [sun dec 12 13:50:24 2010]
+ * updated       julien quintard   [thu dec 16 21:02:28 2010]
  */
 
 #ifndef CORE_REGION_H

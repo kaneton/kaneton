@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/library/include/library.h
  *
  * created       julien quintard   [sun jun 10 17:31:41 2007]
- * updated       julien quintard   [fri dec 10 14:27:00 2010]
+ * updated       julien quintard   [thu dec 16 11:41:59 2010]
  */
 
 #ifndef LIBRARY_LIBRARY_H
@@ -42,11 +42,14 @@
  * ---------- prototypes ------------------------------------------------------
  *
  *	../alloc.c
+ *	../format.c
  *	../memcpy.c
  *	../memcmp.c
  *	../memset.c
- *	../format.c
+ *      ../printf.c
  *      ../random.c
+ *      ../snprintf.c
+ *      ../sprintf.c
  *	../strchr.c
  *	../strcmp.c
  *	../strcpy.c
@@ -86,6 +89,32 @@ int			alloc_init(paddr_t			addr,
 
 
 /*
+ * ../format.c
+ */
+
+int			format_string(t_format_character_fn	character,
+				      t_format_attribute_fn	attribute,
+				      char*			string,
+				      unsigned int		flags,
+				      int			len1,
+				      int			len2);
+
+int			format_quad(t_format_character_fn	character,
+				    t_format_attribute_fn	attribute,
+				    quad_t			value,
+				    int				base,
+				    int				hdl_sign,
+				    unsigned int		flags,
+				    int				len1,
+				    int				len2);
+
+int			format(t_format_character_fn		character,
+			       t_format_attribute_fn		attribute,
+			       const char*			fmt,
+			       va_list				args);
+
+
+/*
  * ../memcpy.c
  */
 
@@ -113,29 +142,13 @@ void*			memset(void*				s,
 
 
 /*
- * ../format.c
+ * ../printf.c
  */
 
-int			format_string(t_format_character_fn	character,
-				      t_format_attribute_fn	attribute,
-				      char*			string,
-				      unsigned int		flags,
-				      int			len1,
-				      int			len2);
+void			printf_character(char			c);
 
-int			format_quad(t_format_character_fn	character,
-				    t_format_attribute_fn	attribute,
-				    quad_t			value,
-				    int				base,
-				    int				hdl_sign,
-				    unsigned int		flags,
-				    int				len1,
-				    int				len2);
-
-int			format(t_format_character_fn		character,
-			       t_format_attribute_fn		attribute,
-			       const char*			fmt,
-			       va_list				args);
+int			printf(char*				fmt,
+			       ...);
 
 
 /*
@@ -145,6 +158,29 @@ int			format(t_format_character_fn		character,
 void			random_seed(void);
 
 unsigned long		random_generate(void);
+
+
+/*
+ * ../snprintf.c
+ */
+
+void			snprintf_character(char			c);
+
+int			snprintf(char*				buffer,
+				 int				size,
+				 char*				fmt,
+				 ...);
+
+
+/*
+ * ../sprintf.c
+ */
+
+void			sprintf_character(char			c);
+
+int			sprintf(char*				buffer,
+				char*				fmt,
+			       ...);
 
 
 /*

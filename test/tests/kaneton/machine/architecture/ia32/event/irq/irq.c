@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/architecture/ia32/event/irq/irq.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:24:09 2010]
+ * updated       julien quintard   [thu dec 16 13:36:12 2010]
  */
 
 /*
@@ -43,11 +43,12 @@ void			test_architecture_event_irq_handler(t_id	id)
 void			test_architecture_event_irq_content(void)
 {
   int			i;
+  i_cpu			cpu;
 
   if (event_reserve(32 + 6,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(test_architecture_event_irq_handler),
-		    0) != ERROR_OK)
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(test_architecture_event_irq_handler),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_HANG("[event_reserve] error");
 
   OUTB(0x3F0 + 2, 0);
@@ -71,7 +72,10 @@ void			test_architecture_event_irq_content(void)
 
   TEST_SIGNATURE(vnmweiofwjf90gg);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -81,8 +85,9 @@ void			test_architecture_event_irq(void)
 {
   i_thread		thread;
   o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
+  i_cpu			cpu;
 
   TEST_ENTER();
 
@@ -107,7 +112,10 @@ void			test_architecture_event_irq(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

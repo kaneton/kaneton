@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/pic/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [sat dec  4 12:25:39 2010]
+ * updated       julien quintard   [thu dec 16 13:34:37 2010]
  */
 
 /*
@@ -35,9 +35,9 @@ void			test_architecture_event_pic_03(void)
   TEST_ENTER();
 
   if (event_reserve(32 + 3,
-		    EVENT_FUNCTION,
-		    EVENT_HANDLER(test_architecture_event_pic_03),
-		    0) != ERROR_OK)
+		    EVENT_TYPE_FUNCTION,
+		    EVENT_ROUTINE(test_architecture_event_pic_03),
+		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
   if (event_release(32 + 3) != ERROR_OK)

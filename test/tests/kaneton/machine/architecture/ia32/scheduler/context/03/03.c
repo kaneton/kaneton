@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/scheduler/context/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [sun dec  5 00:56:44 2010]
+ * updated       julien quintard   [thu dec 16 13:39:33 2010]
  */
 
 /*
@@ -67,11 +67,12 @@ asm ("test_architecture_scheduler_context_03_thread:\n"
 void			test_architecture_scheduler_context_03_content(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
-  t_clock		clock;
+  s_thread_context	ctx;
+  s_stack		stack;
+  s_clock		clock;
   t_uint64		start;
   o_thread*		t;
+  i_cpu			cpu;
 
   /*
    * thread
@@ -147,7 +148,10 @@ void			test_architecture_scheduler_context_03_content(void)
 
   TEST_SIGNATURE(nsvdiojw0e9w32qfr32);
 
-  if (scheduler_stop() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_stop(cpu) != ERROR_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -156,9 +160,10 @@ void			test_architecture_scheduler_context_03_content(void)
 void			test_architecture_scheduler_context_03(void)
 {
   i_thread		thread;
-  t_thread_context	ctx;
-  t_stack		stack;
+  s_thread_context	ctx;
+  s_stack		stack;
   o_thread*		t;
+  i_cpu			cpu;
 
   if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
@@ -181,7 +186,10 @@ void			test_architecture_scheduler_context_03(void)
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (scheduler_start() != ERROR_OK)
+  if (cpu_current(&cpu) != ERROR_OK)
+    TEST_HANG("[cpu_current] error");
+
+  if (scheduler_start(cpu) != ERROR_OK)
     TEST_ERROR("[scheduler_start] error");
 
   if (event_enable() != ERROR_OK)

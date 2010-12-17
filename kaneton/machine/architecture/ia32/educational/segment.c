@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/segment.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:25:22 2007]
- * updated       julien quintard   [thu dec  9 15:16:52 2010]
+ * updated       julien quintard   [thu dec 16 20:58:34 2010]
  */
 
 /*
@@ -59,6 +59,7 @@ t_error			ia32_segment_read(i_region		segid,
   i_region		reg;
   t_paddr		poffset;
   t_paddr		end;
+  o_region*		r;
 
   /*
    * 1)
@@ -95,11 +96,14 @@ t_error			ia32_segment_read(i_region		segid,
 		     &reg) != ERROR_OK)
     return (ERROR_KO);
 
+  if (region_get(_kernel->as, reg, &r) != ERROR_OK)
+    return (ERROR_KO);
+
   /*
    * 3)
    */
 
-  memcpy(buff, (void*)(t_vaddr)reg + offs, sz);
+  memcpy(buff, (void*)r->address + offs, sz);
 
   /*
    * 4)
@@ -131,6 +135,7 @@ t_error			ia32_segment_write(i_region		segid,
   i_region		reg;
   t_paddr		poffset;
   t_paddr		end;
+  o_region*		r;
 
   /*
    * 1)
@@ -167,11 +172,14 @@ t_error			ia32_segment_write(i_region		segid,
 		     &reg) != ERROR_OK)
     return (ERROR_KO);
 
+  if (region_get(_kernel->as, reg, &r) != ERROR_OK)
+    return (ERROR_KO);
+
   /*
    * 3)
    */
 
-  memcpy((void*)(t_vaddr)reg + offs, buff, sz);
+  memcpy((void*)r->address + offs, buff, sz);
 
   /*
    * 4)
@@ -206,6 +214,8 @@ t_error			ia32_segment_copy(i_region		dst,
   o_segment*		segd;
   t_paddr		poffset;
   t_paddr		end;
+  o_region*		rs;
+  o_region*		rd;
 
   /*
    * 1)
@@ -243,6 +253,9 @@ t_error			ia32_segment_copy(i_region		dst,
 		     &regs) != ERROR_OK)
     return (ERROR_KO);
 
+  if (region_get(_kernel->as, regs, &rs) != ERROR_OK)
+    return (ERROR_KO);
+
   if (offsd % PAGESZ)
   {
     poffset = offsd & ~(PAGESZ - 1);
@@ -267,11 +280,14 @@ t_error			ia32_segment_copy(i_region		dst,
 		     &regd) != ERROR_OK)
     return (ERROR_KO);
 
+  if (region_get(_kernel->as, regd, &rd) != ERROR_OK)
+    return (ERROR_KO);
+
   /*
    * 3)
    */
 
-  memcpy((void*)(t_vaddr)regd + offsd, (void*)(t_vaddr)regs + offss, sz);
+  memcpy((void*)rd->address + offsd, (void*)rs->address + offss, sz);
 
   /*
    * 4)
