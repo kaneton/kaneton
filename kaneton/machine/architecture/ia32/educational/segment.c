@@ -72,9 +72,9 @@ t_error			ia32_segment_read(i_region		segid,
    * 2)
    */
 
-  if (offs % PAGESZ)
+  if (offs % ___kaneton$pagesz)
   {
-    poffset = offs & ~(PAGESZ - 1);
+    poffset = offs & ~(___kaneton$pagesz - 1);
     offs -= poffset;
   }
   else
@@ -84,8 +84,8 @@ t_error			ia32_segment_read(i_region		segid,
   }
 
   end = poffset + offs + sz;
-  if (end % PAGESZ)
-    end = (end & ~(PAGESZ - 1)) + PAGESZ;
+  if (end % ___kaneton$pagesz)
+    end = (end & ~(___kaneton$pagesz - 1)) + ___kaneton$pagesz;
 
   if (region_reserve(_kernel->as,
 		     segid,
@@ -148,9 +148,9 @@ t_error			ia32_segment_write(i_region		segid,
    * 2)
    */
 
-  if (offs % PAGESZ)
+  if (offs % ___kaneton$pagesz)
   {
-    poffset = offs & ~(PAGESZ - 1);
+    poffset = offs & ~(___kaneton$pagesz - 1);
     offs -= poffset;
   }
   else
@@ -160,8 +160,8 @@ t_error			ia32_segment_write(i_region		segid,
   }
 
   end = poffset + offs + sz;
-  if (end % PAGESZ)
-    end = (end & ~(PAGESZ - 1)) + PAGESZ;
+  if (end % ___kaneton$pagesz)
+    end = (end & ~(___kaneton$pagesz - 1)) + ___kaneton$pagesz;
 
   if (region_reserve(_kernel->as,
 		     segid,
@@ -229,9 +229,9 @@ t_error			ia32_segment_copy(i_region		dst,
    * 2)
    */
 
-  if (offss % PAGESZ)
+  if (offss % ___kaneton$pagesz)
   {
-    poffset = offss & ~(PAGESZ - 1);
+    poffset = offss & ~(___kaneton$pagesz - 1);
     offss -= poffset;
   }
   else
@@ -241,8 +241,8 @@ t_error			ia32_segment_copy(i_region		dst,
   }
 
   end = poffset + offss + sz;
-  if (end % PAGESZ)
-    end = (end & ~(PAGESZ - 1)) + PAGESZ;
+  if (end % ___kaneton$pagesz)
+    end = (end & ~(___kaneton$pagesz - 1)) + ___kaneton$pagesz;
 
   if (region_reserve(_kernel->as,
 		     src,
@@ -256,9 +256,9 @@ t_error			ia32_segment_copy(i_region		dst,
   if (region_get(_kernel->as, regs, &rs) != ERROR_OK)
     return (ERROR_KO);
 
-  if (offsd % PAGESZ)
+  if (offsd % ___kaneton$pagesz)
   {
-    poffset = offsd & ~(PAGESZ - 1);
+    poffset = offsd & ~(___kaneton$pagesz - 1);
     offsd -= poffset;
   }
   else
@@ -268,8 +268,8 @@ t_error			ia32_segment_copy(i_region		dst,
   }
 
   end = poffset + offsd + sz;
-  if (end % PAGESZ)
-    end = (end & ~(PAGESZ - 1)) + PAGESZ;
+  if (end % ___kaneton$pagesz)
+    end = (end & ~(___kaneton$pagesz - 1)) + ___kaneton$pagesz;
 
   if (region_reserve(_kernel->as,
 		     dst,

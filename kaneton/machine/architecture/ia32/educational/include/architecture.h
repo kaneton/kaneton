@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...itecture/ia32/NEW/include/architecture.h
+ * file          /home/mycure/kane.../ia32/educational/include/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       julien quintard   [sat oct 16 14:02:17 2010]
+ * updated       julien quintard   [fri dec 17 20:20:12 2010]
  */
 
 #ifndef ARCHITECTURE_ARCHITECTURE_H
@@ -18,14 +18,33 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define ENDIAN			___kaneton$endian
-#define WORDSZ			___kaneton$wordsz
-#define PAGESZ			___kaneton$pagesz
+/*
+ * this macro defines the architecture's endianness i.e little endian.
+ */
 
-#define IA32_CPU_MAX		16
+#define ___kaneton$endian		ENDIAN_LITTLE
 
-// XXX
-#define IA32_DEPENDENT
+/*
+ * the frame size defines the fundamental unit of physical memory. in the
+ * IA32 architecture, this unit is the byte.
+ */
+
+#define ___kaneton$framesz		1
+
+/*
+ * the page size defines the fundamental unit of virtual memory. because of
+ * the way the IA32 architecture handles pagination through a hierarchy of
+ * page directory, page tables and page frames, the fundamental unit of
+ * such memory is the page i.e a 4096-byte of aligned memory.
+ */
+
+#define ___kaneton$pagesz		4096
+
+/*
+ * this macro defines the architecture's word size i.e 32-bit.
+ */
+
+#define ___kaneton$wordsz		32
 
 /*
  * ---------- includes --------------------------------------------------------

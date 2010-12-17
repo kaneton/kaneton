@@ -37,7 +37,7 @@ void			test_core_segment_type(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      2 * PAGESZ,
+		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_EXEC,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");

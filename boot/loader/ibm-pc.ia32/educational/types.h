@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...otloader/ibm-pc.ia32/educational/types.h
+ * file          /home/mycure/kane...t/loader/ibm-pc.ia32/educational/types.h
  *
  * created       matthieu bucchianeri   [tue jul 17 15:14:07 2007]
- * updated       matthieu bucchianeri   [wed jul 18 18:12:16 2007]
+ * updated       julien quintard   [fri dec 17 21:31:37 2010]
  */
 
 #ifndef BOOTLOADER_TYPES_H

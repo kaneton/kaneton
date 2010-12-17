@@ -4,36 +4,36 @@ ENTRY(kaneton)
 
 PHDRS
 {
-        uniq PT_LOAD;
+  uniq PT_LOAD;
 }
 
 SECTIONS
 {
-	. = 0x01000000 + SIZEOF_HEADERS;
+  . = 0x01000000 + SIZEOF_HEADERS;
 
-	.text :
-	{
-		*(.text*)
-		. = ALIGN(0x1000);
-		_handler_begin = .;
-		*(.handler)
-		*(.handler.*)
-		. = ALIGN(0x1000);
-		_handler_end = .;
-	} : uniq
+  .text :
+    {
+      *(.text*)
+      . = ALIGN(0x1000);
+      _handler_begin = .;
+      *(.handler)
+      *(.handler.*)
+      . = ALIGN(0x1000);
+      _handler_end = .;
+    } : uniq
 
-	.rodata :
-	{
-		*(.rodata*)
-	} : uniq
+  .rodata :
+    {
+      *(.rodata*)
+    } : uniq
 
-	.data :
-	{
-		*(.data*) *(.bss) *(COMMON)
-		. = ALIGN(0x1000);
-		_handler_data_begin = .;
-		*(.handler_data)
-		. = ALIGN(0x1000);
-		_handler_data_end = .;
-	} : uniq
+  .data :
+    {
+      *(.data*) *(.bss) *(COMMON)
+      . = ALIGN(0x1000);
+      _handler_data_begin = .;
+      *(.handler_data)
+      . = ALIGN(0x1000);
+      _handler_data_end = .;
+    } : uniq
 }

@@ -42,13 +42,13 @@ void			test_core_map_reserve_03(void)
     {
       if (map_reserve(_kernel->as,
 		      MAP_OPTION_NONE,
-		      ((i % 100) + 1) * PAGESZ,
+		      ((i % 100) + 1) * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &addr) != ERROR_OK)
 	TEST_ERROR("[map_reserve] error");
 
       for (j = 0, p = (t_uint8*)addr;
-           j < ((i % 100) + 1) * PAGESZ;
+           j < ((i % 100) + 1) * ___kaneton$pagesz;
            p++, j++)
         {
           *p = 0x0d;

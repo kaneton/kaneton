@@ -63,8 +63,8 @@ t_error			ia32_map_chunk(t_vaddr		v,
   o_region*		reg = alloc;
   o_segment*		s;
 
-  assert(!(v % PAGESZ));
-  assert(!(p % PAGESZ));
+  assert(!(v % ___kaneton$pagesz));
+  assert(!(p % ___kaneton$pagesz));
 
   if (reg == NULL)
     MACHINE_ESCAPE("XXX");
@@ -77,7 +77,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
 			IA32_PAGE_DIRECTORY_ENTRY_INDEX(v), &pt) != ERROR_OK)
     {
       if (segment_reserve(_kernel->as,
-			  PAGESZ,
+			  ___kaneton$pagesz,
 			  PERMISSION_READ | PERMISSION_WRITE,
 			  &seg) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
@@ -108,7 +108,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
 
       memset((void*)IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
 				       IA32_PAGE_DIRECTORY_ENTRY_INDEX(v)), 0,
-	     PAGESZ);
+	     ___kaneton$pagesz);
     }
 
   /*
@@ -135,7 +135,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
   reg->segment = p; // XXX !!!WARNING!!! locate p's segment identifier
   reg->address = v;
   reg->offset = 0;
-  reg->size = PAGESZ;
+  reg->size = ___kaneton$pagesz;
   reg->options = REGION_OPTION_NONE;
 
   if (region_inject(_kernel->as, reg, &useless) != ERROR_OK)
@@ -169,7 +169,7 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
   o_as*			as;
   i_region		region;
 
-  assert(!(v % PAGESZ));
+  assert(!(v % ___kaneton$pagesz));
 
   /*
    * 1)
@@ -224,7 +224,7 @@ t_error			ia32_map_pd(t_ia32_directory*	pd)
 
   tmp = malloc(sizeof(o_region));
 
-  if (region_space(_kernel->as, PAGESZ, &chunk) != ERROR_OK)
+  if (region_space(_kernel->as, ___kaneton$pagesz, &chunk) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   if (ia32_map_chunk(chunk, (t_paddr)*pd, tmp) != ERROR_OK)
@@ -250,7 +250,7 @@ t_error			ia32_map_pt(t_ia32_table*	pt)
 
   tmp = malloc(sizeof(o_region));
 
-  if (region_space(_kernel->as, PAGESZ, &chunk) != ERROR_OK)
+  if (region_space(_kernel->as, ___kaneton$pagesz, &chunk) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   if (ia32_map_chunk(chunk, (t_paddr)pt->paddr, tmp) != ERROR_OK)
@@ -309,9 +309,9 @@ t_error			ia32_map_region(i_as		asid,
   i_segment		ptseg;
   t_uint32		clear_pt;
 
-  assert(!(size % PAGESZ));
-  assert(!(offset % PAGESZ));
-  assert(!(address % PAGESZ));
+  assert(!(size % ___kaneton$pagesz));
+  assert(!(offset % ___kaneton$pagesz));
+  assert(!(address % ___kaneton$pagesz));
 
   /*
    * 1)
@@ -377,7 +377,7 @@ t_error			ia32_map_region(i_as		asid,
       if (ia32_pd_get_table(&pd, pde, &pt) != ERROR_OK)
 	{
 	  if (segment_reserve(asid,
-			      PAGESZ,
+			      ___kaneton$pagesz,
 			      PERMISSION_READ | PERMISSION_WRITE,
 			      &ptseg) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
@@ -410,7 +410,7 @@ t_error			ia32_map_region(i_as		asid,
 	MACHINE_ESCAPE("XXX");
 
       if (clear_pt)
-	memset((void*)pt.vaddr, 0, PAGESZ);
+	memset((void*)pt.vaddr, 0, ___kaneton$pagesz);
 
       /*
        * c)
@@ -429,8 +429,8 @@ t_error			ia32_map_region(i_as		asid,
 	   */
 
 	  pg.addr = paddr;
-	  paddr += PAGESZ;
-	  size -= PAGESZ;
+	  paddr += ___kaneton$pagesz;
+	  size -= ___kaneton$pagesz;
 
 	  if (ia32_pt_add_page(&pt, pte, pg) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
@@ -499,8 +499,8 @@ t_error			ia32_unmap_region(i_as		asid,
   t_ia32_pde		pde;
   t_ia32_pte		pte;
 
-  assert(!(address % PAGESZ));
-  assert(!(size % PAGESZ));
+  assert(!(address % ___kaneton$pagesz));
+  assert(!(size % ___kaneton$pagesz));
 
   /*
    * 1)

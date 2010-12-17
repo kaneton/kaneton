@@ -268,14 +268,14 @@ t_error			ia32_init_context(i_task		taskid,
 
   if (map_reserve(task->as,
 		  MAP_OPTION_NONE,
-		  PAGESZ,
+		  ___kaneton$pagesz,
 		  PERMISSION_READ | PERMISSION_WRITE,
 		  &o->machine.interrupt_stack) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   //printf("INTERRUPT STACK: 0x%x\n", o->machine.interrupt_stack);
 
-  o->machine.interrupt_stack += (PAGESZ - 16);
+  o->machine.interrupt_stack += (___kaneton$pagesz - 16);
 
   /*
    * 4)
@@ -435,7 +435,7 @@ t_error			ia32_init_switcher(void)
    */
 
   if (segment_reserve(_kernel->as,
-		      3 * PAGESZ,
+		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -448,7 +448,7 @@ t_error			ia32_init_switcher(void)
 		     0,
 		     REGION_OPTION_GLOBAL | REGION_OPTION_PRIVILEGED,
 		     0,
-		     3 * PAGESZ,
+		     3 * ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
@@ -466,7 +466,7 @@ t_error			ia32_init_switcher(void)
    */
 
   if (segment_reserve(_kernel->as,
-		      2 * PAGESZ,
+		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -479,7 +479,7 @@ t_error			ia32_init_switcher(void)
 		     0,
 		     REGION_OPTION_GLOBAL | REGION_OPTION_PRIVILEGED,
 		     0,
-		     2 * PAGESZ,
+		     2 * ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
@@ -497,11 +497,11 @@ t_error			ia32_init_switcher(void)
   if (ia32_tss_load(_thread->machine.tss,
 		    IA32_SEGMENT_SELECTOR(IA32_PMODE_GDT_KERNEL_DS,
 					  IA32_PRIVILEGE_RING0),
-		    int_stack + 2 * PAGESZ - 16,
+		    int_stack + 2 * ___kaneton$pagesz - 16,
 		    0x68) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
-  ia32_cpu_local_set(&ia32_local_interrupt_stack, int_stack + 2 * PAGESZ - 16);
+  ia32_cpu_local_set(&ia32_local_interrupt_stack, int_stack + 2 * ___kaneton$pagesz - 16);
 
   /*
    * 5)

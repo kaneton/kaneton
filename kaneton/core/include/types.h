@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/types.h
  *
  * created       julien quintard   [wed jun  6 22:38:37 2007]
- * updated       julien quintard   [wed dec 15 10:24:49 2010]
+ * updated       julien quintard   [fri dec 17 22:03:35 2010]
  */
 
 #ifndef CORE_TYPES_H

@@ -40,12 +40,12 @@ void			test_core_segment_resize(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      3 * PAGESZ,
+		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_resize(seg, PAGESZ, SEGMENT_OPTION_NONE, &seg) != ERROR_OK)
+  if (segment_resize(seg, ___kaneton$pagesz, SEGMENT_OPTION_NONE, &seg) != ERROR_OK)
     TEST_ERROR("[segment_resize] error");
 
   if (segment_get(seg, &o) != ERROR_OK)
@@ -60,7 +60,7 @@ void			test_core_segment_resize(void)
   if (o->type != SEGMENT_TYPE_MEMORY)
     TEST_ERROR("invalid segment's type after resize");
 
-  if (o->size != PAGESZ)
+  if (o->size != ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after resize");
 
   if (o->permissions != PERMISSION_READ)
@@ -73,7 +73,7 @@ void			test_core_segment_resize(void)
       o_segment*	o2;
 
       if (segment_reserve(_kernel->as,
-			  PAGESZ,
+			  ___kaneton$pagesz,
 			  PERMISSION_READ,
 			  &seg2) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
@@ -84,7 +84,7 @@ void			test_core_segment_resize(void)
       if (segment_get(seg2, &o2) != ERROR_OK)
 	TEST_ERROR("[segment_get] error");
 
-      if (o2->address == o1->address + PAGESZ)
+      if (o2->address == o1->address + ___kaneton$pagesz)
 	break;
 
       if (segment_release(seg) != ERROR_OK)
@@ -99,7 +99,7 @@ void			test_core_segment_resize(void)
     TEST_ERROR("unable to allocate a segment following a previously "
 	       "reserved one");
 
-  if (segment_resize(seg, 10 * PAGESZ, SEGMENT_OPTION_NONE, &seg3) != ERROR_OK)
+  if (segment_resize(seg, 10 * ___kaneton$pagesz, SEGMENT_OPTION_NONE, &seg3) != ERROR_OK)
     TEST_ERROR("[segment_resize] error");
 
   if (seg3 == seg)
@@ -122,7 +122,7 @@ void			test_core_segment_resize(void)
   if (o->type != SEGMENT_TYPE_MEMORY)
     TEST_ERROR("invalid segment's type after resize");
 
-  if (o->size != 10 * PAGESZ)
+  if (o->size != 10 * ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after resize");
 
   if (o->permissions != PERMISSION_READ)

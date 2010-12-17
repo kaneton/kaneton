@@ -40,21 +40,21 @@ void			test_core_region_split(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      5 * PAGESZ,
+		      5 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     seg,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     REGION_OPTION_NONE,
 		     0,
-		     4 * PAGESZ,
+		     4 * ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_split(_kernel->as, reg, 3 * PAGESZ, &left, &right) != ERROR_OK)
+  if (region_split(_kernel->as, reg, 3 * ___kaneton$pagesz, &left, &right) != ERROR_OK)
     TEST_ERROR("[region_split] error");
 
   if (region_get(_kernel->as, left, &o) != ERROR_OK)
@@ -67,10 +67,10 @@ void			test_core_region_split(void)
   if (o->segment != seg)
     TEST_ERROR("invalid region's segment identifier after split");
 
-  if (o->offset != PAGESZ)
+  if (o->offset != ___kaneton$pagesz)
     TEST_ERROR("invalid region's offset after split");
 
-  if (o->size != 3 * PAGESZ)
+  if (o->size != 3 * ___kaneton$pagesz)
     TEST_ERROR("invalid region's size after split");
 
   if (region_get(_kernel->as, right, &o) != ERROR_OK)
@@ -83,10 +83,10 @@ void			test_core_region_split(void)
   if (o->segment != seg)
     TEST_ERROR("invalid region's segment identifier after split");
 
-  if (o->offset != 4 * PAGESZ)
+  if (o->offset != 4 * ___kaneton$pagesz)
     TEST_ERROR("invalid region's offset after split");
 
-  if (o->size != PAGESZ)
+  if (o->size != ___kaneton$pagesz)
     TEST_ERROR("invalid region's size after split");
 
   if (region_coalesce(_kernel->as, left, right, &reg) != ERROR_OK)
@@ -101,10 +101,10 @@ void			test_core_region_split(void)
   if (o->segment != seg)
     TEST_ERROR("invalid region's segment identifier after coalescing");
 
-  if (o->offset != PAGESZ)
+  if (o->offset != ___kaneton$pagesz)
     TEST_ERROR("invalid region's offset after coalescing");
 
-  if (o->size != 4 * PAGESZ)
+  if (o->size != 4 * ___kaneton$pagesz)
     TEST_ERROR("invalid region's size after coalescing");
 
   TEST_SIGNATURE(fr309iearbg9hh34h);

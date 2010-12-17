@@ -53,7 +53,7 @@ void			test_core_as_segment(void)
   for (i = 0; i < 10; i++)
     {
       if (segment_reserve(as,
-			  PAGESZ,
+			  ___kaneton$pagesz,
 			  PERMISSION_READ | PERMISSION_WRITE,
 			  &seg) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");

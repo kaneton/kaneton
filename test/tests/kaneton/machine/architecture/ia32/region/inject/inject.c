@@ -49,7 +49,7 @@ void			test_architecture_region_inject(void)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(_kernel->as,
-		      10 * PAGESZ,
+		      10 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -57,16 +57,16 @@ void			test_architecture_region_inject(void)
   o = malloc(sizeof (o_region));
   o->segment = seg;
   o->address = 0x40000000;
-  o->offset = PAGESZ;
-  o->size = 2 * PAGESZ;
+  o->offset = ___kaneton$pagesz;
+  o->size = 2 * ___kaneton$pagesz;
   o->options = REGION_OPTION_FORCE;
 
   if (ia32_map_region(as,
 		      seg,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      REGION_OPTION_FORCE,
 		      0x40000000,
-		      2 * PAGESZ) != ERROR_OK)
+		      2 * ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[ia32_map_region] error");
 
   if (region_inject(as, o, &reg) != ERROR_OK)
@@ -81,10 +81,10 @@ void			test_architecture_region_inject(void)
   if (o->segment != seg)
     TEST_ERROR("invalid region's segment identifier");
 
-  if (o->offset != PAGESZ)
+  if (o->offset != ___kaneton$pagesz)
     TEST_ERROR("invalid region's offset");
 
-  if (o->size != 2 * PAGESZ)
+  if (o->size != 2 * ___kaneton$pagesz)
     TEST_ERROR("invalid region's size");
 
   if (o->options != REGION_OPTION_FORCE)

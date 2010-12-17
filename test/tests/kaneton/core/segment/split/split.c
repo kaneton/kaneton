@@ -39,12 +39,12 @@ void			test_core_segment_split(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      3 * PAGESZ,
+		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_split(seg, 2 * PAGESZ, &seg, &seg2) != ERROR_OK)
+  if (segment_split(seg, 2 * ___kaneton$pagesz, &seg, &seg2) != ERROR_OK)
     TEST_ERROR("[segment_split] error");
 
   if (segment_get(seg, &o1) != ERROR_OK)
@@ -53,7 +53,7 @@ void			test_core_segment_split(void)
   if (segment_get(seg2, &o2) != ERROR_OK)
     TEST_ERROR("[segment_get] error");
 
-  if (o2->address != (o1->address + 2 * PAGESZ))
+  if (o2->address != (o1->address + 2 * ___kaneton$pagesz))
     TEST_ERROR("invalid segments' address");
 
   if (o1->id != seg)
@@ -65,7 +65,7 @@ void			test_core_segment_split(void)
   if (o1->type != SEGMENT_TYPE_MEMORY)
     TEST_ERROR("invalid segment's type after split");
 
-  if (o1->size != 2 * PAGESZ)
+  if (o1->size != 2 * ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after split");
 
   if (o1->permissions != PERMISSION_READ)
@@ -80,7 +80,7 @@ void			test_core_segment_split(void)
   if (o2->type != SEGMENT_TYPE_MEMORY)
     TEST_ERROR("invalid segment's type after split");
 
-  if (o2->size != PAGESZ)
+  if (o2->size != ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after split");
 
   if (o2->permissions != PERMISSION_READ)

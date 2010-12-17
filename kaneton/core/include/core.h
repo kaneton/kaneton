@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [fri dec 10 11:30:51 2010]
+ * updated       julien quintard   [fri dec 17 20:20:46 2010]
  */
 
 #ifndef CORE_CORE_H
@@ -17,6 +17,13 @@
 /*
  * ---------- macros ----------------------------------------------------------
  */
+
+/*
+ * endianness
+ */
+
+#define ENDIAN_LITTLE		1
+#define ENDIAN_BIG		2
 
 /*
  * booleans

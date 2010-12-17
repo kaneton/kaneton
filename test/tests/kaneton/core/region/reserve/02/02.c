@@ -43,17 +43,17 @@ void			test_core_region_reserve_02(void)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as,
-		      2 * PAGESZ,
+		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as,
 		     seg,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     REGION_OPTION_FORCE,
 		     0x40000000,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
@@ -66,10 +66,10 @@ void			test_core_region_reserve_02(void)
   if (o->segment != seg)
     TEST_ERROR("invalid region's segment identifier");
 
-  if (o->offset != PAGESZ)
+  if (o->offset != ___kaneton$pagesz)
     TEST_ERROR("invalid region's offset");
 
-  if (o->size != PAGESZ)
+  if (o->size != ___kaneton$pagesz)
     TEST_ERROR("invalid region's size");
 
   if (as_release(as) != ERROR_OK)

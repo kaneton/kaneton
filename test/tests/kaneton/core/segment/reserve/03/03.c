@@ -37,7 +37,7 @@ void			test_core_segment_reserve_03(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      42 * PAGESZ,
+		      42 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -51,7 +51,7 @@ void			test_core_segment_reserve_03(void)
   if (o->as != _kernel->as)
     TEST_ERROR("invalid segment's address space identifier");
 
-  if (o->size != (42 * PAGESZ))
+  if (o->size != (42 * ___kaneton$pagesz))
     TEST_ERROR("invalid segment's size");
 
   if (o->permissions != PERMISSION_READ)

@@ -55,7 +55,7 @@ void			test_core_segment_give(void)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as1,
-		      2 * PAGESZ,
+		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");

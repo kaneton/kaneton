@@ -61,26 +61,54 @@ m_kernel*		_kernel = NULL;
  *
  * steps:
  *
- * 1) display information.
- * 2) call the machine.
+ * 1) build the endian string.
+ * 2) display information.
+ * 3) call the machine.
  */
 
 t_error			kernel_dump(void)
 {
+  char*			endian;
+
   /*
    * 1)
+   */
+
+  switch (___kaneton$endian)
+    {
+    case ENDIAN_LITTLE:
+      {
+	endian = "little";
+
+	break;
+      }
+    case ENDIAN_BIG:
+      {
+	endian = "big";
+
+	break;
+      }
+    default:
+      CORE_ESCAPE("unknown endianness '%u'",
+		  ___kaneton$endian);
+    }
+
+  /*
+   * 2)
    */
 
   module_call(console, message,
 	      '#',
 	      "kernel manager: cell(%qd) task(%qd) as(%qd) thread(%qd) "
-	      "node(%qd:%qd)\n",
+	      "node(%qd:%qd) endian(%s) wordsz(%u) framesz(%u) pagesz(%u)\n",
 	      _kernel->cell,
 	      _kernel->task, _kernel->as, _kernel->thread,
-	      _kernel->node.cell, _kernel->node.task);
+	      _kernel->node.cell, _kernel->node.task,
+	      endian,
+	      ___kaneton$wordsz, ___kaneton$framesz, ___kaneton$pagesz);
 
   /*
-   * 2)
+   * 3)
    */
 
   if (machine_call(kernel, dump) != ERROR_OK)

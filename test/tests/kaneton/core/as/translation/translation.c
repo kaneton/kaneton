@@ -40,17 +40,17 @@ void			test_core_as_translation(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      2048 * PAGESZ,
+		      2048 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     seg,
-		     4 * PAGESZ,
+		     4 * ___kaneton$pagesz,
 		     REGION_OPTION_NONE,
 		     0,
-		     8 * PAGESZ,
+		     8 * ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
@@ -65,32 +65,32 @@ void			test_core_as_translation(void)
    */
 
   PHYSICAL(region->address,
-	   segment->address + 4 * PAGESZ);
+	   segment->address + 4 * ___kaneton$pagesz);
 
   PHYSICAL(region->address + 1,
-	   segment->address + 4 * PAGESZ + 1);
+	   segment->address + 4 * ___kaneton$pagesz + 1);
 
-  PHYSICAL(region->address + 2 * PAGESZ + 1234,
-	   segment->address + 6 * PAGESZ + 1234);
+  PHYSICAL(region->address + 2 * ___kaneton$pagesz + 1234,
+	   segment->address + 6 * ___kaneton$pagesz + 1234);
 
-  for (i = 0; i < 8 * PAGESZ; i++)
-    PHYSICAL(region->address + i, segment->address + 4 * PAGESZ + i);
+  for (i = 0; i < 8 * ___kaneton$pagesz; i++)
+    PHYSICAL(region->address + i, segment->address + 4 * ___kaneton$pagesz + i);
 
   /*
    * physical to virtual
    */
 
-  VIRTUAL(segment->address + 4 * PAGESZ,
+  VIRTUAL(segment->address + 4 * ___kaneton$pagesz,
 	  region->address);
 
-  VIRTUAL(segment->address + 4 * PAGESZ + 1,
+  VIRTUAL(segment->address + 4 * ___kaneton$pagesz + 1,
 	  region->address + 1);
 
-  VIRTUAL(segment->address + 6 * PAGESZ + 1234,
-	  region->address + 2 * PAGESZ + 1234);
+  VIRTUAL(segment->address + 6 * ___kaneton$pagesz + 1234,
+	  region->address + 2 * ___kaneton$pagesz + 1234);
 
-  for (i = 0; i < 8 * PAGESZ; i++)
-    VIRTUAL(segment->address + 4 * PAGESZ + i,
+  for (i = 0; i < 8 * ___kaneton$pagesz; i++)
+    VIRTUAL(segment->address + 4 * ___kaneton$pagesz + i,
 	    region->address + i);
 
   TEST_SIGNATURE(r3289u9idsjjsfwe9tg9);

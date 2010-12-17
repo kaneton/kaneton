@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [mon may  4 19:41:21 2009]
+# updated       julien quintard   [fri dec 17 20:00:58 2010]
 #
 
 #

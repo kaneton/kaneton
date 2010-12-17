@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [thu dec 16 21:06:07 2010]
+ * updated       julien quintard   [fri dec 17 20:21:51 2010]
  */
 
 /*
@@ -225,7 +225,7 @@ t_error			glue_scheduler_initialize(void)
     MACHINE_ESCAPE("unable to reserve the idle thread");
 
   stack.base = 0;
-  stack.size = PAGESZ;
+  stack.size = ___kaneton$pagesz;
 
   if (thread_stack(_scheduler->idle, stack) != ERROR_OK)
     MACHINE_ESCAPE("unable to set the stack for the thread");

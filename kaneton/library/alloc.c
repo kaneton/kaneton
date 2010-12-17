@@ -38,8 +38,8 @@
    (_size_))
 
 #define PAGED_SIZE(_size_)						\
-  ((_size_) % PAGESZ ?							\
-   (_size_) + PAGESZ - (_size_) % PAGESZ :				\
+  ((_size_) % ___kaneton$pagesz ?					\
+   (_size_) + ___kaneton$pagesz - (_size_) % ___kaneton$pagesz :	\
    (_size_))
 
 #ifdef MALLOC_SIGN_ENABLE
@@ -197,7 +197,7 @@ void*			malloc(size_t				size)
 
 	  _alloc.reserve = 0;
 
-	  pagesz = PAGESZ;
+	  pagesz = ___kaneton$pagesz;
 	}
       else
 	{
@@ -222,7 +222,7 @@ void*			malloc(size_t				size)
 	    {
 	      assert(map_reserve(_kernel->as,
 				 MAP_OPTION_PRIVILEGED,
-				 PAGESZ,
+				 ___kaneton$pagesz,
 				 PERMISSION_READ | PERMISSION_WRITE,
 				 &_alloc.reserve) == ERROR_OK)
 
@@ -600,7 +600,7 @@ void			alloc_setup(void)
 {
   assert(map_reserve(_kernel->as,
 		     MAP_OPTION_PRIVILEGED,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     PERMISSION_READ | PERMISSION_WRITE,
 		     &_alloc.reserve) == ERROR_OK);
 }

@@ -193,7 +193,7 @@ void			test_core_scheduler_complete_02(void)
    */
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &segment) != ERROR_OK)
     TEST_ERROR("[map_reserve] error");
@@ -203,7 +203,7 @@ void			test_core_scheduler_complete_02(void)
 		     0,
 		     REGION_OPTION_NONE,
 		     0x0,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
@@ -253,7 +253,7 @@ void			test_core_scheduler_complete_02(void)
 		     0,
 		     REGION_OPTION_NONE,
 		     0x0,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
@@ -306,7 +306,7 @@ void			test_core_scheduler_complete_02(void)
 		     0,
 		     REGION_OPTION_NONE,
 		     0x0,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 

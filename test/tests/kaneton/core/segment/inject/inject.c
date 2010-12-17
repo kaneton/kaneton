@@ -45,7 +45,7 @@ void			test_core_segment_inject(void)
   new_seg = malloc(sizeof (o_segment));
   new_seg->address = 0x50000000;
   new_seg->permissions = PERMISSION_READ | PERMISSION_EXEC;
-  new_seg->size = 2 * PAGESZ;
+  new_seg->size = 2 * ___kaneton$pagesz;
   new_seg->type = SEGMENT_TYPE_MEMORY;
 
   if (segment_inject(as, new_seg, &seg) != ERROR_OK)
@@ -63,7 +63,7 @@ void			test_core_segment_inject(void)
   if (o->address != new_seg->address)
     TEST_ERROR("invalid segment's address after injection");
 
-  if (o->size != 2 * PAGESZ)
+  if (o->size != 2 * ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after injection");
 
   if (o->permissions != (PERMISSION_READ | PERMISSION_EXEC))

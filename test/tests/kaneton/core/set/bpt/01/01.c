@@ -29,18 +29,18 @@ void			test_core_set_bpt_01(void)
 
   TEST_ENTER();
 
-  if (set_reserve(bpt, SET_OPTION_SORT, sizeof(t_id), PAGESZ, &id) != ERROR_OK)
+  if (set_reserve(bpt, SET_OPTION_SORT, sizeof(t_id), ___kaneton$pagesz, &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error");
 
   if (set_reserve(bpt, SET_OPTION_ALLOCATE | SET_OPTION_FREE,
-                  sizeof(t_id), PAGESZ, &id) == ERROR_OK)
+                  sizeof(t_id), ___kaneton$pagesz, &id) == ERROR_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments");
 
   if (set_reserve(bpt, SET_OPTION_ORGANISE,
-                  sizeof(t_id), PAGESZ, &id) == ERROR_OK)
+                  sizeof(t_id), ___kaneton$pagesz, &id) == ERROR_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments");
 
   TEST_SIGNATURE(s90if3ja4g93);

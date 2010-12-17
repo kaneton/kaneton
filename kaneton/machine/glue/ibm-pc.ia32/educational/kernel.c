@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/kernel.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec 10 17:04:37 2010]
+ * updated       julien quintard   [fri dec 17 21:04:12 2010]
  */
 
 /*

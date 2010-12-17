@@ -146,7 +146,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
                                        // pour extraire l'id ou le generer
                                        // avec SEGMENT_IDENTIFIER() au pire!
   preg->offset = 0;
-  preg->size = IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ; // XXX
+  preg->size = IA32_PAGE_TABLE_MAX_ENTRIES * ___kaneton$pagesz; // XXX
   preg->options = REGION_OPTION_NONE;
 
   if (region_inject(asid, preg, &useless) != ERROR_OK)
@@ -223,7 +223,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 
 		  pt_seg->type = SEGMENT_TYPE_SYSTEM;
 		  pt_seg->address = pt.paddr;
-		  pt_seg->size = PAGESZ;
+		  pt_seg->size = ___kaneton$pagesz;
 		  pt_seg->permissions = PERMISSION_READ | PERMISSION_WRITE;
 
 		  if (segment_inject(asid, pt_seg, &s) != ERROR_OK)
@@ -316,7 +316,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
    */
 
   if (segment_reserve(asid,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -336,7 +336,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
   if (ia32_map_pd(&pd) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
-  memset((void*)pd, 0, PAGESZ);
+  memset((void*)pd, 0, ___kaneton$pagesz);
 
   /*
    * 4)
@@ -382,7 +382,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
 		     (t_vaddr)ia32_gdt.descriptor,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
@@ -398,7 +398,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
 		     (t_vaddr)ia32_idt.descriptor,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 

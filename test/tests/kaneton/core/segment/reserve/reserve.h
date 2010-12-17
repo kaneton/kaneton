@@ -24,7 +24,7 @@
       o_segment*	o;						\
 									\
       if (segment_reserve((_as_),					\
-			  (_pages_) * PAGESZ,				\
+			  (_pages_) * ___kaneton$pagesz,				\
 			  PERMISSION_READ,				\
 			  (_segment_)) != ERROR_OK)			\
 	TEST_ERROR("[segment_reserve] error");				\
@@ -38,7 +38,7 @@
       if (o->as != (_as_))						\
 	TEST_ERROR("invalid segment's address space identifier");	\
 									\
-      if (o->size != (_pages_) * PAGESZ)				\
+      if (o->size != (_pages_) * ___kaneton$pagesz)				\
 	TEST_ERROR("invalid segment's size");				\
 									\
       if (o->permissions != PERMISSION_READ)				\

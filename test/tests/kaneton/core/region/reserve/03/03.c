@@ -44,7 +44,7 @@ void			test_core_region_reserve_03(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-                      10 * PAGESZ,
+                      10 * ___kaneton$pagesz,
                       PERMISSION_READ | PERMISSION_WRITE,
                       &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -54,25 +54,25 @@ void			test_core_region_reserve_03(void)
                      0,
                      REGION_OPTION_NONE,
                      0,
-                     2 * PAGESZ,
+                     2 * ___kaneton$pagesz,
                      &reg1) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(_kernel->as,
                      seg,
-                     3 * PAGESZ,
+                     3 * ___kaneton$pagesz,
                      REGION_OPTION_NONE,
                      0,
-                     2 * PAGESZ,
+                     2 * ___kaneton$pagesz,
                      &reg2) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(_kernel->as,
                      seg,
-                     6 * PAGESZ,
+                     6 * ___kaneton$pagesz,
                      REGION_OPTION_NONE,
                      0,
-                     4 * PAGESZ,
+                     4 * ___kaneton$pagesz,
                      &reg3) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
@@ -86,15 +86,15 @@ void			test_core_region_reserve_03(void)
     TEST_ERROR("[region_get] error");
 
   p = (t_uint8*)r1->address;
-  for (; p < (t_uint8*)r1->address + 2 * PAGESZ; p++)
+  for (; p < (t_uint8*)r1->address + 2 * ___kaneton$pagesz; p++)
     *p = 0xaa;
 
   p = (t_uint8*)r2->address;
-  for (; p < (t_uint8*)r2->address + 2 * PAGESZ; p++)
+  for (; p < (t_uint8*)r2->address + 2 * ___kaneton$pagesz; p++)
     *p = 0x55;
 
   p = (t_uint8*)r3->address;
-  for (; p < (t_uint8*)r3->address + 4 * PAGESZ; p++)
+  for (; p < (t_uint8*)r3->address + 4 * ___kaneton$pagesz; p++)
     *p = 0x0;
 
   if (region_release(_kernel->as, reg1) != ERROR_OK)

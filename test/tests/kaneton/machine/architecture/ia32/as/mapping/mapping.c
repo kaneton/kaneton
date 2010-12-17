@@ -121,7 +121,7 @@ void			test_architecture_as_mapping(void)
 			       paddr);
 
 		  pages++;
-		  paddr += PAGESZ;
+		  paddr += ___kaneton$pagesz;
 		}
 	    }
 

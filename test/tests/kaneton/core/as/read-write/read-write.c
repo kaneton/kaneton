@@ -33,7 +33,7 @@ void			test_core_as_readwrite(void)
   i_segment		useless;
   i_region		reg;
   t_uint32		i;
-  t_uint8		buff[4 * PAGESZ];
+  t_uint8		buff[4 * ___kaneton$pagesz];
 
   TEST_ENTER();
 
@@ -47,50 +47,50 @@ void			test_core_as_readwrite(void)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as,
-		      2 * PAGESZ,
+		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg1) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
-		      4 * PAGESZ,
+		      4 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg2) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
-		      2 * PAGESZ,
+		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg3) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as,
 		     seg1,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     REGION_OPTION_FORCE,
 		     0x20000000,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as,
 		     seg2,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     REGION_OPTION_FORCE,
 		     0x20001000,
-		     2 * PAGESZ,
+		     2 * ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
@@ -99,54 +99,54 @@ void			test_core_as_readwrite(void)
 		     0,
 		     REGION_OPTION_FORCE,
 		     0x20003000,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  for (i = 10; i < 4 * PAGESZ - 12; i++)
+  for (i = 10; i < 4 * ___kaneton$pagesz - 12; i++)
     buff[i] = (i * 2 + 4) % 256;
 
   if (as_write(as,
 	       buff + 10,
-	       4 * PAGESZ - 12,
+	       4 * ___kaneton$pagesz - 12,
 	       0x2000000a) != ERROR_OK)
     TEST_ERROR("[as_write] error");
 
-  for (i = 10; i < 4 * PAGESZ - 12; i++)
+  for (i = 10; i < 4 * ___kaneton$pagesz - 12; i++)
     buff[i] = 0;
 
   if (segment_read(seg1,
-		   PAGESZ,
+		   ___kaneton$pagesz,
 		   buff,
-		   PAGESZ) != ERROR_OK)
+		   ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_read] error");
 
   if (segment_read(seg2,
-		   PAGESZ,
-		   buff + PAGESZ,
-		   2 * PAGESZ) != ERROR_OK)
+		   ___kaneton$pagesz,
+		   buff + ___kaneton$pagesz,
+		   2 * ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_read] error");
 
   if (segment_read(seg3,
 		   0,
-		   buff + 3 * PAGESZ,
-		   PAGESZ) != ERROR_OK)
+		   buff + 3 * ___kaneton$pagesz,
+		   ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_read] error");
 
-  for (i = 10; i < 4 * PAGESZ - 12; i++)
+  for (i = 10; i < 4 * ___kaneton$pagesz - 12; i++)
     if (buff[i] != (i * 2 + 4) % 256)
       TEST_ERROR("the data read differs from the one written");
 
-  for (i = 10; i < 4 * PAGESZ - 12; i++)
+  for (i = 10; i < 4 * ___kaneton$pagesz - 12; i++)
     buff[i] = 0;
 
   if (as_read(as,
 	      0x2000000a,
-	      4 * PAGESZ - 12,
+	      4 * ___kaneton$pagesz - 12,
 	      buff + 10) != ERROR_OK)
     TEST_ERROR("[as_read] error");
 
-  for (i = 10; i < 4 * PAGESZ - 12; i++)
+  for (i = 10; i < 4 * ___kaneton$pagesz - 12; i++)
     if (buff[i] != (i * 2 + 4) % 256)
       TEST_ERROR("the data read differs from the one written");
 

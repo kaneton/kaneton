@@ -35,22 +35,22 @@ void			test_core_segment_clone(void)
   i_segment		seg2;
   t_uint32		i;
   o_segment*		o;
-  t_uint8		buff[PAGESZ];
+  t_uint8		buff[___kaneton$pagesz];
 
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  for (i = 0; i < PAGESZ; i++)
+  for (i = 0; i < ___kaneton$pagesz; i++)
     {
       buff[i] = (i * 2 + 4) % 256;
     }
 
-  if (segment_write(seg, 0, buff, PAGESZ) != ERROR_OK)
+  if (segment_write(seg, 0, buff, ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_write] error");
 
   if (segment_clone(_kernel->as, seg, &seg2) != ERROR_OK)
@@ -65,18 +65,18 @@ void			test_core_segment_clone(void)
   if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))
     TEST_ERROR("invalid segment's permissions after cloning");
 
-  if (o->size != PAGESZ)
+  if (o->size != ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after cloning");
 
-  for (i = 0; i < PAGESZ; i++)
+  for (i = 0; i < ___kaneton$pagesz; i++)
     {
       buff[i] = 0;
     }
 
-  if (segment_read(seg2, 0, buff, PAGESZ) != ERROR_OK)
+  if (segment_read(seg2, 0, buff, ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_read] error");
 
-  for (i = 0; i < PAGESZ; i++)
+  for (i = 0; i < ___kaneton$pagesz; i++)
     {
       if (buff[i] != (i * 2 + 4) % 256)
 	TEST_ERROR("invalid data after cloning");

@@ -48,7 +48,7 @@ t_error			XXX_ia32_page_map(t_paddr		paddr,
 
   region = malloc(sizeof(o_region));
 
-  if (region_space(_kernel->as, PAGESZ, vaddr) != ERROR_OK) // XXX kasid?
+  if (region_space(_kernel->as, ___kaneton$pagesz, vaddr) != ERROR_OK) // XXX kasid?
     return (ERROR_KO);
 
   if (ia32_map_chunk(*vaddr, paddr, region) != ERROR_OK)
@@ -106,8 +106,8 @@ t_error			XXX_ia32_table_dump(t_ia32_directory	directory,
 	      "  [page table %4u] paddr=0x%08x, vaddr=0x%08x range=[0x%x - 0x%x]\n",
 	 index,
 	 paddr, vaddr,
-	 index * IA32_PAGE_DIRECTORY_MAX_ENTRIES * PAGESZ,
-	 (index + 1) * IA32_PAGE_DIRECTORY_MAX_ENTRIES * PAGESZ - 1);
+	 index * IA32_PAGE_DIRECTORY_MAX_ENTRIES * ___kaneton$pagesz,
+	 (index + 1) * IA32_PAGE_DIRECTORY_MAX_ENTRIES * ___kaneton$pagesz - 1);
 
   table = (t_ia32_pte*)vaddr;
 
@@ -119,7 +119,7 @@ t_error			XXX_ia32_table_dump(t_ia32_directory	directory,
 		      "    [page table entry %4u] "
 		      "vaddr=0x%08x, paddr=0x%08x, r/w=%d, user/supervisor=%d, accessed=%d dirty=%d\n",
 		 i,
-		 index * IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ + i * PAGESZ,
+		 index * IA32_PAGE_TABLE_MAX_ENTRIES * ___kaneton$pagesz + i * ___kaneton$pagesz,
 		 IA32_BASE(table[i]),
 		 !!(table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_RW),
 		 !!(table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USER),

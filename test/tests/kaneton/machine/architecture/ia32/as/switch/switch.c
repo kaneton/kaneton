@@ -59,7 +59,7 @@ void			test_architecture_as_switch(void)
     TEST_ERROR("[as_get] error");
 
   if (segment_reserve(as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -69,7 +69,7 @@ void			test_architecture_as_switch(void)
 		     0,
 		     REGION_OPTION_NONE,
 		     0,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
@@ -78,7 +78,7 @@ void			test_architecture_as_switch(void)
 
   if (map_reserve(as,
 		  MAP_OPTION_NONE,
-		  PAGESZ,
+		  ___kaneton$pagesz,
 		  PERMISSION_READ | PERMISSION_WRITE,
 		  &addr) != ERROR_OK)
     TEST_ERROR("[map_reserve] error");

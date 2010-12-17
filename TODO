@@ -30,10 +30,7 @@ autre:
 # ---------- mycure -----------------------------------------------------------
 #
 
---- BUGS?
-
-- changer ces definitions en: $kaneton, $kernel, $server, $driver, $service,
-  $guest, $pagesz, $wordsz, $endian -> a mettre dans les layout
+- passer addr/size en 64-bit
 
 --- GLUE
 
@@ -87,8 +84,6 @@ autre:
 - pt_add_page et pd_add_page: ces fonctions devraient etre donnees car elles n'apportent rien et ca fait juste chier l'etudiant
 - commenter/steps toutes les fonctions
 - spinlock.h a virer?
-- est-ce que ___kaneton$pagesize etc. sont toujours definis car il semble que ce ne soit
-  le cas que dans HOST=linux/ia32.ia32 pas linux/ia32
 - verifier que IA32_ENTRY_ADDRESS prend une pde et pte en arguments car
   le test kaneton/as/ia32/mapping a l'air de l'utiliser differemment.
 - on peut fournir le boot loader en .lo pour eviter qu'ils grugent libia32
@@ -119,3 +114,8 @@ autre:
   etc.
   -> ensuite on definierait l'interface kernel qui elle definierait des
      aliases: ci_task -> i_task etc.
+
+--- LIBRARY
+
+- tout clean, re-arranger le code, le commenter, utiliser le prefixe de
+  type l_ etc.

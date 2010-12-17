@@ -54,7 +54,7 @@ void			test_core_as_region(void)
   for (i = 0; i < 10; i++)
     {
       if (segment_reserve(as,
-			  PAGESZ,
+			  ___kaneton$pagesz,
 			  PERMISSION_READ | PERMISSION_WRITE,
 			  &seg) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
@@ -64,7 +64,7 @@ void			test_core_as_region(void)
 			 0,
 			 REGION_OPTION_NONE,
 			 0,
-			 PAGESZ,
+			 ___kaneton$pagesz,
 			 &reg) != ERROR_OK)
 	TEST_ERROR("[region_reserve] error");
     }

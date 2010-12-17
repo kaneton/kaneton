@@ -201,7 +201,7 @@ t_error			ia32_interrupt_vector_init(void)
    */
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     return (ERROR_KO);
@@ -214,7 +214,7 @@ t_error			ia32_interrupt_vector_init(void)
 		     0,
 		     REGION_OPTION_GLOBAL | REGION_OPTION_PRIVILEGED,
 		     0,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     return (ERROR_KO);
 

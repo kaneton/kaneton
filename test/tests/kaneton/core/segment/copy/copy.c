@@ -34,43 +34,43 @@ void			test_core_segment_copy(void)
   i_segment		seg;
   i_segment		seg_ref;
   t_uint32		i;
-  t_uint8		buff[PAGESZ];
+  t_uint8		buff[___kaneton$pagesz];
 
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg_ref) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  for (i = 0; i < PAGESZ; i++)
+  for (i = 0; i < ___kaneton$pagesz; i++)
     {
       buff[i] = (i * 4 - 1) % 256;
     }
 
-  if (segment_write(seg_ref, 0, buff, PAGESZ) != ERROR_OK)
+  if (segment_write(seg_ref, 0, buff, ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_write] error");
 
   if (segment_copy(seg, 0, seg_ref, 0,
-		   PAGESZ) != ERROR_OK)
+		   ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_copy] error");
 
-  for (i = 0; i < PAGESZ; i++)
+  for (i = 0; i < ___kaneton$pagesz; i++)
     {
       buff[i] = 0;
     }
 
-  if (segment_read(seg, 0, buff, PAGESZ) != ERROR_OK)
+  if (segment_read(seg, 0, buff, ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_read] error");
 
-  for (i = 0; i < PAGESZ; i++)
+  for (i = 0; i < ___kaneton$pagesz; i++)
     {
       if (buff[i] != (i * 4 - 1) % 256)
 	TEST_ERROR("invalid data in the segment");

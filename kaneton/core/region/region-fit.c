@@ -277,6 +277,10 @@ t_error			region_fit_first(i_as			asid,
   if (address == NULL)
     CORE_ESCAPE("the 'address' argument is null");
 
+  if ((size % ___kaneton$pagesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
+		___kaneton$pagesz);
+
   /*
    * 1)
    */
@@ -407,6 +411,10 @@ t_error			region_space(i_as			asid,
   if (address == NULL)
     CORE_ESCAPE("the 'address' argument is null");
 
+  if ((size % ___kaneton$pagesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
+		___kaneton$pagesz);
+
   /*
    * 1)
    */
@@ -471,6 +479,10 @@ t_error			region_inject(i_as			as,
 
   if (object->size == 0)
     CORE_ESCAPE("the object's size is zero");
+
+  if ((object->size % ___kaneton$pagesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
+		___kaneton$pagesz);
 
   /*
    * 1)
@@ -549,6 +561,10 @@ t_error			region_split(i_as			asid,
 
   if (right == NULL)
     CORE_ESCAPE("the 'right' argument is null");
+
+  if ((size % ___kaneton$pagesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
+		___kaneton$pagesz);
 
   /*
    * 1)
@@ -680,6 +696,10 @@ t_error			region_resize(i_as			as,
 
   if (new == NULL)
     CORE_ESCAPE("the 'new' argument is null");
+
+  if ((size % ___kaneton$pagesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
+		___kaneton$pagesz);
 
   /*
    * 1)
@@ -1011,6 +1031,10 @@ t_error			region_reserve(i_as			asid,
 
   if (region == NULL)
     CORE_ESCAPE("the 'region' argument is null");
+
+  if ((size % ___kaneton$pagesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
+		___kaneton$pagesz);
 
   /*
    * 1)
@@ -1406,8 +1430,20 @@ t_error			region_initialize(t_vaddr		base,
    * 0)
    */
 
+  printf("0x%x 0x%x\n", base, size);
+
   if (size == 0)
     CORE_ESCAPE("unable to initialize the region manager with a size of zero");
+
+  /* XXX
+  if ((base % ___kaneton$pagesz) != 0)
+    CORE_ESCAPE("the base is not aligned on the machine's page size: '%u'",
+		___kaneton$pagesz);
+
+  if ((size % ___kaneton$pagesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
+		___kaneton$pagesz);
+  */
 
   /*
    * 1)

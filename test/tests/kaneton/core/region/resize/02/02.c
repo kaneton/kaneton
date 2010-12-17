@@ -37,21 +37,21 @@ void			test_core_region_resize_02(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      10 * PAGESZ,
+		      10 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     seg,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     REGION_OPTION_NONE,
 		     0,
-		     2 * PAGESZ,
+		     2 * ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_resize(_kernel->as, reg, 20 * PAGESZ, &reg) == ERROR_OK)
+  if (region_resize(_kernel->as, reg, 20 * ___kaneton$pagesz, &reg) == ERROR_OK)
     TEST_ERROR("[region_resize] error: out of bound");
 
   if (region_release(_kernel->as, reg) != ERROR_OK)

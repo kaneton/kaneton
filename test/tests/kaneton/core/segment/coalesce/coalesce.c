@@ -39,7 +39,7 @@ void			test_core_segment_coalesce(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -51,7 +51,7 @@ void			test_core_segment_coalesce(void)
       o_segment*	o2;
 
       if (segment_reserve(_kernel->as,
-			  PAGESZ,
+			  ___kaneton$pagesz,
 			  PERMISSION_READ,
 			  &seg2) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
@@ -62,7 +62,7 @@ void			test_core_segment_coalesce(void)
       if (segment_get(seg2, &o2) != ERROR_OK)
 	TEST_ERROR("[segment_get] error");
 
-      if (o2->address == o1->address + PAGESZ)
+      if (o2->address == o1->address + ___kaneton$pagesz)
 	break;
 
       if (segment_release(seg) != ERROR_OK)
@@ -92,7 +92,7 @@ void			test_core_segment_coalesce(void)
   if (o->type != SEGMENT_TYPE_MEMORY)
     TEST_ERROR("invalid segment's type after coalesce");
 
-  if (o->size != 2 * PAGESZ)
+  if (o->size != 2 * ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after coalesce");
 
   if (o->permissions != PERMISSION_READ)
@@ -106,7 +106,7 @@ void			test_core_segment_coalesce(void)
     TEST_ERROR("[segment_release] error");
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -118,7 +118,7 @@ void			test_core_segment_coalesce(void)
       o_segment*	o2;
 
       if (segment_reserve(_kernel->as,
-			  PAGESZ,
+			  ___kaneton$pagesz,
 			  PERMISSION_READ,
 			  &seg2) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
@@ -129,7 +129,7 @@ void			test_core_segment_coalesce(void)
       if (segment_get(seg2, &o2) != ERROR_OK)
 	TEST_ERROR("[segment_get] error");
 
-      if (o2->address == o1->address + PAGESZ)
+      if (o2->address == o1->address + ___kaneton$pagesz)
 	break;
 
       if (segment_release(seg) != ERROR_OK)

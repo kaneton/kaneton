@@ -123,6 +123,9 @@ void			kaneton(s_init*				init)
 
   assert(kernel_initialize() == ERROR_OK);
 
+  // XXX
+  kernel_dump();
+
   /*
    * 6)
    */

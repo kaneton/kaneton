@@ -47,8 +47,8 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab,
 		      " sub-entry %d: ", i);
 	  module_call(console, print,
 		      "0x%x -> base 0x%x, rw %d, usr %d, a %d d %d\n",
-		      pde * IA32_PAGE_TABLE_MAX_ENTRIES * PAGESZ +
-		      i * PAGESZ,
+		      pde * IA32_PAGE_TABLE_MAX_ENTRIES * ___kaneton$pagesz +
+		      i * ___kaneton$pagesz,
 		      IA32_BASE(tab[i]),
 		      !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_RW),
 		      !!(tab[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USER),

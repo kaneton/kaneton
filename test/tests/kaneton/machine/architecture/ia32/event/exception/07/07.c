@@ -60,7 +60,7 @@ void			test_architecture_event_exception_07_handler(t_id id,
     TEST_ERROR("invalid error code");
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &segid) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -70,7 +70,7 @@ void			test_architecture_event_exception_07_handler(t_id id,
 		     0,
 		     REGION_OPTION_FORCE,
                      address,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &regid) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 }
@@ -86,7 +86,7 @@ void			test_architecture_event_exception_07(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &segid) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -97,7 +97,7 @@ void			test_architecture_event_exception_07(void)
 		       0,
 		       REGION_OPTION_NONE,
 		       0,
-		       PAGESZ,
+		       ___kaneton$pagesz,
 		       &regids[i]) != ERROR_OK)
       TEST_ERROR("[region_reserve] error");
 

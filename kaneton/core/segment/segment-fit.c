@@ -309,6 +309,10 @@ t_error			segment_fit_first(i_as			asid,
   if (address == NULL)
     CORE_ESCAPE("the 'address' argument is null");
 
+  if ((size % ___kaneton$framesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's frame size: '%u'",
+		___kaneton$framesz);
+
   /*
    * 1)
    */
@@ -456,6 +460,10 @@ t_error			segment_space(i_as			asid,
 
   if (address == NULL)
     CORE_ESCAPE("the 'address' argument is null");
+
+  if ((size % ___kaneton$framesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's frame size: '%u'",
+		___kaneton$framesz);
 
   /*
    * 1)
@@ -644,6 +652,10 @@ t_error			segment_inject(i_as			asid,
   if (object->size == 0)
     CORE_ESCAPE("unable to inject a zero-sized segment object");
 
+  if ((object->size % ___kaneton$framesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's frame size: '%u'",
+		___kaneton$framesz);
+
   if (object->permissions & PERMISSION_INVALID)
     CORE_ESCAPE("invalid object's permissions");
 
@@ -823,6 +835,10 @@ t_error			segment_resize(i_segment		old,
 
   if (new == NULL)
     CORE_ESCAPE("the 'new' argument is null");
+
+  if ((size % ___kaneton$framesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's frame size: '%u'",
+		___kaneton$framesz);
 
   /*
    * 1)
@@ -1034,6 +1050,10 @@ t_error			segment_split(i_segment			segid,
 
   if (right == NULL)
     CORE_ESCAPE("the 'right' argument is null");
+
+  if ((size % ___kaneton$framesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's frame size: '%u'",
+		___kaneton$framesz);
 
   /*
    * 1)
@@ -1416,6 +1436,10 @@ t_error			segment_reserve(i_as			asid,
   if (id == NULL)
     CORE_ESCAPE("the 'id' argument is null");
 
+  if ((size % ___kaneton$framesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's frame size: '%u'",
+		___kaneton$framesz);
+
   /*
    * 1)
    */
@@ -1796,6 +1820,14 @@ t_error			segment_initialize(t_paddr		base,
   if (size == 0)
     CORE_ESCAPE("unable to initialize the segment manager with a "
 		"size of zero");
+
+  if ((base % ___kaneton$framesz) != 0)
+    CORE_ESCAPE("the base is not aligned on the machine's frame size: '%u'",
+		___kaneton$framesz);
+
+  if ((size % ___kaneton$framesz) != 0)
+    CORE_ESCAPE("the size is not aligned on the machine's frame size: '%u'",
+		___kaneton$framesz);
 
   /*
    * 1)

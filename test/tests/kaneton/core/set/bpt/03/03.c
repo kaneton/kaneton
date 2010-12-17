@@ -44,7 +44,7 @@ void			test_core_set_bpt_03(void)
   if (set_reserve(bpt,
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof(t_test_object),
-		  PAGESZ,
+		  ___kaneton$pagesz,
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
@@ -87,7 +87,7 @@ void			test_core_set_bpt_03(void)
   if (set_reserve(bpt,
 		  SET_OPTION_SORT | SET_OPTION_FREE,
 		  sizeof(t_test_object),
-		  PAGESZ,
+		  ___kaneton$pagesz,
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 

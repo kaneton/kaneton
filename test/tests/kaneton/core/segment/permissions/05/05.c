@@ -34,31 +34,31 @@ void			test_core_segment_permissions_05(void)
   i_segment		seg;
   i_segment		seg_ref;
   t_uint32		i;
-  char			buff[PAGESZ];
+  char			buff[___kaneton$pagesz];
 
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg_ref) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  for (i = 0; i < PAGESZ; i++)
+  for (i = 0; i < ___kaneton$pagesz; i++)
     {
       buff[i] = (i * 4 - 1) % 256;
     }
 
-  if (segment_write(seg_ref, 0, buff, PAGESZ) != ERROR_OK)
+  if (segment_write(seg_ref, 0, buff, ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_write] error");
 
-  if (segment_copy(seg, 0, seg_ref, 0, PAGESZ) == ERROR_OK)
+  if (segment_copy(seg, 0, seg_ref, 0, ___kaneton$pagesz) == ERROR_OK)
     TEST_ERROR("[segment_copy] error: allowed copy to a read only segment");
 
   if (segment_release(seg) != ERROR_OK)

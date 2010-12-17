@@ -59,7 +59,7 @@ void			test_core_as_map(void)
     {
       if (map_reserve(as,
 		      MAP_OPTION_NONE,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &addr) != ERROR_OK)
 	TEST_ERROR("[map_reserve] error");

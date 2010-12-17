@@ -38,7 +38,7 @@ void			test_core_region_write(void)
   TEST_ENTER();
 
   if (segment_reserve(_kernel->as,
-		      PAGESZ,
+		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
@@ -48,12 +48,12 @@ void			test_core_region_write(void)
 		     0,
 		     REGION_OPTION_FORCE,
 		     0x70000000,
-		     PAGESZ,
+		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
   p = (t_uint8*)(t_vaddr)reg;
-  for (; p < (t_uint8*)(t_vaddr)reg + PAGESZ; p++)
+  for (; p < (t_uint8*)(t_vaddr)reg + ___kaneton$pagesz; p++)
     *p = 0x42;
 
   TEST_SIGNATURE(0t09i490eirgi340g);

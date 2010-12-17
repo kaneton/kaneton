@@ -57,7 +57,7 @@ void			test_core_segment_flush(void)
 
       n = 2 * (i + 1);
 
-      if (segment_reserve(as, n * PAGESZ, PERMISSION_READ, &seg) != ERROR_OK)
+      if (segment_reserve(as, n * ___kaneton$pagesz, PERMISSION_READ, &seg) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
 
       if (segment_get(seg, &s) != ERROR_OK)
@@ -69,7 +69,7 @@ void			test_core_segment_flush(void)
       if (s->as != as)
 	TEST_ERROR("invalid segment's address space identifier");
 
-      if (s->size != n * PAGESZ)
+      if (s->size != n * ___kaneton$pagesz)
 	TEST_ERROR("invalid segment's size");
 
       if (s->permissions != PERMISSION_READ)
