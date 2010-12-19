@@ -80,6 +80,9 @@
  * ../task.c
  */
 
+t_error			glue_task_show(i_task			id,
+				       mt_margin		margin);
+
 t_error			glue_task_reserve(t_class		class,
 					  t_behaviour		behav,
 					  t_priority		prior,

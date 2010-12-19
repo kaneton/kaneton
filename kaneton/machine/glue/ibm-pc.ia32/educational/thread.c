@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sun dec 19 18:29:15 2010]
+ * updated       julien quintard   [sun dec 19 20:12:41 2010]
  */
 
 /*
@@ -24,6 +24,16 @@
 #include <kaneton.h>
 
 #include <architecture/architecture.h>
+
+/*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+/*
+ * the thread manager.
+ */
+
+extern m_thread*	_thread;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -114,45 +124,33 @@ t_error			glue_thread_dump(void)
 {
   module_call(console, message,
 	      '#',
-	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  machine:\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+	      "  machine:\n");
 
   module_call(console, message,
 	      '#',
-	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "    selectors:\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+	      "    selectors:\n");
 
   module_call(console, message,
 	      '#',
-	      MODULE_CONSOLE_MARGIN_FORMAT
 	      "      kernel: cs(0x%x) ds(0x%x)\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      _thread->machine.selectors.kernel.cs,
 	      _thread->machine.selectors.kernel.ds);
 
   module_call(console, message,
 	      '#',
-	      MODULE_CONSOLE_MARGIN_FORMAT
 	      "      driver: cs(0x%x) ds(0x%x)\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      _thread->machine.selectors.driver.cs,
 	      _thread->machine.selectors.driver.ds);
 
   module_call(console, message,
 	      '#',
-	      MODULE_CONSOLE_MARGIN_FORMAT
 	      "      service: cs(0x%x) ds(0x%x)\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      _thread->machine.selectors.service.cs,
 	      _thread->machine.selectors.service.ds);
 
   module_call(console, message,
 	      '#',
-	      MODULE_CONSOLE_MARGIN_FORMAT
 	      "      guest: cs(0x%x) ds(0x%x)\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      _thread->machine.selectors.guest.cs,
 	      _thread->machine.selectors.guest.ds);
 

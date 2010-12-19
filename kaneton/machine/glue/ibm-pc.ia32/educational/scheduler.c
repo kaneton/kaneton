@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sun dec 19 18:09:23 2010]
+ * updated       julien quintard   [sun dec 19 20:06:22 2010]
  */
 
 /*
@@ -222,16 +222,6 @@ t_error			glue_scheduler_initialize(void)
 		    TIMER_OPTION_REPEAT,
 		    &_scheduler->machine.timer) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the timer");
-
-  /*
-   * XXX
-   */
-
-  if (event_reserve(7, EVENT_TYPE_FUNCTION,
-		    EVENT_ROUTINE(glue_scheduler_switch_extended),
-		    0) != ERROR_OK)
-    MACHINE_ESCAPE("unable to reserve the event assocated with the timer "
-		   "hardware interrupt");
 
   /*
    * XXX

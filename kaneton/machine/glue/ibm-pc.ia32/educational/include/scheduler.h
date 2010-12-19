@@ -93,8 +93,6 @@ t_error			glue_scheduler_initialize(void);
 
 t_error			glue_scheduler_clean(void);
 
-void			glue_scheduler_switch_extended(i_event	id);
-
 
 /*
  * eop

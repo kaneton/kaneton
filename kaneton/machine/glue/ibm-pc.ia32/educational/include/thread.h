@@ -126,6 +126,8 @@
 t_error			glue_thread_show(i_thread		id,
 					 mt_margin		margin);
 
+t_error			glue_thread_dump(void);
+
 t_error			glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid);
 
