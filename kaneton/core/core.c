@@ -123,9 +123,6 @@ void			kaneton(s_init*				init)
 
   assert(kernel_initialize() == ERROR_OK);
 
-  // XXX
-  kernel_dump();
-
   /*
    * 6)
    */
@@ -200,7 +197,9 @@ void			kaneton(s_init*				init)
  * 3) map the server's code segment, i.e _system (c.f. initialize() in task.c)
  *    at a very precise location.
  * 4) map the array of inputs (servers to be launch at boot time by the
- *    'system' service) so that the server can access and spawn them.
+ *    'system' service) so that the server can access and spawn them. note
+ *    that the inputs are mapped so that the physical and virtual addresses
+ *    match, method referred to as identity mapping.
  * 5) reserve a thread.
  * 6) set up the thread stack.
  * 7) initialize the thread context, especially the entry point.
@@ -215,11 +214,11 @@ t_error			kaneton_spawn(void)
 {
   i_thread		thread;
   i_region		region;
+  i_segment		segment;
   s_stack		stack;
   i_task		task;
   s_thread_context	ctx;
   i_as			as;
-  i_segment		id;
   o_thread*		o;
   struct
   {
@@ -267,11 +266,11 @@ t_error			kaneton_spawn(void)
    * 4)
    */
 
-  if (segment_locate(_init->inputs, &id) == ERROR_FALSE)
+  if (segment_locate((t_paddr)_init->inputs, &segment) == ERROR_FALSE)
     CORE_ESCAPE("unable to locate the segment holding the given address");
 
   if (region_reserve(as,
-		     id,
+		     segment,
 		     0,
 		     REGION_OPTION_FORCE,
 		     (t_vaddr)_init->inputs,

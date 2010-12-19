@@ -127,15 +127,14 @@ void			bootloader_init_dump(void)
 		      init->alloc,
 		      init->allocsz);
 
-  bootloader_cons_msg('#', " %#~ia32%# global offset table: 0x%x (%u bytes)\n",
+  bootloader_cons_msg('#', " %#~ia32%# global offset table: 0x%x\n",
 		      IBMPC_CONS_FRONT(IBMPC_CONS_CYAN) |
 		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
 		      IBMPC_CONS_INT,
 		      IBMPC_CONS_FRONT(IBMPC_CONS_WHITE) |
 		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
 		      IBMPC_CONS_INT,
-		      init->machine.gdt.descriptor,
-		      init->machine.gdt.count);
+		      init->machine.gdt);
 
   bootloader_cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
 		      IBMPC_CONS_FRONT(IBMPC_CONS_CYAN) |
@@ -251,7 +250,7 @@ void			bootloader_init_segments(void)
    * 10)
    */
 
-  init->segments[10].address = (t_paddr)init->machine.gdt.descriptor;
+  init->segments[10].address = (t_paddr)init->machine.gdt;
   init->segments[10].size = PAGESZ;
   init->segments[10].perms = PERM_READ | PERM_WRITE;
 
@@ -548,9 +547,15 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    */
 
   init->pbase = 0x0;
-  init->psize = mbi->mem_upper * 1024;
+  init->psize = ROUND_SIZE(mbi->mem_upper * 1024);
   init->vbase = 0x0;
-  init->vsize = 0xffffffffU;
+
+  init->vsize = ROUND_SIZE(0x100000000LLU - PAGESZ);
+  // XXX this is because this size should
+  // be 4GO ie 0x10000000. but this size
+  // cannot be held in a 32-bit integer.
+  // therefore we remove a page.
+
   init->init = (t_paddr)init;
   init->initsz = initsz;
   init->kcode = kcode;

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/environment/profile/host/host.py
+# file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [sun oct 31 13:04:24 2010]
+# updated       julien quintard   [sat dec 18 21:27:41 2010]
 #
 
 #
@@ -32,7 +32,6 @@ import sys
 import tempfile
 import shutil
 import time
-import readline
 
 #
 # ---------- options ----------------------------------------------------------

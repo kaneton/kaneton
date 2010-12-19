@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/task.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [mon dec 13 11:16:30 2010]
+ * updated       julien quintard   [sun dec 19 14:10:24 2010]
  */
 
 #ifndef GLUE_TASK_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the task dispatcher.
  */
 
 #define		machine_include_task()					\
   extern d_task		glue_task_dispatch
+
+/*
+ * this macro-function dispatches the task calls.
+ */
 
 #define		machine_call_task(_function_, _args_...)		\
   (									\
@@ -39,13 +41,27 @@
     }									\
   )
 
+/*
+ * this macro-function includes data in 'm_task'.
+ */
+
 #define		machine_data_m_task()
+
+/*
+ * this macro-function includes data in the task object i.e 'o_task'.
+ *
+ * the embedded data include (i) the I/O map and (ii) a boolean indicating
+ * if the I/O map must be flushed next time the task is scheduled.
+ */
 
 #define		machine_data_o_task()					\
   struct								\
   {									\
-    t_uint8			iomap[8192];				\
-    t_uint8			ioflush;				\
+    struct								\
+    {									\
+      t_uint8			map[8192];				\
+      t_boolean			flush;					\
+    }				io;					\
   }				machine;
 
 /*

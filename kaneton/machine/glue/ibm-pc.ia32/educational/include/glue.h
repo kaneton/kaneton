@@ -8,28 +8,11 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/glue.h
  *
  * created       julien quintard   [mon jun 11 05:57:15 2007]
- * updated       julien quintard   [mon dec 13 11:14:02 2010]
+ * updated       julien quintard   [sun dec 19 12:03:58 2010]
  */
 
 #ifndef GLUE_GLUE_H
 #define GLUE_GLUE_H			1
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * these machine traps redirect the call to the proper manager.
- */
-
-#define		machine_include(_manager_)				\
-  machine_include_ ## _manager_()
-
-#define		machine_call(_manager_, _function_, _arguments_...)	\
-  machine_call_ ## _manager_(_function_, ##_arguments_)
-
-#define		machine_data(_object_)					\
-  machine_data_ ## _object_()
 
 /*
  * ---------- includes --------------------------------------------------------

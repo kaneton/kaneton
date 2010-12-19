@@ -56,7 +56,7 @@ m_io*			_io = NULL;
 
 t_error			io_grant(i_task				task,
 				 i_port				port,
-				 t_uint8			width)
+				 t_width			width)
 {
   /*
    * 1)
@@ -78,7 +78,7 @@ t_error			io_grant(i_task				task,
 
 t_error			io_deny(i_task				task,
 				i_port				port,
-				t_uint8				width)
+				t_width				width)
 {
   /*
    * 1)
@@ -91,7 +91,7 @@ t_error			io_deny(i_task				task,
 }
 
 /*
- * this function reads a byte from an I/O port.
+ * this function reads data from an I/O port.
  *
  * steps:
  *
@@ -99,9 +99,10 @@ t_error			io_deny(i_task				task,
  * 1) call the machine.
  */
 
-t_error			io_read_8(i_task			task,
-				  i_port			port,
-				  t_uint8*			data)
+t_error			io_read(i_task				task,
+				i_port				port,
+				t_width				width,
+				void*				data)
 {
   /*
    * 0)
@@ -114,104 +115,14 @@ t_error			io_read_8(i_task			task,
    * 1)
    */
 
-  if (machine_call(io, read_8, task, port, data) != ERROR_OK)
+  if (machine_call(io, read, task, port, width, data) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
 }
 
 /*
- * this function reads a 16-bit word from an I/O port.
- *
- * steps:
- *
- * 0) verify the arguments
- * 1) call the machine.
- */
-
-t_error			io_read_16(i_task			task,
-				   i_port			port,
-				   t_uint16*			data)
-{
-  /*
-   * 0)
-   */
-
-  if (data == NULL)
-    CORE_ESCAPE("the 'data' argument is null");
-
-  /*
-   * 1)
-   */
-
-  if (machine_call(io, read_16, task, port, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function reads a 32-bit word from an I/O port.
- *
- * steps:
- *
- * 0) verify the arguments.
- * 1) call the machine.
- */
-
-t_error			io_read_32(i_task			task,
-				   i_port			port,
-				   t_uint32*			data)
-{
-  /*
-   * 0)
-   */
-
-  if (data == NULL)
-    CORE_ESCAPE("the 'data' argument is null");
-
-  /*
-   * 1)
-   */
-
-  if (machine_call(io, read_32, task, port, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function reads a 64-bit word from an I/O port.
- *
- * steps:
- *
- * 0) verify the arguments.
- * 1) call the machine.
- */
-
-t_error			io_read_64(i_task			task,
-				   i_port			port,
-				   t_uint64*			data)
-{
-  /*
-   * 0)
-   */
-
-  if (data == NULL)
-    CORE_ESCAPE("the 'data' argument is null");
-
-  /*
-   * 1)
-   */
-
-  if (machine_call(io, read_64, task, port, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function writes a byte to an I/O port.
+ * this function writes data to an I/O port.
  *
  * steps:
  *
@@ -220,79 +131,14 @@ t_error			io_read_64(i_task			task,
 
 t_error			io_write_8(i_task			task,
 				   i_port			port,
-				   t_uint8			data)
+				   t_width			width,
+				   t_uint64			data)
 {
   /*
    * 1)
    */
 
-  if (machine_call(io, write_8, task, port, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function writes a 16-bit word to an I/O port.
- *
- * steps:
- *
- * 1) call the machine.
- */
-
-t_error			io_write_16(i_task			task,
-				    i_port			port,
-				    t_uint16			data)
-{
-  /*
-   * 1)
-   */
-
-  if (machine_call(io, write_16, task, port, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function writes a 32-bit word to an I/O port.
- *
- * steps:
- *
- * 1) call the machine.
- */
-
-t_error			io_write_32(i_task			task,
-				    i_port			port,
-				    t_uint32			data)
-{
-  /*
-   * 1)
-   */
-
-  if (machine_call(io, write_32, task, port, data) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function writes a 64-bit word to an I/O port.
- *
- * steps:
- *
- * 1) call the machine.
- */
-
-t_error			io_write_64(i_task			task,
-				    i_port			port,
-				    t_uint64			data)
-{
-  /*
-   * 1)
-   */
-
-  if (machine_call(io, write_64, task, port, data) != ERROR_OK)
+  if (machine_call(io, write, task, port, width, data) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/region.h
  *
  * created       julien quintard   [wed jun  6 16:22:05 2007]
- * updated       julien quintard   [mon dec 13 11:51:08 2010]
+ * updated       julien quintard   [sun dec 19 13:46:56 2010]
  */
 
 #ifndef GLUE_REGION_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the region dispatcher.
  */
 
 #define		machine_include_region()				\
   extern d_region	glue_region_dispatch
+
+/*
+ * this macro-function dispatches the region calls.
+ */
 
 #define		machine_call_region(_function_, _args_...)		\
   (									\
@@ -39,7 +41,15 @@
     }									\
   )
 
+/*
+ * this macro-function includes data in 'm_region'.
+ */
+
 #define		machine_data_m_region()
+
+/*
+ * this macro-function includes data in 'o_region'.
+ */
 
 #define		machine_data_o_region()
 

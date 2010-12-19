@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [fri dec 10 21:18:08 2010]
+ * updated       julien quintard   [sun dec 19 17:31:50 2010]
  */
 
 #ifndef CORE_IO_H
@@ -23,6 +23,34 @@
 #include <core/id.h>
 
 #include <machine/machine.h>
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * these macros defines the width of the I/O operations.
+ */
+
+#define IO_WIDTH_8		(1 << 0)
+#define IO_WIDTH_16		(1 << 1)
+#define IO_WIDTH_32		(1 << 2)
+#define IO_WIDTH_64		(1 << 3)
+
+/*
+ * ---------- macro-functions -------------------------------------------------
+ */
+
+/*
+ * this macro-function is used to cast any pointer to a generic
+ * input/output.
+ *
+ * this is required since the I/O manager's functions handle all
+ * types through a single routine.
+ */
+
+#define IO_INPUT(_value_)	((t_uint64)_value_)
+#define IO_OUTPUT(_pointer_)	((void*)_pointer_)
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -45,34 +73,18 @@ typedef struct
 {
   t_error			(*io_grant)(i_task,
 					    i_port,
-					    t_uint8);
+					    t_width);
   t_error			(*io_deny)(i_task,
 					   i_port,
-					   t_uint8);
-  t_error			(*io_read_8)(i_task,
-					     i_port,
-					     t_uint8*);
-  t_error			(*io_read_16)(i_task,
-					      i_port,
-					      t_uint16*);
-  t_error			(*io_read_32)(i_task,
-					      i_port,
-					      t_uint32*);
-  t_error			(*io_read_64)(i_task,
-					      i_port,
-					      t_uint64*);
-  t_error			(*io_write_8)(i_task,
-					      i_port,
-					      t_uint8);
-  t_error			(*io_write_16)(i_task,
-					       i_port,
-					       t_uint16);
-  t_error			(*io_write_32)(i_task,
-					       i_port,
-					       t_uint32);
-  t_error			(*io_write_64)(i_task,
-					       i_port,
-					       t_uint64);
+					   t_width);
+  t_error			(*io_read)(i_task,
+					   i_port,
+					   t_width,
+					   void*);
+  t_error			(*io_write)(i_task,
+					    i_port,
+					    t_width,
+					    t_uint64);
   t_error			(*io_initialize)(void);
   t_error			(*io_clean)(void);
 }				d_io;
@@ -89,43 +101,21 @@ typedef struct
 
 t_error			io_grant(i_task				task,
 				 i_port				port,
-				 t_uint8			width);
+				 t_width			width);
 
 t_error			io_deny(i_task				task,
 				i_port				port,
-				t_uint8				width);
+				t_width				width);
 
-t_error			io_read_8(i_task			task,
-				  i_port			port,
-				  t_uint8*			data);
-
-t_error			io_read_16(i_task			task,
-				   i_port			port,
-				   t_uint16*			data);
-
-t_error			io_read_32(i_task			task,
-				   i_port			port,
-				   t_uint32*			data);
-
-t_error			io_read_64(i_task			task,
-				   i_port			port,
-				   t_uint64*			data);
+t_error			io_read(i_task				task,
+				i_port				port,
+				t_width				width,
+				void*				data);
 
 t_error			io_write_8(i_task			task,
 				   i_port			port,
-				   t_uint8			data);
-
-t_error			io_write_16(i_task			task,
-				    i_port			port,
-				    t_uint16			data);
-
-t_error			io_write_32(i_task			task,
-				    i_port			port,
-				    t_uint32			data);
-
-t_error			io_write_64(i_task			task,
-				    i_port			port,
-				    t_uint64			data);
+				   t_width			width,
+				   t_uint64			data);
 
 t_error			io_initialize(void);
 

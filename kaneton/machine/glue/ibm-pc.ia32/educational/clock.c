@@ -8,14 +8,13 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/clock.c
  *
  * created       julien quintard   [wed nov 24 19:11:47 2010]
- * updated       julien quintard   [thu dec 16 15:55:25 2010]
+ * updated       julien quintard   [sun dec 19 16:41:31 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements dependant code for the clock managment on a ibm-pc.ia32
- * machine.
+ * this file implements the clock manager's glue.
  */
 
 /*
@@ -33,7 +32,7 @@
  */
 
 /*
- * the ibm-pc.ia32 clock manager dispatch.
+ * the clock dispatcher.
  */
 
 d_clock			glue_clock_dispatch =
@@ -70,7 +69,7 @@ t_error			glue_clock_update(t_uint32		millisecond)
 }
 
 /*
- * return the current date/time through the clock structure.
+ * this function returns the current date/time through the clock structure.
  *
  * steps:
  *
@@ -107,7 +106,8 @@ t_error			glue_clock_current(s_clock*		clock)
 }
 
 /*
- * initialize the clock on the platform.
+ * this function initializes the clock manager by setting up the
+ * platform's RTC.
  *
  * steps:
  *
@@ -127,10 +127,19 @@ t_error			glue_clock_initialize(void)
 }
 
 /*
- * clean the clock.
+ * this function cleans the clock.
+ *
+ * 1) clean the RTC
  */
 
 t_error			glue_clock_clean(void)
 {
+  /*
+   * 1)
+   */
+
+  if (platform_rtc_clean() != ERROR_OK)
+    MACHINE_ESCAPE("unable to clean the real time clock");
+
   MACHINE_LEAVE();
 }

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...LE/test/tests/kaneton/core/task/Makefile
+# file          /home/mycure/kaneton/test/tests/kaneton/core/task/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu dec  2 21:22:14 2010]
+# updated       julien quintard   [sat dec 18 15:28:42 2010]
 #
 
 #
@@ -36,7 +36,9 @@ include			../../../../../environment/env.mk
 SUBDIRS			:=		driver				\
 					guest				\
 					kernel				\
-					service				
+					service				\
+					sleep				\
+					wait				
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 

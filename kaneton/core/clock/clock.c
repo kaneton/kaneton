@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/clock/clock.c
  *
  * created       julien quintard   [wed nov 24 18:40:55 2010]
- * updated       julien quintard   [tue dec 14 21:27:53 2010]
+ * updated       julien quintard   [sat dec 18 20:59:41 2010]
  */
 
 /*
@@ -70,7 +70,13 @@ t_error			clock_show(s_clock*			clock,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "clock: year(%u) month(%u) day(%u) hour(%u) minute(%u) "
+	      "clock:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  core: year(%u) month(%u) day(%u) hour(%u) minute(%u) "
 	      "second(%u) millisecond(%u)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      clock->year,

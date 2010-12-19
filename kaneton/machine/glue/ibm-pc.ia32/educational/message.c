@@ -8,14 +8,13 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/message.c
  *
  * created       matthieu bucchianeri   [sun jun 17 18:16:18 2007]
- * updated       julien quintard   [mon dec 13 10:55:50 2010]
+ * updated       julien quintard   [sun dec 19 17:34:28 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements dependent code for message manager on ia32 with paging
- * architecture.
+ * this file implements the message manager's glue.
  */
 
 /*
@@ -33,7 +32,7 @@
  */
 
 /*
- * the ibm-pc.ia32 message manager dispatch.
+ * the message dispatcher.
  */
 
 d_message		glue_message_dispatch =
@@ -60,6 +59,8 @@ d_message		glue_message_dispatch =
 
 /*
  * set return code for a blocked syscall.
+ *
+ * XXX
  */
 
 t_error			glue_message_return(i_thread		thread,
@@ -73,6 +74,8 @@ t_error			glue_message_return(i_thread		thread,
 
 /*
  * set return info for a blocked syscall.
+ *
+ * XXX
  */
 
 t_error			glue_message_return_info(i_thread	thread,
@@ -88,6 +91,8 @@ t_error			glue_message_return_info(i_thread	thread,
 
 /*
  * initialize machine part of message manager.
+ *
+ * XXX
  */
 
 t_error			glue_message_initialize(void)
@@ -100,6 +105,8 @@ t_error			glue_message_initialize(void)
 
 /*
  * clean machine part of message manager.
+ *
+ * XXX
  */
 
 t_error			glue_message_clean(void)

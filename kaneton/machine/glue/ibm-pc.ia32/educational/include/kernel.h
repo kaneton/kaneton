@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/kernel.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [mon dec 13 11:14:10 2010]
+ * updated       julien quintard   [sun dec 19 13:43:00 2010]
  */
 
 #ifndef GLUE_KERNEL_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the kernel dispatcher.
  */
 
 #define		machine_include_kernel()				\
   extern d_kernel		glue_kernel_dispatch
+
+/*
+ * this macro-functio dispatches the kernel calls.
+ */
 
 #define		machine_call_kernel(_function_, _args_...)		\
   (									\
@@ -38,6 +40,10 @@
       _r_;								\
     }									\
   )
+
+/*
+ * this macro-function includes data in 'm_kernel'.
+ */
 
 #define		machine_data_m_kernel()
 

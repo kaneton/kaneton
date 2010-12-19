@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [thu dec 16 21:02:28 2010]
+ * updated       julien quintard   [sat dec 18 21:06:52 2010]
  */
 
 #ifndef CORE_REGION_H
@@ -124,7 +124,7 @@ typedef struct
   t_error			(*region_show)(i_as,
 					       i_region,
 					       mt_margin);
-  t_error			(*region_dump)(i_as);
+  t_error			(*region_dump)(void);
   t_error			(*region_inject)(i_as,
 						 o_region*,
 						 i_region*);
@@ -170,7 +170,7 @@ t_error			region_show(i_as			asid,
 				    i_region			regid,
 				    mt_margin			margin);
 
-t_error			region_dump(i_as			asid);
+t_error			region_dump(void);
 
 t_error			region_fit_first(i_as			asid,
 					 t_vsize		size,

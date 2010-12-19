@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...-pc.ia32/educational/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       julien quintard   [mon dec 13 11:16:05 2010]
+ * updated       julien quintard   [sun dec 19 16:18:38 2010]
  */
 
 #ifndef GLUE_SCHEDULER_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the scheduler dispatcher.
  */
 
 #define		machine_include_scheduler()				\
   extern d_scheduler	glue_scheduler_dispatch
+
+/*
+ * this macro-function dispatches the scheduler calls.
+ */
 
 #define		machine_call_scheduler(_function_, _args_...)		\
   (									\
@@ -39,17 +41,27 @@
     }									\
   )
 
+/*
+ * this macro-function includes data in 'm_scheduler' i.e the scheduler
+ * manager.
+ *
+ * more precisely, the identifier of the timer used to trigger the
+ * scheduler's context switche routine is kept. this identifier will,
+ * for example, be used to adjust the delay between the scheduler's
+ * context switches.
+ */
+
 #define		machine_data_m_scheduler()				\
   struct								\
   {									\
     i_timer			timer;					\
   }				machine;
 
-#define		machine_data_o_scheduler()				\
-  struct								\
-  {									\
-    i_thread			mmx_context;				\
-  }				machine;
+/*
+ * this macro-function includes data in 'o_scheduler'.
+ */
+
+#define		machine_data_o_scheduler()
 
 /*
  * ---------- dependencies ----------------------------------------------------

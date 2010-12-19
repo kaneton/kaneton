@@ -8,13 +8,13 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/kernel.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec 17 21:04:12 2010]
+ * updated       julien quintard   [sun dec 19 17:33:50 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * this file implements the kernel manager's glue.
  */
 
 /*
@@ -32,7 +32,7 @@
  */
 
 /*
- * the ibm-pc.ia32 kernel manager dispatch.
+ * the kernel dispatcher.
  */
 
 d_kernel		glue_kernel_dispatch =

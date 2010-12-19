@@ -99,7 +99,11 @@ t_error			kernel_dump(void)
 
   module_call(console, message,
 	      '#',
-	      "kernel manager: cell(%qd) task(%qd) as(%qd) thread(%qd) "
+	      "kernel manager:\n");
+
+  module_call(console, message,
+	      '#',
+	      "  core: cell(%qd) task(%qd) as(%qd) thread(%qd) "
 	      "node(%qd:%qd) endian(%s) wordsz(%u) framesz(%u) pagesz(%u)\n",
 	      _kernel->cell,
 	      _kernel->task, _kernel->as, _kernel->thread,

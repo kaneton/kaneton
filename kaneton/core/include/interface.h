@@ -28,16 +28,6 @@
 #define INTERFACE_EVENT_ATTRIBUTE_TYPE 10
 #define INTERFACE_EVENT_ATTRIBUTE_HANDLER 11
 #define INTERFACE_EVENT_ATTRIBUTE_DATA 12
-#define INTERFACE_IO_GRANT 13
-#define INTERFACE_IO_DENY 14
-#define INTERFACE_IO_READ_8 15
-#define INTERFACE_IO_READ_16 16
-#define INTERFACE_IO_READ_32 17
-#define INTERFACE_IO_READ_64 18
-#define INTERFACE_IO_WRITE_8 19
-#define INTERFACE_IO_WRITE_16 20
-#define INTERFACE_IO_WRITE_32 21
-#define INTERFACE_IO_WRITE_64 22
 #define INTERFACE_MAP_RESERVE 23
 #define INTERFACE_MAP_RELEASE 24
 #define INTERFACE_MAP_RESIZE 25
@@ -612,26 +602,6 @@ t_error		interface_event_attribute_type(o_syscall*	message);
 t_error		interface_event_attribute_handler(o_syscall*	message);
 
 t_error		interface_event_attribute_data(o_syscall*	message);
-
-t_error		interface_io_grant(o_syscall*	message);
-
-t_error		interface_io_deny(o_syscall*	message);
-
-t_error		interface_io_read_8(o_syscall*	message);
-
-t_error		interface_io_read_16(o_syscall*	message);
-
-t_error		interface_io_read_32(o_syscall*	message);
-
-t_error		interface_io_read_64(o_syscall*	message);
-
-t_error		interface_io_write_8(o_syscall*	message);
-
-t_error		interface_io_write_16(o_syscall*	message);
-
-t_error		interface_io_write_32(o_syscall*	message);
-
-t_error		interface_io_write_64(o_syscall*	message);
 
 t_error		interface_map_reserve(o_syscall*	message);
 

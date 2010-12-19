@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...lue/ibm-pc.ia32/educational/include/io.h
  *
  * created       julien quintard   [wed jun  6 16:19:54 2007]
- * updated       julien quintard   [mon dec 13 11:13:35 2010]
+ * updated       julien quintard   [sun dec 19 13:41:25 2010]
  */
 
 #ifndef GLUE_IO_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the I/O dispatcher.
  */
 
 #define		machine_include_io()					\
   extern d_io		glue_io_dispatch
+
+/*
+ * this macro-function dispatches the I/O calls.
+ */
 
 #define		machine_call_io(_function_, _args_...)			\
   (									\
@@ -39,9 +41,11 @@
     }									\
   )
 
-#define		machine_data_m_io()
+/*
+ * this macro-function includes data in 'm_io'.
+ */
 
-#define		machine_data_o_io()
+#define		machine_data_m_io()
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -55,43 +59,21 @@
 
 t_error			glue_io_grant(i_task			task,
 				      i_port			port,
-				      t_uint8			width);
+				      t_width			width);
 
 t_error			glue_io_deny(i_task			task,
 				     i_port			port,
-				     t_uint8			width);
+				     t_width			width);
 
-t_error			glue_io_read_8(i_task			task,
-				       i_port			port,
-				       t_uint8*			data);
+t_error			glue_io_read(i_task			task,
+				     i_port			port,
+				     t_width			width,
+				     void*			data);
 
-t_error			glue_io_read_16(i_task			task,
-					i_port			port,
-					t_uint16*		data);
-
-t_error			glue_io_read_32(i_task			task,
-					i_port			port,
-					t_uint32*		data);
-
-t_error			glue_io_read_64(i_task			task,
-					i_port			port,
-					t_uint64*		data);
-
-t_error			glue_io_write_8(i_task			task,
-					i_port			port,
-					t_uint8			data);
-
-t_error			glue_io_write_16(i_task			task,
-					 i_port			port,
-					 t_uint16		data);
-
-t_error			glue_io_write_32(i_task			task,
-					 i_port			port,
-					 t_uint32		data);
-
-t_error			glue_io_write_64(i_task			task,
-					 i_port			port,
-					 t_uint64		data);
+t_error			glue_io_write(i_task			task,
+				      i_port			port,
+				      t_width			width,
+				      t_uint64			data);
 
 t_error			glue_io_initialize(void);
 

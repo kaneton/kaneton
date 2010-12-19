@@ -8,13 +8,13 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [thu dec 16 16:19:45 2010]
+ * updated       julien quintard   [sun dec 19 17:30:59 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * this file implements the event manager's glue.
  */
 
 /*
@@ -32,7 +32,7 @@
  */
 
 /*
- * the event manager dispatch.
+ * the event dispatcher.
  */
 
 d_event			glue_event_dispatch =
@@ -51,6 +51,47 @@ d_event			glue_event_dispatch =
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * XXX
+ */
+
+void			glue_event_pagefault(t_id		id,
+					     t_vaddr		data)
+{
+  i_thread		th;
+  t_uint32              addr;
+  t_ia32_context	ctx;
+
+  printf("[XXX] glue_event:pf_handler() by %qd\n", th);
+
+  assert(thread_current(&th) == ERROR_OK);
+
+  assert(ia32_get_context(th, &ctx) == ERROR_OK);
+
+  SCR2(addr);
+
+  module_call(console, print,
+	      "error: page fault !\n"
+	      "  0x%x @ 0x%x\n",
+	      ctx.eip,
+	      addr);
+
+  /* XXX utiliser le error_code (soit dans o_thread) soit autre part
+  module_call(console, print,
+	      "error: page fault !\n"
+	      "  0x%x trying to %s at the address 0x%x requires %s\n",
+	      ctx.eip,
+	      (error_code & 2) ? "write" : "read",
+	      addr,
+	      (error_code & 1) ? "a lower DPL" : "the page to be present");
+  */
+
+  ia32_print_context(th);
+
+  while (1)
+    ;
+}
 
 /*
  * this function enables the interrupts, hence the event processing.
@@ -99,10 +140,18 @@ t_error			glue_event_reserve(i_event		id,
 					   u_event_handler	handler,
 					   t_vaddr		data)
 {
+  /*
+   * XXX
+   */
+
   if (id >= IA32_HANDLER_NR)
     MACHINE_ESCAPE("the event identifier '%qu' is larger than the higher "
 		   "syscall number that the kernel is supposed to handle",
 		   id);
+
+  /*
+   * XXX
+   */
 
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
     {
@@ -119,6 +168,10 @@ t_error			glue_event_reserve(i_event		id,
 
 t_error			glue_event_release(i_event		id)
 {
+  /*
+   * XXX
+   */
+
   if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
     {
       if (platform_pic_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
@@ -128,54 +181,33 @@ t_error			glue_event_release(i_event		id)
   MACHINE_LEAVE();
 }
 
-// XXX a renommer
-void			pf_handler(t_id				id,
-				   t_vaddr			data,
-				   t_uint32			error_code)
-{
-  i_thread		th;
-  t_uint32              addr;
-  t_ia32_context	ctx;
-
-  printf("[XXX] glue_event:pf_handler() by %qd\n", th);
-
-  assert(thread_current(&th) == ERROR_OK);
-
-  assert(ia32_get_context(th, &ctx) == ERROR_OK);
-
-  SCR2(addr);
-
-  module_call(console, print,
-	      "error: page fault !\n"
-	      "  0x%x trying to %s at the address 0x%x requires %s\n",
-	      ctx.eip,
-	      (error_code & 2) ? "write" : "read",
-	      addr,
-	      (error_code & 1) ? "a lower DPL" : "the page to be present");
-
-  ia32_print_context(th);
-
-  while (1)
-    ;
-}
-
 /*
  * XXX
  */
 
 t_error			glue_event_initialize(void)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_interrupt_vector_init() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the interrupt table");
+
+  /*
+   * XXX
+   */
 
   if (platform_pic_initialize() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the PIC");
 
-  // XXX ca devrait etre autre part ca! quoi que! 14 = specifique a la
-  // architecture donc c'est bien ici en fait
+  /*
+   * XXX
+   */
+
   if (event_reserve(14,
 		    EVENT_TYPE_FUNCTION,
-		    EVENT_ROUTINE(pf_handler),
+		    EVENT_ROUTINE(glue_event_pagefault),
 		    EVENT_DATA(NULL)) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the event associated with the "
 		   "page fault exception");

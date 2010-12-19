@@ -107,7 +107,13 @@ t_error			as_show(i_as				id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "address space: id(%qd) task(%qd) segments(%qd) regions(%qd)\n",
+	      "address space:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  core: id(%qd) task(%qd) segments(%qd) regions(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
 	      o->task,
@@ -124,7 +130,7 @@ t_error			as_show(i_as				id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  segments: id(%qd) size(%qd)\n",
+	      "    segments: id(%qd) size(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->segments,
 	      size);
@@ -135,7 +141,7 @@ t_error			as_show(i_as				id,
 	CORE_ESCAPE("unable to retrieve the segment identifier");
 
       if (segment_show(*segment,
-		       margin + 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		       margin + 3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the segment");
     }
 
@@ -149,7 +155,7 @@ t_error			as_show(i_as				id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  regions: id(%qd) size(%qd)\n",
+	      "    regions: id(%qd) size(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->regions,
 	      size);
@@ -161,7 +167,7 @@ t_error			as_show(i_as				id,
 
       if (region_show(o->id,
 		      region->id,
-		      margin + 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		      margin + 3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the region");
     }
 
@@ -202,11 +208,16 @@ t_error			as_dump(void)
 	      '#', "address space manager: ass(%qd)\n",
 	      _as->ass);
 
+  module_call(console, message,
+	      '#', "  core: ass(%qd)\n",
+	      _as->ass);
+
   /*
    * 2)
    */
 
-  if (id_show(&_as->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+  if (id_show(&_as->id,
+	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
   /*
@@ -221,7 +232,7 @@ t_error			as_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  address spaces: id(%qd) size(%qd)\n",
+	      '#', "    address spaces: id(%qd) size(%qd)\n",
 	      _as->ass,
 	      size);
 
@@ -230,9 +241,9 @@ t_error			as_dump(void)
       if (set_object(_as->ass, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the address space object");
 
-      if (as_show(o->id, 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+      if (as_show(o->id,
+		  3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the address space object");
-
     }
 
   /*

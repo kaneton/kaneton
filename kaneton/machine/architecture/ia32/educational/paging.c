@@ -88,7 +88,7 @@ t_error			ia32_paging_init(void)
    * 1)
    */
 
-  ia32_pd = _init->machine.pd;
+  ia32_pd = (t_ia32_directory)_init->machine.pd;
 
   /*
    * 2)

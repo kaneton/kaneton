@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/init.h
  *
  * created       julien quintard   [wed jun  6 16:16:48 2007]
- * updated       julien quintard   [mon dec 13 11:13:15 2010]
+ * updated       julien quintard   [sun dec 19 13:39:38 2010]
  */
 
 #ifndef GLUE_INIT_H
@@ -19,16 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function includes data in the 's_init' structure: the addresses
+ * of both the GDT - Global Descriptor Table and PD - Page Directory.
  */
 
 #define		machine_data_s_init()					\
   struct								\
   {									\
-    t_ia32_gdt			gdt;					\
-    t_ia32_directory		pd;					\
+    t_paddr			gdt;					\
+    t_paddr			pd;					\
   }				machine;
 
 #endif

@@ -125,7 +125,13 @@ t_error			region_show(i_as			asid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "region: id(%qd) range(0x%08x - 0x%08x) segment(%qd) "
+	      "region:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  core: id(%qd) range(0x%08x - 0x%08x) segment(%qd) "
 	      "offset(0x%x) size(0x%x) options(%s)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
@@ -154,79 +160,32 @@ t_error			region_show(i_as			asid,
  *
  * steps:
  *
- * 1) retrieve the address space object.
- * 2) display general information.
- * 3) retrieve the size of the address space's set of regions.
- * 4) show every region.
- * 5) call the machine.
+ * 1) display general information.
+ * 2) call the machine.
  *						      [endblock::dump::comment]
  */
 
-t_error			region_dump(i_as			asid)
+t_error			region_dump(void)
 {
   /*							       [block::dump] */
-
-  t_state		state;
-  o_as*			o;
-  o_region*		data;
-  t_setsz		size;
-  s_iterator		i;
 
   /*
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the address space object");
+  module_call(console, message,
+	      '#', "region manager:\n");
+
+  module_call(console, message,
+	      '#', "  core: base(0x%08x) size(0x%08x)\n",
+	      _region->base,
+	      _region->size);
 
   /*
    * 2)
    */
 
-  module_call(console, message,
-	      '#', "region manager: base(0x%08x) size(0x%08x)\n",
-	      _region->base,
-	      _region->size);
-
-  module_call(console, message,
-	      '#', "  address space: id(%qd) regions(%qd)\n",
-	      o->id,
-	      o->regions);
-
-  /*
-   * 3)
-   */
-
-  if (set_size(o->regions, &size) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the size of the address space's set "
-		"of regions");
-
-  /*
-   * 4)
-   */
-
-  module_call(console, message,
-	      '#', "    regions: id(%qd) size(%qd)\n",
-	      o->regions,
-	      size);
-
-  set_foreach(SET_OPTION_FORWARD, o->regions, &i, state)
-    {
-      if (set_object(o->regions, i, (void**)&data) != ERROR_OK)
-	CORE_ESCAPE("unable to retrieve the region object corresponding "
-		    "to its identifier");
-
-      if (region_show(asid,
-		      data->id,
-		      3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
-	CORE_ESCAPE("unable to show the region");
-    }
-
-  /*
-   * 5)
-   */
-
-  if (machine_call(region, dump, asid) != ERROR_OK)
+  if (machine_call(region, dump) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*							    [endblock::dump] */
@@ -1430,12 +1389,9 @@ t_error			region_initialize(t_vaddr		base,
    * 0)
    */
 
-  printf("0x%x 0x%x\n", base, size);
-
   if (size == 0)
     CORE_ESCAPE("unable to initialize the region manager with a size of zero");
 
-  /* XXX
   if ((base % ___kaneton$pagesz) != 0)
     CORE_ESCAPE("the base is not aligned on the machine's page size: '%u'",
 		___kaneton$pagesz);
@@ -1443,7 +1399,6 @@ t_error			region_initialize(t_vaddr		base,
   if ((size % ___kaneton$pagesz) != 0)
     CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
 		___kaneton$pagesz);
-  */
 
   /*
    * 1)

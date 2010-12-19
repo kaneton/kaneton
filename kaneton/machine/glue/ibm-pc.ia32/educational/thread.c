@@ -8,13 +8,13 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [thu dec 16 21:05:29 2010]
+ * updated       julien quintard   [sun dec 19 18:29:15 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX THREAD information need to be written.
+ * this file implements the thread manager's glue.
  */
 
 /*
@@ -30,7 +30,7 @@
  */
 
 /*
- * the thread manager dispatch.
+ * the thread dispatcher.
  */
 
 d_thread		glue_thread_dispatch =
@@ -75,9 +75,9 @@ t_error			glue_thread_show(i_thread		id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  machine: interrupt-stack(0x%x)\n",
+	      "  machine: pile(0x%x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
-	      thread->machine.interrupt_stack);
+	      thread->machine.pile);
 
   if (ia32_get_context(id, &context) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the thread's IA32 context");
@@ -107,12 +107,69 @@ t_error			glue_thread_show(i_thread		id,
 }
 
 /*
- * reserve a thread on the ia32 architecture
+ * XXX
+ */
+
+t_error			glue_thread_dump(void)
+{
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  machine:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "    selectors:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "      kernel: cs(0x%x) ds(0x%x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      _thread->machine.selectors.kernel.cs,
+	      _thread->machine.selectors.kernel.ds);
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "      driver: cs(0x%x) ds(0x%x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      _thread->machine.selectors.driver.cs,
+	      _thread->machine.selectors.driver.ds);
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "      service: cs(0x%x) ds(0x%x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      _thread->machine.selectors.service.cs,
+	      _thread->machine.selectors.service.ds);
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "      guest: cs(0x%x) ds(0x%x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      _thread->machine.selectors.guest.cs,
+	      _thread->machine.selectors.guest.ds);
+
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function reserves a thread by initializing its hardware context.
  */
 
 t_error			glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_init_context(taskid, *threadid) != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the IA32 context");
 
@@ -120,13 +177,16 @@ t_error			glue_thread_reserve(i_task		taskid,
 }
 
 /*
- * this function updates the context with the new stack and
- * instruction pointers.
+ * this function loads the given context in the thread low-level structure.
  */
 
 t_error			glue_thread_load(i_thread		threadid,
 					 s_thread_context	context)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_setup_context(threadid, context.pc, context.sp) != ERROR_OK)
     MACHINE_ESCAPE("unable to set up the IA32 context");
 
@@ -134,13 +194,16 @@ t_error			glue_thread_load(i_thread		threadid,
 }
 
 /*
- * this function reads from the context both the stack and instruction
- * pointers.
+ * this function returns the thread's current context.
  */
 
 t_error			glue_thread_store(i_thread		threadid,
 					  s_thread_context*	context)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the IA32 context");
 
@@ -151,13 +214,17 @@ t_error			glue_thread_store(i_thread		threadid,
 }
 
 /*
- * this function pushes function arguments onto the stack.
+ * this function sets the given arguments on the thread's stack.
  */
 
 t_error			glue_thread_args(i_thread		threadid,
 					 const void*	       	args,
 					 t_vsize		size)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_push_args(threadid, args, size) != ERROR_OK)
     MACHINE_ESCAPE("unable to push the arguments");
 
@@ -165,11 +232,15 @@ t_error			glue_thread_args(i_thread		threadid,
 }
 
 /*
- * initialize the machine related structures for the thread manager.
+ * this function initializes the thread manager's glue.
  */
 
 t_error			glue_thread_initialize(void)
 {
+  /*
+   * XXX
+   */
+
   // XXX mieux dans scheduler: ici il y avait ia32_init_switcher()
   // XXX finalement on le laisse ici car thread_load() en a besoin
   // et une tache pourrait etre reservee avant que le sched ne soit init.
@@ -178,5 +249,3 @@ t_error			glue_thread_initialize(void)
 
   MACHINE_LEAVE();
 }
-
-// XXX dans show et dump, afficher infos machine-specific

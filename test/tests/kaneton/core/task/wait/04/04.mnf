@@ -1,0 +1,6 @@
+name: core/task/wait/04
+description: This test creates a task and several threads. While one thread waits for the task's start, another thread verifies that the task is being scheduled as expected. Note that in this test, the waiting request occurs after the task's start.
+symbol: test_core_task_wait_04
+signature: mcq0rifggbbg3iyt34hxvmwq0pir3itg3hg34c0we903w2iogj3wibj
+output:
+points: 3

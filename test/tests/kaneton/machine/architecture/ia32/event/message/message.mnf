@@ -1,6 +1,0 @@
-name: machine/architecture/event/message
-description: This test reserves a message-based event and manually triggers it.
-symbol: test_architecture_event_message
-signature: 98sdcujwefqwndff230
-output:
-points: 2

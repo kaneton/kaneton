@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...loader/ibm-pc.ia32/educational/libia32.h
+ * file          /home/mycure/kane...loader/ibm-pc.ia32/educational/libia32.h
  *
  * created       matthieu bucchianeri   [mon jun 25 23:02:50 2007]
- * updated       matthieu bucchianeri   [tue jul 17 15:23:19 2007]
+ * updated       julien quintard   [sat dec 18 10:57:02 2010]
  */
 
 #ifndef BOOTLOADER_LIBIA32_H
@@ -128,6 +128,12 @@
  */
 
 #define PAGESZ			4096
+
+// XXX
+#define ROUND_SIZE(_size_)					\
+  ((_size_) % PAGESZ ?						\
+   (_size_) + PAGESZ - (_size_) % PAGESZ :		\
+   (_size_))
 
 /*
  * paging functions flags

@@ -93,6 +93,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   t_ia32_pde		pde;
   t_ia32_pte		pte;
   i_region		useless;
+  t_ia32_directory	pd;
 
   /*
    * 1)
@@ -105,9 +106,9 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    * 2)
    */
 
-  memcpy(&o->machine.pd, &_init->machine.pd, sizeof(t_ia32_directory));
+  o->machine.pd = _init->machine.pd;
 
-  if (ia32_pd_activate(o->machine.pd,
+  if (ia32_pd_activate((t_ia32_directory)o->machine.pd,
 		       IA32_PAGE_DIRECTORY_CACHED,
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -116,7 +117,10 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    * 3)
    */
 
-  if (ia32_pt_build((t_paddr)o->machine.pd, &pt) != ERROR_OK)
+  // XXX o->machine.pd est une paddr. dans glue/init.h d'ailleurs eviter
+  // de filer une structure car le kernel pourrait vouloir utiliser une
+  // autre structure. il vaut mieux se contenter d'un adresse physique.
+  if (ia32_pt_build(o->machine.pd, &pt) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   pt.present = 1;
@@ -125,7 +129,9 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   pt.cached = IA32_PAGE_TABLE_CACHED;
   pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
 
-  if (ia32_pd_add_table(&o->machine.pd,
+  pd = (t_ia32_directory)o->machine.pd;
+
+  if (ia32_pd_add_table(&pd, // XXX pq & ici?
 			IA32_PAGE_DIRECTORY_MIRROR,
 			pt) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -175,7 +181,9 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
       for (pde = pde_start; pde <= pde_end; pde++)
 	{
 	  if (pde != IA32_PAGE_DIRECTORY_MIRROR &&
-	      ia32_pd_get_table(&o->machine.pd, pde, &pt) == ERROR_OK)
+	      ia32_pd_get_table(&pd, // XXX & ?
+				pde,
+				&pt) == ERROR_OK)
 	    {
 	      pt.vaddr = pt.paddr;
 
@@ -212,7 +220,9 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 
       for (pde = pde_start; pde <= pde_end; pde++)
 	{
-	  if (ia32_pd_get_table(&o->machine.pd, pde, &pt) == ERROR_OK)
+	  if (ia32_pd_get_table(&pd, // XXX & ?
+				pde,
+				&pt) == ERROR_OK)
 	    {
 	      i_segment		s;
 
@@ -244,8 +254,8 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    */
 
   if (ia32_pd_get_cr3((t_uint32*)&ia32_interrupt_pdbr,
-		      o->machine.pd,
-		      IA32_PAGE_DIRECTORY_CACHED, // XXX CACHED
+		      pd,
+		      IA32_PAGE_DIRECTORY_CACHED,
 		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
@@ -259,22 +269,36 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 
 t_error			ia32_kernel_as_finalize(void)
 {
-  // XXX locate puis type pour eviter le cast: !!!WARNING!!!
-  if (segment_type((i_segment)_init->segments[0].address,
+  i_segment		segment;
+
+  if (segment_locate(_init->segments[0].address, &segment) == ERROR_FALSE)
+    MACHINE_ESCAPE("XXX");
+
+  if (segment_type(segment,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
-  if (segment_type((i_segment)_init->segments[1].address,
+  if (segment_locate(_init->segments[1].address, &segment) == ERROR_FALSE)
+    MACHINE_ESCAPE("XXX");
+
+  if (segment_type(segment,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
-  if (segment_type((i_segment)_init->segments[11].address,
+  if (segment_locate(_init->segments[11].address, &segment) == ERROR_FALSE)
+    MACHINE_ESCAPE("XXX");
+
+  if (segment_type(segment,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
+  // XXX tester le nombre de segments plutot!
   if (_init->segments[12].size != 0)
     {
-      if (segment_type((i_segment)_init->segments[12].address,
+      if (segment_locate(_init->segments[12].address, &segment) == ERROR_FALSE)
+	MACHINE_ESCAPE("XXX");
+
+      if (segment_type(segment,
 		       SEGMENT_TYPE_SYSTEM) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
     }
@@ -331,7 +355,9 @@ t_error			ia32_task_as_initialize(i_as		asid)
    * 3)
    */
 
-  pd = o->machine.pd = (t_ia32_directory)s->address;
+  o->machine.pd = s->address;
+
+  pd = (t_ia32_directory)o->machine.pd;
 
   if (ia32_map_pd(&pd) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -342,6 +368,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
    * 4)
    */
 
+  // XXX normal pd = vaddr
   if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
@@ -349,8 +376,14 @@ t_error			ia32_task_as_initialize(i_as		asid)
    * 5)
    */
 
+  // XXX c'est normal c'est une address virtuelle. par contre ce serait
+  // mieux de changer dans glue pour avoir une vaddr et faire un cast
+  // quand on veut l'utiliser, je trouverais ca plus propre. on saurait de
+  // quoi on part (d'une vaddr), qu'on pourrait caster sans risquer de faire
+  // une connerie alors que la on caste un truc dont on ne sait pas ce que
+  // c'est: paddr? vaddr?
   if (region_locate(_kernel->as,
-		    (t_vaddr)_thread->machine.tss,
+		    _thread->machine.tss,
 		    &reg) == ERROR_FALSE)
     MACHINE_ESCAPE("XXX");
 
@@ -365,19 +398,22 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     0,
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
-		     (t_vaddr)_thread->machine.tss,
+		     _thread->machine.tss,
 		     preg->size,
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   //printf("GDT: 0x%x\n", ia32_gdt.descriptor);
 
+  // XXX cast normal mais regarder si on peut pas l'eviter avec des types
+  // differents
   if (segment_locate((t_paddr)ia32_gdt.descriptor, &seg) == ERROR_FALSE)
     MACHINE_ESCAPE("XXX");
 
-  // XXX identity mapping for the GDT
+  // XXX identity mapping for the GDT: car c'est une adresse physique.
+  // XXX le mieux serait de faire un segment locate ici!
   if (region_reserve(asid,
-		     (i_segment)seg,
+		     seg,
 		     0,
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
@@ -388,12 +424,15 @@ t_error			ia32_task_as_initialize(i_as		asid)
 
   //printf("IDT: 0x%x\n", ia32_idt.descriptor);
 
+  // XXX cast normal mais regarder si on peut pas l'eviter avec des types
+  // differents
   if (segment_locate((t_paddr)ia32_idt.descriptor, &seg) == ERROR_FALSE)
     MACHINE_ESCAPE("XXX");
 
-  // XXX identity mapping for the IDT
+  // XXX identity mapping for the IDT, car c'est une address physique.
+  // le mieux serait de faire un segment locate ici!
   if (region_reserve(asid,
-		     (i_segment)seg,
+		     seg,
 		     0,
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
@@ -421,7 +460,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 
       /* XXX
 	 if (region_reserve(asid,
-	 (i_segment)_init->kcode,
+	 _init->kcode,
 	 LINKER_SYMBOL(_handler_begin) - _init->kcode,
 	 REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 	 REGION_OPTION_GLOBAL,
@@ -432,7 +471,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 	 MACHINE_ESCAPE("XXX");
 
 	 if (region_reserve(asid,
-	 (i_segment)_init->kcode,
+	 _init->kcode,
 	 LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
 	 REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 	 REGION_OPTION_GLOBAL,

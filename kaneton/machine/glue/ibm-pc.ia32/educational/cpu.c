@@ -8,13 +8,13 @@
  * file          /home/mycure/kane...chine/glue/ibm-pc.ia32/educational/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       julien quintard   [thu dec  9 21:40:52 2010]
+ * updated       julien quintard   [sun dec 19 16:42:48 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * the file provides the machine-specific CPU functions.
+ * the file implements the CPU manager's glue.
  */
 
 /*
@@ -28,7 +28,7 @@
  */
 
 /*
- * the init structure.
+ * the init structure provided by the boot loader.
  */
 
 extern s_init*		_init;
@@ -38,7 +38,7 @@ extern s_init*		_init;
  */
 
 /*
- * the cpu manager dispatch.
+ * the CPU dispatcher.
  */
 
 d_cpu			glue_cpu_dispatch =
@@ -61,8 +61,9 @@ d_cpu			glue_cpu_dispatch =
 /*
  * this function returns the current CPU.
  *
- * since the ia32/educational implementation assumes a single processor,
- * the current CPU remains the BSP, the only processor.
+ * since the ibm-pc.ia32/educational implementation assumes a single
+ * processor, the current CPU is always the BSP - Boot Strap Processor i.e
+ * the only processor.
  */
 
 t_error			glue_cpu_current(i_cpu*			cpu)

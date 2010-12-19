@@ -1,0 +1,6 @@
+name: core/task/sleep
+description: This test creates a task and a kernel thread. The kernel thread controls the task, putting it to sleep. After a while, the task wakes up and the kernel thread verifies that it has been executed as expected.
+symbol: test_core_task_sleep
+signature: f0w9jq23fojg309hg34niowef02r9nvoawvv
+output:
+points: 2

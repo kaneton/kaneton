@@ -24,6 +24,12 @@
  */
 
 /*
+ * XXX
+ */
+
+#define IA32_GDT_NENTRIES	256
+
+/*
  * misc
  */
 

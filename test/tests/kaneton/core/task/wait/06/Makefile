@@ -5,23 +5,23 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...architecture/ia32/event/message/Makefile
+# file          /home/mycure/kane...tests/kaneton/core/task/wait/06/Makefile
 #
-# created       julien quintard   [wed apr 15 04:30:04 2009]
-# updated       julien quintard   [tue nov 30 17:01:18 2010]
+# created       julien quintard   [wed apr 15 06:30:06 2009]
+# updated       julien quintard   [sat dec 18 19:39:14 2010]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		test/tests/kaneton/machine/architecture/event/message
+component		:=		test/tests/kaneton/core/task/wait/06
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../../../../../environment/env.mk
+include			../../../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -33,7 +33,7 @@ include			../../../../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_C			:=		message.c
+TEST_C			:=		06.c
 TEST_O			:=		$(TEST_C:.c=.o)
 
 TEST_H			:=		$(directory)/$(TEST_C:.c=.h)

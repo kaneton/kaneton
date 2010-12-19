@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 13:04:19 2010]
+ * updated       julien quintard   [sat dec 18 22:07:43 2010]
  */
 
 /*
@@ -51,10 +51,10 @@ void			test_core_thread_wait_03_thread_01(void)
   if (WAIT_CAUSE(&wait) != WAIT_STATE_START)
     TEST_HANG("invalid waiting cause");
 
-  TEST_SIGNATURE(r0923jawodfe09);
-
-  if (thread_sleep(thread1, 3000) != ERROR_OK)
+  if (thread_sleep(thread1, 5000) != ERROR_OK)
     TEST_HANG("[thread_sleep] error");
+
+  TEST_SIGNATURE(r0923jawodfe09);
 
   if (cpu_current(&cpu) != ERROR_OK)
     TEST_HANG("[cpu_current] error");
@@ -67,9 +67,6 @@ void			test_core_thread_wait_03_thread_01(void)
 
 void			test_core_thread_wait_03_thread_02(void)
 {
-  if (thread_sleep(thread2, 1000) != ERROR_OK)
-    TEST_HANG("[thread_sleep] error");
-
   TEST_SIGNATURE(3r2wfeawf9043);
 
   while (1)
@@ -78,10 +75,16 @@ void			test_core_thread_wait_03_thread_02(void)
 
 void			test_core_thread_wait_03_thread_03(void)
 {
-  TEST_SIGNATURE(32w98ru30rwaf09i);
+  if (thread_sleep(thread3, 1000) != ERROR_OK)
+    TEST_HANG("[thread_sleep] error");
 
   if (thread_start(thread2) != ERROR_OK)
     TEST_HANG("[thread_start] error");
+
+  if (thread_sleep(thread3, 1000) != ERROR_OK)
+    TEST_HANG("[thread_sleep] error");
+
+  TEST_SIGNATURE(32w98ru30rwaf09i);
 
   while (1)
     ;

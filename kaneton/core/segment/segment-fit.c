@@ -173,7 +173,13 @@ t_error			segment_show(i_segment			segid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "segment: id(%qd) range(0x%08x - 0x%08x) type(%s) "
+	      "segment:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  core: id(%qd) range(0x%08x - 0x%08x) type(%s) "
 	      "permissions(%s) size(0x%x) as(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
@@ -217,8 +223,10 @@ t_error			segment_dump(void)
    */
 
   module_call(console, message,
-	      '#', "segment manager: base(0x%08x) size(0x%08x) "
-	      "segments(%qd)\n",
+	      '#', "segment manager:\n");
+
+  module_call(console, message,
+	      '#', "  core: base(0x%08x) size(0x%08x) segments(%qd)\n",
 	      _segment->base,
 	      _segment->size,
 	      _segment->segments);
@@ -235,7 +243,7 @@ t_error			segment_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  segments: id(%qd) size(%qd)\n",
+	      '#', "    segments: id(%qd) size(%qd)\n",
 	      _segment->segments,
 	      size);
 
@@ -245,7 +253,7 @@ t_error			segment_dump(void)
 	CORE_ESCAPE("unable to retrieve the object's identifier from the set");
 
       if (segment_show(data->id,
-		       2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		       3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object");
     }
 

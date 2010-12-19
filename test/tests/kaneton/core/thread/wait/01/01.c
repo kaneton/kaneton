@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 12:24:34 2010]
+ * updated       julien quintard   [sat dec 18 15:45:37 2010]
  */
 
 /*

@@ -1,6 +1,6 @@
 name: core/thread/wait/03
 description: This test creates three threads. The first one waits for the second to start while the third starts the second.
 symbol: test_core_thread_wait_03
-signature: 32w98ru30rwaf09ir0923jawodfe093r2wfeawf9043rw98uefskdq0aa
+signature: 3r2wfeawf904332w98ru30rwaf09ir0923jawodfe09rw98uefskdq0aa
 output:
 points: 3

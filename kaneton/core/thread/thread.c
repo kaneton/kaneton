@@ -142,8 +142,14 @@ t_error			thread_show(i_thread			threadid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "thread: id(%qd) priority(%u) state(%s) waits(%qd) "
-	      "value(%d) stack(0x%x) stacksz(0x%x) task(%qd)",
+	      "thread:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  core: id(%qd) priority(%u) state(%s) waits(%qd) "
+	      "value(%d) stack(0x%x) stacksz(0x%x) timer(%qd) task(%qd)",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
 	      o->priority,
@@ -152,6 +158,7 @@ t_error			thread_show(i_thread			threadid,
 	      o->value,
 	      o->stack,
 	      o->stacksz,
+	      o->timer,
 	      o->task);
 
   /*
@@ -166,38 +173,26 @@ t_error			thread_show(i_thread			threadid,
 
       switch (o->wait.state)
 	{
-	case THREAD_STATE_START:
+	case WAIT_STATE_START:
 	  {
 	    state = "start";
 
 	    break;
 	  }
-	case THREAD_STATE_STOP:
+	case WAIT_STATE_STOP:
 	  {
 	    state = "stop";
 
 	    break;
 	  }
-	case THREAD_STATE_BLOCK:
+	case WAIT_STATE_DEATH:
 	  {
-	    state = "block";
-
-	    break;
-	  }
-	case THREAD_STATE_ZOMBIE:
-	  {
-	    state = "zombie";
-
-	    break;
-	  }
-	case THREAD_STATE_DEAD:
-	  {
-	    state = "dead";
+	    state = "death";
 
 	    break;
 	  }
 	default:
-	  CORE_ESCAPE("unknown thread state '%u'",
+	  CORE_ESCAPE("unknown waiting state '%u'",
 		      o->state);
 	}
 
@@ -207,7 +202,7 @@ t_error			thread_show(i_thread			threadid,
 
       module_call(console, print,
 		  " wait(%s)\n",
-		  o->wait.state);
+		  state);
     }
   else
     module_call(console, print, "\n");
@@ -247,14 +242,18 @@ t_error			thread_dump(void)
    */
 
   module_call(console, message,
-	      '#', "thread manager: threads(%qd)\n",
+	      '#', "thread manager:\n");
+
+  module_call(console, message,
+	      '#', "  core: threads(%qd)\n",
 	      _thread->threads);
 
   /*
    * 2)
    */
 
-  if (id_show(&_thread->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+  if (id_show(&_thread->id,
+	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
   /*
@@ -269,7 +268,7 @@ t_error			thread_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  threads: id(%qd) size(%qd)\n",
+	      '#', "    threads: id(%qd) size(%qd)\n",
 	      _thread->threads,
 	      size);
 
@@ -281,7 +280,7 @@ t_error			thread_dump(void)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       if (thread_show(o->id,
-		      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		      3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the thread");
     }
 
@@ -297,12 +296,12 @@ t_error			thread_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  morgue: field(%qd) timer(%qd)\n",
+	      '#', "    morgue: field(%qd) timer(%qd)\n",
 	      _thread->morgue.field,
 	      _thread->morgue.timer);
 
   module_call(console, message,
-	      '#', "    field: id(%qd) size(%qd)\n",
+	      '#', "      field: id(%qd) size(%qd)\n",
 	      _thread->morgue.field,
 	      size);
 
@@ -314,7 +313,7 @@ t_error			thread_dump(void)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       module_call(console, message,
-		  '#', "      thread: id(%qd)\n",
+		  '#', "        thread: id(%qd)\n",
 		  *id);
     }
 
@@ -1138,21 +1137,22 @@ t_error			thread_exit(i_thread			id,
  *      error.
  *   c) save the thread's exit value.
  *   d) release the thread.
- *   e) if there are no more threads in the task, exit the task with
- *      the exit value used for exiting the last thread.
+ *   e) remove the thread identifier from the morgue.
+ *   f) if there are no more threads in the task which is neither a zombie
+ *      nor dead, exit the task with the exit value used for exiting the
+ *      last thread.
  */
 
 void			thread_bury(i_timer			timer,
 				    t_vaddr			data)
 {
   s_iterator		i;
-  t_state		s;
 
   /*
    * 1)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _thread->morgue.field, &i, s)
+  while (set_head(_thread->morgue.field, &i) == ERROR_TRUE)
     {
       i_thread*		id;
       o_thread*		thread;
@@ -1191,7 +1191,15 @@ void			thread_bury(i_timer			timer,
        * e)
        */
 
-      if (set_empty(task->threads) == ERROR_TRUE)
+      assert(set_delete(_thread->morgue.field, i) == ERROR_OK);
+
+      /*
+       * f)
+       */
+
+      if ((task->state != TASK_STATE_ZOMBIE) &&
+	  (task->state != TASK_STATE_DEAD) &&
+	  (set_empty(task->threads) == ERROR_TRUE))
 	assert(task_exit(task->id, value) == ERROR_OK);
     }
 }
@@ -1203,32 +1211,33 @@ void			thread_bury(i_timer			timer,
  *
  * 0) verify the arguments.
  * 1) retrieve the thread and target task objects.
- * 2) if the thread is waiting for the thread to start and the thread is
+ * 2) check that the thread willing to wait is running.
+ * 3) if the thread is waiting for the thread to start and the thread is
  *    already running, fill and return the information.
- * 3) if the thread is waiting for the thread to stop and the thread is
+ * 4) if the thread is waiting for the thread to stop and the thread is
  *    already stopped, fill and return the information.
- * 4) if the thread is waiting for the thread to exit and the thread is
+ * 5) if the thread is waiting for the thread to exit and the thread is
  *    already dying, fill and return the information.
  *   a) fill the waiting thread's wait structure.
  *   b) set the thread as being dead now that someone has taken notice
  *      of its death.
  *   c) add the thread to the morgue.
- * 5) if the thread is already dead, there is nothing to wait for, return an
+ * 6) if the thread is already dead, there is nothing to wait for, return an
  *    error as it is too late.
- * 6) set the thread's waiting state as the one provided. it is necessary
+ * 7) set the thread's waiting state as the one provided. it is necessary
  *    to store such an information for later when the thread will finally
  *    change its state. at that moment, the task will have to know what
  *    the thread is waiting for to decide wheter to wake him up or not.
- * 7) add the thread to the thread's waiting list.
- * 8) stop the thread. the thread will be woken up by the thread once it will
+ * 8) add the thread to the thread's waiting list.
+ * 9) stop the thread. the thread will be woken up by the thread once it will
  *    have changed to the given state. therefore the next steps are executed
  *    only after the thread has been woken up.
- * 9) retrieve the information passed by the thread on the event that led
+ * 10) retrieve the information passed by the thread on the event that led
  *    to the thread being woken up i.e the cause but also the value should
  *    the task have exited. note that these information are passed by the
  *    thread through the waiting thread's object 'wait' specific attribute.
- * 10) re-initialize the thread has being waiting for nothing.
- * 11) call the machine.
+ * 11) re-initialize the thread has being waiting for nothing.
+ * 12) call the machine.
  */
 
 t_error			thread_wait(i_thread			id,
@@ -1260,6 +1269,13 @@ t_error			thread_wait(i_thread			id,
    * 2)
    */
 
+  if (object->state != THREAD_STATE_START)
+    CORE_ESCAPE("unable to make a non-running thread wait for a thread");
+
+  /*
+   * 3)
+   */
+
   if ((state & WAIT_STATE_START) &&
       (o->state == THREAD_STATE_START))
     {
@@ -1272,7 +1288,7 @@ t_error			thread_wait(i_thread			id,
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   if ((state & WAIT_STATE_STOP) &&
@@ -1287,7 +1303,7 @@ t_error			thread_wait(i_thread			id,
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if ((state & WAIT_STATE_DEATH) &&
@@ -1319,34 +1335,34 @@ t_error			thread_wait(i_thread			id,
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   if (o->state == THREAD_STATE_DEAD)
     CORE_ESCAPE("unable to wait for a dead thread");
 
   /*
-   * 6)
+   * 7)
    */
 
   object->wait.state = state;
 
   /*
-   * 7)
+   * 8)
    */
 
   if (set_add(o->waits, &id) != ERROR_OK)
     CORE_ESCAPE("unable to add the thread identifier to the waiting list");
 
   /*
-   * 8)
+   * 9)
    */
 
   if (thread_stop(id) != ERROR_OK)
     CORE_ESCAPE("unable to stop the task");
 
   /*
-   * 9)
+   * 10)
    */
 
   wait->id.thread = target;
@@ -1355,13 +1371,13 @@ t_error			thread_wait(i_thread			id,
   wait->value = object->wait.value;
 
   /*
-   * 10)
+   * 11)
    */
 
   object->wait.state = WAIT_STATE_NONE;
 
   /*
-   * 11)
+   * 12)
    */
 
   if (machine_call(thread, wait, id, target, state, wait) != ERROR_OK)
@@ -1479,19 +1495,34 @@ t_error			thread_args(i_thread			threadid,
  *
  * steps:
  *
- * 1) wake up the thread.
+ * 1) retrieve the thread object.
+ * 2) re-initialize the thread's timer.
+ * 3) wake up the thread.
  */
 
 void			thread_wakeup(i_timer			timer,
 				      t_vaddr			data)
 {
   i_thread*		id = (i_thread*)data;
+  o_thread*		o;
 
   /*
    * 1)
    */
 
-  assert(thread_start(*id) == ERROR_OK);
+  assert(thread_get(*id, &o) == ERROR_OK);
+
+  /*
+   * 2)
+   */
+
+  o->timer = ID_UNUSED;
+
+  /*
+   * 3)
+   */
+
+  assert(thread_start(o->id) == ERROR_OK);
 }
 
 /*
@@ -1515,7 +1546,7 @@ void			thread_wakeup(i_timer			timer,
  */
 
 t_error			thread_sleep(i_thread			id,
-				     t_uint32			milliseconds)
+				     t_delay			milliseconds)
 {
   o_thread*		o;
 

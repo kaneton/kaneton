@@ -92,6 +92,12 @@ t_error			event_show(i_event			id,
    * 2)
    */
 
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "event:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
   switch (o->type)
     {
     case EVENT_TYPE_FUNCTION:
@@ -99,7 +105,7 @@ t_error			event_show(i_event			id,
 	module_call(console, message,
 		    '#',
 		    MODULE_CONSOLE_MARGIN_FORMAT
-		    "event: id(%qd) type(function) routine(0x%x)\n",
+		    "  core: id(%qd) type(function) routine(0x%x)\n",
 		    MODULE_CONSOLE_MARGIN_VALUE(margin),
 		    o->id,
 		    o->handler.routine);
@@ -111,7 +117,7 @@ t_error			event_show(i_event			id,
 	module_call(console, message,
 		    '#',
 		    MODULE_CONSOLE_MARGIN_FORMAT
-		    "event: id(%qd) type(message) task(%qd)\n",
+		    "  core: id(%qd) type(message) task(%qd)\n",
 		    MODULE_CONSOLE_MARGIN_VALUE(margin),
 		    o->id,
 		    o->handler.task);
@@ -156,7 +162,11 @@ t_error			event_dump(void)
    */
 
   module_call(console, message,
-	      '#', "event manager: events(%qd)\n",
+	      '#', "event manager:\n",
+	      _event->events);
+
+  module_call(console, message,
+	      '#', "  core: events(%qd)\n",
 	      _event->events);
 
   /*
@@ -171,7 +181,7 @@ t_error			event_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  events: id(%qd) size(%qd)\n",
+	      '#', "    events: id(%qd) size(%qd)\n",
 	      _event->events,
 	      size);
 
@@ -180,7 +190,8 @@ t_error			event_dump(void)
       if (set_object(_event->events, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object from the set of events");
 
-      if (event_show(data->id, 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+      if (event_show(data->id,
+		     3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the object");
     }
 
@@ -243,11 +254,11 @@ t_error			event_notify(i_event			id)
 
     case EVENT_TYPE_MESSAGE:
       {
-	o_event_message	msg;
+	o_event_message	message;
 	i_node		node;
 
-	msg.id = id;
-	msg.data = o->data;
+	message.id = id;
+	message.data = o->data;
 
 	node.cell = _kernel->cell;
 	node.task = o->handler.task;
@@ -255,7 +266,7 @@ t_error			event_notify(i_event			id)
 	if (message_send(_kernel->task,
 			 node,
 			 MESSAGE_TYPE_EVENT,
-			 (t_vaddr)&msg,
+			 (t_vaddr)&message,
 			 sizeof (o_event_message)) != ERROR_OK)
 	  CORE_ESCAPE("unable to send a message to the destination task");
 

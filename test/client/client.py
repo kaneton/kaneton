@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [thu dec 16 14:42:19 2010]
+# updated       julien quintard   [sat dec 18 21:26:18 2010]
 #
 
 #

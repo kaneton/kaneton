@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/boot/bootloader/Makefile
+# file          /home/mycure/kaneton/boot/loader/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [fri may  1 21:54:05 2009]
+# updated       julien quintard   [sat dec 18 11:15:05 2010]
 #
 
 #
@@ -27,9 +27,7 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		ibm-pc.ia32			\
-					null.null			\
-					qemu-mips.mips64		
+SUBDIRS			:=		${_LOADER_DIR_}
 
 #
 # ---------- rules ------------------------------------------------------------

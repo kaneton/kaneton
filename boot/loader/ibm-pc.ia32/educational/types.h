@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/loader/ibm-pc.ia32/educational/types.h
  *
  * created       matthieu bucchianeri   [tue jul 17 15:14:07 2007]
- * updated       julien quintard   [fri dec 17 21:31:37 2010]
+ * updated       julien quintard   [fri dec 17 22:08:22 2010]
  */
 
 #ifndef BOOTLOADER_TYPES_H

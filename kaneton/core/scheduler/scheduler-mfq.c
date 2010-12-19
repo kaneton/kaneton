@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [thu dec 16 21:03:25 2010]
+ * updated       julien quintard   [sat dec 18 21:09:47 2010]
  */
 
 /*
@@ -197,7 +197,13 @@ t_error			scheduler_show(i_cpu			id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "scheduler: cpu(%qd) thread(%qd) timeslice(%qums) priority(%u) "
+	      "scheduler:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  core: cpu(%qd) thread(%qd) timeslice(%qums) priority(%u) "
 	      "state(%s) active(%qd) expired(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      scheduler->cpu,
@@ -218,7 +224,7 @@ t_error			scheduler_show(i_cpu			id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  active: id(%qd) size(%qd)\n",
+	      "    active: id(%qd) size(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      scheduler->active,
 	      size);
@@ -250,7 +256,7 @@ t_error			scheduler_show(i_cpu			id,
       module_call(console, message,
 		  '#',
 		  MODULE_CONSOLE_MARGIN_FORMAT
-		  "    queue: id(%qd) priority(%u) candidates(%qd)\n",
+		  "      queue: id(%qd) priority(%u) candidates(%qd)\n",
 		  MODULE_CONSOLE_MARGIN_VALUE(margin),
 		  queue->id,
 		  queue->priority,
@@ -266,7 +272,7 @@ t_error			scheduler_show(i_cpu			id,
       module_call(console, message,
 		  '#',
 		  MODULE_CONSOLE_MARGIN_FORMAT
-		  "      candidates: id(%qd) size(%qd)\n",
+		  "        candidates: id(%qd) size(%qd)\n",
 		  MODULE_CONSOLE_MARGIN_VALUE(margin),
 		  queue->candidates,
 		  size);
@@ -290,7 +296,7 @@ t_error			scheduler_show(i_cpu			id,
 	  module_call(console, message,
 		      '#',
 		      MODULE_CONSOLE_MARGIN_FORMAT
-		      "        candidate: thread(%qd) timeslice(%qums)\n",
+		      "          candidate: thread(%qd) timeslice(%qums)\n",
 		      MODULE_CONSOLE_MARGIN_VALUE(margin),
 		      candidate->thread,
 		      candidate->timeslice);
@@ -307,7 +313,7 @@ t_error			scheduler_show(i_cpu			id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  expired: id(%qd) size(%qd)\n",
+	      "    expired: id(%qd) size(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      scheduler->expired,
 	      size);
@@ -339,7 +345,7 @@ t_error			scheduler_show(i_cpu			id,
       module_call(console, message,
 		  '#',
 		  MODULE_CONSOLE_MARGIN_FORMAT
-		  "    queue: id(%qd) priority(%u) candidates(%qd)\n",
+		  "      queue: id(%qd) priority(%u) candidates(%qd)\n",
 		  MODULE_CONSOLE_MARGIN_VALUE(margin),
 		  queue->id,
 		  queue->priority,
@@ -356,6 +362,7 @@ t_error			scheduler_show(i_cpu			id,
 		  '#',
 		  MODULE_CONSOLE_MARGIN_FORMAT
 		  "        candidates: id(%qd) size(%qd)\n",
+		  MODULE_CONSOLE_MARGIN_VALUE(margin),
 		  queue->candidates,
 		  size);
 
@@ -378,7 +385,7 @@ t_error			scheduler_show(i_cpu			id,
 	  module_call(console, message,
 		      '#',
 		      MODULE_CONSOLE_MARGIN_FORMAT
-		      "    candidate: thread(%qd) timeslice(%qums)\n",
+		      "          candidate: thread(%qd) timeslice(%qums)\n",
 		      MODULE_CONSOLE_MARGIN_VALUE(margin),
 		      candidate->thread,
 		      candidate->timeslice);
@@ -430,7 +437,11 @@ t_error			scheduler_dump(void)
 
   module_call(console, message,
 	      '#',
-	      "scheduler manager: quantum(%u) idle(%qd) schedulers(%qd)\n",
+	      "scheduler manager:\n");
+
+  module_call(console, message,
+	      '#',
+	      "  core: quantum(%u) idle(%qd) schedulers(%qd)\n",
 	      _scheduler->quantum,
 	      _scheduler->idle,
 	      _scheduler->schedulers);
@@ -448,7 +459,7 @@ t_error			scheduler_dump(void)
 
   module_call(console, message,
 	      '#',
-	      "  schedulers: id(%qd) size(%qd)\n",
+	      "    schedulers: id(%qd) size(%qd)\n",
 	      _scheduler->schedulers,
 	      size);
 
@@ -468,7 +479,7 @@ t_error			scheduler_dump(void)
        */
 
       if (scheduler_show(scheduler->cpu,
-			 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+			 3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the scheduler");
     }
 

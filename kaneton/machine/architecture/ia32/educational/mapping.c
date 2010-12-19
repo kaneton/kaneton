@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/mapping.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:26:06 2007]
- * updated       julien quintard   [thu dec 16 20:57:39 2010]
+ * updated       julien quintard   [sun dec 19 12:37:35 2010]
  */
 
 /*
@@ -230,7 +230,8 @@ t_error			ia32_map_pd(t_ia32_directory*	pd)
   if (ia32_map_chunk(chunk, (t_paddr)*pd, tmp) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
-  *pd = (t_ia32_directory)(t_uint32)chunk;
+  // XXX ici on retourne dans le meme argument ca n'a AUCUN sens!
+  *pd = (t_ia32_directory)chunk;
 
   /*							  [endblock::map_pd] */
 
@@ -345,7 +346,7 @@ t_error			ia32_map_region(i_as		asid,
    * 4)
    */
 
-  pd = o->machine.pd;
+  pd = (t_ia32_directory)o->machine.pd;
 
   if (asid != _kernel->as)
     {
@@ -376,6 +377,8 @@ t_error			ia32_map_region(i_as		asid,
 
       if (ia32_pd_get_table(&pd, pde, &pt) != ERROR_OK)
 	{
+	  o_segment*	s;
+
 	  if (segment_reserve(asid,
 			      ___kaneton$pagesz,
 			      PERMISSION_READ | PERMISSION_WRITE,
@@ -385,7 +388,10 @@ t_error			ia32_map_region(i_as		asid,
 	  if (segment_type(ptseg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
 
-	  if (ia32_pt_build((t_paddr)ptseg, &pt) != ERROR_OK)
+	  if (segment_get(ptseg, &s) != ERROR_OK)
+	    MACHINE_ESCAPE("XXX");
+
+	  if (ia32_pt_build(s->address, &pt) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
 
 	  pt.rw = IA32_PAGE_TABLE_WRITABLE;
@@ -440,14 +446,14 @@ t_error			ia32_map_region(i_as		asid,
 	   */
 
 	  if (asid == _kernel->as)
-	    ia32_tlb_invalidate((t_vaddr)IA32_ENTRY_ADDRESS(pde, pte));
+	    ia32_tlb_invalidate(IA32_ENTRY_ADDRESS(pde, pte));
 	}
 
       /*
        * f)
        */
 
-      if (ia32_unmap_chunk((t_vaddr)pt.vaddr) != ERROR_OK)
+      if (ia32_unmap_chunk(pt.vaddr) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
     }
 
@@ -513,7 +519,7 @@ t_error			ia32_unmap_region(i_as		asid,
    * 3)
    */
 
-  pd = o->machine.pd;
+  pd = (t_ia32_directory)o->machine.pd;
 
   if (asid != _kernel->as)
     {
@@ -565,7 +571,7 @@ t_error			ia32_unmap_region(i_as		asid,
        * d)
        */
 
-      if (ia32_unmap_chunk((t_vaddr)pt.vaddr) != ERROR_OK)
+      if (ia32_unmap_chunk(pt.vaddr) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
 
       /*

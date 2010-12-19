@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [wed dec 15 23:07:00 2010]
+ * updated       julien quintard   [sat dec 18 11:06:58 2010]
  */
 
 #ifndef CORE_THREAD_H
@@ -201,7 +201,7 @@ typedef struct
 					      const void*,
 					      t_size);
   t_error			(*thread_sleep)(i_thread,
-						t_uint32);
+						t_delay);
   t_error			(*thread_flush)(i_task);
   t_error			(*thread_load)(i_thread,
 					       s_thread_context);
@@ -263,7 +263,7 @@ void			thread_wakeup(i_timer			timer,
 				      t_vaddr			data);
 
 t_error			thread_sleep(i_thread			id,
-				     t_uint32			milliseconds);
+				     t_delay			milliseconds);
 
 t_error			thread_flush(i_task			taskid);
 

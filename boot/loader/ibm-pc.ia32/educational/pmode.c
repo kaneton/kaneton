@@ -126,5 +126,5 @@ void			bootloader_pmode_init(void)
    * 5)
    */
 
-  memcpy(&init->machine.gdt, &gdt, sizeof (t_ia32_gdt));
+  init->machine.gdt = (t_paddr)gdt.descriptor;
 }

@@ -127,7 +127,7 @@
  * entries.
  */
 #define IA32_ENTRY_ADDRESS(_directory_entry_, _table_entry_)		\
-  ((((_directory_entry_) << 22) | ((_table_entry_) << 12)))
+  (t_vaddr)((((_directory_entry_) << 22) | ((_table_entry_) << 12)))
 
 /*
  * computes the aligned address of a directory, table or page address.

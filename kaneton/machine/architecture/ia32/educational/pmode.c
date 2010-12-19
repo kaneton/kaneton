@@ -78,7 +78,8 @@ t_error		ia32_pmode_init(void)
    * 1)
    */
 
-  memcpy(&ia32_gdt, &_init->machine.gdt, sizeof (t_ia32_gdt));
+  ia32_gdt.descriptor = (t_ia32_gdt_entry*)(void*)_init->machine.gdt;
+  ia32_gdt.count = IA32_GDT_NENTRIES;
 
   /*
    * 2)

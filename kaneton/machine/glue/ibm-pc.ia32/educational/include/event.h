@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/event.h
  *
  * created       julien quintard   [wed jun  6 16:15:26 2007]
- * updated       julien quintard   [mon dec 13 11:14:14 2010]
+ * updated       julien quintard   [sun dec 19 13:38:45 2010]
  */
 
 #ifndef GLUE_EVENT_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the event dispatcher.
  */
 
 #define		machine_include_event()					\
   extern d_event	glue_event_dispatch
+
+/*
+ * this macro-function dispatches the CPU calls.
+ */
 
 #define		machine_call_event(_function_, _args_...)		\
   (									\
@@ -39,9 +41,21 @@
     }									\
   )
 
+/*
+ * this macro-function includes data in 'm_event'.
+ */
+
 #define		machine_data_m_event()
 
+/*
+ * this macro-function includes data in 'o_event'.
+ */
+
 #define		machine_data_o_event()
+
+/*
+ * this macro-function includes data in 'o_event_message'.
+ */
 
 #define		machine_data_o_event_message()
 
@@ -61,6 +75,9 @@
  * ../event.c
  */
 
+void			glue_event_pagefault(t_id		id,
+					     t_vaddr		data);
+
 t_error			glue_event_enable(void);
 
 t_error			glue_event_disable(void);
@@ -71,10 +88,6 @@ t_error			glue_event_reserve(i_event		id,
 					   t_vaddr		data);
 
 t_error			glue_event_release(i_event		id);
-
-void			pf_handler(t_id				id,
-				   t_vaddr			data,
-				   t_uint32			error_code);
 
 t_error			glue_event_initialize(void);
 

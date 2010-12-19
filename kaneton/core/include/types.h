@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/types.h
  *
  * created       julien quintard   [wed jun  6 22:38:37 2007]
- * updated       julien quintard   [fri dec 17 22:03:35 2010]
+ * updated       julien quintard   [sun dec 19 17:19:47 2010]
  */
 
 #ifndef CORE_TYPES_H
@@ -23,29 +23,6 @@
 /*
  * ---------- types -----------------------------------------------------------
  */
-
-/*
- * register types: 8-/16-/32- and 64-bit.
- */
-
-typedef t_uint8			t_reg8;
-typedef t_uint16		t_reg16;
-typedef t_uint32		t_reg32;
-typedef t_uint64		t_reg64;
-
-/*
- * the physical address and size types.
- */
-
-typedef t_uint32		t_paddr;
-typedef t_uint32		t_psize;
-
-/*
- * the virtual address and size types.
- */
-
-typedef t_uint32		t_vaddr;
-typedef t_uint32		t_vsize;
 
 /*
  * the general-purpose size and offset types.
@@ -73,6 +50,7 @@ typedef t_uint32		t_operations;
 typedef t_uint64		t_timeslice;
 typedef t_sint32		t_value;
 typedef t_sint64		t_delay;
+typedef t_uint32		t_width;
 
 /*
  * this stack type.

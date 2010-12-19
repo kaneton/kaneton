@@ -8,13 +8,13 @@
  * file          /home/mycure/kane...chine/glue/ibm-pc.ia32/educational/map.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec 10 17:04:54 2010]
+ * updated       julien quintard   [sun dec 19 17:33:56 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * this file implements the map manager's glue.
  */
 
 /*
@@ -32,7 +32,7 @@
  */
 
 /*
- * the ibm-pc.ia32 map manager dispatch.
+ * the map dispatcher.
  */
 
 d_map			glue_map_dispatch =

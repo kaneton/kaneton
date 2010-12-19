@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/types.h
+ * file          /home/mycure/kane...tecture/ia32/educational/include/types.h
  *
  * created       julien quintard   [wed jun  6 19:07:02 2007]
- * updated       julien quintard   [thu jun  7 14:26:38 2007]
+ * updated       julien quintard   [fri dec 17 22:22:25 2010]
  */
 
 #ifndef ARCHITECTURE_TYPES_H
@@ -16,6 +16,10 @@
 
 /*
  * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * fundamental types.
  */
 
 typedef unsigned char		t_uint8;
@@ -26,5 +30,24 @@ typedef unsigned int		t_uint32;
 typedef signed int		t_sint32;
 typedef unsigned long long int	t_uint64;
 typedef signed long long int	t_sint64;
+
+typedef t_uint8			t_reg8;
+typedef t_uint16		t_reg16;
+typedef t_uint32		t_reg32;
+typedef t_uint64		t_reg64;
+
+/*
+ * the physical address and size types.
+ */
+
+typedef t_uint32		t_paddr;
+typedef t_uint32		t_psize;
+
+/*
+ * the virtual address and size types.
+ */
+
+typedef t_uint32		t_vaddr;
+typedef t_uint32		t_vsize;
 
 #endif

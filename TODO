@@ -30,40 +30,9 @@ autre:
 # ---------- mycure -----------------------------------------------------------
 #
 
-- passer addr/size en 64-bit
-
---- GLUE
-
-- verifier que les donnees dependantes sont displayed dans show
-- verifier que les tailles/adresses sont alignees dans core (region/segment..)
-   => on dans segment/region/as dans le core
-
-- chercher les casts pour i_region, i_segment, t_vaddr et t_paddr
- -> ca peut etre des erreurs (dans core et dans test)
-
-- un make clear dans un snapshot student foire dans le boot car
-  il iterere sur les machines plutot que de prendre que l'actuelle donc
-  forcement il tente null.null et ca n'existe pas
-
-- virer la definition PAGESZ (encore pire, ca ne devrait jamais etre utilise
-  ni dans core ni dans les tests/kaneton/core)
-
----- TESTS
-
-- tester le nouveau robot
-
----- IMPLEM SERIEUSE
-
-- commenter modules=fait machine/glue=? machine/plat=? core=?
-- reverifier les protos pour que la target soit toujours en dernier argument: reserve, give etc.
-- bien noter que l'interface ne marche plus.
-- faire marcher les wait et differents etats de task
-- IA32_DEPENDENT (dans architecture.h) a garder? ARCHITECTURE = IA32 ce serait mieux
-- pourquoi le set container n'est pas alloue dans le initialize? d'autant plus qu'il est release dans clean()
-- les types de glue (g_) et de arch (a_)
-
 --- IA32
 
+- renommer diretory and pd et table en pt
 - dans interrupt, on trigger des events (soit on appelle la fonction a la main
   soit on utiliser event_notify) -> deja ca ca pue, ca devrait etre unifie
 - de plus, on passe un code a la fonction alors que ce n'est pas prevu! pour
@@ -90,12 +59,16 @@ autre:
 
 - chercher les XXX dans le code, il ne doit pas en rester
 
+- mettre les structures d'arch dans la partie machine de _kernel
+
 --- WIKI
 
 - section news: nouveau systeme de tests pour cette annee (merci d'etre comprehensif)
 - ajouter osdev.org dans les liens sur le wiki! + SOS (lire les articles)
 - limiter l'acces au Wiki pour l'edition finalement.
 - mettre novuelle version de devleopment book sur le site
+- rajouter une news sur le site de kaneton et dire que le code a ete
+  completement retravaille
 
 --- EXPORT
 

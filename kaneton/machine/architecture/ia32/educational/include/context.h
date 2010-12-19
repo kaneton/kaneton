@@ -26,6 +26,18 @@
 
 // XXX better remove cpu local variables in this version!
 
+// XXX dans le comment dire que les vars ont ete set et doivent etre
+//     utilisees pour set le context proprement. tout ca a ete fait dans
+//     ia32_context_switch() [context.c]:
+//  ia32_local_jump_pdbr: PDBR du thread a sched
+//  ia32_local_jmp_stack: address of the kernel stack of the resuming thread
+//  + setting up the TSS to switch stack to the thread's kernel stack
+//    on interrupt
+//  + copying the iomap into the active TSS
+
+// XXX noter a la fin qu'on recupere (cpu_local_get) la valeur de
+//   interrupt_stack pour ensuet le branler comme ESP courant
+
 #define	IA32_SAVE_CONTEXT()						\
 	 "	pusha					\n"		\
 	 "	movw %ds, %ax				\n"		\

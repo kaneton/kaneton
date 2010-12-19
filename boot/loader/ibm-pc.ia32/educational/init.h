@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ot/loader/ibm-pc.ia32/educational/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       julien quintard   [mon dec 13 11:48:02 2010]
+ * updated       julien quintard   [sun dec 19 11:43:14 2010]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -149,8 +149,8 @@ typedef struct
 
   struct
   {
-    t_ia32_gdt			gdt;
-    t_ia32_directory		pd;
+    t_paddr			gdt;
+    t_paddr			pd;
   }				machine;
 }				t_init;
 

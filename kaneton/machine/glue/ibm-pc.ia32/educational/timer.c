@@ -8,14 +8,16 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/timer.c
  *
  * created       julien quintard   [mon jun 11 05:41:14 2007]
- * updated       julien quintard   [tue dec 14 23:23:27 2010]
+ * updated       julien quintard   [sun dec 19 18:30:32 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements dependant code for the timer managment on a ibm-pc.ia32
- * machine.
+ * this file implements the timer manager's glue.
+ *
+ * the machine relies on the platform which provides a PIT - Programmable
+ * Interval Timer.
  */
 
 /*
@@ -33,7 +35,7 @@
  */
 
 /*
- * the ibm-pc.ia32 timer manager dispatch.
+ * the timer dispatcher.
  */
 
 d_timer			glue_timer_dispatch =
@@ -53,14 +55,21 @@ d_timer			glue_timer_dispatch =
  */
 
 /*
- * init the timer on the platform.
- *
+ * this function initializes the timer manager's glue.
  */
 
 t_error			glue_timer_initialize(void)
 {
+  /*
+   * XXX
+   */
+
   if (platform_pit_initialize() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the PIT");
+
+  /*
+   * XXX
+   */
 
   if (event_reserve(32,
 		    EVENT_TYPE_FUNCTION,
@@ -73,11 +82,15 @@ t_error			glue_timer_initialize(void)
 }
 
 /*
- * clean the timer.
+ * this function cleans the timer manager's glue.
  */
 
 t_error			glue_timer_clean(void)
 {
+  /*
+   * XXX
+   */
+
   if (platform_pit_clean() != ERROR_OK)
     MACHINE_ESCAPE("unable to clean the PIT");
 

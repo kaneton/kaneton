@@ -249,6 +249,12 @@ t_error			timer_show(i_timer			id,
    * 3)
    */
 
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "timer:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
   switch (o->type)
     {
     case TIMER_TYPE_FUNCTION:
@@ -256,7 +262,7 @@ t_error			timer_show(i_timer			id,
 	module_call(console, message,
 		    '#',
 		    MODULE_CONSOLE_MARGIN_FORMAT
-		    "timer: id(%qd) type(function) delay(%qd) options(%s) "
+		    "  core: id(%qd) type(function) delay(%qd) options(%s) "
 		    "repeat(%qd) routine(0x%x) data(0x%x)\n",
 		    MODULE_CONSOLE_MARGIN_VALUE(margin),
 		    o->id,
@@ -273,7 +279,7 @@ t_error			timer_show(i_timer			id,
 	module_call(console, message,
 		    '#',
 		    MODULE_CONSOLE_MARGIN_FORMAT
-		    "timer: id(%qd) type(message) delay(%qd) options(%s) "
+		    "  core: id(%qd) type(message) delay(%qd) options(%s) "
 		    "repeat(%qd) task(%qd) data(0x%x)\n",
 		    MODULE_CONSOLE_MARGIN_VALUE(margin),
 		    o->id,
@@ -325,14 +331,18 @@ t_error			timer_dump(void)
    */
 
   module_call(console, message,
-	      '#', "timer manager: timers(%qd)\n",
+	      '#', "timer manager:\n");
+
+  module_call(console, message,
+	      '#', "  core: timers(%qd)\n",
 	      _timer->timers);
 
   /*
    * 2)
    */
 
-  if (id_show(&_timer->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+  if (id_show(&_timer->id,
+	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
   /*
@@ -347,7 +357,7 @@ t_error			timer_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  timers: id(%qd) size(%qd)\n",
+	      '#', "    timers: id(%qd) size(%qd)\n",
 	      _timer->timers,
 	      size);
 
@@ -367,7 +377,7 @@ t_error			timer_dump(void)
        */
 
       if (timer_show(o->id,
-		     2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		     3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the timer");
     }
 

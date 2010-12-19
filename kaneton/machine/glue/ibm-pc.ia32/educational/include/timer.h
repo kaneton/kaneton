@@ -9,7 +9,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/timer.h
  *
  * created       julien quintard   [wed jun  6 16:29:41 2007]
- * updated       julien quintard   [tue dec 14 22:49:08 2010]
+ * updated       julien quintard   [sun dec 19 16:23:00 2010]
  */
 
 #ifndef GLUE_TIMER_H
@@ -20,13 +20,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the timer dispatcher.
  */
 
 #define		machine_include_timer()					\
   extern d_timer	glue_timer_dispatch
+
+/*
+ * this macro-function dispatches the timer calls.
+ */
 
 #define		machine_call_timer(_function_, _args_...)		\
   (									\
@@ -40,7 +42,15 @@
     }									\
   )
 
+/*
+ * this macro-function includes data in 'm_timer'.
+ */
+
 #define		machine_data_m_timer()
+
+/*
+ * this macro-function includes data in 'o_timer'.
+ */
 
 #define		machine_data_o_timer()
 

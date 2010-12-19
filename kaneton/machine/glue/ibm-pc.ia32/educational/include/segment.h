@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...bm-pc.ia32/educational/include/segment.h
  *
  * created       julien quintard   [wed jun  6 16:25:05 2007]
- * updated       julien quintard   [mon dec 13 11:16:10 2010]
+ * updated       julien quintard   [sun dec 19 13:57:53 2010]
  */
 
 #ifndef GLUE_SEGMENT_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the segment dispatcher.
  */
 
 #define		machine_include_segment()				\
   extern d_segment	glue_segment_dispatch
+
+/*
+ * this macro-function dispatches the segment calls.
+ */
 
 #define		machine_call_segment(_function_, _args_...)		\
   (									\
@@ -39,7 +41,15 @@
     }									\
   )
 
+/*
+ * this macro-function includes data in 'm_segment'.
+ */
+
 #define		machine_data_m_segment()
+
+/*
+ * this macro-function includes data in 'o_segment'.
+ */
 
 #define		machine_data_o_segment()
 

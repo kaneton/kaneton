@@ -8,14 +8,15 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [fri dec 10 21:27:31 2010]
+ * updated       julien quintard   [sun dec 19 17:51:23 2010]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file  implements dependent  code for region  manager on  ia32 with
- * paging architecture.
+ * this file implements the region manager's glue which basically consists
+ * in updating the address space's page directory, tables etc. in order
+ * to reflect the core operation.
  */
 
 /*
@@ -33,12 +34,13 @@
  */
 
 /*
- * the region manager dispatch.
+ * the region dispatcher.
  */
 
 d_region		glue_region_dispatch =
   {
     /*							   [block::dispatch] */
+
     NULL,
     NULL,
     NULL,
@@ -50,6 +52,7 @@ d_region		glue_region_dispatch =
     NULL,
     glue_region_initialize,
     glue_region_clean
+
     /*							[endblock::dispatch] */
   };
 
@@ -62,8 +65,13 @@ d_region		glue_region_dispatch =
 /*
  * this function resizes a region.
  *
- * this is an extremely simple and inefficient implementation... but
- * it does work.
+ * note that the glue implementation is quite inefficient but extremely
+ * simple as many scenarios could occur: larger, smaller, in-place, relocated
+ * etc.
+ *
+ * the current implementation therefore consists in unmapping the pages
+ * of the previous region before mapping the page corresponding to the
+ * region's new size.
  */
 
 t_error			glue_region_resize(i_as			as,
@@ -73,12 +81,24 @@ t_error			glue_region_resize(i_as			as,
 {
   o_region*		reg;
 
+  /*
+   * XXX
+   */
+
   if (region_get(as, old, &reg) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
+
+  /*
+   * XXX
+   */
 
   if (ia32_unmap_region(as, reg->address, reg->size) != ERROR_OK)
     MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to the "
 		   "original region");
+
+  /*
+   * XXX
+   */
 
   if (ia32_map_region(as,
 		      reg->segment,
@@ -93,8 +113,8 @@ t_error			glue_region_resize(i_as			as,
 }
 
 /*
- * reserves a region.
- *
+ * this function reserves a region and therefore calls the architecture
+ * so that the region's page get mapped.
  */
 
 t_error			glue_region_reserve(i_as		asid,
@@ -105,6 +125,10 @@ t_error			glue_region_reserve(i_as		asid,
 					    t_vsize		size,
 					    i_region*		regid)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_map_region(asid,
 		      segid,
 		      offset,
@@ -118,8 +142,8 @@ t_error			glue_region_reserve(i_as		asid,
 }
 
 /*
- * this function  releases a region.
- *
+ * this function releases a region. the pages corresponding to the region's
+ * area of memory are thus unmapped.
  */
 
 t_error			glue_region_release(i_as		asid,
@@ -127,8 +151,16 @@ t_error			glue_region_release(i_as		asid,
 {
   o_region*		reg;
 
+  /*
+   * XXX
+   */
+
   if (region_get(asid, regid, &reg) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
+
+  /*
+   * XXX
+   */
 
   if (ia32_unmap_region(asid, reg->address, reg->size) != ERROR_OK)
     MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to "
@@ -138,13 +170,16 @@ t_error			glue_region_release(i_as		asid,
 }
 
 /*
- * this function just initializes the machine-dependent region manager.
- *
+ * this function initializes the region manager's glue.
  */
 
 t_error			glue_region_initialize(t_vaddr		base,
 					       t_vsize		size)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_paging_init() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the paging");
 
@@ -152,12 +187,15 @@ t_error			glue_region_initialize(t_vaddr		base,
 }
 
 /*
- * this function cleans the machine-dependent region manager.
- *
+ * this function cleans the region manager's glue.
  */
 
 t_error			glue_region_clean(void)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_paging_clean() != ERROR_OK)
     MACHINE_ESCAPE("unable to clean the paging");
 

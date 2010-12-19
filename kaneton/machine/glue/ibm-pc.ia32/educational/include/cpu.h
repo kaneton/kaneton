@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ue/ibm-pc.ia32/educational/include/cpu.h
  *
  * created       julien quintard   [mon jun  4 01:05:31 2007]
- * updated       julien quintard   [fri dec 10 21:14:28 2010]
+ * updated       julien quintard   [sun dec 19 13:38:26 2010]
  */
 
 #ifndef GLUE_CPU_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the CPU dispatcher.
  */
 
 #define		machine_include_cpu()					\
   extern d_cpu		glue_cpu_dispatch
+
+/*
+ * this macro-function dispatches the CPU calls.
+ */
 
 #define		machine_call_cpu(_function_, _args_...)			\
   (									\
@@ -39,7 +41,15 @@
     }									\
   )
 
+/*
+ * this macro-function includes data in 'm_cpu'.
+ */
+
 #define		machine_data_m_cpu()
+
+/*
+ * this macro-function includes data in 'o_cpu'.
+ */
 
 #define		machine_data_o_cpu()
 

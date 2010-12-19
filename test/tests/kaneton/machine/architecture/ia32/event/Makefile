@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...machine/architecture/ia32/event/Makefile
+# file          /home/mycure/kane...itecture/ia32/educational/event/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [wed dec  1 05:51:17 2010]
+# updated       julien quintard   [sat dec 18 11:20:48 2010]
 #
 
 #
@@ -41,7 +41,6 @@ SUBDIRS			:=		context				\
 					interrupt			\
 					irq				\
 					map				\
-					message				\
 					pic				
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)

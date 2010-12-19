@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...bm-pc.ia32/educational/include/message.h
  *
  * created       julien quintard   [wed jun  6 16:20:48 2007]
- * updated       julien quintard   [mon dec 13 11:14:34 2010]
+ * updated       julien quintard   [sun dec 19 13:46:24 2010]
  */
 
 #ifndef GLUE_MESSAGE_H
@@ -19,13 +19,15 @@
  */
 
 /*
- * these macro-function redirect the calls from the core to the appropriate
- * glue function but also provide the machine-specific data to include
- * in the core managers, objects etc.
+ * this macro-function defines the message dispatcher.
  */
 
 #define		machine_include_message()				\
   extern d_message	glue_message_dispatch
+
+/*
+ * this macro-function dispatches the message calls.
+ */
 
 #define		machine_call_message(_function_, _args_...)		\
   (									\
@@ -39,9 +41,21 @@
     }									\
   )
 
+/*
+ * this macro-function includes data in 'm_message'.
+ */
+
 #define		machine_data_m_message()
 
+/*
+ * this macro-function includes data in 'o_message'.
+ */
+
 #define		machine_data_o_message()
+
+/*
+ * this macro-function includes data in 'o_message_type'.
+ */
 
 #define		machine_data_o_message_type()
 

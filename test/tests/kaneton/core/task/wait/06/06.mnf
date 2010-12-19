@@ -1,0 +1,6 @@
+name: core/task/wait/06
+description: This test creates a task and several threads. While one thread waits for the task's stop, another thread verifies that the task is being scheduled as expected. Note that in this test, the waiting request occurs after the task's stop.
+symbol: test_core_task_wait_06
+signature: vcnwerf20fgh30hj0hb02zxcmq3rj20g90ihb90ihyncuwqdq23jd92jf093gu
+output:
+points: 3

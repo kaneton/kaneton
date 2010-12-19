@@ -96,7 +96,13 @@ t_error			cpu_show(i_cpu				id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "CPU: id(%qd) efficiency(%qu)\n",
+	      "CPU:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "  core: id(%qd) efficiency(%qu)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
 	      o->efficiency);
@@ -134,7 +140,10 @@ t_error			cpu_dump(void)
    */
 
   module_call(console, message,
-	      '#', "CPU manager: cpus(%qd)\n",
+	      '#', "CPU manager:\n");
+
+  module_call(console, message,
+	      '#', "  core: cpus(%qd)\n",
 	      _cpu->cpus);
 
   /*
@@ -149,7 +158,7 @@ t_error			cpu_dump(void)
    */
 
   module_call(console, message,
-	      '#', "  CPUs: id(%qd) size(%qd)\n",
+	      '#', "    cpus: id(%qd) size(%qd)\n",
 	      _cpu->cpus,
 	      size);
 
@@ -158,7 +167,8 @@ t_error			cpu_dump(void)
       if (set_object(_cpu->cpus, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the CPU identifier");
 
-      if (cpu_show(data->id, 2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+      if (cpu_show(data->id,
+		   3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
 	CORE_ESCAPE("unable to show the CPU");
     }
 

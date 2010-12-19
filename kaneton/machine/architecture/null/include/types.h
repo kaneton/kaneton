@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/types.h
+ * file          /home/mycure/kane...achine/architecture/null/include/types.h
  *
  * created       julien quintard   [wed jun  6 19:07:02 2007]
- * updated       julien quintard   [thu jun  7 14:26:38 2007]
+ * updated       julien quintard   [fri dec 17 22:09:29 2010]
  */
 
 #ifndef ARCHITECTURE_TYPES_H

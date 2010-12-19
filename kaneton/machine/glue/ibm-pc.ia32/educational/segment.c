@@ -8,15 +8,15 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun dec 12 13:39:58 2010]
+ * updated       julien quintard   [sun dec 19 18:29:32 2010]
  */
-
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements dependent code for the segment manager on a ibm-pc.ia32
- * machine.
+ * this file implements the segment manager's glue.
+ *
+ * the machine behaviour consists in managing the IA32 segmentation model.
  */
 
 /*
@@ -34,7 +34,7 @@
  */
 
 /*
- * the ibm-pc.ia32 segment manager dispatch.
+ * the segment dispatcher.
  */
 
 d_segment		glue_segment_dispatch =
@@ -65,7 +65,6 @@ d_segment		glue_segment_dispatch =
 
 /*
  * this function reads directly from a segment to a buffer.
- *
  */
 
 t_error			glue_segment_read(i_segment		segid,
@@ -73,6 +72,10 @@ t_error			glue_segment_read(i_segment		segid,
 					  void*			buff,
 					  t_psize		sz)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_segment_read(segid, offs, buff, sz) != ERROR_OK)
     MACHINE_ESCAPE("unable to read data from the segment");
 
@@ -80,8 +83,7 @@ t_error			glue_segment_read(i_segment		segid,
 }
 
 /*
- * this function write directly to a segment from a buffer.
- *
+ * this function writes directly to a segment from a buffer.
  */
 
 t_error			glue_segment_write(i_segment		segid,
@@ -89,6 +91,10 @@ t_error			glue_segment_write(i_segment		segid,
 					   const void*		buff,
 					   t_psize		sz)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_segment_write(segid, offs, buff, sz) != ERROR_OK)
     MACHINE_ESCAPE("unable to write data to the segment");
 
@@ -96,8 +102,7 @@ t_error			glue_segment_write(i_segment		segid,
 }
 
 /*
- * this function copies a block of bytes from one segment to another.
- *
+ * this function copies a chunk of data from one segment to another.
  */
 
 t_error			glue_segment_copy(i_segment		dst,
@@ -106,6 +111,10 @@ t_error			glue_segment_copy(i_segment		dst,
 					  t_paddr		offss,
 					  t_psize		sz)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_segment_copy(dst, offsd, src, offss, sz) != ERROR_OK)
     MACHINE_ESCAPE("unable to copy data from a segment to another");
 
@@ -113,13 +122,21 @@ t_error			glue_segment_copy(i_segment		dst,
 }
 
 /*
- * this function just initializes the machine-dependent segment manager.
+ * this function initializes the segment manager's glue.
  */
 
 t_error			glue_segment_initialize(void)
 {
+  /*
+   * XXX
+   */
+
   if (ia32_pmode_init() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the protected mode");
+
+  /*
+   * XXX
+   */
 
   if (ia32_segmentation_init() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the IA32 segmentation");
@@ -128,12 +145,20 @@ t_error			glue_segment_initialize(void)
 }
 
 /*
- * this function cleans the machine-dependent segment manager.
+ * this function cleans the segment manager's glue.
  */
 
 t_error			glue_segment_clean(void)
 {
+  /*
+   * XXX
+   */
+
   // XXX clean segmentation.
+
+  /*
+   * XXX
+   */
 
   if (ia32_pmode_clean() != ERROR_OK)
     MACHINE_ESCAPE("unable to clean the protected mode");

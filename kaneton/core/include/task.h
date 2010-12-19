@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [wed dec 15 18:01:50 2010]
+ * updated       julien quintard   [sat dec 18 11:07:11 2010]
  */
 
 #ifndef CORE_TASK_H
@@ -153,6 +153,10 @@
  *
  * finally, the 'message' contains the set of messages associated with
  * the task.
+ *
+ * note that a timer is provided should the task need to trigger an
+ * action. for instance the timer is used for the task to sleep for some
+ * time.
  */
 
 typedef struct
@@ -178,6 +182,8 @@ typedef struct
   t_value			value;
 
   i_set				messages;
+
+  i_timer			timer;
 
   machine_data(o_task);
 }				o_task;
@@ -226,6 +232,8 @@ typedef struct
 					     i_task,
 					     t_state,
 					     s_wait*);
+  t_error			(*task_sleep)(i_task,
+					      t_delay);
   t_error			(*task_initialize)(void);
   t_error			(*task_clean)(void);
 }				d_task;
@@ -271,6 +279,12 @@ t_error			task_wait(i_thread			id,
 				  i_task			target,
 				  t_state			state,
 				  s_wait*			wait);
+
+void			task_wakeup(i_timer			timer,
+				    t_vaddr			data);
+
+t_error			task_sleep(i_task			id,
+				   t_delay			milliseconds);
 
 t_error			task_current(i_task*			task);
 
