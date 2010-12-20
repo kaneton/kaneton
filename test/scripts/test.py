@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton/test/scripts/test.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [wed dec  8 22:08:32 2010]
+# updated       julien quintard   [mon dec 20 08:29:04 2010]
 #
 
 #
@@ -154,7 +154,7 @@ def                     Test(namespace):
 
     # test the success of the construct script invocation.
     if status == ktp.StatusError:
-      Error(namespace, output)
+      Error(namespace, output + "\n[rounds] " + str(Rounds[ConstructPhase]))
 
     if namespace.verbose:
       print("stressing the image '" + image + "'")
@@ -185,7 +185,7 @@ def                     Test(namespace):
 
     # test the success of the stress script invocation.
     if status == ktp.StatusError:
-      Error(namespace, output)
+      Error(namespace, output + "\n[rounds] " + str(Rounds[StressPhase]))
 
     # retrieve the current time.
     end = time.time()

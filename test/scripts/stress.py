@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton/test/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri dec 17 13:16:04 2010]
+# updated       julien quintard   [mon dec 20 08:29:19 2010]
 #
 
 #

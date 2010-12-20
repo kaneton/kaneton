@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/event/context/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [thu dec 16 13:28:57 2010]
+ * updated       julien quintard   [sun dec 19 21:40:57 2010]
  */
 
 /*
@@ -111,9 +111,6 @@ void			test_architecture_event_context_02(void)
                "movl %%esp, %1"
                : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
-  if (event_release(3) != ERROR_OK)
-    TEST_ERROR("[event_release] error");
-
   if (thrown != 1)
     TEST_ERROR("the triggered exception has not been caught");
 
@@ -145,6 +142,9 @@ void			test_architecture_event_context_02(void)
     TEST_ERROR("the FS register is different");
   if (ctx1->gs != ctx2->gs)
     TEST_ERROR("the GS register is different");
+
+  if (event_release(3) != ERROR_OK)
+    TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(twjvviw094g398w2ur2);
 

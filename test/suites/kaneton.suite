@@ -23,8 +23,8 @@ components:
   event:
     - kaneton/machine/architecture/ia32/event/
 
-  time:
-    - kaneton/core/time/
+  timer:
+    - kaneton/core/timer/
 
   segment:
     - kaneton/core/segment/
