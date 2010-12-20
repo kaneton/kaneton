@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo.../architecture/ia32/event/context/02/02.h
+ * file          /home/mycure/kane.../architecture/ia32/event/context/02/02.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [tue nov 30 16:42:24 2010]
+ * updated       julien quintard   [mon dec 20 21:40:09 2010]
  */
 
 #ifndef TESTS_KANETON_MACHINE_ARCHITECTURE_EVENT_CONTEXT_02_02_H

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/event/context/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [sun dec 19 21:40:57 2010]
+ * updated       julien quintard   [mon dec 20 22:20:39 2010]
  */
 
 /*
@@ -108,7 +108,8 @@ void			test_architecture_event_context_02(void)
                "pushl %%es\n"
                "pushl %%fs\n"
                "pushl %%gs\n"
-               "movl %%esp, %1"
+               "movl %%esp, %1\n"
+	       "subl $20, %%esp" /* [XXX:improvement] this should not be necessary! why is it? */
                : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
   if (thrown != 1)
@@ -132,15 +133,15 @@ void			test_architecture_event_context_02(void)
   if (ctx1->ebp != ctx2->ebp)
     TEST_ERROR("the EBP register is different");
 
-  if (ctx1->cs != ctx2->cs)
+  if ((ctx1->cs & 0xffff) != (ctx2->cs & 0xffff))
     TEST_ERROR("the CS register is different");
-  if (ctx1->ds != ctx2->ds)
+  if ((ctx1->ds & 0xffff) != (ctx2->ds & 0xffff))
     TEST_ERROR("the DS register is different");
-  if (ctx1->es != ctx2->es)
+  if ((ctx1->es & 0xffff) != (ctx2->es & 0xffff))
     TEST_ERROR("the ES register is different");
-  if (ctx1->fs != ctx2->fs)
+  if ((ctx1->fs & 0xffff) != (ctx2->fs & 0xffff))
     TEST_ERROR("the FS register is different");
-  if (ctx1->gs != ctx2->gs)
+  if ((ctx1->gs & 0xffff) != (ctx2->gs & 0xffff))
     TEST_ERROR("the GS register is different");
 
   if (event_release(3) != ERROR_OK)
