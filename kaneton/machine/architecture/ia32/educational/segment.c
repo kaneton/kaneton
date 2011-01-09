@@ -1,3 +1,5 @@
+// XXX peut etre mettre ca dans pmode.c?
+
 /*
  * ---------- header ----------------------------------------------------------
  *
@@ -8,7 +10,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/segment.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:25:22 2007]
- * updated       julien quintard   [thu dec 16 20:58:34 2010]
+ * updated       julien quintard   [thu jan  6 09:04:13 2011]
  */
 
 /*

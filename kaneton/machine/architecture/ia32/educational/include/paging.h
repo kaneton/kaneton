@@ -27,7 +27,7 @@
  * misc
  */
 
-// XXX -> ENTRIES instead of MAX_ENTRIES
+// XXX -> ENTRIES/NENTRIES instead of MAX_ENTRIES
 #define IA32_PAGE_DIRECTORY_MAX_ENTRIES			1024
 #define IA32_PAGE_DIRECTORY_NOTCACHED			0
 #define IA32_PAGE_DIRECTORY_CACHED			1
@@ -153,6 +153,9 @@
 
 /*
  * abstract record for page
+ *
+ * XXX si jamais on garde les records abstract, les mettre dans architecture.h
+ * et bien explique leur role!
  */
 
 typedef struct
@@ -196,7 +199,6 @@ typedef t_ia32_pde* t_ia32_directory;
  *	../paging.c
  *	../pd.c
  *	../pt.c
- *	../tlb.c
  */
 
 /*
@@ -271,15 +273,6 @@ t_error			ia32_pt_get_page(t_ia32_table*		tab,
 
 t_error			ia32_pt_delete_page(t_ia32_table*	tab,
 					    t_uint16		entry);
-
-
-/*
- * ../tlb.c
- */
-
-t_error			ia32_tlb_invalidate(t_vaddr			page);
-
-t_error			ia32_tlb_flush(void);
 
 
 /*

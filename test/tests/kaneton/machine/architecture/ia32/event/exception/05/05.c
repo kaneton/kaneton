@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2050]
- * updated       julien quintard   [thu dec 16 13:31:07 2010]
+ * updated       julien quintard   [fri jan  7 19:13:12 2011]
  */
 
 /*
@@ -43,8 +43,8 @@ void			test_architecture_event_exception_05(void)
 {
   TEST_ENTER();
 
-  if (ia32_gdt_delete_segment(NULL, 16) != ERROR_OK)
-    TEST_ERROR("[ia32_gdt_delete_segment] error");
+  if (architecture_gdt_delete(16) != ERROR_OK)
+    TEST_ERROR("[architecture_gdt_delete] error");
 
   if (event_reserve(13,
 		    EVENT_TYPE_FUNCTION,

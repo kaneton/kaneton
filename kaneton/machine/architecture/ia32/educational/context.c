@@ -22,24 +22,18 @@
  */
 
 /*
- * tells the processor capabilities.
- */
-
-t_uint32	ia32_cpucaps = 0;
-
-/*
  * stack switching addresses
  */
 
 // XXX stack dans le kernel qui est utilisee pour traiter une interrupt
-IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_interrupt_stack = 0;
+t_uint32	ia32_local_interrupt_stack = 0;
 
 // XXX pour le context switch: la stack kernel du thread a sched + son PDBR
 // XXX la thread's pile est utilisee lors d'une int/exc pour sauvegarder
 //  le contexte. a ne pas confondre avec ia32_local_interrupt_stack qui
-//  est la stack utilisee pour traiter une interrupt par le kernle.
-IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_jump_stack = 0;
-IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_jump_pdbr = 0;
+//  est la stack utilisee pour traiter une interrupt par le kernel.
+t_uint32	ia32_local_jump_stack = 0;
+t_uint32	ia32_local_jump_pdbr = 0;
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -60,43 +54,6 @@ extern m_thread*	_thread;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * initialize a few things about extended contexts.
- *
- * steps:
- *
- * 1) initialize the FPU.
- * 2) detect MMX and SSE processor capabilities.
- */
-
-t_error			ia32_extended_context_init(void)
-{
-  /*
-   * 1)
-   */
-
-  CLTS();
-
-  FINIT();
-
-  /*
-   * 2)
-   */
-  /* XXX
-  if (ia32_cpu_has_mmx())
-    ia32_cpucaps |= IA32_CAPS_MMX;
-  */
-  /* XXX
-  if (ia32_cpu_has_sse() && ia32_cpu_has_fxstate())
-    {
-      ia32_enable_sse();
-      ia32_cpucaps |= IA32_CAPS_SSE;
-    }
-  */
-
-  MACHINE_LEAVE();
-}
 
 /*
  * this functions clears the io permission bitmap of a task.
@@ -182,7 +139,7 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   o_task*		o;
   i_task		current;
   t_uint8		i;
-  t_ia32_tss*		tss;
+  as_tss*		tss;
 
   (void) io_bitmap_isset;
 
@@ -214,7 +171,7 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   if (task_current(&current) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
-  tss = (t_ia32_tss*)_thread->machine.tss;
+  tss = (as_tss*)_thread->machine.tss;
 
   if (current == tskid)
     memcpy((t_uint8*)tss + tss->io,
@@ -326,27 +283,6 @@ t_error			ia32_init_context(i_task		taskid,
   if (ia32_set_context(threadid, &ctx, IA32_CONTEXT_FULL) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
-  /*
-   * 5)
-   */
-
-  /* XXX
-  if (ia32_cpucaps & IA32_CAPS_SSE)
-    {
-      memset(&o->machine.u.sse, 0, sizeof(t_sse_state));
-
-      o->machine.u.sse.fcw = 0x37f;
-      o->machine.u.sse.ftw = 0xffff;
-    }
-  else
-    {
-      memset(&o->machine.u.x87, 0, sizeof(t_x87_state));
-
-      o->machine.u.x87.fcw = 0x37f;
-      o->machine.u.x87.ftw = 0xffff;
-    }
-  */
-
   MACHINE_LEAVE();
 }
 
@@ -369,13 +305,6 @@ t_error			ia32_duplicate_context(i_thread		old,
   if (ia32_get_context(old, &ctx) != ERROR_OK ||
       ia32_set_context(new, &ctx, IA32_CONTEXT_FULL) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
-
-  /* XXX
-  if (ia32_cpucaps & IA32_CAPS_SSE)
-    memcpy(&to->machine.u.sse, &from->machine.u.sse, sizeof(t_sse_state));
-  else
-    memcpy(&to->machine.u.x87, &from->machine.u.x87, sizeof(t_x87_state));
-  */
 
   MACHINE_LEAVE();
 }
@@ -441,7 +370,8 @@ t_error			ia32_init_switcher(void)
   i_region		reg;
   t_vaddr		int_stack;
   o_region*		r;
-  t_ia32_tss*		tss;
+  as_tss*		tss;
+  t_uint16		selector;
 
   /*
    * 1)
@@ -479,11 +409,11 @@ t_error			ia32_init_switcher(void)
 
   _thread->machine.tss = r->address;
 
-  tss = (t_ia32_tss*)_thread->machine.tss;
+  tss = (as_tss*)_thread->machine.tss;
 
   //printf("TSS 0x%x\n", _thread->machine.tss);
 
-  memset(tss, 0x0, sizeof(t_ia32_tss));
+  memset(tss, 0x0, sizeof(as_tss));
 
   /*
    * 3)
@@ -520,50 +450,77 @@ t_error			ia32_init_switcher(void)
    * 4)
    */
 
-  if (ia32_tss_load(tss,
-		    IA32_SEGMENT_SELECTOR(IA32_PMODE_GDT_KERNEL_DS,
-					  IA32_PRIVILEGE_RING0),
-		    int_stack + 2 * ___kaneton$pagesz - 16,
-		    0x68) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
+				ARCHITECTURE_PRIVILEGE_RING0,
+				&selector) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the kernel data segment selector");
 
-  ia32_cpu_local_set(&ia32_local_interrupt_stack, int_stack + 2 * ___kaneton$pagesz - 16);
+  if (architecture_tss_update(tss,
+			      selector,
+			      int_stack + 2 * ___kaneton$pagesz - 16,
+			      TSS_IO_OFFSET) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the TSS");
+
+  ia32_local_interrupt_stack = int_stack + 2 * ___kaneton$pagesz - 16;
 
   /*
    * 5)
    */
 
-  if (ia32_tss_init(tss) != ERROR_OK)
+  if (architecture_tss_activate(tss) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   /*
-   *
+   * XXX
    */
 
-  ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_CS,
-			  ia32_privilege_kernel,
-			  &_thread->machine.selectors.kernel.cs);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_DS,
-			  ia32_privilege_kernel,
-			  &_thread->machine.selectors.kernel.ds);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_CS,
-			  ia32_privilege_driver,
-			  &_thread->machine.selectors.driver.cs);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_DS,
-			  ia32_privilege_driver,
-			  &_thread->machine.selectors.driver.ds);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_CS,
-			  ia32_privilege_service,
-			  &_thread->machine.selectors.service.cs);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_DS,
-			  ia32_privilege_service,
-			  &_thread->machine.selectors.service.ds);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_GUEST_CS,
-			  ia32_privilege_guest,
-			  &_thread->machine.selectors.guest.cs);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_GUEST_DS,
-			  ia32_privilege_guest,
-			  &_thread->machine.selectors.guest.ds);
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
+				ARCHITECTURE_PRIVILEGE_KERNEL,
+				&_thread->machine.selectors.kernel.cs) !=
+      ERROR_OK)
+    MACHINE_ESCAPE("unable to build the kernel code segment selector");
+
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
+				ARCHITECTURE_PRIVILEGE_KERNEL,
+				&_thread->machine.selectors.kernel.ds) !=
+      ERROR_OK)
+    MACHINE_ESCAPE("unable to build the kernel data segment selector");
+
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_DRIVER_CODE,
+				ARCHITECTURE_PRIVILEGE_DRIVER,
+				&_thread->machine.selectors.driver.cs) !=
+      ERROR_OK)
+    MACHINE_ESCAPE("unable to build the driver code segment selector");
+
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_DRIVER_DATA,
+				ARCHITECTURE_PRIVILEGE_DRIVER,
+				&_thread->machine.selectors.driver.ds) !=
+      ERROR_OK)
+    MACHINE_ESCAPE("unable to build the driver data segment selector");
+
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_SERVICE_CODE,
+				ARCHITECTURE_PRIVILEGE_SERVICE,
+				&_thread->machine.selectors.service.cs) !=
+      ERROR_OK)
+    MACHINE_ESCAPE("unable to build the service code segment selector");
+
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_SERVICE_DATA,
+				ARCHITECTURE_PRIVILEGE_SERVICE,
+				&_thread->machine.selectors.service.ds) !=
+      ERROR_OK)
+    MACHINE_ESCAPE("unable to build the service data segment selector");
+
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_GUEST_CODE,
+				ARCHITECTURE_PRIVILEGE_GUEST,
+				&_thread->machine.selectors.guest.cs) !=
+      ERROR_OK)
+    MACHINE_ESCAPE("unable to build the guest code segment selector");
+
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_GUEST_DATA,
+				ARCHITECTURE_PRIVILEGE_GUEST,
+				&_thread->machine.selectors.guest.ds) !=
+      ERROR_OK)
+    MACHINE_ESCAPE("unable to build the guest data segment selector");
 
   MACHINE_LEAVE();
 }
@@ -591,8 +548,7 @@ t_error			ia32_context_ring0_stack(void)
 
   if (otask->class == TASK_CLASS_KERNEL)
     {
-      othread->machine.pile =
-	ia32_cpu_local_get(ia32_local_jump_stack);
+      othread->machine.pile = ia32_local_jump_stack;
 
       othread->machine.pile +=
 	sizeof (t_ia32_context);
@@ -624,7 +580,8 @@ t_error			ia32_context_switch(i_thread		current,
   o_task*		task;
   o_as*			as;
   t_vaddr		cr3;
-  t_ia32_tss*		tss;
+  as_tss*		tss;
+  t_uint16		selector;
 
   /*
    * 1)
@@ -635,7 +592,7 @@ t_error			ia32_context_switch(i_thread		current,
 
   //printf("[context switch] from %qd to %qd\n", current, elected);
 
-  tss = (t_ia32_tss*)_thread->machine.tss;
+  tss = (as_tss*)_thread->machine.tss;
 
   /*
    * 2)
@@ -669,7 +626,7 @@ t_error			ia32_context_switch(i_thread		current,
 	 cr3);
   */
 
-  ia32_cpu_local_set(&ia32_local_jump_pdbr, cr3);
+  ia32_local_jump_pdbr = cr3;
 
   /* XXX
   printf("CONTEXT SWITCH: [interrupt stack] 0x%x 0x%x\n",
@@ -677,15 +634,18 @@ t_error			ia32_context_switch(i_thread		current,
 	 to->machine.pile - sizeof (t_ia32_context));
   */
 
-  ia32_cpu_local_set(&ia32_local_jump_stack,
-		     to->machine.pile - sizeof (t_ia32_context));
+  ia32_local_jump_stack = to->machine.pile - sizeof (t_ia32_context);
 
-  if (ia32_tss_load(tss,
-		    IA32_SEGMENT_SELECTOR(IA32_PMODE_GDT_KERNEL_DS,
-					  IA32_PRIVILEGE_RING0),
-		    to->machine.pile,
-		    0x68) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
+				ARCHITECTURE_PRIVILEGE_RING0,
+				&selector) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the kernel data segment selector");
+
+  if (architecture_tss_update(tss,
+			      selector,
+			      to->machine.pile,
+			      TSS_IO_OFFSET) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the TSS");
 
   /*
    * 4)
@@ -708,87 +668,6 @@ t_error			ia32_context_switch(i_thread		current,
 
   // XXX inutile, juste pour activer x87
   //STS();
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function is used to switch FPU, MMX and SSE context.
- *
- * steps:
- *
- * 1) clears the TS bit in CR0.
- * 2) get both executing and old contexts.
- * 3) SSE case
- *  a) save the SSE & FPU context into the previous thread context.
- *  b) restore the SSE & FPU context of the executing thread.
- * 4) FPU or MMX case
- *  a) save the FPU/MMX context into the previous thread context.
- *  b) restore the FPU/MMX context of the executing thread.
- */
-
-t_error			ia32_extended_context_switch(i_thread	current,
-						     i_thread	elected)
-{
-  o_thread*		o;
-  o_thread*		old;
-
-  printf("XXX EXTENDED CONTEXT SWITCH ... should not occur\n");
-  /*
-   * 1)
-   */
-
-  CLTS();
-
-  if (current == elected)
-    MACHINE_LEAVE();
-
-  /*
-   * 2)
-   */
-
-  if (thread_get(elected, &o) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (thread_get(current, &old) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (ia32_cpucaps & IA32_CAPS_SSE)
-    {
-      /*
-       * 3)
-       */
-
-      /*
-       * a)
-       */
-
-      // XXX FXSAVE(old->machine.u.sse);
-
-      /*
-       * b)
-       */
-
-      // XXX FXRSTOR(o->machine.u.sse);
-    }
-  else
-    {
-      /*
-       * 4)
-       */
-
-      /*
-       * a)
-       */
-
-      // XXX FSAVE(old->machine.u.x87);
-
-      /*
-       * b)
-       */
-
-      // XXX FRSTOR(o->machine.u.x87);
-    }
 
   MACHINE_LEAVE();
 }

@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [fri nov  5 16:37:00 2010]
+# updated       julien quintard   [sat jan  8 16:45:40 2011]
 #
 
 #
@@ -33,42 +33,34 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ARCHITECTURE_C		:=	apic.c					\
-				context.c				\
-				cpuid.c					\
+ARCHITECTURE_C		:=	context.c				\
 				gdt.c					\
+				handler.c				\
 				idt.c					\
-				interrupt.c				\
-				ipi.c					\
-				ldt.c					\
-				local.c					\
+				tlb.c					\
+\
 				mapping.c				\
 				paging.c				\
 				pd.c					\
 				pmode.c					\
 				pt.c					\
 				segment.c				\
-				sse.c					\
-				syscalls.c				\
-				tlb.c					\
 				tss.c					\
 				virtual.c				
 
 ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)
 
-ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/apic.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
+ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/handler.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/idt.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/interrupt.h \
-				$(_ARCHITECTURE_INCLUDE_DIR_)/ipi.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/local.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/tlb.h	\
+\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/mapping.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/misc.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/paging.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/pmode.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/segment.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
 

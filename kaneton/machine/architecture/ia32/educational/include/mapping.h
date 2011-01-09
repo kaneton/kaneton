@@ -1,3 +1,5 @@
+// XXX faire un .h par .c
+
 /*
  * ---------- header ----------------------------------------------------------
  *
@@ -8,7 +10,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/mapping.h
  *
  * created       matthieu bucchianeri   [mon dec 24 19:28:30 2007]
- * updated       julien quintard   [mon nov 22 11:26:57 2010]
+ * updated       julien quintard   [thu jan  6 09:19:24 2011]
  */
 
 #ifndef ARCHITECTURE_MAPPING_H

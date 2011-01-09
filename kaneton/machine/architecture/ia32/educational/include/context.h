@@ -38,62 +38,65 @@
 // XXX noter a la fin qu'on recupere (cpu_local_get) la valeur de
 //   interrupt_stack pour ensuet le branler comme ESP courant
 
+// XXX 36(esp) -> exception error code
+
+// XXX
+// 1) save registers
+// 2) push ds
+// 3) save interrupted task's cr3 in local_jump_pdbr
+// 4) retrieve error code in ebx
+// 5) set the kernel as (interrupt_pdbr) as being the current cr3
+// 6) set the kernel data segment (interrupt_ds) as being the current ds.
+// 7) save esp in local_jump_stack
+// 8) set la pile kernel speciale (local_interrupt_stack) as being esp.
+// XXX
+//
+// DANS cette histoire du coup il n'est jamais question de la 'pile'
+// d'un thread!
+// -> dans context_switch() on set local_jump_stack comme etant a la
+//    fin du thread's 'pile'. et on load le TSS dans cette pile, tout en
+//    haut!
+//
+// XXX
+
 #define	IA32_SAVE_CONTEXT()						\
-	 "	pusha					\n"		\
-	 "	movw %ds, %ax				\n"		\
-	 "	pushl %eax				\n"		\
-	 "	movl %cr3, %eax				\n"		\
-	 "	movl %eax, ia32_local_jump_pdbr		\n"		\
-	 "	movl 36(%esp), %ebx			\n"		\
-	 "	movl ia32_interrupt_pdbr, %eax		\n"		\
-	 "	movl %eax, %cr3				\n"		\
-	 "	movw ia32_interrupt_ds, %ax		\n"		\
-	 "	movw %ax, %ds				\n"		\
-	 "	movw %ax, %es				\n"		\
-	 "	movw %ax, %fs				\n"		\
-	 "	movw %ax, %gs				\n"		\
-	 "	pushl %esp				\n"		\
-	 "	pushl $ia32_local_jump_stack		\n"		\
-	 "	call ia32_cpu_local_set			\n"		\
-	 "	addl $8, %esp				\n"		\
-	 "	pushl ia32_local_interrupt_stack	\n"		\
-	 "	call ia32_cpu_local_get			\n"		\
-	 "	addl $4, %esp				\n"		\
-	 "	movl %eax, %esp				\n"
+  "	pusha							\n"	\
+  "	movw %ds, %ax						\n"	\
+  "	pushl %eax						\n"	\
+  "	movl %cr3, %eax						\n"	\
+  "	movl %eax, ia32_local_jump_pdbr				\n"	\
+  "	movl 36(%esp), %ebx					\n"	\
+  "	movl ia32_interrupt_pdbr, %eax				\n"	\
+  "	movl %eax, %cr3						\n"	\
+  "	movw ia32_interrupt_ds, %ax				\n"	\
+  "	movw %ax, %ds						\n"	\
+  "	movw %ax, %es						\n"	\
+  "	movw %ax, %fs						\n"	\
+  "	movw %ax, %gs						\n"	\
+  "	movl %esp, ia32_local_jump_stack			\n"	\
+  "	movl ia32_local_interrupt_stack, %esp			\n"
 
 #define IA32_RESTORE_CONTEXT()						\
-	 "	pushl ia32_local_jump_stack		\n"		\
-	 "	call ia32_cpu_local_get			\n"		\
-	 "	addl $4, %esp				\n"		\
-	 "	movl %eax, %edx				\n"		\
-	 "	pushl ia32_local_jump_pdbr		\n"		\
-	 "	call ia32_cpu_local_get			\n"		\
-	 "	addl $4, %esp				\n"		\
-	 "	movl %cr3, %ebx				\n"		\
-	 "	cmp %eax, %ebx				\n"		\
-	 "	je 1f					\n"		\
-	 "	movl %eax, %cr3				\n"		\
-	 "1:						\n"		\
-	 "	movl %edx, %esp				\n"		\
-	 "	popl %eax				\n"		\
-	 "	movw %ax, %ds				\n"		\
-	 "	movw %ax, %es				\n"		\
-	 "	movw %ax, %fs				\n"		\
-	 "	movw %ax, %gs				\n"		\
-	 "	popa					\n"
+  "	movl ia32_local_jump_stack, %edx			\n"	\
+  "	movl ia32_local_jump_pdbr, %eax				\n"	\
+  "	movl %cr3, %ebx						\n"	\
+  "	cmp %eax, %ebx						\n"	\
+  "	je 1f							\n"	\
+  "	movl %eax, %cr3						\n"	\
+  "1:								\n"	\
+  "	movl %edx, %esp						\n"	\
+  "	popl %eax						\n"	\
+  "	movw %ax, %ds						\n"	\
+  "	movw %ax, %es						\n"	\
+  "	movw %ax, %fs						\n"	\
+  "	movw %ax, %gs						\n"	\
+  "	popa							\n"
 
 /*						 [endblock::macros::context] */
 
 /*
  * ---------- macros ----------------------------------------------------------
  */
-
-/*
- * extended CPU capabilities.
- */
-
-#define IA32_CAPS_MMX		(1 << 0)
-#define IA32_CAPS_SSE		(1 << 1)
 
 /*
  * context mask fields.
@@ -149,97 +152,16 @@ typedef struct
 }		__attribute__ ((packed)) t_ia32_context;
 
 /*
- * x87 FPU state.
- */
-
-typedef struct
-{
-  t_uint16	fcw;
-  t_uint16	reserved1;
-  t_uint16	fsw;
-  t_uint16	reserved2;
-  t_uint16	ftw;
-  t_uint16	reserved3;
-  t_uint32	fpu_eip;
-  t_uint16	fpu_cs;
-  t_uint32	opcode:11;
-  t_uint32	reserved4:5;
-  t_uint32	fpu_ptr;
-  t_uint16	fpu_ds;
-  t_uint16	reserved5;
-  t_uint8	st0[10];
-  t_uint8	st1[10];
-  t_uint8	st2[10];
-  t_uint8	st3[10];
-  t_uint8	st4[10];
-  t_uint8	st5[10];
-  t_uint8	st6[10];
-  t_uint8	st7[10];
-}		__attribute__ ((packed)) t_x87_state;
-
-/*
- * x87 FPU, MMX and SSE state.
- */
-
-typedef struct
-{
-  t_uint16	fcw;
-  t_uint16	fsw;
-  t_uint16	ftw;
-  t_uint16	fop;
-  t_uint32	fpu_eip;
-  t_uint16	fpu_cs;
-  t_uint16	reserved2;
-  t_uint32	fpu_ptr;
-  t_uint16	fpu_ds;
-  t_uint16	reserved3;
-  t_uint32	mxcsr;
-  t_uint32	mxcsr_mask;
-  t_uint8	st0[10];
-  t_uint8	reserved4[6];
-  t_uint8	st1[10];
-  t_uint8	reserved5[6];
-  t_uint8	st2[10];
-  t_uint8	reserved6[6];
-  t_uint8	st3[10];
-  t_uint8	reserved7[6];
-  t_uint8	st4[10];
-  t_uint8	reserved8[6];
-  t_uint8	st5[10];
-  t_uint8	reserved9[6];
-  t_uint8	st6[10];
-  t_uint8	reserved10[6];
-  t_uint8	st7[10];
-  t_uint8	reserved11[6];
-  t_uint8	xmm0[16];
-  t_uint8	xmm1[16];
-  t_uint8	xmm2[16];
-  t_uint8	xmm3[16];
-  t_uint8	xmm4[16];
-  t_uint8	xmm5[16];
-  t_uint8	xmm6[16];
-  t_uint8	xmm7[16];
-  t_uint8	reserved12[224];
-}		__attribute__ ((packed)) t_sse_state;
-
-/*
  * ---------- extern ----------------------------------------------------------
  */
-
-/*
- * CPU capabilities from CPUID.
- */
-
-extern t_uint32		ia32_cpucaps;
 
 /*
  * stack switching addresses
  */
 
-extern t_ia32_cpu_local	ia32_local_interrupt_stack;
-extern t_ia32_cpu_local	ia32_local_jump_stack;
-extern t_ia32_cpu_local	ia32_local_jump_pdbr;
-
+extern t_uint32	ia32_local_interrupt_stack;
+extern t_uint32	ia32_local_jump_stack;
+extern t_uint32	ia32_local_jump_pdbr;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -250,8 +172,6 @@ extern t_ia32_cpu_local	ia32_local_jump_pdbr;
 /*
  * ../context.c
  */
-
-t_error			ia32_extended_context_init(void);
 
 t_error			ia32_clear_io_bitmap(i_task		tskid);
 
@@ -285,9 +205,6 @@ t_error			ia32_context_ring0_stack(void);
 
 t_error			ia32_context_switch(i_thread		current,
 					    i_thread		elected);
-
-t_error			ia32_extended_context_switch(i_thread	current,
-						     i_thread	elected);
 
 t_error			ia32_push_args(i_thread			threadid,
 				       const void*		args,

@@ -1,28 +1,34 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/include/task/tss.h
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...hitecture/ia32/educational/include/tss.h
  *
  * created       renaud voltz   [mon apr 10 00:50:33 2006]
- * updated       matthieu bucchianeri   [tue feb  6 19:49:39 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * XXX THREAD information need to be written.
+ * updated       julien quintard   [sat jan  8 21:29:31 2011]
  */
 
 #ifndef ARCHITECTURE_TSS_H
-#define ARCHITECTURE_TSS_H		1
+#define ARCHITECTURE_TSS_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <core/types.h>
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * this macro defines the location, i.e offset, of the IO map within the TSS.
+ */
+
+#define TSS_IO_OFFSET		0x68
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -74,7 +80,7 @@ typedef struct
   t_uint16		io;
   t_uint8		io_bitmap[8192];
   t_uint8		io_end;
-}			__attribute__ ((packed)) t_ia32_tss;
+}			__attribute__ ((packed)) as_tss;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -86,12 +92,12 @@ typedef struct
  * ../tss.c
  */
 
-t_error			ia32_tss_load(t_ia32_tss*		tss,
-				      t_uint16			ss,
-				      t_uint32			esp,
-				      t_uint32			io);
+t_error			architecture_tss_update(as_tss*		tss,
+						t_uint16	ss,
+						t_uint32	esp,
+						t_uint32	io);
 
-t_error			ia32_tss_init(t_ia32_tss*			tss);
+t_error			architecture_tss_activate(as_tss*	tss);
 
 
 /*

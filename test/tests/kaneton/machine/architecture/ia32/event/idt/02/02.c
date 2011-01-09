@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/idt/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [thu dec 16 13:32:19 2010]
+ * updated       julien quintard   [sat jan  8 19:21:02 2011]
  */
 
 /*
@@ -29,15 +29,15 @@ void			test_architecture_event_idt_02_handler(t_id	id)
 
 void			test_architecture_event_idt_02(void)
 {
-  t_ia32_idt_register	idtr;
-  t_ia32_idt_entry*	idte;
+  as_idt_register	idtr;
+  as_idt_entry*		idte;
   int			i;
   t_uint16		cs;
 
-  if (ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_CS,
-			      ia32_privilege_kernel,
-			      &cs) != ERROR_OK)
-    TEST_ERROR("[ia32_gdt_build_selector] error");
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
+				ARCHITECTURE_PRIVILEGE_KERNEL,
+				&cs) != ERROR_OK)
+    TEST_ERROR("[architecture_gdt_selector] error");
 
   if (event_reserve(3,
 		    EVENT_TYPE_FUNCTION,
@@ -47,20 +47,20 @@ void			test_architecture_event_idt_02(void)
 
   memset(&idtr, 0, sizeof (idtr));
 
-  SIDT(idtr);
+  ARCHITECTURE_SIDT(idtr);
 
   idte = (void*)idtr.address;
 
   for (i = 0; i < idtr.size / 8; i++)
     {
-      if (!(idte[i].type & IA32_DESCRIPTOR_PRESENT))
+      if (!(idte[i].type & ARCHITECTURE_IDT_TYPE_PRESENT))
         continue;
 
       if (!(idte[i].type & ((1 << 3) | (1 << 2) | (1 << 1))))
         TEST_ERROR("IDT entry %u is neither an interrupt nor a trap gate",
 		   i);
 
-      if (idte[i].segsel != cs)
+      if (idte[i].selector != cs)
         TEST_ERROR("IDT entry %u references an invalidt segment selector",
 		   i);
     }

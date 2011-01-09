@@ -1,19 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/include/pmode/idt.h
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...hitecture/ia32/educational/include/idt.h
  *
  * created       renaud voltz   [fri feb 10 16:36:20 2006]
- * updated       matthieu bucchianeri   [fri mar 16 21:18:50 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * protected mode structures and macros.
- *
+ * updated       julien quintard   [fri jan  7 19:22:50 2011]
  */
 
 #ifndef ARCHITECTURE_IDT_H
@@ -24,33 +19,76 @@
  */
 
 /*
- * misc
+ * this macro defines the maximum of entries an IDT can hold.
  */
 
-#define IA32_IDT_MAX_ENTRIES		256
-
-#define IA32_IDT_EXCEPTION_BASE		0
-#define IA32_IDT_IRQ_BASE		32
-#define IA32_IDT_IPI_BASE		48
-#define IA32_IDT_SYSCALL_BASE		56
+#define ARCHITECTURE_IDT_SIZE			256
 
 /*
- * gate types (for idt entries)
+ * these macros define the base entry and the number of entries for the
+ * several types of gate: IRQ, exception, IPI or syscall.
+ *
+ * note that 200 syscalls could be set up but the kernel limits itself
+ * to ten.
  */
 
-#define IA32_GATE_TYPE_TASK		((1 << 3) | (1 << 2))
-#define IA32_GATE_TYPE_TRAP		((1 << 3) |			\
-					 (1 << 2) |			\
-					 (1 << 1) |			\
-					 (1 << 0))
-#define IA32_GATE_TYPE_INTERRUPT	((1 << 3) | (1 << 2) | (1 << 1))
+#define ARCHITECTURE_IDT_EXCEPTION_BASE		0
+#define ARCHITECTURE_IDT_EXCEPTION_SIZE		32
+
+#define ARCHITECTURE_IDT_IRQ_BASE		32
+#define ARCHITECTURE_IDT_IRQ_SIZE		16
+
+#define ARCHITECTURE_IDT_IPI_BASE		48
+#define ARCHITECTURE_IDT_IPI_SIZE		8
+
+#define ARCHITECTURE_IDT_SYSCALL_BASE		56
+#define ARCHITECTURE_IDT_SYSCALL_SIZE		10
 
 /*
- * gate type
+ * these macros define the types of IDT gates.
  */
 
-#define IA32_IDT_GET_TYPE(_type_)					\
+#define ARCHITECTURE_IDT_TYPE_TASK		((1 << 3) |		\
+						 (1 << 2))
+#define ARCHITECTURE_IDT_TYPE_TRAP		((1 << 3) |		\
+						 (1 << 2) |		\
+						 (1 << 1) |		\
+						 (1 << 0))
+#define ARCHITECTURE_IDT_TYPE_INTERRUPT		((1 << 3) |		\
+						 (1 << 2) |		\
+						 (1 << 1))
+
+/*
+ * type definitions.
+ */
+
+#define ARCHITECTURE_IDT_TYPE_PRESENT		(1 << 7)
+
+/*
+ * ---------- macro-functions -------------------------------------------------
+ */
+
+/*
+ * this macro-function returns the system type according to the
+ * hardware type field.
+ */
+
+#define ARCHITECTURE_IDT_TYPE(_type_)					\
   ((_type_) & ((1 << 4) | (1 << 3) | (1 << 2) | (1 << 1) | (1 <<  0)))
+
+/*
+ * this macro-function computes the hardware DPL - Descriptor Privilege
+ * Level according to a system-based privilege value.
+ *
+ * the GET macro does the opposite, return the system privilege based on
+ * the IDT entry's type.
+ */
+
+#define ARCHITECTURE_IDT_DPL_SET(_privilege_)				\
+  ((_privilege_) << 5)
+
+#define ARCHITECTURE_IDT_DPL_GET(_type_)				\
+  (((_type_) >> 5) & 0x3)
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -63,59 +101,45 @@
  */
 
 /*
- * gates types
- */
-typedef enum
-  {
-    ia32_type_gate_task		= IA32_GATE_TYPE_TASK,
-    ia32_type_gate_interrupt	= IA32_GATE_TYPE_INTERRUPT,
-    ia32_type_gate_trap		= IA32_GATE_TYPE_TRAP,
-  } t_ia32_gate_type;
-
-/*
- * abstract gate descriptor
+ * this structure defines an IDT entry composed of an offset i.e the
+ * handler to be triggered for instance, a segment selector and a type.
  */
 
 typedef struct
 {
-  t_uint32			offset;
-  t_uint16			segsel;
-  t_ia32_privilege		privilege;
-  t_ia32_gate_type		type;
-}				t_ia32_gate;
+  t_uint16		offset_00_15;
+  t_uint16		selector;
+  t_uint8		reserved;
+  t_uint8		type;
+  t_uint16		offset_16_31;
+}			__attribute__ ((packed)) as_idt_entry;
 
 /*
- * idt entry
+ * this structure represents an in-memory IDT descriptor.
  */
 
 typedef struct
 {
-  t_uint16			offset_00_15;
-  t_uint16			segsel;
-  t_uint8			reserved;
-  t_uint8			type;
-  t_uint16			offset_16_31;
-}				__attribute__ ((packed)) t_ia32_idt_entry;
+  as_idt_entry*		table;
+  t_uint16		size;
+}			as_idt_descriptor;
 
 /*
- * idt
+ * this structure represents the IDTR - IDT register which is the
+ * hardware structure for locating the current IDT.
  */
 
 typedef struct
 {
-  t_ia32_idt_entry		*descriptor;
-  t_uint16			count;
-}				t_ia32_idt;
+  t_uint16		size;
+  t_paddr		address;
+}			__attribute__ ((packed)) as_idt_register;
 
 /*
- * idt register
+ * this type indicates the type of the IDT entry.
  */
 
-typedef struct
-{
-  t_uint16			size;
-  t_uint32			address;
-}				__attribute__ ((packed)) t_ia32_idt_register;
+typedef t_uint8		at_idt_type;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -127,30 +151,23 @@ typedef struct
  * ../idt.c
  */
 
-t_error			ia32_idt_dump(t_ia32_idt*		table);
+t_error			architecture_idt_dump(void);
 
-t_error			ia32_idt_size(t_ia32_idt*		table,
-				      t_uint16*			size);
+t_error			architecture_idt_build(t_paddr		base,
+					       t_uint16		size,
+					       as_idt_descriptor* descriptor);
 
-t_error			ia32_idt_build(t_uint16		entries,
-				       t_paddr		base,
-				       t_uint8		clear,
-				       t_ia32_idt*	table);
+t_error			architecture_idt_import(as_idt_descriptor* descriptor);
 
-t_error			ia32_idt_activate(t_ia32_idt*		table);
+t_error			architecture_idt_export(as_idt_descriptor* descriptor);
 
-t_error			ia32_idt_import(t_ia32_idt*		table);
+t_error			architecture_idt_insert(t_uint16	index,
+						t_vaddr		offset,
+						t_uint16	selector,
+						at_privilege	privilege,
+						at_idt_type	type);
 
-t_error			ia32_idt_add_gate(t_ia32_idt*		table,
-					  t_uint16		index,
-					  t_ia32_gate		gate);
-
-t_error			ia32_idt_get_gate(t_ia32_idt*		table,
-					  t_uint16		index,
-					  t_ia32_gate*		gate);
-
-t_error			ia32_idt_delete_gate(t_ia32_idt*	table,
-					     t_uint16		gate_id);
+t_error			architecture_idt_delete(t_uint16	index);
 
 
 /*

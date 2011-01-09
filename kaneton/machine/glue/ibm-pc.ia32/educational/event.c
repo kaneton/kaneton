@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sun dec 19 17:30:59 2010]
+ * updated       julien quintard   [sat jan  8 14:38:54 2011]
  */
 
 /*
@@ -69,7 +69,7 @@ void			glue_event_pagefault(t_id		id,
 
   assert(ia32_get_context(th, &ctx) == ERROR_OK);
 
-  SCR2(addr);
+  ARCHITECTURE_SCR2(addr);
 
   module_call(console, print,
 	      "error: page fault !\n"
@@ -107,7 +107,7 @@ t_error			glue_event_enable(void)
    * 1)
    */
 
-  STI();
+  ARCHITECTURE_STI();
 
   MACHINE_LEAVE();
 }
@@ -126,7 +126,7 @@ t_error			glue_event_disable(void)
    * 1)
    */
 
-  CLI();
+  ARCHITECTURE_CLI();
 
   MACHINE_LEAVE();
 }
@@ -144,18 +144,26 @@ t_error			glue_event_reserve(i_event		id,
    * XXX
    */
 
-  if (id >= IA32_HANDLER_NR)
-    MACHINE_ESCAPE("the event identifier '%qu' is larger than the higher "
-		   "syscall number that the kernel is supposed to handle",
+  if (!(((id >= ARCHITECTURE_IDT_EXCEPTION_BASE) &&
+	 (id < (ARCHITECTURE_IDT_EXCEPTION_BASE +
+	       ARCHITECTURE_IDT_EXCEPTION_SIZE))) ||
+	((id >= ARCHITECTURE_IDT_IRQ_BASE) &&
+	 (id < (ARCHITECTURE_IDT_IRQ_BASE +
+		ARCHITECTURE_IDT_IRQ_SIZE))) ||
+	((id >= ARCHITECTURE_IDT_SYSCALL_BASE) &&
+	 (id < (ARCHITECTURE_IDT_SYSCALL_BASE +
+		ARCHITECTURE_IDT_SYSCALL_SIZE)))))
+    MACHINE_ESCAPE("this event identifier '%qu' is not supported",
 		   id);
 
   /*
    * XXX
    */
 
-  if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
+  if ((id >= ARCHITECTURE_IDT_IRQ_BASE) &&
+      (id < ARCHITECTURE_IDT_IRQ_BASE + ARCHITECTURE_IDT_IRQ_SIZE))
     {
-      if (platform_pic_enable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+      if (platform_pic_enable(id - ARCHITECTURE_IDT_IRQ_BASE) != ERROR_OK)
 	MACHINE_ESCAPE("unable to enable the IRQ");
     }
 
@@ -172,9 +180,10 @@ t_error			glue_event_release(i_event		id)
    * XXX
    */
 
-  if (id >= IA32_IDT_IRQ_BASE && id < IA32_IDT_IRQ_BASE + IA32_IRQ_NR)
+  if ((id >= ARCHITECTURE_IDT_IRQ_BASE) &&
+      (id < ARCHITECTURE_IDT_IRQ_BASE + ARCHITECTURE_IDT_IRQ_SIZE))
     {
-      if (platform_pic_disable(id - IA32_IDT_IRQ_BASE) != ERROR_OK)
+      if (platform_pic_disable(id - ARCHITECTURE_IDT_IRQ_BASE) != ERROR_OK)
 	MACHINE_ESCAPE("unable to disable the IRQ");
     }
 
@@ -191,7 +200,7 @@ t_error			glue_event_initialize(void)
    * XXX
    */
 
-  if (ia32_interrupt_vector_init() != ERROR_OK)
+  if (architecture_handler_setup() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the interrupt table");
 
   /*

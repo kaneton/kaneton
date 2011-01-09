@@ -30,6 +30,12 @@ autre:
 # ---------- mycure -----------------------------------------------------------
 #
 
+- malloc double-free qui devrait peter ou peter un warning
+
+--- TEST
+
+- faire un test qui reserve/inject des trucs non-alignes
+
 --- IA32
 
 - renommer diretory and pd et table en pt
@@ -61,14 +67,25 @@ autre:
 
 - mettre les structures d'arch dans la partie machine de _kernel
 
---- WIKI
+- il devrait plus y avoir de return ou ERROR_OK/KO
+- ... de IA32
+- ordonner les include dans architecture.h
+- pas de CORE_
+- chercher les XXX
 
-- section news: nouveau systeme de tests pour cette annee (merci d'etre comprehensif)
-- ajouter osdev.org dans les liens sur le wiki! + SOS (lire les articles)
-- limiter l'acces au Wiki pour l'edition finalement.
-- mettre novuelle version de devleopment book sur le site
-- rajouter une news sur le site de kaneton et dire que le code a ete
-  completement retravaille
+- variables importantes eparpillees et non commentees:
+  [handler.c]
+  IA32_HANDLER_DATA_SECTION t_uint16      ia32_interrupt_ds = 0;
+  IA32_HANDLER_DATA_SECTION t_uint32      ia32_interrupt_pdbr = 0;
+
+  [context.c]
+  IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_local_interrupt_stack = 0;
+  IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_local_jump_stack = 0;
+  IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_local_jump_pdbr = 0;
+  IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_exception_code = 0;
+
+- pourquoi les vars specifiques aux CPUs sont mises dans une section
+  HANDLER?
 
 --- EXPORT
 
@@ -87,6 +104,20 @@ autre:
   etc.
   -> ensuite on definierait l'interface kernel qui elle definierait des
      aliases: ci_task -> i_task etc.
+- le probleme d'allocation recursive (design): (i) deux objets avec le meme
+  id ne devraient jamais etre ajoutes sans erreur (ii) a corriger
+  fondamentalement
+- pour les capabilities: (i) soit un autorise l'attenuation hierarchique,
+  auquel cas, c'est tres flexible mais pas super secure car en donnant une
+  cap a un gars, il peut la refiler a tout le monde (sous-attenuee ou non)
+  (ii) soit on limite a un niveau et en plus on inclue l'id de la tache qui
+  va recevoir la cap pour eviter qu'il ne la refile (juste inclure un id et
+  autoriser l'attenuation peut etre interessant cela dit). -> en incluant
+  l'id on perd en perf car il faut faire un appel par attenuation i.e on ne
+  peut pas attenuer une fois et balancer a 100 mecs.
+- terminer d'ecrire les cours (fs, scheduling etc.)
+- super test pour departager les gens en fonction de la rapidite -> points
+  bonus => 25/20
 
 --- LIBRARY
 

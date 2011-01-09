@@ -1,30 +1,25 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/pmode/gdt.c
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:36:16 2007]
+ * file          /home/mycure/kane...hine/architecture/ia32/educational/gdt.c
+ *
+ * created       matthieu bucchianeri   [mon dec 10 13:54:28 2007]
+ * updated       julien quintard   [sat jan  8 21:19:12 2011]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * manage global descriptor table.
+ * this file contains functionalities for managing the GDT - Global Descriptor
+ * Table.
  *
- * gdt_import copies segment descriptors from the active gdt to a new one.
- * this is useful to create a new gdt not discarding old descriptors (for
- * example to create a larget table from an existing one).
- *
- * gdt_activate is used to set a gdt as new active gdt.
- *
- * gdt_add_segment adds a new segment given its index while gdt_reserve_segment
- * does not requires an index and takes the first free slot.
- *
- * gdt_build_selector is used to build a segment selector (for loading in a
- * segment register).
+ * note that the educational implementation retrieves the GDT provided
+ * by the boot loader in order to re-use it. however, the entries set
+ * by the boot loaders are then replaced by the kernel's.
  */
 
 /*
@@ -40,476 +35,520 @@
  */
 
 /*
- * gdt table pointer
+ * the current system GDT.
  */
 
-t_ia32_gdt	ia32_gdt;
+as_gdt_descriptor		_architecture_gdt;
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
 /*
- * dumps a gdt.
+ * this function dumps a GDT given by its structure's address.
  *
  * steps:
  *
- * XXX
+ * 1) display a header message.
+ * 2) go through the GDT entries.
+ *   a) ignore non-present entries.
+ *   b) compute the base and limit addresses.
+ *   c) depending on the segment type flags, build a type string.
+ *     A) the entry represents a system segment.
+ *     B) the entry represents a regular code/data segment.
+ *   d) display the segment.
  */
 
-t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt)
+t_error			architecture_gdt_dump(void)
 {
   t_uint16		i;
-  t_ia32_segment	seg;
-  const char*		type;
 
   /*
    * 1)
    */
 
-  if (dump_gdt == IA32_GDT_CURRENT)
-    dump_gdt = &ia32_gdt;
+  module_call(console, message,
+	      '#', "GDT: table(0x%08x) size(%u)\n",
+	      _architecture_gdt.table, _architecture_gdt.size);
 
   /*
    * 2)
    */
 
-  for (i = 1; i < dump_gdt->count; i++)
+  for (i = 1; i < _architecture_gdt.size; i++)
     {
-      if (ia32_gdt_get_segment(dump_gdt, i, &seg) != ERROR_OK)
+      t_paddr		base;
+      t_paddr		limit;
+      char*		type;
+      at_privilege	privilege;
+
+      /*
+       * a)
+       */
+
+      if (!(_architecture_gdt.table[i].type & ARCHITECTURE_GDT_TYPE_PRESENT))
 	continue;
 
-      type = NULL;
-      if (seg.is_system)
+      /*
+       * b)
+       */
+
+      base =
+	_architecture_gdt.table[i].base_00_15 |
+	(_architecture_gdt.table[i].base_16_23 << 16) |
+	(_architecture_gdt.table[i].base_24_31 << 24);
+
+      limit =
+	_architecture_gdt.table[i].limit_00_15 |
+	(_architecture_gdt.table[i].limit_16_19 << 16);
+
+      if (_architecture_gdt.table[i].flags & ARCHITECTURE_GDT_FLAG_GRANULARITY)
+	limit *= ___kaneton$pagesz;
+
+      privilege = ARCHITECTURE_GDT_DPL_GET(_architecture_gdt.table[i].type);
+
+      /*
+       * c)
+       */
+
+      if (!(_architecture_gdt.table[i].type & ARCHITECTURE_GDT_TYPE_S))
 	{
-	  if (seg.type.system == ia32_type_ldt)
-	    type = "LDT";
-	  if (seg.type.system == ia32_type_tss)
-	    type = "TSS";
-	  if (seg.type.system == ia32_type_call_gate)
-	    type = "Call Gate";
-	  if (seg.type.system == ia32_type_int_gate)
-	    type = "Interrupt Gate";
-	  if (seg.type.system == ia32_type_trap_gate)
-	    type = "Trap Gate";
+	  /*
+	   * A)
+	   */
+
+	  switch (ARCHITECTURE_GDT_TYPE_SYSTEM(_architecture_gdt.table[i].type))
+	    {
+	    case ARCHITECTURE_GDT_TYPE_LDT:
+	      {
+		type = "ldt";
+
+		break;
+	      }
+	    case ARCHITECTURE_GDT_TYPE_TSS:
+	      {
+		type = "tss";
+
+		break;
+	      }
+	    case ARCHITECTURE_GDT_TYPE_CALL:
+	      {
+		type = "call gate";
+
+		break;
+	      }
+	    case ARCHITECTURE_GDT_TYPE_TRAP:
+	      {
+		type = "trap gate";
+
+		break;
+	      }
+	    case ARCHITECTURE_GDT_TYPE_INTERRUPT:
+	      {
+		type = "interrupt gate";
+
+		break;
+	      }
+	    default:
+	      MACHINE_ESCAPE("unknown system segment type '%u'",
+			     _architecture_gdt.table[i].type);
+	    }
 	}
       else
 	{
-	  if (seg.type.user == ia32_type_code)
-	    type = "Code";
-	  if (seg.type.user == ia32_type_data)
-	    type = "Data";
+	  /*
+	   * B)
+	   */
+
+	  switch (ARCHITECTURE_GDT_TYPE_SEGMENT(_architecture_gdt.table[i].type))
+	    {
+	    case ARCHITECTURE_GDT_TYPE_CODE:
+	      {
+		type = "code";
+
+		break;
+	      }
+	    case ARCHITECTURE_GDT_TYPE_DATA:
+	      {
+		type = "data";
+
+		break;
+	      }
+	    default:
+	      MACHINE_ESCAPE("unknown regular segment type '%u'",
+			     _architecture_gdt.table[i].type);
+	    }
 	}
-      if (!type)
-	type = "Other";
 
-      module_call(console, print,
-		  "segment %d, base = 0x%x limit = 0x%x, type = %s\n",
-		  i, seg.base, seg.limit, type);
+      /*
+       * d)
+       */
+
+      module_call(console, message,
+		  '#', "  %u: base(0x%08x) limit(0x%08x) type(%s) "
+		  "privilege(%u)\n",
+		  i, base, limit, type, privilege);
     }
 
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }
 
 /*
- * returns size of a gdt.
- */
-
-t_error			ia32_gdt_size(t_ia32_gdt*		table,
-				      t_uint16*			size)
-{
-  assert(size != NULL);
-
-  if (table == IA32_GDT_CURRENT)
-    table = &ia32_gdt;
-
-  *size = table->count;
-
-  return ERROR_OK;
-}
-
-/*
- * builds a global descriptor table with specified number of entries.
+ * this function builds a GDT according to the given parameters.
  *
  * steps:
  *
- * 1) checks the number of entries.
- * 2) aligns the address (for best performances).
- * 3) builds the gdt structure.
- * 4) clears the table if necessary.
+ * 0) verify the arguments.
+ * 1) align the base address if necessary.
+ * 2) initialized the gdt structure.
+ * 3) initialize the table's memory.
  */
 
-t_error			ia32_gdt_build(t_uint16			entries,
-				       t_paddr			base,
-				       t_ia32_gdt*		gdt,
-				       t_uint8			clear)
+t_error			architecture_gdt_build(t_paddr		base,
+					       t_psize		size,
+					       as_gdt_descriptor* descriptor)
 {
-  assert(gdt != NULL);
+  /*
+   * 0)
+   */
+
+  if (descriptor == NULL)
+    MACHINE_ESCAPE("the 'descriptor' argument is null");
+
+  if (size > (ARCHITECTURE_GDT_SIZE * sizeof(as_gdt_entry)))
+    MACHINE_ESCAPE("the given size is too large as exceeding the GDT's "
+		   "theoretically maximum capacity");
 
   /*
    * 1)
    */
 
-  if (entries > IA32_GDT_MAX_ENTRIES)
-    return ERROR_KO;
+  if (base % sizeof(as_gdt_entry))
+    base += sizeof(as_gdt_entry) - (base % sizeof(as_gdt_entry));
 
   /*
    * 2)
    */
 
-  if (base % sizeof(t_ia32_gdt_entry))
+  descriptor->table = (as_gdt_entry*)base;
+  descriptor->size = size / sizeof(as_gdt_entry);
+
+  /*
+   * 3)
+   */
+
+  memset(descriptor->table, 0x0, descriptor->size * sizeof(as_gdt_entry));
+
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function imports the given GDT, making it the current GDT.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) set the GDT register according to the given GDT.
+ * 2) load the GDT.
+ * 3) set the given GDT as being the current one by copying its content
+ *    in the current system GDT's structure.
+ */
+
+t_error			architecture_gdt_import(as_gdt_descriptor* descriptor)
+{
+  as_gdt_register	gdtr;
+
+  /*
+   * 0)
+   */
+
+  if (descriptor == NULL)
+    MACHINE_ESCAPE("the 'descriptor' argument is null");
+
+  /*
+   * 1)
+   */
+
+  gdtr.address = (t_paddr)descriptor->table;
+  gdtr.size = descriptor->size * sizeof(as_gdt_entry);
+
+  /*
+   * 2)
+   */
+
+  ARCHITECTURE_LGDT(gdtr);
+
+  /*
+   * 3)
+   */
+
+  memcpy(&_architecture_gdt, descriptor, sizeof(as_gdt_descriptor));
+
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function exports the current GDT by copying its content in the
+ * given structure.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) retrieve the GDT register's value.
+ * 2) copy the current GDT's content into the given one.
+ * 3) updates the given GDT's size.
+ */
+
+t_error			architecture_gdt_export(as_gdt_descriptor* descriptor)
+{
+  as_gdt_register	gdtr;
+  as_gdt_entry*		source;
+  as_gdt_entry*		dest;
+
+  /*
+   * 0)
+   */
+
+  if (descriptor == NULL)
+    MACHINE_ESCAPE("the 'descriptor' argument is null");
+
+  /*
+   * 1)
+   */
+
+  ARCHITECTURE_SGDT(gdtr);
+
+  /*
+   * 2)
+   */
+
+  source = (as_gdt_entry*)gdtr.address;
+  dest = descriptor->table;
+
+  memcpy(dest, source, gdtr.size);
+
+  /*
+   * 3)
+   */
+
+  descriptor->size = gdtr.size / sizeof(as_gdt_entry);
+
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function inserts a segment in the table, at a precise index, hence
+ * possibly erasing a previously recorded segment.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) set the base address.
+ * 2) set the type according to the given class.
+ * 3) set the flags.
+ * 4) compute the limit address accordin to the granularity flag.
+ */
+
+t_error			architecture_gdt_insert(t_uint16	index,
+						t_paddr		base,
+						t_paddr		limit,
+						at_privilege	privilege,
+						at_gdt_class	class,
+						at_gdt_type	type)
+{
+  t_paddr		l;
+
+  /*
+   * 0)
+   */
+
+  if (index >= _architecture_gdt.size)
+    MACHINE_ESCAPE("out-of-bound insertion");
+
+  if (index == 0)
+    MACHINE_ESCAPE("the first GDT entry cannot be used");
+
+  /*
+   * 1)
+   */
+
+  _architecture_gdt.table[index].base_00_15 = base & 0xffff;
+  _architecture_gdt.table[index].base_16_23 = (base >> 16) & 0xff;
+  _architecture_gdt.table[index].base_24_31 = (base >> 24) & 0xff;
+
+  /*
+   * 2)
+   */
+
+  _architecture_gdt.table[index].type =
+    ARCHITECTURE_GDT_TYPE_PRESENT |
+    ARCHITECTURE_GDT_DPL_SET(privilege);
+
+  switch (class)
     {
-      base += sizeof(t_ia32_gdt_entry) - (base % sizeof(t_ia32_gdt_entry));
+    case ARCHITECTURE_GDT_CLASS_SYSTEM:
+      {
+	_architecture_gdt.table[index].type |= type;
+
+	break;
+      }
+    case ARCHITECTURE_GDT_CLASS_SEGMENT:
+      {
+	_architecture_gdt.table[index].type |= ARCHITECTURE_GDT_TYPE_S | type;
+
+	break;
+      }
+    default:
+      {
+	MACHINE_ESCAPE("unknown segment class '%u'",
+		       class);
+      }
     }
 
   /*
    * 3)
    */
 
-  gdt->descriptor = (t_ia32_gdt_entry*)base;
-  gdt->count = entries;
+  _architecture_gdt.table[index].flags = ARCHITECTURE_GDT_FLAG_32BIT;
 
   /*
    * 4)
    */
 
-  if (clear)
+  if (limit >= ___kaneton$pagesz)
     {
-      memset(gdt->descriptor, 0, entries * sizeof(t_ia32_gdt_entry));
-    }
+      _architecture_gdt.table[index].flags |=
+	ARCHITECTURE_GDT_FLAG_GRANULARITY;
 
-  return ERROR_OK;
-}
-
-/*
- * activates a gdt.
- *
- * steps:
- *
- * 1) builds and loads the new gdt register.
- * 2) updates global gdt record.
- */
-
-t_error			ia32_gdt_activate(t_ia32_gdt		new_gdt)
-{
-  t_ia32_gdt_register	gdtr;
-
-  /*
-   * 1)
-   */
-
-  gdtr.address = (t_paddr)new_gdt.descriptor;
-  gdtr.size = new_gdt.count * sizeof(t_ia32_gdt_entry);
-  LGDT(gdtr);
-
-  /*
-   * 2)
-   */
-
-  ia32_gdt.descriptor = new_gdt.descriptor;
-  ia32_gdt.count = new_gdt.count;
-
-  return ERROR_OK;
-}
-
-/*
- * imports descriptors from previous gdt
- *
- * steps:
- *
- * 1) gets the current gdt register.
- * 2) checks size of the old and new gdt.
- * 3) copies to new gdt address.
- */
-
-t_error			ia32_gdt_import(t_ia32_gdt*		gdt)
-{
-  t_ia32_gdt_register	sgdtr;
-  t_ia32_gdt_entry*	source;
-  t_ia32_gdt_entry*	dest;
-
-  /*
-   * 1)
-   */
-
-  SGDT(sgdtr);
-
-  /*
-   * 2)
-   */
-
-  if (sgdtr.size > gdt->count * sizeof(t_ia32_gdt_entry))
-    return ERROR_KO;
-
-  /*
-   * 3)
-   */
-
-  source = (t_ia32_gdt_entry*)sgdtr.address;
-  dest = gdt->descriptor;
-
-  memcpy(dest, source, sgdtr.size);
-
-  return ERROR_OK;
-}
-
-/*
- * adds a segment, erasing previous segment present.
- *
- * steps:
- *
- * 1) retrieves the global pointer if needed.
- * 2) checks the size of the table.
- * 3) sets the type field.
- * 4) sets the base field.
- * 5) sets the flags.
- * 6) sets the limit field.
- */
-
-t_error			ia32_gdt_add_segment(t_ia32_gdt*	table,
-					     t_uint16		segment,
-					     t_ia32_segment	descriptor)
-{
-  t_uint32		size;
-
-  /*
-   * 1)
-   */
-
-  if (table == IA32_GDT_CURRENT)
-    table = &ia32_gdt;
-
-  /*
-   * 2)
-   */
-
-  if (segment >= table->count)
-    return ERROR_KO;
-
-  /*
-   * 3)
-   */
-
-  table->descriptor[segment].type = IA32_DESCRIPTOR_PRESENT |
-    IA32_DESCRIPTOR_SET_DPL(descriptor.privilege);
-  if (descriptor.is_system)
-    table->descriptor[segment].type |= descriptor.type.system;
-  else
-    table->descriptor[segment].type |= IA32_GDT_TYPE_S | descriptor.type.user;
-
-  /*
-   * 4)
-   */
-
-  table->descriptor[segment].base_00_15 = (t_uint16)descriptor.base;
-  table->descriptor[segment].base_16_23 = (descriptor.base >> 16);
-  table->descriptor[segment].base_24_31 = (descriptor.base >> 24);
-
-  /*
-   * 5)
-   */
-
-  table->descriptor[segment].flags = IA32_GDT_FLAG_USE32;
-
-  if (descriptor.limit >= 4096)
-    {
-      table->descriptor[segment].flags |= IA32_GDT_FLAG_GRANULAR;
-      size = descriptor.limit / 4096;
+      l = limit / ___kaneton$pagesz;
     }
   else
     {
-      size = descriptor.limit;
+      l = limit;
     }
 
-  /*
-   * 6)
-   */
+  _architecture_gdt.table[index].limit_00_15 = l & 0xffff;
+  _architecture_gdt.table[index].limit_16_19 = (l >> 16) & 0xf;
 
-  table->descriptor[segment].limit_00_15 = (t_uint16)size;
-  table->descriptor[segment].limit_16_19 = size >> 16;
-
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }
 
 /*
- * reserve a segment. the first free segment entry is taken.
+ * this function reserves an available slot for the given segment.
  *
  * steps:
  *
- * 1) gets the global pointer if needed.
- * 2) searchs for an empty place.
- * 3) adds the segment.
- * 4) sets the reserved index.
+ * 0) verify the arguments.
+ * 1) look for an available slot.
+ * 2) insert the segment in the GDT.
  */
 
-t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
-						 t_ia32_segment	descriptor,
-						 t_uint16*	segment)
+t_error			architecture_gdt_reserve(t_paddr	base,
+						 t_paddr	limit,
+						 at_privilege	privilege,
+						 at_gdt_class	class,
+						 at_gdt_type	type,
+						 t_uint16*	index)
 {
-  t_uint16		look;
+  t_uint16		i;
 
-  assert(segment != NULL);
+  /*
+   * 0)
+   */
+
+  if (index == NULL)
+    MACHINE_ESCAPE("the 'index' argument is null");
 
   /*
    * 1)
    */
 
-  if (table == IA32_GDT_CURRENT)
-    table = &ia32_gdt;
+  *index = 0;
+
+  for (i = 1; i < _architecture_gdt.size; i++)
+    if (!(_architecture_gdt.table[i].type & ARCHITECTURE_GDT_TYPE_PRESENT))
+      {
+	*index = i;
+
+	break;
+      }
+
+  if (*index == 0)
+    MACHINE_ESCAPE("unable to find an available GDT entry");
 
   /*
    * 2)
    */
 
-  look = 1;
-  while (look < table->count &&
-	 (table->descriptor[look].type & IA32_DESCRIPTOR_PRESENT))
-    look++;
+  if (architecture_gdt_insert(*index,
+			      base, limit, privilege, class, type) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the segment in the GDT");
 
-  if (look == table->count)
-    return ERROR_KO;
-
-  /*
-   * 3)
-   */
-
-  if (ia32_gdt_add_segment(table, look, descriptor) != ERROR_OK)
-    return ERROR_KO;
-
-  /*
-   * 4)
-   */
-
-  *segment = look;
-
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }
 
 /*
- * gets an entry.
- *
- * XXX
- */
-
-t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
-					     t_uint16		index,
-					     t_ia32_segment*	segment)
-{
-  assert(segment != NULL);
-
-  /*
-   * 1)
-   */
-
-  if (table == IA32_GDT_CURRENT)
-    table = &ia32_gdt;
-
-  /*
-   * 2)
-   */
-
-  if (index >= table->count ||
-      !(table->descriptor[index].type & IA32_DESCRIPTOR_PRESENT))
-    return ERROR_KO;
-
-  /*
-   * 3)
-   */
-
-  segment->base = table->descriptor[index].base_00_15 |
-    (table->descriptor[index].base_16_23 << 16) |
-    (table->descriptor[index].base_24_31 << 24);
-
-  segment->limit = table->descriptor[index].limit_00_15 |
-    (table->descriptor[index].limit_16_19 << 16);
-
-  if (table->descriptor[index].flags & IA32_GDT_FLAG_GRANULAR)
-    segment->limit *= 4096;
-
-  segment->privilege = IA32_DESCRIPTOR_GET_DPL(table->descriptor[index].type);
-
-  segment->is_system = !(table->descriptor[index].type & IA32_GDT_TYPE_S);
-
-  if (segment->is_system)
-    {
-      segment->type.system =
-	IA32_GDT_TYPE_SYSTEM(table->descriptor[index].type);
-    }
-  else
-    {
-      segment->type.user =
-	IA32_GDT_TYPE_USER(table->descriptor[index].type);
-    }
-
-  return ERROR_OK;
-}
-
-/*
- * deletes an entry.
+ * this function deletes a GDT entry, making it available.
  *
  * steps:
  *
- * 1) gets the global pointer if needed.
- * 2) checks boundary.
- * 3) mark the segment as non-present.
+ * 0) verify the arguments.
+ * 1) re-initialize the GDT entry's memory.
  */
 
-t_error			ia32_gdt_delete_segment(t_ia32_gdt*	table,
-						t_uint16	segment)
+t_error			architecture_gdt_delete(t_uint16	index)
 {
+  /*
+   * 0)
+   */
+
+  if (index >= _architecture_gdt.size)
+    MACHINE_ESCAPE("out-of-bound insertion");
+
+  if (index == 0)
+    MACHINE_ESCAPE("the first GDT entry cannot be used");
 
   /*
    * 1)
    */
 
-  if (table == IA32_GDT_CURRENT)
-    table = &ia32_gdt;
+  memset(&_architecture_gdt.table[index], 0x0, sizeof(as_gdt_entry));
 
-  /*
-   * 2)
-   */
-
-  if (segment >= table->count)
-    return ERROR_KO;
-
-  /*
-   * 3)
-   */
-
-  table->descriptor[segment].type &= ~IA32_DESCRIPTOR_PRESENT;
-
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }
 
 /*
- * builds a selector with specified segment and privileges.
+ * this function builds a segment selector according to the given
+ * parameters.
  *
  * steps:
  *
- * 1) checks segment entry boundary.
- * 2) builds the selector.
+ * 0) verify the arguments.
+ * 1) compute the selector according to the given parameters.
  */
 
-t_error			ia32_gdt_build_selector(t_uint16	segment,
-						t_ia32_privilege privilege,
-						t_uint16*	selector)
+t_error			architecture_gdt_selector(t_uint16	index,
+						  at_privilege	privilege,
+						  t_uint16*	selector)
 {
-  assert(selector != NULL);
+  /*
+   * 0)
+   */
+
+  if (selector == NULL)
+    MACHINE_ESCAPE("the 'selector' argument is null");
+
+  if (index >= _architecture_gdt.size)
+    MACHINE_ESCAPE("out-of-bound index");
 
   /*
    * 1)
    */
 
-  if (segment >= ia32_gdt.count)
-    return ERROR_KO;
+  *selector =
+    ARCHITECTURE_GDT_SELECTOR_TI_GDT |
+    ARCHITECTURE_GDT_SELECTOR_RPL(privilege) |
+    ARCHITECTURE_GDT_SELECTOR_INDEX(index);
 
-  /*
-   * 2)
-   */
-
-  *selector = IA32_SEGMENT_SELECTOR_TI_GDT |
-    IA32_SEGMENT_SELECTOR_RPL(privilege) |
-    IA32_SEGMENT_SELECTOR_INDEX(segment);
-
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }

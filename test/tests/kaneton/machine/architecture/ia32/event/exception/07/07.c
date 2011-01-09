@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ia32/educational/event/exception/07/07.c
+ * file          /home/mycure/kane...rchitecture/ia32/event/exception/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2070]
- * updated       julien quintard   [fri dec 17 14:52:00 2010]
+ * updated       julien quintard   [sat jan  8 15:35:11 2011]
  */
 
 /*
@@ -24,6 +24,8 @@
  */
 
 extern m_kernel*		_kernel;
+
+extern t_uint32			_architecture_handler_exception_code;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -41,22 +43,18 @@ void			test_architecture_event_exception_07_handler(t_id id,
 {
   i_segment		segid;
   i_region		regid;
-  i_thread		i;
-  o_thread*		o;
-
-  if (thread_current(&i) != ERROR_OK)
-    TEST_ERROR("[thread_current] error");
-
-  if (thread_get(i, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
 
   thrown = 1;
 
-  if (!((!(o->machine.error & (1 << 0)) &&	/* non present page */
-	 (o->machine.error & (1 << 1)) &&	/* write access */
-	 !(o->machine.error & (1 << 2)) &&	/* supervisor mode when exception */
-	 !(o->machine.error & (1 << 3)) &&	/* reserved bit error */
-	 !(o->machine.error & (1 << 4)))))
+  if (!((!(_architecture_handler_exception_code & (1 << 0)) &&
+	 /* non present page */
+	 (_architecture_handler_exception_code & (1 << 1)) &&
+	 /* write access */
+	 !(_architecture_handler_exception_code & (1 << 2)) &&
+	 /* supervisor mode when exception */
+	 !(_architecture_handler_exception_code & (1 << 3)) &&
+	 /* reserved bit error */
+	 !(_architecture_handler_exception_code & (1 << 4)))))
     TEST_ERROR("invalid error code");
 
   if (segment_reserve(_kernel->as,

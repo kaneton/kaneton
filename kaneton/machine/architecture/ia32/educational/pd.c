@@ -280,7 +280,7 @@ t_error			ia32_pd_activate(t_ia32_directory	dir,
    * 2)
    */
 
-  LCR3(pdbr);
+  ARCHITECTURE_LCR3(pdbr);
 
   /*
    * 3)

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ia32/educational/event/exception/06/06.c
+ * file          /home/mycure/kane...rchitecture/ia32/event/exception/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [fri dec 17 14:47:33 2010]
+ * updated       julien quintard   [sat jan  8 17:30:55 2011]
  */
 
 /*
@@ -18,6 +18,12 @@
 #include <kaneton.h>
 
 #include "06.h"
+
+/*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern t_uint32			_architecture_handler_exception_code;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -33,18 +39,11 @@ static volatile t_uint16	gs = (16 << 3);
 void			test_architecture_event_exception_06_handler(t_id id,
 								     t_vaddr data)
 {
-  i_thread		i;
-  o_thread*		o;
-
-  if (thread_current(&i) != ERROR_OK)
-    TEST_ERROR("[thread_current] error");
-
-  if (thread_get(i, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
+  t_uint32		error;
 
   thrown = 1;
 
-  if (!(o->machine.error & gs))
+  if (!(_architecture_handler_exception_code & gs))
     TEST_ERROR("invalid error code");
 
   gs = 0x10;

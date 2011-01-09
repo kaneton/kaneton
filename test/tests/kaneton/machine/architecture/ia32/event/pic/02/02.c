@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/pic/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [thu dec 16 13:34:25 2010]
+ * updated       julien quintard   [fri jan  7 20:38:43 2011]
  */
 
 /*
@@ -45,12 +45,12 @@ void			test_architecture_event_pic_02(void)
 		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
-  INB(TEST_MASTER_PORT_B, mask);
+  ARCHITECTURE_INB(TEST_MASTER_PORT_B, mask);
 
   if ((mask & (1 << 2)) != 0)
     TEST_ERROR("invalid PIC mask");
 
-  INB(TEST_SLAVE_PORT_B, mask);
+  ARCHITECTURE_INB(TEST_SLAVE_PORT_B, mask);
 
   if (mask != 0xfd)
     TEST_ERROR("invalid PIC mask");

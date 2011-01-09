@@ -1,19 +1,21 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/paging/tlb.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...hine/architecture/ia32/educational/tlb.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:57:00 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:31:01 2007]
+ * updated       julien quintard   [sat jan  8 16:44:09 2011]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * manage translation lookaside buffers.
- *
+ * this file contains functions for managing the TLB - Translation
+ * Lookaside Buffer.
  */
 
 /*
@@ -29,28 +31,28 @@
  */
 
 /*
- * flushes a single pte cache given a page address.
+ * this function invalidates a single address from the TLB.
  */
 
-t_error			ia32_tlb_invalidate(t_vaddr			page)
+t_error			architecture_tlb_invalidate(t_vaddr	address)
 {
   /*						     [block::tlb_invalidate] */
 
   asm volatile("invlpg (%0)"
 	       :
-	       : "r" (page)
+	       : "r" (address)
 	       : "memory");
 
   /*						  [endblock::tlb_invalidate] */
 
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }
 
 /*
- * flushes the whole pd and pt caches.
+ * this function flushes the whole TLB's content.
  */
 
-t_error			ia32_tlb_flush(void)
+t_error			architecture_tlb_flush(void)
 {
   /*							  [block::tlb_flush] */
 
@@ -62,5 +64,5 @@ t_error			ia32_tlb_flush(void)
 
   /*						       [endblock::tlb_flush] */
 
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }

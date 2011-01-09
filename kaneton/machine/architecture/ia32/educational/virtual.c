@@ -1,3 +1,5 @@
+// XXX renommer as ou space!
+
 /*
  * licence       kaneton licence
  *
@@ -40,18 +42,6 @@ extern m_kernel*	_kernel;
 extern m_thread*	_thread;
 
 /*
- * the IDT structure.
- */
-
-extern t_ia32_idt	ia32_idt;
-
-/*
- * the GDT structure.
- */
-
-extern t_ia32_gdt	ia32_gdt;
-
-/*
  * the layout's .handler and .handler_data addresses.
  */
 
@@ -59,6 +49,13 @@ extern t_vaddr		_handler_begin;
 extern t_vaddr		_handler_end;
 extern t_vaddr		_handler_data_begin;
 extern t_vaddr		_handler_data_end;
+
+/*
+ * XXX
+ */
+
+extern as_gdt_descriptor	_architecture_gdt;
+extern as_idt_descriptor	_architecture_idt;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -247,7 +244,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    * 7)
    */
 
-  ia32_tlb_flush();
+  architecture_tlb_flush();
 
   /*
    * 8)
@@ -406,18 +403,18 @@ t_error			ia32_task_as_initialize(i_as		asid)
   //printf("GDT: 0x%x\n", ia32_gdt.descriptor);
 
   // XXX cast normal mais regarder si on peut pas l'eviter avec des types
-  // differents
-  if (segment_locate((t_paddr)ia32_gdt.descriptor, &seg) == ERROR_FALSE)
+  // differents -> on ne peut pas!
+  if (segment_locate((t_paddr)_architecture_gdt.table, &seg) == ERROR_FALSE)
     MACHINE_ESCAPE("XXX");
 
   // XXX identity mapping for the GDT: car c'est une adresse physique.
-  // XXX le mieux serait de faire un segment locate ici!
+  // XXX le mieux serait de faire un segment locate ici! -> c'est fait!
   if (region_reserve(asid,
 		     seg,
 		     0,
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
-		     (t_vaddr)ia32_gdt.descriptor,
+		     (t_vaddr)_architecture_gdt.table,
 		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -426,7 +423,8 @@ t_error			ia32_task_as_initialize(i_as		asid)
 
   // XXX cast normal mais regarder si on peut pas l'eviter avec des types
   // differents
-  if (segment_locate((t_paddr)ia32_idt.descriptor, &seg) == ERROR_FALSE)
+  if (segment_locate((t_paddr)_architecture_idt.table,
+		     &seg) == ERROR_FALSE)
     MACHINE_ESCAPE("XXX");
 
   // XXX identity mapping for the IDT, car c'est une address physique.
@@ -436,7 +434,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
 		     0,
 		     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
 		     REGION_OPTION_GLOBAL,
-		     (t_vaddr)ia32_idt.descriptor,
+		     (t_vaddr)_architecture_idt.table,
 		     ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
@@ -531,115 +529,115 @@ t_error			ia32_task_as_initialize(i_as		asid)
 
 t_error			ia32_segmentation_init(void)
 {
-  t_ia32_segment	seg;
-  t_uint16		kcs;
-  t_uint16		kds;
+  t_uint16		code;
+  t_uint16		data;
 
   /*
    * 1)
    */
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_kernel;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_code;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_KERNEL_CS,
-			   seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_KERNEL,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_CODE) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the kernel code GDT segment");
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_kernel;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_data;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_KERNEL_DS,
-			   seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_KERNEL,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the kernel data GDT segment");
 
   /*
    * 2)
    */
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_driver;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_code;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_DRIVER_CS,
-			   seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_DRIVER_CODE,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_DRIVER,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_CODE) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the driver code GDT segment");
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_driver;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_data;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_DRIVER_DS,
-			   seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_DRIVER_DATA,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_DRIVER,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the driver data GDT segment");
 
   /*
    * 3)
    */
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_service;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_code;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_SERVICE_CS,
-			   seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_SERVICE_CODE,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_SERVICE,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_CODE) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the service code GDT segment");
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_service;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_data;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_SERVICE_DS,
-			   seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_SERVICE_DATA,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_SERVICE,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the service data GDT segment");
 
   /*
    * 4)
    */
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_guest;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_code;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_GUEST_CS,
-			   seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_GUEST_CODE,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_GUEST,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_CODE) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the guest code GDT segment");
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_guest;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_data;
-  if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_GUEST_DS,
-			   seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_GUEST_DATA,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_GUEST,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+    MACHINE_ESCAPE("unable to insert the guest data GDT segment");
 
   /*
    * 5)
    */
 
-  ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_CS,
-			  ia32_privilege_kernel,
-			  &kcs);
-  ia32_gdt_build_selector(IA32_PMODE_GDT_KERNEL_DS,
-			  ia32_privilege_kernel,
-			  &kds);
-  ia32_pmode_set_segment_registers(kcs, kds);
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
+				ARCHITECTURE_PRIVILEGE_KERNEL,
+				&code) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the kernel code segment selector");
+
+  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
+				ARCHITECTURE_PRIVILEGE_KERNEL,
+				&data) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the kernel data segment selector");
+
+  /*
+   * XXX
+   */
+
+  if (architecture_pmode_registers(code, data) != ERROR_OK)
+    MACHINE_ESCAPE("unable to update the segment's registers");
 
   /*
    * 6)
    */
 
-  ia32_interrupt_ds = kds;
+  ia32_interrupt_ds = data;
 
   MACHINE_LEAVE();
 }

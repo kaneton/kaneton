@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/event/context/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [mon dec 20 22:20:39 2010]
+ * updated       julien quintard   [fri jan  7 19:11:45 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- globals ---------------------------------------------------------
  */
 
-static volatile int	thrown = 0;
+static volatile int		thrown = 0;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -35,10 +35,10 @@ void			test_architecture_event_context_02_handler(t_id	id)
 
   thrown = 1;
 
-  if (ia32_gdt_build_selector(14,
-			      ia32_privilege_kernel,
-			      &ds) != ERROR_OK)
-    TEST_ERROR("[ia32_gdt_build_selector] error");
+  if (architecture_gdt_selector(14,
+				ARCHITECTURE_PRIVILEGE_KERNEL,
+				&ds) != ERROR_OK)
+    TEST_ERROR("[architecture_gdt_selector] error");
 
   asm volatile("movl $0x10034a10, %eax\n"
                "movl $0xf5000100, %ebx\n"
@@ -62,18 +62,16 @@ void			test_architecture_event_context_02(void)
   t_test_ctx*		ctx1;
   t_test_ctx*		ctx2;
   t_uint32		esp;
-  t_ia32_segment	seg;
 
   TEST_ENTER();
 
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = ia32_privilege_kernel;
-  seg.is_system = 0;
-  seg.type.user = ia32_type_data;
-
-  if (ia32_gdt_add_segment(NULL, 14, seg) != ERROR_OK)
-    TEST_ERROR("[ia32_gdt_add_segment] error");
+  if (architecture_gdt_insert(14,
+			      0x0,
+			      0xffffffff,
+			      ARCHITECTURE_PRIVILEGE_KERNEL,
+			      ARCHITECTURE_GDT_CLASS_SEGMENT,
+			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+    TEST_ERROR("[architecture_gdt_insert] error");
 
   if (event_reserve(3,
 		    EVENT_TYPE_FUNCTION,

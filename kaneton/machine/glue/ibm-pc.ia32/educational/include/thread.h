@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [sun dec 19 16:17:19 2010]
+ * updated       julien quintard   [sat jan  8 13:58:34 2011]
  */
 
 #ifndef GLUE_THREAD_H
@@ -103,8 +103,6 @@
   struct								\
   {									\
     t_vaddr		pile;						\
-									\
-    t_uint32		error;						\
   }			machine;
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/mapping.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:26:06 2007]
- * updated       julien quintard   [sun dec 19 12:37:35 2010]
+ * updated       julien quintard   [sat jan  8 16:46:39 2011]
  */
 
 /*
@@ -102,7 +102,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
 			    pt) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
 
-      ia32_tlb_invalidate(
+      architecture_tlb_invalidate(
 	IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
 			   IA32_PAGE_DIRECTORY_ENTRY_INDEX(v)));
 
@@ -145,7 +145,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
    * 4)
    */
 
-  ia32_tlb_invalidate(v);
+  architecture_tlb_invalidate(v);
 
   MACHINE_LEAVE();
 }
@@ -206,7 +206,7 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
    * 4)
    */
 
-  ia32_tlb_invalidate(v);
+  architecture_tlb_invalidate(v);
 
   MACHINE_LEAVE();
 }
@@ -214,7 +214,7 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
 /*
  * this function is an helper for mapping a page directory.
  */
-
+// XXX utilise 3 fois! ne pas faire de fonction, ce sera plus propre.
 t_error			ia32_map_pd(t_ia32_directory*	pd)
 {
   /*							     [block::map_pd] */
@@ -241,7 +241,7 @@ t_error			ia32_map_pd(t_ia32_directory*	pd)
 /*
  * this function is an helper for mapping a page table.
  */
-
+// XXX utilise 3 fois! ne pas faire de fonction, ce sera plus propre.
 t_error			ia32_map_pt(t_ia32_table*	pt)
 {
   /*							     [block::map_pt] */
@@ -446,7 +446,7 @@ t_error			ia32_map_region(i_as		asid,
 	   */
 
 	  if (asid == _kernel->as)
-	    ia32_tlb_invalidate(IA32_ENTRY_ADDRESS(pde, pte));
+	    architecture_tlb_invalidate(IA32_ENTRY_ADDRESS(pde, pte));
 	}
 
       /*
@@ -564,7 +564,7 @@ t_error			ia32_unmap_region(i_as		asid,
 	    MACHINE_ESCAPE("XXX");
 
 	  if (asid == _kernel->as)
-	    ia32_tlb_invalidate(IA32_ENTRY_ADDRESS(pde, pte));
+	    architecture_tlb_invalidate(IA32_ENTRY_ADDRESS(pde, pte));
 	}
 
       /*
@@ -586,8 +586,9 @@ t_error			ia32_unmap_region(i_as		asid,
 	    MACHINE_ESCAPE("XXX");
 
 	  if (asid == _kernel->as)
-	    ia32_tlb_invalidate(IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
-						   pde));
+	    architecture_tlb_invalidate(
+              IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
+				 pde));
 
 	  if (segment_locate(pt.paddr, &s) == ERROR_FALSE)
 	    MACHINE_ESCAPE("XXX");

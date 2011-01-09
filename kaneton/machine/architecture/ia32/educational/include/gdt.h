@@ -1,19 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/include/pmode/gdt.h
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...hitecture/ia32/educational/include/gdt.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:48:11 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * protected mode structures and macros.
- *
+ * updated       julien quintard   [fri jan  7 17:49:39 2011]
  */
 
 #ifndef ARCHITECTURE_GDT_H
@@ -24,110 +19,157 @@
  */
 
 /*
- * XXX
+ * this macro represents the maximum number of entries a GDT can contain.
  */
 
-#define IA32_GDT_NENTRIES	256
+#define ARCHITECTURE_GDT_SIZE			256
 
 /*
- * misc
+ * the code/data segment types.
  */
 
-#define IA32_GDT_MAX_ENTRIES	8191
-#define IA32_GDT_CURRENT	NULL
-
-#define IA32_LDT_MAX_ENTRIES	8191
+#define ARCHITECTURE_GDT_TYPE_CODE		((1 << 3) |		\
+						 (1 << 1))
+#define ARCHITECTURE_GDT_TYPE_DATA		(1 << 1)
 
 /*
- * gdt flags
+ * the system segment types.
  */
 
-#define IA32_GDT_FLAG_GRANULAR	(1 << 3)
-#define IA32_GDT_FLAG_USE32	(1 << 2)
-#define IA32_GDT_FLAG_USE16	(0 << 2)
-#define IA32_GDT_FLAG_AVAILABLE	(1 << 0)
+#define ARCHITECTURE_GDT_TYPE_LDT		(1 << 1)
+#define ARCHITECTURE_GDT_TYPE_TSS		((1 << 3) |		\
+						 (1 << 0))
+#define ARCHITECTURE_GDT_TYPE_CALL		((1 << 3) |		\
+						 (1 << 2))
+#define ARCHITECTURE_GDT_TYPE_TRAP		((1 << 3) |		\
+						 (1 << 2) |		\
+						 (1 << 1) |		\
+						 (1 << 0))
+#define ARCHITECTURE_GDT_TYPE_INTERRUPT		((1 << 3) |		\
+						 (1 << 2) |		\
+						 (1 << 1))
 
 /*
- * system segment types
+ * these macros indicate whether a system is to be used to store a system
+ * structure such as a LDT, TSS etc. or as a regular segment i.e for code
+ * or data.
  */
 
-#define IA32_SEGMENT_TYPE_CODE		((1 << 3) | (1 << 1))
-#define IA32_SEGMENT_TYPE_DATA		(1 << 1)
-#define IA32_SEGMENT_TYPE_LDT		(1 << 1)
-#define IA32_SEGMENT_TYPE_TSS		((1 << 3) | (1 << 0))
-
-#define IA32_SEGMENT_GATE_CALL		((1 << 3) | (1 << 2))
-#define IA32_SEGMENT_GATE_TRAP		((1 << 3) |			\
-					 (1 << 2) |			\
-					 (1 << 1) |			\
-					 (1 << 0))
-#define IA32_SEGMENT_GATE_INTERRUPT	((1 << 3) | (1 << 2) | (1 << 1))
+#define ARCHITECTURE_GDT_CLASS_SYSTEM		0x1
+#define ARCHITECTURE_GDT_CLASS_SEGMENT		0x2
 
 /*
- * gdt type
+ * type definitions.
+ *
+ * the S bit indicates that the segment is not a system one. the present
+ * flag indicates that the segment is a valid one and must therefore be
+ * considered by the CPU.
  */
 
-#define IA32_GDT_TYPE_SYSTEM(_type_)					\
+#define ARCHITECTURE_GDT_TYPE_S			(1 << 4)
+#define ARCHITECTURE_GDT_TYPE_PRESENT		(1 << 7)
+
+/*
+ * flags definitions.
+ *
+ * the available bit can be used by the software for its own purpose. the
+ * 16bit/32bit flag indicates whether the system operates in 16/32 bit. the
+ * meaning of this bit is actually more complicated than that. for more
+ * information, please refer to the IA32 documentation. finally, the granular
+ * bit indicates whether the limit address should be considered as a number
+ * of bytes or a number of pages.
+ */
+
+#define ARCHITECTURE_GDT_FLAG_AVAILABLE		(1 << 0)
+#define ARCHITECTURE_GDT_FLAG_16BIT		(0 << 2)
+#define ARCHITECTURE_GDT_FLAG_32BIT		(1 << 2)
+#define ARCHITECTURE_GDT_FLAG_GRANULARITY	(1 << 3)
+
+/*
+ * these definitions represents the indexes of the different system
+ * segments, for the kernel, driver, service and guest task classes.
+ */
+
+#define ARCHITECTURE_GDT_INDEX_KERNEL_CODE	1
+#define ARCHITECTURE_GDT_INDEX_KERNEL_DATA	2
+#define ARCHITECTURE_GDT_INDEX_DRIVER_CODE	3
+#define ARCHITECTURE_GDT_INDEX_DRIVER_DATA	4
+#define ARCHITECTURE_GDT_INDEX_SERVICE_CODE	5
+#define ARCHITECTURE_GDT_INDEX_SERVICE_DATA	6
+#define ARCHITECTURE_GDT_INDEX_GUEST_CODE	7
+#define ARCHITECTURE_GDT_INDEX_GUEST_DATA	8
+
+/*
+ * these values indicates the table in which is located the selector's target.
+ */
+
+#define ARCHITECTURE_GDT_SELECTOR_TI_GDT	(0 << 2)
+#define ARCHITECTURE_GDT_SELECTOR_TI_LDT	(1 << 2)
+
+/*
+ * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * this macro-function computes the hardware DPL - Descriptor Privilege
+ * Level according to a system-based privilege value.
+ *
+ * the GET macro does the opposite, return the system privilege based on
+ * the GDT entry's type.
+ */
+
+#define ARCHITECTURE_GDT_DPL_SET(_privilege_)				\
+  ((_privilege_) << 5)
+
+#define ARCHITECTURE_GDT_DPL_GET(_type_)				\
+  (((_type_) >> 5) & 0x3)
+
+/*
+ * these two macro-function returns a system type value according to
+ * the hardware 8-bit field.
+ *
+ * the first macro-function must be used if the segment is a system one
+ * while the second must be used for regular code/data segments.
+ */
+
+#define ARCHITECTURE_GDT_TYPE_SYSTEM(_type_)				\
   ((_type_) & ((1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)))
 
-#define IA32_GDT_TYPE_USER(_type_)					\
+#define ARCHITECTURE_GDT_TYPE_SEGMENT(_type_)				\
   ((_type_) & ((1 << 3) | (1 << 1)))
 
-#define IA32_GDT_TYPE_S			(1 << 4)
+/*
+ * this macro-function computes the RPL - Request Privilege Level value
+ * according to the given system privilege value.
+ */
+
+#define ARCHITECTURE_GDT_SELECTOR_RPL(_privilege_)			\
+  ((_privilege_) << 0)
+
+/*
+ * this macro-function compute the selector's index field which indicates
+ * the GDT entry attached to the selector.
+ */
+
+#define ARCHITECTURE_GDT_SELECTOR_INDEX(_index_)			\
+  ((_index_) << 3)
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <core/types.h>
-#include <architecture/pmode.h>
+#include <architecture/privilege.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * user segments types
- */
-typedef enum
-  {
-    ia32_type_code	= IA32_SEGMENT_TYPE_CODE,
-    ia32_type_data	= IA32_SEGMENT_TYPE_DATA,
-  } t_ia32_user_segment_type;
-
-/*
- * system segments types
- */
-typedef enum
-  {
-    ia32_type_ldt	= IA32_SEGMENT_TYPE_LDT,
-    ia32_type_tss	= IA32_SEGMENT_TYPE_TSS,
-    ia32_type_call_gate	= IA32_SEGMENT_GATE_CALL,
-    ia32_type_trap_gate	= IA32_SEGMENT_GATE_TRAP,
-    ia32_type_int_gate	= IA32_SEGMENT_GATE_INTERRUPT,
-  } t_ia32_system_segment_type;
-
-typedef union
-{
-  t_ia32_user_segment_type	user;
-  t_ia32_system_segment_type	system;
-}				u_ia32_segment_type;
-
-/*
- * abstract segment descriptor
- */
-
-typedef struct
-{
-  t_uint32		base;
-  t_uint32		limit;
-  t_ia32_privilege	privilege;
-  t_uint8		is_system;
-  u_ia32_segment_type	type;
-}			t_ia32_segment;
-
-/*
- * gdt entry
+ * the hardware-represented GDT entry which is composed of a base address,
+ * a limit address, a type and some flags.
+ *
+ * for more information, please refer to the IA32 hardware documentation.
  */
 
 typedef struct
@@ -139,150 +181,84 @@ typedef struct
   t_uint8		limit_16_19 : 4;
   t_uint8		flags : 4;
   t_uint8		base_24_31;
-}			__attribute__ ((packed)) t_ia32_gdt_entry;
+}			__attribute__ ((packed)) as_gdt_entry;
 
 /*
- * gdt
+ * the GTD descriptor i.e the structure for managing a GDT.
+ *
+ * this structure contains a pointer to the GDT entries along with the
+ * current size i.e number of allocated entries.
  */
 
 typedef struct
 {
-  t_ia32_gdt_entry	*descriptor;
-  t_uint16		count;
-}			t_ia32_gdt;
+  as_gdt_entry*		table;
+  t_uint16		size;
+}			as_gdt_descriptor;
 
 /*
- * gdt register
+ * this structure represents the GDTR - GDT Register which is the hardware
+ * structure locating the current GDT.
  */
 
 typedef struct
 {
   t_uint16		size;
-  t_uint32		address;
-}			__attribute__ ((packed)) t_ia32_gdt_register;
+  t_paddr		address;
+}			__attribute__ ((packed)) as_gdt_register;
 
 /*
- * ldt entry
+ * this type indicates whether a GDT entry represents a system object such
+ * as a TSS, a LDT etc. or a code/data segment.
  */
 
-typedef struct
-{
-  t_uint16		limit_00_15;
-  t_uint16		base_00_15;
-  t_uint8		base_16_23;
-  t_uint8		type;
-  t_uint8		limit_16_19 : 4;
-  t_uint8		flags : 4;
-  t_uint8		base_24_31;
-}			__attribute__ ((packed)) t_ia32_ldt_entry;
+typedef t_uint8		at_gdt_class;
 
 /*
- * ldt
+ * this type indicates the type of the segment.
  */
 
-typedef struct
-{
-  t_ia32_ldt_entry	*descriptor;
-  t_uint16		count;
-  t_uint16		gdt_entry;
-}			t_ia32_ldt;
-
-/*
- * ldt register
- */
-
-typedef struct
-{
-  t_uint16		selector;
-  t_uint16		size;
-  t_uint32		address;
-}			__attribute__ ((packed)) t_ia32_ldt_register;
+typedef t_uint8		at_gdt_type;
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
  *	../gdt.c
- *	../ldt.c
  */
 
 /*
  * ../gdt.c
  */
 
-t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt);
+t_error			architecture_gdt_dump(void);
 
-t_error			ia32_gdt_size(t_ia32_gdt*		table,
-				      t_uint16*			size);
+t_error			architecture_gdt_build(t_paddr		base,
+					       t_psize		size,
+					       as_gdt_descriptor* descriptor);
 
-t_error			ia32_gdt_build(t_uint16			entries,
-				       t_paddr			base,
-				       t_ia32_gdt*		gdt,
-				       t_uint8			clear);
+t_error			architecture_gdt_import(as_gdt_descriptor* descriptor);
 
-t_error			ia32_gdt_activate(t_ia32_gdt		new_gdt);
+t_error			architecture_gdt_export(as_gdt_descriptor* descriptor);
 
-t_error			ia32_gdt_import(t_ia32_gdt*		gdt);
+t_error			architecture_gdt_insert(t_uint16	index,
+						t_paddr		base,
+						t_paddr		limit,
+						at_privilege	privilege,
+						at_gdt_class	class,
+						at_gdt_type	type);
 
-t_error			ia32_gdt_add_segment(t_ia32_gdt*	table,
-					     t_uint16		segment,
-					     t_ia32_segment	descriptor);
+t_error			architecture_gdt_reserve(t_paddr	base,
+						 t_paddr	limit,
+						 at_privilege	privilege,
+						 at_gdt_class	class,
+						 at_gdt_type	type,
+						 t_uint16*	index);
 
-t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
-						 t_ia32_segment	descriptor,
-						 t_uint16*	segment);
+t_error			architecture_gdt_delete(t_uint16	index);
 
-t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
-					     t_uint16		index,
-					     t_ia32_segment*	segment);
-
-t_error			ia32_gdt_delete_segment(t_ia32_gdt*	table,
-						t_uint16	segment);
-
-t_error			ia32_gdt_build_selector(t_uint16	segment,
-						t_ia32_privilege privilege,
-						t_uint16*	selector);
-
-
-/*
- * ../ldt.c
- */
-
-t_error			ia32_ldt_base(t_ia32_ldt*		table,
-				      t_paddr*			addr);
-
-t_error			ia32_ldt_size(t_ia32_ldt*		table,
-				      t_uint16*			size);
-
-t_error			ia32_ldt_dump(t_ia32_ldt*		table);
-
-t_error			ia32_ldt_activate(t_ia32_ldt		table);
-
-t_error			ia32_ldt_build(t_uint16			entries,
-				       t_paddr			base,
-				       t_ia32_ldt*		ldt,
-				       t_uint8			clear);
-
-t_error			ia32_ldt_destroy(t_ia32_ldt		*ldt);
-
-t_error			ia32_ldt_add_segment(t_ia32_ldt*	table,
-					     t_uint16		segment,
-					     t_ia32_segment	descriptor);
-
-t_error			ia32_ldt_reserve_segment(t_ia32_ldt*	table,
-						 t_ia32_segment	descriptor,
-						 t_uint16*	segment);
-
-t_error			ia32_ldt_get_segment(t_ia32_ldt*	table,
-					     t_uint16		index,
-					     t_ia32_segment*	segment);
-
-t_error			ia32_ldt_delete_segment(t_ia32_ldt*	table,
-						t_uint16	segment);
-
-t_error			ia32_ldt_build_selector(t_ia32_ldt*	table,
-						t_uint16	segment,
-						t_ia32_privilege privilege,
-						t_uint16*	selector);
+t_error			architecture_gdt_selector(t_uint16	index,
+						  at_privilege	privilege,
+						  t_uint16*	selector);
 
 
 /*

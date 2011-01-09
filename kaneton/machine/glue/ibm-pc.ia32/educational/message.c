@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/message.c
  *
  * created       matthieu bucchianeri   [sun jun 17 18:16:18 2007]
- * updated       julien quintard   [sun dec 19 17:34:28 2010]
+ * updated       julien quintard   [thu jan  6 09:06:57 2011]
  */
 
 /*
@@ -66,8 +66,10 @@ d_message		glue_message_dispatch =
 t_error			glue_message_return(i_thread		thread,
 					    t_error		code)
 {
+  /* XXX
   if (ia32_syscall_set_code(thread, code) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
+  */
 
   MACHINE_LEAVE();
 }
@@ -83,8 +85,10 @@ t_error			glue_message_return_info(i_thread	thread,
 						 t_vsize	size,
 						 i_node		sender)
 {
+  /* XXX
   if (ia32_syscall_set_info(thread, code, size, sender) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
+  */
 
   MACHINE_LEAVE();
 }
@@ -97,8 +101,10 @@ t_error			glue_message_return_info(i_thread	thread,
 
 t_error			glue_message_initialize(void)
 {
+  /* XXX
   if (ia32_syscalls_init() != ERROR_OK)
     MACHINE_ESCAPE("XXX");
+  */
 
   MACHINE_LEAVE();
 }
@@ -111,8 +117,10 @@ t_error			glue_message_initialize(void)
 
 t_error			glue_message_clean(void)
 {
+  /* XXX
   if (ia32_syscalls_clean() != ERROR_OK)
     MACHINE_ESCAPE("XXX");
+  */
 
   MACHINE_LEAVE();
 }

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/pic/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [thu dec 16 13:34:37 2010]
+ * updated       julien quintard   [fri jan  7 20:38:54 2011]
  */
 
 /*
@@ -43,12 +43,12 @@ void			test_architecture_event_pic_03(void)
   if (event_release(32 + 3) != ERROR_OK)
     TEST_ERROR("[event_release] error");
 
-  INB(TEST_MASTER_PORT_B, mask);
+  ARCHITECTURE_INB(TEST_MASTER_PORT_B, mask);
 
   if ((mask & (1 << 3)) == 0)
     TEST_ERROR("invalid PIC mask");
 
-  INB(TEST_SLAVE_PORT_B, mask);
+  ARCHITECTURE_INB(TEST_SLAVE_PORT_B, mask);
 
   if (mask != 0xff)
     TEST_ERROR("invalid PIC mask");

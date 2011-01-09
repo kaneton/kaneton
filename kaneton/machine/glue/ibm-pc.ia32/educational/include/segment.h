@@ -81,8 +81,6 @@ t_error			glue_segment_copy(i_segment		dst,
 
 t_error			glue_segment_initialize(void);
 
-t_error			glue_segment_clean(void);
-
 
 /*
  * eop

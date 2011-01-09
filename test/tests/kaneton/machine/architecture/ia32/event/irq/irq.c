@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/architecture/ia32/event/irq/irq.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 13:36:12 2010]
+ * updated       julien quintard   [fri jan  7 20:38:09 2011]
  */
 
 /*
@@ -51,19 +51,19 @@ void			test_architecture_event_irq_content(void)
 		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_HANG("[event_reserve] error");
 
-  OUTB(0x3F0 + 2, 0);
+  ARCHITECTURE_OUTB(0x3F0 + 2, 0);
   for (i = 0; i < 10000; i++)
     asm volatile("nop");
 
-  OUTB(0x3F0 + 2, 0x0C);
+  ARCHITECTURE_OUTB(0x3F0 + 2, 0x0C);
   for (i = 0; i < 10000000; i++)
     asm volatile("nop");
 
-  OUTB(0x3F0 + 2, 0);
+  ARCHITECTURE_OUTB(0x3F0 + 2, 0);
   for (i = 0; i < 10000; i++)
     asm volatile("nop");
 
-  OUTB(0x3F0 + 2, 0x0C);
+  ARCHITECTURE_OUTB(0x3F0 + 2, 0x0C);
   for (i = 0; i < 10000000; i++)
     asm volatile("nop");
 

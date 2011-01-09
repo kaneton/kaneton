@@ -1,19 +1,20 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:39:53 2007]
+ * file          /home/mycure/kane...ne/architecture/ia32/educational/pmode.c
+ *
+ * created       julien quintard   [sat jan  8 19:01:44 2011]
+ * updated       julien quintard   [sat jan  8 19:18:41 2011]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * manage protected mode.
- *
+ * this file contains functions for managing the ia32 protected mode.
  */
 
 /*
@@ -32,70 +33,83 @@
  * the init structure.
  */
 
-extern s_init*		_init;
+extern s_init*			_init;
 
 /*
- * global offset table.
+ * the GDT.
  */
 
-extern t_ia32_gdt	ia32_gdt;
+extern as_gdt_descriptor	_architecture_gdt;
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
 /*
- * enables protected mode by setting PE bit in CR0.
+ * this function enables the protected mode by setting the PE bit in CR0.
  */
 
-static void	ia32_pmode_enable(void)
+t_error		architecture_pmode_enable(void)
 {
-  asm volatile("movl %%cr0, %%eax\n\t"
-	       "orw $1, %%ax\n\t"
-	       "movl %%eax, %%cr0\n\t"
+  asm volatile("movl %%cr0, %%eax\n"
+	       "orw $1, %%ax\n"
+	       "movl %%eax, %%cr0\n"
 	       :
 	       :
 	       : "%eax");
 
-  asm volatile("jmp 1f\t\n"
+  asm volatile("jmp 1f\n"
 	       "1:"
 	       );
+
+  MACHINE_LEAVE();
 }
 
 /*
- * initializes protected mode.
+ * this function sets up the protected mode.
  *
  * steps:
  *
- * 1) copy gdt from the init variable.
- * 2) enable protected mode.
+ * 1) build a GDT descriptor based on the GDT prepared by the boot loader.
+ * 2) import the descriptor in order to make it the current system's GDT.
+ * 3) enable the protected mode.
  */
 
-t_error		ia32_pmode_init(void)
+t_error		architecture_pmode_setup(void)
 {
+  as_gdt_descriptor	descriptor;
 
   /*
    * 1)
    */
 
-  ia32_gdt.descriptor = (t_ia32_gdt_entry*)(void*)_init->machine.gdt;
-  ia32_gdt.count = IA32_GDT_NENTRIES;
+  descriptor.table = (void*)_init->machine.gdt;
+  descriptor.size = ARCHITECTURE_GDT_SIZE;
 
   /*
    * 2)
    */
 
-  ia32_pmode_enable();
+  if (architecture_gdt_import(&descriptor) != ERROR_OK)
+    MACHINE_ESCAPE("unable to import the boot loader's GDT");
 
-  return ERROR_OK;
+  /*
+   * 3)
+   */
+
+  if (architecture_pmode_enable() != ERROR_OK)
+    MACHINE_ESCAPE("unable to enable the protected mode");
+
+  MACHINE_LEAVE();
 }
 
 /*
- * sets code/data/stack segment registers.
+ * this function install the given segment registers by updating
+ * the processor's segment registers.
  */
 
-t_error		ia32_pmode_set_segment_registers(t_uint16	seg_code,
-						 t_uint16	seg_data)
+t_error		architecture_pmode_registers(t_uint16	code,
+					     t_uint16	data)
 {
   asm volatile("pushl %0\n\t"
 	       "pushl $1f\n\t"
@@ -108,18 +122,9 @@ t_error		ia32_pmode_set_segment_registers(t_uint16	seg_code,
 	       "movw %%ax, %%fs\n\t"
 	       "movw %%ax, %%gs\n\t"
 	       :
-	       : "g" (seg_code), "g" (seg_data)
+	       : "g" (code), "g" (data)
 	       : "memory", "%eax"
 	       );
 
-  return ERROR_OK;
-}
-
-/*
- * ends protected mode.
- */
-
-t_error		ia32_pmode_clean(void)
-{
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun dec 19 18:29:32 2010]
+ * updated       julien quintard   [sat jan  8 19:18:23 2011]
  */
 
 /*
@@ -56,7 +56,7 @@ d_segment		glue_segment_dispatch =
     NULL,
     NULL,
     glue_segment_initialize,
-    glue_segment_clean
+    NULL
   };
 
 /*
@@ -131,8 +131,8 @@ t_error			glue_segment_initialize(void)
    * XXX
    */
 
-  if (ia32_pmode_init() != ERROR_OK)
-    MACHINE_ESCAPE("unable to initialize the protected mode");
+  if (architecture_pmode_setup() != ERROR_OK)
+    MACHINE_ESCAPE("unable to set up the protected mode");
 
   /*
    * XXX
@@ -140,28 +140,6 @@ t_error			glue_segment_initialize(void)
 
   if (ia32_segmentation_init() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the IA32 segmentation");
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function cleans the segment manager's glue.
- */
-
-t_error			glue_segment_clean(void)
-{
-  /*
-   * XXX
-   */
-
-  // XXX clean segmentation.
-
-  /*
-   * XXX
-   */
-
-  if (ia32_pmode_clean() != ERROR_OK)
-    MACHINE_ESCAPE("unable to clean the protected mode");
 
   MACHINE_LEAVE();
 }

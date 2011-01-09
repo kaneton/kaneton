@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/idt/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:27:31 2010]
+ * updated       julien quintard   [fri jan  7 20:37:33 2011]
  */
 
 /*
@@ -25,13 +25,13 @@
 
 void			test_architecture_event_idt_01(void)
 {
-  t_ia32_idt_register	idtr;
+  as_idt_register	idtr;
 
   TEST_ENTER();
 
   memset(&idtr, 0, sizeof (idtr));
 
-  SIDT(idtr);
+  ARCHITECTURE_SIDT(idtr);
 
   if (idtr.size != 2048)
     TEST_ERROR("the IDT is not 256 entries wide");
