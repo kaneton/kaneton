@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [fri dec 10 14:47:01 2010]
+# updated       julien quintard   [sun jan  9 21:42:48 2011]
 #
 
 #
@@ -46,7 +46,8 @@ ifeq ($(behaviour),default)
 main:			dependencies $(_KANETON_)
 
 $(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)			\
-			$(_LIBRARY_LO_) $(_MODULES_LO_)
+			$(_LIBRARY_LO_) $(_MODULES_LO_)			\
+			$(_KERNEL_LAYOUT_)
 	$(call env_remove,$(_KANETON_),)
 
 	$(call env_executable,$(_KANETON_),				\

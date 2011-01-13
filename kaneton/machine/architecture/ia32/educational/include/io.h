@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chitecture/ia32/educational/include/io.h
  *
  * created       julien quintard   [fri jan  7 20:00:03 2011]
- * updated       julien quintard   [fri jan  7 20:01:28 2011]
+ * updated       julien quintard   [sun jan  9 22:46:17 2011]
  */
 
 #ifndef ARCHITECTURE_IO_H
@@ -29,5 +29,58 @@
 #define ARCHITECTURE_IO_OUT_8		ARCHITECTURE_OUTB
 #define ARCHITECTURE_IO_OUT_16		ARCHITECTURE_OUTW
 #define ARCHITECTURE_IO_OUT_32		ARCHITECTURE_OUTL
+
+/*
+ * this macro defines the number of bits in an I/O bitmap.
+ */
+
+#define ARCHITECTURE_IO_MAP_BITS	65536
+
+/*
+ * this macro defines the size of an I/O bitmap, in bytes.
+ */
+
+#define ARCHITECTURE_IO_MAP_SIZE	ARCHITECTURE_IO_MAP_BITS / 8
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../io.c
+ */
+
+/*
+ * ../io.c
+ */
+
+t_error			architecture_io_clear(i_task		task);
+
+t_error			architecture_io_set(t_uint8*		map,
+					    t_uint32		port,
+					    t_uint32		value);
+
+t_error			architecture_io_get(t_uint8*		map,
+					    t_uint32		port,
+					    t_uint32*		value);
+
+t_error			architecture_io_grant(i_task		task,
+					      t_uint32		port,
+					      t_uint8		width);
+
+t_error			architecture_io_deny(i_task		task,
+					     t_uint32		port,
+					     t_uint8		width);
+
+t_error			architecture_io_reset(void);
+
+
+/*
+ * eop
+ */
 
 #endif

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/interrupt/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 13:32:36 2010]
+ * updated       julien quintard   [mon jan 10 06:58:34 2011]
  */
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [sat jan  8 17:30:34 2011]
+ * updated       julien quintard   [mon jan 10 21:31:11 2011]
  */
 
 /*
@@ -58,12 +58,14 @@ ARCHITECTURE_HANDLER_SHELL_PROTOTYPES();
  * the segment selector to load on interrupt. XXX
  */
 
+ARCHITECTURE_LINKER_LOCATION(".handler_data")
 t_uint16	ia32_interrupt_ds = 0;
 
 /*
  * the page directory to load on interrupt. XXX
  */
 
+ARCHITECTURE_LINKER_LOCATION(".handler_data")
 t_uint32	ia32_interrupt_pdbr = 0;
 
 /*

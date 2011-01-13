@@ -1,4 +1,4 @@
-// XXX peut etre mettre ca dans pmode.c?
+// XXX peut etre mettre dans miscellaneous.c ou mapping.c
 
 /*
  * ---------- header ----------------------------------------------------------
@@ -7,10 +7,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../architecture/ia32/educational/segment.c
+ * file          /home/mycure/kane...itecture/ia32/educational/segmentation.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:25:22 2007]
- * updated       julien quintard   [thu jan  6 09:04:13 2011]
+ * updated       julien quintard   [sun jan  9 17:53:15 2011]
  */
 
 /*

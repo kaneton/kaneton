@@ -1,75 +1,19 @@
 #
-# ---------- buck -------------------------------------------------------------
-#
-
- cswitch: no io bitmap copy when class < 1
- et puis meme ca s'optimise encore : faire un set de i_port a granter,
-c'est tjs mieux que 8192 bytes a memcpy.
-
---
-
- un truc qui me parait bizarre dans le bootloader: la stack courant
-elle est pas mappee explicitement !
-
---
-
-autre:
- - map_resize, {region,segment}_{split,resize,coalesce}
- - {task,thread}_wait
- - ia32_as_reserve: ajuster les flags G des pte du kas
- - sched_update: optimiser car ca pue
- - set_array_locate : dicho desactivée
-
---
-  on devrait (dans kaneton) fournir la possibilite de creer une capability
-  utilisable une fois, ou dans une periode de temps etc.
-
-  inclure le nom du process dans la capability pour que ce ne soit pas anonyme?
-
-#
 # ---------- mycure -----------------------------------------------------------
 #
 
-- malloc double-free qui devrait peter ou peter un warning
-
---- TEST
-
-- faire un test qui reserve/inject des trucs non-alignes
-
 --- IA32
 
-- renommer diretory and pd et table en pt
-- dans interrupt, on trigger des events (soit on appelle la fonction a la main
-  soit on utiliser event_notify) -> deja ca ca pue, ca devrait etre unifie
-- de plus, on passe un code a la fonction alors que ce n'est pas prevu! pour
-  faire ca il suffit d'ajouter un code dans la partie machine de l'event!
-  -> chercher tous les event_notify et verifier que c'est propre
-     puis corriger event_notify dans event si besoin
-
-- virer les returns dans arch contre des LEAVE (core/glue/platform ont ete verifies)
-- les include guards ainsi que macros et fonction prefixes doivent etre PLATFORM,
-  ARCHITECTURE, GLUE et non IA32. il faut faire ca dans les tests egalement.
-  => surtout dans machine/ia32/ car le reste est fait
+- les include guards ainsi que macros et fonction prefixes doivent etre
+  ARCHITECTURE et non IA32.
 - revoir context.h avec les 2 macros
-- virer mmx, sse et x87? (sinon renommer ia32_*)
-- meme chose avec les CPU?
-- meme chose pour les IPI?
 - dans paging.h, pas clair! on devrait avoir une structure pour: directory entry, table entry. directory et table serait des tableaux de ces structures.
   au lieu de ca, actuellement on a des structures abstraites qui ne sont utilisees que lorsque l'on a besoin en castant!
 - pt_add_page et pd_add_page: ces fonctions devraient etre donnees car elles n'apportent rien et ca fait juste chier l'etudiant
-- commenter/steps toutes les fonctions
-- spinlock.h a virer?
 - verifier que IA32_ENTRY_ADDRESS prend une pde et pte en arguments car
   le test kaneton/as/ia32/mapping a l'air de l'utiliser differemment.
-- on peut fournir le boot loader en .lo pour eviter qu'ils grugent libia32
-
-- chercher les XXX dans le code, il ne doit pas en rester
-
-- mettre les structures d'arch dans la partie machine de _kernel
-
 - il devrait plus y avoir de return ou ERROR_OK/KO
-- ... de IA32
-- ordonner les include dans architecture.h
+- reordonner les include dans architecture.h
 - pas de CORE_
 - chercher les XXX
 
@@ -84,13 +28,28 @@ autre:
   IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_local_jump_pdbr = 0;
   IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_exception_code = 0;
 
-- pourquoi les vars specifiques aux CPUs sont mises dans une section
-  HANDLER?
+- verifier les includes. il y a des fichiers inutiles
+- warning?
+- voir si REGION_OPTION_GLOBAL est utilisee. c'est trop arch-specific
+  LE VIRER!
+- c'est quoi exactement le comportement du flag USED dans les PD/PT?
+- tout mettre dans kernel.machine ou dans le manager associe a l'operation!
+- gdt/idt descriptor -> gdt/idt
+- virer le flag USED et utiliser PRESENT
+- inutile d'inclure architecture.h partout, c'est compte dans kaneton.h
+- XXX dans core/glue/platform/module et test pour etre sur
+  + warnings!
+- rajouter explications types dans cours sur le design
+
+- rajouter du logging dans le systeme de tests pour savoir quel test est
+  en cours, de quel user etc.
+- baisser le timeout?
 
 --- EXPORT
 
 - fini le ARCH=IA32 ce sera tjs IA32/EDUCATIONAL, changer les fichiers
 - bien verifier que ca compiler/clear ie que les Makefiles sont bons
+- on peut fournir le boot loader en .lo pour eviter qu'ils grugent libia32
 
 --- EVALUATION
 
@@ -118,6 +77,24 @@ autre:
 - terminer d'ecrire les cours (fs, scheduling etc.)
 - super test pour departager les gens en fonction de la rapidite -> points
   bonus => 25/20
+- malloc double-free qui devrait peter ou peter un warning
+- page fault dans malloc:
+    int i;
+
+    for (i = 0; i < 1000; i++)
+      {
+        printf("[%u]\n", i);
+
+        i_task t;
+        i_as a;
+
+        assert(task_reserve(TASK_CLASS_KERNEL,
+                            TASK_BEHAVIOUR_KERNEL,
+                            TASK_PRIORITY_KERNEL,
+                            &t) == ERROR_OK);
+
+        assert(as_reserve(t, &a) == ERROR_OK);
+      }
 
 --- LIBRARY
 

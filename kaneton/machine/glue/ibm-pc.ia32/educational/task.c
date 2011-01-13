@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sun dec 19 20:09:23 2010]
+ * updated       julien quintard   [mon jan 10 21:31:32 2011]
  */
 
 /*
@@ -108,8 +108,8 @@ t_error			glue_task_reserve(t_class		class,
    * XXX
    */
 
-  if (ia32_clear_io_bitmap(*id) != ERROR_OK)
-    MACHINE_ESCAPE("unable to clear the IO bitmap");
+  if (architecture_io_clear(*id) != ERROR_OK)
+    MACHINE_ESCAPE("unable to clear the I/O bitmap");
 
   /*
    * XXX

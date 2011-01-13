@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sat jan  8 14:38:54 2011]
+ * updated       julien quintard   [mon jan 10 21:29:41 2011]
  */
 
 /*
@@ -77,7 +77,11 @@ void			glue_event_pagefault(t_id		id,
 	      ctx.eip,
 	      addr);
 
-  /* XXX utiliser le error_code (soit dans o_thread) soit autre part
+  extern t_uint32 _architecture_handler_exception_code;
+
+  int error_code = _architecture_handler_exception_code;
+
+  /* XXX utiliser le error_code (soit dans o_thread) soit autre part */
   module_call(console, print,
 	      "error: page fault !\n"
 	      "  0x%x trying to %s at the address 0x%x requires %s\n",
@@ -85,7 +89,7 @@ void			glue_event_pagefault(t_id		id,
 	      (error_code & 2) ? "write" : "read",
 	      addr,
 	      (error_code & 1) ? "a lower DPL" : "the page to be present");
-  */
+  /* */
 
   ia32_print_context(th);
 

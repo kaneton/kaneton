@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/mapping.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:26:06 2007]
- * updated       julien quintard   [sat jan  8 16:46:39 2011]
+ * updated       julien quintard   [thu jan 13 10:34:37 2011]
  */
 
 /*
@@ -35,234 +35,12 @@
 
 extern m_kernel*	_kernel;
 
+// XXX
+extern at_pd		_architecture_pd;
+
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this function directly maps a chunk of memory.
- *
- * steps:
- *
- * 1) check  if  the needed  page  table  is  present in  the  kernel,
- *    otherwise,  create  it.
- * 2) via the mirroring entry,  add the page-table entry corresponding
- *    to the virtual address.
- * 3) inject the manually mapped region into the kernel address space.
- * 4) invalidate tlb entry.
- */
-
-t_error			ia32_map_chunk(t_vaddr		v,
-				       t_paddr		p,
-				       void*		alloc)
-{
-  i_region		useless;
-  t_ia32_table		pt;
-  t_ia32_page		pg;
-  i_segment		seg;
-  o_region*		reg = alloc;
-  o_segment*		s;
-
-  assert(!(v % ___kaneton$pagesz));
-  assert(!(p % ___kaneton$pagesz));
-
-  if (reg == NULL)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 1)
-   */
-
-  if (ia32_pd_get_table(IA32_PAGE_DIRECTORY_CURRENT,
-			IA32_PAGE_DIRECTORY_ENTRY_INDEX(v), &pt) != ERROR_OK)
-    {
-      if (segment_reserve(_kernel->as,
-			  ___kaneton$pagesz,
-			  PERMISSION_READ | PERMISSION_WRITE,
-			  &seg) != ERROR_OK)
-	MACHINE_ESCAPE("XXX");
-
-      if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-	MACHINE_ESCAPE("XXX");
-
-      if (segment_get(seg, &s) != ERROR_OK)
-	MACHINE_ESCAPE("XXX");
-
-      if (ia32_pt_build(s->address, &pt) != ERROR_OK)
-	MACHINE_ESCAPE("XXX");
-
-      pt.rw = IA32_PAGE_TABLE_WRITABLE;
-      pt.present = 1;
-      pt.user = IA32_PAGE_TABLE_PRIVILEGED;
-      pt.cached = IA32_PAGE_TABLE_CACHED;
-      pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
-
-      if (ia32_pd_add_table(IA32_PAGE_DIRECTORY_CURRENT,
-			    IA32_PAGE_DIRECTORY_ENTRY_INDEX(v),
-			    pt) != ERROR_OK)
-	MACHINE_ESCAPE("XXX");
-
-      architecture_tlb_invalidate(
-	IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
-			   IA32_PAGE_DIRECTORY_ENTRY_INDEX(v)));
-
-      memset((void*)IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
-				       IA32_PAGE_DIRECTORY_ENTRY_INDEX(v)), 0,
-	     ___kaneton$pagesz);
-    }
-
-  /*
-   * 2)
-   */
-
-  pt.vaddr = IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
-				IA32_PAGE_DIRECTORY_ENTRY_INDEX(v));
-
-  pg.rw = IA32_PAGE_WRITABLE;
-  pg.present = 1;
-  pg.user = IA32_PAGE_PRIVILEGED;
-  pg.cached = IA32_PAGE_CACHED;
-  pg.writeback = IA32_PAGE_WRITEBACK;
-  pg.addr = p;
-
-  if (ia32_pt_add_page(&pt, IA32_PAGE_TABLE_ENTRY_INDEX(v), pg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 3)
-   */
-
-  reg->segment = p; // XXX !!!WARNING!!! locate p's segment identifier
-  reg->address = v;
-  reg->offset = 0;
-  reg->size = ___kaneton$pagesz;
-  reg->options = REGION_OPTION_NONE;
-
-  if (region_inject(_kernel->as, reg, &useless) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 4)
-   */
-
-  architecture_tlb_invalidate(v);
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function unmaps a page previously mapped with the map_chunk
- * function.
- *
- * steps:
- *
- * 1) get the page table corresponding to the virtual address.
- * 2) remove, via the mirroring entry, the page-table entry.
- * 3) manually remove the kernel region associated.
- * 4) invalidate translation caches.
- */
-
-t_error			ia32_unmap_chunk(t_vaddr	v)
-{
-
-  t_ia32_table		pt;
-  o_as*			as;
-  i_region		region;
-
-  assert(!(v % ___kaneton$pagesz));
-
-  /*
-   * 1)
-   */
-
-  if (ia32_pd_get_table(IA32_PAGE_DIRECTORY_CURRENT,
-			IA32_PAGE_DIRECTORY_ENTRY_INDEX(v), &pt) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 2)
-   */
-
-  pt.vaddr = IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
-				IA32_PAGE_DIRECTORY_ENTRY_INDEX(v));
-
-  if (ia32_pt_delete_page(&pt, IA32_PAGE_TABLE_ENTRY_INDEX(v)) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 3)
-   */
-
-  if (as_get(_kernel->as, &as) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (region_locate(as->id, v, &region) == ERROR_FALSE)
-    MACHINE_ESCAPE("XXX");
-
-  if (set_remove(as->regions, region) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 4)
-   */
-
-  architecture_tlb_invalidate(v);
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function is an helper for mapping a page directory.
- */
-// XXX utilise 3 fois! ne pas faire de fonction, ce sera plus propre.
-t_error			ia32_map_pd(t_ia32_directory*	pd)
-{
-  /*							     [block::map_pd] */
-
-  t_vaddr		chunk;
-  void*			tmp;
-
-  tmp = malloc(sizeof(o_region));
-
-  if (region_space(_kernel->as, ___kaneton$pagesz, &chunk) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (ia32_map_chunk(chunk, (t_paddr)*pd, tmp) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  // XXX ici on retourne dans le meme argument ca n'a AUCUN sens!
-  *pd = (t_ia32_directory)chunk;
-
-  /*							  [endblock::map_pd] */
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function is an helper for mapping a page table.
- */
-// XXX utilise 3 fois! ne pas faire de fonction, ce sera plus propre.
-t_error			ia32_map_pt(t_ia32_table*	pt)
-{
-  /*							     [block::map_pt] */
-
-  t_vaddr		chunk;
-  void*			tmp;
-
-  tmp = malloc(sizeof(o_region));
-
-  if (region_space(_kernel->as, ___kaneton$pagesz, &chunk) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (ia32_map_chunk(chunk, (t_paddr)pt->paddr, tmp) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  pt->vaddr = chunk;
-
-  /*							  [endblock::map_pt] */
-
-  MACHINE_LEAVE();
-}
 
 /*
  * map a region.
@@ -298,7 +76,7 @@ t_error			ia32_map_region(i_as		asid,
   o_segment*		oseg;
   t_vaddr		vaddr;
   t_paddr		paddr;
-  t_ia32_directory	pd;
+  at_pd			pd;
   t_ia32_table		pt;
   t_ia32_page		pg;
   t_ia32_pde		pde_start;
@@ -346,12 +124,19 @@ t_error			ia32_map_region(i_as		asid,
    * 4)
    */
 
-  pd = (t_ia32_directory)o->machine.pd;
-
   if (asid != _kernel->as)
     {
+      /* XXX[old]
       if (ia32_map_pd(&pd) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
+      */
+      if (architecture_pd_map(o->machine.pd, &pd) != ERROR_OK) // XXX
+	MACHINE_ESCAPE("unable to map the page directory");
+    }
+  else
+    {
+      // XXX identity mapping
+      pd = (at_pd)o->machine.pd;
     }
 
   /*
@@ -375,7 +160,10 @@ t_error			ia32_map_region(i_as		asid,
        * a)
        */
 
+      /* XXX[old]
       if (ia32_pd_get_table(&pd, pde, &pt) != ERROR_OK)
+      */
+      if (!(pd[pde] & ARCHITECTURE_PDE_USED))
 	{
 	  o_segment*	s;
 
@@ -391,28 +179,32 @@ t_error			ia32_map_region(i_as		asid,
 	  if (segment_get(ptseg, &s) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
 
-	  if (ia32_pt_build(s->address, &pt) != ERROR_OK)
-	    MACHINE_ESCAPE("XXX");
+	  pt.paddr = s->address; // XXX pour le map_pt() a venir!
 
-	  pt.rw = IA32_PAGE_TABLE_WRITABLE;
-	  pt.present = 1;
-	  pt.user = IA32_PAGE_TABLE_USER;
-	  pt.cached = IA32_PAGE_TABLE_CACHED; // XXX CACHED
-	  pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
-
-	  if (ia32_pd_add_table(&pd, pde, pt) != ERROR_OK)
+	  if (architecture_pd_insert(pd,
+				     pde,
+				     s->address,
+				     ARCHITECTURE_PDE_PRESENT |
+				     ARCHITECTURE_PDE_RW |
+				     ARCHITECTURE_PDE_USER |
+				     ARCHITECTURE_PDE_PWB |
+				     ARCHITECTURE_PDE_PCE) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
 
 	  clear_pt = 1;
 	}
       else
-	clear_pt = 0;
+	{
+	  clear_pt = 0;
+
+	  pt.paddr = IA32_BASE(pd[pde]);
+	}
 
       /*
        * b)
        */
 
-      if (ia32_map_pt(&pt) != ERROR_OK)
+      if (architecture_pt_map(pt.paddr, (at_pt*)&pt.vaddr) != ERROR_OK) // XXX
 	MACHINE_ESCAPE("XXX");
 
       if (clear_pt)
@@ -435,11 +227,26 @@ t_error			ia32_map_region(i_as		asid,
 	   */
 
 	  pg.addr = paddr;
+
+	  if (architecture_pt_insert((at_pt)pt.vaddr,
+				     pte,
+				     paddr,
+				     ARCHITECTURE_PTE_PRESENT |
+				     (oseg->permissions & PERMISSION_WRITE ?
+				       ARCHITECTURE_PTE_RW :
+				       ARCHITECTURE_PTE_RO) |
+				     (options & REGION_OPTION_PRIVILEGED ?
+				       ARCHITECTURE_PTE_SUPERVISOR :
+				       ARCHITECTURE_PTE_USER) |
+				     ARCHITECTURE_PTE_PWB |
+				     ARCHITECTURE_PTE_PCE |
+				     (options & REGION_OPTION_GLOBAL ?
+				       ARCHITECTURE_PTE_GLOBAL :
+				       ARCHITECTURE_PTE_NONE)) != ERROR_OK)
+	    MACHINE_ESCAPE("unable to add the page to the page table");
+
 	  paddr += ___kaneton$pagesz;
 	  size -= ___kaneton$pagesz;
-
-	  if (ia32_pt_add_page(&pt, pte, pg) != ERROR_OK)
-	    MACHINE_ESCAPE("XXX");
 
 	  /*
 	   * e)
@@ -453,7 +260,7 @@ t_error			ia32_map_region(i_as		asid,
        * f)
        */
 
-      if (ia32_unmap_chunk(pt.vaddr) != ERROR_OK)
+      if (architecture_pt_unmap((at_pt)pt.vaddr) != ERROR_OK) // XXX
 	MACHINE_ESCAPE("XXX");
     }
 
@@ -462,7 +269,7 @@ t_error			ia32_map_region(i_as		asid,
    */
 
   if (asid != _kernel->as)
-    if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_OK)
+    if (architecture_pd_unmap((at_pd)pd) != ERROR_OK) // XXX
       MACHINE_ESCAPE("XXX");
 
   /*						      [endblock::map_region] */
@@ -496,7 +303,7 @@ t_error			ia32_unmap_region(i_as		asid,
   /*						       [block::unmap_region] */
 
   o_as*			o;
-  t_ia32_directory	pd;
+  at_pd			pd;
   t_ia32_table		pt;
   t_ia32_pde		pde_start;
   t_ia32_pde		pde_end;
@@ -519,12 +326,19 @@ t_error			ia32_unmap_region(i_as		asid,
    * 3)
    */
 
-  pd = (t_ia32_directory)o->machine.pd;
-
   if (asid != _kernel->as)
     {
+      /* XXX[old]
       if (ia32_map_pd(&pd) != ERROR_OK)
 	MACHINE_ESCAPE("XXX");
+      */
+      if (architecture_pd_map(o->machine.pd, &pd) != ERROR_OK) // XXX
+	MACHINE_ESCAPE("unable to map the page directory");
+    }
+  else
+    {
+      // XXX identity mapping.
+      pd = (at_pd)o->machine.pd;
     }
 
   /*
@@ -542,14 +356,19 @@ t_error			ia32_unmap_region(i_as		asid,
        * a)
        */
 
+      /* XXX[old]
       if (ia32_pd_get_table(&pd, pde, &pt) != ERROR_OK)
+	MACHINE_ESCAPE("XXX");
+      */
+      if (!(pd[pde] & ARCHITECTURE_PDE_USED))
 	MACHINE_ESCAPE("XXX");
 
       /*
        * b)
        */
 
-      if (ia32_map_pt(&pt) != ERROR_OK)
+      if (architecture_pt_map(IA32_BASE(pd[pde]),
+			      (at_pt*)&pt.vaddr) != ERROR_OK) // XXX
 	MACHINE_ESCAPE("XXX");
 
       /*
@@ -560,7 +379,7 @@ t_error			ia32_unmap_region(i_as		asid,
 	   pte < (pde == pde_end ? pte_end : IA32_PAGE_TABLE_MAX_ENTRIES);
 	   pte++)
 	{
-	  if (ia32_pt_delete_page(&pt, pte) != ERROR_OK)
+	  if (architecture_pt_delete((at_pt)pt.vaddr, pte) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
 
 	  if (asid == _kernel->as)
@@ -571,7 +390,7 @@ t_error			ia32_unmap_region(i_as		asid,
        * d)
        */
 
-      if (ia32_unmap_chunk(pt.vaddr) != ERROR_OK)
+      if (architecture_pt_unmap((at_pt)pt.vaddr) != ERROR_OK) // XXX
 	MACHINE_ESCAPE("XXX");
 
       /*
@@ -582,7 +401,7 @@ t_error			ia32_unmap_region(i_as		asid,
 	{
 	  i_segment	s;
 
-	  if (ia32_pd_delete_table(&pd, pde) != ERROR_OK)
+	  if (architecture_pd_delete((at_pd)pd, pde) != ERROR_OK)
 	    MACHINE_ESCAPE("XXX");
 
 	  if (asid == _kernel->as)
@@ -603,7 +422,7 @@ t_error			ia32_unmap_region(i_as		asid,
    */
 
   if (asid != _kernel->as)
-    if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_OK)
+    if (architecture_pd_unmap(pd) != ERROR_OK) // XXX
       MACHINE_ESCAPE("XXX");
 
   /*						    [endblock::unmap_region] */

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/types.h
  *
  * created       julien quintard   [wed jun  6 22:38:37 2007]
- * updated       julien quintard   [sun dec 19 17:19:47 2010]
+ * updated       julien quintard   [mon jan 10 15:11:49 2011]
  */
 
 #ifndef CORE_TYPES_H
@@ -51,6 +51,7 @@ typedef t_uint64		t_timeslice;
 typedef t_sint32		t_value;
 typedef t_sint64		t_delay;
 typedef t_uint32		t_width;
+typedef t_uint32		t_flags;
 
 /*
  * this stack type.

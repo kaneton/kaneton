@@ -1,19 +1,20 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...chine/architecture/ia32/educational/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:34:11 2007]
+ * updated       julien quintard   [thu jan 13 12:25:39 2011]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * manage page directory.
- *
+ * this file contains functions for managing PDs - Page Directories.
  */
 
 /*
@@ -25,470 +26,498 @@
 #include <architecture/architecture.h>
 
 /*
- * ---------- globals ---------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
 /*
- * active page directory.
- */
-
-t_ia32_directory	ia32_pd;
-
-/*
- * ---------- XXX -------------------------------------------------------------
+ * the kernel manager.
  */
 
 extern m_kernel*	_kernel;
 
-// XXX rajouter option qui reserve ou non une region
-t_error			XXX_ia32_page_map(t_paddr		paddr,
-					  t_vaddr*		vaddr)
-{
-  void*			region;
-
-  region = malloc(sizeof(o_region));
-
-  if (region_space(_kernel->as, ___kaneton$pagesz, vaddr) != ERROR_OK) // XXX kasid?
-    return (ERROR_KO);
-
-  if (ia32_map_chunk(*vaddr, paddr, region) != ERROR_OK)
-    return (ERROR_KO);
-
-  return (ERROR_OK);
-}
-
-t_error			XXX_ia32_page_unmap(t_vaddr		vaddr)
-{
-  return (ia32_unmap_chunk(vaddr)); // XXX
-}
-
-t_error			XXX_ia32_directory_dump(t_paddr		paddr)
-{
-  t_uint32		i;
-  t_vaddr		vaddr;
-  t_ia32_directory	directory;
-
-  if (XXX_ia32_page_map(paddr, &vaddr) != ERROR_OK)
-    return (ERROR_KO);
-
-  module_call(console, print,
-	      "[page directory] paddr=0x%08x, vaddr=0x%08x\n",
-	      paddr, vaddr);
-
-  directory = (t_ia32_directory)vaddr;
-
-  for (i = 0; i < IA32_PAGE_DIRECTORY_MAX_ENTRIES; i++)
-    {
-      if (directory[i] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_P)
-	XXX_ia32_table_dump(directory, i);
-    }
-
-  if (XXX_ia32_page_unmap(vaddr) != ERROR_OK)
-    return (ERROR_KO);
-
-  return (ERROR_OK);
-}
-
-t_error			XXX_ia32_table_dump(t_ia32_directory	directory,
-					    t_uint32		index)
-{
-  t_paddr		paddr;
-  t_vaddr		vaddr;
-  t_uint32		i;
-  t_ia32_pte*		table; // XXX should be t_ia32_table
-
-  paddr = IA32_BASE(directory[index]);
-
-  if (XXX_ia32_page_map(paddr, &vaddr) != ERROR_OK)
-    return (ERROR_KO);
-
-  module_call(console, print,
-	      "  [page table %4u] paddr=0x%08x, vaddr=0x%08x range=[0x%x - 0x%x]\n",
-	 index,
-	 paddr, vaddr,
-	 index * IA32_PAGE_DIRECTORY_MAX_ENTRIES * ___kaneton$pagesz,
-	 (index + 1) * IA32_PAGE_DIRECTORY_MAX_ENTRIES * ___kaneton$pagesz - 1);
-
-  table = (t_ia32_pte*)vaddr;
-
-  for (i = 0; i < IA32_PAGE_TABLE_MAX_ENTRIES; i++)
-    {
-      if (table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USED)
-	{
-	  module_call(console, print,
-		      "    [page table entry %4u] "
-		      "vaddr=0x%08x, paddr=0x%08x, r/w=%d, user/supervisor=%d, accessed=%d dirty=%d\n",
-		 i,
-		 index * IA32_PAGE_TABLE_MAX_ENTRIES * ___kaneton$pagesz + i * ___kaneton$pagesz,
-		 IA32_BASE(table[i]),
-		 !!(table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_RW),
-		 !!(table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_USER),
-		 !!(table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_A),
-		 !!(table[i] & IA32_PAGE_TABLE_ENTRY_FLAG_D));
-	}
-    }
-
-  if (XXX_ia32_page_unmap(vaddr) != ERROR_OK)
-    return (ERROR_KO);
-
-  return (ERROR_OK);
-}
+// XXX
+extern at_pd		_architecture_pd;
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
 /*
- * dumps a page directory and its tables.
+ * this function dumps the given mapped page directory.
+ *
+ * steps:
+ *
+ * 1) retrieve the given mapped page directory's physical address.
+ * 2) display a general message.
+ * 3) go through the present page directory entries.
+ *   a) build the entry's flag string.
+ *   b) display the page directory entry.
+ *   c) map the referenced page table.
+ *   d) dump the page table.
+ *   e) unmap the page table.
  */
 
-t_error			ia32_pd_dump(t_ia32_directory*		dir)
+t_error			architecture_pd_dump(at_pd		pd)
 {
+  t_paddr		paddr;
+  at_pdei		i;
 
-  /*							    [block::pd_dump] */
+  /*
+   * 1)
+   */
 
-  t_uint32		i;
-  t_ia32_pde*		d;
+  if (as_physical(_kernel->as, (t_vaddr)pd, &paddr) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the page directory's physical address");
 
-  if (dir == IA32_PAGE_DIRECTORY_CURRENT)
-    d = ia32_pd;
-  else
-    d = *dir;
+  /*
+   * 2)
+   */
 
-  for (i = 0; i < IA32_PAGE_DIRECTORY_MAX_ENTRIES; i++)
+  module_call(console, message,
+	      '#', "[page directory] paddr(0x%08x) vaddr(0x%08x)\n",
+	      paddr, (t_vaddr)pd);
+
+  /*
+   * 3)
+   */
+
+  for (i = 0; i < ARCHITECTURE_PD_SIZE; i++)
     {
-      if (d[i] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_P)
+      if (pd[i] & ARCHITECTURE_PDE_PRESENT)
 	{
-	  module_call(console, print,
-		      "entry %d\n", i);
+	  at_pt		pt;
+	  char		flags[7];
 
-	  ia32_pt_dump((t_ia32_pte*)(IA32_BASE(d[i])),
-		       i);
+	  /*
+	   * a)
+	   */
+
+	  if (pd[i] & ARCHITECTURE_PDE_PRESENT)
+	    flags[0] = 'p';
+	  else
+	    flags[0] = '.';
+
+	  if (pd[i] & ARCHITECTURE_PDE_RW)
+	    flags[1] = 'w';
+	  else
+	    flags[1] = 'r';
+
+	  if (pd[i] & ARCHITECTURE_PDE_USER)
+	    flags[2] = 'u';
+	  else
+	    flags[2] = 's';
+
+	  if (pd[i] & ARCHITECTURE_PDE_PWT)
+	    flags[3] = 't';
+	  else
+	    flags[3] = 'b';
+
+	  if (pd[i] & ARCHITECTURE_PDE_PCD)
+	    flags[4] = '.';
+	  else
+	    flags[4] = 'c';
+
+	  if (pd[i] & ARCHITECTURE_PDE_ACCESSED)
+	    flags[5] = 'a';
+	  else
+	    flags[5] = '.';
+
+	  flags[6] = '\0';
+
+	  /*
+	   * b)
+	   */
+
+	  module_call(console, message,
+		      '#',
+		      "  [page directory entry %4u] address(0x%08x) flags(%s) "
+		      "range(0x%08x - 0x%08x)\n",
+		      i,
+		      ARCHITECTURE_PDE_ADDRESS(pd[i]),
+		      flags,
+		      i * ARCHITECTURE_PD_SIZE * ___kaneton$pagesz,
+		      (i + 1) * ARCHITECTURE_PD_SIZE * ___kaneton$pagesz - 1);
+
+	  /*
+	   * c)
+	   */
+
+	  if (architecture_pt_map(ARCHITECTURE_PDE_ADDRESS(pd[i]),
+				  &pt) != ERROR_OK)
+	    MACHINE_ESCAPE("unable to map the page table");
+
+	  /*
+	   * d)
+	   */
+
+	  if (architecture_pt_dump(pt,
+				   2 * MODULE_CONSOLE_MARGIN_SHIFT) !=
+	      ERROR_OK)
+	    MACHINE_ESCAPE("unable to dump the %uth page directory entry");
+
+	  /*
+	   * e)
+	   */
+
+	  if (architecture_pt_unmap(pt) != ERROR_OK)
+	    MACHINE_ESCAPE("unable to unmap the page table");
 	}
     }
 
-  /*							 [endblock::pd_dump] */
-
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }
 
-/*							   [block::pd_build] */
-
 /*
- * builds a new page directory.
+ * this function builds a mapped page directory.
  *
  * steps:
  *
- * 1) checks address alignement.
- * 2) fills the record.
+ * 1) initialize the page directory's entries making them all non-present.
  */
 
-t_error			ia32_pd_build(t_paddr			base,
-				      t_ia32_directory*		directory)
+t_error			architecture_pd_build(at_pd		pd)
 {
-  assert(directory != NULL);
-
   /*
    * 1)
    */
 
-  if (IA32_BASE(base) != base)
-    return ERROR_KO;
+  memset(pd, 0x0, ___kaneton$pagesz);
 
-  /*
-   * 2)
-   */
-
-  *directory = (t_ia32_directory)base;
-
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }
 
-/*							[endblock::pd_build] */
-
-/*							    [block::pd_base] */
-
 /*
- * gets the base of a pd.
- *
- */
-
-t_error			ia32_pd_base(t_ia32_directory*		dir,
-				     t_paddr*			base)
-{
-  t_ia32_pde*		d;
-
-  assert(base != NULL);
-
-  /*
-   * 1)
-   */
-
-  if (dir != IA32_PAGE_DIRECTORY_CURRENT)
-    d = *dir;
-  else
-    d = ia32_pd;
-
-  /*
-   * 2)
-   */
-
-  *base = IA32_BASE(d);
-
-  return ERROR_OK;
-}
-
-/*							 [endblock::pd_base] */
-
-/*
- * activates a directory.
- *						  [block::pd_activate::comment]
+ * this function inserts a page table reference in the given page directory.
  *
  * steps:
  *
- * 1) computes the pdbr value.
- * 2) loads the pdbr.
- * 3) sets the global variable.
- *					       [endblock::pd_activate::comment]
+ * 0) verify the arguments.
+ * 1) construct the page directory entry.
  */
 
-t_error			ia32_pd_activate(t_ia32_directory	dir,
-					 t_uint32		cached,
-					 t_uint32		writeback)
-{
-  /*							[block::pd_activate] */
-  t_uint32		pdbr;
-  t_uint32		mask = 0xfffff000;
 
-  assert(cached == IA32_PAGE_DIRECTORY_CACHED ||
-	 cached == IA32_PAGE_DIRECTORY_NOTCACHED);
-  assert(writeback == IA32_PAGE_DIRECTORY_WRITEBACK ||
-	 writeback == IA32_PAGE_DIRECTORY_WRITETHROUGH);
+t_error			architecture_pd_insert(at_pd		pd,
+					       at_pdei		index,
+					       t_paddr		address,
+					       t_flags		flags)
+{
+  /*
+   * 0)
+   */
+
+  if (index >= ARCHITECTURE_PT_SIZE)
+    MACHINE_ESCAPE("out-of-bound page table entry index");
+
+  if (ARCHITECTURE_PAGING_BASE(address) != address)
+    MACHINE_ESCAPE("the given address is not aligned");
 
   /*
    * 1)
    */
 
-  if (cached == IA32_PAGE_DIRECTORY_NOTCACHED)
-    mask |= (1 << 4);
-  if (writeback == IA32_PAGE_DIRECTORY_WRITETHROUGH)
-    mask |= (1 << 3);
+  pd[index] =
+    ARCHITECTURE_PAGING_BASE(address) |
+    flags |
+    ARCHITECTURE_PDE_USED;
 
-  pdbr = ((t_uint32)dir & mask);
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function deletes a page directory entry by resetting its memory.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) reset the page directory entry.
+ */
+
+t_error			architecture_pd_delete(at_pd		pd,
+					       at_pdei		index)
+{
+  /*
+   * 0)
+   */
+
+  if (index >= ARCHITECTURE_PT_SIZE)
+    MACHINE_ESCAPE("out-of-bound page table entry index");
+
+  if (!(pd[index] & ARCHITECTURE_PDE_USED))
+    MACHINE_ESCAPE("this page directory entry does not seem to be used");
+
+  /*
+   * 1)
+   */
+
+  pd[index] = 0x0;
+
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function maps a page directory in the kernel's address space, taking
+ * care to register the page used to map it in the region manager.
+ *
+ * note that the mirroring technique is used to prevent this function
+ * from looping infinitely i.e mapping a page table requires it to be mapped
+ * which may require the page table referencing the page to be mapped to
+ * be mapped as well and so on and so forth.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) reserve a page in the virtual space for the page directory to be mapped.
+ * 2) compute the address of the kernel's page table responsible for
+ *    referencing the reserved page. note that the mirroring technique
+ *    is used for locating the page table. therefore, if this page table
+ *    is present, the kernel can access it without mapping it.
+ * 3) if this page table required for referencing the page---through
+ *    which the page directory is about to be mapped---is not present,
+ *    create it.
+ *   a) reserve a segment for the page table to be created.
+ *   b) make the segment a system one.
+ *   c) retrieve the reserved segment object.
+ *   d) update the page directory, hence referencing the new page table.
+ *   e) build the page table. note that the mirrored address is used from
+ *      now on. this is why the page table does not have to be mapped.
+ * 4) update the page table, referencing the page through which the given
+ *    page directory is being mapped.
+ * 5) locate the segment in which the given page directory lies.
+ * 6) allocate and fill a region object.
+ * 7) inject the region in the kernel's address space in order to secure
+ *    it.
+ * 8) return the address of the mapped page directory.
+ */
+
+t_error			architecture_pd_map(t_paddr		paddr,
+					    at_pd*		table)
+{
+  i_segment		segment;
+  i_region		region;
+  t_vaddr		vaddr;
+  o_region*		o;
+  at_pt			pt;
+
+  /*
+   * 0)
+   */
+
+  if (paddr % ___kaneton$pagesz)
+    MACHINE_ESCAPE("the physical address is not aligned");
+
+  if (table == NULL)
+    MACHINE_ESCAPE("the 'table' argument is null");
+
+  /*
+   * 1)
+   */
+
+  if (region_space(_kernel->as,
+		   ___kaneton$pagesz,
+		   &vaddr) != ERROR_OK)
+    MACHINE_ESCAPE("unable to find space within the kernel's address space");
 
   /*
    * 2)
    */
 
-  ARCHITECTURE_LCR3(pdbr);
+  pt = (at_pt)ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR,
+					  ARCHITECTURE_PD_INDEX(vaddr));
 
   /*
    * 3)
    */
 
-  ia32_pd = dir;
+  if (!(_architecture_pd[ARCHITECTURE_PD_INDEX(vaddr)] &
+	ARCHITECTURE_PDE_USED))
+    {
+      o_segment*	o;
 
-  /*						     [endblock::pd_activate] */
+      /*
+       * a)
+       */
 
-  return ERROR_OK;
+      if (segment_reserve(_kernel->as,
+			  ___kaneton$pagesz,
+			  PERMISSION_READ | PERMISSION_WRITE,
+			  &segment) != ERROR_OK)
+	MACHINE_ESCAPE("unable to reserve a segment");
+
+      /*
+       * b)
+       */
+
+      if (segment_type(segment, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
+	MACHINE_ESCAPE("unable to change the segment's type to system");
+
+      /*
+       * c)
+       */
+
+      if (segment_get(segment, &o) != ERROR_OK)
+	MACHINE_ESCAPE("unable to retrieve the segment object");
+
+      /*
+       * d)
+       */
+
+      if (architecture_pd_insert(_architecture_pd,
+				 ARCHITECTURE_PD_INDEX(vaddr),
+				 o->address,
+				 ARCHITECTURE_PDE_PRESENT |
+				 ARCHITECTURE_PDE_RW |
+				 ARCHITECTURE_PDE_SUPERVISOR |
+				 ARCHITECTURE_PDE_PWB |
+				 ARCHITECTURE_PDE_PCE) != ERROR_OK)
+	MACHINE_ESCAPE("unable to insert an entry in the page directory");
+
+      /*
+       * e)
+       */
+
+      if (architecture_pt_build(pt) != ERROR_OK)
+	MACHINE_ESCAPE("unable to build the page table");
+    }
+
+  /*
+   * 4)
+   */
+
+  if (architecture_pt_insert(pt,
+			     ARCHITECTURE_PT_INDEX(vaddr),
+			     paddr,
+			     ARCHITECTURE_PTE_PRESENT |
+			     ARCHITECTURE_PTE_RW |
+			     ARCHITECTURE_PTE_SUPERVISOR |
+			     ARCHITECTURE_PTE_PWB |
+			     ARCHITECTURE_PTE_PCE) != ERROR_OK)
+    MACHINE_ESCAPE("unable to add the page to the page table");
+
+  /*
+   * 5)
+   */
+
+  if (segment_locate(paddr, &segment) == ERROR_FALSE)
+    MACHINE_ESCAPE("unable to locate the segment to map");
+
+  /*
+   * 6)
+   */
+
+  if ((o = malloc(sizeof(o_region))) == NULL)
+    MACHINE_ESCAPE("unable to allocate memory for the region object");
+
+  o->segment = segment;
+  o->address = vaddr;
+  o->offset = 0x0;
+  o->size = ___kaneton$pagesz;
+  o->options = REGION_OPTION_NONE;
+
+  /*
+   * 7)
+   */
+
+  if (region_inject(_kernel->as, o, &region) != ERROR_OK)
+    MACHINE_ESCAPE("unable to inject the region associated with the mapped "
+		   "page");
+
+  /*
+   * 8)
+   */
+
+  *table = (at_pd)vaddr;
+
+  MACHINE_LEAVE();
 }
 
 /*
- * get the page-directory base register corresponding to a page-directory.
- */
-
-t_error			ia32_pd_get_cr3(t_uint32*		cr3,
-					t_ia32_directory	dir,
-					t_uint32		cached,
-					t_uint32		writeback)
-{
-  /*							 [block::pd_get_cr3] */
-  t_uint32		mask = 0xfffff000;
-
-  assert(cr3 != NULL);
-  assert(cached == IA32_PAGE_DIRECTORY_CACHED ||
-	 cached == IA32_PAGE_DIRECTORY_NOTCACHED);
-  assert(writeback == IA32_PAGE_DIRECTORY_WRITEBACK ||
-	 writeback == IA32_PAGE_DIRECTORY_WRITETHROUGH);
-
-  if (cached == IA32_PAGE_DIRECTORY_NOTCACHED)
-    mask |= (1 << 4);
-  if (writeback == IA32_PAGE_DIRECTORY_WRITETHROUGH)
-    mask |= (1 << 3);
-
-  *cr3 = ((t_uint32)dir & mask);
-
-  /*						      [endblock::pd_get_cr3] */
-
-  return (ERROR_OK);
-}
-
-/*
- * adds a table to a directory.
- *						 [block::pd_add_table::comment]
+ * this function unmaps the given page directory.
  *
  * steps:
  *
- * 1) gets the directory address.
- * 2) setups the entry.
- * 3) adds the entry.
- *					      [endblock::pd_add_table::comment]
+ * 0) verify the arguments.
+ * 1) if there is no kernel page directory entry referecing the given
+ *    address, return an error as the given page directory does not seem
+ *    to be mapped.
+ * 2) compute the mirroring address of the page table referencing the
+ *    given address.
+ * 3) delete the page table entry referencing the given address.
+ * 4) retrieve the kernel address space object.
+ * 5) locate the region corresponding to the given page directory to unmap.
+ * 6) remove this region from the kernel address space, making it
+ *    available.
+ * 7) invalidate the virtual address as no longer used.
  */
 
-
-t_error			ia32_pd_add_table(t_ia32_directory*	dir,
-					  t_uint16		entry,
-					  t_ia32_table		table)
+t_error			architecture_pd_unmap(at_pd		table)
 {
-  /*						       [block::pd_add_table] */
+  i_region		region;
+  t_vaddr		vaddr;
+  at_pt			pt;
+  o_as*			o;
 
-  t_ia32_pde*		d;
-  t_uint32		opts = 0;
+  /*
+   * 0)
+   */
 
-  assert(entry < IA32_PAGE_DIRECTORY_MAX_ENTRIES);
+  vaddr = (t_vaddr)table;
+
+  if (vaddr % ___kaneton$pagesz)
+    MACHINE_ESCAPE("the page directory address is not aligned");
 
   /*
    * 1)
    */
 
-  if (dir != IA32_PAGE_DIRECTORY_CURRENT)
-    d = *dir;
-  else
-    d = ia32_pd;
+  if (!(_architecture_pd[ARCHITECTURE_PD_INDEX(vaddr)] &
+	ARCHITECTURE_PDE_USED))
+    MACHINE_ESCAPE("the page table referencing the page directory does "
+		   "not seem to be used");
 
   /*
    * 2)
    */
 
-  if (table.present)
-    opts |= IA32_PAGE_DIRECTORY_ENTRY_FLAG_P;
-
-  if (table.cached == IA32_PAGE_TABLE_NOTCACHED)
-    opts |= IA32_PAGE_DIRECTORY_ENTRY_FLAG_CD;
-  if (table.writeback == IA32_PAGE_TABLE_WRITETHROUGH)
-    opts |= IA32_PAGE_DIRECTORY_ENTRY_FLAG_WT;
-
-  opts |= (table.rw == IA32_PAGE_TABLE_WRITABLE ?
-	   IA32_PAGE_DIRECTORY_ENTRY_FLAG_RW :
-	   IA32_PAGE_DIRECTORY_ENTRY_FLAG_RO);
-
-  opts |= (table.user == IA32_PAGE_TABLE_USER ?
-	   IA32_PAGE_DIRECTORY_ENTRY_FLAG_USER :
-	   IA32_PAGE_DIRECTORY_ENTRY_FLAG_SUPERVISOR);
-
-  opts |= IA32_PAGE_DIRECTORY_ENTRY_FLAG_USED;
+  pt = (at_pt)ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR,
+					  ARCHITECTURE_PD_INDEX(vaddr));
 
   /*
    * 3)
    */
 
-  d[entry] = IA32_BASE(table.paddr) | opts;
-
-  /*						    [endblock::pd_add_table] */
-
-  return ERROR_OK;
-}
-
-/*
- * gets a table entry from a directory.
- *						 [block::pd_get_table::comment]
- *
- * steps:
- *
- * 1) gets the directory address.
- * 2) checks entry validity.
- * 3) fills the page record.
- *					      [endblock::pd_get_table::comment]
- */
-
-t_error			ia32_pd_get_table(t_ia32_directory*	dir,
-					  t_uint16		entry,
-					  t_ia32_table*		table)
-{
-  /*						       [block::pd_get_table] */
-
-  t_ia32_directory	d;
-
-  assert(table != NULL);
+  if (architecture_pt_delete(pt,
+			     ARCHITECTURE_PT_INDEX(vaddr)) != ERROR_OK)
+    MACHINE_ESCAPE("unable to delete the page table entry referencing "
+		   "the mapped page directory");
 
   /*
-   * 1)
+   * 4)
    */
 
-  if (dir != IA32_PAGE_DIRECTORY_CURRENT)
-    d = *dir;
-  else
-    d = ia32_pd;
+  if (as_get(_kernel->as, &o) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the kernel address space object");
 
   /*
-   * 2)
+   * 5)
    */
 
-  if (!(d[entry] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_USED))
-    return ERROR_KO;
+  if (region_locate(o->id, vaddr, &region) == ERROR_FALSE)
+    MACHINE_ESCAPE("unable to locate the region associated with the "
+		   "page directory");
 
   /*
-   * 3)
+   * 6)
    */
 
-  table->rw = (d[entry] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_RW) ?
-    IA32_PAGE_TABLE_WRITABLE : IA32_PAGE_TABLE_READONLY;
-  table->present = !!(d[entry] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_P);
-  table->user = (d[entry] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_USER) ?
-    IA32_PAGE_TABLE_USER : IA32_PAGE_TABLE_PRIVILEGED;
-  table->writeback = (d[entry] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_WT) ?
-    IA32_PAGE_TABLE_WRITETHROUGH : IA32_PAGE_TABLE_WRITEBACK;
-  table->cached = (d[entry] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_CD) ?
-    IA32_PAGE_TABLE_NOTCACHED : IA32_PAGE_TABLE_CACHED;
-  table->paddr = IA32_BASE(d[entry]);
-
-  /*						    [endblock::pd_get_table] */
-
-  return ERROR_OK;
-}
-
-/*
- * deletes an entry.
- *					      [block::pd_delete_table::comment]
- *
- * steps:
- *
- * 1) gets the directory pointer.
- * 2) checks if the entry is a valid one.
- * 3) resets the entry.
- *					   [endblock::pd_delete_table::comment]
- */
-
-t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
-					     t_uint16		entry)
-{
-  /*						    [block::pd_delete_table] */
-
-  t_ia32_directory	d;
+  if (set_remove(o->regions, region) != ERROR_OK)
+    MACHINE_ESCAPE("unable to remove the region from the address space");
 
   /*
-   * 1)
+   * 7)
    */
 
-  if (dir != IA32_PAGE_DIRECTORY_CURRENT)
-    d = *dir;
-  else
-    d = ia32_pd;
+  if (architecture_tlb_invalidate(vaddr) != ERROR_OK)
+    MACHINE_ESCAPE("unable to invalidate the page directory address");
 
-  /*
-   * 2)
-   */
-
-  if (!(d[entry] & IA32_PAGE_DIRECTORY_ENTRY_FLAG_USED))
-    return ERROR_KO;
-
-  /*
-   * 3)
-   */
-
-  d[entry] = 0;
-
-  /*						 [endblock::pd_delete_table] */
-
-  return ERROR_OK;
+  MACHINE_LEAVE();
 }

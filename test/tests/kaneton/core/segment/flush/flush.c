@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/segment/flush/flush.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 14:00:04 2010]
+ * updated       julien quintard   [tue jan 11 16:34:38 2011]
  */
 
 /*
@@ -57,7 +57,10 @@ void			test_core_segment_flush(void)
 
       n = 2 * (i + 1);
 
-      if (segment_reserve(as, n * ___kaneton$pagesz, PERMISSION_READ, &seg) != ERROR_OK)
+      if (segment_reserve(as,
+			  n * ___kaneton$pagesz,
+			  PERMISSION_READ,
+			  &seg) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
 
       if (segment_get(seg, &s) != ERROR_OK)
@@ -84,12 +87,6 @@ void			test_core_segment_flush(void)
 
   if (after_sz != 0)
     TEST_ERROR("segments seem to be reamining in the set after flush");
-
-  if (as_release(as) != ERROR_OK)
-    TEST_ERROR("[as_release] error");
-
-  if (task_release(task) != ERROR_OK)
-    TEST_ERROR("[task_release] error");
 
   TEST_SIGNATURE(i23932rkfargl320g940);
 

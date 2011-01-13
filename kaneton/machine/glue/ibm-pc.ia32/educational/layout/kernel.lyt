@@ -15,11 +15,10 @@ SECTIONS
     {
       *(.text*)
       . = ALIGN(0x1000);
-      _handler_begin = .;
-      *(.handler)
-      *(.handler.*)
+      _handler_code_begin = .;
+      *(.handler_code)
       . = ALIGN(0x1000);
-      _handler_end = .;
+      _handler_code_end = .;
     } : uniq
 
   .rodata :
@@ -30,5 +29,9 @@ SECTIONS
   .data :
     {
       *(.data*) *(.bss) *(COMMON)
+      _handler_data_begin = .;
+      *(.handler_data)
+      . = ALIGN(0x1000);
+      _handler_data_end = .;
     } : uniq
 }

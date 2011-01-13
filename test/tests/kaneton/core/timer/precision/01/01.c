@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/timer/precision/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [thu dec 16 13:20:26 2010]
+ * updated       julien quintard   [sun jan  9 18:55:37 2011]
  */
 
 /*

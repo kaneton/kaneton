@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri dec 17 16:10:15 2010]
+ * updated       julien quintard   [thu jan 13 10:37:40 2011]
  */
 
 /*
@@ -94,22 +94,36 @@ void			test_architecture_as_switch(void)
   ptr1 = (int*)r->address;
   ptr2 = (int*)addr;
 
+  /* XXX[old]
   if (ia32_pd_activate(o->machine.pd,
 		       IA32_PAGE_DIRECTORY_CACHED,
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     TEST_ERROR("[ia32_pd_activate] error: unable to activate the task's "
 	       "address space");
+  */
+  if (architecture_paging_import((at_pd)o->machine.pd, // XXX
+				 ARCHITECTURE_REGISTER_CR3_PCE |
+				 ARCHITECTURE_REGISTER_CR3_PWB) != ERROR_OK)
+    TEST_ERROR("[architecture_paging_import] error: unable to activate "
+	       "the task's address space");
 
   *ptr1 = 0x41424344;
   i = *ptr1;
   *ptr2 = 0x40414243;
   j = *ptr2;
 
+  /* XXX[old]
   if (ia32_pd_activate(kdir,
 		       IA32_PAGE_DIRECTORY_CACHED,
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     TEST_ERROR("[ia32_pd_activate] error: unable to activate the kernel's "
 	       "address space");
+  */
+  if (architecture_paging_import((at_pd)kdir, // XXX
+				 ARCHITECTURE_REGISTER_CR3_PCE |
+				 ARCHITECTURE_REGISTER_CR3_PWB) != ERROR_OK)
+    TEST_ERROR("[architecture_paging_import] error: unable to activate "
+	       "the kernel's address space");
 
   if (i != 0x41424344)
     TEST_ERROR("the data written through the kernel address space is invalid "

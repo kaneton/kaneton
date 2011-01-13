@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [sun dec 19 17:51:23 2010]
+ * updated       julien quintard   [mon jan 10 08:39:03 2011]
  */
 
 /*
@@ -51,7 +51,7 @@ d_region		glue_region_dispatch =
     glue_region_release,
     NULL,
     glue_region_initialize,
-    glue_region_clean
+    NULL
 
     /*							[endblock::dispatch] */
   };
@@ -180,24 +180,8 @@ t_error			glue_region_initialize(t_vaddr		base,
    * XXX
    */
 
-  if (ia32_paging_init() != ERROR_OK)
-    MACHINE_ESCAPE("unable to initialize the paging");
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function cleans the region manager's glue.
- */
-
-t_error			glue_region_clean(void)
-{
-  /*
-   * XXX
-   */
-
-  if (ia32_paging_clean() != ERROR_OK)
-    MACHINE_ESCAPE("unable to clean the paging");
+  if (architecture_paging_setup() != ERROR_OK)
+    MACHINE_ESCAPE("unable to set up the paging");
 
   MACHINE_LEAVE();
 }

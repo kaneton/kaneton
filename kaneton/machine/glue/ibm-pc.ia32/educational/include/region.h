@@ -82,8 +82,6 @@ t_error			glue_region_release(i_as		asid,
 t_error			glue_region_initialize(t_vaddr		base,
 					       t_vsize		size);
 
-t_error			glue_region_clean(void);
-
 
 /*
  * eop

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../ia32/educational/include/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       julien quintard   [sat jan  8 17:28:30 2011]
+ * updated       julien quintard   [wed jan 12 03:52:26 2011]
  */
 
 #ifndef ARCHITECTURE_ARCHITECTURE_H
@@ -55,18 +55,21 @@
 #include <architecture/handler.h>
 #include <architecture/idt.h>
 #include <architecture/io.h>
-#include <architecture/tlb.h>
-
-
-#include <architecture/tss.h>
-#include <architecture/pmode.h>
+#include <architecture/linker.h>
 #include <architecture/paging.h>
-#include <architecture/segment.h>
+#include <architecture/pd.h>
+#include <architecture/pmode.h>
+#include <architecture/privilege.h>
+#include <architecture/pt.h>
+#include <architecture/register.h>
+#include <architecture/tlb.h>
+#include <architecture/tss.h>
+#include <architecture/types.h>
+
+
+#include <architecture/segmentation.h>
 #include <architecture/mapping.h>
 #include <architecture/context.h>
-#include <architecture/types.h>
 #include <architecture/virtual.h>
-#include <architecture/linker.h>
-#include <architecture/privilege.h>
 
 #endif

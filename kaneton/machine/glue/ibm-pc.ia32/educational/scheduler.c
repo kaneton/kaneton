@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sun dec 19 20:06:22 2010]
+ * updated       julien quintard   [sun jan  9 18:56:37 2011]
  */
 
 /*

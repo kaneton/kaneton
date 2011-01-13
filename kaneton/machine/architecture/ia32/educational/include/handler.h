@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/handler.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       julien quintard   [sat jan  8 16:19:32 2011]
+ * updated       julien quintard   [mon jan 10 06:40:51 2011]
  */
 
 #ifndef ARCHITECTURE_HANDLER_H
@@ -29,14 +29,6 @@
 					ARCHITECTURE_IDT_SYSCALL_SIZE
 
 /*
- * this macro defines an attribute which is to be attached to handlers
- * in order to place them at a precise location in the kernel binary image.
- */
-
-#define ARCHITECTURE_HANDLER_SECTION					\
-  __attribute__ ((section(".handler")))
-
-/*
  * ---------- macro-functions -------------------------------------------------
  */
 
@@ -46,7 +38,7 @@
  */
 
 #define ARCHITECTURE_HANDLER_SHELL_EXCEPTION_CODE(_n_)		       	\
-  asm	(".section .handler				\n"		\
+  asm	(".section .handler_code			\n"		\
 	 "architecture_handler_shell_exception" #_n_ ":	\n"		\
 	 "	cli					\n"		\
 	 IA32_SAVE_CONTEXT()						\
@@ -68,7 +60,7 @@
  */
 
 #define ARCHITECTURE_HANDLER_SHELL_EXCEPTION_NOCODE(_n_)		\
-  asm	(".section .handler				\n"		\
+  asm	(".section .handler_code			\n"		\
 	 "architecture_handler_shell_exception" #_n_ ":	\n"		\
 	 "	cli					\n"		\
 	 "	addl $-4, %esp				\n"		\
@@ -90,7 +82,7 @@
  */
 
 #define ARCHITECTURE_HANDLER_SHELL_IRQ(_n_)		       		\
-  asm	(".section .handler				\n"		\
+  asm	(".section .handler_code			\n"		\
 	 "architecture_handler_shell_irq" #_n_ ":	\n"		\
 	 "	cli					\n"		\
 	 "	addl $-4, %esp				\n"		\
@@ -109,7 +101,7 @@
  */
 
 #define ARCHITECTURE_HANDLER_SHELL_SYSCALL(_n_)		       		\
-  asm	(".section .handler				\n"		\
+  asm	(".section .handler_code			\n"		\
 	 "architecture_handler_shell_syscall" #_n_ ":	\n"		\
 	 "	cli					\n"		\
 	 "	addl $-4, %esp				\n"		\

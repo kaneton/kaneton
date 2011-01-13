@@ -26,13 +26,17 @@
  */
 
 // XXX stack dans le kernel qui est utilisee pour traiter une interrupt
+ARCHITECTURE_LINKER_LOCATION(".handler_data")
 t_uint32	ia32_local_interrupt_stack = 0;
 
 // XXX pour le context switch: la stack kernel du thread a sched + son PDBR
 // XXX la thread's pile est utilisee lors d'une int/exc pour sauvegarder
 //  le contexte. a ne pas confondre avec ia32_local_interrupt_stack qui
 //  est la stack utilisee pour traiter une interrupt par le kernel.
+ARCHITECTURE_LINKER_LOCATION(".handler_data")
 t_uint32	ia32_local_jump_stack = 0;
+
+ARCHITECTURE_LINKER_LOCATION(".handler_data")
 t_uint32	ia32_local_jump_pdbr = 0;
 
 /*
@@ -54,147 +58,6 @@ extern m_thread*	_thread;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this functions clears the io permission bitmap of a task.
- */
-
-t_error			ia32_clear_io_bitmap(i_task		tskid)
-{
-  o_task*		o;
-
-  if (task_get(tskid, &o) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  memset(&o->machine.io.map, 0xFF, 8192); // XXX sizeof iomap
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function duplicate the io permission bitmap of a task to another.
- */
-
-t_error			ia32_duplicate_io_bitmap(i_task		old,
-						 i_task		new)
-{
-  o_task*		from;
-  o_task*		to;
-
-  if (task_get(old, &from) != ERROR_OK || task_get(new, &to) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  memcpy(to->machine.io.map, from->machine.io.map, 8192); // XXX sizeof ioamp
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function modifies a bit in a bitmap.
- */
-
-static void		io_bitmap_set(t_uint8*		bitmap,
-				      t_uint32		port,
-				      t_uint32		value)
-{
-  if (value)
-    bitmap[port / 8] |= (1 << (port % 8));
-  else
-    bitmap[port / 8] &= ~(1 << (port % 8));
-}
-
-/*
- * this function checks one or more bits in a bitmap. bits to '1' have
- * higher precedence.
- */
-
-static t_uint8		io_bitmap_isset(t_uint8*	bitmap,
-					t_uint32	port,
-					t_uint8		consecutive)
-{
-  t_uint8		i;
-
-  for (i = 0 ; i < consecutive; i++)
-    if ((bitmap[port / 8] & (1 << (port % 8))) != 0)
-      return 1;
-  return 0;
-}
-
-/*
- * this function allow I/O to a port.
- *
- * steps:
- *
- * 1) check the port id.
- * 2) get the task.
- * 3) change permission bitmap.
- * 4) if we are updating the current task, then flushes the bitmap.
- */
-
-t_error			ia32_set_io_bitmap(i_task		tskid,
-					   i_port		id,
-					   t_uint8		width,
-					   t_uint8		allow)
-{
-  o_task*		o;
-  i_task		current;
-  t_uint8		i;
-  as_tss*		tss;
-
-  (void) io_bitmap_isset;
-
-  /*
-   * 1)
-   */
-
-  if (id + width >= 65536)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 2)
-   */
-
-  if (task_get(tskid, &o) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 3)
-   */
-
-  for (i = 0; i < width; i++)
-    io_bitmap_set(o->machine.io.map, id + i, !allow);
-
-  /*
-   * 4)
-   */
-
-  if (task_current(&current) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  tss = (as_tss*)_thread->machine.tss;
-
-  if (current == tskid)
-    memcpy((t_uint8*)tss + tss->io,
-	   &o->machine.io.map,
-	   8192); // XXX sizeof
-  else
-    o->machine.io.flush = BOOLEAN_TRUE;
-
-  MACHINE_LEAVE();
-}
-
-/*
- * setup current I/O PL to 0.
- */
-
-t_error			ia32_reset_iopl(void)
-{
-  asm volatile("pushf\n\t"
-	       "andl $0xFFFFCFFF, %ss:(%esp)\n\t"
-	       "popf");
-
-  MACHINE_LEAVE();
-}
 
 /*
  * this function initializes a blank context.
@@ -614,11 +477,18 @@ t_error			ia32_context_switch(i_thread		current,
    * 3)
    */
 
+  /* XXX[old]
   if (ia32_pd_get_cr3(&cr3,
 		      (t_ia32_directory)as->machine.pd,
 		      IA32_PAGE_DIRECTORY_CACHED,
 		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
+  */
+  if (architecture_paging_cr3((at_pd)as->machine.pd, // XXX
+			      ARCHITECTURE_REGISTER_CR3_PCE |
+			      ARCHITECTURE_REGISTER_CR3_PWB,
+			      &cr3) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the CR3 register's content");
 
   /* XXX
   printf("CONTEXT SWITCH: [cr3] 0x%x 0x%x\n",

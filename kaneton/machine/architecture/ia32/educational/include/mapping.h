@@ -32,16 +32,6 @@
  * ../mapping.c
  */
 
-t_error			ia32_map_chunk(t_vaddr		v,
-				       t_paddr		p,
-				       void*		alloc);
-
-t_error			ia32_unmap_chunk(t_vaddr	v);
-
-t_error			ia32_map_pd(t_ia32_directory*	pd);
-
-t_error			ia32_map_pt(t_ia32_table*	pt);
-
 t_error			ia32_map_region(i_as		asid,
 					i_segment	segid,
 					t_paddr		offset,

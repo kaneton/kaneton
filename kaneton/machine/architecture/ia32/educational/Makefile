@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [sat jan  8 16:45:40 2011]
+# updated       julien quintard   [tue jan 11 17:11:26 2011]
 #
 
 #
@@ -37,15 +37,16 @@ ARCHITECTURE_C		:=	context.c				\
 				gdt.c					\
 				handler.c				\
 				idt.c					\
+				io.c					\
+				pmode.c					\
 				tlb.c					\
+				tss.c					\
+				paging.c				\
 \
 				mapping.c				\
-				paging.c				\
 				pd.c					\
-				pmode.c					\
 				pt.c					\
-				segment.c				\
-				tss.c					\
+				segmentation.c				\
 				virtual.c				
 
 ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)
@@ -54,14 +55,15 @@ ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/handler.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/idt.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/io.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/paging.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/tlb.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	\
 \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/mapping.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/misc.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/paging.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/pmode.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/segment.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/segmentation.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
 
 #

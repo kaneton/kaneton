@@ -54,6 +54,7 @@ extern t_vaddr		_handler_data_end;
  * XXX
  */
 
+extern at_pd			_architecture_pd;
 extern as_gdt_descriptor	_architecture_gdt;
 extern as_idt_descriptor	_architecture_idt;
 
@@ -104,21 +105,29 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    */
 
   o->machine.pd = _init->machine.pd;
-
+  /* XXX
   if (ia32_pd_activate((t_ia32_directory)o->machine.pd,
 		       IA32_PAGE_DIRECTORY_CACHED,
 		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
+  */
+
+  if (architecture_paging_import((at_pd)o->machine.pd, // XXX
+				 ARCHITECTURE_REGISTER_CR3_PCE |
+				 ARCHITECTURE_REGISTER_CR3_PWB) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   /*
    * 3)
    */
-
   // XXX o->machine.pd est une paddr. dans glue/init.h d'ailleurs eviter
   // de filer une structure car le kernel pourrait vouloir utiliser une
   // autre structure. il vaut mieux se contenter d'un adresse physique.
+  /* XXX[old]
   if (ia32_pt_build(o->machine.pd, &pt) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
+  */
+  pt.paddr = o->machine.pd; // XXX
 
   pt.present = 1;
   pt.rw = IA32_PAGE_TABLE_WRITABLE;
@@ -126,11 +135,22 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
   pt.cached = IA32_PAGE_TABLE_CACHED;
   pt.writeback = IA32_PAGE_TABLE_WRITEBACK;
 
-  pd = (t_ia32_directory)o->machine.pd;
-
+  pd = (t_ia32_directory)o->machine.pd; // XXX identity mapping
+  /* XXX[old]
   if (ia32_pd_add_table(&pd, // XXX pq & ici?
 			IA32_PAGE_DIRECTORY_MIRROR,
 			pt) != ERROR_OK)
+    MACHINE_ESCAPE("XXX");
+  */
+
+  if (architecture_pd_insert((at_pd)o->machine.pd, // XXX
+			     IA32_PAGE_DIRECTORY_MIRROR,
+			     o->machine.pd,
+			     ARCHITECTURE_PDE_PRESENT |
+			     ARCHITECTURE_PDE_RW |
+			     ARCHITECTURE_PDE_SUPERVISOR |
+			     ARCHITECTURE_PDE_PWB |
+			     ARCHITECTURE_PDE_PCE) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   /*
@@ -149,7 +169,7 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
                                        // pour extraire l'id ou le generer
                                        // avec SEGMENT_IDENTIFIER() au pire!
   preg->offset = 0;
-  preg->size = IA32_PAGE_TABLE_MAX_ENTRIES * ___kaneton$pagesz; // XXX
+  preg->size = IA32_PAGE_TABLE_MAX_ENTRIES * ___kaneton$pagesz; // XXX on reserve toutes les entrees du mirroring i.e pour acceder a toutes les page tables kernel
   preg->options = REGION_OPTION_NONE;
 
   if (region_inject(asid, preg, &useless) != ERROR_OK)
@@ -178,10 +198,14 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
       for (pde = pde_start; pde <= pde_end; pde++)
 	{
 	  if (pde != IA32_PAGE_DIRECTORY_MIRROR &&
-	      ia32_pd_get_table(&pd, // XXX & ?
+	      /* XXX[old]
+	      ia32_pd_get_table(&pd,
 				pde,
 				&pt) == ERROR_OK)
+	      */
+	      pd[pde] & ARCHITECTURE_PDE_USED)
 	    {
+	      pt.paddr = IA32_BASE(pd[pde]);
 	      pt.vaddr = pt.paddr;
 
 	      for (pte = (pde == pde_start ? pte_start : 0);
@@ -189,7 +213,9 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 			  IA32_PAGE_TABLE_MAX_ENTRIES);
 		   pte++)
 		{
-		  ia32_pt_delete_page(&pt, pte);
+		  if (((at_pt)pt.vaddr)[pte] & ARCHITECTURE_PTE_USED)
+		    if (architecture_pt_delete((at_pt)pt.vaddr, pte) != ERROR_OK)
+		      MACHINE_ESCAPE("XXX");
 		}
 	    }
 	}
@@ -217,10 +243,15 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
 
       for (pde = pde_start; pde <= pde_end; pde++)
 	{
-	  if (ia32_pd_get_table(&pd, // XXX & ?
+	  /* XXX[old]
+	  if (ia32_pd_get_table(&pd,
 				pde,
 				&pt) == ERROR_OK)
+	  */
+	  if (pd[pde] & ARCHITECTURE_PDE_USED)
 	    {
+	      pt.paddr = IA32_BASE(pd[pde]);
+
 	      i_segment		s;
 
 	      if (segment_locate(pt.paddr, &s) == ERROR_FALSE)
@@ -250,12 +281,19 @@ t_error			ia32_kernel_as_initialize(i_as		asid)
    * 8)
    */
 
+
+  if (architecture_paging_cr3(pd,
+			      ARCHITECTURE_REGISTER_CR3_PCE |
+			      ARCHITECTURE_REGISTER_CR3_PWB,
+			      (at_cr3*)&ia32_interrupt_pdbr) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the CR3 register's content");
+  /* XXX[old]
   if (ia32_pd_get_cr3((t_uint32*)&ia32_interrupt_pdbr,
 		      pd,
 		      IA32_PAGE_DIRECTORY_CACHED,
 		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
-
+  */
   MACHINE_LEAVE();
 }
 
@@ -322,7 +360,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
   i_segment	        seg;
   i_region		reg;
   o_region*		preg;
-  t_ia32_directory	pd;
+  at_pd			pd;
   o_segment*		s;
 
   /*
@@ -354,11 +392,15 @@ t_error			ia32_task_as_initialize(i_as		asid)
 
   o->machine.pd = s->address;
 
-  pd = (t_ia32_directory)o->machine.pd;
-
+  /* XXX[old]
   if (ia32_map_pd(&pd) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
+  */
 
+  if (architecture_pd_map(o->machine.pd, &pd) != ERROR_OK) // XXX
+    MACHINE_ESCAPE("unable to map the page directory");
+
+  // XXX build instead
   memset((void*)pd, 0, ___kaneton$pagesz);
 
   /*
@@ -366,7 +408,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
    */
 
   // XXX normal pd = vaddr
-  if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_OK)
+  if (architecture_pd_unmap((at_pd)pd) != ERROR_OK) // XXX
     MACHINE_ESCAPE("XXX");
 
   /*
@@ -447,14 +489,7 @@ t_error			ia32_task_as_initialize(i_as		asid)
   // des as de taches non-kernel :)
   if (asid != _kernel->as)
     {
-      // XXX on map le kernel code/data car lors d'une interruption,
-      // XXX on arrive dans une page qui contient l'ISR.
-      // XXX dans la version educationa, on switch dans l'AS kernel
-      // XXX a chaque fois pour eviter de propager les modifs de page
-      // XXX directory/table des que le kernel alloue dynamiquement des
-      // XXX donnees ou d'utiliser du mapping de porc a la linux. cela dit,
-      // XXX l'ISR doit connaitre l'AS du kernel. il faut donc mappe les
-      // XXX donnees du kernel ainsi que son code (pour le code de l'ISR).
+      // XXX faire des region_locate ici
 
       /* XXX
 	 if (region_reserve(asid,

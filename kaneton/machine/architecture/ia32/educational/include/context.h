@@ -173,18 +173,6 @@ extern t_uint32	ia32_local_jump_pdbr;
  * ../context.c
  */
 
-t_error			ia32_clear_io_bitmap(i_task		tskid);
-
-t_error			ia32_duplicate_io_bitmap(i_task		old,
-						 i_task		new);
-
-t_error			ia32_set_io_bitmap(i_task		tskid,
-					   i_port		id,
-					   t_uint8		width,
-					   t_uint8		allow);
-
-t_error			ia32_reset_iopl(void);
-
 t_error			ia32_init_context(i_task		taskid,
 					  i_thread		threadid);
 

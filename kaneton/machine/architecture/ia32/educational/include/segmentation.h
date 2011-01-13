@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...hitecture/ia32/generic/include/segment.h
+ * file          /home/mycure/kane.../ia32/educational/include/segmentation.h
  *
  * created       matthieu bucchianeri   [mon dec 24 19:27:38 2007]
- * updated       matthieu bucchianeri   [mon dec 24 19:28:20 2007]
+ * updated       julien quintard   [sun jan  9 22:44:40 2011]
  */
 
 #ifndef ARCHITECTURE_SEGMENT_H
@@ -23,11 +23,11 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *	../segment.c
+ *	../segmentation.c
  */
 
 /*
- * ../segment.c
+ * ../segmentation.c
  */
 
 t_error			ia32_segment_read(i_region		segid,

@@ -1,23 +1,69 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...ecture/ia32/educational/include/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue mar 13 11:24:14 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * declares paging structures, macros, etc.
- *
+ * updated       julien quintard   [wed jan 12 03:56:05 2011]
  */
 
 #ifndef ARCHITECTURE_PAGING_H
 #define ARCHITECTURE_PAGING_H	1
+
+/*
+ * ---------- macro-functions -------------------------------------------------
+ */
+
+/*
+ * return the aligned base of a given address.
+ */
+
+#define ARCHITECTURE_PAGING_BASE(_vaddr_)				\
+  ((_vaddr_) & 0xfffff000)
+
+/*
+ * computes a virtual address according to the given directory and table
+ * entries.
+ */
+#define ARCHITECTURE_PAGING_ADDRESS(_pde_, _pte_)			\
+  (t_vaddr)(((_pde_) << 22) | ((_pte_) << 12))
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <architecture/pd.h>
+#include <architecture/pt.h>
+#include <architecture/register.h>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -27,13 +73,12 @@
  * misc
  */
 
-// XXX -> ENTRIES/NENTRIES instead of MAX_ENTRIES
-#define IA32_PAGE_DIRECTORY_MAX_ENTRIES			1024
-#define IA32_PAGE_DIRECTORY_NOTCACHED			0
-#define IA32_PAGE_DIRECTORY_CACHED			1
-#define IA32_PAGE_DIRECTORY_WRITETHROUGH		0
-#define IA32_PAGE_DIRECTORY_WRITEBACK			1
-#define IA32_PAGE_DIRECTORY_CURRENT			NULL
+#define IA32_PAGE_DIRECTORY_MAX_ENTRIES                 1024
+#define IA32_PAGE_DIRECTORY_NOTCACHED                   0
+#define IA32_PAGE_DIRECTORY_CACHED                      1
+#define IA32_PAGE_DIRECTORY_WRITETHROUGH                0
+#define IA32_PAGE_DIRECTORY_WRITEBACK                   1
+#define IA32_PAGE_DIRECTORY_CURRENT                     NULL
 
 #define IA32_PAGE_TABLE_MAX_ENTRIES				1024
 #define IA32_PAGE_TABLE_NOTCACHED			0
@@ -45,6 +90,15 @@
 #define IA32_PAGE_TABLE_PRIVILEGED			0
 #define IA32_PAGE_TABLE_USER				1
 
+#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_A                (1 << 5)
+#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_CD               (1 << 4)
+#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_WT               (1 << 3)
+#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_USER             (1 << 2)
+#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_SUPERVISOR       (0 << 2)
+#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_RO               (0 << 1)
+#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_RW               (1 << 1)
+#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_P                (1 << 0)
+
 #define IA32_PAGE_NOTCACHED				0
 #define IA32_PAGE_CACHED				1
 #define IA32_PAGE_WRITETHROUGH				0
@@ -55,19 +109,6 @@
 #define IA32_PAGE_USER					1
 #define IA32_PAGE_NONGLOBAL				0
 #define IA32_PAGE_GLOBAL				1
-
-/*
- * page directory entry flags
- */
-
-#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_A		(1 << 5)
-#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_CD		(1 << 4)
-#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_WT		(1 << 3)
-#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_USER		(1 << 2)
-#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_SUPERVISOR	(0 << 2)
-#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_RO		(0 << 1)
-#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_RW		(1 << 1)
-#define IA32_PAGE_DIRECTORY_ENTRY_FLAG_P		(1 << 0)
 
 /*
  * the following flags are not arch-managed. they are "available" bits of the
@@ -184,14 +225,12 @@ typedef struct
   t_uint8	writeback;
 }		t_ia32_table;
 
+#include <architecture/pd.h>
+
+// XXX
 typedef t_uint32		t_ia32_pde;
 typedef t_uint32		t_ia32_pte;
-
-/*
- * abstract record for directory
- */
-
-typedef t_ia32_pde* t_ia32_directory;
+typedef at_pde*			t_ia32_directory;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -205,74 +244,61 @@ typedef t_ia32_pde* t_ia32_directory;
  * ../paging.c
  */
 
-t_error			ia32_paging_init(void);
+t_error			architecture_paging_enable(void);
 
-t_error			ia32_paging_clean(void);
+t_error			architecture_paging_setup(void);
+
+t_error			architecture_paging_cr3(at_pd		pd,
+						t_flags		flags,
+						at_cr3*		cr3);
+
+t_error			architecture_paging_import(at_pd	pd,
+						   t_flags	flags);
 
 
 /*
  * ../pd.c
  */
 
-t_error			XXX_ia32_page_map(t_paddr		paddr,
-					  t_vaddr*		vaddr);
+t_error			architecture_pd_dump(at_pd		pd);
 
-t_error			XXX_ia32_page_unmap(t_vaddr		vaddr);
+t_error			architecture_pd_build(at_pd		pd);
 
-t_error			XXX_ia32_directory_dump(t_paddr		paddr);
+t_error			architecture_pd_insert(at_pd		pd,
+					       at_pdei		index,
+					       t_paddr		address,
+					       t_flags		flags);
 
-t_error			XXX_ia32_table_dump(t_ia32_directory	directory,
-					    t_uint32		index);
+t_error			architecture_pd_delete(at_pd		pd,
+					       at_pdei		index);
 
-t_error			ia32_pd_dump(t_ia32_directory*		dir);
+t_error			architecture_pd_map(t_paddr		paddr,
+					    at_pd*		table);
 
-t_error			ia32_pd_build(t_paddr			base,
-				      t_ia32_directory*		directory);
-
-t_error			ia32_pd_base(t_ia32_directory*		dir,
-				     t_paddr*			base);
-
-t_error			ia32_pd_activate(t_ia32_directory	dir,
-					 t_uint32		cached,
-					 t_uint32		writeback);
-
-t_error			ia32_pd_get_cr3(t_uint32*		cr3,
-					t_ia32_directory	dir,
-					t_uint32		cached,
-					t_uint32		writeback);
-
-t_error			ia32_pd_add_table(t_ia32_directory*	dir,
-					  t_uint16		entry,
-					  t_ia32_table		table);
-
-t_error			ia32_pd_get_table(t_ia32_directory*	dir,
-					  t_uint16		entry,
-					  t_ia32_table*		table);
-
-t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
-					     t_uint16		entry);
+t_error			architecture_pd_unmap(at_pd		table);
 
 
 /*
  * ../pt.c
  */
 
-t_error			ia32_pt_dump(t_ia32_pte*		tab,
-				     int			pde);
+t_error			architecture_pt_dump(at_pt		pt,
+					     mt_margin		margin);
 
-t_error			ia32_pt_build(t_paddr			base,
-				      t_ia32_table*		table);
+t_error			architecture_pt_build(at_pt		pt);
 
-t_error			ia32_pt_add_page(t_ia32_table*		tab,
-					 t_uint16		entry,
-					 t_ia32_page		page);
+t_error			architecture_pt_insert(at_pt		pt,
+					       at_ptei		index,
+					       t_paddr		address,
+					       t_flags		flags);
 
-t_error			ia32_pt_get_page(t_ia32_table*		tab,
-					 t_uint16		entry,
-					 t_ia32_page*		page);
+t_error			architecture_pt_delete(at_pt		pt,
+					       at_ptei		index);
 
-t_error			ia32_pt_delete_page(t_ia32_table*	tab,
-					    t_uint16		entry);
+t_error			architecture_pt_map(t_paddr		paddr,
+					    at_pt*		table);
+
+t_error			architecture_pt_unmap(at_pt		table);
 
 
 /*

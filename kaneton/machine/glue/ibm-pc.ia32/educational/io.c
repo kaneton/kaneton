@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       julien quintard   [sun dec 19 17:32:56 2010]
+ * updated       julien quintard   [sun jan  9 22:50:43 2011]
  */
 
 /*
@@ -54,15 +54,13 @@ d_io			glue_io_dispatch =
 /*
  * this function enables I/Os on the given port for the given task
  * by properly setting the I/O bitmap.
- *
- * XXX
  */
 
 t_error			glue_io_grant(i_task			task,
 				      i_port			port,
 				      t_width			width)
 {
-  if (ia32_set_io_bitmap(task, port, width, 1) != ERROR_OK)
+  if (architecture_io_grant(task, port, width) != ERROR_OK)
     MACHINE_ESCAPE("unable to set the I/O bitmap");
 
   MACHINE_LEAVE();
@@ -70,22 +68,20 @@ t_error			glue_io_grant(i_task			task,
 
 /*
  * this function denies access on the given I/O port.
- *
- * XXX
  */
 
 t_error			glue_io_deny(i_task			task,
 				     i_port			port,
 				     t_width			width)
 {
-  if (ia32_set_io_bitmap(task, port, width, 0) != ERROR_OK)
+  if (architecture_io_deny(task, port, width) != ERROR_OK)
     MACHINE_ESCAPE("unable to set the I/O bitmap");
 
   MACHINE_LEAVE();
 }
 
 /*
- * XXX
+ * this function reads data from one or more I/O registers.
  */
 
 t_error			glue_io_read(i_task			task,
@@ -125,7 +121,7 @@ t_error			glue_io_read(i_task			task,
 }
 
 /*
- * XXX
+ * this function writes data to one or more I/O ports.
  */
 
 t_error			glue_io_write(i_task			task,
@@ -170,7 +166,7 @@ t_error			glue_io_write(i_task			task,
 
 t_error			glue_io_initialize(void)
 {
-  if (ia32_reset_iopl() != ERROR_OK)
+  if (architecture_io_reset() != ERROR_OK)
     MACHINE_ESCAPE("unable to reset the IOPL - I/O Privilege Level");
 
   MACHINE_LEAVE();

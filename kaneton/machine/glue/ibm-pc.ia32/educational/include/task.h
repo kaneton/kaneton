@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/task.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [sun dec 19 14:10:24 2010]
+ * updated       julien quintard   [sun jan  9 22:28:23 2011]
  */
 
 #ifndef GLUE_TASK_H
@@ -59,7 +59,7 @@
   {									\
     struct								\
     {									\
-      t_uint8			map[8192];				\
+      t_uint8			map[ARCHITECTURE_IO_MAP_SIZE];		\
       t_boolean			flush;					\
     }				io;					\
   }				machine;
