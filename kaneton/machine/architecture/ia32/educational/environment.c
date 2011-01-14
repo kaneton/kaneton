@@ -8,13 +8,17 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [fri jan 14 13:40:04 2011]
+ * updated       julien quintard   [fri jan 14 17:08:38 2011]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * this file contains functions for initializing the environments of a
+ * task, especially regarding its address space.
+ *
+ * note that the kernel is treated separately from the servers i.e drivers,
+ * services and guests.
  *
  * [XXX:improvement] in the server initialization, needless to map the kernel
  *                   code and stack. instead the handler shells should be
@@ -72,7 +76,30 @@ extern as_idt_descriptor	_architecture_idt; // XXX
  *
  * steps:
  *
- * XXX
+ * 1) retrieve the address space objec.
+ * 2) set the kernel address space's page directory by importing the
+ *    page directory set up by the boot loader.
+ * 3) generate the PDBR - Page Directory Base Register, also known as
+ *    the CR3, based on the page directory's physical address and some flags.
+ * 4) set the page directory virtual address as being an identity mapping
+ *    of the physical address. this is how the boot loader set things up.
+ * 5) set the current page directory as being the kernel's one by updating
+ *    the microprocessor CR3 register.
+ * 6) update the kernel page directory---which is assumed to have been mapped
+ *    by the boot loader through the identity mapping technique---in order
+ *    to set up the mirroring entry. this entry wastes the last 4MB
+ *    of memory and are used for accessing the kernel page directory and
+ *    tables without mapping anything, hence preventing infinite loops.
+ *    note that the entry references the page directory itself, making the
+ *    page directory act as a page table whenever accessed through the
+ *    mirror page directory entry.
+ * 7) the last 4MB of virtual memory are not accessible since the mirroring
+ *    page directory entry and the referenced page table's entries---the
+ *    page directory itself---are used for the mirroring mechanism. these
+ *    4MB are wasted and must therefore not be reservable or the kernel may
+ *    end up overwritten the mirroring entries. a region covering the last
+ *    4MB of virtual memory is therefore injected.
+ * 8) XXX
  */
 
 t_error			architecture_environment_kernel(i_as	id)
@@ -113,17 +140,17 @@ t_error			architecture_environment_kernel(i_as	id)
    * 3)
    */
 
-  pd = (at_pd)as->machine.pd; // XXX identity mapping to come!
+  if (architecture_paging_cr3(as->machine.pd,
+			      ARCHITECTURE_REGISTER_CR3_PCE |
+			      ARCHITECTURE_REGISTER_CR3_PWB,
+			      &ia32_interrupt_pdbr) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the CR3 register's content");
 
   /*
    * 4)
    */
 
-  if (architecture_paging_cr3(pd,
-			      ARCHITECTURE_REGISTER_CR3_PCE |
-			      ARCHITECTURE_REGISTER_CR3_PWB,
-			      &ia32_interrupt_pdbr) != ERROR_OK)
-    MACHINE_ESCAPE("unable to build the CR3 register's content");
+  pd = (at_pd)as->machine.pd;
 
   /*
    * 5)
@@ -137,7 +164,6 @@ t_error			architecture_environment_kernel(i_as	id)
    * 6)
    */
 
-  // XXX mirroring entry
   if (architecture_pd_insert(pd,
 			     ARCHITECTURE_PD_MIRROR,
 			     as->machine.pd,
@@ -152,10 +178,6 @@ t_error			architecture_environment_kernel(i_as	id)
    * 7)
    */
 
-  // XXX a noter que l'on inject pas de segment ni de region pour le
-  // page directory car ils sont dans init segment/regions et seront
-  // injectes dans task_initialize()
-
   if ((r = malloc(sizeof(o_region))) == NULL)
     MACHINE_ESCAPE("unable to allocate memory for the region object");
 
@@ -165,20 +187,14 @@ t_error			architecture_environment_kernel(i_as	id)
                                        // pour extraire l'id ou le generer
                                        // avec SEGMENT_IDENTIFIER() au pire!
   r->offset = 0x0;
-  // XXX on reserve toutes les entrees du mirroring i.e pour acceder a
-  // toutes les page tables kernel
   r->size = ARCHITECTURE_PT_SIZE * ___kaneton$pagesz;
   r->options = REGION_OPTION_NONE;
-
-  /*
-   * 8)
-   */
 
   if (region_inject(as->id, r, &useless) != ERROR_OK)
     MACHINE_ESCAPE("unable to inject the mirroring region");
 
   /*
-   * 9)
+   * 8)
    */
 
   pde.start = 0;
@@ -259,7 +275,7 @@ t_error			architecture_environment_kernel(i_as	id)
     }
 
   /*
-   * 10)
+   * 9)
    */
 
   for (i = 0; i < _init->nregions; i++)
@@ -320,7 +336,7 @@ t_error			architecture_environment_kernel(i_as	id)
     }
 
   /*
-   * 11)
+   * 10)
    */
 
   if (architecture_tlb_flush() != ERROR_OK)
@@ -330,7 +346,26 @@ t_error			architecture_environment_kernel(i_as	id)
 }
 
 /*
- * XXX
+ * this function sets up the environment of a server i.e drivers, services
+ * and guests.
+ *
+ * steps:
+ *
+ * 1) retrieve the address space object.
+ * 2) reserve a system segment.
+ * 3) use this segment for the given address space's page directory.
+ * 4) map the page directory, initialize it and unmap it.
+ * 5) locate the segment containing the system's TSS and map it in
+ *    the given address space. note that the TSS is mapped at the same
+ *    virtual address as in the kernel.
+ * 6) locate the segment containing the system's GDT and map it in the
+ *    given address space, again at the same virtual address as the kernel's.
+ * 7) locate the segment containing the system's IDT and map it in the
+ *    given address space, again at the same virtual address as the kernel's.
+ * 8) locate the segment containing the kernel code and map it in the given
+ *    address space. note that the identity mapping technique is used here.
+ * 9) locate the segment containing the kernel stack and map it in the given
+ *    address space, note that the identity mapping technique is used here.
  */
 
 t_error			architecture_environment_server(i_as	id)
@@ -359,49 +394,33 @@ t_error			architecture_environment_server(i_as	id)
 		      &segment) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve a segment");
 
-  /*
-   * 3)
-   */
-
   if (segment_type(segment, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("unable to change the segment's type");
-
-  /*
-   * 4)
-   */
 
   if (segment_get(segment, &s) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
   /*
-   * 5)
+   * 3)
    */
 
   as->machine.pd = s->address;
 
   /*
-   * 6)
+   * 4)
    */
 
   if (architecture_pd_map(as->machine.pd, &pd) != ERROR_OK)
     MACHINE_ESCAPE("unable to map the page directory");
 
-  /*
-   * 7)
-   */
-
   if (architecture_pd_build(pd) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the page directory");
-
-  /*
-   * 8)
-   */
 
   if (architecture_pd_unmap(pd) != ERROR_OK)
     MACHINE_ESCAPE("unable to unmap the page directory");
 
   /*
-   * 9)
+   * 5)
    */
 
   if (region_locate(_kernel->as,
@@ -409,19 +428,9 @@ t_error			architecture_environment_server(i_as	id)
 		    &region) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the TSS lies");
 
-  /*
-   * 10)
-   */
-
   if (region_get(_kernel->as, region, &r) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
-  /*
-   * 11)
-   */
-
-  // XXX force the mapping so that the TSS gets mapped at the same
-  // location in every as.
   if (region_reserve(as->id,
 		     r->segment,
 		     0x0,
@@ -434,7 +443,7 @@ t_error			architecture_environment_server(i_as	id)
     MACHINE_ESCAPE("unable to reserve the region mapping the TSS");
 
   /*
-   * 12)
+   * 6)
    */
 
   if (region_locate(_kernel->as,
@@ -442,18 +451,9 @@ t_error			architecture_environment_server(i_as	id)
 		    &region) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the GDT lies");
 
-  /*
-   * 13)
-   */
-
   if (region_get(_kernel->as, region, &r) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
-  /*
-   * 14)
-   */
-
-  // XXX meme chose on force
   if (region_reserve(as->id,
 		     r->segment,
 		     0x0,
@@ -466,7 +466,7 @@ t_error			architecture_environment_server(i_as	id)
     MACHINE_ESCAPE("unable to reserve the region mapping the GDT");
 
   /*
-   * 15)
+   * 7)
    */
 
   if (region_locate(_kernel->as,
@@ -474,18 +474,9 @@ t_error			architecture_environment_server(i_as	id)
 		    &region) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the IDT lies");
 
-  /*
-   * 16)
-   */
-
   if (region_get(_kernel->as, region, &r) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
-  /*
-   * 17)
-   */
-
-  // XXX meme chose on force.
   if (region_reserve(as->id,
 		     r->segment,
 		     0x0,
@@ -498,7 +489,7 @@ t_error			architecture_environment_server(i_as	id)
     MACHINE_ESCAPE("unable to reserve the region mapping the IDT");
 
   /*
-   * 18)
+   * 8)
    */
 
   /* XXX
@@ -529,23 +520,20 @@ t_error			architecture_environment_server(i_as	id)
     MACHINE_ESCAPE("unable to locate the segment which contains the "
 		   "kernel code");
 
-  /*
-   * 19)
-   */
-
-  // XXX identity mapping for the kernel code.
   if (region_reserve(as->id,
 		     segment,
 		     0x0,
 		     REGION_OPTION_FORCE |
-		     REGION_OPTION_GLOBAL,
+		     REGION_OPTION_GLOBAL, // [XXX] cannot put PRIVILEGED here
+		                           // or guests will crash whenever
+		                           // an interrupt occurs!
 		     (t_vaddr)_init->kcode,
 		     (t_vsize)_init->kcodesz,
 		     &region) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the kernel code");
 
   /*
-   * 20)
+   * 9)
    */
 
   if (segment_locate(_init->kstack,
@@ -553,11 +541,6 @@ t_error			architecture_environment_server(i_as	id)
     MACHINE_ESCAPE("unable to locate the segment which contains the "
 		   "kernel stack");
 
-  /*
-   * 21)
-   */
-
-  // XXX identity mapping for the kernel stack.
   if (region_reserve(as->id,
 		     segment,
 		     0x0,

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/as/mapping/mapping.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 13 23:06:28 2011]
+ * updated       julien quintard   [fri jan 14 14:26:20 2011]
  */
 
 /*
@@ -25,7 +25,7 @@
 
 extern m_as*		_as;
 
-// XXX
+// XXX + j'ai vire 3 lignes a ce test
 extern at_pd		_architecture_pd;
 
 /*
@@ -103,7 +103,7 @@ void			test_architecture_as_mapping(void)
 			  0);
 		   pte < (pde == pde_end ?
 			  pte_end :
-			  IA32_PAGE_TABLE_MAX_ENTRIES);
+			  ARCHITECTURE_PT_SIZE);
 		   pte++)
 		{
 		  if (ARCHITECTURE_PTE_ADDRESS(pt[pte]) != paddr)
@@ -119,10 +119,6 @@ void			test_architecture_as_mapping(void)
 		  paddr += ___kaneton$pagesz;
 		}
 	    }
-
-	  if (0 && start < IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR, 0))
-	    for (; size > 0; size--, p++)
-	      *p = *p;
         }
     }
 

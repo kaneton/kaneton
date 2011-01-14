@@ -88,8 +88,6 @@ t_error			glue_task_reserve(t_class		class,
 					  t_priority		prior,
 					  i_task*		id);
 
-t_error			glue_task_initialize(void);
-
 
 /*
  * eop

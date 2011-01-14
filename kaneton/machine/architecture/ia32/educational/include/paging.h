@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ecture/ia32/educational/include/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri jan 14 14:21:00 2011]
+ * updated       julien quintard   [fri jan 14 14:55:30 2011]
  */
 
 #ifndef ARCHITECTURE_PAGING_H
@@ -59,7 +59,7 @@ t_error			architecture_paging_enable(void);
 
 t_error			architecture_paging_setup(void);
 
-t_error			architecture_paging_cr3(at_pd		pd,
+t_error			architecture_paging_cr3(t_paddr		pd,
 						t_flags		flags,
 						at_cr3*		cr3);
 

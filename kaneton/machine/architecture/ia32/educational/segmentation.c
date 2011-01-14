@@ -8,13 +8,16 @@
  * file          /home/mycure/kane...itecture/ia32/educational/segmentation.c
  *
  * created       julien quintard   [fri jan 14 13:51:10 2011]
- * updated       julien quintard   [fri jan 14 13:52:43 2011]
+ * updated       julien quintard   [fri jan 14 14:50:30 2011]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * this file contains functionalities to managing the IA32 segmentation.
+ *
+ * note however that most of the functionalities are included in the pmode.c
+ * file.
  */
 
 /*
@@ -37,7 +40,22 @@ extern t_uint16		ia32_interrupt_ds;
  */
 
 /*
- * XXX
+ * this function sets up the IA32 segmentation by registering the code and
+ * data segments for the various task classes: kernel, driver, service and
+ * guest.
+ *
+ * steps:
+ *
+ * 1) register the kernel code and data segments in the GDT.
+ * 2) register the driver code and data segments in the GDT.
+ * 3) register the service code and data segments in the GDT.
+ * 4) register the guest code and data segments in the GDT.
+ * 5) build the kernel code and data segment selectors.
+ * 6) update the microprocessor's segment registers with the given
+ *    segment selectors.
+ * 7) finally, save the kernel data selector as the system will need
+ *    it whenever an interrupt occurs in order to switch to the kernel
+ *    address space and trigger the interrupt handler.
  */
 
 t_error			architecture_segmentation_setup(void)

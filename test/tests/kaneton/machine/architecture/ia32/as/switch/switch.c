@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 13 22:06:57 2011]
+ * updated       julien quintard   [fri jan 14 16:15:30 2011]
  */
 
 /*
@@ -39,8 +39,8 @@ void			test_architecture_as_switch(void)
   i_region		reg;
   t_vaddr		addr;
   o_as*			o;
-  at_pd			kdir;
-  at_pd			dir;
+  t_paddr		kdir;
+  t_paddr		dir;
   int*			ptr1;
   int*			ptr2;
   o_region*		r;
@@ -88,12 +88,14 @@ void			test_architecture_as_switch(void)
   if (as_get(_kernel->as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error");
 
-  kdir = (at_pd)o->machine.pd;
+  kdir = o->machine.pd;
 
   if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error");
 
-  dir = (at_pd)o->machine.pd;
+  dir = o->machine.pd;
+
+  // XXX map this directory.
 
   ptr1 = (int*)r->address;
   ptr2 = (int*)addr;
@@ -104,7 +106,7 @@ void			test_architecture_as_switch(void)
 			      &cr3) != ERROR_OK)
     TEST_ERROR("[architecture_paging_cr3] error");
 
-  if (architecture_paging_import(dir,
+  if (architecture_paging_import(NULL, // XXX
 				 cr3) != ERROR_OK)
     TEST_ERROR("[architecture_paging_import] error: unable to activate "
 	       "the task's address space");
@@ -120,7 +122,7 @@ void			test_architecture_as_switch(void)
 			      &cr3) != ERROR_OK)
     TEST_ERROR("[architecture_paging_cr3] error");
 
-  if (architecture_paging_import(kdir,
+  if (architecture_paging_import((at_pd)kdir, // XXX identity mapping
 				 cr3) != ERROR_OK)
     TEST_ERROR("[architecture_paging_import] error: unable to activate "
 	       "the kernel's address space");

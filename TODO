@@ -60,6 +60,8 @@
 
 --- FUTURE
 
+- matter dans le trac car du coup la plupart des tickets ont du etre resolus!
+
 - changer tous les types de core en prefixant avec c_ pour core.
   t_options deviendrait ct_options, m_scheduler, cm_scheduler, i_task, ci_task
   etc.

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/educational/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       julien quintard   [thu jan 13 23:11:22 2011]
+ * updated       julien quintard   [fri jan 14 15:56:54 2011]
  */
 
 /*
@@ -175,13 +175,16 @@ t_error			architecture_paging_setup(void)
  * this function generates the CR3 register's content so that to be
  * overwritten, hence referencing another page directory structure.
  *
+ * note that the CR3 register is also referred to as the PDBR - Page Directory
+ * Base Register as it contains the address of the page directory in use.
+ *
  * steps:
  *
  * 0) verify the arguments.
  * 1) generate the CR3 register's content.
  */
 
-t_error			architecture_paging_cr3(at_pd		pd,
+t_error			architecture_paging_cr3(t_paddr		pd,
 						t_flags		flags,
 						at_cr3*		cr3)
 {
@@ -196,7 +199,7 @@ t_error			architecture_paging_cr3(at_pd		pd,
    * 1)
    */
 
-  *cr3 = ((t_vaddr)pd & 0xfffff000) | flags;
+  *cr3 = (pd & 0xfffff000) | flags;
 
   MACHINE_LEAVE();
 }
@@ -230,17 +233,39 @@ t_error			architecture_paging_import(at_pd	pd,
 }
 
 /*
- * this function exports the current page directory and CR3.
+ * this function exports the current CR3 hence page directory.
  *
  * steps:
  *
- * XXX
+ * 0) verify the arguments.
+ * 1) retrieve the current page directory.
+ * 2) retrieve the current CR3.
  */
 
 t_error			architecture_paging_export(at_pd*	pd,
 						   at_cr3*	cr3)
 {
-  // XXX
+  /*
+   * 0)
+   */
+
+  if (pd == NULL)
+    MACHINE_ESCAPE("the 'pd' argument is null");
+
+  if (cr3 == NULL)
+    MACHINE_ESCAPE("the 'cr3' argument is null");
+
+  /*
+   * 1)
+   */
+
+  *pd = _architecture_pd;
+
+  /*
+   * 2)
+   */
+
+  ARCHITECTURE_SCR3(*cr3);
 
   MACHINE_LEAVE();
 }
