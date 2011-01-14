@@ -477,13 +477,6 @@ t_error			ia32_context_switch(i_thread		current,
    * 3)
    */
 
-  /* XXX[old]
-  if (ia32_pd_get_cr3(&cr3,
-		      (t_ia32_directory)as->machine.pd,
-		      IA32_PAGE_DIRECTORY_CACHED,
-		      IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-  */
   if (architecture_paging_cr3((at_pd)as->machine.pd, // XXX
 			      ARCHITECTURE_REGISTER_CR3_PCE |
 			      ARCHITECTURE_REGISTER_CR3_PWB,

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       julien quintard   [thu jan 13 12:25:39 2011]
+ * updated       julien quintard   [thu jan 13 13:42:51 2011]
  */
 
 /*
@@ -50,7 +50,7 @@ extern at_pd		_architecture_pd;
  * 1) retrieve the given mapped page directory's physical address.
  * 2) display a general message.
  * 3) go through the present page directory entries.
- *   a) build the entry's flag string.
+ *   a) build the entry's flags string.
  *   b) display the page directory entry.
  *   c) map the referenced page table.
  *   d) dump the page table.
@@ -295,8 +295,8 @@ t_error			architecture_pd_map(t_paddr		paddr,
   i_segment		segment;
   i_region		region;
   t_vaddr		vaddr;
-  o_region*		o;
   at_pt			pt;
+  o_region*		o;
 
   /*
    * 0)

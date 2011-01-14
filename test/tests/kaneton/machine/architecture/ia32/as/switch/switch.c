@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 13 10:37:40 2011]
+ * updated       julien quintard   [thu jan 13 22:06:57 2011]
  */
 
 /*
@@ -39,10 +39,12 @@ void			test_architecture_as_switch(void)
   i_region		reg;
   t_vaddr		addr;
   o_as*			o;
-  t_ia32_directory	kdir;
+  at_pd			kdir;
+  at_pd			dir;
   int*			ptr1;
   int*			ptr2;
   o_region*		r;
+  at_cr3		cr3;
 
   TEST_ENTER();
 
@@ -86,24 +88,24 @@ void			test_architecture_as_switch(void)
   if (as_get(_kernel->as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error");
 
-  kdir = o->machine.pd;
+  kdir = (at_pd)o->machine.pd;
 
   if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error");
 
+  dir = (at_pd)o->machine.pd;
+
   ptr1 = (int*)r->address;
   ptr2 = (int*)addr;
 
-  /* XXX[old]
-  if (ia32_pd_activate(o->machine.pd,
-		       IA32_PAGE_DIRECTORY_CACHED,
-		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
-    TEST_ERROR("[ia32_pd_activate] error: unable to activate the task's "
-	       "address space");
-  */
-  if (architecture_paging_import((at_pd)o->machine.pd, // XXX
-				 ARCHITECTURE_REGISTER_CR3_PCE |
-				 ARCHITECTURE_REGISTER_CR3_PWB) != ERROR_OK)
+  if (architecture_paging_cr3(dir,
+			      ARCHITECTURE_REGISTER_CR3_PCE |
+			      ARCHITECTURE_REGISTER_CR3_PWB,
+			      &cr3) != ERROR_OK)
+    TEST_ERROR("[architecture_paging_cr3] error");
+
+  if (architecture_paging_import(dir,
+				 cr3) != ERROR_OK)
     TEST_ERROR("[architecture_paging_import] error: unable to activate "
 	       "the task's address space");
 
@@ -112,16 +114,14 @@ void			test_architecture_as_switch(void)
   *ptr2 = 0x40414243;
   j = *ptr2;
 
-  /* XXX[old]
-  if (ia32_pd_activate(kdir,
-		       IA32_PAGE_DIRECTORY_CACHED,
-		       IA32_PAGE_DIRECTORY_WRITEBACK) != ERROR_OK)
-    TEST_ERROR("[ia32_pd_activate] error: unable to activate the kernel's "
-	       "address space");
-  */
-  if (architecture_paging_import((at_pd)kdir, // XXX
-				 ARCHITECTURE_REGISTER_CR3_PCE |
-				 ARCHITECTURE_REGISTER_CR3_PWB) != ERROR_OK)
+  if (architecture_paging_cr3(kdir,
+			      ARCHITECTURE_REGISTER_CR3_PCE |
+			      ARCHITECTURE_REGISTER_CR3_PWB,
+			      &cr3) != ERROR_OK)
+    TEST_ERROR("[architecture_paging_cr3] error");
+
+  if (architecture_paging_import(kdir,
+				 cr3) != ERROR_OK)
     TEST_ERROR("[architecture_paging_import] error: unable to activate "
 	       "the kernel's address space");
 

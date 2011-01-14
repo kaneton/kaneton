@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [tue jan 11 17:11:26 2011]
+# updated       julien quintard   [fri jan 14 14:19:18 2011]
 #
 
 #
@@ -34,37 +34,34 @@ include			../../../../../environment/env.mk
 #
 
 ARCHITECTURE_C		:=	context.c				\
+				environment.c				\
 				gdt.c					\
 				handler.c				\
 				idt.c					\
 				io.c					\
-				pmode.c					\
-				tlb.c					\
-				tss.c					\
 				paging.c				\
-\
-				mapping.c				\
 				pd.c					\
+				pmode.c					\
 				pt.c					\
 				segmentation.c				\
-				virtual.c				
+				tlb.c					\
+				tss.c					
 
 ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)
 
 ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/environment.h \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/handler.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/idt.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/io.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/paging.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/tlb.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	\
-\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/mapping.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/misc.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/pd.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/pmode.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/segmentation.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
+				$(_ARCHITECTURE_INCLUDE_DIR_)/pt.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/segmentation.h \
+				$(_ARCHITECTURE_INCLUDE_DIR_)/tlb.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	
 
 #
 # ---------- rules ------------------------------------------------------------

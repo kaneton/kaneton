@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/as/mapping/mapping.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 13 10:37:21 2011]
+ * updated       julien quintard   [thu jan 13 23:06:28 2011]
  */
 
 /*
@@ -54,14 +54,13 @@ void			test_architecture_as_mapping(void)
 	  t_vaddr	start;
 	  t_vsize	size;
 	  t_paddr	phys;
-	  t_ia32_table	pt;
-	  t_ia32_page	pg;
-	  t_ia32_pde	pde_start;
-	  t_ia32_pde	pde_end;
-	  t_ia32_pte	pte_start;
-	  t_ia32_pte	pte_end;
-	  t_ia32_pde	pde;
-	  t_ia32_pte	pte;
+	  at_pt		pt;
+	  at_pdei	pde_start;
+	  at_pdei	pde_end;
+	  at_ptei	pte_start;
+	  at_ptei	pte_end;
+	  at_pdei	pde;
+	  at_ptei	pte;
 	  t_uint32	br;
 	  t_paddr	paddr;
 	  t_uint8*	p;
@@ -83,28 +82,21 @@ void			test_architecture_as_mapping(void)
 	  phys = oseg->address;
 	  paddr = phys;
 
-	  pde_start = IA32_PAGE_DIRECTORY_ENTRY_INDEX(start);
-	  pde_end = IA32_PAGE_DIRECTORY_ENTRY_INDEX(start + size);
-	  pte_start = IA32_PAGE_TABLE_ENTRY_INDEX(start);
-	  pte_end = IA32_PAGE_TABLE_ENTRY_INDEX(start + size);
+	  pde_start = ARCHITECTURE_PD_INDEX(start);
+	  pde_end = ARCHITECTURE_PD_INDEX(start + size);
+
+	  pte_start = ARCHITECTURE_PT_INDEX(start);
+	  pte_end = ARCHITECTURE_PT_INDEX(start + size);
 
 	  for (br = 0, pde = pde_start; !br && pde <= pde_end; pde++)
 	    {
-	      /* XXX[old]
-	      if (ia32_pd_get_table(NULL, pde, &pt) != ERROR_OK)
-		TEST_ERROR("[ia32_pd_get_table] error: the region at 0x%x "
-			   "seems to be incorrectly mapped i.e no page "
-			   "table",
-			   start);
-	      */
 	      if (!(_architecture_pd[pde] & ARCHITECTURE_PDE_USED))
 		TEST_ERROR("the region at 0x%x seems to be incorrectly "
 			   "mapped i.e no page table",
 			   start);
 
-	      // XXX a changer: virer pt
-	      pt.vaddr = IA32_ENTRY_ADDRESS(IA32_PAGE_DIRECTORY_MIRROR,
-					    pde);
+	      pt = (at_pt)ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR,
+						      pde);
 
 	      for (pte = (pde == pde_start ?
 			  pte_start :
@@ -114,22 +106,13 @@ void			test_architecture_as_mapping(void)
 			  IA32_PAGE_TABLE_MAX_ENTRIES);
 		   pte++)
 		{
-		  /* XXX needless
-		  if (ia32_pt_get_page(&pt, pte, &pg) != ERROR_OK)
-		    TEST_ERROR("[ia32_pt_get_page] error: the region at 0x%x "
-			       "seems to be incorrectly mapped i.e no page "
-			       "table entry for 0x%x",
-			       start,
-			       IA32_ENTRY_ADDRESS(pde, pte));
-		  */
-		  // XXX cast
-		  if (ARCHITECTURE_PTE_ADDRESS(((at_pt)pt.vaddr)[pte]) != paddr)
+		  if (ARCHITECTURE_PTE_ADDRESS(pt[pte]) != paddr)
 		    TEST_ERROR("the region at 0x%x seems to be incorrectly "
 			       "mapped i.e 0x%x mapped to 0x%x, expecting "
 			       "address 0x%x",
 			       start,
-			       IA32_ENTRY_ADDRESS(pde, pte),
-			       pg.addr,
+			       ARCHITECTURE_PAGING_ADDRESS(pde, pte),
+			       ARCHITECTURE_PTE_ADDRESS(pt[pte]),
 			       paddr);
 
 		  pages++;

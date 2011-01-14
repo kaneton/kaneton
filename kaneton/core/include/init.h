@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [wed dec 15 23:07:39 2010]
+ * updated       julien quintard   [fri jan 14 13:43:37 2011]
  */
 
 #ifndef CORE_INIT_H
@@ -56,6 +56,7 @@ typedef struct
   t_paddr			address;
   t_psize			size;
   t_permissions			permissions;
+  t_type			type;
 }				s_init_segment;
 
 /*

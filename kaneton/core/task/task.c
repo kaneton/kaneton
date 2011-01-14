@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [mon jan 10 21:32:15 2011]
+ * updated       julien quintard   [fri jan 14 13:43:57 2011]
  */
 
 /*
@@ -2254,7 +2254,7 @@ t_error			task_initialize(void)
        * b)
        */
 
-      segment->type = SEGMENT_TYPE_MEMORY;
+      segment->type = _init->segments[i].type;
       segment->address = _init->segments[i].address;
       segment->size = _init->segments[i].size;
       segment->permissions = _init->segments[i].permissions;

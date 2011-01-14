@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [mon jan 10 21:31:32 2011]
+ * updated       julien quintard   [fri jan 14 14:18:57 2011]
  */
 
 /*
@@ -48,7 +48,7 @@ d_task			glue_task_dispatch =
     NULL,
     NULL,
     NULL,
-    glue_task_initialize,
+    NULL,
     NULL,
   };
 
@@ -123,22 +123,6 @@ t_error			glue_task_reserve(t_class		class,
    */
 
   o->machine.io.flush = BOOLEAN_FALSE;
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function initializes the task manager's glue.
- */
-
-t_error			glue_task_initialize(void)
-{
-  /*
-   * XXX
-   */
-
-  if (ia32_kernel_as_finalize() != ERROR_OK)
-    MACHINE_ESCAPE("unable to finalize the address space");
 
   MACHINE_LEAVE();
 }

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chitecture/ia32/educational/include/pd.h
  *
  * created       julien quintard   [mon jan 10 09:05:19 2011]
- * updated       julien quintard   [thu jan 13 10:31:04 2011]
+ * updated       julien quintard   [thu jan 13 17:00:24 2011]
  */
 
 #ifndef ARCHITECTURE_PD_H
@@ -25,7 +25,7 @@
 #define ARCHITECTURE_PD_SIZE		1024
 
 /*
- * this value defines the page directory entry which acts as the mirro
+ * this value defines the page directory entry which acts as the mirror
  * entry i.e the entry referencing the page directory itself.
  */
 
@@ -142,6 +142,28 @@ typedef t_uint32		at_pdei;
  *
  *      ../pd.c
  */
+
+/*
+ * ../pd.c
+ */
+
+t_error			architecture_pd_dump(at_pd		pd);
+
+t_error			architecture_pd_build(at_pd		pd);
+
+t_error			architecture_pd_insert(at_pd		pd,
+					       at_pdei		index,
+					       t_paddr		address,
+					       t_flags		flags);
+
+t_error			architecture_pd_delete(at_pd		pd,
+					       at_pdei		index);
+
+t_error			architecture_pd_map(t_paddr		paddr,
+					    at_pd*		table);
+
+t_error			architecture_pd_unmap(at_pd		table);
+
 
 /*
  * eop

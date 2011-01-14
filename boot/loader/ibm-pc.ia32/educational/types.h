@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/loader/ibm-pc.ia32/educational/types.h
  *
  * created       matthieu bucchianeri   [tue jul 17 15:14:07 2007]
- * updated       julien quintard   [fri dec 17 22:08:22 2010]
+ * updated       julien quintard   [fri jan 14 13:36:00 2011]
  */
 
 #ifndef BOOTLOADER_TYPES_H
@@ -57,5 +57,6 @@ typedef t_uint32		t_vsize;
 
 typedef t_uint32		t_size;
 typedef t_uint32		t_offset;
+typedef t_uint32		t_type;
 
 #endif

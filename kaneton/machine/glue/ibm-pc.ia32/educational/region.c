@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [mon jan 10 08:39:03 2011]
+ * updated       julien quintard   [thu jan 13 16:52:22 2011]
  */
 
 /*
@@ -92,7 +92,7 @@ t_error			glue_region_resize(i_as			as,
    * XXX
    */
 
-  if (ia32_unmap_region(as, reg->address, reg->size) != ERROR_OK)
+  if (architecture_paging_unmap(as, reg->address, reg->size) != ERROR_OK)
     MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to the "
 		   "original region");
 
@@ -100,12 +100,12 @@ t_error			glue_region_resize(i_as			as,
    * XXX
    */
 
-  if (ia32_map_region(as,
-		      reg->segment,
-		      reg->offset,
-		      reg->options,
-		      reg->address,
-		      size) != ERROR_OK)
+  if (architecture_paging_map(as,
+			      reg->segment,
+			      reg->offset,
+			      reg->options,
+			      reg->address,
+			      size) != ERROR_OK)
     MACHINE_ESCAPE("unable to map the virtual memory corresponding to the "
 		   "future resized region");
 
@@ -129,12 +129,12 @@ t_error			glue_region_reserve(i_as		asid,
    * XXX
    */
 
-  if (ia32_map_region(asid,
-		      segid,
-		      offset,
-		      options,
-		      address,
-		      size) != ERROR_OK)
+  if (architecture_paging_map(asid,
+			      segid,
+			      offset,
+			      options,
+			      address,
+			      size) != ERROR_OK)
     MACHINE_ESCAPE("unable to map the virtual memory corresponding to the "
 		   "reserved region");
 
@@ -162,7 +162,7 @@ t_error			glue_region_release(i_as		asid,
    * XXX
    */
 
-  if (ia32_unmap_region(asid, reg->address, reg->size) != ERROR_OK)
+  if (architecture_paging_unmap(asid, reg->address, reg->size) != ERROR_OK)
     MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to "
 		   "the region");
 

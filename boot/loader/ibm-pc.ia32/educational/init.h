@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ot/loader/ibm-pc.ia32/educational/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       julien quintard   [sun dec 19 11:43:14 2010]
+ * updated       julien quintard   [fri jan 14 13:37:53 2011]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -29,6 +29,9 @@
 #define INIT_REGIONS		11
 #define INIT_KSTACKSZ		(4 * PAGESZ)
 #define INIT_ALLOCSZ		(256 * PAGESZ)
+
+#define INIT_SEGMENT_TYPE_MEMORY	1
+#define INIT_SEGMENT_TYPE_SYSTEM	2
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -69,6 +72,7 @@ typedef struct
   t_paddr			address;
   t_psize			size;
   t_perms			perms;
+  t_type			type;
 }				s_segment;
 
 /*

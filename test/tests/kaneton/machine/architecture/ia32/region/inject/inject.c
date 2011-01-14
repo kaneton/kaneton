@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...architecture/ia32/region/inject/inject.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 12:21:31 2010]
+ * updated       julien quintard   [thu jan 13 16:24:25 2011]
  */
 
 /*
@@ -61,13 +61,13 @@ void			test_architecture_region_inject(void)
   o->size = 2 * ___kaneton$pagesz;
   o->options = REGION_OPTION_FORCE;
 
-  if (ia32_map_region(as,
-		      seg,
-		      ___kaneton$pagesz,
-		      REGION_OPTION_FORCE,
-		      0x40000000,
-		      2 * ___kaneton$pagesz) != ERROR_OK)
-    TEST_ERROR("[ia32_map_region] error");
+  if (architecture_paging_map(as,
+			      seg,
+			      ___kaneton$pagesz,
+			      REGION_OPTION_FORCE,
+			      0x40000000,
+			      2 * ___kaneton$pagesz) != ERROR_OK)
+    TEST_ERROR("[architecture_paging_map] error");
 
   if (region_inject(as, o, &reg) != ERROR_OK)
     TEST_ERROR("[region_inject] error");

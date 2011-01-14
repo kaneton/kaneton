@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [mon jan 10 21:32:53 2011]
+ * updated       julien quintard   [fri jan 14 13:11:45 2011]
  */
 
 /*
@@ -115,13 +115,13 @@ t_error			glue_as_reserve(i_task			task,
 {
   if (*as == _kernel->as)
     {
-      if (ia32_kernel_as_initialize(*as) != ERROR_OK)
+      if (architecture_environment_kernel(*as) != ERROR_OK)
 	MACHINE_ESCAPE("unable to initialize the kernel's address space");
     }
   else
     {
-      if (ia32_task_as_initialize(*as) != ERROR_OK)
-	MACHINE_ESCAPE("unable to initialize the task's address space");
+      if (architecture_environment_server(*as) != ERROR_OK)
+	MACHINE_ESCAPE("unable to initialize the server's address space");
     }
 
   MACHINE_LEAVE();

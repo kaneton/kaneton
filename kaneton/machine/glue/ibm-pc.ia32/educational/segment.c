@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jan  8 19:18:23 2011]
+ * updated       julien quintard   [fri jan 14 14:16:54 2011]
  */
 
 /*
@@ -76,7 +76,7 @@ t_error			glue_segment_read(i_segment		segid,
    * XXX
    */
 
-  if (ia32_segment_read(segid, offs, buff, sz) != ERROR_OK)
+  if (architecture_paging_read(segid, offs, buff, sz) != ERROR_OK)
     MACHINE_ESCAPE("unable to read data from the segment");
 
   MACHINE_LEAVE();
@@ -95,7 +95,7 @@ t_error			glue_segment_write(i_segment		segid,
    * XXX
    */
 
-  if (ia32_segment_write(segid, offs, buff, sz) != ERROR_OK)
+  if (architecture_paging_write(segid, offs, buff, sz) != ERROR_OK)
     MACHINE_ESCAPE("unable to write data to the segment");
 
   MACHINE_LEAVE();
@@ -115,7 +115,7 @@ t_error			glue_segment_copy(i_segment		dst,
    * XXX
    */
 
-  if (ia32_segment_copy(dst, offsd, src, offss, sz) != ERROR_OK)
+  if (architecture_paging_copy(dst, offsd, src, offss, sz) != ERROR_OK)
     MACHINE_ESCAPE("unable to copy data from a segment to another");
 
   MACHINE_LEAVE();
@@ -138,7 +138,7 @@ t_error			glue_segment_initialize(void)
    * XXX
    */
 
-  if (ia32_segmentation_init() != ERROR_OK)
+  if (architecture_segmentation_setup() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the IA32 segmentation");
 
   MACHINE_LEAVE();

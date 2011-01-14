@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [mon jan 10 21:31:11 2011]
+ * updated       julien quintard   [fri jan 14 13:52:29 2011]
  */
 
 /*
@@ -66,7 +66,7 @@ t_uint16	ia32_interrupt_ds = 0;
  */
 
 ARCHITECTURE_LINKER_LOCATION(".handler_data")
-t_uint32	ia32_interrupt_pdbr = 0;
+at_cr3		ia32_interrupt_pdbr = 0;
 
 /*
  * this variable is used to hold the error code whenever an exception occur.
@@ -349,13 +349,22 @@ void			architecture_handler_spurious(t_uint32	n)
   module_call(console, message,
 	      '!',
 	      "spurious: n(%u) thread(%qu)\n",
-	      "  eip(0x%08x) ebp(0x%08x) esp(0x%08x) eflags(0x%08x)\n"
-	      "  cs(0x%x) ds(0x%x) ss(0x%x)\n"
+	      n, id);
+
+  module_call(console, message,
+	      '!',
+	      "  eip(0x%08x) ebp(0x%08x) esp(0x%08x) eflags(0x%08x)\n",
+	      ctx.eip, ctx.ebp, ctx.esp, ctx.eflags);
+
+  module_call(console, message,
+	      '!',
+	      "  cs(0x%x) ds(0x%x) ss(0x%x)\n",
+	      ctx.cs, ctx.ds, ctx.ss);
+
+  module_call(console, message,
+	      '!',
 	      "  eax(0x%x) ebx(0x%x) ecx(0x%x) edx(0x%x) "
 	      "esi(0x%x) edi(0x%x)\n",
-	      n, id,
-	      ctx.eip, ctx.ebp, ctx.esp, ctx.eflags,
-	      ctx.cs, ctx.ds, ctx.ss,
 	      ctx.eax, ctx.ebx, ctx.ecx, ctx.edx, ctx.esi, ctx.edi);
 
   /*
@@ -370,7 +379,7 @@ void			architecture_handler_spurious(t_uint32	n)
    * 6)
    */
 
-  assert(as_read(task->as, ctx.esp, 32, stack) == ERROR_OK);
+  assert(as_read(task->as, ctx.esp, sizeof(stack), stack) == ERROR_OK);
 
   /*
    * 7)

@@ -8,13 +8,15 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       julien quintard   [thu jan 13 12:16:14 2011]
+ * updated       julien quintard   [thu jan 13 13:48:26 2011]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * this file contains functions for manipulating PTs - Page Tables.
+ *
+ * note that the whole file is extremely similar to pd.c.
  */
 
 /*
@@ -29,7 +31,10 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-// XXX
+/*
+ * the kernel manager.
+ */
+
 extern m_kernel*	_kernel;
 
 // XXX
@@ -44,7 +49,11 @@ extern at_pd		_architecture_pd;
  *
  * steps:
  *
- * 1) XXX
+ * 1) retrieve the page table's physical address.
+ * 2) display a general message.
+ * 3) go through the page table's entries.
+ *   a) build the flags string.
+ *   b) display the page table's entry.
  */
 
 t_error			architecture_pt_dump(at_pt		pt,
@@ -201,7 +210,8 @@ t_error			architecture_pt_insert(at_pt		pt,
  *
  * steps:
  *
- * XXX
+ * 0) verify the arguments.
+ * 1) reset the page table entry.
  *
  * [XXX:improvement] should the page table gets empty, remove the
  *                   page directory entry referencing it!
@@ -217,15 +227,11 @@ t_error			architecture_pt_delete(at_pt		pt,
   if (index >= ARCHITECTURE_PT_SIZE)
     MACHINE_ESCAPE("out-of-bound page table entry index");
 
-  /*
-   * 1)
-   */
-
   if (!(pt[index] & ARCHITECTURE_PTE_USED))
     MACHINE_ESCAPE("this page table entry does not seem to be used");
 
   /*
-   * 2)
+   * 1)
    */
 
   pt[index] = 0x0;
@@ -234,7 +240,33 @@ t_error			architecture_pt_delete(at_pt		pt,
 }
 
 /*
- * XXX
+ * this function maps a page table located at the given physical address.
+ *
+ * note that this function makes use of the mirroring mechanism.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) reserve a page in the virtual space for the page table to be mapped.
+ * 2) compute the mirrored address of the kernel's page table responsible
+ *    for referencing the reserved page. note that the mirroring technique
+ *    is used for locating the page table. therefore, if this page table
+ *    is present, the kernel can access it without mapping it.
+ * 3) if this page table required for referencing the page---through
+ *    which the page table is about to be mapped---is not present, create it.
+ *   a) reserve a segment for the page table to be created.
+ *   b) make the segment a system one.
+ *   c) retrieve the reserved segment object.
+ *   d) update the page directory, hence referencing the new page table.
+ *   e) build the page table. note that the mirrored address is used from
+ *      now on. this is why the page table does not have to be mapped.
+ * 4) update the kernel page table, referencing the page through which
+ *    the given page table is being mapped.
+ * 5) locate the segment in which the given page table lies.
+ * 6) allocate and fill a region object.
+ * 7) inject the region in the kernel's address space in order to secure
+ *    it.
+ * 8) return the address of the mapped page table.
  */
 
 t_error			architecture_pt_map(t_paddr		paddr,
@@ -253,6 +285,9 @@ t_error			architecture_pt_map(t_paddr		paddr,
   if (paddr % ___kaneton$pagesz)
     MACHINE_ESCAPE("the physical address is not aligned");
 
+  if (table == NULL)
+    MACHINE_ESCAPE("the 'table' argument is null");
+
   /*
    * 1)
    */
@@ -270,17 +305,13 @@ t_error			architecture_pt_map(t_paddr		paddr,
 					  ARCHITECTURE_PD_INDEX(vaddr));
 
   /*
-   * 2)
+   * 3)
    */
 
   if (!(_architecture_pd[ARCHITECTURE_PD_INDEX(vaddr)] &
 	ARCHITECTURE_PDE_USED))
     {
       o_segment*	o;
-
-      /*
-       * A)
-       */
 
       /*
        * a)
@@ -324,19 +355,12 @@ t_error			architecture_pt_map(t_paddr		paddr,
        * e)
        */
 
-      if (architecture_tlb_invalidate((t_vaddr)pt) != ERROR_OK)
-	MACHINE_ESCAPE("unable to invalidate the page table's address");
-      // XXX message d'erreur/explication?
-
-      /*
-       * f)
-       */
-
-      memset(pt, 0x0, ___kaneton$pagesz);
+      if (architecture_pt_build(pt) != ERROR_OK)
+	MACHINE_ESCAPE("unable to build the page table");
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   if (architecture_pt_insert(pt,
@@ -350,22 +374,18 @@ t_error			architecture_pt_map(t_paddr		paddr,
     MACHINE_ESCAPE("unable to add the page to the page table");
 
   /*
-   * 4)
+   * 5)
    */
 
   if (segment_locate(paddr, &segment) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the segment to map");
 
   /*
-   * 5)
+   * 6)
    */
 
   if ((o = malloc(sizeof(o_region))) == NULL)
     MACHINE_ESCAPE("unable to allocate memory for the region object");
-
-  /*
-   * 6)
-   */
 
   o->segment = segment;
   o->address = vaddr;
@@ -385,20 +405,28 @@ t_error			architecture_pt_map(t_paddr		paddr,
    * 8)
    */
 
-  if (architecture_tlb_invalidate(vaddr) != ERROR_OK)
-    MACHINE_ESCAPE("unable to invalidate the page address");
-
-  /*
-   * 9)
-   */
-
   *table = (at_pt)vaddr;
 
   MACHINE_LEAVE();
 }
 
 /*
- * XXX
+ * this function unmaps the given page table.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) if there is no kernel page directory entry referecing the given
+ *    address, return an error as the given page table does not seem
+ *    to be mapped.
+ * 2) compute the mirroring address of the page table referencing the
+ *    given address.
+ * 3) delete the page table entry referencing the given address.
+ * 4) retrieve the kernel address space object.
+ * 5) locate the region corresponding to the given page table to unmap.
+ * 6) remove this region from the kernel address space, making it
+ *    available.
+ * 7) invalidate the virtual address as no longer used.
  */
 
 t_error			architecture_pt_unmap(at_pt		table)

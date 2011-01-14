@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo.../kaneton/core/segment/read-write/02/02.c
+ * file          /home/mycure/kane.../kaneton/core/segment/read-write/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:58:16 2010]
+ * updated       julien quintard   [thu jan 13 18:04:39 2011]
  */
 
 /*
@@ -42,13 +42,19 @@ void			test_core_segment_readwrite_02(void)
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_read(seg, 2 * ___kaneton$pagesz, buff, sizeof(t_uint32)) == ERROR_OK)
+  if (segment_read(seg,
+		   2 * ___kaneton$pagesz,
+		   buff,
+		   sizeof(t_uint32)) == ERROR_OK)
     TEST_ERROR("[segment_read] error: out of bound");
 
   if (segment_read(seg, 0, buff, 2 * ___kaneton$pagesz) == ERROR_OK)
     TEST_ERROR("[segment_read] error: overflow");
 
-  if (segment_write(seg, 2 * ___kaneton$pagesz, buff, sizeof(t_uint32)) == ERROR_OK)
+  if (segment_write(seg,
+		    2 * ___kaneton$pagesz,
+		    buff,
+		    sizeof(t_uint32)) == ERROR_OK)
     TEST_ERROR("[segment_write] error: out of bound");
 
   if (segment_write(seg, 0, buff, 2 * ___kaneton$pagesz) == ERROR_OK)

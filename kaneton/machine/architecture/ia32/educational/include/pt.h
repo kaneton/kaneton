@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chitecture/ia32/educational/include/pt.h
  *
  * created       julien quintard   [mon jan 10 09:31:37 2011]
- * updated       julien quintard   [thu jan 13 10:30:55 2011]
+ * updated       julien quintard   [thu jan 13 17:01:55 2011]
  */
 
 #ifndef ARCHITECTURE_PT_H
@@ -23,6 +23,17 @@
  */
 
 #define ARCHITECTURE_PT_SIZE		1024
+
+/*
+ * this value defines the page table entry---within the mirror page directory
+ * entry---which acts as the mirror entry i.e the page table entry referencing
+ * the page directory itself.
+ *
+ * this value must be coupled with ARCHITECTURE_PD_MIRROR in order to
+ * access to the page directory through the mirroring.
+ */
+
+#define ARCHITECTURE_PT_MIRROR		1023
 
 /*
  * this is an empty flag.
@@ -149,6 +160,29 @@ typedef t_uint32		at_ptei;
  *
  *      ../pt.c
  */
+
+/*
+ * ../pt.c
+ */
+
+t_error			architecture_pt_dump(at_pt		pt,
+					     mt_margin		margin);
+
+t_error			architecture_pt_build(at_pt		pt);
+
+t_error			architecture_pt_insert(at_pt		pt,
+					       at_ptei		index,
+					       t_paddr		address,
+					       t_flags		flags);
+
+t_error			architecture_pt_delete(at_pt		pt,
+					       at_ptei		index);
+
+t_error			architecture_pt_map(t_paddr		paddr,
+					    at_pt*		table);
+
+t_error			architecture_pt_unmap(at_pt		table);
+
 
 /*
  * eop

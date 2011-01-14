@@ -175,10 +175,12 @@ void			bootloader_init_segments(void)
   init->segments[0].address = INIT_ISA_ADDR;
   init->segments[0].size = 0x1000;
   init->segments[0].perms = PERM_READ;
+  init->segments[0].type = INIT_SEGMENT_TYPE_SYSTEM;
 
   init->segments[1].address = INIT_ISA_ADDR + 0x1000;
   init->segments[1].size = INIT_ISA_SIZE - 0x1000;
   init->segments[1].perms = PERM_READ | PERM_WRITE;
+  init->segments[1].type = INIT_SEGMENT_TYPE_SYSTEM;
 
   /*
    * 2)
@@ -189,6 +191,7 @@ void			bootloader_init_segments(void)
   init->segments[2].address = (t_paddr)&__early_start;
   init->segments[2].size = &__early_end - &__early_start;
   init->segments[2].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+  init->segments[2].type = INIT_SEGMENT_TYPE_MEMORY;
 
   /*
    * 3)
@@ -197,6 +200,7 @@ void			bootloader_init_segments(void)
   init->segments[3].address = init->kcode;
   init->segments[3].size = init->kcodesz;
   init->segments[3].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+  init->segments[3].type = INIT_SEGMENT_TYPE_MEMORY;
 
   /*
    * 4)
@@ -205,6 +209,7 @@ void			bootloader_init_segments(void)
   init->segments[4].address = init->init;
   init->segments[4].size = init->initsz;
   init->segments[4].perms = PERM_READ | PERM_WRITE;
+  init->segments[4].type = INIT_SEGMENT_TYPE_MEMORY;
 
   /*
    * 5)
@@ -213,6 +218,7 @@ void			bootloader_init_segments(void)
   init->segments[5].address = (t_paddr)init->segments;
   init->segments[5].size = init->segmentssz;
   init->segments[5].perms = PERM_READ | PERM_WRITE;
+  init->segments[5].type = INIT_SEGMENT_TYPE_MEMORY;
 
   /*
    * 6)
@@ -221,6 +227,7 @@ void			bootloader_init_segments(void)
   init->segments[6].address = (t_paddr)init->regions;
   init->segments[6].size = init->regionssz;
   init->segments[6].perms = PERM_READ | PERM_WRITE;
+  init->segments[6].type = INIT_SEGMENT_TYPE_MEMORY;
 
   /*
    * 7)
@@ -229,6 +236,7 @@ void			bootloader_init_segments(void)
   init->segments[7].address = (t_paddr)init->cpus;
   init->segments[7].size = init->cpussz;
   init->segments[7].perms = PERM_READ | PERM_WRITE;
+  init->segments[7].type = INIT_SEGMENT_TYPE_MEMORY;
 
   /*
    * 8)
@@ -237,6 +245,7 @@ void			bootloader_init_segments(void)
   init->segments[8].address = init->kstack;
   init->segments[8].size = init->kstacksz;
   init->segments[8].perms = PERM_READ | PERM_WRITE;
+  init->segments[8].type = INIT_SEGMENT_TYPE_MEMORY;
 
   /*
    * 9)
@@ -245,6 +254,7 @@ void			bootloader_init_segments(void)
   init->segments[9].address = init->alloc;
   init->segments[9].size = init->allocsz;
   init->segments[9].perms = PERM_READ | PERM_WRITE;
+  init->segments[9].type = INIT_SEGMENT_TYPE_MEMORY;
 
   /*
    * 10)
@@ -253,6 +263,7 @@ void			bootloader_init_segments(void)
   init->segments[10].address = (t_paddr)init->machine.gdt;
   init->segments[10].size = PAGESZ;
   init->segments[10].perms = PERM_READ | PERM_WRITE;
+  init->segments[10].type = INIT_SEGMENT_TYPE_SYSTEM;
 
   /*
    * 11)
@@ -261,6 +272,7 @@ void			bootloader_init_segments(void)
   init->segments[11].address = (t_paddr)init->machine.pd;
   init->segments[11].size = PAGESZ;
   init->segments[11].perms = PERM_READ | PERM_WRITE;
+  init->segments[11].type = INIT_SEGMENT_TYPE_SYSTEM;
 
   /*
    * 12)
@@ -271,6 +283,7 @@ void			bootloader_init_segments(void)
       init->segments[12].address = (t_paddr)init->inputs;
       init->segments[12].size = init->inputssz;
       init->segments[12].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+      init->segments[12].type = INIT_SEGMENT_TYPE_MEMORY;
     }
   else
     {
@@ -286,6 +299,7 @@ void			bootloader_init_segments(void)
       init->segments[13].address = init->scode;
       init->segments[13].size = init->scodesz;
       init->segments[13].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+      init->segments[13].type = INIT_SEGMENT_TYPE_MEMORY;
     }
   else
     {

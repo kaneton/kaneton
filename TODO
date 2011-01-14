@@ -38,12 +38,14 @@
 - virer le flag USED et utiliser PRESENT
 - inutile d'inclure architecture.h partout, c'est compte dans kaneton.h
 - XXX dans core/glue/platform/module et test pour etre sur
-  + warnings!
+  + warnings! + return
 - rajouter explications types dans cours sur le design
 
 - rajouter du logging dans le systeme de tests pour savoir quel test est
   en cours, de quel user etc.
 - baisser le timeout?
+- changer le import paging pour qu'il prenne simplement un CR3
+- ajouter le type du segment dans init pour eviter le as_finalize
 
 --- EXPORT
 
@@ -78,6 +80,8 @@
 - super test pour departager les gens en fonction de la rapidite -> points
   bonus => 25/20
 - malloc double-free qui devrait peter ou peter un warning
+- REGION_OPTION_PRIVILEGED -> SYSTEM
+- rajouter des options a segment_reserve, type par exemple
 - page fault dans malloc:
     int i;
 
