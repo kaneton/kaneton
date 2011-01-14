@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/as/mapping/mapping.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan 14 14:26:20 2011]
+ * updated       julien quintard   [fri jan 14 18:59:08 2011]
  */
 
 /*
@@ -25,7 +25,7 @@
 
 extern m_as*		_as;
 
-// XXX + j'ai vire 3 lignes a ce test
+// XXX
 extern at_pd		_architecture_pd;
 
 /*
@@ -75,6 +75,9 @@ void			test_architecture_as_mapping(void)
 	  p = (t_uint8*)start;
 
 	  pages = 0;
+
+	  if (oreg->segment == ID_UNUSED)
+	    continue;
 
           if (segment_get(oreg->segment, &oseg) != ERROR_OK)
 	    TEST_ERROR("[segment_get] error");

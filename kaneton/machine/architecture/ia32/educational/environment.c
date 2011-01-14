@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [fri jan 14 17:08:38 2011]
+ * updated       julien quintard   [fri jan 14 18:45:51 2011]
  */
 
 /*
@@ -99,7 +99,58 @@ extern as_idt_descriptor	_architecture_idt; // XXX
  *    4MB are wasted and must therefore not be reservable or the kernel may
  *    end up overwritten the mirroring entries. a region covering the last
  *    4MB of virtual memory is therefore injected.
- * 8) XXX
+ *    note that the region injected references an ID_UNUSED-identified
+ *    segment in order to avoid having to reserve a 4MB segment. this is
+ *    possible because region_inject() does not check if the referenced
+ *    segment identifer is valid.
+ * 8) this step consists in cleaning the page directory set up by the boot
+ *    loader, now used by the kernel, by unmapping any page which is not
+ *    related to the fundamental regions provided by the boot loader.
+ *    go through all the pre-reserved regions provided by the bootloader plus
+ *    one. this additional iteration is required in order to clean the
+ *    mapped pages from the last region to the end of the virtual address
+ *    space.
+ *   a) compute the page directory and table end indexes for the given
+ *      region. note that for the extra iteration, the end indexes are
+ *      set to their maximum so that every page table entry of every page
+ *      directory entry following the last region is cleaned.
+ *   b) go through the involved page directory entries.
+ *     i) if the page directory entry does not reference a page table or
+ *        is used as the mirroring entry, leave it. otherwise...
+ *       #1) retrieve the page table referenced by the page directory entry.
+ *           note that the boot loader relied on the identity mapping technique
+ *           for its paging set up. identity mapping is therefore used to
+ *           retrieve the page table virtual address.
+ *       #2) go through the page table's involved entries.
+ *         #a) if the page table entry is used, delete the reference as
+ *             this mapping must not be very important since not related to
+ *             the pre-reserved regions provided by the boot loader.
+ *   c) if the treated region is not the extra one, compute the next
+ *      page directory and table start indexes as starting right after
+ *      the end of the region i.e address + size.
+ * 9) the page directory imported by the kernel has been set up by the
+ *    boot loader. besides, the boot loader has passed to the kernel a list
+ *    of pre-reserved system segments and regions. the segments are or will
+ *    be injected in the segment manager and likewise for the regions, in the
+ *    region manager. however, the page directory provided by the boot loader
+ *    makes use of several page tables which have not been passed to the
+ *    kernel as pre-reserved segments. the physical memory pages containing
+ *    these page tables must be protected so they never get reserved and
+ *    overwritten by a task or the kernel itself. this step therefore goes
+ *    through the page directory and inject a segment in the segment manager
+ *    for every unprotected page table.
+ *    go through the regions as these are the only elements being currently
+ *    mapped.
+ *   a) compute the start and end indexes of the region's memory area.
+ *   b) go through the involved page directory entries.
+ *     i) if there is a referenced page table...
+ *       #1) if there is no segment associated with the page table's physical
+ *           address...
+ *         #a) create a segment object which describes the page table's
+ *             memory area.
+ *         #b) inject the segment, hence preventing this system memory
+ *             area from being reserved by anyone.
+ * 10) flush the whole TLB, resetting all the address translations.
  */
 
 t_error			architecture_environment_kernel(i_as	id)
@@ -117,6 +168,7 @@ t_error			architecture_environment_kernel(i_as	id)
     at_ptei		index;
   }			pte;
   i_region		useless;
+  t_size		size;
   o_as*			as;
   at_pd			pd;
   at_pt			pt;
@@ -182,10 +234,7 @@ t_error			architecture_environment_kernel(i_as	id)
     MACHINE_ESCAPE("unable to allocate memory for the region object");
 
   r->address = ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR, 0);
-  r->segment = (i_segment)as->machine.pd; // XXX !!!WARNING!!! ici on devrait
-                                       // pouvoir recupere le vrai segment
-                                       // pour extraire l'id ou le generer
-                                       // avec SEGMENT_IDENTIFIER() au pire!
+  r->segment = ID_UNUSED;
   r->offset = 0x0;
   r->size = ARCHITECTURE_PT_SIZE * ___kaneton$pagesz;
   r->options = REGION_OPTION_NONE;
@@ -200,7 +249,7 @@ t_error			architecture_environment_kernel(i_as	id)
   pde.start = 0;
   pte.start = 0;
 
-  for (i = 0; i <= _init->nregions; i++)
+  for (i = 0; i < (_init->nregions + 1); i++)
     {
       /*
        * a)
@@ -222,21 +271,21 @@ t_error			architecture_environment_kernel(i_as	id)
        */
 
       for (pde.index = pde.start;
-	   pde.index <= pde.end; // XXX <
+	   pde.index <= pde.end;
 	   pde.index++)
 	{
 	  /*
 	   * i)
 	   */
 
-	  if ((pde.index != ARCHITECTURE_PD_MIRROR) && // XXX why puisque pde.end a ete calcule pour l'eviter?
+	  if ((pde.index != ARCHITECTURE_PD_MIRROR) &&
 	      (pd[pde.index] & ARCHITECTURE_PDE_USED))
 	    {
 	      /*
 	       * #1)
 	       */
 
-	      pt = (at_pt)ARCHITECTURE_PDE_ADDRESS(pd[pde.index]); // XXX identity mapping
+	      pt = (at_pt)ARCHITECTURE_PDE_ADDRESS(pd[pde.index]);
 
 	      /*
 	       * #2)
@@ -265,7 +314,7 @@ t_error			architecture_environment_kernel(i_as	id)
        * c)
        */
 
-      if (i != _init->nregions) // est-ce necessaire puisqu'ensuite on quitte la boucle?
+      if (i != _init->nregions)
 	{
 	  pde.start = ARCHITECTURE_PD_INDEX(_init->regions[i].address +
 					    _init->regions[i].size);
@@ -294,7 +343,7 @@ t_error			architecture_environment_kernel(i_as	id)
 
       for (pde.index = pde.start;
 	   pde.index <= pde.end;
-	   pde.index++) // XXX <
+	   pde.index++)
 	{
 	  /*
 	   * i)
