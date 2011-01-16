@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [fri jan 14 18:45:51 2011]
+ * updated       julien quintard   [sat jan 15 00:24:06 2011]
  */
 
 /*
@@ -30,8 +30,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -59,13 +57,13 @@ extern m_thread*	_thread;
  * the system's GDT.
  */
 
-extern as_gdt_descriptor	_architecture_gdt; // XXX
+extern as_gdt		_architecture_gdt; // XXX
 
 /*
  * the system's IDT.
  */
 
-extern as_idt_descriptor	_architecture_idt; // XXX
+extern as_idt		_architecture_idt; // XXX
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -279,7 +277,7 @@ t_error			architecture_environment_kernel(i_as	id)
 	   */
 
 	  if ((pde.index != ARCHITECTURE_PD_MIRROR) &&
-	      (pd[pde.index] & ARCHITECTURE_PDE_USED))
+	      (pd[pde.index] & ARCHITECTURE_PDE_PRESENT))
 	    {
 	      /*
 	       * #1)
@@ -300,7 +298,7 @@ t_error			architecture_environment_kernel(i_as	id)
 		   * #a)
 		   */
 
-		  if (pt[pte.index] & ARCHITECTURE_PTE_USED)
+		  if (pt[pte.index] & ARCHITECTURE_PTE_PRESENT)
 		    {
 		      if (architecture_pt_delete(pt, pte.index) != ERROR_OK)
 			MACHINE_ESCAPE("unable to delete the page "
@@ -349,7 +347,7 @@ t_error			architecture_environment_kernel(i_as	id)
 	   * i)
 	   */
 
-	  if (pd[pde.index] & ARCHITECTURE_PDE_USED)
+	  if (pd[pde.index] & ARCHITECTURE_PDE_PRESENT)
 	    {
 	      i_segment		segment;
 	      o_segment*	s;
@@ -368,10 +366,10 @@ t_error			architecture_environment_kernel(i_as	id)
 		  if ((s = malloc(sizeof(o_segment))) == NULL)
 		    MACHINE_ESCAPE("unable to allocate memory");
 
-		  s->type = SEGMENT_TYPE_SYSTEM;
 		  s->address = ARCHITECTURE_PDE_ADDRESS(pd[pde.index]);
 		  s->size = ___kaneton$pagesz;
 		  s->permissions = PERMISSION_READ | PERMISSION_WRITE;
+		  s->options = SEGMENT_OPTION_SYSTEM;
 
 		  /*
 		   * #b)
@@ -440,11 +438,9 @@ t_error			architecture_environment_server(i_as	id)
   if (segment_reserve(as->id,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_SYSTEM,
 		      &segment) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve a segment");
-
-  if (segment_type(segment, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    MACHINE_ESCAPE("unable to change the segment's type");
 
   if (segment_get(segment, &s) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
@@ -484,8 +480,7 @@ t_error			architecture_environment_server(i_as	id)
 		     r->segment,
 		     0x0,
 		     REGION_OPTION_FORCE |
-		     REGION_OPTION_PRIVILEGED |
-		     REGION_OPTION_GLOBAL,
+		     REGION_OPTION_NONE,
 		     _thread->machine.tss,
 		     r->size,
 		     &region) != ERROR_OK)
@@ -507,8 +502,7 @@ t_error			architecture_environment_server(i_as	id)
 		     r->segment,
 		     0x0,
 		     REGION_OPTION_FORCE |
-		     REGION_OPTION_PRIVILEGED |
-		     REGION_OPTION_GLOBAL,
+		     REGION_OPTION_NONE,
 		     (t_vaddr)_architecture_gdt.table,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
@@ -530,8 +524,7 @@ t_error			architecture_environment_server(i_as	id)
 		     r->segment,
 		     0x0,
 		     REGION_OPTION_FORCE |
-		     REGION_OPTION_PRIVILEGED |
-		     REGION_OPTION_GLOBAL,
+		     REGION_OPTION_NONE,
 		     (t_vaddr)_architecture_idt.table,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
@@ -545,8 +538,7 @@ t_error			architecture_environment_server(i_as	id)
      if (region_reserve(asid,
      _init->kcode,
      LINKER_SYMBOL(_handler_begin) - _init->kcode,
-     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
-     REGION_OPTION_GLOBAL,
+     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED,
      LINKER_SYMBOL(_handler_begin),
      LINKER_SYMBOL(_handler_end) -
      LINKER_SYMBOL(_handler_begin),
@@ -556,8 +548,7 @@ t_error			architecture_environment_server(i_as	id)
      if (region_reserve(asid,
      _init->kcode,
      LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
-     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED |
-     REGION_OPTION_GLOBAL,
+     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED,
      LINKER_SYMBOL(_handler_data_begin),
      LINKER_SYMBOL(_handler_data_end) -
      LINKER_SYMBOL(_handler_data_begin),
@@ -572,10 +563,7 @@ t_error			architecture_environment_server(i_as	id)
   if (region_reserve(as->id,
 		     segment,
 		     0x0,
-		     REGION_OPTION_FORCE |
-		     REGION_OPTION_GLOBAL, // [XXX] cannot put PRIVILEGED here
-		                           // or guests will crash whenever
-		                           // an interrupt occurs!
+		     REGION_OPTION_FORCE,
 		     (t_vaddr)_init->kcode,
 		     (t_vsize)_init->kcodesz,
 		     &region) != ERROR_OK)
@@ -593,9 +581,7 @@ t_error			architecture_environment_server(i_as	id)
   if (region_reserve(as->id,
 		     segment,
 		     0x0,
-		     REGION_OPTION_FORCE |
-		     REGION_OPTION_GLOBAL |
-		     REGION_OPTION_PRIVILEGED, // XXX ?
+		     REGION_OPTION_FORCE,
 		     (t_vaddr)_init->kstack,
 		     (t_vsize)_init->kstacksz,
 		     &region) != ERROR_OK)

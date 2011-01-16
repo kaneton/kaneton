@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/as/as.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [tue apr  3 14:53:38 2007]
+ * updated       julien quintard   [fri jan 14 20:08:33 2011]
  */
 
 /*

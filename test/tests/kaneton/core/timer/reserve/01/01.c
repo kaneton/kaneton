@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/timer/reserve/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [thu dec 16 23:28:27 2010]
+ * updated       julien quintard   [sat jan 15 15:59:11 2011]
  */
 
 /*
@@ -54,7 +54,7 @@ void			test_core_timer_reserve_01_content(void)
 		    1000,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[event_reserve] error");
+    TEST_HANG("[timer_reserve] error");
 
   if (clock_current(&clock) != ERROR_OK)
     TEST_HANG("[clock_current] error");

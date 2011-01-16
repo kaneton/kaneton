@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...s/kaneton/core/segment/reserve/reserve.h
  *
  * created       julien quintard   [wed oct 20 16:12:39 2010]
- * updated       julien quintard   [fri dec 17 16:12:30 2010]
+ * updated       julien quintard   [fri jan 14 22:59:44 2011]
  */
 
 #ifndef TESTS_KANETON_SEGMENT_RESERVE_RESERVE_H
@@ -24,8 +24,9 @@
       o_segment*	o;						\
 									\
       if (segment_reserve((_as_),					\
-			  (_pages_) * ___kaneton$pagesz,				\
+			  (_pages_) * ___kaneton$pagesz,		\
 			  PERMISSION_READ,				\
+			  SEGMENT_OPTION_NONE,				\
 			  (_segment_)) != ERROR_OK)			\
 	TEST_ERROR("[segment_reserve] error");				\
 									\
@@ -38,7 +39,7 @@
       if (o->as != (_as_))						\
 	TEST_ERROR("invalid segment's address space identifier");	\
 									\
-      if (o->size != (_pages_) * ___kaneton$pagesz)				\
+      if (o->size != (_pages_) * ___kaneton$pagesz)			\
 	TEST_ERROR("invalid segment's size");				\
 									\
       if (o->permissions != PERMISSION_READ)				\

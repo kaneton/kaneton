@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...kaneton/core/segment/permissions/01/01.c
+ * file          /home/mycure/kane...kaneton/core/segment/permissions/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:55:32 2010]
+ * updated       julien quintard   [fri jan 14 23:00:31 2011]
  */
 
 /*
@@ -39,6 +39,7 @@ void			test_core_segment_permissions_01(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_EXEC,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

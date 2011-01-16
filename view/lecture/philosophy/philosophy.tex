@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/lecture/philosophy/philosophy.tex
 %
 % created       julien quintard   [wed may 16 19:41:40 2007]
-% updated       julien quintard   [fri may 21 16:20:45 2010]
+% updated       julien quintard   [fri jan 14 21:55:30 2011]
 %
 
 %
@@ -611,6 +611,34 @@
   Unfortunately but obviously, this design choice has a drastic impact on
   the kernel performance since every system call implies switching the
   address space hence flushing the caches.
+\end{frame}
+
+% 12)
+
+\begin{frame}
+  \frametitle{Typing}
+
+  Finally, note that a type convention has been used throughout the
+  kaneton implementation.
+
+  \-
+
+  The core types operate as normal with structures prefixed by \code{s\_},
+  enumerations by \code{e\_}, types by \code{t\_} and so on. In addition,
+  kaneton-specific prefixes are used to identify: objects with \code{o\_},
+  managers with \code{m\_} \etc{}
+
+  \-
+
+  Besides, the library types' prefixes are prepended with a \code{l},
+  while the same rule applies for the modules with \code{m}, platforms
+  with \code{p} and architecture with \code{a}.
+
+  \-
+
+  As such, the type \code{mm\_console} represents a module-specific console
+  manager while the type \code{at\_pd} represents an architecture-specific
+  page directory.
 \end{frame}
 
 \end{document}

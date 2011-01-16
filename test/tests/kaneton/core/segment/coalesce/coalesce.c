@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...kaneton/core/segment/coalesce/coalesce.c
+ * file          /home/mycure/kane...kaneton/core/segment/coalesce/coalesce.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:53:33 2010]
+ * updated       julien quintard   [fri jan 14 23:09:02 2011]
  */
 
 /*
@@ -41,6 +41,7 @@ void			test_core_segment_coalesce(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
@@ -53,6 +54,7 @@ void			test_core_segment_coalesce(void)
       if (segment_reserve(_kernel->as,
 			  ___kaneton$pagesz,
 			  PERMISSION_READ,
+			  SEGMENT_OPTION_NONE,
 			  &seg2) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
 
@@ -89,8 +91,8 @@ void			test_core_segment_coalesce(void)
   if (o->as != _kernel->as)
     TEST_ERROR("invalid segment's address space identifier after coalesce");
 
-  if (o->type != SEGMENT_TYPE_MEMORY)
-    TEST_ERROR("invalid segment's type after coalesce");
+  if (o->options != SEGMENT_OPTION_NONE)
+    TEST_ERROR("invalid segment's options after coalesce");
 
   if (o->size != 2 * ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after coalesce");
@@ -108,6 +110,7 @@ void			test_core_segment_coalesce(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
@@ -120,6 +123,7 @@ void			test_core_segment_coalesce(void)
       if (segment_reserve(_kernel->as,
 			  ___kaneton$pagesz,
 			  PERMISSION_READ,
+			  SEGMENT_OPTION_NONE,
 			  &seg2) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
 

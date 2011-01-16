@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/time/timer.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/timer/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       matthieu bucchianeri   [tue feb  6 23:16:26 2007]
+ * updated       julien quintard   [fri jan 14 20:04:36 2011]
  */
 
 /*

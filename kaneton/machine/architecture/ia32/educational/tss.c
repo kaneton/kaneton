@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/tss.c
  *
  * created       renaud voltz   [mon apr 10 01:01:34 2006]
- * updated       julien quintard   [sat jan  8 21:16:33 2011]
+ * updated       julien quintard   [sat jan 15 18:45:21 2011]
  */
 
 /*
@@ -37,8 +37,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -108,9 +106,9 @@ t_error			architecture_tss_activate(as_tss*	tss)
 
   if (architecture_gdt_reserve((t_paddr)tss,
 			       sizeof(as_tss),
-			       ARCHITECTURE_PRIVILEGE_RING0,
-			       ARCHITECTURE_GDT_CLASS_SYSTEM,
-			       ARCHITECTURE_GDT_TYPE_TSS,
+			       ARCHITECTURE_GDTE_DPL_SET(
+			         ARCHITECTURE_PRIVILEGE_RING0) |
+			       ARCHITECTURE_GDTE_TSS,
 			       &index) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve a GDT entry");
 

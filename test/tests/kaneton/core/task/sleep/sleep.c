@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...st/tests/kaneton/core/task/sleep/sleep.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec 19 16:20:18 2010]
+ * updated       julien quintard   [fri jan 14 23:05:21 2011]
  */
 
 /*
@@ -119,6 +119,7 @@ void			test_core_task_sleep(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &segment) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

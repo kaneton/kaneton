@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/debug/serial.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...kaneton/machine/platform/ibm-pc/serial.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sun may 27 14:47:01 2007]
+ * updated       julien quintard   [fri jan 14 20:13:12 2011]
  */
 
 /*

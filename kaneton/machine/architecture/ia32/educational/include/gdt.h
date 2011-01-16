@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/include/gdt.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri jan  7 17:49:39 2011]
+ * updated       julien quintard   [sun jan 16 01:02:49 2011]
  */
 
 #ifndef ARCHITECTURE_GDT_H
@@ -28,35 +28,31 @@
  * the code/data segment types.
  */
 
-#define ARCHITECTURE_GDT_TYPE_CODE		((1 << 3) |		\
-						 (1 << 1))
-#define ARCHITECTURE_GDT_TYPE_DATA		(1 << 1)
+#define ARCHITECTURE_GDTE_CODE			((1LL << 43) |		\
+						 (1LL << 41))
+#define ARCHITECTURE_GDTE_DATA			(1LL << 41)
 
 /*
  * the system segment types.
  */
 
-#define ARCHITECTURE_GDT_TYPE_LDT		(1 << 1)
-#define ARCHITECTURE_GDT_TYPE_TSS		((1 << 3) |		\
-						 (1 << 0))
-#define ARCHITECTURE_GDT_TYPE_CALL		((1 << 3) |		\
-						 (1 << 2))
-#define ARCHITECTURE_GDT_TYPE_TRAP		((1 << 3) |		\
-						 (1 << 2) |		\
-						 (1 << 1) |		\
-						 (1 << 0))
-#define ARCHITECTURE_GDT_TYPE_INTERRUPT		((1 << 3) |		\
-						 (1 << 2) |		\
-						 (1 << 1))
+#define ARCHITECTURE_GDTE_LDT			(1LL << 41)
+#define ARCHITECTURE_GDTE_TSS			((1LL << 43) |		\
+						 (1LL << 40))
+#define ARCHITECTURE_GDTE_TSS_AVAILABLE		ARCHITECTURE_GDTE_TSS
+#define ARCHITECTURE_GDTE_TSS_BUSY		((1LL << 43) |		\
+						 (1LL << 41) |		\
+						 (1LL << 40))
 
-/*
- * these macros indicate whether a system is to be used to store a system
- * structure such as a LDT, TSS etc. or as a regular segment i.e for code
- * or data.
- */
-
-#define ARCHITECTURE_GDT_CLASS_SYSTEM		0x1
-#define ARCHITECTURE_GDT_CLASS_SEGMENT		0x2
+#define ARCHITECTURE_GDTE_CALL			((1LL << 43) |		\
+						 (1LL << 42))
+#define ARCHITECTURE_GDTE_TRAP			((1LL << 43) |		\
+						 (1LL << 42) |		\
+						 (1LL << 41) |		\
+						 (1LL << 40))
+#define ARCHITECTURE_GDTE_INTERRUPT		((1LL << 43) |		\
+						 (1LL << 42) |		\
+						 (1LL << 41))
 
 /*
  * type definitions.
@@ -66,8 +62,8 @@
  * considered by the CPU.
  */
 
-#define ARCHITECTURE_GDT_TYPE_S			(1 << 4)
-#define ARCHITECTURE_GDT_TYPE_PRESENT		(1 << 7)
+#define ARCHITECTURE_GDTE_S			(1LL << 44)
+#define ARCHITECTURE_GDTE_PRESENT		(1LL << 47)
 
 /*
  * flags definitions.
@@ -80,10 +76,17 @@
  * of bytes or a number of pages.
  */
 
-#define ARCHITECTURE_GDT_FLAG_AVAILABLE		(1 << 0)
-#define ARCHITECTURE_GDT_FLAG_16BIT		(0 << 2)
-#define ARCHITECTURE_GDT_FLAG_32BIT		(1 << 2)
-#define ARCHITECTURE_GDT_FLAG_GRANULARITY	(1 << 3)
+#define ARCHITECTURE_GDTE_AVAILABLE		(1LL << 52)
+#define ARCHITECTURE_GDTE_16BIT			(0LL << 54)
+#define ARCHITECTURE_GDTE_32BIT			(1LL << 54)
+#define ARCHITECTURE_GDTE_GRANULARITY		(1LL << 55)
+
+/*
+ * these values indicates the table in which is located the selector's target.
+ */
+
+#define ARCHITECTURE_GDT_SELECTOR_TI_GDT	(0LL << 2)
+#define ARCHITECTURE_GDT_SELECTOR_TI_LDT	(1LL << 2)
 
 /*
  * these definitions represents the indexes of the different system
@@ -100,13 +103,6 @@
 #define ARCHITECTURE_GDT_INDEX_GUEST_DATA	8
 
 /*
- * these values indicates the table in which is located the selector's target.
- */
-
-#define ARCHITECTURE_GDT_SELECTOR_TI_GDT	(0 << 2)
-#define ARCHITECTURE_GDT_SELECTOR_TI_LDT	(1 << 2)
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -118,11 +114,11 @@
  * the GDT entry's type.
  */
 
-#define ARCHITECTURE_GDT_DPL_SET(_privilege_)				\
-  ((_privilege_) << 5)
+#define ARCHITECTURE_GDTE_DPL_SET(_privilege_)				\
+  (((at_gdte)(_privilege_) & 0x3) << 45)
 
-#define ARCHITECTURE_GDT_DPL_GET(_type_)				\
-  (((_type_) >> 5) & 0x3)
+#define ARCHITECTURE_GDTE_DPL_GET(_gdte_)				\
+  (((_gdte_) >> 45) & 0x3)
 
 /*
  * these two macro-function returns a system type value according to
@@ -132,11 +128,54 @@
  * while the second must be used for regular code/data segments.
  */
 
-#define ARCHITECTURE_GDT_TYPE_SYSTEM(_type_)				\
-  ((_type_) & ((1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)))
+#define ARCHITECTURE_GDTE_TYPE_SYSTEM(_gdte_)				\
+  ((_gdte_) &								\
+   (ARCHITECTURE_GDTE_LDT |						\
+    ARCHITECTURE_GDTE_TSS |						\
+    ARCHITECTURE_GDTE_CALL |						\
+    ARCHITECTURE_GDTE_TRAP |						\
+    ARCHITECTURE_GDTE_INTERRUPT))
 
-#define ARCHITECTURE_GDT_TYPE_SEGMENT(_type_)				\
-  ((_type_) & ((1 << 3) | (1 << 1)))
+#define ARCHITECTURE_GDTE_TYPE_SEGMENT(_gdte_)				\
+  ((_gdte_) &								\
+   (ARCHITECTURE_GDTE_CODE |						\
+    ARCHITECTURE_GDTE_DATA))
+
+/*
+ * this macro-function sets the base address in its GDT entry form.
+ */
+
+#define ARCHITECTURE_GDTE_BASE_SET(_base_)				\
+  (at_gdte)((((at_gdte)(_base_) & 0x0000ffff) << 16) |			\
+	    (((at_gdte)(_base_) & 0x00ff0000) << 16) |			\
+	    (((at_gdte)(_base_) & 0xff000000) << 32))
+
+/*
+ * this macro-function returns the base address contained in the given
+ * GDT entry.
+ */
+
+#define ARCHITECTURE_GDTE_BASE_GET(_gdte_)				\
+  (t_paddr)((((_gdte_) >> 16) & 0x0000ffff) |				\
+	    (((_gdte_) >> 16) & 0x00ff0000) |				\
+	    (((_gdte_) >> 32) & 0xff000000))
+
+/*
+ * this macro-function sets the limit address in its GDT entry form.
+ */
+
+#define ARCHITECTURE_GDTE_LIMIT_GET(_gdte_)				\
+  (t_paddr)((((_gdte_) >> 00) & 0x0000ffff) |				\
+	    (((_gdte_) >> 32) & 0x000f0000))
+
+/*
+ * this macro-function returns the limit address contained in the given
+ * GDT entry.
+ */
+ 
+#define ARCHITECTURE_GDTE_LIMIT_SET(_limit_)				\
+  (at_gdte)((((at_gdte)(_limit_) & 0x0000ffff) << 00) |			\
+	    (((at_gdte)(_limit_) & 0x00ff0000) << 32))
 
 /*
  * this macro-function computes the RPL - Request Privilege Level value
@@ -172,16 +211,7 @@
  * for more information, please refer to the IA32 hardware documentation.
  */
 
-typedef struct
-{
-  t_uint16		limit_00_15;
-  t_uint16		base_00_15;
-  t_uint8		base_16_23;
-  t_uint8		type;
-  t_uint8		limit_16_19 : 4;
-  t_uint8		flags : 4;
-  t_uint8		base_24_31;
-}			__attribute__ ((packed)) as_gdt_entry;
+typedef t_uint64	at_gdte;
 
 /*
  * the GTD descriptor i.e the structure for managing a GDT.
@@ -192,9 +222,9 @@ typedef struct
 
 typedef struct
 {
-  as_gdt_entry*		table;
+  at_gdte*		table;
   t_uint16		size;
-}			as_gdt_descriptor;
+}			as_gdt;
 
 /*
  * this structure represents the GDTR - GDT Register which is the hardware
@@ -205,20 +235,7 @@ typedef struct
 {
   t_uint16		size;
   t_paddr		address;
-}			__attribute__ ((packed)) as_gdt_register;
-
-/*
- * this type indicates whether a GDT entry represents a system object such
- * as a TSS, a LDT etc. or a code/data segment.
- */
-
-typedef t_uint8		at_gdt_class;
-
-/*
- * this type indicates the type of the segment.
- */
-
-typedef t_uint8		at_gdt_type;
+}			__attribute__ ((packed)) as_gdtr;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -234,30 +251,26 @@ t_error			architecture_gdt_dump(void);
 
 t_error			architecture_gdt_build(t_paddr		base,
 					       t_psize		size,
-					       as_gdt_descriptor* descriptor);
+					       as_gdt*		gdt);
 
-t_error			architecture_gdt_import(as_gdt_descriptor* descriptor);
+t_error			architecture_gdt_import(as_gdt*		gdt);
 
-t_error			architecture_gdt_export(as_gdt_descriptor* descriptor);
+t_error			architecture_gdt_export(as_gdt*		gdt);
 
 t_error			architecture_gdt_insert(t_uint16	index,
 						t_paddr		base,
 						t_paddr		limit,
-						at_privilege	privilege,
-						at_gdt_class	class,
-						at_gdt_type	type);
+						t_flags		flags);
 
 t_error			architecture_gdt_reserve(t_paddr	base,
 						 t_paddr	limit,
-						 at_privilege	privilege,
-						 at_gdt_class	class,
-						 at_gdt_type	type,
+						 t_flags	flags,
 						 t_uint16*	index);
 
 t_error			architecture_gdt_delete(t_uint16	index);
 
 t_error			architecture_gdt_selector(t_uint16	index,
-						  at_privilege	privilege,
+						  t_privilege	privilege,
 						  t_uint16*	selector);
 
 

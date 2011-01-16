@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/architecture/ia32/event/map/map.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan  7 20:38:21 2011]
+ * updated       julien quintard   [sat jan 15 17:07:26 2011]
  */
 
 /*
@@ -32,7 +32,7 @@ extern m_as*		_as;
 
 void			test_architecture_event_map(void)
 {
-  as_idt_register	idtr;
+  as_idtr		idtr;
   t_paddr		paddr;
   t_vaddr		vaddr;
   s_iterator		it;

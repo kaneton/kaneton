@@ -1,18 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/include/task/context.h
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...cture/ia32/educational/include/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       matthieu bucchianeri   [tue feb  6 19:49:02 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * XXX THREAD information need to be written.
+ * updated       julien quintard   [sat jan 15 06:22:19 2011]
  */
 
 #ifndef ARCHITECTURE_CONTEXT_H
@@ -130,6 +126,8 @@
 
 /*
  * basic IA-32 context.
+ *
+ * XXX _esp = original esp
  */
 
 typedef struct
@@ -138,12 +136,12 @@ typedef struct
   t_uint32	edi;
   t_uint32	esi;
   t_uint32	ebp;
-  t_uint32	orig_esp;
+  t_uint32	_esp;
   t_uint32	ebx;
   t_uint32	edx;
   t_uint32	ecx;
   t_uint32	eax;
-  t_uint32	error_code;
+  t_uint32	error;
   t_uint32	eip;
   t_uint32	cs;
   t_uint32	eflags;
@@ -201,7 +199,8 @@ t_error			ia32_push_args(i_thread			threadid,
 t_error			ia32_get_context(i_thread		thread,
 					 t_ia32_context*	context);
 
-t_error                 ia32_print_context(i_thread             thread);
+t_error                 ia32_print_context(i_thread             thread,
+					   mt_margin		margin);
 
 t_error			ia32_set_context(i_thread		thread,
 					 t_ia32_context*	context,

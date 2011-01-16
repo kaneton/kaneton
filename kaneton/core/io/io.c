@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/io/io.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/io/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [wed nov  1 17:07:30 2006]
+ * updated       julien quintard   [fri jan 14 20:03:08 2011]
  */
 
 /*

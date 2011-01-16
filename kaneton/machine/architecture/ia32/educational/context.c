@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/architecture/ia32/educational/context.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [fri jun 15 09:30:33 2007]
+ * updated       julien quintard   [sat jan 15 15:37:04 2011]
  */
 
 /*
@@ -14,8 +16,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -252,16 +252,14 @@ t_error			ia32_init_switcher(void)
   if (segment_reserve(_kernel->as,
 		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_SYSTEM,
 		      &seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   if (region_reserve(_kernel->as,
 		     seg,
 		     0,
-		     REGION_OPTION_GLOBAL | REGION_OPTION_PRIVILEGED,
+		     REGION_OPTION_NONE,
 		     0,
 		     3 * ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
@@ -286,16 +284,14 @@ t_error			ia32_init_switcher(void)
   if (segment_reserve(_kernel->as,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_SYSTEM,
 		      &seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
   if (region_reserve(_kernel->as,
 		     seg,
 		     0,
-		     REGION_OPTION_GLOBAL | REGION_OPTION_PRIVILEGED,
+		     REGION_OPTION_NONE,
 		     0,
 		     2 * ___kaneton$pagesz,
 		     &reg) != ERROR_OK)
@@ -639,22 +635,36 @@ t_error			ia32_get_context(i_thread		thread,
 /*
  * XXX
  */
-t_error                 ia32_print_context(i_thread             thread)
+// XXX to remove
+t_error                 ia32_print_context(i_thread             thread,
+					   mt_margin		margin)
 {
-    t_ia32_context      ctxt;
+  t_ia32_context	ctx;
 
-    ia32_get_context(thread, &ctxt);
+  ia32_get_context(thread, &ctx);
 
-    module_call(console, print,
-		"Context:\n"
-		"eax: 0x%08x   ebx: 0x%08x   ecx: 0x%08x\n"
-		"edx: 0x%08x   esi: 0x%08x   edi: 0x%08x\n"
-		"ebp: 0x%08x   esp: 0x%08x   eip: 0x%08x\n",
-		ctxt.eax, ctxt.ebx, ctxt.ecx,
-		ctxt.edx, ctxt.esi, ctxt.edi,
-		ctxt.ebp, ctxt.orig_esp, ctxt.eip);
+  module_call(console, message,
+	      '!',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "context: eax(0x%08x) ebx(0x%08x) ecx(0x%08x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      ctx.eax, ctx.ebx, ctx.ecx);
 
-    MACHINE_LEAVE();
+  module_call(console, message,
+	      '!',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "         edx(0x%08x) esi(0x%08x) edi(0x%08x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      ctx.edx, ctx.esi, ctx.edi);
+
+  module_call(console, message,
+	      '!',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "         ebp(0x%08x) esp(0x%08x) eip(0x%08x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      ctx.ebp, ctx._esp, ctx.eip);
+
+  MACHINE_LEAVE();
 }
 
 /*

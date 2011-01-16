@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [sun dec 12 16:05:18 2010]
+ * updated       julien quintard   [sat jan 15 00:19:12 2011]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -39,10 +39,17 @@
  */
 
 /*
- * options.
+ * the options related to the segments.
+ *
+ * the 'system' option indicates the segment contains data related to
+ * the system management such as hardware data structure for instance.
+ *
+ * the 'norelocate' option is used by the resize() function.
  */
 
 #define SEGMENT_OPTION_NONE		(1 << 0)
+#define SEGMENT_OPTION_SYSTEM		(1 << 1)
+
 #define SEGMENT_OPTION_NORELOCATE	(1 << 1)
 
 /*
@@ -50,13 +57,6 @@
  */
 
 #define SEGMENT_BPT_NODESZ		4096
-
-/*
- * the types of segments.
- */
-
-#define SEGMENT_TYPE_MEMORY		(1 << 0)
-#define SEGMENT_TYPE_SYSTEM		(1 << 1)
 
 /*
  * ---------- macro-functions -------------------------------------------------
@@ -87,12 +87,12 @@ typedef struct
 
   i_as				as;
 
-  t_type			type;
-
   t_paddr			address;
   t_psize			size;
 
   t_permissions			permissions;
+
+  t_options			options;
 
   machine_data(o_segment);
 }				o_segment;
@@ -161,8 +161,6 @@ typedef struct
   t_error			(*segment_release)(i_segment);
   t_error			(*segment_permissions)(i_segment,
 						       t_permissions);
-  t_error			(*segment_type)(i_segment,
-						t_type);
   t_error			(*segment_flush)(i_as);
   t_error			(*segment_initialize)();
   t_error			(*segment_clean)(void);
@@ -235,15 +233,13 @@ t_error			segment_copy(i_segment			dst,
 t_error			segment_reserve(i_as			asid,
 					t_psize			size,
 					t_permissions		perms,
+					t_options		options,
 					i_segment*		id);
 
 t_error			segment_release(i_segment		segid);
 
 t_error			segment_permissions(i_segment		segid,
 					    t_permissions	perms);
-
-t_error			segment_type(i_segment			segid,
-				     t_type			type);
 
 t_error			segment_flush(i_as			asid);
 

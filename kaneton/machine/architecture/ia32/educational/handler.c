@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [fri jan 14 13:52:29 2011]
+ * updated       julien quintard   [sat jan 15 22:34:26 2011]
  */
 
 /*
@@ -27,8 +27,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -197,7 +195,7 @@ t_error			architecture_handler_setup(void)
   t_uint16		selector;
   i_segment		segment;
   i_region		region;
-  as_idt_descriptor	idt;
+  as_idt		idt;
   o_region*		o;
   t_uint32		i;
 
@@ -208,16 +206,14 @@ t_error			architecture_handler_setup(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_SYSTEM,
 		      &segment) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve a segment");
-
-  if (segment_type(segment, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-    MACHINE_ESCAPE("unable to change the segment's type");
 
   if (region_reserve(_kernel->as,
 		     segment,
 		     0x0,
-		     REGION_OPTION_GLOBAL | REGION_OPTION_PRIVILEGED,
+		     REGION_OPTION_NONE,
 		     0x0,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
@@ -258,8 +254,10 @@ t_error			architecture_handler_setup(void)
       if (architecture_idt_insert(i,
 				  (t_vaddr)_architecture_handler_shells[i],
 				  selector,
-				  ARCHITECTURE_PRIVILEGE_RING0,
-				  ARCHITECTURE_IDT_TYPE_INTERRUPT) != ERROR_OK)
+				  ARCHITECTURE_IDTE_DPL_SET(
+				    ARCHITECTURE_PRIVILEGE_RING0) |
+				  ARCHITECTURE_IDTE_32BIT |
+				  ARCHITECTURE_IDTE_INTERRUPT) != ERROR_OK)
 	MACHINE_ESCAPE("unable to register the exception handler '%u'",
 		       i);
     }
@@ -275,8 +273,10 @@ t_error			architecture_handler_setup(void)
       if (architecture_idt_insert(i,
 				  (t_vaddr)_architecture_handler_shells[i],
 				  selector,
-				  ARCHITECTURE_PRIVILEGE_RING0,
-				  ARCHITECTURE_IDT_TYPE_INTERRUPT) != ERROR_OK)
+				  ARCHITECTURE_IDTE_DPL_SET(
+				    ARCHITECTURE_PRIVILEGE_RING0) |
+				  ARCHITECTURE_IDTE_32BIT |
+				  ARCHITECTURE_IDTE_INTERRUPT) != ERROR_OK)
 	MACHINE_ESCAPE("unable to register the exception handler '%u'",
 		       i);
     }
@@ -292,8 +292,10 @@ t_error			architecture_handler_setup(void)
       if (architecture_idt_insert(i,
 				  (t_vaddr)_architecture_handler_shells[i],
 				  selector,
-				  ARCHITECTURE_PRIVILEGE_RING3,
-				  ARCHITECTURE_IDT_TYPE_INTERRUPT) != ERROR_OK)
+				  ARCHITECTURE_IDTE_DPL_SET(
+				    ARCHITECTURE_PRIVILEGE_RING3) |
+				  ARCHITECTURE_IDTE_32BIT |
+				  ARCHITECTURE_IDTE_INTERRUPT) != ERROR_OK)
 	MACHINE_ESCAPE("unable to register the exception handler '%u'",
 		       i);
     }

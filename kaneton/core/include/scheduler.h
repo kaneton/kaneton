@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [wed dec 15 17:04:01 2010]
+ * updated       julien quintard   [sat jan 15 14:53:38 2011]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -98,11 +98,8 @@
       o_task*		_task_;						\
       o_thread*		_thread_;					\
 									\
-      if (thread_get((_id_), &_thread_) != ERROR_OK)			\
-        CORE_ESCAPE("unable to retrieve the thread object");		\
-									\
-      if (task_get(_thread_->task, &_task_) != ERROR_OK)		\
-        CORE_ESCAPE("unable to retrieve the task object");		\
+      assert(thread_get((_id_), &_thread_) == ERROR_OK);		\
+      assert(task_get(_thread_->task, &_task_) == ERROR_OK);		\
 									\
       ((_task_->priority - TASK_PRIORITY_BACKGROUND_LOW) *		\
        (_thread_->priority - THREAD_PRIORITY_LOW));			\

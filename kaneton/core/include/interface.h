@@ -39,12 +39,9 @@
 #define INTERFACE_SEGMENT_CLONE 34
 #define INTERFACE_SEGMENT_GIVE 35
 #define INTERFACE_SEGMENT_COPY 36
-#define INTERFACE_SEGMENT_RESERVE 37
 #define INTERFACE_SEGMENT_RELEASE 38
 #define INTERFACE_SEGMENT_PERMISSIONS 40
-#define INTERFACE_SEGMENT_TYPE 41
 #define INTERFACE_SEGMENT_ATTRIBUTE_AS 42
-#define INTERFACE_SEGMENT_ATTRIBUTE_TYPE 43
 #define INTERFACE_SEGMENT_ATTRIBUTE_ADDRESS 44
 #define INTERFACE_SEGMENT_ATTRIBUTE_SIZE 45
 #define INTERFACE_SEGMENT_ATTRIBUTE_PERMISSIONS 46
@@ -253,12 +250,6 @@ typedef struct
 	}		segment_copy;
 	struct
 	{
-	  i_as	arg1;
-	  t_psize	arg2;
-	  t_permissions	arg3;
-	}		segment_reserve;
-	struct
-	{
 	  i_segment	arg1;
 	}		segment_release;
 	struct
@@ -269,16 +260,7 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_type	arg2;
-	}		segment_type;
-	struct
-	{
-	  t_id	arg1;
 	}		segment_attribute_as;
-	struct
-	{
-	  t_id	arg1;
-	}		segment_attribute_type;
 	struct
 	{
 	  t_id	arg1;
@@ -467,16 +449,8 @@ typedef struct
 	}		segment_clone;
 	struct
 	{
-	  i_segment	result1;
-	}		segment_reserve;
-	struct
-	{
 	  i_as	result1;
 	}		segment_attribute_as;
-	struct
-	{
-	  t_type	result1;
-	}		segment_attribute_type;
 	struct
 	{
 	  t_paddr	result1;
@@ -625,17 +599,11 @@ t_error		interface_segment_give(o_syscall*	message);
 
 t_error		interface_segment_copy(o_syscall*	message);
 
-t_error		interface_segment_reserve(o_syscall*	message);
-
 t_error		interface_segment_release(o_syscall*	message);
 
 t_error		interface_segment_permissions(o_syscall*	message);
 
-t_error		interface_segment_type(o_syscall*	message);
-
 t_error		interface_segment_attribute_as(o_syscall*	message);
-
-t_error		interface_segment_attribute_type(o_syscall*	message);
 
 t_error		interface_segment_attribute_address(o_syscall*	message);
 

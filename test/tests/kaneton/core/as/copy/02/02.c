@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/test/tests/kaneton/core/as/copy/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [fri dec 17 16:06:01 2010]
+ * updated       julien quintard   [fri jan 14 22:55:52 2011]
  */
 
 /*
@@ -58,30 +58,35 @@ void			test_core_as_copy_02(void)
   if (segment_reserve(as1,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg1) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg2) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      4 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg3) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
@@ -128,30 +133,35 @@ void			test_core_as_copy_02(void)
   if (segment_reserve(as2,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg4) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      4 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg5) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg6) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

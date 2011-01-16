@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/tlb.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:57:00 2005]
- * updated       julien quintard   [sat jan  8 16:44:09 2011]
+ * updated       julien quintard   [fri jan 14 21:42:09 2011]
  */
 
 /*
@@ -23,8 +23,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- functions -------------------------------------------------------

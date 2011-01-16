@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/timer/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 13:23:49 2010]
+ * updated       julien quintard   [sat jan 15 15:59:36 2011]
  */
 
 /*
@@ -68,7 +68,7 @@ void			test_core_timer_reserve_03_content(void)
 		    1000,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[event_reserve] error");
+    TEST_HANG("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
 		    TIMER_ROUTINE(test_core_timer_reserve_03_handler_02),
@@ -76,7 +76,7 @@ void			test_core_timer_reserve_03_content(void)
 		    200,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[event_reserve] error");
+    TEST_HANG("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
 		    TIMER_ROUTINE(test_core_timer_reserve_03_handler_03),
@@ -84,7 +84,7 @@ void			test_core_timer_reserve_03_content(void)
 		    500,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[event_reserve] error");
+    TEST_HANG("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
 		    TIMER_ROUTINE(test_core_timer_reserve_03_handler_04),
@@ -92,7 +92,7 @@ void			test_core_timer_reserve_03_content(void)
 		    700,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[event_reserve] error");
+    TEST_HANG("[timer_reserve] error");
 
   if (clock_current(&clock) != ERROR_OK)
     TEST_HANG("[clock_current] error");

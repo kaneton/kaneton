@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/map.h
  *
  * created       julien quintard   [wed jun  6 13:31:27 2007]
- * updated       julien quintard   [fri dec 10 21:18:34 2010]
+ * updated       julien quintard   [fri jan 14 20:18:43 2011]
  */
 
 #ifndef CORE_MAP_H
@@ -28,14 +28,15 @@
 
 /*
  * the flags that can be passed at the map reservation time.
+ *
+ * for more information, please refer to the region-related flags.
  */
 
 #define MAP_OPTION_NONE		0
 #define MAP_OPTION_FORCE	(1 << 0)
-#define MAP_OPTION_USER		(0 << 1)
-#define MAP_OPTION_PRIVILEGED	(1 << 1)
+#define MAP_OPTION_SYSTEM	(1 << 1)
 
-#define MAP_OPTION_INVALID	(~((1 << 1) | (1 << 0)))
+#define MAP_OPTION_INVALID	(~(MAP_OPTION_FORCE | MAP_OPTION_SYSTEM))
 
 /*
  * ---------- types -----------------------------------------------------------

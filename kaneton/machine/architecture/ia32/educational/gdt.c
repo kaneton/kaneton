@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/gdt.c
  *
  * created       matthieu bucchianeri   [mon dec 10 13:54:28 2007]
- * updated       julien quintard   [sat jan  8 21:19:12 2011]
+ * updated       julien quintard   [sun jan 16 01:09:07 2011]
  */
 
 /*
@@ -28,8 +28,6 @@
 
 #include <kaneton.h>
 
-#include <architecture/architecture.h>
-
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -38,7 +36,7 @@
  * the current system GDT.
  */
 
-as_gdt_descriptor		_architecture_gdt;
+as_gdt			_architecture_gdt;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -53,10 +51,11 @@ as_gdt_descriptor		_architecture_gdt;
  * 2) go through the GDT entries.
  *   a) ignore non-present entries.
  *   b) compute the base and limit addresses.
- *   c) depending on the segment type flags, build a type string.
+ *   c) build the flags string.
+ *   d) depending on the segment type flags, build a type string.
  *     A) the entry represents a system segment.
  *     B) the entry represents a regular code/data segment.
- *   d) display the segment.
+ *   e) display the segment.
  */
 
 t_error			architecture_gdt_dump(void)
@@ -75,83 +74,100 @@ t_error			architecture_gdt_dump(void)
    * 2)
    */
 
-  for (i = 1; i < _architecture_gdt.size; i++)
+  for (i = 0; i < _architecture_gdt.size; i++)
     {
+      t_privilege	privilege;
       t_paddr		base;
       t_paddr		limit;
       char*		type;
-      at_privilege	privilege;
+      char		flags[4];
 
       /*
        * a)
        */
 
-      if (!(_architecture_gdt.table[i].type & ARCHITECTURE_GDT_TYPE_PRESENT))
+      if (!(_architecture_gdt.table[i] & ARCHITECTURE_GDTE_PRESENT))
 	continue;
 
       /*
        * b)
        */
 
-      base =
-	_architecture_gdt.table[i].base_00_15 |
-	(_architecture_gdt.table[i].base_16_23 << 16) |
-	(_architecture_gdt.table[i].base_24_31 << 24);
+      base = ARCHITECTURE_GDTE_BASE_GET(_architecture_gdt.table[i]);
 
-      limit =
-	_architecture_gdt.table[i].limit_00_15 |
-	(_architecture_gdt.table[i].limit_16_19 << 16);
+      limit = ARCHITECTURE_GDTE_LIMIT_GET(_architecture_gdt.table[i]);
 
-      if (_architecture_gdt.table[i].flags & ARCHITECTURE_GDT_FLAG_GRANULARITY)
+      if (_architecture_gdt.table[i] & ARCHITECTURE_GDTE_GRANULARITY)
 	limit *= ___kaneton$pagesz;
 
-      privilege = ARCHITECTURE_GDT_DPL_GET(_architecture_gdt.table[i].type);
+      privilege = ARCHITECTURE_GDTE_DPL_GET(_architecture_gdt.table[i]);
 
       /*
        * c)
        */
 
-      if (!(_architecture_gdt.table[i].type & ARCHITECTURE_GDT_TYPE_S))
+      if (_architecture_gdt.table[i] & ARCHITECTURE_GDTE_AVAILABLE)
+	flags[0] = 'f';
+      else
+	flags[0] = '.';
+
+      if (_architecture_gdt.table[i] & ARCHITECTURE_GDTE_32BIT)
+	flags[1] = 's';
+      else
+	flags[1] = '.';
+
+      if (_architecture_gdt.table[i] & ARCHITECTURE_GDTE_GRANULARITY)
+	flags[2] = 'g';
+      else
+	flags[2] = '.';
+
+      flags[3] = '\0';
+
+      /*
+       * d)
+       */
+
+      if (!(_architecture_gdt.table[i] & ARCHITECTURE_GDTE_S))
 	{
 	  /*
 	   * A)
 	   */
 
-	  switch (ARCHITECTURE_GDT_TYPE_SYSTEM(_architecture_gdt.table[i].type))
+	  switch (ARCHITECTURE_GDTE_TYPE_SYSTEM(_architecture_gdt.table[i]))
 	    {
-	    case ARCHITECTURE_GDT_TYPE_LDT:
+	    case ARCHITECTURE_GDTE_LDT:
 	      {
 		type = "ldt";
 
 		break;
 	      }
-	    case ARCHITECTURE_GDT_TYPE_TSS:
+	    case ARCHITECTURE_GDTE_TSS_AVAILABLE:
+	    case ARCHITECTURE_GDTE_TSS_BUSY:
 	      {
 		type = "tss";
 
 		break;
 	      }
-	    case ARCHITECTURE_GDT_TYPE_CALL:
+	    case ARCHITECTURE_GDTE_CALL:
 	      {
 		type = "call gate";
 
 		break;
 	      }
-	    case ARCHITECTURE_GDT_TYPE_TRAP:
+	    case ARCHITECTURE_GDTE_TRAP:
 	      {
 		type = "trap gate";
 
 		break;
 	      }
-	    case ARCHITECTURE_GDT_TYPE_INTERRUPT:
+	    case ARCHITECTURE_GDTE_INTERRUPT:
 	      {
 		type = "interrupt gate";
 
 		break;
 	      }
 	    default:
-	      MACHINE_ESCAPE("unknown system segment type '%u'",
-			     _architecture_gdt.table[i].type);
+	      MACHINE_ESCAPE("unknown system segment type");
 	    }
 	}
       else
@@ -160,34 +176,33 @@ t_error			architecture_gdt_dump(void)
 	   * B)
 	   */
 
-	  switch (ARCHITECTURE_GDT_TYPE_SEGMENT(_architecture_gdt.table[i].type))
+	  switch (ARCHITECTURE_GDTE_TYPE_SEGMENT(_architecture_gdt.table[i]))
 	    {
-	    case ARCHITECTURE_GDT_TYPE_CODE:
+	    case ARCHITECTURE_GDTE_CODE:
 	      {
 		type = "code";
 
 		break;
 	      }
-	    case ARCHITECTURE_GDT_TYPE_DATA:
+	    case ARCHITECTURE_GDTE_DATA:
 	      {
 		type = "data";
 
 		break;
 	      }
 	    default:
-	      MACHINE_ESCAPE("unknown regular segment type '%u'",
-			     _architecture_gdt.table[i].type);
+	      MACHINE_ESCAPE("unknown regular segment type");
 	    }
 	}
 
       /*
-       * d)
+       * e)
        */
 
       module_call(console, message,
 		  '#', "  %u: base(0x%08x) limit(0x%08x) type(%s) "
-		  "privilege(%u)\n",
-		  i, base, limit, type, privilege);
+		  "privilege(%u) flags(%s)\n",
+		  i, base, limit, type, privilege, flags);
     }
 
   MACHINE_LEAVE();
@@ -206,16 +221,16 @@ t_error			architecture_gdt_dump(void)
 
 t_error			architecture_gdt_build(t_paddr		base,
 					       t_psize		size,
-					       as_gdt_descriptor* descriptor)
+					       as_gdt*		gdt)
 {
   /*
    * 0)
    */
 
-  if (descriptor == NULL)
-    MACHINE_ESCAPE("the 'descriptor' argument is null");
+  if (gdt == NULL)
+    MACHINE_ESCAPE("the 'gdt' argument is null");
 
-  if (size > (ARCHITECTURE_GDT_SIZE * sizeof(as_gdt_entry)))
+  if (size > (ARCHITECTURE_GDT_SIZE * sizeof(at_gdte)))
     MACHINE_ESCAPE("the given size is too large as exceeding the GDT's "
 		   "theoretically maximum capacity");
 
@@ -223,21 +238,21 @@ t_error			architecture_gdt_build(t_paddr		base,
    * 1)
    */
 
-  if (base % sizeof(as_gdt_entry))
-    base += sizeof(as_gdt_entry) - (base % sizeof(as_gdt_entry));
+  if (base % sizeof(at_gdte))
+    base += sizeof(at_gdte) - (base % sizeof(at_gdte));
 
   /*
    * 2)
    */
 
-  descriptor->table = (as_gdt_entry*)base;
-  descriptor->size = size / sizeof(as_gdt_entry);
+  gdt->table = (at_gdte*)base;
+  gdt->size = size / sizeof(at_gdte);
 
   /*
    * 3)
    */
 
-  memset(descriptor->table, 0x0, descriptor->size * sizeof(as_gdt_entry));
+  memset(gdt->table, 0x0, gdt->size * sizeof(at_gdte));
 
   MACHINE_LEAVE();
 }
@@ -254,23 +269,23 @@ t_error			architecture_gdt_build(t_paddr		base,
  *    in the current system GDT's structure.
  */
 
-t_error			architecture_gdt_import(as_gdt_descriptor* descriptor)
+t_error			architecture_gdt_import(as_gdt*		gdt)
 {
-  as_gdt_register	gdtr;
+  as_gdtr		gdtr;
 
   /*
    * 0)
    */
 
-  if (descriptor == NULL)
-    MACHINE_ESCAPE("the 'descriptor' argument is null");
+  if (gdt == NULL)
+    MACHINE_ESCAPE("the 'gdt' argument is null");
 
   /*
    * 1)
    */
 
-  gdtr.address = (t_paddr)descriptor->table;
-  gdtr.size = descriptor->size * sizeof(as_gdt_entry);
+  gdtr.address = (t_paddr)gdt->table;
+  gdtr.size = gdt->size * sizeof(at_gdte);
 
   /*
    * 2)
@@ -282,7 +297,7 @@ t_error			architecture_gdt_import(as_gdt_descriptor* descriptor)
    * 3)
    */
 
-  memcpy(&_architecture_gdt, descriptor, sizeof(as_gdt_descriptor));
+  memcpy(&_architecture_gdt, gdt, sizeof(as_gdt));
 
   MACHINE_LEAVE();
 }
@@ -299,18 +314,18 @@ t_error			architecture_gdt_import(as_gdt_descriptor* descriptor)
  * 3) updates the given GDT's size.
  */
 
-t_error			architecture_gdt_export(as_gdt_descriptor* descriptor)
+t_error			architecture_gdt_export(as_gdt*		gdt)
 {
-  as_gdt_register	gdtr;
-  as_gdt_entry*		source;
-  as_gdt_entry*		dest;
+  as_gdtr		gdtr;
+  at_gdte*		source;
+  at_gdte*		dest;
 
   /*
    * 0)
    */
 
-  if (descriptor == NULL)
-    MACHINE_ESCAPE("the 'descriptor' argument is null");
+  if (gdt == NULL)
+    MACHINE_ESCAPE("the 'gdt' argument is null");
 
   /*
    * 1)
@@ -322,8 +337,8 @@ t_error			architecture_gdt_export(as_gdt_descriptor* descriptor)
    * 2)
    */
 
-  source = (as_gdt_entry*)gdtr.address;
-  dest = descriptor->table;
+  source = (at_gdte*)gdtr.address;
+  dest = gdt->table;
 
   memcpy(dest, source, gdtr.size);
 
@@ -331,7 +346,7 @@ t_error			architecture_gdt_export(as_gdt_descriptor* descriptor)
    * 3)
    */
 
-  descriptor->size = gdtr.size / sizeof(as_gdt_entry);
+  gdt->size = gdtr.size / sizeof(at_gdte);
 
   MACHINE_LEAVE();
 }
@@ -343,21 +358,15 @@ t_error			architecture_gdt_export(as_gdt_descriptor* descriptor)
  * steps:
  *
  * 0) verify the arguments.
- * 1) set the base address.
- * 2) set the type according to the given class.
- * 3) set the flags.
- * 4) compute the limit address accordin to the granularity flag.
+ * 1) update the GDT entry.
+ * 2) set the limit and granularity according to its value.
  */
 
 t_error			architecture_gdt_insert(t_uint16	index,
 						t_paddr		base,
 						t_paddr		limit,
-						at_privilege	privilege,
-						at_gdt_class	class,
-						at_gdt_type	type)
+						t_flags		flags)
 {
-  t_paddr		l;
-
   /*
    * 0)
    */
@@ -368,67 +377,33 @@ t_error			architecture_gdt_insert(t_uint16	index,
   if (index == 0)
     MACHINE_ESCAPE("the first GDT entry cannot be used");
 
+  if (_architecture_gdt.table[index] & ARCHITECTURE_GDTE_PRESENT)
+    MACHINE_ESCAPE("the GDT entry to update is already in use");
+
   /*
    * 1)
    */
 
-  _architecture_gdt.table[index].base_00_15 = base & 0xffff;
-  _architecture_gdt.table[index].base_16_23 = (base >> 16) & 0xff;
-  _architecture_gdt.table[index].base_24_31 = (base >> 24) & 0xff;
+  _architecture_gdt.table[index] =
+    ARCHITECTURE_GDTE_PRESENT |
+    ARCHITECTURE_GDTE_BASE_SET(base) |
+    ARCHITECTURE_GDTE_32BIT |
+    flags;
 
   /*
    * 2)
    */
 
-  _architecture_gdt.table[index].type =
-    ARCHITECTURE_GDT_TYPE_PRESENT |
-    ARCHITECTURE_GDT_DPL_SET(privilege);
-
-  switch (class)
-    {
-    case ARCHITECTURE_GDT_CLASS_SYSTEM:
-      {
-	_architecture_gdt.table[index].type |= type;
-
-	break;
-      }
-    case ARCHITECTURE_GDT_CLASS_SEGMENT:
-      {
-	_architecture_gdt.table[index].type |= ARCHITECTURE_GDT_TYPE_S | type;
-
-	break;
-      }
-    default:
-      {
-	MACHINE_ESCAPE("unknown segment class '%u'",
-		       class);
-      }
-    }
-
-  /*
-   * 3)
-   */
-
-  _architecture_gdt.table[index].flags = ARCHITECTURE_GDT_FLAG_32BIT;
-
-  /*
-   * 4)
-   */
-
   if (limit >= ___kaneton$pagesz)
     {
-      _architecture_gdt.table[index].flags |=
-	ARCHITECTURE_GDT_FLAG_GRANULARITY;
-
-      l = limit / ___kaneton$pagesz;
+      _architecture_gdt.table[index] |=
+	ARCHITECTURE_GDTE_GRANULARITY |
+	ARCHITECTURE_GDTE_LIMIT_SET(limit / ___kaneton$pagesz);
     }
   else
     {
-      l = limit;
+      _architecture_gdt.table[index] |= ARCHITECTURE_GDTE_LIMIT_SET(limit);
     }
-
-  _architecture_gdt.table[index].limit_00_15 = l & 0xffff;
-  _architecture_gdt.table[index].limit_16_19 = (l >> 16) & 0xf;
 
   MACHINE_LEAVE();
 }
@@ -445,9 +420,7 @@ t_error			architecture_gdt_insert(t_uint16	index,
 
 t_error			architecture_gdt_reserve(t_paddr	base,
 						 t_paddr	limit,
-						 at_privilege	privilege,
-						 at_gdt_class	class,
-						 at_gdt_type	type,
+						 t_flags	flags,
 						 t_uint16*	index)
 {
   t_uint16		i;
@@ -466,7 +439,7 @@ t_error			architecture_gdt_reserve(t_paddr	base,
   *index = 0;
 
   for (i = 1; i < _architecture_gdt.size; i++)
-    if (!(_architecture_gdt.table[i].type & ARCHITECTURE_GDT_TYPE_PRESENT))
+    if (!(_architecture_gdt.table[i] & ARCHITECTURE_GDTE_PRESENT))
       {
 	*index = i;
 
@@ -481,7 +454,7 @@ t_error			architecture_gdt_reserve(t_paddr	base,
    */
 
   if (architecture_gdt_insert(*index,
-			      base, limit, privilege, class, type) != ERROR_OK)
+			      base, limit, flags) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the segment in the GDT");
 
   MACHINE_LEAVE();
@@ -508,11 +481,14 @@ t_error			architecture_gdt_delete(t_uint16	index)
   if (index == 0)
     MACHINE_ESCAPE("the first GDT entry cannot be used");
 
+  if (!(_architecture_gdt.table[index] & ARCHITECTURE_GDTE_PRESENT))
+    MACHINE_ESCAPE("the GDT entry to delete is not present");
+
   /*
    * 1)
    */
 
-  memset(&_architecture_gdt.table[index], 0x0, sizeof(as_gdt_entry));
+  memset(&_architecture_gdt.table[index], 0x0, sizeof(at_gdte));
 
   MACHINE_LEAVE();
 }
@@ -528,7 +504,7 @@ t_error			architecture_gdt_delete(t_uint16	index)
  */
 
 t_error			architecture_gdt_selector(t_uint16	index,
-						  at_privilege	privilege,
+						  t_privilege	privilege,
 						  t_uint16*	selector)
 {
   /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/core/task/service/service.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 12:21:43 2010]
+ * updated       julien quintard   [fri jan 14 23:04:59 2011]
  */
 
 /*
@@ -87,8 +87,9 @@ void			test_core_task_service(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &segment) != ERROR_OK)
-    TEST_ERROR("[map_reserve] error");
+    TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel->as,
 		     segment,

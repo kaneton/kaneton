@@ -49,12 +49,11 @@
 #define PERM_WRITE			(1 << 1)
 #define PERM_EXEC			(1 << 2)
 
+#define SEGMENT_OPTION_NONE		(1 << 0)
+#define SEGMENT_OPTION_SYSTEM		(1 << 1)
+
 #define REGION_OPT_NONE			0
 #define REGION_OPT_FORCE		(1 << 0)
-#define REGION_OPT_USER			(0 << 1)
-#define REGION_OPT_PRIVILEGED		(1 << 1)
-#define REGION_OPT_LOCAL		(0 << 2)
-#define REGION_OPT_GLOBAL		(1 << 2)
 
 /*
  * ---------- prototypes ------------------------------------------------------

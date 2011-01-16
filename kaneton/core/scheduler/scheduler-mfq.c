@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sat dec 18 21:09:47 2010]
+ * updated       julien quintard   [sat jan 15 07:28:41 2011]
  */
 
 /*
@@ -825,9 +825,6 @@ t_error			scheduler_yield(void)
  * (i) it has not expired and (ii) there is no thread with a higher priority
  * in the active list.
  *
- * should both active and expired sets be empty, the function elects
- * the special idle thread in order to give the CPU something to do.
- *
  * finally, this function may detect that the scheduler has been stopped.
  * should this occur, the elected thread is saved and the original kernel
  * thread is specially scheduled, hence returning to its initial state.
@@ -882,16 +879,16 @@ t_error			scheduler_yield(void)
  *         #2) save the candidate in the queue associated with its current
  *             priority.
  *       x) at this point the election process is over: exit the loop.
- * 7) if not thread has been elected...
- *   a) either this is the second time an election has been tried, in which
- *      case the idle thread is elected since this situation means that
- *      no threads are left in the queues.
- *   b) or this is the first time and only the active set has been explored.
- *     i) swap the active and expired sets.
- *     ii) save the fact that a swap has been performed, hence that the
- *         next time the function will end up in this situation, both
- *         active and expired sets will have been explored.
- *     iii) try again with the expired set.
+ * 7) if no thread has been elected...
+ *   a) depending on the fact that this is the first or second time.
+ *     A) if this is the second time, the is no thread to scheduler. this
+ *        event should never occur!
+ *     B) this is the first time: only the active set has been explored...
+ *       i) swap the active and expired sets.
+ *       ii) save the fact that a swap has been performed, hence that the
+ *           next time the function will end up in this situation, both
+ *           active and expired sets will have been explored.
+ *       iii) try again with the expired set.
  * 8) now that a thread has been elected, check the scheduler's state.
  *   A) if the scheduler is still running, keep it that way.
  *   B) if the scheduler has been stopped...
@@ -1186,13 +1183,8 @@ t_error			scheduler_elect(void)
 	   * A)
 	   */
 
-	  /*
-	   * i)
-	   */
-
-	  future_thread = _scheduler->idle;
-	  future_priority = SCHEDULER_PRIORITY(future_thread);
-	  future_timeslice = _scheduler->quantum;
+	  MACHINE_ESCAPE("the scheduler's queues seem devoid of "
+			 "the idle thread");
 	}
       else
 	{

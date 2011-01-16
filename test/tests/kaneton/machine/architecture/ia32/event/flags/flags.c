@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/architecture/ia32/event/flags/flags.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 13:35:44 2010]
+ * updated       julien quintard   [sat jan 15 22:39:55 2011]
  */
 
 /*
@@ -54,7 +54,7 @@ void			test_architecture_event_flags_content(void)
   t_uint32		eflags;
   i_cpu			cpu;
 
-  if (event_reserve(3,
+  if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_BP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_flags_handler),
 		    EVENT_DATA(NULL)) != ERROR_OK)

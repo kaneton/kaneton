@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [sat jan  8 17:30:55 2011]
+ * updated       julien quintard   [sat jan 15 22:39:20 2011]
  */
 
 /*
@@ -30,7 +30,7 @@ extern t_uint32			_architecture_handler_exception_code;
  */
 
 static volatile int		thrown = 0;
-static volatile t_uint16	gs = (16 << 3);
+static volatile t_uint16	gs = (0x10 << 3);
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -53,7 +53,7 @@ void			test_architecture_event_exception_06(void)
 {
   TEST_ENTER();
 
-  if (event_reserve(13,
+  if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_GP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_exception_06_handler),
 		    EVENT_DATA(NULL)) != ERROR_OK)
@@ -66,7 +66,7 @@ void			test_architecture_event_exception_06(void)
   if (thrown != 1)
     TEST_ERROR("the exception has not been caught");
 
-  if (event_release(13) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_GP) != ERROR_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(0vfwwfi32w9fwjovkhg);

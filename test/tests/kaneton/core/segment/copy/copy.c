@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...t/tests/kaneton/core/segment/copy/copy.c
+ * file          /home/mycure/kane...t/tests/kaneton/core/segment/copy/copy.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:53:53 2010]
+ * updated       julien quintard   [fri jan 14 23:01:44 2011]
  */
 
 /*
@@ -41,12 +41,14 @@ void			test_core_segment_copy(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg_ref) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

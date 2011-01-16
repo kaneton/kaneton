@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...itecture/ia32/educational/segmentation.c
  *
  * created       julien quintard   [fri jan 14 13:51:10 2011]
- * updated       julien quintard   [fri jan 14 14:50:30 2011]
+ * updated       julien quintard   [sun jan 16 01:12:09 2011]
  */
 
 /*
@@ -25,8 +25,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -70,17 +68,19 @@ t_error			architecture_segmentation_setup(void)
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
 			      0x0,
 			      0xffffffff,
-			      ARCHITECTURE_PRIVILEGE_KERNEL,
-			      ARCHITECTURE_GDT_CLASS_SEGMENT,
-			      ARCHITECTURE_GDT_TYPE_CODE) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DPL_SET(
+			        ARCHITECTURE_PRIVILEGE_KERNEL) |
+			      ARCHITECTURE_GDTE_S |
+			      ARCHITECTURE_GDTE_CODE) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the kernel code GDT segment");
 
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
 			      0x0,
 			      0xffffffff,
-			      ARCHITECTURE_PRIVILEGE_KERNEL,
-			      ARCHITECTURE_GDT_CLASS_SEGMENT,
-			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DPL_SET(
+			        ARCHITECTURE_PRIVILEGE_KERNEL) |
+			      ARCHITECTURE_GDTE_S |
+			      ARCHITECTURE_GDTE_DATA) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the kernel data GDT segment");
 
   /*
@@ -90,17 +90,19 @@ t_error			architecture_segmentation_setup(void)
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_DRIVER_CODE,
 			      0x0,
 			      0xffffffff,
-			      ARCHITECTURE_PRIVILEGE_DRIVER,
-			      ARCHITECTURE_GDT_CLASS_SEGMENT,
-			      ARCHITECTURE_GDT_TYPE_CODE) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DPL_SET(
+			        ARCHITECTURE_PRIVILEGE_DRIVER) |
+			      ARCHITECTURE_GDTE_S |
+			      ARCHITECTURE_GDTE_CODE) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the driver code GDT segment");
 
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_DRIVER_DATA,
 			      0x0,
 			      0xffffffff,
-			      ARCHITECTURE_PRIVILEGE_DRIVER,
-			      ARCHITECTURE_GDT_CLASS_SEGMENT,
-			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DPL_SET(
+			        ARCHITECTURE_PRIVILEGE_DRIVER) |
+			      ARCHITECTURE_GDTE_S |
+			      ARCHITECTURE_GDTE_DATA) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the driver data GDT segment");
 
   /*
@@ -110,17 +112,19 @@ t_error			architecture_segmentation_setup(void)
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_SERVICE_CODE,
 			      0x0,
 			      0xffffffff,
-			      ARCHITECTURE_PRIVILEGE_SERVICE,
-			      ARCHITECTURE_GDT_CLASS_SEGMENT,
-			      ARCHITECTURE_GDT_TYPE_CODE) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DPL_SET(
+			        ARCHITECTURE_PRIVILEGE_SERVICE) |
+			      ARCHITECTURE_GDTE_S |
+			      ARCHITECTURE_GDTE_CODE) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the service code GDT segment");
 
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_SERVICE_DATA,
 			      0x0,
 			      0xffffffff,
-			      ARCHITECTURE_PRIVILEGE_SERVICE,
-			      ARCHITECTURE_GDT_CLASS_SEGMENT,
-			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DPL_SET(
+			        ARCHITECTURE_PRIVILEGE_SERVICE) |
+			      ARCHITECTURE_GDTE_S |
+			      ARCHITECTURE_GDTE_DATA) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the service data GDT segment");
 
   /*
@@ -130,17 +134,19 @@ t_error			architecture_segmentation_setup(void)
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_GUEST_CODE,
 			      0x0,
 			      0xffffffff,
-			      ARCHITECTURE_PRIVILEGE_GUEST,
-			      ARCHITECTURE_GDT_CLASS_SEGMENT,
-			      ARCHITECTURE_GDT_TYPE_CODE) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DPL_SET(
+			        ARCHITECTURE_PRIVILEGE_GUEST) |
+			      ARCHITECTURE_GDTE_S |
+			      ARCHITECTURE_GDTE_CODE) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the guest code GDT segment");
 
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_GUEST_DATA,
 			      0x0,
 			      0xffffffff,
-			      ARCHITECTURE_PRIVILEGE_GUEST,
-			      ARCHITECTURE_GDT_CLASS_SEGMENT,
-			      ARCHITECTURE_GDT_TYPE_DATA) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DPL_SET(
+			        ARCHITECTURE_PRIVILEGE_GUEST) |
+			      ARCHITECTURE_GDTE_S |
+			      ARCHITECTURE_GDTE_DATA) != ERROR_OK)
     MACHINE_ESCAPE("unable to insert the guest data GDT segment");
 
   /*

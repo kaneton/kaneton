@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/debug/cons-text.c
+ * license       kaneton
  *
- * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue feb  6 22:22:47 2007]
+ * file          /home/mycure/kane...aneton/machine/platform/ibm-pc/console.c
+ *
+ * created       julien quintard   [sat may 28 18:23:13 2005]
+ * updated       julien quintard   [fri jan 14 20:12:43 2011]
  */
 
 /*

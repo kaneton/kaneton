@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri jan 14 14:18:57 2011]
+ * updated       julien quintard   [sat jan 15 15:11:29 2011]
  */
 
 /*
@@ -22,10 +22,6 @@
  */
 
 #include <kaneton.h>
-
-#include <glue/glue.h>
-#include <architecture/architecture.h>
-#include <platform/platform.h>
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -57,7 +53,12 @@ d_task			glue_task_dispatch =
  */
 
 /*
- * XXX
+ * this function shows the given task's machine-related data.
+ *
+ * steps:
+ *
+ * 1) retrieve the task object.
+ * 2) display the machine-specific information.
  */
 
 t_error			glue_task_show(i_task			id,
@@ -94,7 +95,13 @@ t_error			glue_task_show(i_task			id,
 }
 
 /*
- * this function reserves a task.
+ * this function initializes the I/O map in order to terminate the
+ * task reservation process.
+ *
+ * steps:
+ *
+ * 1) retrieve the task object.
+ * 2) clear the I/O map.
  */
 
 t_error			glue_task_reserve(t_class		class,
@@ -105,22 +112,18 @@ t_error			glue_task_reserve(t_class		class,
   o_task*		o;
 
   /*
-   * XXX
-   */
-
-  if (architecture_io_clear(*id) != ERROR_OK)
-    MACHINE_ESCAPE("unable to clear the I/O bitmap");
-
-  /*
-   * XXX
+   * 1)
    */
 
   if (task_get(*id, &o) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
-   * XXX
+   * 2)
    */
+
+  if (architecture_io_clear(*id) != ERROR_OK)
+    MACHINE_ESCAPE("unable to clear the I/O bitmap");
 
   o->machine.io.flush = BOOLEAN_FALSE;
 

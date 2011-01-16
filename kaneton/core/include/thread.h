@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [sat dec 18 11:06:58 2010]
+ * updated       julien quintard   [sat jan 15 14:59:21 2011]
  */
 
 #ifndef CORE_THREAD_H
@@ -33,17 +33,17 @@
  * the thread priorities.
  */
 
-#define THREAD_PRIORITY		130
-#define THREAD_PRIORITY_HIGH	250
-#define THREAD_PRIORITY_LOW	10
+#define THREAD_PRIORITY			130
+#define THREAD_PRIORITY_HIGH		250
+#define THREAD_PRIORITY_LOW		10
 
 /*
  * the stack sizes.
  */
 
-#define THREAD_STACKSZ		500 * ___kaneton$pagesz
-#define THREAD_STACKSZ_HIGH	1000 * ___kaneton$pagesz
-#define THREAD_STACKSZ_LOW	1 * ___kaneton$pagesz
+#define THREAD_STACKSZ			500 * ___kaneton$pagesz
+#define THREAD_STACKSZ_HIGH		1000 * ___kaneton$pagesz
+#define THREAD_STACKSZ_LOW		1 * ___kaneton$pagesz
 
 /*
  * some initial size for the sets.
@@ -61,11 +61,11 @@
  * a dead thread resides in the morgue until it is definitely released.
  */
 
-#define THREAD_STATE_START	1
-#define THREAD_STATE_STOP	2
-#define THREAD_STATE_BLOCK	3
-#define THREAD_STATE_ZOMBIE	4
-#define THREAD_STATE_DEAD	5
+#define THREAD_STATE_START		1
+#define THREAD_STATE_STOP		2
+#define THREAD_STATE_BLOCK		3
+#define THREAD_STATE_ZOMBIE		4
+#define THREAD_STATE_DEAD		5
 
 /*
  * the delay in milliseconds until the morgue runs and releases the
@@ -78,7 +78,37 @@
  * buried, an error would occur.
  */
 
-#define THREAD_MORGUE_DELAY	TASK_MORGUE_DELAY / 2
+#define THREAD_MORGUE_DELAY		TASK_MORGUE_DELAY / 2
+
+/*
+ * this macro defines the index of the queue in which we wishes the
+ * idle thread to be placed i.e next to the lowest priority queue.
+ */
+
+#define THREAD_IDLE_QUEUE		SCHEDULER_PRIORITY_LOW + 1
+
+/*
+ * this macro defines the idle thread's priority according to the queue
+ * in which we want it to be placed.
+ */
+
+#define THREAD_IDLE_PRIORITY						\
+  (									\
+    {									\
+      extern m_kernel*	_kernel;					\
+									\
+      o_task*		_task_;						\
+									\
+      assert(task_get(_kernel->task, &_task_) == ERROR_OK);		\
+									\
+       ((THREAD_IDLE_QUEUE - SCHEDULER_PRIORITY_LOW) *			\
+	((TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW) *	\
+	 (THREAD_PRIORITY_HIGH - THREAD_PRIORITY_LOW)) /		\
+	(SCHEDULER_PRIORITY_HIGH - SCHEDULER_PRIORITY_LOW) /		\
+	(_task_->priority - TASK_PRIORITY_BACKGROUND_LOW)) +		\
+       THREAD_PRIORITY_LOW + 1;						\
+    }									\
+  )
 
 /*
  * ---------- types -----------------------------------------------------------

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/segment/inject/inject.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun dec  5 14:01:02 2010]
+ * updated       julien quintard   [fri jan 14 23:09:31 2011]
  */
 
 /*
@@ -46,7 +46,7 @@ void			test_core_segment_inject(void)
   new_seg->address = 0x50000000;
   new_seg->permissions = PERMISSION_READ | PERMISSION_EXEC;
   new_seg->size = 2 * ___kaneton$pagesz;
-  new_seg->type = SEGMENT_TYPE_MEMORY;
+  new_seg->options = SEGMENT_OPTION_NONE;
 
   if (segment_inject(as, new_seg, &seg) != ERROR_OK)
     TEST_ERROR("[segment_inject] error");

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ure/ia32/educational/include/privilege.h
  *
  * created       julien quintard   [fri jan  7 11:50:11 2011]
- * updated       julien quintard   [fri jan  7 13:31:28 2011]
+ * updated       julien quintard   [sat jan 15 17:52:25 2011]
  */
 
 #ifndef ARCHITECTURE_PRIVILEGE_H
@@ -41,15 +41,5 @@
 #define ARCHITECTURE_PRIVILEGE_DRIVER		ARCHITECTURE_PRIVILEGE_RING1
 #define ARCHITECTURE_PRIVILEGE_SERVICE		ARCHITECTURE_PRIVILEGE_RING2
 #define ARCHITECTURE_PRIVILEGE_GUEST		ARCHITECTURE_PRIVILEGE_RING3
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * a privilege-specific type.
- */
-
-typedef t_uint8		at_privilege;
 
 #endif

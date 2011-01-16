@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/platform/ibm-pc/include/pit.h
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...on/machine/platform/ibm-pc/include/pit.h
  *
  * created       renaud voltz   [wed mar 15 10:59:38 2006]
- * updated       matthieu bucchianeri   [fri jun 15 01:30:40 2007]
+ * updated       julien quintard   [fri jan 14 20:09:53 2011]
  */
 
 #ifndef PLATFORM_PIT_H

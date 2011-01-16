@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/timer/precision/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [sun jan  9 18:55:37 2011]
+ * updated       julien quintard   [sat jan 15 16:00:05 2011]
  */
 
 /*
@@ -69,7 +69,7 @@ void			test_core_timer_precision_01_content(void)
 		    500,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[event_reserve] error");
+    TEST_HANG("[timer_reserve] error");
 
   if (clock_current(&clock) != ERROR_OK)
     TEST_HANG("[clock_current] error");

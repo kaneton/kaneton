@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/set/set-stack.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/set/set-stack.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       matthieu bucchianeri   [tue feb  6 22:59:14 2007]
+ * updated       julien quintard   [fri jan 14 20:04:50 2011]
  */
 
 /*

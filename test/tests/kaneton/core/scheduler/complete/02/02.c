@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/complete/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 12:03:22 2010]
+ * updated       julien quintard   [fri jan 14 23:06:21 2011]
  */
 
 /*
@@ -195,6 +195,7 @@ void			test_core_scheduler_complete_02(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &segment) != ERROR_OK)
     TEST_ERROR("[map_reserve] error");
 

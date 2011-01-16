@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       julien quintard   [sat jan  8 16:17:55 2011]
+ * updated       julien quintard   [sun jan 16 01:02:19 2011]
  */
 
 /*
@@ -27,8 +27,6 @@
 
 #include <kaneton.h>
 
-#include <architecture/architecture.h>
-
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -37,7 +35,7 @@
  * the current system IDT.
  */
 
-as_idt_descriptor		_architecture_idt;
+as_idt				_architecture_idt;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -52,8 +50,9 @@ as_idt_descriptor		_architecture_idt;
  * 2) go through the IDT entries.
  *   a) ignore non-present entries.
  *   b) compute the offset, selector, privilege.
- *   c) build a type string.
- *   d) display the IDT entry.
+ *   c) build the flags string.
+ *   d) build a type string.
+ *   e) display the IDT entry.
  */
 
 t_error			architecture_idt_dump(void)
@@ -77,62 +76,71 @@ t_error			architecture_idt_dump(void)
       char*		type;
       t_uint16		selector;
       t_vaddr		offset;
-      at_privilege	privilege;
+      t_privilege	privilege;
+      char		flags[2];
 
       /*
        * a)
        */
 
-      if (!(_architecture_idt.table[i].type & ARCHITECTURE_IDT_TYPE_PRESENT))
+      if (!(_architecture_idt.table[i] & ARCHITECTURE_IDTE_PRESENT))
 	continue;
 
       /*
        * b)
        */
 
-      offset =
-	_architecture_idt.table[i].offset_00_15 |
-	(_architecture_idt.table[i].offset_16_31 << 16);
-      selector = _architecture_idt.table[i].selector;
-      privilege = ARCHITECTURE_IDT_DPL_GET(_architecture_idt.table[i].type);
+      offset = ARCHITECTURE_IDTE_OFFSET_GET(_architecture_idt.table[i]);
+      selector = ARCHITECTURE_IDTE_SELECTOR_GET(_architecture_idt.table[i]);
+      privilege = ARCHITECTURE_IDTE_DPL_GET(_architecture_idt.table[i]);
 
       /*
        * c)
        */
 
-      switch (ARCHITECTURE_IDT_TYPE(_architecture_idt.table[i].type))
+      if (_architecture_idt.table[i] & ARCHITECTURE_IDTE_32BIT)
+	flags[0] = 'd';
+      else
+	flags[0] = '.';
+
+      flags[1] = '\0';
+
+      /*
+       * d)
+       */
+
+      switch (ARCHITECTURE_IDTE_TYPE(_architecture_idt.table[i]))
 	{
-	case ARCHITECTURE_IDT_TYPE_TASK:
+	case ARCHITECTURE_IDTE_TASK:
 	  {
 	    type = "task gate";
 
 	    break;
 	  }
-	case ARCHITECTURE_IDT_TYPE_INTERRUPT:
+	case ARCHITECTURE_IDTE_INTERRUPT:
 	  {
 	    type = "interrupt gate";
 
 	    break;
 	  }
-	case ARCHITECTURE_IDT_TYPE_TRAP:
+	case ARCHITECTURE_IDTE_TRAP:
 	  {
 	    type = "trap gate";
 
 	    break;
 	  }
 	default:
-	  MACHINE_ESCAPE("unknown gate type '%u'",
-			 _architecture_idt.table[i].type);
+	  MACHINE_ESCAPE("unknown gate type");
 	}
 
       /*
-       * d)
+       * e)
        */
 
       module_call(console, message,
 		  '#', "  %u: offset(0x%08x) selector(0x%x) type(%s) "
-		  "privilege(%u)\n",
-		  i, offset, selector, type, privilege);
+		  "privilege(%u) flags(%s)\n",
+		  i, offset, selector, type, privilege, flags);
     }
 
   MACHINE_LEAVE();
@@ -151,14 +159,14 @@ t_error			architecture_idt_dump(void)
 
 t_error			architecture_idt_build(t_paddr		base,
 					       t_uint16		size,
-					       as_idt_descriptor* descriptor)
+					       as_idt*		idt)
 {
   /*
    * 0)
    */
 
-  if (descriptor == NULL)
-    MACHINE_ESCAPE("the 'descriptor' argument is null");
+  if (idt == NULL)
+    MACHINE_ESCAPE("the 'idt' argument is null");
 
   if (size > ARCHITECTURE_IDT_SIZE)
     MACHINE_ESCAPE("the given size is too large as exceeding the IDT's "
@@ -168,21 +176,21 @@ t_error			architecture_idt_build(t_paddr		base,
    * 1)
    */
 
-  if (base % sizeof(as_idt_entry))
-    base += sizeof(as_idt_entry) - (base % sizeof(as_idt_entry));
+  if (base % sizeof(at_idte))
+    base += sizeof(at_idte) - (base % sizeof(at_idte));
 
   /*
    * 2)
    */
 
-  descriptor->table = (as_idt_entry*)base;
-  descriptor->size = size;
+  idt->table = (at_idte*)base;
+  idt->size = size;
 
   /*
    * 3)
    */
 
-  memset(descriptor->table, 0x0, size * sizeof(as_idt_entry));
+  memset(idt->table, 0x0, size * sizeof(at_idte));
 
   MACHINE_LEAVE();
 }
@@ -198,23 +206,23 @@ t_error			architecture_idt_build(t_paddr		base,
  * 3) copy the given descriptor into the system's current one.
  */
 
-t_error			architecture_idt_import(as_idt_descriptor* descriptor)
+t_error			architecture_idt_import(as_idt*		idt)
 {
-  as_idt_register	idtr;
+  as_idtr		idtr;
 
   /*
    * 0)
    */
 
-  if (descriptor == NULL)
-    MACHINE_ESCAPE("the 'descriptor' argument is null");
+  if (idt == NULL)
+    MACHINE_ESCAPE("the 'idt' argument is null");
 
   /*
    * 1)
    */
 
-  idtr.address = (t_paddr)descriptor->table;
-  idtr.size = descriptor->size * sizeof(as_idt_entry);
+  idtr.address = (t_paddr)idt->table;
+  idtr.size = idt->size * sizeof(at_idte);
 
   /*
    * 2)
@@ -226,7 +234,7 @@ t_error			architecture_idt_import(as_idt_descriptor* descriptor)
    * 3)
    */
 
-  memcpy(&_architecture_idt, descriptor, sizeof(as_idt_descriptor));
+  memcpy(&_architecture_idt, idt, sizeof(as_idt));
 
   MACHINE_LEAVE();
 }
@@ -242,18 +250,18 @@ t_error			architecture_idt_import(as_idt_descriptor* descriptor)
  * 3) set the given descriptor's size.
  */
 
-t_error			architecture_idt_export(as_idt_descriptor* descriptor)
+t_error			architecture_idt_export(as_idt*		idt)
 {
-  as_idt_register	idtr;
-  as_idt_entry*		source;
-  as_idt_entry*		dest;
+  as_idtr		idtr;
+  at_idte*		source;
+  at_idte*		dest;
 
   /*
    * 0)
    */
 
-  if (descriptor == NULL)
-    MACHINE_ESCAPE("the 'descriptor' argument is null");
+  if (idt == NULL)
+    MACHINE_ESCAPE("the 'idt' argument is null");
 
   /*
    * 1)
@@ -265,8 +273,8 @@ t_error			architecture_idt_export(as_idt_descriptor* descriptor)
    * 2)
    */
 
-  source = (as_idt_entry*)idtr.address;
-  dest = descriptor->table;
+  source = (at_idte*)idtr.address;
+  dest = idt->table;
 
   memcpy(dest, source, idtr.size);
 
@@ -274,7 +282,7 @@ t_error			architecture_idt_export(as_idt_descriptor* descriptor)
    * 3)
    */
 
-  descriptor->size = idtr.size / sizeof(as_idt_entry);
+  idt->size = idtr.size / sizeof(at_idte);
 
   MACHINE_LEAVE();
 }
@@ -286,17 +294,13 @@ t_error			architecture_idt_export(as_idt_descriptor* descriptor)
  * steps:
  *
  * 0) verify the arguments.
- * 1) set the type.
- * 2) set the segment selector.
- * 3) set the offset.
- * 4) set the reserved bits to zero.
+ * 1) update the IDT entry.
  */
 
 t_error			architecture_idt_insert(t_uint16	index,
 						t_vaddr		offset,
 						t_uint16	selector,
-						at_privilege	privilege,
-						at_idt_type	type)
+						t_flags		flags)
 {
   /*
    * 0)
@@ -305,33 +309,18 @@ t_error			architecture_idt_insert(t_uint16	index,
   if (index >= _architecture_idt.size)
     MACHINE_ESCAPE("out-of-bound insertion");
 
+  if (_architecture_idt.table[index] & ARCHITECTURE_IDTE_PRESENT)
+    MACHINE_ESCAPE("the IDT entry to insert is already in use");
+
   /*
    * 1)
    */
 
-  _architecture_idt.table[index].type =
-    ARCHITECTURE_IDT_TYPE_PRESENT |
-    ARCHITECTURE_IDT_DPL_SET(privilege) |
-    type;
-
-  /*
-   * 2)
-   */
-
-  _architecture_idt.table[index].selector = selector;
-
-  /*
-   * 3)
-   */
-
-  _architecture_idt.table[index].offset_00_15 = offset & 0xffff;
-  _architecture_idt.table[index].offset_16_31 = (offset >> 16) & 0xffff;
-
-  /*
-   * 4)
-   */
-
-  _architecture_idt.table[index].reserved = 0;
+  _architecture_idt.table[index] =
+    ARCHITECTURE_IDTE_PRESENT |
+    ARCHITECTURE_IDTE_OFFSET_SET(offset) |
+    ARCHITECTURE_IDTE_SELECTOR_SET(selector) |
+    flags;
 
   MACHINE_LEAVE();
 }
@@ -354,11 +343,14 @@ t_error			architecture_idt_delete(t_uint16	index)
   if (index >= _architecture_idt.size)
     MACHINE_ESCAPE("out-of-bound index");
 
+  if (!(_architecture_idt.table[index] & ARCHITECTURE_IDTE_PRESENT))
+    MACHINE_ESCAPE("the IDT entry to delete is not present");
+
   /*
    * 1)
    */
 
-  memset(&_architecture_idt.table[index], 0x0, sizeof(as_idt_entry));
+  memset(&_architecture_idt.table[index], 0x0, sizeof(at_idte));
 
   MACHINE_LEAVE();
 }

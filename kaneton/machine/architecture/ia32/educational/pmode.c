@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/architecture/ia32/educational/pmode.c
  *
  * created       julien quintard   [sat jan  8 19:01:44 2011]
- * updated       julien quintard   [sat jan  8 19:18:41 2011]
+ * updated       julien quintard   [sun jan 16 01:15:15 2011]
  */
 
 /*
@@ -22,8 +22,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -39,7 +37,7 @@ extern s_init*			_init;
  * the GDT.
  */
 
-extern as_gdt_descriptor	_architecture_gdt;
+extern as_gdt			_architecture_gdt;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -77,20 +75,25 @@ t_error		architecture_pmode_enable(void)
 
 t_error		architecture_pmode_setup(void)
 {
-  as_gdt_descriptor	descriptor;
+  as_gdt	gdt;
 
   /*
    * 1)
    */
 
-  descriptor.table = (void*)_init->machine.gdt;
-  descriptor.size = ARCHITECTURE_GDT_SIZE;
+  gdt.table = (void*)_init->machine.gdt;
+  gdt.size = ARCHITECTURE_GDT_SIZE;
 
   /*
    * 2)
    */
 
-  if (architecture_gdt_import(&descriptor) != ERROR_OK)
+  if (architecture_gdt_build(_init->machine.gdt,
+			     ARCHITECTURE_GDT_SIZE * sizeof(at_gdte),
+			     &gdt) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the GDT");
+
+  if (architecture_gdt_import(&gdt) != ERROR_OK)
     MACHINE_ESCAPE("unable to import the boot loader's GDT");
 
   /*

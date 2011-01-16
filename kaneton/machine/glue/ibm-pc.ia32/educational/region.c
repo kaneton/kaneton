@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [thu jan 13 16:52:22 2011]
+ * updated       julien quintard   [sat jan 15 06:52:34 2011]
  */
 
 /*
@@ -24,10 +24,6 @@
  */
 
 #include <kaneton.h>
-
-#include <glue/glue.h>
-#include <architecture/architecture.h>
-#include <platform/platform.h>
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -66,12 +62,17 @@ d_region		glue_region_dispatch =
  * this function resizes a region.
  *
  * note that the glue implementation is quite inefficient but extremely
- * simple as many scenarios could occur: larger, smaller, in-place, relocated
- * etc.
+ * simple.
  *
  * the current implementation therefore consists in unmapping the pages
  * of the previous region before mapping the page corresponding to the
  * region's new size.
+ *
+ * steps:
+ *
+ * 1) retrieve the region object.
+ * 2) destroy the old mapping.
+ * 3) map the new region.
  */
 
 t_error			glue_region_resize(i_as			as,
@@ -79,32 +80,34 @@ t_error			glue_region_resize(i_as			as,
 					   t_vsize		size,
 					   i_region*		new)
 {
-  o_region*		reg;
+  o_region*		o;
 
   /*
-   * XXX
+   * 1)
    */
 
-  if (region_get(as, old, &reg) != ERROR_OK)
+  if (region_get(as, old, &o) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
-   * XXX
+   * 2)
    */
 
-  if (architecture_paging_unmap(as, reg->address, reg->size) != ERROR_OK)
+  if (architecture_paging_unmap(as,
+				o->address,
+				o->size) != ERROR_OK)
     MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to the "
 		   "original region");
 
   /*
-   * XXX
+   * 3)
    */
 
   if (architecture_paging_map(as,
-			      reg->segment,
-			      reg->offset,
-			      reg->options,
-			      reg->address,
+			      o->segment,
+			      o->offset,
+			      o->options,
+			      o->address,
 			      size) != ERROR_OK)
     MACHINE_ESCAPE("unable to map the virtual memory corresponding to the "
 		   "future resized region");
@@ -113,8 +116,7 @@ t_error			glue_region_resize(i_as			as,
 }
 
 /*
- * this function reserves a region and therefore calls the architecture
- * so that the region's page get mapped.
+ * this function maps the freshly reserved region.
  */
 
 t_error			glue_region_reserve(i_as		asid,
@@ -125,10 +127,6 @@ t_error			glue_region_reserve(i_as		asid,
 					    t_vsize		size,
 					    i_region*		regid)
 {
-  /*
-   * XXX
-   */
-
   if (architecture_paging_map(asid,
 			      segid,
 			      offset,
@@ -142,27 +140,33 @@ t_error			glue_region_reserve(i_as		asid,
 }
 
 /*
- * this function releases a region. the pages corresponding to the region's
- * area of memory are thus unmapped.
+ * this function unmaps the pages associated with the given region.
+ *
+ * steps:
+ *
+ * 1) retrieve the region object.
+ * 2) unmap the pages.
  */
 
 t_error			glue_region_release(i_as		asid,
 					    i_region		regid)
 {
-  o_region*		reg;
+  o_region*		o;
 
   /*
-   * XXX
+   * 1)
    */
 
-  if (region_get(asid, regid, &reg) != ERROR_OK)
+  if (region_get(asid, regid, &o) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
-   * XXX
+   * 2)
    */
 
-  if (architecture_paging_unmap(asid, reg->address, reg->size) != ERROR_OK)
+  if (architecture_paging_unmap(asid,
+				o->address,
+				o->size) != ERROR_OK)
     MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to "
 		   "the region");
 
@@ -171,13 +175,17 @@ t_error			glue_region_release(i_as		asid,
 
 /*
  * this function initializes the region manager's glue.
+ *
+ * steps:
+ *
+ * 1) set up the IA32 paging unit.
  */
 
 t_error			glue_region_initialize(t_vaddr		base,
 					       t_vsize		size)
 {
   /*
-   * XXX
+   * 1)
    */
 
   if (architecture_paging_setup() != ERROR_OK)

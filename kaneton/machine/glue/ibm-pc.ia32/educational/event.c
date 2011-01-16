@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [mon jan 10 21:29:41 2011]
+ * updated       julien quintard   [sat jan 15 16:59:43 2011]
  */
 
 /*
@@ -23,9 +23,12 @@
 
 #include <kaneton.h>
 
-#include <glue/glue.h>
-#include <architecture/architecture.h>
-#include <platform/platform.h>
+/*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+// XXX
+extern t_uint32		_architecture_handler_exception_code;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -53,45 +56,80 @@ d_event			glue_event_dispatch =
  */
 
 /*
- * XXX
+ * this handler is triggered whenever a page fault---i.e an access to a
+ * invalid virtual address---occurs.
+ *
+ * steps:
+ *
+ * 1) retrieve the currently running thread identifier.
+ * 2) retrieve the thread's IA32 context.
+ * 3) retrieve the content of the CR2 register i.e the address of
+ *    access which caused the page fault.
+ * 4) display information on the page fault.
+ * 5) show the context.
  */
 
 void			glue_event_pagefault(t_id		id,
 					     t_vaddr		data)
 {
-  i_thread		th;
-  t_uint32              addr;
+  i_thread		thread;
+  t_uint32              address;
   t_ia32_context	ctx;
 
-  printf("[XXX] glue_event:pf_handler() by %qd\n", th);
+  /*
+   * 1)
+   */
 
-  assert(thread_current(&th) == ERROR_OK);
+  assert(thread_current(&thread) == ERROR_OK);
 
-  assert(ia32_get_context(th, &ctx) == ERROR_OK);
+  /*
+   * 2)
+   */
 
-  ARCHITECTURE_SCR2(addr);
+  assert(ia32_get_context(thread, &ctx) == ERROR_OK);
 
-  module_call(console, print,
-	      "error: page fault !\n"
-	      "  0x%x @ 0x%x\n",
+  /*
+   * 3)
+   */
+
+  ARCHITECTURE_SCR2(address);
+
+  /*
+   * 4)
+   */
+
+  module_call(console, message,
+	      '!', "page fault: thread(%qd) eip(0x%08x) address(0x%08x) "
+	      "access(%s) mode(%s) reason(%s)\n",
+	      thread,
 	      ctx.eip,
-	      addr);
+	      address,
+	      (_architecture_handler_exception_code &
+	       ARCHITECTURE_HANDLER_PAGEFAULT_WRITE) ?
+	      "write" : "read",
+	      (_architecture_handler_exception_code &
+	       ARCHITECTURE_HANDLER_PAGEFAULT_USER) ?
+	      "user" : "supervisor",
+	      (_architecture_handler_exception_code &
+	       ARCHITECTURE_HANDLER_PAGEFAULT_PRIVILEGE) ?
+	      "protection violation" : "non-present page");
 
-  extern t_uint32 _architecture_handler_exception_code;
+  /*
+   * 5)
+   */
 
-  int error_code = _architecture_handler_exception_code;
+  module_call(console, message,
+	      '!',
+	      "  context: eax(0x%08x) ebx(0x%08x) ecx(0x%08x) "
+	      "edx(0x%08x) esi(0x%08x) edi(0x%08x) "
+	      "ebp(0x%08x) esp(0x%08x) eip(0x%08x)\n",
+	      ctx.eax, ctx.ebx, ctx.ecx,
+	      ctx.edx, ctx.esi, ctx.edi,
+	      ctx.ebp, ctx._esp, ctx.eip);
 
-  /* XXX utiliser le error_code (soit dans o_thread) soit autre part */
-  module_call(console, print,
-	      "error: page fault !\n"
-	      "  0x%x trying to %s at the address 0x%x requires %s\n",
-	      ctx.eip,
-	      (error_code & 2) ? "write" : "read",
-	      addr,
-	      (error_code & 1) ? "a lower DPL" : "the page to be present");
-  /* */
-
-  ia32_print_context(th);
+  /*
+   * 6)
+   */
 
   while (1)
     ;
@@ -136,7 +174,13 @@ t_error			glue_event_disable(void)
 }
 
 /*
- * XXX
+ * this function activates the hardware-related event, if necessary.
+ *
+ * steps:
+ *
+ * 0) verify the arguments.
+ * 1) if the reserved event is an IRQ - Interrupt Request, activate it
+ *    via the PIC - Programmable Interrupt Controller.
  */
 
 t_error			glue_event_reserve(i_event		id,
@@ -145,7 +189,7 @@ t_error			glue_event_reserve(i_event		id,
 					   t_vaddr		data)
 {
   /*
-   * XXX
+   * 0)
    */
 
   if (!(((id >= ARCHITECTURE_IDT_EXCEPTION_BASE) &&
@@ -161,7 +205,7 @@ t_error			glue_event_reserve(i_event		id,
 		   id);
 
   /*
-   * XXX
+   * 1)
    */
 
   if ((id >= ARCHITECTURE_IDT_IRQ_BASE) &&
@@ -175,13 +219,17 @@ t_error			glue_event_reserve(i_event		id,
 }
 
 /*
- * XXX
+ * this function releases an event.
+ *
+ * steps:
+ *
+ * 1) should the event be an IRQ, deactivate it.
  */
 
 t_error			glue_event_release(i_event		id)
 {
   /*
-   * XXX
+   * 1)
    */
 
   if ((id >= ARCHITECTURE_IDT_IRQ_BASE) &&
@@ -195,30 +243,36 @@ t_error			glue_event_release(i_event		id)
 }
 
 /*
- * XXX
+ * this function initializes the hardware interrupt handling mechanism.
+ *
+ * steps:
+ *
+ * 1) set up the handler system.
+ * 2) initialize the PIC.
+ * 3) reserve the page fault event and register its handler.
  */
 
 t_error			glue_event_initialize(void)
 {
   /*
-   * XXX
+   * 1)
    */
 
   if (architecture_handler_setup() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the interrupt table");
 
   /*
-   * XXX
+   * 2)
    */
 
   if (platform_pic_initialize() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the PIC");
 
   /*
-   * XXX
+   * 3)
    */
 
-  if (event_reserve(14,
+  if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_PF,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(glue_event_pagefault),
 		    EVENT_DATA(NULL)) != ERROR_OK)
@@ -229,11 +283,19 @@ t_error			glue_event_initialize(void)
 }
 
 /*
- * XXX
+ * this function cleans the hardware event processing.
+ *
+ * steps:
+ *
+ * 1) clean the PIC.
  */
 
 t_error			glue_event_clean(void)
 {
+  /*
+   * 1)
+   */
+
   if (platform_pic_clean() != ERROR_KO)
     MACHINE_ESCAPE("unable to clean the PIC");
 

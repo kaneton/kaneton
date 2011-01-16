@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/set/set-pipe.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/set/set-pipe.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       matthieu bucchianeri   [tue feb  6 22:59:07 2007]
+ * updated       julien quintard   [fri jan 14 20:06:10 2011]
  */
 
 /*

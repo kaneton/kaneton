@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/pic/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [fri jan  7 20:38:43 2011]
+ * updated       julien quintard   [sat jan 15 16:37:33 2011]
  */
 
 /*

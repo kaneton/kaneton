@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/pic/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [fri jan  7 20:38:54 2011]
+ * updated       julien quintard   [sat jan 15 16:37:38 2011]
  */
 
 /*
@@ -34,13 +34,13 @@ void			test_architecture_event_pic_03(void)
 
   TEST_ENTER();
 
-  if (event_reserve(32 + 3,
+  if (event_reserve(ARCHITECTURE_IDT_IRQ_COM2,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_pic_03),
 		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (event_release(32 + 3) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_IRQ_COM2) != ERROR_OK)
     TEST_ERROR("[event_release] error");
 
   ARCHITECTURE_INB(TEST_MASTER_PORT_B, mask);

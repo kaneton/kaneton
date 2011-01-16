@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/region/region.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/region/region-fit.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue feb  6 22:40:42 2007]
+ * updated       julien quintard   [sat jan 15 00:20:07 2011]
  */
 
 /*
@@ -88,7 +90,7 @@ t_error			region_show(i_as			asid,
   /*							       [block::show] */
 
   o_region*		o;
-  char			options[4];
+  char			options[2];
 
   /*
    * 1)
@@ -108,15 +110,7 @@ t_error			region_show(i_as			asid,
   else
     options[0] = '.';
 
-  if (o->options & REGION_OPTION_PRIVILEGED)
-    options[1] = 'p';
-  else
-    options[1] = 'u';
-
-  if (o->options & REGION_OPTION_GLOBAL)
-    options[2] = 'g';
-  else
-    options[2] = 'l';
+  options[1] = '\0';
 
   /*
    * 3)
@@ -884,11 +878,8 @@ t_error			region_coalesce(i_as			asid,
 
   if (oleft->address + oleft->size != oright->address ||
       oleft->segment != oright->segment ||
-      oleft->offset + oleft->size != oright->offset ||
-      (oleft->options & REGION_OPTION_PRIVILEGED) !=
-      (oright->options & REGION_OPTION_PRIVILEGED))
-    CORE_ESCAPE("unable to coalesce non-adjacent regions and/or regions "
-		"with different privileges");
+      oleft->offset + oleft->size != oright->offset)
+    CORE_ESCAPE("unable to coalesce non-adjacent regions");
 
   /*
    * 3)

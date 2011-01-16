@@ -175,12 +175,12 @@ void			bootloader_init_segments(void)
   init->segments[0].address = INIT_ISA_ADDR;
   init->segments[0].size = 0x1000;
   init->segments[0].perms = PERM_READ;
-  init->segments[0].type = INIT_SEGMENT_TYPE_SYSTEM;
+  init->segments[0].options = SEGMENT_OPTION_SYSTEM;
 
   init->segments[1].address = INIT_ISA_ADDR + 0x1000;
   init->segments[1].size = INIT_ISA_SIZE - 0x1000;
   init->segments[1].perms = PERM_READ | PERM_WRITE;
-  init->segments[1].type = INIT_SEGMENT_TYPE_SYSTEM;
+  init->segments[1].options = SEGMENT_OPTION_SYSTEM;
 
   /*
    * 2)
@@ -191,7 +191,7 @@ void			bootloader_init_segments(void)
   init->segments[2].address = (t_paddr)&__early_start;
   init->segments[2].size = &__early_end - &__early_start;
   init->segments[2].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
-  init->segments[2].type = INIT_SEGMENT_TYPE_MEMORY;
+  init->segments[2].options = SEGMENT_OPTION_NONE;
 
   /*
    * 3)
@@ -200,7 +200,7 @@ void			bootloader_init_segments(void)
   init->segments[3].address = init->kcode;
   init->segments[3].size = init->kcodesz;
   init->segments[3].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
-  init->segments[3].type = INIT_SEGMENT_TYPE_MEMORY;
+  init->segments[3].options = SEGMENT_OPTION_NONE;
 
   /*
    * 4)
@@ -209,7 +209,7 @@ void			bootloader_init_segments(void)
   init->segments[4].address = init->init;
   init->segments[4].size = init->initsz;
   init->segments[4].perms = PERM_READ | PERM_WRITE;
-  init->segments[4].type = INIT_SEGMENT_TYPE_MEMORY;
+  init->segments[4].options = SEGMENT_OPTION_NONE;
 
   /*
    * 5)
@@ -218,7 +218,7 @@ void			bootloader_init_segments(void)
   init->segments[5].address = (t_paddr)init->segments;
   init->segments[5].size = init->segmentssz;
   init->segments[5].perms = PERM_READ | PERM_WRITE;
-  init->segments[5].type = INIT_SEGMENT_TYPE_MEMORY;
+  init->segments[5].options = SEGMENT_OPTION_NONE;
 
   /*
    * 6)
@@ -227,7 +227,7 @@ void			bootloader_init_segments(void)
   init->segments[6].address = (t_paddr)init->regions;
   init->segments[6].size = init->regionssz;
   init->segments[6].perms = PERM_READ | PERM_WRITE;
-  init->segments[6].type = INIT_SEGMENT_TYPE_MEMORY;
+  init->segments[6].options = SEGMENT_OPTION_NONE;
 
   /*
    * 7)
@@ -236,7 +236,7 @@ void			bootloader_init_segments(void)
   init->segments[7].address = (t_paddr)init->cpus;
   init->segments[7].size = init->cpussz;
   init->segments[7].perms = PERM_READ | PERM_WRITE;
-  init->segments[7].type = INIT_SEGMENT_TYPE_MEMORY;
+  init->segments[7].options = SEGMENT_OPTION_NONE;
 
   /*
    * 8)
@@ -245,7 +245,7 @@ void			bootloader_init_segments(void)
   init->segments[8].address = init->kstack;
   init->segments[8].size = init->kstacksz;
   init->segments[8].perms = PERM_READ | PERM_WRITE;
-  init->segments[8].type = INIT_SEGMENT_TYPE_MEMORY;
+  init->segments[8].options = SEGMENT_OPTION_NONE;
 
   /*
    * 9)
@@ -254,7 +254,7 @@ void			bootloader_init_segments(void)
   init->segments[9].address = init->alloc;
   init->segments[9].size = init->allocsz;
   init->segments[9].perms = PERM_READ | PERM_WRITE;
-  init->segments[9].type = INIT_SEGMENT_TYPE_MEMORY;
+  init->segments[9].options = SEGMENT_OPTION_NONE;
 
   /*
    * 10)
@@ -263,7 +263,7 @@ void			bootloader_init_segments(void)
   init->segments[10].address = (t_paddr)init->machine.gdt;
   init->segments[10].size = PAGESZ;
   init->segments[10].perms = PERM_READ | PERM_WRITE;
-  init->segments[10].type = INIT_SEGMENT_TYPE_SYSTEM;
+  init->segments[10].options = SEGMENT_OPTION_SYSTEM;
 
   /*
    * 11)
@@ -272,7 +272,7 @@ void			bootloader_init_segments(void)
   init->segments[11].address = (t_paddr)init->machine.pd;
   init->segments[11].size = PAGESZ;
   init->segments[11].perms = PERM_READ | PERM_WRITE;
-  init->segments[11].type = INIT_SEGMENT_TYPE_SYSTEM;
+  init->segments[11].options = SEGMENT_OPTION_SYSTEM;
 
   /*
    * 12)
@@ -283,7 +283,7 @@ void			bootloader_init_segments(void)
       init->segments[12].address = (t_paddr)init->inputs;
       init->segments[12].size = init->inputssz;
       init->segments[12].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
-      init->segments[12].type = INIT_SEGMENT_TYPE_MEMORY;
+      init->segments[12].options = SEGMENT_OPTION_NONE;
     }
   else
     {
@@ -299,7 +299,7 @@ void			bootloader_init_segments(void)
       init->segments[13].address = init->scode;
       init->segments[13].size = init->scodesz;
       init->segments[13].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
-      init->segments[13].type = INIT_SEGMENT_TYPE_MEMORY;
+      init->segments[13].options = SEGMENT_OPTION_NONE;
     }
   else
     {
@@ -340,7 +340,7 @@ void			bootloader_init_regions(void)
   init->regions[0].address = init->segments[1].address;
   init->regions[0].size = init->segments[1].size;
   init->regions[0].offset = 0;
-  init->regions[0].opts = REGION_OPT_PRIVILEGED;
+  init->regions[0].opts = REGION_OPT_FORCE;
 
   /*
    * 2)
@@ -350,7 +350,7 @@ void			bootloader_init_regions(void)
   init->regions[1].address = init->segments[2].address;
   init->regions[1].size = init->segments[2].size;
   init->regions[1].offset = 0;
-  init->regions[1].opts = REGION_OPT_PRIVILEGED;
+  init->regions[1].opts = REGION_OPT_FORCE;
 
   /*
    * 3)
@@ -360,7 +360,7 @@ void			bootloader_init_regions(void)
   init->regions[2].address = init->segments[3].address;
   init->regions[2].size = init->segments[3].size;
   init->regions[2].offset = 0;
-  init->regions[2].opts = REGION_OPT_PRIVILEGED;
+  init->regions[2].opts = REGION_OPT_FORCE;
 
   /*
    * 4)
@@ -370,7 +370,7 @@ void			bootloader_init_regions(void)
   init->regions[3].address = init->segments[4].address;
   init->regions[3].size = init->segments[4].size;
   init->regions[3].offset = 0;
-  init->regions[3].opts = REGION_OPT_PRIVILEGED;
+  init->regions[3].opts = REGION_OPT_FORCE;
 
   /*
    * 5)
@@ -380,7 +380,7 @@ void			bootloader_init_regions(void)
   init->regions[4].address = init->segments[5].address;
   init->regions[4].size = init->segments[5].size;
   init->regions[4].offset = 0;
-  init->regions[4].opts = REGION_OPT_PRIVILEGED;
+  init->regions[4].opts = REGION_OPT_FORCE;
 
   /*
    * 6)
@@ -390,7 +390,7 @@ void			bootloader_init_regions(void)
   init->regions[5].address = init->segments[6].address;
   init->regions[5].size = init->segments[6].size;
   init->regions[5].offset = 0;
-  init->regions[5].opts = REGION_OPT_PRIVILEGED;
+  init->regions[5].opts = REGION_OPT_FORCE;
 
   /*
    * 7)
@@ -400,7 +400,7 @@ void			bootloader_init_regions(void)
   init->regions[6].address = init->segments[7].address;
   init->regions[6].size = init->segments[7].size;
   init->regions[6].offset = 0;
-  init->regions[6].opts = REGION_OPT_PRIVILEGED;
+  init->regions[6].opts = REGION_OPT_FORCE;
 
   /*
    * 8)
@@ -410,7 +410,7 @@ void			bootloader_init_regions(void)
   init->regions[7].address = init->segments[8].address;
   init->regions[7].size = init->segments[8].size;
   init->regions[7].offset = 0;
-  init->regions[7].opts = REGION_OPT_PRIVILEGED;
+  init->regions[7].opts = REGION_OPT_FORCE;
 
   /*
    * 9)
@@ -420,7 +420,7 @@ void			bootloader_init_regions(void)
   init->regions[8].address = init->segments[9].address;
   init->regions[8].size = init->segments[9].size;
   init->regions[8].offset = 0;
-  init->regions[8].opts = REGION_OPT_PRIVILEGED | REGION_OPT_GLOBAL;
+  init->regions[8].opts = REGION_OPT_FORCE;
 
   /*
    * 10)
@@ -430,7 +430,7 @@ void			bootloader_init_regions(void)
   init->regions[9].address = init->segments[10].address;
   init->regions[9].size = init->segments[10].size;
   init->regions[9].offset = 0;
-  init->regions[9].opts = REGION_OPT_PRIVILEGED;
+  init->regions[9].opts = REGION_OPT_FORCE;
 
   /*
    * 11)
@@ -440,7 +440,7 @@ void			bootloader_init_regions(void)
   init->regions[10].address = init->segments[11].address;
   init->regions[10].size = init->segments[11].size;
   init->regions[10].offset = 0;
-  init->regions[10].opts = REGION_OPT_PRIVILEGED;
+  init->regions[10].opts = REGION_OPT_FORCE;
 }
 
 /*

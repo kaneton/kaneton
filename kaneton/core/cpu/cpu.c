@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/cpu/cpu.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [wed mar 21 23:57:13 2007]
+ * updated       julien quintard   [fri jan 14 20:03:38 2011]
  */
 
 /*

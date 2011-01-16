@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sun jan  9 18:56:37 2011]
+ * updated       julien quintard   [sat jan 15 15:01:45 2011]
  */
 
 /*
@@ -22,8 +22,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -69,6 +67,11 @@ d_scheduler		glue_scheduler_dispatch =
  * ---------- prototype -------------------------------------------------------
  */
 
+/*
+ * this prototype has been placed here in order to prevent the prototypes
+ * generator from taking the assembler idle function into account.
+ */
+
 extern void		glue_scheduler_idle ();
 
 /*
@@ -76,7 +79,7 @@ extern void		glue_scheduler_idle ();
  */
 
 /*
- * the idle thread assembly.
+ * the idle thread's source code.
  */
 
 asm (".text				\n"
@@ -87,7 +90,7 @@ asm (".text				\n"
      ".text				\n");
 
 /*
- * XXX
+ * this function dumps the scheduler manager's machine part.
  */
 
 t_error			glue_scheduler_dump(void)
@@ -101,8 +104,15 @@ t_error			glue_scheduler_dump(void)
 }
 
 /*
- * this function manually triggers the timer interrupt in order to
- * induce an immediate scheduler election.
+ * this function contributes to stopping the scheduler by manually triggering
+ * the timer interrupt in order to induce an immediate scheduler election.
+ *
+ * during this election, the scheduler will notice the scheduler's state
+ * has changed to stop and will do the necessary to stop electing threads.
+ *
+ * 1) retrieve the current CPU's scheduler.
+ * 2) if the CPU to stop is the current one, yield the execution in order
+ *    to induce a scheduler election.
  */
 
 t_error			glue_scheduler_stop(i_cpu		cpu)
@@ -110,17 +120,17 @@ t_error			glue_scheduler_stop(i_cpu		cpu)
   o_scheduler*		scheduler;
 
   /*
-   * XXX
+   * 1)
    */
 
   if (scheduler_current(&scheduler) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the current scheduler");
 
   /*
-   * XXX
+   * 2)
    */
 
-  if (cpu == scheduler->cpu)
+  if (scheduler->cpu == cpu)
     {
       if (scheduler_yield() != ERROR_OK)
 	MACHINE_ESCAPE("unable to yield the execution");
@@ -130,8 +140,17 @@ t_error			glue_scheduler_stop(i_cpu		cpu)
 }
 
 /*
- * this function represents the timer handler which performs the
- * election and context switch.
+ * this handler is triggered whenever the scheduler quantum of time has
+ * elapsed. this function requests the scheduler to elect a new thread
+ * and performs the context switch.
+ *
+ * steps:
+ *
+ * 1) retrieve the current CPU's scheduler.
+ * 2) save the identifier of the currently running thread.
+ * 3) request a thread election to the scheduler.
+ * 4) save the identifier of the thread about to be executed.
+ * 5) perform a context switch between the two threads.
  */
 
 void			glue_scheduler_switch_handler(void)
@@ -141,23 +160,31 @@ void			glue_scheduler_switch_handler(void)
   i_thread		future;
 
   /*
-   * XXX
+   * 1)
    */
 
   assert(scheduler_current(&scheduler) == ERROR_OK);
 
+  /*
+   * 2)
+   */
+
   current = scheduler->thread;
 
   /*
-   * XXX
+   * 3)
    */
 
   assert(scheduler_elect() == ERROR_OK);
 
+  /*
+   * 4)
+   */
+
   future = scheduler->thread;
 
   /*
-   * XXX
+   * 5)
    */
 
   assert(ia32_context_switch(current, future) == ERROR_OK);
@@ -166,14 +193,16 @@ void			glue_scheduler_switch_handler(void)
 /*
  * this function sets the scheduler quantum value.
  *
- * note that since the quantum has been updated, the scheduler timer
- * must be adujsted
+ * steps:
+ *
+ * 1) note that since the quantum has been updated, the scheduler timer
+ *    must also be adujsted.
  */
 
 t_error			glue_scheduler_quantum(t_quantum	quantum)
 {
   /*
-   * XXX
+   * 1)
    */
 
   if (timer_update(_scheduler->machine.timer, quantum) != ERROR_OK)
@@ -184,14 +213,18 @@ t_error			glue_scheduler_quantum(t_quantum	quantum)
 }
 
 /*
- * this function yields the execution by manually triggering the
- * timer hardware interrupt, hence inducing a scheduler election.
+ * this function yields the execution by manually triggering the timer
+ * hardware interrupt, hence inducing a scheduler election and context switch.
+ *
+ * steps:
+ *
+ * 1) manually trigger the interrupt #2 i.e the timer.
  */
 
 t_error			glue_scheduler_yield(void)
 {
   /*
-   * XXX
+   * 1)
    */
 
   asm volatile ("int $32");
@@ -202,17 +235,32 @@ t_error			glue_scheduler_yield(void)
 /*
  * this function initializes the scheduler manager's glue.
  *
- * XXX
+ * steps:
+ *
+ * 1) reserve a timer so that a context switch is triggered every quantum
+ *    milliseconds.
+ * 2) reserve the idle thread. this thread ensures that there is always
+ *    at least one thread in the scheduler's queues, hence that the CPU
+ *    always has something to do.
+ *    note that the idle thread's priority is computed in order to be
+ *    slightly higher than the lowest one. more precisely, the priority
+ *    is computed in order for the idle thread to end up in the next to last
+ *    scheduler's queue.
+ *    for more information regarding this design choice, please refer to
+ *    the scheduler_yield() function.
+ * 3) allocate the idle thread's stack.
+ * 4) initialize the thread's context especially its entry point.
+ * 5) start the idle thread, making it eligeable.
  */
 
 t_error			glue_scheduler_initialize(void)
 {
-  s_thread_context	ctx;
   s_stack		stack;
+  s_thread_context	ctx;
   o_thread*		o;
 
   /*
-   * XXX
+   * 1)
    */
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
@@ -224,20 +272,16 @@ t_error			glue_scheduler_initialize(void)
     MACHINE_ESCAPE("unable to reserve the timer");
 
   /*
-   * XXX
+   * 2)
    */
 
-  // XXX ici on fait en sorte que la priorite ne soit pas la plus faible pour
-  // que le yield fonctionne mais qu'elle soit assez basse tout de meme.
-  //
-  // on pourrait faire une macro opur la priorite avec une fonction math.
   if (thread_reserve(_kernel->task,
-		     THREAD_PRIORITY_LOW + 10,
+		     THREAD_IDLE_PRIORITY,
 		     &_scheduler->idle) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the idle thread");
 
   /*
-   * XXX
+   * 3)
    */
 
   stack.base = 0;
@@ -247,7 +291,7 @@ t_error			glue_scheduler_initialize(void)
     MACHINE_ESCAPE("unable to set the stack for the thread");
 
   /*
-   * XXX
+   * 4)
    */
 
   if (thread_get(_scheduler->idle, &o) != ERROR_OK)
@@ -260,7 +304,7 @@ t_error			glue_scheduler_initialize(void)
     MACHINE_ESCAPE("unable to load the thread context");
 
   /*
-   * XXX
+   * 5)
    */
 
   if (thread_start(_scheduler->idle) != ERROR_OK)
@@ -272,24 +316,19 @@ t_error			glue_scheduler_initialize(void)
 /*
  * this function cleans the scheduler manager's glue.
  *
- * XXX
+ * steps:
+ *
+ * 1) release the scheduler timer.
  */
 
 t_error			glue_scheduler_clean(void)
 {
   /*
-   * XXX
+   * 1)
    */
 
   if (timer_release(_scheduler->machine.timer) != ERROR_OK)
     MACHINE_ESCAPE("unable to release the timer");
-
-  /*
-   * XXX
-   */
-
-  if (event_release(7) != ERROR_OK)
-    MACHINE_ESCAPE("unable to release the timer event");
 
   MACHINE_LEAVE();
 }

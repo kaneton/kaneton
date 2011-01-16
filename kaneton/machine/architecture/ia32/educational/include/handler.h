@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/handler.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       julien quintard   [mon jan 10 06:40:51 2011]
+ * updated       julien quintard   [sat jan 15 16:30:33 2011]
  */
 
 #ifndef ARCHITECTURE_HANDLER_H
@@ -27,6 +27,15 @@
 					ARCHITECTURE_IDT_IRQ_SIZE +	  \
 					ARCHITECTURE_IDT_IPI_SIZE +	  \
 					ARCHITECTURE_IDT_SYSCALL_SIZE
+
+/*
+ * these macros defines the error flags contained in the page-fault-specific
+ * exception code.
+ */
+
+#define ARCHITECTURE_HANDLER_PAGEFAULT_PRIVILEGE	(1 << 0)
+#define ARCHITECTURE_HANDLER_PAGEFAULT_WRITE		(1 << 1)
+#define ARCHITECTURE_HANDLER_PAGEFAULT_USER		(1 << 2)
 
 /*
  * ---------- macro-functions -------------------------------------------------

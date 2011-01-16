@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/architecture/ia32/event/irq/irq.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan  7 20:38:09 2011]
+ * updated       julien quintard   [sat jan 15 16:37:13 2011]
  */
 
 /*
@@ -45,7 +45,7 @@ void			test_architecture_event_irq_content(void)
   int			i;
   i_cpu			cpu;
 
-  if (event_reserve(32 + 6,
+  if (event_reserve(ARCHITECTURE_IDT_IRQ_FLOPPY,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_irq_handler),
 		    EVENT_DATA(NULL)) != ERROR_OK)

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [sat dec 18 21:06:52 2010]
+ * updated       julien quintard   [sat jan 15 00:18:11 2011]
  */
 
 #ifndef CORE_REGION_H
@@ -44,16 +44,15 @@
 
 /*
  * the flags which can be used for reserving regions.
+ *
+ * the _force_ option enables the caller of region_reserve() to specify
+ * the address of reservation.
  */
 
 #define REGION_OPTION_NONE		0
 #define REGION_OPTION_FORCE		(1 << 0)
-#define REGION_OPTION_USER		(0 << 1)
-#define REGION_OPTION_PRIVILEGED	(1 << 1)
-#define REGION_OPTION_LOCAL		(0 << 2)
-#define REGION_OPTION_GLOBAL		(1 << 2)
 
-#define REGION_OPTION_INVALID		(~((1 << 2) | (1 << 1) | (1 << 0)))
+#define REGION_OPTION_INVALID		(~(REGION_OPTION_FORCE))
 
 /*
  * ---------- macro-functions -------------------------------------------------

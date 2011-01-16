@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/platform/ibm-pc/event.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/machine/platform/ibm-pc/pic.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:44:58 2005]
- * updated       matthieu bucchianeri   [fri jun 15 01:32:33 2007]
+ * updated       julien quintard   [fri jan 14 20:10:47 2011]
  */
 
 /*

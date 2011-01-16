@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2070]
- * updated       julien quintard   [sat jan  8 15:35:11 2011]
+ * updated       julien quintard   [sat jan 15 22:39:31 2011]
  */
 
 /*
@@ -60,6 +60,7 @@ void			test_architecture_event_exception_07_handler(t_id id,
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &segid) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
@@ -86,6 +87,7 @@ void			test_architecture_event_exception_07(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &segid) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
@@ -111,9 +113,9 @@ void			test_architecture_event_exception_07(void)
   if (segment_release(segid) != ERROR_OK)
     TEST_ERROR("[segment_release] error");
 
-  event_release(14);
+  event_release(ARCHITECTURE_IDT_EXCEPTION_PF);
 
-  if (event_reserve(14,
+  if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_PF,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_exception_07_handler),
 		    EVENT_DATA(NULL)) != ERROR_OK)
@@ -128,7 +130,7 @@ void			test_architecture_event_exception_07(void)
   if (thrown != 1)
     TEST_ERROR("the exception has not been caught");
 
-  if (event_release(14) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_PF) != ERROR_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(0i3rfw90ug8938hy3);

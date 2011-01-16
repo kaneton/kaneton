@@ -69,18 +69,6 @@
  * ../message.c
  */
 
-t_error			glue_message_return(i_thread		thread,
-					    t_error		code);
-
-t_error			glue_message_return_info(i_thread	thread,
-						 t_error	code,
-						 t_vsize	size,
-						 i_node		sender);
-
-t_error			glue_message_initialize(void);
-
-t_error			glue_message_clean(void);
-
 
 /*
  * eop

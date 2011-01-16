@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...test/tests/kaneton/core/segment/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [thu dec 16 11:57:45 2010]
+# updated       julien quintard   [fri jan 14 23:07:43 2011]
 #
 
 #
@@ -43,8 +43,7 @@ SUBDIRS			:=		clone				\
 					read-write			\
 					reserve				\
 					resize				\
-					split				\
-					type				
+					split				
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 

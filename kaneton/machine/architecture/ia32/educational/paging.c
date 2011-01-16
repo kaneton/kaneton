@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/educational/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       julien quintard   [fri jan 14 15:56:54 2011]
+ * updated       julien quintard   [sat jan 15 00:27:22 2011]
  */
 
 /*
@@ -85,8 +85,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -294,12 +292,11 @@ t_error			architecture_paging_export(at_pd*	pd,
  *   b) depending on the existence of the page directory entry.
  *     1#) if the entry does not exist...
  *       i) reserve a segment for the page table.
- *       ii) change the segment's type.
- *       iii) retrieve the segment object.
- *       iv) update the page directory by referencing the new page table.
- *       v) map the page table. note that for the kernel address space,
+ *       ii) retrieve the segment object.
+ *       iii) update the page directory by referencing the new page table.
+ *       iv) map the page table. note that for the kernel address space,
  *          the mirroring mechanism could be used instead of this step.
- *       vi) build the page table.
+ *       v) build the page table.
  *     2#) otherwise...
  *       i) map the page table. note that for the kernel address space,
  *          the mirroring mechanism could be used instead of this step.
@@ -431,7 +428,7 @@ t_error			architecture_paging_map(i_as		id,
        * b)
        */
 
-      if (!(pd[pde.index] & ARCHITECTURE_PDE_USED))
+      if (!(pd[pde.index] & ARCHITECTURE_PDE_PRESENT))
 	{
 	  i_segment	i;
 	  o_segment*	s;
@@ -447,6 +444,7 @@ t_error			architecture_paging_map(i_as		id,
 	  if (segment_reserve(as->id,
 			      ___kaneton$pagesz,
 			      PERMISSION_READ | PERMISSION_WRITE,
+			      SEGMENT_OPTION_SYSTEM,
 			      &i) != ERROR_OK)
 	    MACHINE_ESCAPE("unable to reserve a segment");
 
@@ -454,18 +452,11 @@ t_error			architecture_paging_map(i_as		id,
 	   * ii)
 	   */
 
-	  if (segment_type(i, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-	    MACHINE_ESCAPE("unable to change the segment's type");
-
-	  /*
-	   * iii)
-	   */
-
 	  if (segment_get(i, &s) != ERROR_OK)
 	    MACHINE_ESCAPE("unable to retrieve the segment object");
 
 	  /*
-	   * iv)
+	   * iii)
 	   */
 
 	  if (architecture_pd_insert(pd,
@@ -479,14 +470,14 @@ t_error			architecture_paging_map(i_as		id,
 	    MACHINE_ESCAPE("unable to update the page directory");
 
 	  /*
-	   * v)
+	   * iv)
 	   */
 
 	  if (architecture_pt_map(s->address, &pt) != ERROR_OK)
 	    MACHINE_ESCAPE("unable to map the page table");
 
 	  /*
-	   * vi)
+	   * v)
 	   */
 
 	  if (architecture_pt_build(pt) != ERROR_OK)
@@ -519,7 +510,7 @@ t_error			architecture_paging_map(i_as		id,
 	   * i)
 	   */
 
-	  if (pt[pte.index] & ARCHITECTURE_PTE_USED)
+	  if (pt[pte.index] & ARCHITECTURE_PTE_PRESENT)
 	    MACHINE_ESCAPE("this page table entry is already in use");
 
 	  /*
@@ -533,14 +524,11 @@ t_error			architecture_paging_map(i_as		id,
 				     (o->permissions & PERMISSION_WRITE ?
 				       ARCHITECTURE_PTE_RW :
 				       ARCHITECTURE_PTE_RO) |
-				     (options & REGION_OPTION_PRIVILEGED ?
+				     (o->options & SEGMENT_OPTION_SYSTEM ?
 				       ARCHITECTURE_PTE_SUPERVISOR :
 				       ARCHITECTURE_PTE_USER) |
 				     ARCHITECTURE_PTE_PWB |
-				     ARCHITECTURE_PTE_PCE |
-				     (options & REGION_OPTION_GLOBAL ?
-				       ARCHITECTURE_PTE_GLOBAL :
-				       ARCHITECTURE_PTE_NONE)) != ERROR_OK)
+				     ARCHITECTURE_PTE_PCE) != ERROR_OK)
 	    MACHINE_ESCAPE("unable to update the page table");
 
 	  /*
@@ -689,7 +677,7 @@ t_error			architecture_paging_unmap(i_as		id,
        * a)
        */
 
-      if (!(pd[pde.index] & ARCHITECTURE_PDE_USED))
+      if (!(pd[pde.index] & ARCHITECTURE_PDE_PRESENT))
 	MACHINE_ESCAPE("there is no page table referencing this page");
 
       /*
@@ -867,7 +855,7 @@ t_error			architecture_paging_read(i_segment	id,
   if (region_reserve(_kernel->as,
 		     id,
 		     offset,
-		     REGION_OPTION_PRIVILEGED,
+		     REGION_OPTION_NONE,
 		     0x0,
 		     end - offset,
 		     &region) != ERROR_OK)
@@ -969,7 +957,7 @@ t_error			architecture_paging_write(i_segment	id,
   if (region_reserve(_kernel->as,
 		     id,
 		     offset,
-		     REGION_OPTION_PRIVILEGED,
+		     REGION_OPTION_NONE,
 		     0x0,
 		     end - offset,
 		     &region) != ERROR_OK)
@@ -1094,7 +1082,7 @@ t_error			architecture_paging_copy(i_region	dst,
   if (region_reserve(_kernel->as,
 		     src,
 		     from,
-		     REGION_OPTION_PRIVILEGED,
+		     REGION_OPTION_NONE,
 		     0x0,
 		     end - from,
 		     &source.region.id) != ERROR_OK)
@@ -1139,7 +1127,7 @@ t_error			architecture_paging_copy(i_region	dst,
   if (region_reserve(_kernel->as,
 		     dst,
 		     to,
-		     REGION_OPTION_PRIVILEGED,
+		     REGION_OPTION_NONE,
 		     0x0,
 		     end - to,
 		     &destination.region.id) != ERROR_OK)

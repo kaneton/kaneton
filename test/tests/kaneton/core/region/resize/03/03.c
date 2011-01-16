@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/region/resize/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [fri dec 17 16:37:42 2010]
+ * updated       julien quintard   [fri jan 14 23:03:52 2011]
  */
 
 /*
@@ -41,6 +41,7 @@ void			test_core_region_resize_03(void)
   if (segment_reserve(_kernel->as,
 		      10 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

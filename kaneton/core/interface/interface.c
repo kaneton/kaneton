@@ -370,26 +370,6 @@ t_error		interface_segment_copy(o_syscall*	message)
 }
 
 /*
- * this function launchs the segment_reserve() function.
- */
-
-t_error		interface_segment_reserve(o_syscall*	message)
-{
-  t_error	error;
-  i_segment	result1;
-
-  error = segment_reserve(message->u.request.u.segment_reserve.arg1,
-			message->u.request.u.segment_reserve.arg2,
-			message->u.request.u.segment_reserve.arg3,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.segment_reserve.result1 = result1;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the segment_release() function.
  */
 
@@ -421,22 +401,6 @@ t_error		interface_segment_permissions(o_syscall*	message)
 }
 
 /*
- * this function launchs the segment_type() function.
- */
-
-t_error		interface_segment_type(o_syscall*	message)
-{
-  t_error	error;
-
-  error = segment_type(message->u.request.u.segment_type.arg1,
-			message->u.request.u.segment_type.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function get the asid attribute of the o_segment object.
  */
 
@@ -452,27 +416,6 @@ t_error		interface_segment_attribute_as(o_syscall*	message)
     {
       message->u.reply.error = ERROR_OK;
       message->u.reply.u.segment_attribute_as.result1 = o->as;
-    }
-
-  return (ERROR_OK);
-}
-
-/*
- * this function get the type attribute of the o_segment object.
- */
-
-t_error		interface_segment_attribute_type(o_syscall*	message)
-{
-  o_segment*		o;
-
-  if (segment_get(message->u.request.u.segment_attribute_type.arg1, &o) != ERROR_OK)
-    {
-      message->u.reply.error = ERROR_KO;
-    }
-  else
-    {
-      message->u.reply.error = ERROR_OK;
-      message->u.reply.u.segment_attribute_type.result1 = o->type;
     }
 
   return (ERROR_OK);
@@ -1092,12 +1035,9 @@ t_interface_dispatch dispatch[] =
   interface_segment_clone,
   interface_segment_give,
   interface_segment_copy,
-  interface_segment_reserve,
   interface_segment_release,
   interface_segment_permissions,
-  interface_segment_type,
   interface_segment_attribute_as,
-  interface_segment_attribute_type,
   interface_segment_attribute_address,
   interface_segment_attribute_size,
   interface_segment_attribute_permissions,

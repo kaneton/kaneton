@@ -211,7 +211,7 @@ void*			malloc(size_t				size)
 	  stucked = 1;
 
 	  assert(map_reserve(_kernel->as,
-			     MAP_OPTION_PRIVILEGED,
+			     MAP_OPTION_SYSTEM,
 			     pagesz,
 			     PERMISSION_READ | PERMISSION_WRITE,
 			     &addr) == ERROR_OK);
@@ -221,7 +221,7 @@ void*			malloc(size_t				size)
 	  if (_alloc.reserve == 0)
 	    {
 	      assert(map_reserve(_kernel->as,
-				 MAP_OPTION_PRIVILEGED,
+				 MAP_OPTION_SYSTEM,
 				 ___kaneton$pagesz,
 				 PERMISSION_READ | PERMISSION_WRITE,
 				 &_alloc.reserve) == ERROR_OK)
@@ -599,7 +599,7 @@ void*			realloc(void* 				ptr,
 void			alloc_setup(void)
 {
   assert(map_reserve(_kernel->as,
-		     MAP_OPTION_PRIVILEGED,
+		     MAP_OPTION_SYSTEM,
 		     ___kaneton$pagesz,
 		     PERMISSION_READ | PERMISSION_WRITE,
 		     &_alloc.reserve) == ERROR_OK);

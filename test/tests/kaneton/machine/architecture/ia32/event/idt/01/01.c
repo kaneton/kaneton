@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/event/idt/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan  7 20:37:33 2011]
+ * updated       julien quintard   [sat jan 15 17:06:01 2011]
  */
 
 /*
@@ -25,7 +25,7 @@
 
 void			test_architecture_event_idt_01(void)
 {
-  as_idt_register	idtr;
+  as_idtr		idtr;
 
   TEST_ENTER();
 

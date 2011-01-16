@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/segment/give/give.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat dec  4 13:23:06 2010]
+ * updated       julien quintard   [fri jan 14 23:01:34 2011]
  */
 
 /*
@@ -57,6 +57,7 @@ void			test_core_segment_give(void)
   if (segment_reserve(as1,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

@@ -1,17 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/platform/ibm-pc/include/event.h
+ * license       kaneton
+ *
+ * file          /home/mycure/kane...on/machine/platform/ibm-pc/include/pic.h
  *
  * created       renaud voltz   [wed mar 15 10:49:45 2006]
- * updated       matthieu bucchianeri   [fri jun 15 01:30:33 2007]
+ * updated       julien quintard   [fri jan 14 20:09:41 2011]
  */
 
 #ifndef PLATFORM_PIC_H
 #define PLATFORM_PIC_H	1
-
 
 /*
  * ---------- defines ---------------------------------------------------------

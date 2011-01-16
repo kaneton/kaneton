@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/core/as/translation/translation.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 13:51:24 2010]
+ * updated       julien quintard   [fri jan 14 23:02:35 2011]
  */
 
 /*
@@ -42,6 +42,7 @@ void			test_core_as_translation(void)
   if (segment_reserve(_kernel->as,
 		      2048 * ___kaneton$pagesz,
 		      PERMISSION_READ,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/set/set-ll.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/set/set-ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb  6 22:58:58 2007]
+ * updated       julien quintard   [fri jan 14 20:05:39 2011]
  */
 
 /*

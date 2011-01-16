@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2050]
- * updated       julien quintard   [fri jan  7 19:13:12 2011]
+ * updated       julien quintard   [sat jan 15 22:39:14 2011]
  */
 
 /*
@@ -24,7 +24,7 @@
  */
 
 static volatile int		thrown = 0;
-static volatile t_uint16	gs = (16 << 3);
+static volatile t_uint16	gs = (0x10 << 3);
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -43,10 +43,7 @@ void			test_architecture_event_exception_05(void)
 {
   TEST_ENTER();
 
-  if (architecture_gdt_delete(16) != ERROR_OK)
-    TEST_ERROR("[architecture_gdt_delete] error");
-
-  if (event_reserve(13,
+  if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_GP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_exception_05_handler),
 		    EVENT_DATA(NULL)) != ERROR_OK)

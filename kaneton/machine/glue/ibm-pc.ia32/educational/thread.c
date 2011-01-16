@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sun dec 19 20:12:41 2010]
+ * updated       julien quintard   [sat jan 15 15:43:44 2011]
  */
 
 /*
@@ -22,8 +22,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -70,7 +68,13 @@ d_thread		glue_thread_dispatch =
  */
 
 /*
- * XXX
+ * this function shows a thread's machine-specific data.
+ *
+ * steps:
+ *
+ * 1) retrieve the thread object.
+ * 2) retrieve the thread's IA32 context.
+ * 3) display the thread's machine-specific information.
  */
 
 t_error			glue_thread_show(i_thread		id,
@@ -79,8 +83,23 @@ t_error			glue_thread_show(i_thread		id,
   o_thread*		thread;
   t_ia32_context	context;
 
+  /*
+   * 1)
+   */
+
   if (thread_get(id, &thread) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the thread object");
+
+  /*
+   * 2)
+   */
+
+  if (ia32_get_context(id, &context) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread's IA32 context");
+
+  /*
+   * 3)
+   */
 
   module_call(console, message,
 	      '#',
@@ -88,9 +107,6 @@ t_error			glue_thread_show(i_thread		id,
 	      "  machine: pile(0x%x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      thread->machine.pile);
-
-  if (ia32_get_context(id, &context) != ERROR_OK)
-    MACHINE_ESCAPE("unable to retrieve the thread's IA32 context");
 
   module_call(console, message,
 	      '#',
@@ -117,14 +133,27 @@ t_error			glue_thread_show(i_thread		id,
 }
 
 /*
- * XXX
+ * this function dumps the thread manager's machine-specific information.
+ *
+ * steps:
+ *
+ * 1) display a general message.
+ * 2) display the segment selectors.
  */
 
 t_error			glue_thread_dump(void)
 {
+  /*
+   * 1)
+   */
+
   module_call(console, message,
 	      '#',
 	      "  machine:\n");
+
+  /*
+   * 2)
+   */
 
   module_call(console, message,
 	      '#',
@@ -132,25 +161,25 @@ t_error			glue_thread_dump(void)
 
   module_call(console, message,
 	      '#',
-	      "      kernel: cs(0x%x) ds(0x%x)\n",
+	      "      kernel: CS(0x%x) DS(0x%x)\n",
 	      _thread->machine.selectors.kernel.cs,
 	      _thread->machine.selectors.kernel.ds);
 
   module_call(console, message,
 	      '#',
-	      "      driver: cs(0x%x) ds(0x%x)\n",
+	      "      driver: CS(0x%x) DS(0x%x)\n",
 	      _thread->machine.selectors.driver.cs,
 	      _thread->machine.selectors.driver.ds);
 
   module_call(console, message,
 	      '#',
-	      "      service: cs(0x%x) ds(0x%x)\n",
+	      "      service: CS(0x%x) DS(0x%x)\n",
 	      _thread->machine.selectors.service.cs,
 	      _thread->machine.selectors.service.ds);
 
   module_call(console, message,
 	      '#',
-	      "      guest: cs(0x%x) ds(0x%x)\n",
+	      "      guest: CS(0x%x) DS(0x%x)\n",
 	      _thread->machine.selectors.guest.cs,
 	      _thread->machine.selectors.guest.ds);
 
@@ -159,13 +188,17 @@ t_error			glue_thread_dump(void)
 
 /*
  * this function reserves a thread by initializing its hardware context.
+ *
+ * steps:
+ *
+ * 1) initialize the thread's IA32 context.
  */
 
 t_error			glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid)
 {
   /*
-   * XXX
+   * 1)
    */
 
   if (ia32_init_context(taskid, *threadid) != ERROR_OK)
@@ -181,10 +214,6 @@ t_error			glue_thread_reserve(i_task		taskid,
 t_error			glue_thread_load(i_thread		threadid,
 					 s_thread_context	context)
 {
-  /*
-   * XXX
-   */
-
   if (ia32_setup_context(threadid, context.pc, context.sp) != ERROR_OK)
     MACHINE_ESCAPE("unable to set up the IA32 context");
 
@@ -198,15 +227,14 @@ t_error			glue_thread_load(i_thread		threadid,
 t_error			glue_thread_store(i_thread		threadid,
 					  s_thread_context*	context)
 {
-  /*
-   * XXX
-   */
-
   if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the IA32 context");
 
-  // XXX ici on devrai recup le ia32 context et copier ce qu'il faut dans le
-  // thread context.
+  // XXX ici on devrai recup le ia32 context puis dans cette fonction
+  // faire le trie et remplir pc et sp plutot que d'avoir une fonction
+  // arch specifique.
+  // XXX meme chose pour load()
+  // XXX update steps
 
   MACHINE_LEAVE();
 }
@@ -219,10 +247,6 @@ t_error			glue_thread_args(i_thread		threadid,
 					 const void*	       	args,
 					 t_vsize		size)
 {
-  /*
-   * XXX
-   */
-
   if (ia32_push_args(threadid, args, size) != ERROR_OK)
     MACHINE_ESCAPE("unable to push the arguments");
 
@@ -231,17 +255,18 @@ t_error			glue_thread_args(i_thread		threadid,
 
 /*
  * this function initializes the thread manager's glue.
+ *
+ * steps:
+ *
+ * 1) initialize the context switcher.
  */
 
 t_error			glue_thread_initialize(void)
 {
   /*
-   * XXX
+   * 1)
    */
 
-  // XXX mieux dans scheduler: ici il y avait ia32_init_switcher()
-  // XXX finalement on le laisse ici car thread_load() en a besoin
-  // et une tache pourrait etre reservee avant que le sched ne soit init.
   if (ia32_init_switcher() != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the context switcher");
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chitecture/ia32/educational/include/pd.h
  *
  * created       julien quintard   [mon jan 10 09:05:19 2011]
- * updated       julien quintard   [thu jan 13 17:00:24 2011]
+ * updated       julien quintard   [fri jan 14 21:09:58 2011]
  */
 
 #ifndef ARCHITECTURE_PD_H
@@ -81,13 +81,6 @@
  */
 
 #define ARCHITECTURE_PDE_ACCESSED	(1 << 5)
-
-/*
- * the following flag is not architecture-specific. instead, a software flag
- * has been created by using an architecture unused bit.
- */
-
-#define ARCHITECTURE_PDE_USED		(1 << 9)
 
 /*
  * ---------- macro-functions -------------------------------------------------

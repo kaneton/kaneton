@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/io.c
  *
  * created       julien quintard   [sun jan  9 22:11:18 2011]
- * updated       julien quintard   [sun jan  9 22:50:54 2011]
+ * updated       julien quintard   [fri jan 14 21:41:41 2011]
  */
 
 /*
@@ -23,8 +23,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- exports ---------------------------------------------------------

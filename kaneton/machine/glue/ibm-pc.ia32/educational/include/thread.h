@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [sat jan  8 13:58:34 2011]
+ * updated       julien quintard   [sat jan 15 06:44:36 2011]
  */
 
 #ifndef GLUE_THREAD_H
@@ -94,9 +94,6 @@
  *
  * note that terms have been introduced in order to distinguish the
  * thread's stack i.e 'stack' with its kernel stack i.e 'pile'.
- *
- * the 'error' attribute stored the error code whenever an exception
- * occurs. XXX this should be placed somewhere else!
  */
 
 #define         machine_data_o_thread()					\

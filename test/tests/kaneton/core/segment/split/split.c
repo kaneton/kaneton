@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...tests/kaneton/core/segment/split/split.c
+ * file          /home/mycure/kane...tests/kaneton/core/segment/split/split.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 19:01:34 2010]
+ * updated       julien quintard   [fri jan 14 23:10:46 2011]
  */
 
 /*
@@ -41,6 +41,7 @@ void			test_core_segment_split(void)
   if (segment_reserve(_kernel->as,
 		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
@@ -62,8 +63,8 @@ void			test_core_segment_split(void)
   if (o1->as != _kernel->as)
     TEST_ERROR("invalid segment's address space identifier after split");
 
-  if (o1->type != SEGMENT_TYPE_MEMORY)
-    TEST_ERROR("invalid segment's type after split");
+  if (o1->options != SEGMENT_OPTION_NONE)
+    TEST_ERROR("invalid segment's options after split");
 
   if (o1->size != 2 * ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after split");
@@ -77,8 +78,8 @@ void			test_core_segment_split(void)
   if (o2->as != _kernel->as)
     TEST_ERROR("invalid segment's address space identifier after split");
 
-  if (o2->type != SEGMENT_TYPE_MEMORY)
-    TEST_ERROR("invalid segment's type after split");
+  if (o2->options != SEGMENT_OPTION_NONE)
+    TEST_ERROR("invalid segment's options after split");
 
   if (o2->size != ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after split");

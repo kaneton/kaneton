@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/segment/segment-fit.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri may 25 11:33:16 2007]
+ * updated       julien quintard   [sat jan 15 04:52:13 2011]
  */
 
 /*
@@ -17,7 +19,7 @@
  *
  * among these functionalities, the manager can reserve and release
  * segments but also modify some of their properties such as a segment's
- * permissions, owner, type etc.
+ * permissions, owner, options etc.
  *
  * the manager also provides functions for manipulating existing segments
  * such as resizing, splitting and copying.
@@ -42,6 +44,12 @@
  *                   or add options to segment_reserve() very much like
  *                   region_reserve(). this function will be useful for
  *                   reserving memory-mapped devices.
+ * [XXX:improvement] the segment_resize() function can render some regions
+ *                   invalid. the system would have no choice but to either
+ *                   scan all the regions and update them or refuse the
+ *                   segment resizing; or keep a set of the regions mapping
+ *                   a segment in order to perform this operation more
+ *                   efficiently
  */
 
 /*
@@ -102,7 +110,7 @@ m_segment*		_segment = NULL;
  * steps:
  *
  * 1) retrieve the segment object.
- * 2) compute the type string.
+ * 2) compute the options string.
  * 3) compute the permissions string.
  * 4) display the segment's attributes.
  * 5) call the machine.
@@ -112,7 +120,7 @@ t_error			segment_show(i_segment			segid,
 				     mt_margin			margin)
 {
   char			perms[4];
-  char*			type;
+  char			options[2];
   o_segment*		o;
 
   /*
@@ -126,24 +134,12 @@ t_error			segment_show(i_segment			segid,
    * 2)
    */
 
-  switch (o->type)
-    {
-    case SEGMENT_TYPE_MEMORY:
-      {
-	type = "memory";
+  if (o->options & SEGMENT_OPTION_SYSTEM)
+    options[0] = 's';
+  else
+    options[0] = '.';
 
-	break;
-      }
-    case SEGMENT_TYPE_SYSTEM:
-      {
-	type = "system";
-
-	break;
-      }
-    default:
-      CORE_ESCAPE("unknown segment type '%u'",
-		  o->type);
-    }
+  options[1] = '\0';
 
   /*
    * 3)
@@ -179,15 +175,15 @@ t_error			segment_show(i_segment			segid,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  core: id(%qd) range(0x%08x - 0x%08x) type(%s) "
-	      "permissions(%s) size(0x%x) as(%qd)\n",
+	      "  core: id(%qd) range(0x%08x - 0x%08x) permissions(%s) "
+	      "size(0x%x) options(%s) as(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
 	      o->address,
 	      o->address + o->size - 1,
-	      type,
 	      perms,
 	      o->size,
+	      options,
 	      o->as);
 
   /*
@@ -545,14 +541,18 @@ t_error			segment_clone(i_as			asid,
    * 2)
    */
 
-  if (from->type == SEGMENT_TYPE_SYSTEM)
+  if (from->options & SEGMENT_OPTION_SYSTEM)
     CORE_ESCAPE("unable to clone a system segment");
 
   /*
    * 3)
    */
 
-  if (segment_reserve(asid, from->size, PERMISSION_WRITE, new) != ERROR_OK)
+  if (segment_reserve(asid,
+		      from->size,
+		      PERMISSION_WRITE,
+		      from->options,
+		      new) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a segment");
 
   /*
@@ -652,10 +652,6 @@ t_error			segment_inject(i_as			asid,
 
   if (object == NULL)
     CORE_ESCAPE("the 'object' argument is null");
-
-  if ((object->type != SEGMENT_TYPE_MEMORY) &&
-      (object->type != SEGMENT_TYPE_SYSTEM))
-    CORE_ESCAPE("the object type is invalid");
 
   if (object->size == 0)
     CORE_ESCAPE("unable to inject a zero-sized segment object");
@@ -975,6 +971,7 @@ t_error			segment_resize(i_segment		old,
 	  if (segment_reserve(o->as,
 			      size,
 			      PERMISSION_WRITE,
+			      o->options,
 			      new) != ERROR_OK)
 	    CORE_ESCAPE("unable to reserve a segment");
 
@@ -1089,7 +1086,7 @@ t_error			segment_split(i_segment			segid,
 
   n->as = o->as;
   n->permissions = o->permissions;
-  n->type = o->type;
+  n->options = o->options;
 
   n->address = o->address + size;
   n->size = o->size - size;
@@ -1134,7 +1131,7 @@ t_error			segment_split(i_segment			segid,
  *
  * 0) verify the arguments.
  * 1) retrieve both the left and right segment objects.
- * 2) verify that the segments are adjacent, with the same types and
+ * 2) verify that the segments are adjacent, with the same options and
  *    permissions etc.
  * 3) compute the new segment size.
  * 4) return the future identifier i.e the identifier of the left
@@ -1183,8 +1180,8 @@ t_error			segment_coalesce(i_segment		left,
   if (seg1->permissions != seg2->permissions)
     CORE_ESCAPE("unable to coalesce segments with different permissions");
 
-  if (seg1->type != seg2->type)
-    CORE_ESCAPE("unable to coalesce segments with different types");
+  if (seg1->options != seg2->options)
+    CORE_ESCAPE("unable to coalesce segments with different options");
 
   /*
    * 3)
@@ -1426,6 +1423,7 @@ t_error			segment_copy(i_segment			dst,
 t_error			segment_reserve(i_as			asid,
 					t_psize			size,
 					t_permissions		perms,
+					t_options		options,
 					i_segment*		id)
 {
   o_as*			as;
@@ -1476,7 +1474,7 @@ t_error			segment_reserve(i_as			asid,
   o->as = as->id;
   o->size = size;
   o->permissions = perms;
-  o->type = SEGMENT_TYPE_MEMORY;
+  o->options = options;
   o->id = SEGMENT_IDENTIFIER(o);
 
   /*
@@ -1594,53 +1592,6 @@ t_error			segment_permissions(i_segment		segid,
    */
 
   if (machine_call(segment, permissions, segid, perms) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
- * this function modifies the type of a segment.
- *
- * steps:
- *
- * 0) verify the arguments.
- * 1) retrieve the segment object.
- * 2) set the new type.
- * 4) call the machine.
- */
-
-t_error			segment_type(i_segment			segid,
-				     t_type			type)
-{
-  o_segment*		o;
-
-  /*
-   * 0)
-   */
-
-  if ((type != SEGMENT_TYPE_MEMORY) &&
-      (type != SEGMENT_TYPE_SYSTEM))
-    CORE_ESCAPE("the provided type is invalid");
-
-  /*
-   * 1)
-   */
-
-  if (segment_get(segid, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the segment object");
-
-  /*
-   * 2)
-   */
-
-  o->type = type;
-
-  /*
-   * 3)
-   */
-
-  if (machine_call(segment, type, segid, type) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();

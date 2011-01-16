@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chitecture/ia32/educational/include/pt.h
  *
  * created       julien quintard   [mon jan 10 09:31:37 2011]
- * updated       julien quintard   [thu jan 13 17:01:55 2011]
+ * updated       julien quintard   [fri jan 14 21:10:02 2011]
  */
 
 #ifndef ARCHITECTURE_PT_H
@@ -100,13 +100,6 @@
  */
 
 #define ARCHITECTURE_PTE_GLOBAL		(1 << 8)
-
-/*
- * the following flag is not architecture-specific. instead, a software flag
- * has been created by using an architecture unused bit.
- */
-
-#define ARCHITECTURE_PTE_USED		(1 << 9)
 
 /*
  * ---------- macro-functions -------------------------------------------------

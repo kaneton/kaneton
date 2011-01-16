@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/scheduler/complete/complete.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 13:37:53 2010]
+ * updated       julien quintard   [fri jan 14 23:07:13 2011]
  */
 
 /*
@@ -106,6 +106,7 @@ void			test_architecture_scheduler_complete(void)
   if (segment_reserve(_kernel->as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &segment) != ERROR_OK)
     TEST_ERROR("[map_reserve] error");
 

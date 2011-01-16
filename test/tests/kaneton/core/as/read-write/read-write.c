@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo.../kaneton/core/as/read-write/read-write.c
+ * file          /home/mycure/kane.../kaneton/core/as/read-write/read-write.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:42:21 2010]
+ * updated       julien quintard   [fri jan 14 22:56:21 2011]
  */
 
 /*
@@ -49,30 +49,35 @@ void			test_core_as_readwrite(void)
   if (segment_reserve(as,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg1) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
 		      4 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg2) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &useless) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg3) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

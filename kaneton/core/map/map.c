@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/map/map.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       matthieu bucchianeri   [tue feb  6 22:39:11 2007]
+ * updated       julien quintard   [sat jan 15 00:21:05 2011]
  */
 
 /*
@@ -95,7 +97,12 @@ t_error			map_reserve(i_as			as,
    * 1)
    */
 
-  if (segment_reserve(as, size, permissions, &segment) != ERROR_OK)
+  if (segment_reserve(as,
+		      size,
+		      permissions,
+		      ((options & MAP_OPTION_SYSTEM) ?
+		       SEGMENT_OPTION_SYSTEM : SEGMENT_OPTION_NONE),
+		      &segment) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a segment");
 
   /*
@@ -115,9 +122,7 @@ t_error			map_reserve(i_as			as,
       if (region_reserve(as,
 			 segment,
 			 0,
-			 REGION_OPTION_FORCE |
-			 ((options & MAP_OPTION_PRIVILEGED) ?
-			  REGION_OPTION_PRIVILEGED : 0),
+			 REGION_OPTION_FORCE,
 			 *address,
 			 size,
 			 &region) != ERROR_OK)
@@ -136,9 +141,7 @@ t_error			map_reserve(i_as			as,
       if (region_reserve(as,
 			 segment,
 			 0,
-			 REGION_OPTION_NONE |
-			 ((options & MAP_OPTION_PRIVILEGED) ?
-			  REGION_OPTION_PRIVILEGED : 0),
+			 REGION_OPTION_NONE,
 			 0,
 			 size,
 			 &region) != ERROR_OK)

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       julien quintard   [thu jan 13 13:48:26 2011]
+ * updated       julien quintard   [fri jan 14 22:52:53 2011]
  */
 
 /*
@@ -24,8 +24,6 @@
  */
 
 #include <kaneton.h>
-
-#include <architecture/architecture.h>
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -86,7 +84,7 @@ t_error			architecture_pt_dump(at_pt		pt,
 
   for (i = 0; i < ARCHITECTURE_PT_SIZE; i++)
     {
-      if (pt[i] & ARCHITECTURE_PTE_USED)
+      if (pt[i] & ARCHITECTURE_PTE_PRESENT)
 	{
 	  char		flags[8];
 
@@ -200,7 +198,7 @@ t_error			architecture_pt_insert(at_pt		pt,
   pt[index] =
     ARCHITECTURE_PAGING_BASE(address) |
     flags |
-    ARCHITECTURE_PTE_USED;
+    ARCHITECTURE_PTE_PRESENT;
 
   MACHINE_LEAVE();
 }
@@ -227,7 +225,7 @@ t_error			architecture_pt_delete(at_pt		pt,
   if (index >= ARCHITECTURE_PT_SIZE)
     MACHINE_ESCAPE("out-of-bound page table entry index");
 
-  if (!(pt[index] & ARCHITECTURE_PTE_USED))
+  if (!(pt[index] & ARCHITECTURE_PTE_PRESENT))
     MACHINE_ESCAPE("this page table entry does not seem to be used");
 
   /*
@@ -255,10 +253,9 @@ t_error			architecture_pt_delete(at_pt		pt,
  * 3) if this page table required for referencing the page---through
  *    which the page table is about to be mapped---is not present, create it.
  *   a) reserve a segment for the page table to be created.
- *   b) make the segment a system one.
- *   c) retrieve the reserved segment object.
- *   d) update the page directory, hence referencing the new page table.
- *   e) build the page table. note that the mirrored address is used from
+ *   b) retrieve the reserved segment object.
+ *   c) update the page directory, hence referencing the new page table.
+ *   d) build the page table. note that the mirrored address is used from
  *      now on. this is why the page table does not have to be mapped.
  * 4) update the kernel page table, referencing the page through which
  *    the given page table is being mapped.
@@ -309,7 +306,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
    */
 
   if (!(_architecture_pd[ARCHITECTURE_PD_INDEX(vaddr)] &
-	ARCHITECTURE_PDE_USED))
+	ARCHITECTURE_PDE_PRESENT))
     {
       o_segment*	o;
 
@@ -320,6 +317,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
       if (segment_reserve(_kernel->as,
 			  ___kaneton$pagesz,
 			  PERMISSION_READ | PERMISSION_WRITE,
+			  SEGMENT_OPTION_SYSTEM,
 			  &segment) != ERROR_OK)
 	MACHINE_ESCAPE("unable to reserve a segment");
 
@@ -327,18 +325,11 @@ t_error			architecture_pt_map(t_paddr		paddr,
        * b)
        */
 
-      if (segment_type(segment, SEGMENT_TYPE_SYSTEM) != ERROR_OK)
-	MACHINE_ESCAPE("unable to change the segment's type to system");
-
-      /*
-       * c)
-       */
-
       if (segment_get(segment, &o) != ERROR_OK)
 	MACHINE_ESCAPE("unable to retrieve the segment object");
 
       /*
-       * d)
+       * c)
        */
 
       if (architecture_pd_insert(_architecture_pd,
@@ -352,7 +343,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
 	MACHINE_ESCAPE("unable to insert an entry in the page directory");
 
       /*
-       * e)
+       * d)
        */
 
       if (architecture_pt_build(pt) != ERROR_OK)
@@ -450,7 +441,7 @@ t_error			architecture_pt_unmap(at_pt		table)
    */
 
   if (!(_architecture_pd[ARCHITECTURE_PD_INDEX(vaddr)] &
-	ARCHITECTURE_PDE_USED))
+	ARCHITECTURE_PDE_PRESENT))
     MACHINE_ESCAPE("the page table referencing the page directory does "
 		   "not seem to be used");
 

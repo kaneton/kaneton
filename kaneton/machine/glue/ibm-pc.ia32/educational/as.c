@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri jan 14 13:11:45 2011]
+ * updated       julien quintard   [sat jan 15 06:12:51 2011]
  */
 
 /*
@@ -26,10 +26,6 @@
  */
 
 #include <kaneton.h>
-
-#include <glue/glue.h>
-#include <architecture/architecture.h>
-#include <platform/platform.h>
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -105,9 +101,9 @@ t_error			glue_as_show(i_as			id,
 }
 
 /*
- * this function reserves an address space.
- *
- * XXX
+ * this function initializes the given address space depending to the task,
+ * being either the kernel or one of the servers i.e a driver, service or
+ * guest.
  */
 
 t_error			glue_as_reserve(i_task			task,

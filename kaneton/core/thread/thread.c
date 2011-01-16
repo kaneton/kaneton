@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       julian pidancet   [fri apr 13 03:06:06 2007]
+ * updated       julien quintard   [fri jan 14 20:20:14 2011]
  */
 
 /*
@@ -1439,9 +1441,8 @@ t_error			thread_stack(i_thread			threadid,
        */
 
       if (map_reserve(task->as,
-		      MAP_OPTION_NONE |
 		      (task->class == TASK_CLASS_KERNEL ?
-		       MAP_OPTION_PRIVILEGED : MAP_OPTION_USER),
+		       MAP_OPTION_SYSTEM : MAP_OPTION_NONE),
 		      stack.size,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      &(o->stack)) != ERROR_OK)

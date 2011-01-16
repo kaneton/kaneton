@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...architecture/ia32/region/inject/inject.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 13 16:24:25 2011]
+ * updated       julien quintard   [fri jan 14 23:06:48 2011]
  */
 
 /*
@@ -51,6 +51,7 @@ void			test_architecture_region_inject(void)
   if (segment_reserve(_kernel->as,
 		      10 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 

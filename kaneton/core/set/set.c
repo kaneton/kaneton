@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
+ *
+ * license       kaneton
  *
  * file          /home/mycure/kaneton/kaneton/core/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       julien quintard   [sat jul  8 02:36:34 2006]
+ * updated       julien quintard   [fri jan 14 20:05:09 2011]
  */
 
 /*

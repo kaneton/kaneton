@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/id/id.c
+ * license       kaneton
+ *
+ * file          /home/mycure/kaneton/kaneton/core/id/id.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb  6 22:27:40 2007]
+ * updated       julien quintard   [fri jan 14 20:06:30 2011]
  */
 
 /*

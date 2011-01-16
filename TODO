@@ -1,21 +1,22 @@
 #
-# ---------- mycure -----------------------------------------------------------
+# ---------- general ----------------------------------------------------------
 #
 
---- IA32
+- pas de CORE_, de XXX, de IA32, de return, warning: dans kaneton + test
 
-- les include guards ainsi que macros et fonction prefixes doivent etre
-  ARCHITECTURE et non IA32.
-- revoir context.h avec les 2 macros
-- dans paging.h, pas clair! on devrait avoir une structure pour: directory entry, table entry. directory et table serait des tableaux de ces structures.
-  au lieu de ca, actuellement on a des structures abstraites qui ne sont utilisees que lorsque l'on a besoin en castant!
-- pt_add_page et pd_add_page: ces fonctions devraient etre donnees car elles n'apportent rien et ca fait juste chier l'etudiant
-- verifier que IA32_ENTRY_ADDRESS prend une pde et pte en arguments car
-  le test kaneton/as/ia32/mapping a l'air de l'utiliser differemment.
-- il devrait plus y avoir de return ou ERROR_OK/KO
-- reordonner les include dans architecture.h
-- pas de CORE_
-- chercher les XXX
+#
+# ---------- assignments ------------------------------------------------------
+#
+
+- segmentation (GDT) dans k0
+- IDT dans k1
+- etc.
+
+- donner des tips: commencer par trigger une interrupt, dumper quand une exception occurs, dumper la page directory/table lors d'un page fault etc.
+
+#
+# ---------- ia32 -------------------------------------------------------------
+#
 
 - variables importantes eparpillees et non commentees:
   [handler.c]
@@ -28,62 +29,47 @@
   IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_local_jump_pdbr = 0;
   IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_exception_code = 0;
 
-- verifier les includes. il y a des fichiers inutiles
-- warning?
-- voir si REGION_OPTION_GLOBAL est utilisee. c'est trop arch-specific
-  LE VIRER!
-- c'est quoi exactement le comportement du flag USED dans les PD/PT?
 - tout mettre dans kernel.machine ou dans le manager associe a l'operation!
-- gdt/idt descriptor -> gdt/idt
-- virer le flag USED et utiliser PRESENT
-- inutile d'inclure architecture.h partout, c'est compte dans kaneton.h
-- XXX dans core/glue/platform/module et test pour etre sur
-  + warnings! + return
-- rajouter explications types dans cours sur le design
 
-- rajouter du logging dans le systeme de tests pour savoir quel test est
-  en cours, de quel user etc.
-- baisser le timeout?
-- changer le import paging pour qu'il prenne simplement un CR3
-- ajouter le type du segment dans init pour eviter le as_finalize
-
---- EXPORT
+#
+# ---------- export -----------------------------------------------------------
+#
 
 - fini le ARCH=IA32 ce sera tjs IA32/EDUCATIONAL, changer les fichiers
 - bien verifier que ca compiler/clear ie que les Makefiles sont bons
 - on peut fournir le boot loader en .lo pour eviter qu'ils grugent libia32
 
---- EVALUATION
+#
+# ---------- evaluation -------------------------------------------------------
+#
 
 - faire un super test et en 1 semaine faire une tranche de challenge ou ils doivent optimiser kaneton!
   -> genre lancer tous les tests a la suite sans rebooter
 
---- FUTURE
+#
+# ---------- future -----------------------------------------------------------
+#
 
 - matter dans le trac car du coup la plupart des tickets ont du etre resolus!
+- le trac n'est surement plus necessaire! ce fichier suffit!
+
+- systeme de test en non-bloquant: list retourne la liste du serveur, display
+  aussi et test retourne direct avec un email envoye quand termine.
+- rajouter du logging dans le systeme de tests pour savoir quel test est
+  en cours, de quel user etc.
+- mettre le timeout dans le manifest, en fonction de l'environment
+    { xen: XXX, qemu: XXX }
 
 - changer tous les types de core en prefixant avec c_ pour core.
   t_options deviendrait ct_options, m_scheduler, cm_scheduler, i_task, ci_task
   etc.
   -> ensuite on definierait l'interface kernel qui elle definierait des
      aliases: ci_task -> i_task etc.
+
 - le probleme d'allocation recursive (design): (i) deux objets avec le meme
   id ne devraient jamais etre ajoutes sans erreur (ii) a corriger
   fondamentalement
-- pour les capabilities: (i) soit un autorise l'attenuation hierarchique,
-  auquel cas, c'est tres flexible mais pas super secure car en donnant une
-  cap a un gars, il peut la refiler a tout le monde (sous-attenuee ou non)
-  (ii) soit on limite a un niveau et en plus on inclue l'id de la tache qui
-  va recevoir la cap pour eviter qu'il ne la refile (juste inclure un id et
-  autoriser l'attenuation peut etre interessant cela dit). -> en incluant
-  l'id on perd en perf car il faut faire un appel par attenuation i.e on ne
-  peut pas attenuer une fois et balancer a 100 mecs.
-- terminer d'ecrire les cours (fs, scheduling etc.)
-- super test pour departager les gens en fonction de la rapidite -> points
-  bonus => 25/20
 - malloc double-free qui devrait peter ou peter un warning
-- REGION_OPTION_PRIVILEGED -> SYSTEM
-- rajouter des options a segment_reserve, type par exemple
 - page fault dans malloc:
     int i;
 
@@ -101,6 +87,20 @@
 
         assert(as_reserve(t, &a) == ERROR_OK);
       }
+
+- pour les capabilities: (i) soit un autorise l'attenuation hierarchique,
+  auquel cas, c'est tres flexible mais pas super secure car en donnant une
+  cap a un gars, il peut la refiler a tout le monde (sous-attenuee ou non)
+  (ii) soit on limite a un niveau et en plus on inclue l'id de la tache qui
+  va recevoir la cap pour eviter qu'il ne la refile (juste inclure un id et
+  autoriser l'attenuation peut etre interessant cela dit). -> en incluant
+  l'id on perd en perf car il faut faire un appel par attenuation i.e on ne
+  peut pas attenuer une fois et balancer a 100 mecs.
+
+- terminer d'ecrire les cours (fs, scheduling etc.)
+
+- super test pour departager les gens en fonction de la rapidite -> points
+  bonus => 25/20
 
 --- LIBRARY
 

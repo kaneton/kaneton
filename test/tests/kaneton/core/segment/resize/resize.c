@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/segment/resize/resize.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 11:59:07 2010]
+ * updated       julien quintard   [fri jan 14 23:10:18 2011]
  */
 
 /*
@@ -42,10 +42,14 @@ void			test_core_segment_resize(void)
   if (segment_reserve(_kernel->as,
 		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ,
+		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_resize(seg, ___kaneton$pagesz, SEGMENT_OPTION_NONE, &seg) != ERROR_OK)
+  if (segment_resize(seg,
+		     ___kaneton$pagesz,
+		     SEGMENT_OPTION_NONE,
+		     &seg) != ERROR_OK)
     TEST_ERROR("[segment_resize] error");
 
   if (segment_get(seg, &o) != ERROR_OK)
@@ -57,8 +61,8 @@ void			test_core_segment_resize(void)
   if (o->as != _kernel->as)
     TEST_ERROR("invalid segment's address space identifier after resize");
 
-  if (o->type != SEGMENT_TYPE_MEMORY)
-    TEST_ERROR("invalid segment's type after resize");
+  if (o->options != SEGMENT_OPTION_NONE)
+    TEST_ERROR("invalid segment's options after resize");
 
   if (o->size != ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after resize");
@@ -75,6 +79,7 @@ void			test_core_segment_resize(void)
       if (segment_reserve(_kernel->as,
 			  ___kaneton$pagesz,
 			  PERMISSION_READ,
+			  SEGMENT_OPTION_NONE,
 			  &seg2) != ERROR_OK)
 	TEST_ERROR("[segment_reserve] error");
 
@@ -99,7 +104,10 @@ void			test_core_segment_resize(void)
     TEST_ERROR("unable to allocate a segment following a previously "
 	       "reserved one");
 
-  if (segment_resize(seg, 10 * ___kaneton$pagesz, SEGMENT_OPTION_NONE, &seg3) != ERROR_OK)
+  if (segment_resize(seg,
+		     10 * ___kaneton$pagesz,
+		     SEGMENT_OPTION_NONE,
+		     &seg3) != ERROR_OK)
     TEST_ERROR("[segment_resize] error");
 
   if (seg3 == seg)
@@ -119,8 +127,8 @@ void			test_core_segment_resize(void)
   if (o->as != _kernel->as)
     TEST_ERROR("invalid segment's address space identifier after resize");
 
-  if (o->type != SEGMENT_TYPE_MEMORY)
-    TEST_ERROR("invalid segment's type after resize");
+  if (o->options != SEGMENT_OPTION_NONE)
+    TEST_ERROR("invalid segment's options after resize");
 
   if (o->size != 10 * ___kaneton$pagesz)
     TEST_ERROR("invalid segment's size after resize");
