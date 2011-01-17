@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       julien quintard   [fri jan 14 20:20:14 2011]
+ * updated       julien quintard   [mon jan 17 17:16:55 2011]
  */
 
 /*
@@ -48,6 +48,12 @@ machine_include(thread);
 /*
  * ---------- externs ---------------------------------------------------------
  */
+
+/*
+ * the init structure.
+ */
+
+extern s_init*		_init;
 
 /*
  * the kernel manager.
@@ -1481,11 +1487,11 @@ t_error			thread_stack(i_thread			threadid,
  * highly machine-specific.
  */
 
-t_error			thread_args(i_thread			threadid,
-				    void*			args,
-				    t_vsize			size)
+t_error			thread_arguments(i_thread		threadid,
+					 void*			arguments,
+					 t_vsize		size)
 {
-  if (machine_call(thread, args, threadid, args, size) != ERROR_OK)
+  if (machine_call(thread, arguments, threadid, arguments, size) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1794,13 +1800,17 @@ t_error			thread_get(i_thread			id,
  *    not been set up yet.
  * 7) reserve the kernel thread though this thread will never be scheduled
  *    per say.
- * 8) block the thread: this is to make things clear that this thread
+ * 8) set the kernel thread stack as being the one currently in use i.e
+ *    the stack allocated and set up by the boot loader.
+ * 9) block the thread: this is to make things clear that this thread
  *    is not supposed to be scheduled.
- * 9) call the machine.
+ * 10) call the machine.
  */
 
 t_error			thread_initialize(void)
 {
+  s_stack		stack;
+
   /*
    * 1)
    */
@@ -1864,11 +1874,21 @@ t_error			thread_initialize(void)
    * 8)
    */
 
+  stack.base = (t_vaddr)_init->kstack;
+  stack.size = (t_vaddr)_init->kstacksz;
+
+  if (thread_stack(_kernel->thread, stack) != ERROR_OK)
+    CORE_ESCAPE("unable to set up the thread's stack");
+
+  /*
+   * 9)
+   */
+
   if (thread_block(_kernel->thread) != ERROR_OK)
     CORE_ESCAPE("unable to block the kernel thread");
 
   /*
-   * 9)
+   * 10)
    */
 
   if (machine_call(thread, initialize) != ERROR_OK)

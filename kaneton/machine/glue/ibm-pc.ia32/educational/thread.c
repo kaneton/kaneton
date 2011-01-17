@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sat jan 15 15:43:44 2011]
+ * updated       julien quintard   [mon jan 17 16:56:40 2011]
  */
 
 /*
@@ -54,7 +54,7 @@ d_thread		glue_thread_dispatch =
     NULL,
     NULL,
     NULL,
-    glue_thread_args,
+    glue_thread_arguments,
     NULL,
     NULL,
     glue_thread_load,
@@ -81,7 +81,7 @@ t_error			glue_thread_show(i_thread		id,
 					 mt_margin		margin)
 {
   o_thread*		thread;
-  t_ia32_context	context;
+  as_context		ctx;
 
   /*
    * 1)
@@ -94,7 +94,7 @@ t_error			glue_thread_show(i_thread		id,
    * 2)
    */
 
-  if (ia32_get_context(id, &context) != ERROR_OK)
+  if (architecture_context_get(id, &ctx) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the thread's IA32 context");
 
   /*
@@ -104,9 +104,16 @@ t_error			glue_thread_show(i_thread		id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  machine: pile(0x%x)\n",
+	      "  machine:\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "    pile: base(0x%x) esp(0x%x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
-	      thread->machine.pile);
+	      thread->machine.pile.base,
+	      thread->machine.pile.esp);
 
   module_call(console, message,
 	      '#',
@@ -115,19 +122,19 @@ t_error			glue_thread_show(i_thread		id,
 	      "esi(0x%x) edi(0x%x) ebp(0x%x) esp(0x%x) eip(0x%x) "
 	      "eflags(0x%x) cs(0x%x) ds(0x%x) ss(0x%x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
-	      context.eax,
-	      context.ebx,
-	      context.ecx,
-	      context.edx,
-	      context.esi,
-	      context.edi,
-	      context.ebp,
-	      context.esp,
-	      context.eip,
-	      context.eflags,
-	      context.cs,
-	      context.ds,
-	      context.ss);
+	      ctx.eax,
+	      ctx.ebx,
+	      ctx.ecx,
+	      ctx.edx,
+	      ctx.esi,
+	      ctx.edi,
+	      ctx.ebp,
+	      ctx.esp,
+	      ctx.eip,
+	      ctx.eflags,
+	      ctx.cs,
+	      ctx.ds,
+	      ctx.ss);
 
   MACHINE_LEAVE();
 }
@@ -194,14 +201,14 @@ t_error			glue_thread_dump(void)
  * 1) initialize the thread's IA32 context.
  */
 
-t_error			glue_thread_reserve(i_task		taskid,
-					    i_thread*		threadid)
+t_error			glue_thread_reserve(i_task		task,
+					    i_thread*		thread)
 {
   /*
    * 1)
    */
 
-  if (ia32_init_context(taskid, *threadid) != ERROR_OK)
+  if (architecture_context_build(*thread) != ERROR_OK)
     MACHINE_ESCAPE("unable to initialize the IA32 context");
 
   MACHINE_LEAVE();
@@ -209,32 +216,70 @@ t_error			glue_thread_reserve(i_task		taskid,
 
 /*
  * this function loads the given context in the thread low-level structure.
+ *
+ * steps:
+ *
+ * 1) retrieve the thread's IA32 context.
+ * 2) set some of the context's attributes: PC and SP.
+ * 3) upadte the thread's IA32 context.
  */
 
-t_error			glue_thread_load(i_thread		threadid,
+t_error			glue_thread_load(i_thread		id,
 					 s_thread_context	context)
 {
-  if (ia32_setup_context(threadid, context.pc, context.sp) != ERROR_OK)
-    MACHINE_ESCAPE("unable to set up the IA32 context");
+  as_context		ctx;
+
+  /*
+   * 1)
+   */
+
+  if (architecture_context_get(id, &ctx) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread's IA32 context");
+
+  /*
+   * 2)
+   */
+
+  ctx.eip = context.pc;
+  ctx.esp = context.sp;
+
+  /*
+   * 3)
+   */
+
+  if (architecture_context_set(id, &ctx) != ERROR_OK)
+    MACHINE_ESCAPE("unable to update the IA32 context");
 
   MACHINE_LEAVE();
 }
 
 /*
  * this function returns the thread's current context.
+ *
+ * steps:
+ *
+ * 1) retrieve the thread's IA32 context.
+ * 2) return the only core-meaningful values: PC and SP.
  */
 
-t_error			glue_thread_store(i_thread		threadid,
+t_error			glue_thread_store(i_thread		id,
 					  s_thread_context*	context)
 {
-  if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_OK)
-    MACHINE_ESCAPE("unable to retrieve the IA32 context");
+  as_context		ctx;
 
-  // XXX ici on devrai recup le ia32 context puis dans cette fonction
-  // faire le trie et remplir pc et sp plutot que d'avoir une fonction
-  // arch specifique.
-  // XXX meme chose pour load()
-  // XXX update steps
+  /*
+   * 1)
+   */
+
+  if (architecture_context_set(id, &ctx) != ERROR_OK)
+    MACHINE_ESCAPE("unable to update the IA32 context");
+
+  /*
+   * 2)
+   */
+
+  context->pc = ctx.eip;
+  context->sp = ctx.esp;
 
   MACHINE_LEAVE();
 }
@@ -243,11 +288,11 @@ t_error			glue_thread_store(i_thread		threadid,
  * this function sets the given arguments on the thread's stack.
  */
 
-t_error			glue_thread_args(i_thread		threadid,
-					 const void*	       	args,
-					 t_vsize		size)
+t_error			glue_thread_arguments(i_thread		id,
+					      void*		arguments,
+					      t_vsize		size)
 {
-  if (ia32_push_args(threadid, args, size) != ERROR_OK)
+  if (architecture_context_arguments(id, arguments, size) != ERROR_OK)
     MACHINE_ESCAPE("unable to push the arguments");
 
   MACHINE_LEAVE();
@@ -267,8 +312,8 @@ t_error			glue_thread_initialize(void)
    * 1)
    */
 
-  if (ia32_init_switcher() != ERROR_OK)
-    MACHINE_ESCAPE("unable to initialize the context switcher");
+  if (architecture_context_setup() != ERROR_OK)
+    MACHINE_ESCAPE("unable to set up the context switcher");
 
   MACHINE_LEAVE();
 }

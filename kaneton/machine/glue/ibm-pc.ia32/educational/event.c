@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sat jan 15 16:59:43 2011]
+ * updated       julien quintard   [sun jan 16 15:15:03 2011]
  */
 
 /*
@@ -27,8 +27,11 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-// XXX
-extern t_uint32		_architecture_handler_exception_code;
+/*
+ * the architecture manager.
+ */
+
+extern am		_architecture;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -74,7 +77,7 @@ void			glue_event_pagefault(t_id		id,
 {
   i_thread		thread;
   t_uint32              address;
-  t_ia32_context	ctx;
+  as_context		ctx;
 
   /*
    * 1)
@@ -86,7 +89,7 @@ void			glue_event_pagefault(t_id		id,
    * 2)
    */
 
-  assert(ia32_get_context(thread, &ctx) == ERROR_OK);
+  // XXX assert(architecture_context_get(thread, &ctx) == ERROR_OK);
 
   /*
    * 3)
@@ -104,13 +107,13 @@ void			glue_event_pagefault(t_id		id,
 	      thread,
 	      ctx.eip,
 	      address,
-	      (_architecture_handler_exception_code &
+	      (_architecture.error &
 	       ARCHITECTURE_HANDLER_PAGEFAULT_WRITE) ?
 	      "write" : "read",
-	      (_architecture_handler_exception_code &
+	      (_architecture.error &
 	       ARCHITECTURE_HANDLER_PAGEFAULT_USER) ?
 	      "user" : "supervisor",
-	      (_architecture_handler_exception_code &
+	      (_architecture.error &
 	       ARCHITECTURE_HANDLER_PAGEFAULT_PRIVILEGE) ?
 	      "protection violation" : "non-present page");
 

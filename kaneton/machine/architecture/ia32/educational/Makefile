@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [fri jan 14 14:19:18 2011]
+# updated       julien quintard   [sun jan 16 13:36:42 2011]
 #
 
 #
@@ -33,7 +33,8 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ARCHITECTURE_C		:=	context.c				\
+ARCHITECTURE_C		:=	architecture.c				\
+				context.c				\
 				environment.c				\
 				gdt.c					\
 				handler.c				\

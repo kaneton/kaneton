@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       julien quintard   [fri jan 14 22:52:53 2011]
+ * updated       julien quintard   [mon jan 17 15:45:04 2011]
  */
 
 /*
@@ -35,8 +35,11 @@
 
 extern m_kernel*	_kernel;
 
-// XXX
-extern at_pd		_architecture_pd;
+/*
+ * the address space manager which contains the kernel PD.
+ */
+
+extern m_as*		_as;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -305,7 +308,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
    * 3)
    */
 
-  if (!(_architecture_pd[ARCHITECTURE_PD_INDEX(vaddr)] &
+  if (!(_as->machine.pd[ARCHITECTURE_PD_INDEX(vaddr)] &
 	ARCHITECTURE_PDE_PRESENT))
     {
       o_segment*	o;
@@ -332,7 +335,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
        * c)
        */
 
-      if (architecture_pd_insert(_architecture_pd,
+      if (architecture_pd_insert(_as->machine.pd,
 				 ARCHITECTURE_PD_INDEX(vaddr),
 				 o->address,
 				 ARCHITECTURE_PDE_PRESENT |
@@ -440,7 +443,7 @@ t_error			architecture_pt_unmap(at_pt		table)
    * 1)
    */
 
-  if (!(_architecture_pd[ARCHITECTURE_PD_INDEX(vaddr)] &
+  if (!(_as->machine.pd[ARCHITECTURE_PD_INDEX(vaddr)] &
 	ARCHITECTURE_PDE_PRESENT))
     MACHINE_ESCAPE("the page table referencing the page directory does "
 		   "not seem to be used");

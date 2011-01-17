@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sat jan 15 15:01:45 2011]
+ * updated       julien quintard   [sun jan 16 20:00:26 2011]
  */
 
 /*
@@ -187,7 +187,7 @@ void			glue_scheduler_switch_handler(void)
    * 5)
    */
 
-  assert(ia32_context_switch(current, future) == ERROR_OK);
+  assert(architecture_context_switch(current, future) == ERROR_OK);
 }
 
 /*

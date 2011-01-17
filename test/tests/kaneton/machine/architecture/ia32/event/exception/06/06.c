@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [sat jan 15 22:39:20 2011]
+ * updated       julien quintard   [sun jan 16 13:48:03 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern t_uint32			_architecture_handler_exception_code;
+extern am			_architecture;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -43,7 +43,7 @@ void			test_architecture_event_exception_06_handler(t_id id,
 
   thrown = 1;
 
-  if (!(_architecture_handler_exception_code & gs))
+  if (!(_architecture.error & gs))
     TEST_ERROR("invalid error code");
 
   gs = 0x10;

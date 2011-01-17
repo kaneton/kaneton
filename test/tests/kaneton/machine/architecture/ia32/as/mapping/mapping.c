@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/as/mapping/mapping.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan 14 21:11:20 2011]
+ * updated       julien quintard   [mon jan 17 15:49:04 2011]
  */
 
 /*
@@ -24,9 +24,6 @@
  */
 
 extern m_as*		_as;
-
-// XXX
-extern at_pd		_architecture_pd;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -93,7 +90,7 @@ void			test_architecture_as_mapping(void)
 
 	  for (br = 0, pde = pde_start; !br && pde <= pde_end; pde++)
 	    {
-	      if (!(_architecture_pd[pde] & ARCHITECTURE_PDE_PRESENT))
+	      if (!(_as->machine.pd[pde] & ARCHITECTURE_PDE_PRESENT))
 		TEST_ERROR("the region at 0x%x seems to be incorrectly "
 			   "mapped i.e no page table",
 			   start);

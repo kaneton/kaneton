@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/educational/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       julien quintard   [sat jan 15 00:27:22 2011]
+ * updated       julien quintard   [mon jan 17 15:47:07 2011]
  */
 
 /*
@@ -103,14 +103,10 @@ extern s_init*		_init;
 extern m_kernel*	_kernel;
 
 /*
- * ---------- globals ---------------------------------------------------------
+ * the address space manager which contains the kernel PD.
  */
 
-/*
- * the system's current page directory.
- */
-
-at_pd			_architecture_pd;
+extern m_as*		_as;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -157,7 +153,7 @@ t_error			architecture_paging_setup(void)
    * 1)
    */
 
-  _architecture_pd = (at_pd)_init->machine.pd;
+  _as->machine.pd = (at_pd)_init->machine.pd;
 
   /*
    * 2)
@@ -182,22 +178,22 @@ t_error			architecture_paging_setup(void)
  * 1) generate the CR3 register's content.
  */
 
-t_error			architecture_paging_cr3(t_paddr		pd,
-						t_flags		flags,
-						at_cr3*		cr3)
+t_error			architecture_paging_pdbr(t_paddr	pd,
+						 t_flags	flags,
+						 at_cr3*	pdbr)
 {
   /*
    * 0)
    */
 
-  if (cr3 == NULL)
-    MACHINE_ESCAPE("the 'cr3' argument is null");
+  if (pdbr == NULL)
+    MACHINE_ESCAPE("the 'pdbr' argument is null");
 
   /*
    * 1)
    */
 
-  *cr3 = (pd & 0xfffff000) | flags;
+  *pdbr = (pd & 0xfffff000) | flags;
 
   MACHINE_LEAVE();
 }
@@ -219,7 +215,7 @@ t_error			architecture_paging_import(at_pd	pd,
    * 1)
    */
 
-  _architecture_pd = pd;
+  _as->machine.pd = pd;
 
   /*
    * 2)
@@ -257,7 +253,7 @@ t_error			architecture_paging_export(at_pd*	pd,
    * 1)
    */
 
-  *pd = _architecture_pd;
+  *pd = _as->machine.pd;
 
   /*
    * 2)
@@ -1039,7 +1035,6 @@ t_error			architecture_paging_copy(i_region	dst,
     }			region;
     t_paddr		shift;
   }			destination;
-  t_paddr		shift;
   t_paddr		end;
 
   /*

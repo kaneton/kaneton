@@ -59,9 +59,9 @@ t_error			architecture_paging_enable(void);
 
 t_error			architecture_paging_setup(void);
 
-t_error			architecture_paging_cr3(t_paddr		pd,
-						t_flags		flags,
-						at_cr3*		cr3);
+t_error			architecture_paging_pdbr(t_paddr	pd,
+						 t_flags	flags,
+						 at_cr3*	pdbr);
 
 t_error			architecture_paging_import(at_pd	pd,
 						   at_cr3	cr3);

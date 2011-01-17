@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun jan 16 01:41:22 2011]
+ * updated       julien quintard   [mon jan 17 19:14:30 2011]
  */
 
 /*
@@ -229,7 +229,7 @@ t_error			kaneton_spawn(void)
     int			argc;
     char*		argv;
     char*		envp;
-  }			args;
+  }			arguments;
 
   /*
    * 1)
@@ -314,13 +314,13 @@ t_error			kaneton_spawn(void)
    * 8)
    */
 
-  args.task = task;
-  args.as = as;
-  args.argc = 1;
-  args.argv = (char*)_init->inputs;
-  args.envp = NULL;
+  arguments.task = task;
+  arguments.as = as;
+  arguments.argc = 1;
+  arguments.argv = (char*)_init->inputs;
+  arguments.envp = NULL;
 
-  if (thread_args(thread, &args, sizeof (args)) != ERROR_OK)
+  if (thread_arguments(thread, &arguments, sizeof (arguments)) != ERROR_OK)
     CORE_ESCAPE("unable to pass arguments to the thread");
 
   /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [sat jan 15 06:44:36 2011]
+ * updated       julien quintard   [mon jan 17 16:55:47 2011]
  */
 
 #ifndef GLUE_THREAD_H
@@ -99,7 +99,11 @@
 #define         machine_data_o_thread()					\
   struct								\
   {									\
-    t_vaddr		pile;						\
+    struct								\
+    {									\
+      t_vaddr		base;						\
+      t_reg32		esp;						\
+    }			pile;						\
   }			machine;
 
 /*
@@ -123,18 +127,18 @@ t_error			glue_thread_show(i_thread		id,
 
 t_error			glue_thread_dump(void);
 
-t_error			glue_thread_reserve(i_task		taskid,
-					    i_thread*		threadid);
+t_error			glue_thread_reserve(i_task		task,
+					    i_thread*		thread);
 
-t_error			glue_thread_load(i_thread		threadid,
+t_error			glue_thread_load(i_thread		id,
 					 s_thread_context	context);
 
-t_error			glue_thread_store(i_thread		threadid,
+t_error			glue_thread_store(i_thread		id,
 					  s_thread_context*	context);
 
-t_error			glue_thread_args(i_thread		threadid,
-					 const void*	       	args,
-					 t_vsize		size);
+t_error			glue_thread_arguments(i_thread		id,
+					      void*		arguments,
+					      t_vsize		size);
 
 t_error			glue_thread_initialize(void);
 

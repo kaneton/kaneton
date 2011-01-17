@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/gdt.c
  *
  * created       matthieu bucchianeri   [mon dec 10 13:54:28 2007]
- * updated       julien quintard   [sun jan 16 01:09:07 2011]
+ * updated       julien quintard   [mon jan 17 15:42:03 2011]
  */
 
 /*
@@ -29,14 +29,14 @@
 #include <kaneton.h>
 
 /*
- * ---------- globals ---------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
 /*
- * the current system GDT.
+ * the segment manager which contains the current GDT.
  */
 
-as_gdt			_architecture_gdt;
+extern m_segment*	_segment;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -68,13 +68,13 @@ t_error			architecture_gdt_dump(void)
 
   module_call(console, message,
 	      '#', "GDT: table(0x%08x) size(%u)\n",
-	      _architecture_gdt.table, _architecture_gdt.size);
+	      _segment->machine.gdt.table, _segment->machine.gdt.size);
 
   /*
    * 2)
    */
 
-  for (i = 0; i < _architecture_gdt.size; i++)
+  for (i = 0; i < _segment->machine.gdt.size; i++)
     {
       t_privilege	privilege;
       t_paddr		base;
@@ -86,37 +86,37 @@ t_error			architecture_gdt_dump(void)
        * a)
        */
 
-      if (!(_architecture_gdt.table[i] & ARCHITECTURE_GDTE_PRESENT))
+      if (!(_segment->machine.gdt.table[i] & ARCHITECTURE_GDTE_PRESENT))
 	continue;
 
       /*
        * b)
        */
 
-      base = ARCHITECTURE_GDTE_BASE_GET(_architecture_gdt.table[i]);
+      base = ARCHITECTURE_GDTE_BASE_GET(_segment->machine.gdt.table[i]);
 
-      limit = ARCHITECTURE_GDTE_LIMIT_GET(_architecture_gdt.table[i]);
+      limit = ARCHITECTURE_GDTE_LIMIT_GET(_segment->machine.gdt.table[i]);
 
-      if (_architecture_gdt.table[i] & ARCHITECTURE_GDTE_GRANULARITY)
+      if (_segment->machine.gdt.table[i] & ARCHITECTURE_GDTE_GRANULARITY)
 	limit *= ___kaneton$pagesz;
 
-      privilege = ARCHITECTURE_GDTE_DPL_GET(_architecture_gdt.table[i]);
+      privilege = ARCHITECTURE_GDTE_DPL_GET(_segment->machine.gdt.table[i]);
 
       /*
        * c)
        */
 
-      if (_architecture_gdt.table[i] & ARCHITECTURE_GDTE_AVAILABLE)
+      if (_segment->machine.gdt.table[i] & ARCHITECTURE_GDTE_AVAILABLE)
 	flags[0] = 'f';
       else
 	flags[0] = '.';
 
-      if (_architecture_gdt.table[i] & ARCHITECTURE_GDTE_32BIT)
+      if (_segment->machine.gdt.table[i] & ARCHITECTURE_GDTE_32BIT)
 	flags[1] = 's';
       else
 	flags[1] = '.';
 
-      if (_architecture_gdt.table[i] & ARCHITECTURE_GDTE_GRANULARITY)
+      if (_segment->machine.gdt.table[i] & ARCHITECTURE_GDTE_GRANULARITY)
 	flags[2] = 'g';
       else
 	flags[2] = '.';
@@ -127,13 +127,13 @@ t_error			architecture_gdt_dump(void)
        * d)
        */
 
-      if (!(_architecture_gdt.table[i] & ARCHITECTURE_GDTE_S))
+      if (!(_segment->machine.gdt.table[i] & ARCHITECTURE_GDTE_S))
 	{
 	  /*
 	   * A)
 	   */
 
-	  switch (ARCHITECTURE_GDTE_TYPE_SYSTEM(_architecture_gdt.table[i]))
+	  switch (ARCHITECTURE_GDTE_TYPE_SYSTEM(_segment->machine.gdt.table[i]))
 	    {
 	    case ARCHITECTURE_GDTE_LDT:
 	      {
@@ -176,7 +176,7 @@ t_error			architecture_gdt_dump(void)
 	   * B)
 	   */
 
-	  switch (ARCHITECTURE_GDTE_TYPE_SEGMENT(_architecture_gdt.table[i]))
+	  switch (ARCHITECTURE_GDTE_TYPE_SEGMENT(_segment->machine.gdt.table[i]))
 	    {
 	    case ARCHITECTURE_GDTE_CODE:
 	      {
@@ -297,7 +297,7 @@ t_error			architecture_gdt_import(as_gdt*		gdt)
    * 3)
    */
 
-  memcpy(&_architecture_gdt, gdt, sizeof(as_gdt));
+  memcpy(&_segment->machine.gdt, gdt, sizeof(as_gdt));
 
   MACHINE_LEAVE();
 }
@@ -371,20 +371,20 @@ t_error			architecture_gdt_insert(t_uint16	index,
    * 0)
    */
 
-  if (index >= _architecture_gdt.size)
+  if (index >= _segment->machine.gdt.size)
     MACHINE_ESCAPE("out-of-bound insertion");
 
   if (index == 0)
     MACHINE_ESCAPE("the first GDT entry cannot be used");
 
-  if (_architecture_gdt.table[index] & ARCHITECTURE_GDTE_PRESENT)
+  if (_segment->machine.gdt.table[index] & ARCHITECTURE_GDTE_PRESENT)
     MACHINE_ESCAPE("the GDT entry to update is already in use");
 
   /*
    * 1)
    */
 
-  _architecture_gdt.table[index] =
+  _segment->machine.gdt.table[index] =
     ARCHITECTURE_GDTE_PRESENT |
     ARCHITECTURE_GDTE_BASE_SET(base) |
     ARCHITECTURE_GDTE_32BIT |
@@ -396,13 +396,13 @@ t_error			architecture_gdt_insert(t_uint16	index,
 
   if (limit >= ___kaneton$pagesz)
     {
-      _architecture_gdt.table[index] |=
+      _segment->machine.gdt.table[index] |=
 	ARCHITECTURE_GDTE_GRANULARITY |
 	ARCHITECTURE_GDTE_LIMIT_SET(limit / ___kaneton$pagesz);
     }
   else
     {
-      _architecture_gdt.table[index] |= ARCHITECTURE_GDTE_LIMIT_SET(limit);
+      _segment->machine.gdt.table[index] |= ARCHITECTURE_GDTE_LIMIT_SET(limit);
     }
 
   MACHINE_LEAVE();
@@ -438,8 +438,8 @@ t_error			architecture_gdt_reserve(t_paddr	base,
 
   *index = 0;
 
-  for (i = 1; i < _architecture_gdt.size; i++)
-    if (!(_architecture_gdt.table[i] & ARCHITECTURE_GDTE_PRESENT))
+  for (i = 1; i < _segment->machine.gdt.size; i++)
+    if (!(_segment->machine.gdt.table[i] & ARCHITECTURE_GDTE_PRESENT))
       {
 	*index = i;
 
@@ -475,20 +475,20 @@ t_error			architecture_gdt_delete(t_uint16	index)
    * 0)
    */
 
-  if (index >= _architecture_gdt.size)
+  if (index >= _segment->machine.gdt.size)
     MACHINE_ESCAPE("out-of-bound insertion");
 
   if (index == 0)
     MACHINE_ESCAPE("the first GDT entry cannot be used");
 
-  if (!(_architecture_gdt.table[index] & ARCHITECTURE_GDTE_PRESENT))
+  if (!(_segment->machine.gdt.table[index] & ARCHITECTURE_GDTE_PRESENT))
     MACHINE_ESCAPE("the GDT entry to delete is not present");
 
   /*
    * 1)
    */
 
-  memset(&_architecture_gdt.table[index], 0x0, sizeof(at_gdte));
+  memset(&_segment->machine.gdt.table[index], 0x0, sizeof(at_gdte));
 
   MACHINE_LEAVE();
 }
@@ -514,7 +514,7 @@ t_error			architecture_gdt_selector(t_uint16	index,
   if (selector == NULL)
     MACHINE_ESCAPE("the 'selector' argument is null");
 
-  if (index >= _architecture_gdt.size)
+  if (index >= _segment->machine.gdt.size)
     MACHINE_ESCAPE("out-of-bound index");
 
   /*

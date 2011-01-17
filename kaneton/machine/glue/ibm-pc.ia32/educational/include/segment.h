@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...bm-pc.ia32/educational/include/segment.h
  *
  * created       julien quintard   [wed jun  6 16:25:05 2007]
- * updated       julien quintard   [sun dec 19 13:57:53 2010]
+ * updated       julien quintard   [sun jan 16 13:41:34 2011]
  */
 
 #ifndef GLUE_SEGMENT_H
@@ -45,7 +45,11 @@
  * this macro-function includes data in 'm_segment'.
  */
 
-#define		machine_data_m_segment()
+#define		machine_data_m_segment()				\
+  struct								\
+  {									\
+    as_gdt	gdt;							\
+  }		machine;
 
 /*
  * this macro-function includes data in 'o_segment'.

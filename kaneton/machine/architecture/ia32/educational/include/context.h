@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       julien quintard   [sat jan 15 06:22:19 2011]
+ * updated       julien quintard   [mon jan 17 19:14:05 2011]
  */
 
 #ifndef ARCHITECTURE_CONTEXT_H
@@ -20,99 +20,156 @@
 
 /*						    [block::macros::context] */
 
-// XXX better remove cpu local variables in this version!
+/*
+ * this macro-function saves the context of the thread which had just
+ * been interrupted.
+ *
+ * note that at this point, the stack is use is the thread's pile i.e ring0
+ * stack; except for the kernel threads since there is no change in privilege.
+ *
+ * steps:
+ *
+ * 1) push all the registers on the current stack i.e the pile, hence
+ *    saving their values.
+ * 2) push the DS - Data Segment selector.
+ * 3) save the current CR3 i.e PDBR in _architecture.thread.pdbr.
+ * 4) retrieve the error code. note that this code is not always present
+ *    as only some exceptions provide them. however, the code is always
+ *    saved in EBX et it is left to the handler shells to decide whether
+ *    it is relevent to the current interrupt i.e it would for example be
+ *    ignored for IRQs.
+ * 5) put the kernel's PDBR (_architecture.kernel.pdbr) in EAX. if the
+ *    kernel PDBR is equal to the PDBR of the interrupted thread
+ *    (_architecture.thread.pdbr), do nothing. otherwise, load the kernel
+ *    PDBR by changing the CPU's CR3.
+ * 6) update the segment selectors DS, SS, ES, FS et GS with the kernel
+ *    data selector since the system is now running in the kernel environment.
+ * 7) save the current stack pointer i.e ESP in _architecture.thread.pile.esp.
+ * 8) finally, use the KIS - Kernel Interrupt Stack by setting ESP with
+ *    the value contained in _architecture.kernel.kis.esp.
+ */
 
-// XXX dans le comment dire que les vars ont ete set et doivent etre
-//     utilisees pour set le context proprement. tout ca a ete fait dans
-//     ia32_context_switch() [context.c]:
-//  ia32_local_jump_pdbr: PDBR du thread a sched
-//  ia32_local_jmp_stack: address of the kernel stack of the resuming thread
-//  + setting up the TSS to switch stack to the thread's kernel stack
-//    on interrupt
-//  + copying the iomap into the active TSS
+#define	ARCHITECTURE_CONTEXT_SAVE()					\
+  asm (									\
+       /*								\
+	* 1)								\
+	*/								\
+									\
+       "pusha							\n"	\
+									\
+       /*								\
+	* 2)								\
+	*/								\
+									\
+       "movw %ds, %ax						\n"	\
+       "pushl %eax						\n"	\
+									\
+       /*								\
+	* 3)								\
+	*/								\
+									\
+       "movl %cr3, %eax						\n"	\
+       "movl %eax, (_architecture + 14)				\n"	\
+									\
+       /*								\
+	* 4)								\
+	*/								\
+									\
+       "movl 36(%esp), %ebx					\n"	\
+									\
+       /*								\
+	* 5)								\
+	*/								\
+									\
+       "movl (_architecture + 2), %eax				\n"	\
+       "cmp %eax, (_architecture + 14)				\n"	\
+       "je 1f							\n"	\
+       "movl %eax, %cr3						\n"	\
+       "1:							\n"	\
+									\
+       /*								\
+	* 6)								\
+	*/								\
+									\
+       "movw (_architecture + 0), %ax				\n"	\
+       "movw %ax, %ds						\n"	\
+       "movw %ax, %es						\n"	\
+       "movw %ax, %fs						\n"	\
+       "movw %ax, %gs						\n"	\
+									\
+       /*								\
+	* 7)								\
+	*/								\
+       /*								\
+       "movl %esp, (_architecture + 18)				\n"	\
+       */								\
+       /*								\
+	* 8)								\
+	*/								\
+									\
+       "movl (_architecture + 10), %esp				");
 
-// XXX noter a la fin qu'on recupere (cpu_local_get) la valeur de
-//   interrupt_stack pour ensuet le branler comme ESP courant
+/*
+ * this macro-function restores the context of the thread whose PDBR and pile
+ * are referenced in _architecture.thread. as such, the whole ia32/educational
+ * context switch mechanism relies on the simple fact that changing
+ * the _architecture structure and returning from the interrupt will make
+ * the thread's context restored and its execution resumed.
+ *
+ * note that at this point, the environment is composed of the kernel PDBR
+ * and the KIS - Kernel Interrupt Stack.
+ *
+ * steps:
+ *
+ * 1) if the current PDBR i.e CR3 is different from the PDBR of the thread
+ *    to restore (_architecture.thread.pdbr), update CR3 with
+ *    _architecture.thread.pdbr. otherwise do nothing.
+ * 2) retrieve the thread's pile pointer (_architecture.thread.pile.esp)
+ *    and update ESP with it. by doing this, the system now operates on
+ *    the thread's pile i.e no longer using the KIS - Kernel Interrupt Stack.
+ * 3) retrieve the DS - Data Segment selector from the pile: it has been
+ *    push by ARCHITECTURE_CONTEXT_SAVE(). then, update the segment selectors
+ *    DS, SS, ES, FS and GS.
+ * 4) retrieve the value of the general-purpose registers from the stack.
+ */
 
-// XXX 36(esp) -> exception error code
-
-// XXX
-// 1) save registers
-// 2) push ds
-// 3) save interrupted task's cr3 in local_jump_pdbr
-// 4) retrieve error code in ebx
-// 5) set the kernel as (interrupt_pdbr) as being the current cr3
-// 6) set the kernel data segment (interrupt_ds) as being the current ds.
-// 7) save esp in local_jump_stack
-// 8) set la pile kernel speciale (local_interrupt_stack) as being esp.
-// XXX
-//
-// DANS cette histoire du coup il n'est jamais question de la 'pile'
-// d'un thread!
-// -> dans context_switch() on set local_jump_stack comme etant a la
-//    fin du thread's 'pile'. et on load le TSS dans cette pile, tout en
-//    haut!
-//
-// XXX
-
-#define	IA32_SAVE_CONTEXT()						\
-  "	pusha							\n"	\
-  "	movw %ds, %ax						\n"	\
-  "	pushl %eax						\n"	\
-  "	movl %cr3, %eax						\n"	\
-  "	movl %eax, ia32_local_jump_pdbr				\n"	\
-  "	movl 36(%esp), %ebx					\n"	\
-  "	movl ia32_interrupt_pdbr, %eax				\n"	\
-  "	movl %eax, %cr3						\n"	\
-  "	movw ia32_interrupt_ds, %ax				\n"	\
-  "	movw %ax, %ds						\n"	\
-  "	movw %ax, %es						\n"	\
-  "	movw %ax, %fs						\n"	\
-  "	movw %ax, %gs						\n"	\
-  "	movl %esp, ia32_local_jump_stack			\n"	\
-  "	movl ia32_local_interrupt_stack, %esp			\n"
-
-#define IA32_RESTORE_CONTEXT()						\
-  "	movl ia32_local_jump_stack, %edx			\n"	\
-  "	movl ia32_local_jump_pdbr, %eax				\n"	\
-  "	movl %cr3, %ebx						\n"	\
-  "	cmp %eax, %ebx						\n"	\
-  "	je 1f							\n"	\
-  "	movl %eax, %cr3						\n"	\
-  "1:								\n"	\
-  "	movl %edx, %esp						\n"	\
-  "	popl %eax						\n"	\
-  "	movw %ax, %ds						\n"	\
-  "	movw %ax, %es						\n"	\
-  "	movw %ax, %fs						\n"	\
-  "	movw %ax, %gs						\n"	\
-  "	popa							\n"
+#define ARCHITECTURE_CONTEXT_RESTORE()					\
+  asm (									\
+       /*								\
+	* 1)								\
+	*/								\
+									\
+       "movl %cr3, %ebx						\n"	\
+       "movl (_architecture + 14), %eax				\n"	\
+       "cmp %eax, %ebx						\n"	\
+       "je 1f							\n"	\
+       "movl %eax, %cr3						\n"	\
+       "1:							\n"	\
+									\
+       /*								\
+	* 2)								\
+	*/								\
+       /*								\
+       "movl (_architecture + 18), %edx				\n"	\
+       "movl %edx, %esp						\n"	\
+       */								\
+       /*								\
+	* 3)								\
+	*/								\
+									\
+       "popl %eax						\n"	\
+       "movw %ax, %ds						\n"	\
+       "movw %ax, %es						\n"	\
+       "movw %ax, %fs						\n"	\
+       "movw %ax, %gs						\n"	\
+									\
+       /*								\
+	* 4)								\
+	*/								\
+									\
+       "popa							");
 
 /*						 [endblock::macros::context] */
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-/*
- * context mask fields.
- */
-
-#define IA32_CONTEXT_EAX	(1 << 0)
-#define IA32_CONTEXT_EBX	(1 << 1)
-#define IA32_CONTEXT_ECX	(1 << 2)
-#define IA32_CONTEXT_EDX	(1 << 3)
-#define IA32_CONTEXT_ESI	(1 << 4)
-#define IA32_CONTEXT_EDI	(1 << 5)
-#define IA32_CONTEXT_EBP	(1 << 6)
-#define IA32_CONTEXT_ESP	(1 << 7)
-#define IA32_CONTEXT_EIP	(1 << 8)
-#define IA32_CONTEXT_EFLAGS	(1 << 9)
-#define IA32_CONTEXT_CS		(1 << 10)
-#define IA32_CONTEXT_DS		(1 << 11)
-#define IA32_CONTEXT_SS		(1 << 12)
-
-#define IA32_CONTEXT_FULL	0x1fff
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -125,41 +182,27 @@
  */
 
 /*
- * basic IA-32 context.
- *
- * XXX _esp = original esp
+ * this structure represents the IA32 context.
  */
 
 typedef struct
 {
-  t_uint32	ds;
-  t_uint32	edi;
-  t_uint32	esi;
-  t_uint32	ebp;
-  t_uint32	_esp;
-  t_uint32	ebx;
-  t_uint32	edx;
-  t_uint32	ecx;
-  t_uint32	eax;
-  t_uint32	error;
-  t_uint32	eip;
-  t_uint32	cs;
-  t_uint32	eflags;
-  t_uint32	esp;
-  t_uint32	ss;
-}		__attribute__ ((packed)) t_ia32_context;
-
-/*
- * ---------- extern ----------------------------------------------------------
- */
-
-/*
- * stack switching addresses
- */
-
-extern t_uint32	ia32_local_interrupt_stack;
-extern t_uint32	ia32_local_jump_stack;
-extern t_uint32	ia32_local_jump_pdbr;
+  t_reg32	ds;
+  t_reg32	edi;
+  t_reg32	esi;
+  t_reg32	ebp;
+  t_reg32	_esp;
+  t_reg32	ebx;
+  t_reg32	edx;
+  t_reg32	ecx;
+  t_reg32	eax;
+  t_reg32	error;
+  t_reg32	eip;
+  t_reg32	cs;
+  t_reg32	eflags;
+  t_reg32	esp;
+  t_reg32	ss;
+}		__attribute__ ((packed)) as_context;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -171,40 +214,24 @@ extern t_uint32	ia32_local_jump_pdbr;
  * ../context.c
  */
 
-t_error			ia32_init_context(i_task		taskid,
-					  i_thread		threadid);
+t_error			architecture_context_build(i_thread	id);
 
-t_error			ia32_duplicate_context(i_thread		old,
-					       i_thread		new);
-
-t_error			ia32_setup_context(i_thread		threadid,
-					   t_vaddr		pc,
-					   t_vaddr		sp);
-
-t_error			ia32_status_context(i_thread		threadid,
-					    t_vaddr*		pc,
-					    t_vaddr*		sp);
-
-t_error			ia32_init_switcher(void);
+t_error			architecture_context_setup(void);
 
 t_error			ia32_context_ring0_stack(void);
 
-t_error			ia32_context_switch(i_thread		current,
-					    i_thread		elected);
+t_error			architecture_context_switch(i_thread	current,
+						    i_thread	future);
 
-t_error			ia32_push_args(i_thread			threadid,
-				       const void*		args,
-				       t_vsize			size);
+t_error			architecture_context_arguments(i_thread	id,
+						       void*	arguments,
+						       t_vsize	size);
 
-t_error			ia32_get_context(i_thread		thread,
-					 t_ia32_context*	context);
+t_error			architecture_context_get(i_thread	id,
+						 as_context*	context);
 
-t_error                 ia32_print_context(i_thread             thread,
-					   mt_margin		margin);
-
-t_error			ia32_set_context(i_thread		thread,
-					 t_ia32_context*	context,
-					 t_uint32		mask);
+t_error			architecture_context_set(i_thread	id,
+						 as_context*	context);
 
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [sat jan 15 22:34:26 2011]
+ * updated       julien quintard   [mon jan 17 19:13:21 2011]
  */
 
 /*
@@ -20,6 +20,29 @@
  * piece a assembly code which sets up the environment so that the
  * handler can be written in C without worrying about the restoring the
  * stack properly depending on the nature of the interrupt/exception etc.
+ *
+ * whenever a non-ring0 task, executing and storing data on its stack
+ * (thread->stack) is interrupted by an internal or external event, the
+ * privilege changes from ring3 for example, to ring0. since the privilege
+ * has changed, this microprocessor saves the interrupted thread's state onto
+ * its ring0 stack i.e its pile (thread->machine.pile).
+ *
+ * at this point, the interrupt shell is triggered. this code lives in a
+ * small area of memory along its data (within sections .handler_code and
+ * .handler_data) and is mapped in every address space.
+ *
+ * the interrupt shell, still executing in the task's address space, then
+ * switches to the kernel address space and executes the interrupt handler
+ * by using the KIS - Kernel Interrupt Stack. this stack has nothing to do
+ * with the kernel thread's stack. indeed, this stack is used to treat
+ * interrupts within the kernel address space.
+ *
+ * finally, once the interrupt has been treated, the original address space
+ * and pile is restored---through the ARCHITECTURE_CONTEXT_RESTORE()
+ * macro function---and the 'iret' instruction is called. at this point, the
+ * microprocessor detects that the privilege had changed and must therefore
+ * be restored. the thread's context, i.e registers' content, is therefore
+ * restored while jumping back on the thread's stack.
  */
 
 /*
@@ -39,6 +62,15 @@
 extern m_kernel*	_kernel;
 
 /*
+ * the architecture manager.
+ */
+
+extern am		_architecture;
+
+// XXX
+int _XXX;
+
+/*
  * ---------- prototypes ------------------------------------------------------
  */
 
@@ -51,26 +83,6 @@ ARCHITECTURE_HANDLER_SHELL_PROTOTYPES();
 /*
  * ---------- globals ---------------------------------------------------------
  */
-
-/*
- * the segment selector to load on interrupt. XXX
- */
-
-ARCHITECTURE_LINKER_LOCATION(".handler_data")
-t_uint16	ia32_interrupt_ds = 0;
-
-/*
- * the page directory to load on interrupt. XXX
- */
-
-ARCHITECTURE_LINKER_LOCATION(".handler_data")
-at_cr3		ia32_interrupt_pdbr = 0;
-
-/*
- * this variable is used to hold the error code whenever an exception occur.
- */
-
-t_uint32	_architecture_handler_exception_code = 0;
 
 /*
  * this table contains the handler shell associated with a given IDT entry
@@ -324,7 +336,7 @@ void			architecture_handler_spurious(t_uint32	n)
   o_thread*		thread;
   o_task*		task;
   t_uint32		stack[8];
-  t_ia32_context	ctx;
+  as_context		ctx;
 
   /*
    * 1)
@@ -342,7 +354,7 @@ void			architecture_handler_spurious(t_uint32	n)
    * 3)
    */
 
-  assert(ia32_get_context(id, &ctx) == ERROR_OK);
+  assert(architecture_context_get(id, &ctx) == ERROR_OK);
 
   /*
    * 4)
@@ -414,6 +426,9 @@ void			architecture_handler_exception(t_uint32	n,
   i_event		id;
   o_event*		o;
 
+  thread_dump();
+  printf("0x%x\n", _XXX);
+
   /*
    * 1)
    */
@@ -443,7 +458,7 @@ void			architecture_handler_exception(t_uint32	n,
    * 4)
    */
 
-  _architecture_handler_exception_code = code;
+  _architecture.error = code;
 
   /*
    * 5)
@@ -455,7 +470,7 @@ void			architecture_handler_exception(t_uint32	n,
    * 6)
    */
 
-  _architecture_handler_exception_code = 0;
+  _architecture.error = 0;
 }
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/event.h
  *
  * created       julien quintard   [wed jun  6 16:15:26 2007]
- * updated       julien quintard   [sun dec 19 13:38:45 2010]
+ * updated       julien quintard   [sun jan 16 13:41:50 2011]
  */
 
 #ifndef GLUE_EVENT_H
@@ -45,7 +45,11 @@
  * this macro-function includes data in 'm_event'.
  */
 
-#define		machine_data_m_event()
+#define		machine_data_m_event()					\
+  struct								\
+  {									\
+    as_idt	idt;							\
+  }		machine;
 
 /*
  * this macro-function includes data in 'o_event'.

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/tss.c
  *
  * created       renaud voltz   [mon apr 10 01:01:34 2006]
- * updated       julien quintard   [sat jan 15 18:45:21 2011]
+ * updated       julien quintard   [mon jan 17 13:31:11 2011]
  */
 
 /*
@@ -52,8 +52,8 @@
  */
 
 t_error			architecture_tss_update(as_tss*		tss,
-						t_uint16	ss,
-						t_uint32	esp,
+						t_uint16	ss0,
+						t_uint32	esp0,
 						t_uint32	io)
 {
   /*
@@ -67,8 +67,8 @@ t_error			architecture_tss_update(as_tss*		tss,
    * 1)
    */
 
-  tss->ss0 = ss;
-  tss->esp0 = esp;
+  tss->ss0 = ss0;
+  tss->esp0 = esp0;
   tss->io = io;
   tss->io_end = 0xFF;
 

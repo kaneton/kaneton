@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/handler.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       julien quintard   [sat jan 15 16:30:33 2011]
+ * updated       julien quintard   [mon jan 17 13:52:54 2011]
  */
 
 #ifndef ARCHITECTURE_HANDLER_H
@@ -38,29 +38,43 @@
 #define ARCHITECTURE_HANDLER_PAGEFAULT_USER		(1 << 2)
 
 /*
+ * this macro defines the size of a thread's pile i.e the stack used whenever
+ * a privilege change occurs.
+ */
+
+#define ARCHITECTURE_HANDLER_PILE_SIZE	___kaneton$pagesz
+
+/*
+ * this macro defines the size of the KIS - Kernel Interrupt Stack. this is
+ * the stack which is used, within the kernel environment, for treating
+ * interrupts.
+ */
+
+#define ARCHITECTURE_HANDLER_KIS_SIZE	2 * ___kaneton$pagesz
+
+/*
  * ---------- macro-functions -------------------------------------------------
  */
 
 /*
  * this shell is for exceptions: the interrupts are disabled, the context
- * is saved, the exception number is pushed and the handler is called.
+ * is saved, the exception number is passed to handler which is then called.
  */
 
 #define ARCHITECTURE_HANDLER_SHELL_EXCEPTION_CODE(_n_)		       	\
-  asm	(".section .handler_code			\n"		\
-	 "architecture_handler_shell_exception" #_n_ ":	\n"		\
-	 "	cli					\n"		\
-	 IA32_SAVE_CONTEXT()						\
-	 "	pushl %ebx				\n"		\
-	 "	pushl $" #_n_ "				\n"		\
-	 "	call architecture_handler_exception	\n"		\
-	 "	addl $8, %esp				\n"		\
-	 IA32_RESTORE_CONTEXT()						\
-	 "	addl $4, %esp				\n"		\
-	 "	sti					\n"		\
-	 "	iret					\n"		\
-	 ".text						")
-
+  asm (".section .handler_code					\n"	\
+       "architecture_handler_shell_exception" #_n_ ":		\n"	\
+       "  cli							\n");	\
+  ARCHITECTURE_CONTEXT_SAVE();						\
+  asm ("  pushl %ebx						\n"	\
+       "  pushl $" #_n_ "					\n"	\
+       "  call architecture_handler_exception			\n"	\
+       "  addl $8, %esp						");	\
+  ARCHITECTURE_CONTEXT_RESTORE();					\
+  asm ("  addl $4, %esp						\n"	\
+       "  sti							\n"	\
+       "  iret							\n"	\
+       ".text							");
 
 /*
  * this shell is identical to the previous one, i.e for exceptions, except
@@ -69,60 +83,60 @@
  */
 
 #define ARCHITECTURE_HANDLER_SHELL_EXCEPTION_NOCODE(_n_)		\
-  asm	(".section .handler_code			\n"		\
-	 "architecture_handler_shell_exception" #_n_ ":	\n"		\
-	 "	cli					\n"		\
-	 "	addl $-4, %esp				\n"		\
-	 IA32_SAVE_CONTEXT()						\
-	 "	pushl $0				\n"		\
-	 "	pushl $" #_n_ "				\n"		\
-	 "	call architecture_handler_exception	\n"		\
-	 "	addl $8, %esp				\n"		\
-	 IA32_RESTORE_CONTEXT()						\
-	 "	addl $4, %esp				\n"		\
-	 "	sti					\n"		\
-	 "	iret					\n"		\
-	 ".text						")
-
+  asm (".section .handler_code					\n"	\
+       "architecture_handler_shell_exception" #_n_ ":		\n"	\
+       "  cli							\n"	\
+       "  addl $-4, %esp					");	\
+  ARCHITECTURE_CONTEXT_SAVE();						\
+  asm ("  pushl $0						\n"	\
+       "  pushl $" #_n_ "					\n"	\
+       "  call architecture_handler_exception			\n"	\
+       "  addl $8, %esp				");			\
+  ARCHITECTURE_CONTEXT_RESTORE();					\
+  asm ("  addl $4, %esp						\n"	\
+       "  sti							\n"	\
+       "  iret							\n"	\
+       ".text							");
 
 /*
- * this shell is for IRQs - Interrupt Requests: likewise, the IRQ number
- * is passed to the handler while the interrupts have been disabled.
+ * this shell is for IRQs - Interrupt Requests. as for the previous shells,
+ * the IRQ number is passed to the handler while the interrupts have been
+ *  disabled.
  */
 
 #define ARCHITECTURE_HANDLER_SHELL_IRQ(_n_)		       		\
-  asm	(".section .handler_code			\n"		\
-	 "architecture_handler_shell_irq" #_n_ ":	\n"		\
-	 "	cli					\n"		\
-	 "	addl $-4, %esp				\n"		\
-	 IA32_SAVE_CONTEXT()						\
-	 "	pushl $" #_n_ "				\n"		\
-	 "	call architecture_handler_irq		\n"		\
-	 "	addl $4, %esp				\n"		\
-	 IA32_RESTORE_CONTEXT()						\
-	 "	addl $4, %esp				\n"		\
-	 "	sti					\n"		\
-	 "	iret					\n"		\
-	 ".text						")
+  asm (".section .handler_code					\n"	\
+       "architecture_handler_shell_irq" #_n_ ":			\n"	\
+       "  cli							\n"	\
+       "  addl $-4, %esp					");	\
+  ARCHITECTURE_CONTEXT_SAVE();						\
+  asm ("  pushl $" #_n_ "					\n"	\
+       "  call architecture_handler_irq				\n"	\
+       "  addl $4, %esp						");	\
+  ARCHITECTURE_CONTEXT_RESTORE();					\
+  asm ("  addl $4, %esp						\n"	\
+       "  sti							\n"	\
+       "  iret							\n"	\
+       ".text							");
 
 /*
- * this shell is for system calls and is similar to the previous ones.
+ * this shell is for system calls and is similar to the previous one.
  */
 
 #define ARCHITECTURE_HANDLER_SHELL_SYSCALL(_n_)		       		\
-  asm	(".section .handler_code			\n"		\
-	 "architecture_handler_shell_syscall" #_n_ ":	\n"		\
-	 "	cli					\n"		\
-	 "	addl $-4, %esp				\n"		\
-	 IA32_SAVE_CONTEXT()						\
-	 "	pushl $" #_n_ "				\n"		\
-	 "	call architecture_handler_syscall	\n"		\
-	 "	addl $4, %esp				\n"		\
-	 IA32_RESTORE_CONTEXT()						\
-	 "	addl $4, %esp				\n"		\
-	 "	sti					\n"		\
-	 "	iret					\n"		\
-	 ".text						")
+  asm (".section .handler_code					\n"	\
+       "architecture_handler_shell_syscall" #_n_ ":		\n"	\
+       "  cli							\n"	\
+       "  addl $-4, %esp					");	\
+  ARCHITECTURE_CONTEXT_SAVE();						\
+  asm ("  pushl $" #_n_ "					\n"	\
+       "  call architecture_handler_syscall			\n"	\
+       "  addl $4, %esp						");	\
+  ARCHITECTURE_CONTEXT_RESTORE();					\
+  asm ("  addl $4, %esp						\n"	\
+       "  sti							\n"	\
+       "  iret							\n"	\
+       ".text							");
 
 /*
  * this macro-function generates the prototypes of the handler shells.
@@ -196,6 +210,8 @@
 
 #include <core/types.h>
 
+#include <architecture/register.h>
+
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -205,26 +221,6 @@
  */
 
 typedef void			(*at_handler_shell)(void);
-
-/*
- * ---------- extern ----------------------------------------------------------
- */
-
-// XXX below
-
-/*
- * on-interrupt data segment to load.
- */
-
-extern t_uint16	ia32_interrupt_ds;
-
-/*
- * on-interrupt PDBR to load.
- */
-
-extern t_uint32	ia32_interrupt_pdbr;
-
-// XXX until here
 
 /*
  * ---------- prototypes ------------------------------------------------------

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [sat jan 15 00:24:06 2011]
+ * updated       julien quintard   [sun jan 16 14:39:30 2011]
  */
 
 /*
@@ -54,16 +54,22 @@ extern m_kernel*	_kernel;
 extern m_thread*	_thread;
 
 /*
- * the system's GDT.
+ * the segment manager.
  */
 
-extern as_gdt		_architecture_gdt; // XXX
+extern m_segment*	_segment;
 
 /*
- * the system's IDT.
+ * the event manager.
  */
 
-extern as_idt		_architecture_idt; // XXX
+extern m_event*		_event;
+
+/*
+ * the architecture manager.
+ */
+
+extern am		_architecture;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -78,7 +84,8 @@ extern as_idt		_architecture_idt; // XXX
  * 2) set the kernel address space's page directory by importing the
  *    page directory set up by the boot loader.
  * 3) generate the PDBR - Page Directory Base Register, also known as
- *    the CR3, based on the page directory's physical address and some flags.
+ *    the CR3, based on the kernel page directory's physical address and
+ *    some flags.
  * 4) set the page directory virtual address as being an identity mapping
  *    of the physical address. this is how the boot loader set things up.
  * 5) set the current page directory as being the kernel's one by updating
@@ -149,6 +156,8 @@ extern as_idt		_architecture_idt; // XXX
  *         #b) inject the segment, hence preventing this system memory
  *             area from being reserved by anyone.
  * 10) flush the whole TLB, resetting all the address translations.
+ * 11) register the kernel PDBR as being the PDBR on which to switch whenever
+ *     an interrupt occurs.
  */
 
 t_error			architecture_environment_kernel(i_as	id)
@@ -166,7 +175,7 @@ t_error			architecture_environment_kernel(i_as	id)
     at_ptei		index;
   }			pte;
   i_region		useless;
-  t_size		size;
+  at_cr3		pdbr;
   o_as*			as;
   at_pd			pd;
   at_pt			pt;
@@ -190,10 +199,10 @@ t_error			architecture_environment_kernel(i_as	id)
    * 3)
    */
 
-  if (architecture_paging_cr3(as->machine.pd,
-			      ARCHITECTURE_REGISTER_CR3_PCE |
-			      ARCHITECTURE_REGISTER_CR3_PWB,
-			      &ia32_interrupt_pdbr) != ERROR_OK)
+  if (architecture_paging_pdbr(as->machine.pd,
+			       ARCHITECTURE_REGISTER_CR3_PCE |
+			       ARCHITECTURE_REGISTER_CR3_PWB,
+			       &pdbr) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the CR3 register's content");
 
   /*
@@ -207,7 +216,7 @@ t_error			architecture_environment_kernel(i_as	id)
    */
 
   if (architecture_paging_import(pd,
-				 ia32_interrupt_pdbr) != ERROR_OK)
+				 pdbr) != ERROR_OK)
     MACHINE_ESCAPE("unable to import the kernel page directory");
 
   /*
@@ -389,6 +398,12 @@ t_error			architecture_environment_kernel(i_as	id)
   if (architecture_tlb_flush() != ERROR_OK)
     MACHINE_ESCAPE("unable to flush the TLB");
 
+  /*
+   * 11)
+   */
+
+  _architecture.kernel.pdbr = pdbr;
+
   MACHINE_LEAVE();
 }
 
@@ -491,7 +506,7 @@ t_error			architecture_environment_server(i_as	id)
    */
 
   if (region_locate(_kernel->as,
-		    (t_vaddr)_architecture_gdt.table,
+		    (t_vaddr)_segment->machine.gdt.table,
 		    &region) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the GDT lies");
 
@@ -503,7 +518,7 @@ t_error			architecture_environment_server(i_as	id)
 		     0x0,
 		     REGION_OPTION_FORCE |
 		     REGION_OPTION_NONE,
-		     (t_vaddr)_architecture_gdt.table,
+		     (t_vaddr)_segment->machine.gdt.table,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the GDT");
@@ -513,7 +528,7 @@ t_error			architecture_environment_server(i_as	id)
    */
 
   if (region_locate(_kernel->as,
-		    (t_vaddr)_architecture_idt.table,
+		    (t_vaddr)_event->machine.idt.table,
 		    &region) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the IDT lies");
 
@@ -525,7 +540,7 @@ t_error			architecture_environment_server(i_as	id)
 		     0x0,
 		     REGION_OPTION_FORCE |
 		     REGION_OPTION_NONE,
-		     (t_vaddr)_architecture_idt.table,
+		     (t_vaddr)_event->machine.idt.table,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the IDT");

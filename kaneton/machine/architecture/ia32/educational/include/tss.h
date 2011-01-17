@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/include/tss.h
  *
  * created       renaud voltz   [mon apr 10 00:50:33 2006]
- * updated       julien quintard   [sat jan  8 21:29:31 2011]
+ * updated       julien quintard   [sun jan 16 21:36:58 2011]
  */
 
 #ifndef ARCHITECTURE_TSS_H
@@ -28,7 +28,14 @@
  * this macro defines the location, i.e offset, of the IO map within the TSS.
  */
 
-#define TSS_IO_OFFSET		0x68
+#define ARCHITECTURE_TSS_IO_OFFSET	0x68
+
+/*
+ * this macro defines the number of pages required to contain the system's
+ * TSS.
+ */
+
+#define ARCHITECTURE_TSS_SIZE		3 * ___kaneton$pagesz
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -93,8 +100,8 @@ typedef struct
  */
 
 t_error			architecture_tss_update(as_tss*		tss,
-						t_uint16	ss,
-						t_uint32	esp,
+						t_uint16	ss0,
+						t_uint32	esp0,
 						t_uint32	io);
 
 t_error			architecture_tss_activate(as_tss*	tss);

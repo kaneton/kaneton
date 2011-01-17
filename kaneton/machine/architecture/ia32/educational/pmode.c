@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/architecture/ia32/educational/pmode.c
  *
  * created       julien quintard   [sat jan  8 19:01:44 2011]
- * updated       julien quintard   [sun jan 16 01:15:15 2011]
+ * updated       julien quintard   [sun jan 16 13:42:19 2011]
  */
 
 /*
@@ -32,12 +32,6 @@
  */
 
 extern s_init*			_init;
-
-/*
- * the GDT.
- */
-
-extern as_gdt			_architecture_gdt;
 
 /*
  * ---------- functions -------------------------------------------------------

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...itecture/ia32/educational/segmentation.c
  *
  * created       julien quintard   [fri jan 14 13:51:10 2011]
- * updated       julien quintard   [sun jan 16 01:12:09 2011]
+ * updated       julien quintard   [sun jan 16 13:38:05 2011]
  */
 
 /*
@@ -30,8 +30,11 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-// XXX
-extern t_uint16		ia32_interrupt_ds;
+/*
+ * the architecture manager.
+ */
+
+extern am		_architecture;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -174,7 +177,7 @@ t_error			architecture_segmentation_setup(void)
    * 7)
    */
 
-  ia32_interrupt_ds = data;
+  _architecture.kernel.ds = data;
 
   MACHINE_LEAVE();
 }

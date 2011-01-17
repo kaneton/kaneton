@@ -4,6 +4,9 @@
 
 - pas de CORE_, de XXX, de IA32, de return, warning: dans kaneton + test
 
+- chercher les XXX restants et en faire des TODO
+- afficher PD, GDT, IDT dans le show de glue
+
 #
 # ---------- assignments ------------------------------------------------------
 #
@@ -13,23 +16,34 @@
 - etc.
 
 - donner des tips: commencer par trigger une interrupt, dumper quand une exception occurs, dumper la page directory/table lors d'un page fault etc.
+- donner des references de chapitres importants dans doc IA32
+
+#
+# ---------- core -------------------------------------------------------------
+#
+
+- inutile d'avoir des pointeurs pour les managers!
+
+- matter dans le trac car du coup la plupart des tickets ont du etre resolus!
+- le trac n'est surement plus necessaire! ce fichier suffit!
+
+#
+# ---------- test -------------------------------------------------------------
+#
+
+- systeme de test en non-bloquant: list retourne la liste du serveur, display
+  aussi et test retourne direct avec un email envoye quand termine.
+- rajouter du logging dans le systeme de tests pour savoir quel test est
+  en cours, de quel user etc.
+- mettre le timeout dans le manifest, en fonction de l'environment
+    { xen: XXX, qemu: XXX }
 
 #
 # ---------- ia32 -------------------------------------------------------------
 #
 
-- variables importantes eparpillees et non commentees:
-  [handler.c]
-  IA32_HANDLER_DATA_SECTION t_uint16      ia32_interrupt_ds = 0;
-  IA32_HANDLER_DATA_SECTION t_uint32      ia32_interrupt_pdbr = 0;
-
-  [context.c]
-  IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_local_interrupt_stack = 0;
-  IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_local_jump_stack = 0;
-  IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_local_jump_pdbr = 0;
-  IA32_HANDLER_DATA_SECTION t_ia32_cpu_local ia32_exception_code = 0;
-
-- tout mettre dans kernel.machine ou dans le manager associe a l'operation!
+- renommer esp dans _arch en pile car tous les pointeurs sur fin de pile
+  sont nommes pile
 
 #
 # ---------- export -----------------------------------------------------------
@@ -49,16 +63,6 @@
 #
 # ---------- future -----------------------------------------------------------
 #
-
-- matter dans le trac car du coup la plupart des tickets ont du etre resolus!
-- le trac n'est surement plus necessaire! ce fichier suffit!
-
-- systeme de test en non-bloquant: list retourne la liste du serveur, display
-  aussi et test retourne direct avec un email envoye quand termine.
-- rajouter du logging dans le systeme de tests pour savoir quel test est
-  en cours, de quel user etc.
-- mettre le timeout dans le manifest, en fonction de l'environment
-    { xen: XXX, qemu: XXX }
 
 - changer tous les types de core en prefixant avec c_ pour core.
   t_options deviendrait ct_options, m_scheduler, cm_scheduler, i_task, ci_task

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...lue/ibm-pc.ia32/educational/include/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [sun dec 19 12:44:19 2010]
+ * updated       julien quintard   [mon jan 17 15:43:52 2011]
  */
 
 #ifndef GLUE_AS_H
@@ -43,9 +43,16 @@
 
 /*
  * this macro-function includes data in the 'm_as' type.
+ *
+ * the 'pd' attribute represents the architecture's kernel PD - Page
+ * Directory.
  */
 
-#define		machine_data_m_as()
+#define		machine_data_m_as()					\
+  struct								\
+  {									\
+    at_pd		pd;						\
+  }			machine;
 
 /*
  * this macro-function includes data in the address space object 'o_as':
@@ -55,8 +62,8 @@
 #define		machine_data_o_as()					\
   struct								\
   {									\
-    t_paddr			pd;					\
-  }				machine;
+    t_paddr		pd;						\
+  }			machine;
 
 /*
  * ---------- dependencies ----------------------------------------------------

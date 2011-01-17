@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       julien quintard   [sun jan 16 01:02:19 2011]
+ * updated       julien quintard   [mon jan 17 15:41:44 2011]
  */
 
 /*
@@ -28,14 +28,14 @@
 #include <kaneton.h>
 
 /*
- * ---------- globals ---------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
 /*
- * the current system IDT.
+ * the event manager which contains the current IDT.
  */
 
-as_idt				_architecture_idt;
+extern m_event*		_event;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -65,13 +65,13 @@ t_error			architecture_idt_dump(void)
 
   module_call(console, message,
 	      '#', "IDT: table(0x%08x) size(%u)\n",
-	      _architecture_idt.table, _architecture_idt.size);
+	      _event->machine.idt.table, _event->machine.idt.size);
 
   /*
    * 2)
    */
 
-  for (i = 0; i < _architecture_idt.size; i++)
+  for (i = 0; i < _event->machine.idt.size; i++)
     {
       char*		type;
       t_uint16		selector;
@@ -83,22 +83,22 @@ t_error			architecture_idt_dump(void)
        * a)
        */
 
-      if (!(_architecture_idt.table[i] & ARCHITECTURE_IDTE_PRESENT))
+      if (!(_event->machine.idt.table[i] & ARCHITECTURE_IDTE_PRESENT))
 	continue;
 
       /*
        * b)
        */
 
-      offset = ARCHITECTURE_IDTE_OFFSET_GET(_architecture_idt.table[i]);
-      selector = ARCHITECTURE_IDTE_SELECTOR_GET(_architecture_idt.table[i]);
-      privilege = ARCHITECTURE_IDTE_DPL_GET(_architecture_idt.table[i]);
+      offset = ARCHITECTURE_IDTE_OFFSET_GET(_event->machine.idt.table[i]);
+      selector = ARCHITECTURE_IDTE_SELECTOR_GET(_event->machine.idt.table[i]);
+      privilege = ARCHITECTURE_IDTE_DPL_GET(_event->machine.idt.table[i]);
 
       /*
        * c)
        */
 
-      if (_architecture_idt.table[i] & ARCHITECTURE_IDTE_32BIT)
+      if (_event->machine.idt.table[i] & ARCHITECTURE_IDTE_32BIT)
 	flags[0] = 'd';
       else
 	flags[0] = '.';
@@ -109,7 +109,7 @@ t_error			architecture_idt_dump(void)
        * d)
        */
 
-      switch (ARCHITECTURE_IDTE_TYPE(_architecture_idt.table[i]))
+      switch (ARCHITECTURE_IDTE_TYPE(_event->machine.idt.table[i]))
 	{
 	case ARCHITECTURE_IDTE_TASK:
 	  {
@@ -234,7 +234,7 @@ t_error			architecture_idt_import(as_idt*		idt)
    * 3)
    */
 
-  memcpy(&_architecture_idt, idt, sizeof(as_idt));
+  memcpy(&_event->machine.idt, idt, sizeof(as_idt));
 
   MACHINE_LEAVE();
 }
@@ -306,17 +306,17 @@ t_error			architecture_idt_insert(t_uint16	index,
    * 0)
    */
 
-  if (index >= _architecture_idt.size)
+  if (index >= _event->machine.idt.size)
     MACHINE_ESCAPE("out-of-bound insertion");
 
-  if (_architecture_idt.table[index] & ARCHITECTURE_IDTE_PRESENT)
+  if (_event->machine.idt.table[index] & ARCHITECTURE_IDTE_PRESENT)
     MACHINE_ESCAPE("the IDT entry to insert is already in use");
 
   /*
    * 1)
    */
 
-  _architecture_idt.table[index] =
+  _event->machine.idt.table[index] =
     ARCHITECTURE_IDTE_PRESENT |
     ARCHITECTURE_IDTE_OFFSET_SET(offset) |
     ARCHITECTURE_IDTE_SELECTOR_SET(selector) |
@@ -340,17 +340,17 @@ t_error			architecture_idt_delete(t_uint16	index)
    * 0)
    */
 
-  if (index >= _architecture_idt.size)
+  if (index >= _event->machine.idt.size)
     MACHINE_ESCAPE("out-of-bound index");
 
-  if (!(_architecture_idt.table[index] & ARCHITECTURE_IDTE_PRESENT))
+  if (!(_event->machine.idt.table[index] & ARCHITECTURE_IDTE_PRESENT))
     MACHINE_ESCAPE("the IDT entry to delete is not present");
 
   /*
    * 1)
    */
 
-  memset(&_architecture_idt.table[index], 0x0, sizeof(at_idte));
+  memset(&_event->machine.idt.table[index], 0x0, sizeof(at_idte));
 
   MACHINE_LEAVE();
 }

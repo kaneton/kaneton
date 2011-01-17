@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/region/region-fit.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [sat jan 15 00:20:07 2011]
+ * updated       julien quintard   [mon jan 17 19:12:41 2011]
  */
 
 /*

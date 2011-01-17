@@ -8,7 +8,49 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sat jan 15 15:37:04 2011]
+ * updated       julien quintard   [mon jan 17 19:17:24 2011]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file contains functions related to the IA32 context management.
+ *
+ * the ia32/educational implementation makes use of a single TSS - Task
+ * State Segment which describes the currently executing context.
+ *
+ * the context switch mechanism consists in saving the currently executing
+ * thread's state and loading the future's. note however that the CPU
+ * performs some saving/restoring automatically.
+ *
+ * basically, things go as follows. a task is running, say in CPL3 i.e a guest
+ * task. when the timer interrupt occurs, for example, the privilege changes
+ * from CPL3 to CPL0. the CPU, noticing this change in privilege saves some
+ * of the thread's context---SS, ESP, EFLAGS, CS, EIP and possible an error
+ * code---on a special stack referred to as the thread's pile i.e a stack
+ * specifically used whenever the privilege changes. note that, should no
+ * change in privilege occur, the registers would be stored on the thread's
+ * current stack.
+ *
+ * at this point, the processor executes the handler shell (cf handler.c)
+ * which pre-handles an interrupt depending on its nature: exception, IRQ etc.
+ * besides, the handler shell calls the ARCHITECTURE_CONTEXT_SAVE()
+ * macro-function which is at the heart of the context switching mechanism.
+ *
+ * once the interrupt has been treated, the ARCHITECTURE_CONTEXT_RESTORE()
+ * macro-function restores the necessary. finally, the 'iret' instruction
+ * is called. the CPU noticing that a privilege change had occured, restores
+ * the thread's context by fetching the registers it pushed from the
+ * thread's pile (or from the thread's stack if the privilege had not changed).
+ *
+ * the whole context switch mechanism therefore relies on interrupts. more
+ * precisely the idea for context switching from a thread A to a thread B
+ * is to (i) save the thread A's context but this is done naturally when
+ * A gets interrupted and (ii) change the TSS so that thread B gets referenced,
+ * hence making the CPU think B got interrupted (instead of A). therefore,
+ * when returning from the interrupt, the CPU will restore B's context
+ * rather than A's. this is how A got interrupted, its context saved
+ * and B's execution got resumed.
  */
 
 /*
@@ -18,26 +60,14 @@
 #include <kaneton.h>
 
 /*
- * ---------- globals ---------------------------------------------------------
+ * ---------- externs ---------------------------------------------------------
  */
 
 /*
- * stack switching addresses
+ * the architecture manager.
  */
 
-// XXX stack dans le kernel qui est utilisee pour traiter une interrupt
-ARCHITECTURE_LINKER_LOCATION(".handler_data")
-t_uint32	ia32_local_interrupt_stack = 0;
-
-// XXX pour le context switch: la stack kernel du thread a sched + son PDBR
-// XXX la thread's pile est utilisee lors d'une int/exc pour sauvegarder
-//  le contexte. a ne pas confondre avec ia32_local_interrupt_stack qui
-//  est la stack utilisee pour traiter une interrupt par le kernel.
-ARCHITECTURE_LINKER_LOCATION(".handler_data")
-t_uint32	ia32_local_jump_stack = 0;
-
-ARCHITECTURE_LINKER_LOCATION(".handler_data")
-t_uint32	ia32_local_jump_pdbr = 0;
+extern am		_architecture;
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -60,253 +90,238 @@ extern m_thread*	_thread;
  */
 
 /*
- * this function initializes a blank context.
+ * this function builds the given context, initializes its attributes.
  *
  * steps:
  *
- * 1) get the thread object for the specified thread.
- * 2) get the task object the thread belongs to.
- * 3) reserve the thread privileged stack.
- * 4) reset the context to zero and initialize constants.
- * 5) reset advanced context (FPU or SSE).
+ * 1) retrieve the thread and task objects.
+ * 2) allocate a pile for the thread i.e a stack which is used by the
+ *    processor to store the context whenever the execution privilege
+ *    changes; for example whenever a guest task running in CP3 is
+ *    interrupted by the timer.
+ * 3) place the pile pointer at the end since IA32 stacks grow towards
+ *    the lower addresses.
+ * 4) initialize the IA32 context's registers to zero.
+ * 5) initialize the eflags by activating the first bit (mandatory) but
+ *    also the IF flags to that maskable interrupts get triggered. besides,
+ *    allow driver tasks to perform I/O operations by setting the
+ *    appropriate IOPL.
+ * 6) set the context's segment selectors according to the task's class.
+ * 7) finally, set the context.
  */
 
-t_error			ia32_init_context(i_task		taskid,
-					  i_thread		threadid)
+t_error			architecture_context_build(i_thread	id)
 {
-  o_thread*		o;
   o_task*		task;
-  t_ia32_context	ctx;
-
+  o_thread*		thread;
+  as_context		ctx;
 
   /*
    * 1)
    */
 
-  if (thread_get(threadid, &o) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (thread_get(id, &thread) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread object");
+
+  if (task_get(thread->task, &task) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
-  if (task_get(taskid, &task) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (map_reserve(task->as,
+		  MAP_OPTION_NONE,
+		  ARCHITECTURE_HANDLER_PILE_SIZE,
+		  PERMISSION_READ | PERMISSION_WRITE,
+		  &thread->machine.pile.base) != ERROR_OK)
+    MACHINE_ESCAPE("unable to reserve a map for the thread's pile");
 
   /*
    * 3)
    */
 
-  if (map_reserve(task->as,
-		  MAP_OPTION_NONE,
-		  ___kaneton$pagesz,
-		  PERMISSION_READ | PERMISSION_WRITE,
-		  &o->machine.pile) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  //printf("INTERRUPT STACK: 0x%x\n", o->machine.pile);
-
-  o->machine.pile += (___kaneton$pagesz - 16);
+  thread->machine.pile.esp =
+    thread->machine.pile.base + (ARCHITECTURE_HANDLER_PILE_SIZE - 16);
 
   /*
    * 4)
    */
 
-  memset(&ctx, 0, sizeof (t_ia32_context));
+  memset(&ctx, 0, sizeof (as_context));
 
-  // XXX 9 = Interrupt Enabled Flags
-  ctx.eflags = (1 << 9) | (1 << 1);
+  /*
+   * 5)
+   */
 
-  // XXX 12 = IO Privilege Level = 1
-  // XXX => drivers can access I/O ports withouth the CPU checking the
-  //  IO map
+  ctx.eflags =
+    ARCHITECTURE_REGISTER_EFLAGS_01 |
+    ARCHITECTURE_REGISTER_EFLAGS_IF;
+
   if (task->class == TASK_CLASS_DRIVER)
-    ctx.eflags |= (1 << 12);
+    {
+      ctx.eflags |=
+	ARCHITECTURE_REGISTER_EFLAGS_IOPL_SET(ARCHITECTURE_PRIVILEGE_DRIVER);
+    }
+
+  /*
+   * 6)
+   */
 
   switch (task->class)
     {
       case TASK_CLASS_KERNEL:
-	ctx.ds = ctx.ss = _thread->machine.selectors.kernel.ds;
-	ctx.cs = _thread->machine.selectors.kernel.cs;
-	break;
+	{
+	  ctx.cs = _thread->machine.selectors.kernel.cs;
+	  ctx.ds = _thread->machine.selectors.kernel.ds;
+	  ctx.ss = _thread->machine.selectors.kernel.ds;
+
+	  break;
+	}
       case TASK_CLASS_DRIVER:
-	ctx.ds = ctx.ss = _thread->machine.selectors.driver.ds;
-	ctx.cs = _thread->machine.selectors.driver.cs;
-	break;
+	{
+	  ctx.cs = _thread->machine.selectors.driver.cs;
+	  ctx.ds = _thread->machine.selectors.driver.ds;
+	  ctx.ss = _thread->machine.selectors.driver.ds;
+
+	  break;
+	}
       case TASK_CLASS_SERVICE:
-	ctx.ds = ctx.ss = _thread->machine.selectors.service.ds;
-	ctx.cs = _thread->machine.selectors.service.cs;
-	break;
+	{
+	  ctx.cs = _thread->machine.selectors.service.cs;
+	  ctx.ds = _thread->machine.selectors.service.ds;
+	  ctx.ss = _thread->machine.selectors.service.ds;
+
+	  break;
+	}
       case TASK_CLASS_GUEST:
-	ctx.ds = ctx.ss = _thread->machine.selectors.guest.ds;
-	ctx.cs = _thread->machine.selectors.guest.cs;
-	break;
+	{
+	  ctx.cs = _thread->machine.selectors.guest.cs;
+	  ctx.ds = _thread->machine.selectors.guest.ds;
+	  ctx.ss = _thread->machine.selectors.guest.ds;
+
+	  break;
+	}
     }
 
-  if (ia32_set_context(threadid, &ctx, IA32_CONTEXT_FULL) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  /*
+   * 7)
+   */
 
-  MACHINE_LEAVE();
-}
-
-
-/*
- * this function duplicate the whole context of a thread.
- */
-
-t_error			ia32_duplicate_context(i_thread		old,
-					       i_thread		new)
-{
-  o_thread*		from;
-  o_thread*		to;
-  t_ia32_context	ctx;
-
-  if (thread_get(old, &from) != ERROR_OK ||
-      thread_get(new, &to) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (ia32_get_context(old, &ctx) != ERROR_OK ||
-      ia32_set_context(new, &ctx, IA32_CONTEXT_FULL) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (architecture_context_set(thread->id, &ctx) != ERROR_OK)
+    MACHINE_ESCAPE("unable to set the context");
 
   MACHINE_LEAVE();
 }
 
 /*
- * this function updates the context with the new stack and
- * instruction pointers.
- */
-
-t_error			ia32_setup_context(i_thread		threadid,
-					   t_vaddr		pc,
-					   t_vaddr		sp)
-{
-  t_ia32_context	ctx;
-
-  ctx.eip = pc;
-  ctx.esp = sp;
-
-  return (ia32_set_context(threadid, &ctx,
-			   IA32_CONTEXT_EIP | IA32_CONTEXT_ESP));
-}
-
-/*
- * this function reads from the context both the stack and instruction
- * pointers.
- */
-
-t_error			ia32_status_context(i_thread		threadid,
-					    t_vaddr*		pc,
-					    t_vaddr*		sp)
-{
-  t_ia32_context	ctx;
-
-  assert(pc != NULL);
-  assert(sp != NULL);
-
-  if (ia32_get_context(threadid, &ctx) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  *pc = ctx.eip;
-  *sp = ctx.esp;
-
-  MACHINE_LEAVE();
-}
-
-/*
- * initialize the ia32 context switch mecanism.
+ * this function sets up the context switch mechanism.
  *
  * steps:
  *
- * 1) get the kernel address space.
- * 2) reserve some memory for the TSS.
- * 3) reserve 2 pages for the interrupt stack. this stack is
- *    automatically setup by the processor on privilege level switch.
- * 4) load the interrupt stack and the I/O bitmap base into the TSS.
- * 5) activate the TSS.
+ * 1) retrieve the kernel address space object.
+ * 2) reserve a segment for the TSS and map it.
+ * 3) place the tss in the allocated region.
+ * 4) initialize the TSS.
+ * 5) reserve a segment for the KIS - Kernel Interrupt Stack i.e the stack
+ *    used for treating interrupts, in the kernel environment. finally,
+ *    map the segment.
+ * 6) set up the KIS and initialize its stack pointer.
+ * 7) build the segment selector associated with the kernel data segment.
+ * 8) set up the TSS.
+ * 9) activate the TSS.
+ * 10) retrieve the segment selectors associated with the
+ *     kernel/driver/service/guest code/data segments. these segment selectors
+ *     will be used whenever a thread of the associated task class will
+ *     be created.
  */
 
-t_error			ia32_init_switcher(void)
+t_error			architecture_context_setup(void)
 {
-  o_as*			as;
-  i_segment		seg;
-  i_region		reg;
-  t_vaddr		int_stack;
-  o_region*		r;
-  as_tss*		tss;
   t_uint16		selector;
+  i_segment		segment;
+  i_region		region;
+  as_tss*		tss;
+  o_as*			as;
+  o_region*		o;
 
   /*
    * 1)
    */
 
   if (as_get(_kernel->as, &as) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+    MACHINE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
-  // XXX a-t-on vraiment besoin de 3 pages pour le TSS?
-  // XXX allouer que ce qu'il faut!
   if (segment_reserve(_kernel->as,
-		      3 * ___kaneton$pagesz,
+		      ARCHITECTURE_TSS_SIZE,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_SYSTEM,
-		      &seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+		      &segment) != ERROR_OK)
+    MACHINE_ESCAPE("unable to reserve a segment");
 
   if (region_reserve(_kernel->as,
-		     seg,
-		     0,
+		     segment,
+		     0x0,
 		     REGION_OPTION_NONE,
-		     0,
-		     3 * ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+		     0x0,
+		     ARCHITECTURE_TSS_SIZE,
+		     &region) != ERROR_OK)
+    MACHINE_ESCAPE("unable to reserve a region");
 
-  if (region_get(_kernel->as, reg, &r) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  _thread->machine.tss = r->address;
-
-  tss = (as_tss*)_thread->machine.tss;
-
-  //printf("TSS 0x%x\n", _thread->machine.tss);
-
-  memset(tss, 0x0, sizeof(as_tss));
+  if (region_get(_kernel->as, region, &o) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
    * 3)
    */
 
-  // XXX pourquoi allouer 2 pages?
-  if (segment_reserve(_kernel->as,
-		      2 * ___kaneton$pagesz,
-		      PERMISSION_READ | PERMISSION_WRITE,
-		      SEGMENT_OPTION_SYSTEM,
-		      &seg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (region_reserve(_kernel->as,
-		     seg,
-		     0,
-		     REGION_OPTION_NONE,
-		     0,
-		     2 * ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (region_get(_kernel->as, reg, &r) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  // XXX int_stack c'est donc quoi? la stack kernel globale?
-  int_stack = r->address;
-
-  //printf("INT STACK 0x%x\n", int_stack);
+  _thread->machine.tss = o->address;
 
   /*
    * 4)
+   */
+
+  tss = (as_tss*)_thread->machine.tss;
+
+  memset(tss, 0x0, sizeof (as_tss));
+
+  /*
+   * 5)
+   */
+
+  if (segment_reserve(_kernel->as,
+		      ARCHITECTURE_HANDLER_KIS_SIZE,
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_SYSTEM,
+		      &segment) != ERROR_OK)
+    MACHINE_ESCAPE("unable to reserve a segment");
+
+  if (region_reserve(_kernel->as,
+		     segment,
+		     0x0,
+		     REGION_OPTION_NONE,
+		     0x0,
+		     ARCHITECTURE_HANDLER_KIS_SIZE,
+		     &region) != ERROR_OK)
+    MACHINE_ESCAPE("unable to reserve a region");
+
+  if (region_get(_kernel->as, region, &o) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the region object");
+
+  /*
+   * 6)
+   */
+
+  _architecture.kernel.kis.base = o->address;
+  _architecture.kernel.kis.esp =
+    _architecture.kernel.kis.base + (ARCHITECTURE_HANDLER_KIS_SIZE - 16);
+
+  /*
+   * 7)
    */
 
   if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
@@ -314,71 +329,73 @@ t_error			ia32_init_switcher(void)
 				&selector) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the kernel data segment selector");
 
+  /*
+   * 8)
+   */
+
   if (architecture_tss_update(tss,
 			      selector,
-			      int_stack + 2 * ___kaneton$pagesz - 16,
-			      TSS_IO_OFFSET) != ERROR_OK)
+			      _architecture.kernel.kis.esp,
+			      ARCHITECTURE_TSS_IO_OFFSET) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the TSS");
 
-  ia32_local_interrupt_stack = int_stack + 2 * ___kaneton$pagesz - 16;
-
   /*
-   * 5)
+   * 9)
    */
 
   if (architecture_tss_activate(tss) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+    MACHINE_ESCAPE("unable to activate the system's TSS");
 
   /*
-   * XXX
+   * 10)
    */
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
-				ARCHITECTURE_PRIVILEGE_KERNEL,
-				&_thread->machine.selectors.kernel.cs) !=
-      ERROR_OK)
+  if (architecture_gdt_selector(
+        ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
+	ARCHITECTURE_PRIVILEGE_KERNEL,
+	&_thread->machine.selectors.kernel.cs) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the kernel code segment selector");
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
-				ARCHITECTURE_PRIVILEGE_KERNEL,
-				&_thread->machine.selectors.kernel.ds) !=
-      ERROR_OK)
+  if (architecture_gdt_selector(
+        ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
+	ARCHITECTURE_PRIVILEGE_KERNEL,
+	&_thread->machine.selectors.kernel.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the kernel data segment selector");
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_DRIVER_CODE,
-				ARCHITECTURE_PRIVILEGE_DRIVER,
-				&_thread->machine.selectors.driver.cs) !=
-      ERROR_OK)
+  if (architecture_gdt_selector(
+        ARCHITECTURE_GDT_INDEX_DRIVER_CODE,
+	ARCHITECTURE_PRIVILEGE_DRIVER,
+	&_thread->machine.selectors.driver.cs) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the driver code segment selector");
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_DRIVER_DATA,
-				ARCHITECTURE_PRIVILEGE_DRIVER,
-				&_thread->machine.selectors.driver.ds) !=
-      ERROR_OK)
+  if (architecture_gdt_selector(
+        ARCHITECTURE_GDT_INDEX_DRIVER_DATA,
+	ARCHITECTURE_PRIVILEGE_DRIVER,
+	&_thread->machine.selectors.driver.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the driver data segment selector");
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_SERVICE_CODE,
-				ARCHITECTURE_PRIVILEGE_SERVICE,
-				&_thread->machine.selectors.service.cs) !=
-      ERROR_OK)
+  if (architecture_gdt_selector(
+        ARCHITECTURE_GDT_INDEX_SERVICE_CODE,
+	ARCHITECTURE_PRIVILEGE_SERVICE,
+	&_thread->machine.selectors.service.cs) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the service code segment selector");
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_SERVICE_DATA,
-				ARCHITECTURE_PRIVILEGE_SERVICE,
-				&_thread->machine.selectors.service.ds) !=
-      ERROR_OK)
+  if (architecture_gdt_selector(
+        ARCHITECTURE_GDT_INDEX_SERVICE_DATA,
+	ARCHITECTURE_PRIVILEGE_SERVICE,
+	&_thread->machine.selectors.service.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the service data segment selector");
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_GUEST_CODE,
-				ARCHITECTURE_PRIVILEGE_GUEST,
-				&_thread->machine.selectors.guest.cs) !=
-      ERROR_OK)
+  if (architecture_gdt_selector(
+        ARCHITECTURE_GDT_INDEX_GUEST_CODE,
+	ARCHITECTURE_PRIVILEGE_GUEST,
+	&_thread->machine.selectors.guest.cs) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the guest code segment selector");
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_GUEST_DATA,
-				ARCHITECTURE_PRIVILEGE_GUEST,
-				&_thread->machine.selectors.guest.ds) !=
-      ERROR_OK)
+  if (architecture_gdt_selector(
+        ARCHITECTURE_GDT_INDEX_GUEST_DATA,
+	ARCHITECTURE_PRIVILEGE_GUEST,
+	&_thread->machine.selectors.guest.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the guest data segment selector");
 
   MACHINE_LEAVE();
@@ -394,8 +411,6 @@ t_error			ia32_context_ring0_stack(void)
   o_thread*		othread;
   o_task*		otask;
 
-  //printf("[XXX] ia32_context_ring0_stack()\n");
-
   if (thread_current(&current) != ERROR_OK)
     MACHINE_ESCAPE("XXX");
 
@@ -407,13 +422,33 @@ t_error			ia32_context_ring0_stack(void)
 
   if (otask->class == TASK_CLASS_KERNEL)
     {
-      othread->machine.pile = ia32_local_jump_stack;
+      // XXX le thread kernel est interrompu -> il n'y a pas changement
+      // de privilege donc on n'utilise pas sa pile (qui ne sera donc
+      // jamais utilisee) -> CONTEXT_SAVE() va donc prendre l'ESP courant
+      // et le considere comme etant la pile donc le sauver dans
+      // architecture.thread.pile.esp alors qu'en fait c'est juste sa stack.
+      //
+      // XXX lors d'un context switch vers le kernel thread, on va prendre
+      // la pile du thread (kernel) et lors du CONTEXT_RESTORE() on va chercher
+      // le context du thread sur cette pile. malheureusement le contexte
+      // du thread kernel a ete sauve sur la stack et non sur la pile.
+      //
+      // XXX pour cette raison, on hack le truc ici on mettant a jour
+      // tout thread qui tourne en ring0 (kernel threads) pour que la pile
+      // coincide avec la stack et que le context soit bien retrouve.
+      //
+      // XXX un bien meilleure solution serait, dans le build, de ne pas
+      // creer de pile si class == kernel et de faire pointer la pile sur
+      // la stack.
+      //
+      // XXX un autre solution serait de ne passer (dans restore) sur
+      // la pile que si le thread a restore n'est pas deja en ring0.
+      othread->machine.pile.esp = _architecture.thread.pile.esp;
 
-      othread->machine.pile +=
-	sizeof (t_ia32_context);
+      // XXX et ca c'est surement un hack car dans context switch on
+      // va faire un -= sizeof(...) donc on contrecarre ici.
+      othread->machine.pile.esp += sizeof (as_context);
     }
-
-  //printf("[XXX] /ia32_context_ring0_stack()\n");
 
   MACHINE_LEAVE();
 }
@@ -423,22 +458,43 @@ t_error			ia32_context_ring0_stack(void)
  *
  * steps:
  *
- * 1) check if a switch is necessary.
- * 2) get necessary objects.
- * 3) set jump stack & pdbr. update tss for next interrupt.
- * 4) update the I/O permissions bit map.
- * 5) set the TS flag so any use of FPU, MMX or SSE instruction will
- *    generate an exception.
+ * 1) if the future thread is the current one, return as no context
+ *    has to be switched.
+ * 2) retrieve the system's TSS.
+ * 3) retrieve the current and future thread objects.
+ * 4) retrieve the future task object.
+ * 5) retrieve the fhture address space object.
+ * 6) build the PDBR - Page Directory Base Register associated with the
+ *    future address space.
+ * 7) set, in the architecture's structure the about-to-be current PDBR
+ *    as being the future's one. since the system is going to return from
+ *    the interrupt, the ARCHITECTURE_CONTEXT_RESTORE() will use the
+ *    PDBR as the one to restore.
+ * 8) set, in the architecture's structure, the future thread's pile pointer
+ *    as being the one to restore. once again, ARCHITECTURE_CONTEXT_RESTORE()
+ *    will use this value to restore the pile. note that since the CPU
+ *    had saved the thread's context on the pile the ESP is computed
+ *    accordingly.
+ * 9) build the kernel data segment selector.
+ * 10) update the TSS, only updating the pointer to the pile of the thread
+ *     to restore. since this pile contains the saved context, the CPU
+ *     can retrieve the necessary information for restoring the thread's
+ *     state and resuming its execution.
+ * 11) if the future thread belongs to another task and has no right to
+ *     perform I/O operation (service or guest tasks) or that the task
+ *     I/O map has been marked as dirty, refresh the TSS's I/O map.
+ *   a) copy the task's I/O map.
+ *   b) mark it as fresh.
  */
 
-t_error			ia32_context_switch(i_thread		current,
-					    i_thread		elected)
+t_error			architecture_context_switch(i_thread	current,
+						    i_thread	future)
 {
   o_thread*		from;
   o_thread*		to;
   o_task*		task;
   o_as*			as;
-  t_vaddr		cr3;
+  at_cr3		pdbr;
   as_tss*		tss;
   t_uint16		selector;
 
@@ -446,310 +502,272 @@ t_error			ia32_context_switch(i_thread		current,
    * 1)
    */
 
-  if (current == elected)
+  if (current == future)
     MACHINE_LEAVE();
-
-  //printf("[context switch] from %qd to %qd\n", current, elected);
-
-  tss = (as_tss*)_thread->machine.tss;
 
   /*
    * 2)
    */
 
-  if (thread_get(current, &from) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (thread_get(elected, &to) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (task_get(to->task, &task) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (as_get(task->as, &as) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  tss = (as_tss*)_thread->machine.tss;
 
   /*
    * 3)
    */
 
-  if (architecture_paging_cr3((at_pd)as->machine.pd, // XXX
-			      ARCHITECTURE_REGISTER_CR3_PCE |
-			      ARCHITECTURE_REGISTER_CR3_PWB,
-			      &cr3) != ERROR_OK)
-    MACHINE_ESCAPE("unable to build the CR3 register's content");
+  if (thread_get(current, &from) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the current thread object");
 
-  /* XXX
-  printf("CONTEXT SWITCH: [cr3] 0x%x 0x%x\n",
-	 ia32_local_jump_pdbr,
-	 cr3);
-  */
+  if (thread_get(future, &to) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the future thread object");
 
-  ia32_local_jump_pdbr = cr3;
+  /*
+   * 4)
+   */
 
-  /* XXX
-  printf("CONTEXT SWITCH: [interrupt stack] 0x%x 0x%x\n",
-	 ia32_local_jump_stack,
-	 to->machine.pile - sizeof (t_ia32_context));
-  */
+  if (task_get(to->task, &task) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the future task object");
 
-  ia32_local_jump_stack = to->machine.pile - sizeof (t_ia32_context);
+  /*
+   * 5)
+   */
+
+  if (as_get(task->as, &as) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the future address space object");
+
+  /*
+   * 6)
+   */
+
+  if (architecture_paging_pdbr(as->machine.pd,
+			       ARCHITECTURE_REGISTER_CR3_PCE |
+			       ARCHITECTURE_REGISTER_CR3_PWB,
+			       &pdbr) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the PDBR");
+
+  /*
+   * 7)
+   */
+
+  _architecture.thread.pdbr = pdbr;
+
+  /*
+   * 8)
+   */
+
+  _architecture.thread.pile.esp = to->machine.pile.esp - sizeof (as_context);
+
+  /*
+   * 9)
+   */
 
   if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
 				ARCHITECTURE_PRIVILEGE_RING0,
 				&selector) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the kernel data segment selector");
 
+  /*
+   * 10)
+   */
+
   if (architecture_tss_update(tss,
 			      selector,
-			      to->machine.pile,
-			      TSS_IO_OFFSET) != ERROR_OK)
+			      to->machine.pile.esp,
+			      ARCHITECTURE_TSS_IO_OFFSET) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the TSS");
+
+  /*
+   * 11)
+   */
+
+  if (((from->task != to->task) &&
+       ((task->class == TASK_CLASS_SERVICE) ||
+	(task->class == TASK_CLASS_GUEST))) ||
+      (task->machine.io.flush == BOOLEAN_TRUE))
+    {
+      /*
+       * a)
+       */
+
+      memcpy((t_uint8*)tss + tss->io,
+	     &task->machine.io.map,
+	     sizeof (task->machine.io.map));
+
+      /*
+       * b)
+       */
+
+      task->machine.io.flush = BOOLEAN_FALSE;
+    }
+
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function pushes the given arguments on a thread's stack. this way,
+ * the thread will be able to access these values at startup.
+ *
+ * steps:
+ *
+ * 1) retrieve the thread and task objects.
+ * 2) retrieve the thread's context.
+ * 3) update the thread's stack pointer by decreasing it since the
+ *    arguments are going to be stored at the top of it.
+ * 4) write the arguments to the thread's stack.
+ * 5) update the thread's context.
+ */
+
+t_error			architecture_context_arguments(i_thread	id,
+						       void*	arguments,
+						       t_vsize	size)
+{
+  s_thread_context	context;
+  o_thread*		thread;
+  o_task*		task;
+
+  /*
+   * 1)
+   */
+
+  if (thread_get(id, &thread) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread object");
+
+  if (task_get(thread->task, &task) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the task object");
+
+  /*
+   * 2)
+   */
+
+  if (thread_store(thread->id, &context) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread context");
+
+  /*
+   * 3)
+   */
+
+  context.sp -= size;
 
   /*
    * 4)
    */
 
-  if (current == ID_UNUSED || // XXX impossible kernel ou idle ou autre
-      (from->task != to->task && (task->class == TASK_CLASS_SERVICE ||
-				  task->class == TASK_CLASS_GUEST)) ||
-      task->machine.io.flush == BOOLEAN_TRUE)
-    {
-      memcpy((t_uint8*)tss + tss->io,
-	     &task->machine.io.map,
-	     8192); // XXX sizeof
-      task->machine.io.flush = BOOLEAN_FALSE;
-    }
+  if (as_write(task->as, arguments, size, context.sp) != ERROR_OK)
+    MACHINE_ESCAPE("unable to store the arguments on the thread's stack");
 
   /*
    * 5)
    */
 
-  // XXX inutile, juste pour activer x87
-  //STS();
+  if (thread_load(thread->id, context) != ERROR_OK)
+    MACHINE_ESCAPE("unable to update the thread context");
 
   MACHINE_LEAVE();
 }
 
 /*
- * this function pushes arguments on a thread's stack.
+ * this function retrieves the IA32 context of the given thread.
+ *
+ * note that the interrupted task's context has been stored in its
+ * pile, i.e ring0 stack. since the pile is only mapped in the task's
+ * address space, this function, running in the kernel environment, cannot
+ * access it directly. therefore, the task's pile is temporarily mapped
+ * in the kernel address space the time for the context to be copied.
  *
  * steps:
  *
- * 1) get thread and task object.
- * 2) get current thread context and decrement the stack pointer.
- * 3) copy the argument onto the stack.
- * 4) update the thread context.
+ * 0) verify the arguments.
+ * 1) retrieve the thread and task objects.
+ * 2) read the thread's context from its pile.
  */
 
-t_error			ia32_push_args(i_thread			threadid,
-				       const void*		args,
-				       t_vsize			size)
+t_error			architecture_context_get(i_thread	id,
+						 as_context*	context)
 {
-  o_thread*		o;
-  o_task*		otask;
-  s_thread_context	context;
+  o_thread*		thread;
+  o_task*		task;
+
+  /*
+   * 0)
+   */
+
+  if (context == NULL)
+    MACHINE_ESCAPE("the 'context' argument is null");
 
   /*
    * 1)
    */
 
-  if (thread_get(threadid, &o) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (thread_get(id, &thread) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(o->task, &otask) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 2)
-   */
-
-  if (thread_store(threadid, &context) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  context.sp -= size;
-
-  /*
-   * 3)
-   */
-
-  if (as_write(otask->as, args, size, context.sp) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 4)
-   */
-
-  if (thread_load(threadid, context) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function retrieves the context of a given thread.
- *
- * XXX the context is stored in the thread's kernel stack i.e pile.
- * since this stack is only mapped in the kernel's address space, we
- * cannot access it directly. therefore, an as_read() is used.
-
- * steps:
- *
- * 1) get thread & task objects.
- * 2) read the context.
- */
-
-t_error			ia32_get_context(i_thread		thread,
-					 t_ia32_context*	context)
-{
-  o_thread*		o;
-  o_task*		otask;
-
-  //printf("[XXX] ia32_get_context(%qd, 0x%x)\n", thread, context);
-
-  /*
-   * 1)
-   */
-
-  if (thread_get(thread, &o) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  if (task_get(o->task, &otask) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (task_get(thread->task, &task) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
-  if (as_read(otask->as,
-	      o->machine.pile - sizeof (t_ia32_context),
-	      sizeof (t_ia32_context),
+  if (as_read(task->as,
+	      thread->machine.pile.esp - sizeof (as_context),
+	      sizeof (as_context),
 	      context) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  //printf("[XXX] /ia32_get_context(%qd, 0x%x)\n", thread, context);
-
-  MACHINE_LEAVE();
-}
-
-/*
- * XXX
- */
-// XXX to remove
-t_error                 ia32_print_context(i_thread             thread,
-					   mt_margin		margin)
-{
-  t_ia32_context	ctx;
-
-  ia32_get_context(thread, &ctx);
-
-  module_call(console, message,
-	      '!',
-	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "context: eax(0x%08x) ebx(0x%08x) ecx(0x%08x)\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin),
-	      ctx.eax, ctx.ebx, ctx.ecx);
-
-  module_call(console, message,
-	      '!',
-	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "         edx(0x%08x) esi(0x%08x) edi(0x%08x)\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin),
-	      ctx.edx, ctx.esi, ctx.edi);
-
-  module_call(console, message,
-	      '!',
-	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "         ebp(0x%08x) esp(0x%08x) eip(0x%08x)\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin),
-	      ctx.ebp, ctx._esp, ctx.eip);
+    MACHINE_ESCAPE("unable to extract the thread's IA32 context "
+		   "from its pile");
 
   MACHINE_LEAVE();
 }
 
 /*
- * this function updates the context of a thread given a set of register
- * values.
+ * this function updates the context of a given thread.
  *
- * XXX does the opposite of get_context()
+ * note that the interrupted task's context has been stored in its
+ * pile, i.e ring0 stack. since the pile is only mapped in the task's
+ * address space, this function, running in the kernel environment, cannot
+ * access it directly. therefore, the task's pile is temporarily mapped
+ * in the kernel address space the time for the context to be updated.
  *
  * steps:
  *
- * 1) get thread & task objects.
- * 2) read the current context.
- * 3) according to the mask, update the required registers.
- * 4) store back the context to the thread's stack.
+ * 0) verify the arguments.
+ * 1) retrieve the thread and task objects.
+ * 2) update the thread's context stored in its pile by writing its address
+ *    space.
  */
 
-t_error			ia32_set_context(i_thread		thread,
-					 t_ia32_context*	context,
-					 t_uint32		mask)
+t_error			architecture_context_set(i_thread	id,
+						 as_context*	context)
 {
-  o_thread*		o;
-  o_task*		otask;
-  t_ia32_context	temp;
+  o_thread*		thread;
+  o_task*		task;
+
+  /*
+   * 0)
+   */
+
+  if (context == NULL)
+    MACHINE_ESCAPE("the 'context' argument is null");
 
   /*
    * 1)
    */
 
-  if (thread_get(thread, &o) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (thread_get(id, &thread) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(o->task, &otask) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (task_get(thread->task, &task) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
-  if (as_read(otask->as,
-	      o->machine.pile - sizeof (t_ia32_context),
-	      sizeof (t_ia32_context),
-	      &temp) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
-
-  /*
-   * 3)
-   */
-
-  if (mask & IA32_CONTEXT_EAX)
-    temp.eax = context->eax;
-  if (mask & IA32_CONTEXT_EBX)
-    temp.ebx = context->ebx;
-  if (mask & IA32_CONTEXT_ECX)
-    temp.ecx = context->ecx;
-  if (mask & IA32_CONTEXT_EDX)
-    temp.edx = context->edx;
-  if (mask & IA32_CONTEXT_ESI)
-    temp.esi = context->esi;
-  if (mask & IA32_CONTEXT_EDI)
-    temp.edi = context->edi;
-  if (mask & IA32_CONTEXT_EBP)
-    temp.ebp = context->ebp;
-  if (mask & IA32_CONTEXT_ESP)
-    temp.esp = context->esp;
-  if (mask & IA32_CONTEXT_EIP)
-    temp.eip = context->eip;
-  if (mask & IA32_CONTEXT_EFLAGS)
-    temp.eflags = context->eflags;
-  if (mask & IA32_CONTEXT_CS)
-    temp.cs = context->cs;
-  if (mask & IA32_CONTEXT_SS)
-    temp.ss = context->ss;
-  if (mask & IA32_CONTEXT_DS)
-    temp.ds = context->ds;
-
-  /*
-   * 4)
-   */
-
-  if (as_write(otask->as,
-	       &temp, sizeof
-	       (t_ia32_context),
-	       o->machine.pile -
-	         sizeof (t_ia32_context)) != ERROR_OK)
-    MACHINE_ESCAPE("XXX");
+  if (as_write(task->as,
+	       context,
+	       sizeof (as_context),
+	       thread->machine.pile.esp - sizeof (as_context)) != ERROR_OK)
+    MACHINE_ESCAPE("unable to write the thread's IA32 context in "
+		   "its pile");
 
   MACHINE_LEAVE();
 }

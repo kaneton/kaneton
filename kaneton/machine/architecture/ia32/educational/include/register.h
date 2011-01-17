@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ture/ia32/educational/include/register.h
  *
  * created       julien quintard   [wed jan 12 03:44:59 2011]
- * updated       julien quintard   [fri jan 14 15:01:18 2011]
+ * updated       julien quintard   [sun jan 16 12:19:46 2011]
  */
 
 #ifndef ARCHITECTURE_REGISTER_H
@@ -35,6 +35,18 @@
 #define ARCHITECTURE_REGISTER_CR3_PWB		(0 << 3)
 
 /*
+ * this flag enables the maskable interrupts to be delivered.
+ */
+
+#define ARCHITECTURE_REGISTER_EFLAGS_IF		(1 << 9)
+
+/*
+ * the bit 1 of the eflags must always be set.
+ */
+
+#define ARCHITECTURE_REGISTER_EFLAGS_01		(1 << 1)
+
+/*
  * ---------- macro-functions -------------------------------------------------
  */
 
@@ -43,8 +55,16 @@
  * register.
  */
 
-#define ARCHITECTURE_REGISTER_CR3_ADDRESS(_cr3_)			\
+#define ARCHITECTURE_REGISTER_CR3_ADDRESS_GET(_cr3_)			\
   (_cr3_) & 0xfffff000
+
+/*
+ * this macro-function sets the IOPL - I/O Privilege Level in the
+ * EFLAGS register.
+ */
+
+#define ARCHITECTURE_REGISTER_EFLAGS_IOPL_SET(_privilege_)		\
+  (((_privilege_) & 0x3 )<< 12)
 
 /*
  * ---------- dependencies ----------------------------------------------------
