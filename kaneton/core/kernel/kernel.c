@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [mon jan 17 19:10:11 2011]
+ * updated       julien quintard   [mon jan 17 19:22:55 2011]
  */
 
 /*
@@ -169,6 +169,7 @@ t_error			kernel_dump(void)
  * 20) call the machine.
  */
 
+// XXX re-organiser
 t_error			kernel_initialize(void)
 {
   /*
@@ -285,6 +286,7 @@ t_error			kernel_initialize(void)
    * 16)
    */
 
+  // XXX
   if (io_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the I/O manager");
 

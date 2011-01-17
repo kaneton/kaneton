@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       julien quintard   [fri jan 14 20:03:38 2011]
+ * updated       julien quintard   [mon jan 17 19:22:02 2011]
  */
 
 /*
@@ -258,11 +258,6 @@ t_error			cpu_select(i_cpu*			id)
 {
   static i_cpu		current = 0;
   t_setsz		size;
-
-  // XXX to remove
-  id = 0;
-  CORE_LEAVE();
-  // XXX
 
   /*
    * 0)

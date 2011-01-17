@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [mon jan 17 19:13:21 2011]
+ * updated       julien quintard   [mon jan 17 19:23:52 2011]
  */
 
 /*
@@ -425,9 +425,6 @@ void			architecture_handler_exception(t_uint32	n,
 {
   i_event		id;
   o_event*		o;
-
-  thread_dump();
-  printf("0x%x\n", _XXX);
 
   /*
    * 1)

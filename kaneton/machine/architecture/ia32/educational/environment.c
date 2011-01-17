@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [sun jan 16 14:39:30 2011]
+ * updated       julien quintard   [mon jan 17 19:23:30 2011]
  */
 
 /*
@@ -558,7 +558,6 @@ t_error			architecture_environment_server(i_as	id)
      LINKER_SYMBOL(_handler_end) -
      LINKER_SYMBOL(_handler_begin),
      &reg) != ERROR_OK)
-     MACHINE_ESCAPE("XXX");
 
      if (region_reserve(asid,
      _init->kcode,
@@ -568,7 +567,6 @@ t_error			architecture_environment_server(i_as	id)
      LINKER_SYMBOL(_handler_data_end) -
      LINKER_SYMBOL(_handler_data_begin),
      &reg) != ERROR_OK)
-     MACHINE_ESCAPE("XXX");
   */
 
   if (segment_locate(_init->kcode, &segment) == ERROR_FALSE)
