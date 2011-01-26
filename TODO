@@ -15,7 +15,8 @@
 - IDT dans k1
 - etc.
 
-- donner des tips: commencer par trigger une interrupt, dumper quand une exception occurs, dumper la page directory/table lors d'un page fault etc.
+- donner des tips: commencer par trigger une interrupt, dumper quand une
+  exception occurs, dumper la page directory/table lors d'un page fault etc.
 - donner des references de chapitres importants dans doc IA32
 
 #
@@ -57,7 +58,8 @@
 # ---------- evaluation -------------------------------------------------------
 #
 
-- faire un super test et en 1 semaine faire une tranche de challenge ou ils doivent optimiser kaneton!
+- faire un super test et en 1 semaine faire une tranche de challenge ou ils
+  doivent optimiser kaneton!
   -> genre lancer tous les tests a la suite sans rebooter
 
 #
@@ -70,10 +72,8 @@
   -> ensuite on definierait l'interface kernel qui elle definierait des
      aliases: ci_task -> i_task etc.
 
-- le probleme d'allocation recursive (design): (i) deux objets avec le meme
-  id ne devraient jamais etre ajoutes sans erreur (ii) a corriger
-  fondamentalement
 - malloc double-free qui devrait peter ou peter un warning
+- lors d'un free, verifier que la zone est allouee.
 - page fault dans malloc:
     int i;
 
@@ -91,6 +91,38 @@
 
         assert(as_reserve(t, &a) == ERROR_OK);
       }
+- probleme de design pour malloc() recusrifs.
+  When a segment is reserved for instance, it is added to a set. This set
+  may need to allocate memory to extend the data structure, hence calling
+  malloc(). Unfortunately, malloc() might need to allocate more memory as
+  well, and to map it, calling segment_reserve() indirectly through
+  map_reserve(), creating a loop.
+  This loop can lead to inconsistencies since a segment could have been
+  found available in the first segment_reserve(), but after malloc() and
+  segment_reserve() is re-called, the same segment could be picked.
+  Allocating the object in the segment manager before calling set_add()
+  without internal allocation is not enough to prevent this problem.
+  Indeed, although the set can be created without the SET_OPT_ALLOC
+  option, the set might need more memory to handle a set_add() operation.
+  For instance, a linked-list set needs to allocate a container, this
+  container including previous and next pointers. Therefore, by
+  allocating this container, the malloc() function may require more memory,
+  hence calling segment_reserve() through map_reserve(), leading to the same
+  problem: a segment might be picked twice leading to inconsistencies.
+  A solution might be to use a specific set implementation that would always
+  make sure that, following a set_add(), it will always be able to handle
+  the next request without any more allocation.
+  Unfortunately, this solution would not be flexible enough because the
+  segment and region managers would be forced to use this set implementation.
+  I believe the ultimate solution is to add a set functionality: set_vouch().
+  This function, when called, makes sure that it can handle a next operation
+  without any more allocation. This function will therefore computes the worst
+  case scenario in terms of memory requirement and call memvouch() which will
+  make sure it has the given required amount of memory ready for use.
+  With this solution, only the segment and region fundamental memory managers
+  will use set_vouch() so that only these managers suffer the extra penalty
+  time while keeping the system flexible; indeed, those managers can be easily
+  changed to use another set implementation: ll, array, bpt etc.
 
 - pour les capabilities: (i) soit un autorise l'attenuation hierarchique,
   auquel cas, c'est tres flexible mais pas super secure car en donnant une
@@ -106,7 +138,133 @@
 - super test pour departager les gens en fonction de la rapidite -> points
   bonus => 25/20
 
---- LIBRARY
+- ameliorer la liberation des objets lors d'une erreur:
+  t_error foo()
+  {
+    i_segment i1;
+    i_segment i2;
+
+    if (segment_reserve(&i1) != ERROR_NONE)
+      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+    if (segment_reserve(&i2) != ERROR_NONE)
+    {
+      segment_release(i1);
+
+      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    }
+
+    SEGMENT_LEAVE(segment, ERROR_NONE);
+  }
+
+- A 'facade' is the definition of a node's communication interface, basically
+  a RPC interface.
+  The difference with the other RPC systems is that we want the facade
+  generation tool to be able to generate code in different languages being
+  C, C++, D, Python etc. so that the user-land applications can use a native
+  kernel interface instead of relying on a C-wrapper as everybody does.
+  This tool will be used both for generating nodes communication interface but
+  also, as stated before, to generate the kernel interface itself.
+  For instance, user-land applications will therefore be able to access kernel
+  values such as kaneton.SHEDULER_STATE_WAIT etc. the whole in native.
+  Thus, the generation tool will be able to generate code relying extensively
+  on the language features such as packages, namespaces and so forth.
+  Finally, when compiling an application, the build system will find the facade
+  required to retrieve the message definitions, generate the stubs for
+  marshalling the messages and generate and pretty binary, ready to be
+  launched :)
+
+- When the loader starts, it pre-reserved some regions like the DMA zone,
+  the VGA area etc. because these memory areas cannot be used.
+  Therefore, when the kernel is started, a list of such areas is passed
+  and the kernel injects these areas in its managers: segment and region.
+  If we consider the DMA zone, a service specialised in its management
+  should acquire the write on it. These zones have been pre-reserved to
+  prevent a unauthorised task from reserving it.
+  However, how could the kernel knows whether the calling client is the
+  one of supposed to take care of the DMA zone. For that, the kernel
+  should be started with a configuration file specifying the relations
+  between tasks and protected objects such as special memory regions, IRQ
+  lines etc.
+  The configuration file syntax must be designed and implemented so that
+  the mod service retrieves this file (which should already be the case
+  actually).
+  Even better would be to define a layout descriptive file, specifying the
+  machine specific components such as memory areas, IRQs etc. Then, the
+  configuration file would like those components to tasks.
+- The kaneton object should provide some acccessors so that user-land
+  applications can read/write attributes.
+  For example: segment_set(o, ATTRIBUTE_PERMISSIONS, PERM_READ) would set
+  the permissions to read-only while segment_get(o, ATTRIBUTE_PERMISSIONS)
+  would return the current permissions.
+  Since the manager generally have a get() function to retrieve an object
+  according to its identifier, the get() function should be renamed in
+  retrieve().
+- developper message et capability managers.
+- revoir l'outil configure
+
+#
+# ---------- library ----------------------------------------------------------
+#
 
 - tout clean, re-arranger le code, le commenter, utiliser le prefixe de
   type l_ etc.
+
+#
+# ---------- lectures ---------------------------------------------------------
+#
+
+- IPC/virtualization lectures do not compile.
+- file system lecture to complete
+- The boot lecture should contain a section about the kaneton boot system
+  including the pre-reserved memory area, init structure, segments and regions
+  structure but also the mod. For more information, refer to the IA32 Book
+  or contact Julien Quintard.
+- The portability lecture should be improved a bit by including more details
+  regarding the kaneton portability system as well as a comparison with other
+  systems such as Linux, BSD etc.
+- generalities: Some scenarios could be given to illustrate the differences
+  between the kernel models especially when it comes to crashes for
+  microkernels or calls for exokernels etc. Besides, relying on scenarios
+  would make the lecture more attractive and prevent it to look like a bare
+  listing of the different kernel types. Finally, a section could be focusing
+  on embedded and real-time kernels to briefly describe their specificities.
+- interrupts: Some figures are missing and corrections need to be applied,
+  especially regarding the last section: Hardware.
+- scheduling: a voir ce qui pourrait etre ameliore
+- boot: a voir ce qui pourrait etre ameliore
+
+#
+# ---------- cheat ------------------------------------------------------------
+#
+
+- The cheat system outputs wrong matches like this one between
+  core/scheduler/scheduler.c (EPITA::2009::group6) and
+  machine/architecture/ia32/context.c (EPITA::209::group2).
+  The cheat system has not removed the code for the group6 and this is correct
+  because the section is part of the machine but the students included it in
+  the core.
+  However, this section should have been removed from the snapshot before
+  comparing for the group2 since this section has been provided in the base
+  student snapshot.
+
+#
+# ---------- book -------------------------------------------------------------
+#
+
+- The core book must be written. This book should contain everything related
+  to the machine-independent part of the kaneton microkernel. Additionally,
+  note that the Assignments book should not then contain any function or
+  manager description but basically just references to the Core book.
+- The IA32 Book must be updated, taking care of: Updating the old parts such
+  as the bootloader, especially the memory organisation at the bootloader time
+  Distinguishing the different branches: educational, optimised etc. Using the
+  LaTeX \details() function for including additional information relative to
+  the implementation. Such information will not be available to the public but
+  only to the kaneton contributors. Writers should rely extensively on this
+  function for specifying implementation details, design choices etc.
+  Distinguishing the platforms. Indeed, the book should contain a Plateforms
+  chapter with a section per architecture/platform couple on which kaneton has
+  been ported.
+  This book is crucial because without it, students spend most of their time
+  trying to understand what a function does.

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       julien quintard   [mon jan 17 19:14:05 2011]
+ * updated       julien quintard   [wed jan 26 21:49:44 2011]
  */
 
 #ifndef ARCHITECTURE_CONTEXT_H
@@ -100,9 +100,9 @@
        /*								\
 	* 7)								\
 	*/								\
-       /*								\
+									\
        "movl %esp, (_architecture + 18)				\n"	\
-       */								\
+									\
        /*								\
 	* 8)								\
 	*/								\
@@ -149,10 +149,10 @@
        /*								\
 	* 2)								\
 	*/								\
-       /*								\
+									\
        "movl (_architecture + 18), %edx				\n"	\
        "movl %edx, %esp						\n"	\
-       */								\
+									\
        /*								\
 	* 3)								\
 	*/								\

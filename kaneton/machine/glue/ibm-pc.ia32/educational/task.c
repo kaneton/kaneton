@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sat jan 15 15:11:29 2011]
+ * updated       julien quintard   [wed jan 26 20:52:00 2011]
  */
 
 /*
@@ -33,7 +33,7 @@
 
 d_task			glue_task_dispatch =
   {
-    NULL,
+    glue_task_show,
     NULL,
     glue_task_reserve,
     NULL,

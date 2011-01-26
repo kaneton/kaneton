@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [mon jan 17 19:17:24 2011]
+ * updated       julien quintard   [wed jan 26 21:46:58 2011]
  */
 
 /*
@@ -336,6 +336,7 @@ t_error			architecture_context_setup(void)
   if (architecture_tss_update(tss,
 			      selector,
 			      _architecture.kernel.kis.esp,
+			      // XXX ici ca devrait etre la pile du thread kernel. si on change cette valeur alors ESP dans SAVE() sera different
 			      ARCHITECTURE_TSS_IO_OFFSET) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the TSS");
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [mon jan 17 19:23:52 2011]
+ * updated       julien quintard   [wed jan 26 20:50:11 2011]
  */
 
 /*

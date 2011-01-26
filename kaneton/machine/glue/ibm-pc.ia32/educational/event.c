@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sun jan 16 15:15:03 2011]
+ * updated       julien quintard   [wed jan 26 20:50:31 2011]
  */
 
 /*
@@ -89,7 +89,7 @@ void			glue_event_pagefault(t_id		id,
    * 2)
    */
 
-  // XXX assert(architecture_context_get(thread, &ctx) == ERROR_OK);
+  assert(architecture_context_get(thread, &ctx) == ERROR_OK);
 
   /*
    * 3)

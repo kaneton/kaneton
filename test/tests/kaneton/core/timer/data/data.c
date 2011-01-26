@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...est/tests/kaneton/core/timer/data/data.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat jan 15 15:59:55 2011]
+ * updated       julien quintard   [wed jan 26 21:50:07 2011]
  */
 
 /*

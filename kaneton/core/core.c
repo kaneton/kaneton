@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [mon jan 17 19:14:30 2011]
+ * updated       julien quintard   [wed jan 26 21:50:39 2011]
  */
 
 /*
@@ -124,6 +124,16 @@ void			kaneton(s_init*				init)
 	      '+', "starting the kernel\n");
 
   assert(kernel_initialize() == ERROR_OK);
+
+  // XXX
+  /*
+  {
+    test_core_timer_data();
+    printf("BACK\n");
+    while (1);
+  }
+  */
+  // XXX
 
   /*
    * 6)

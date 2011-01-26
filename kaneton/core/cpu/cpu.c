@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       julien quintard   [mon jan 17 19:22:02 2011]
+ * updated       julien quintard   [wed jan 26 20:55:33 2011]
  */
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [fri jan 14 22:42:51 2011]
+ * updated       julien quintard   [wed jan 26 20:52:45 2011]
  */
 
 /*

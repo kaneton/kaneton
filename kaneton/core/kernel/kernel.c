@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [mon jan 17 19:22:55 2011]
+ * updated       julien quintard   [wed jan 26 20:55:19 2011]
  */
 
 /*
@@ -235,6 +235,8 @@ t_error			kernel_initialize(void)
    */
 
   // XXX
+  if (cpu_initialize() != ERROR_OK)
+    CORE_ESCAPE("unable to initialize the CPU manager");
 
   /*
    * 9)
@@ -261,7 +263,7 @@ t_error			kernel_initialize(void)
 
   alloc_setup();
 
- /*
+  /*
    * 13)
    */
 
@@ -289,9 +291,6 @@ t_error			kernel_initialize(void)
   // XXX
   if (io_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the I/O manager");
-
-  if (cpu_initialize() != ERROR_OK)
-    CORE_ESCAPE("unable to initialize the CPU manager");
 
   if (scheduler_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the scheduler manager");

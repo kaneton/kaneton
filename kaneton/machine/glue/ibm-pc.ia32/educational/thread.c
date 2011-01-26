@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [mon jan 17 16:56:40 2011]
+ * updated       julien quintard   [wed jan 26 20:47:39 2011]
  */
 
 /*
