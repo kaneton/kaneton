@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       julien quintard   [wed jan 26 21:49:44 2011]
+ * updated       julien quintard   [thu jan 27 13:24:51 2011]
  */
 
 #ifndef ARCHITECTURE_CONTEXT_H
@@ -30,7 +30,8 @@
  * steps:
  *
  * 1) push all the registers on the current stack i.e the pile, hence
- *    saving their values.
+ *    saving their values. this set of values correspond to the as_context
+ *    structure.
  * 2) push the DS - Data Segment selector.
  * 3) save the current CR3 i.e PDBR in _architecture.thread.pdbr.
  * 4) retrieve the error code. note that this code is not always present

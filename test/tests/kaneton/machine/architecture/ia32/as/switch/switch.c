@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.c
+ * file          /home/mycure/kane...ture/ia32/educational/as/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun jan 16 14:36:35 2011]
+ * updated       julien quintard   [thu jan 27 14:42:20 2011]
  */
 
 /*
@@ -38,13 +38,15 @@ void			test_architecture_as_switch(void)
   i_segment		seg;
   i_region		reg;
   t_vaddr		addr;
-  o_as*			o;
+  o_as*			ko;
   t_paddr		kdir;
+  at_cr3		kpdbr;
+  o_as*			o;
   t_paddr		dir;
+  at_cr3		pdbr;
   int*			ptr1;
   int*			ptr2;
   o_region*		r;
-  at_cr3		pdbr;
 
   TEST_ENTER();
 
@@ -86,18 +88,24 @@ void			test_architecture_as_switch(void)
 		  &addr) != ERROR_OK)
     TEST_ERROR("[map_reserve] error");
 
-  if (as_get(_kernel->as, &o) != ERROR_OK)
+  ptr1 = (int*)r->address;
+  ptr2 = (int*)addr;
+
+  if (as_get(_kernel->as, &ko) != ERROR_OK)
     TEST_ERROR("[as_get] error");
 
-  kdir = o->machine.pd;
+  kdir = ko->machine.pd;
+
+  if (architecture_paging_pdbr(kdir,
+			       ARCHITECTURE_REGISTER_CR3_PCE |
+			       ARCHITECTURE_REGISTER_CR3_PWB,
+			       &kpdbr) != ERROR_OK)
+    TEST_ERROR("[architecture_paging_pdbr] error");
 
   if (as_get(as, &o) != ERROR_OK)
     TEST_ERROR("[as_get] error");
 
   dir = o->machine.pd;
-
-  ptr1 = (int*)r->address;
-  ptr2 = (int*)addr;
 
   if (architecture_paging_pdbr(dir,
 			       ARCHITECTURE_REGISTER_CR3_PCE |
@@ -105,26 +113,14 @@ void			test_architecture_as_switch(void)
 			       &pdbr) != ERROR_OK)
     TEST_ERROR("[architecture_paging_pdbr] error");
 
-  if (architecture_paging_import(NULL, /* we can do that but it is not wise */
-				 pdbr) != ERROR_OK)
-    TEST_ERROR("[architecture_paging_import] error: unable to activate "
-	       "the task's address space");
+  ARCHITECTURE_LCR3(pdbr);
 
   *ptr1 = 0x41424344;
   i = *ptr1;
   *ptr2 = 0x40414243;
   j = *ptr2;
 
-  if (architecture_paging_pdbr(kdir,
-			       ARCHITECTURE_REGISTER_CR3_PCE |
-			       ARCHITECTURE_REGISTER_CR3_PWB,
-			       &pdbr) != ERROR_OK)
-    TEST_ERROR("[architecture_paging_pdbr] error");
-
-  if (architecture_paging_import((at_pd)kdir, /* because of identity mapping */
-				 pdbr) != ERROR_OK)
-    TEST_ERROR("[architecture_paging_import] error: unable to activate "
-	       "the kernel's address space");
+  ARCHITECTURE_LCR3(kpdbr);
 
   if (i != 0x41424344)
     TEST_ERROR("the data written through the kernel address space is invalid "

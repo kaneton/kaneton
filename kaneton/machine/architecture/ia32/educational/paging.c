@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/educational/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       julien quintard   [mon jan 17 15:47:07 2011]
+ * updated       julien quintard   [thu jan 27 14:37:02 2011]
  */
 
 /*

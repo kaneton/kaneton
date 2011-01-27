@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [wed jan 26 20:47:39 2011]
+ * updated       julien quintard   [thu jan 27 13:27:18 2011]
  */
 
 /*
@@ -271,8 +271,8 @@ t_error			glue_thread_store(i_thread		id,
    * 1)
    */
 
-  if (architecture_context_set(id, &ctx) != ERROR_OK)
-    MACHINE_ESCAPE("unable to update the IA32 context");
+  if (architecture_context_get(id, &ctx) != ERROR_OK)
+    MACHINE_ESCAPE("unable to retrieve the IA32 context");
 
   /*
    * 2)

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [wed jan 26 21:46:58 2011]
+ * updated       julien quintard   [thu jan 27 15:12:06 2011]
  */
 
 /*
@@ -448,6 +448,8 @@ t_error			ia32_context_ring0_stack(void)
 
       // XXX et ca c'est surement un hack car dans context switch on
       // va faire un -= sizeof(...) donc on contrecarre ici.
+      // XXX de plus c'est necessaire pour le context_get() qui pense que
+      // pile.esp pointe au haut de la pile.
       othread->machine.pile.esp += sizeof (as_context);
     }
 
@@ -556,6 +558,7 @@ t_error			architecture_context_switch(i_thread	current,
    * 8)
    */
 
+  // XXX peut etre ici prendre la stack dans le cas d'un thread kernel?
   _architecture.thread.pile.esp = to->machine.pile.esp - sizeof (as_context);
 
   /*
@@ -571,6 +574,8 @@ t_error			architecture_context_switch(i_thread	current,
    * 10)
    */
 
+  // XXX inutile de faire ca pour un thread kernel puisque SS0 et ESP0 ne
+  // seront pas utilises!
   if (architecture_tss_update(tss,
 			      selector,
 			      to->machine.pile.esp,
@@ -762,6 +767,10 @@ t_error			architecture_context_set(i_thread	id,
   /*
    * 2)
    */
+
+  // XXX ici on peut utiliser _architecture.thread.pile.esp qui pointe deja
+  // XXX sur le context sauvegarde.
+  // XXX -> en plus ca marche pour tous les rings
 
   if (as_write(task->as,
 	       context,

@@ -7,6 +7,10 @@
 - chercher les XXX restants et en faire des TODO
 - afficher PD, GDT, IDT dans le show de glue
 
+- changer pour virer thread_stack() qui ne sert a rien et l'integrer dans
+  thread_reserve()
+- peut etre essayer de mettre event plus tot dans l'init kernel
+
 #
 # ---------- assignments ------------------------------------------------------
 #
