@@ -67,6 +67,8 @@
  * ../segment.c
  */
 
+t_error			glue_segment_dump(void);
+
 t_error			glue_segment_read(i_segment		segid,
 					  t_paddr		offs,
 					  void*			buff,

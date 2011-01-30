@@ -156,9 +156,9 @@ t_error			ia32_gdt_build(t_uint16			entries,
    * 2)
    */
 
-  if (base % sizeof(t_ia32_gdte))
+  if (base % sizeof (t_ia32_gdte))
     {
-      base += sizeof(t_ia32_gdte) - (base % sizeof(t_ia32_gdte));
+      base += sizeof (t_ia32_gdte) - (base % sizeof (t_ia32_gdte));
     }
 
   /*
@@ -174,7 +174,7 @@ t_error			ia32_gdt_build(t_uint16			entries,
 
   if (clear)
     {
-      memset(gdt->descriptor, 0, entries * sizeof(t_ia32_gdte));
+      memset(gdt->descriptor, 0, entries * sizeof (t_ia32_gdte));
     }
 
   return ERROR_NONE;
@@ -198,7 +198,7 @@ t_error			ia32_gdt_activate(t_ia32_gdt		new_gdt)
    */
 
   gdtr.address = (t_paddr)new_gdt.descriptor;
-  gdtr.size = new_gdt.count * sizeof(t_ia32_gdte);
+  gdtr.size = new_gdt.count * sizeof (t_ia32_gdte);
   LGDT(gdtr);
 
   /*
@@ -237,7 +237,7 @@ t_error			ia32_gdt_import(t_ia32_gdt*		gdt)
    * 2)
    */
 
-  if (sgdtr.size > gdt->count * sizeof(t_ia32_gdte))
+  if (sgdtr.size > gdt->count * sizeof (t_ia32_gdte))
     return ERROR_UNKNOWN;
 
   /*

@@ -39,7 +39,7 @@ void			test_core_set_stack_07(void)
    * reserve
    */
 
-  if (set_reserve(stack, SET_OPTION_ALLOCATE, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(stack, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*

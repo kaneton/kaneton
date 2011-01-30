@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/tss.c
  *
  * created       renaud voltz   [mon apr 10 01:01:34 2006]
- * updated       julien quintard   [mon jan 17 13:31:11 2011]
+ * updated       julien quintard   [sat jan 29 10:55:16 2011]
  */
 
 /*
@@ -41,6 +41,33 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * this function builds an initial tss.
+ *
+ * steps:
+ *
+ * 1) set the TSS.
+ * 2) initialize its memory.
+ */
+
+t_error			architecture_tss_build(t_vaddr		address,
+					       as_tss**		tss)
+{
+  /*
+   * 1)
+   */
+
+  *tss = (as_tss*)address;
+
+  /*
+   * 2)
+   */
+
+  memset(*tss, 0x0, sizeof (as_tss));
+
+  MACHINE_LEAVE();
+}
 
 /*
  * this function updates the given TSS according to the given parameters.
@@ -105,7 +132,7 @@ t_error			architecture_tss_activate(as_tss*	tss)
    */
 
   if (architecture_gdt_reserve((t_paddr)tss,
-			       sizeof(as_tss),
+			       sizeof (as_tss),
 			       ARCHITECTURE_GDTE_DPL_SET(
 			         ARCHITECTURE_PRIVILEGE_RING0) |
 			       ARCHITECTURE_GDTE_TSS,

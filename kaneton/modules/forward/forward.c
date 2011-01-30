@@ -125,7 +125,7 @@ t_error			module_forward_flush(void)
 
   memset(_module_forward.buffer,
 	 0x0,
-	 sizeof(_module_forward.buffer));
+	 sizeof (_module_forward.buffer));
 
   MODULE_LEAVE();
 }
@@ -152,7 +152,7 @@ void			module_forward_character(char		c)
    * 2)
    */
 
-  if ((_module_forward.size >= (sizeof(_module_forward.buffer) - 1)) ||
+  if ((_module_forward.size >= (sizeof (_module_forward.buffer) - 1)) ||
       (c == '\n'))
     module_forward_flush();
 }

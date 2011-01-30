@@ -1457,7 +1457,7 @@ t_error			segment_reserve(i_as			asid,
    * 2)
    */
 
-  if ((o = malloc(sizeof(o_segment))) == NULL)
+  if ((o = malloc(sizeof (o_segment))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the segment object");
 
   /*
@@ -1818,7 +1818,7 @@ t_error			segment_initialize(t_paddr		base,
 
   if (set_reserve(bpt,
 		  SET_OPTION_SORT | SET_OPTION_FREE,
-		  sizeof(o_segment),
+		  sizeof (o_segment),
 		  SEGMENT_BPT_NODESZ,
 		  &_segment->segments) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the segments set");

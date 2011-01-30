@@ -41,7 +41,7 @@ void			test_core_set_pipe_06(void)
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -129,7 +129,7 @@ void			test_core_set_pipe_06(void)
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -185,12 +185,12 @@ void			test_core_set_pipe_06(void)
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_FREE, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_FREE, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 10; i++)
     {
-      t_id*	o = malloc(sizeof(t_id));
+      t_id*	o = malloc(sizeof (t_id));
 
       *o = i * 10;
 

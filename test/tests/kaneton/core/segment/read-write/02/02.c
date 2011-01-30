@@ -46,7 +46,7 @@ void			test_core_segment_readwrite_02(void)
   if (segment_read(seg,
 		   2 * ___kaneton$pagesz,
 		   buff,
-		   sizeof(t_uint32)) == ERROR_OK)
+		   sizeof (t_uint32)) == ERROR_OK)
     TEST_ERROR("[segment_read] error: out of bound");
 
   if (segment_read(seg, 0, buff, 2 * ___kaneton$pagesz) == ERROR_OK)
@@ -55,7 +55,7 @@ void			test_core_segment_readwrite_02(void)
   if (segment_write(seg,
 		    2 * ___kaneton$pagesz,
 		    buff,
-		    sizeof(t_uint32)) == ERROR_OK)
+		    sizeof (t_uint32)) == ERROR_OK)
     TEST_ERROR("[segment_write] error: out of bound");
 
   if (segment_write(seg, 0, buff, 2 * ___kaneton$pagesz) == ERROR_OK)

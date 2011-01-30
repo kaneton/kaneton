@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [thu jan 27 14:44:37 2011]
+ * updated       julien quintard   [sun jan 30 12:16:07 2011]
  */
 
 /*
@@ -125,16 +125,6 @@ void			kaneton(s_init*				init)
 
   assert(kernel_initialize() == ERROR_OK);
 
-  // XXX
-  /*
-  {
-    test_architecture_as_switch();
-    printf("BACK\n");
-    while (1);
-  }
-  */
-  // XXX
-
   /*
    * 6)
    */
@@ -213,13 +203,11 @@ void			kaneton(s_init*				init)
  *    that the inputs are mapped so that the physical and virtual addresses
  *    match, method referred to as identity mapping.
  * 5) reserve a thread.
- * 6) set up the thread stack.
- * 7) initialize the thread context, especially the entry point.
- * 8) builds an arguments array containing the address of the inputs array.
+ * 6) builds an arguments array containing the address of the inputs array.
  *    place these arguments so that the thread can retrieve them in the
  *    main() function.
- * 9) set the task as running.
- * 10) start the thread.
+ * 7) set the task as running.
+ * 8) start the thread.
  */
 
 t_error			kaneton_spawn(void)
@@ -227,11 +215,8 @@ t_error			kaneton_spawn(void)
   i_thread		thread;
   i_region		region;
   i_segment		segment;
-  s_stack		stack;
   i_task		task;
-  s_thread_context	ctx;
   i_as			as;
-  o_thread*		o;
   struct
   {
     i_task		task;
@@ -294,34 +279,16 @@ t_error			kaneton_spawn(void)
    * 5)
    */
 
-  if (thread_reserve(task, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(task,
+		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+		     THREAD_STACK_SIZE,
+		     _init->sentry,
+		     &thread) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a thread");
 
   /*
    * 6)
-   */
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ;
-
-  if (thread_stack(thread, stack) != ERROR_OK)
-    CORE_ESCAPE("unable to set up the thread's stack");
-
-  /*
-   * 7)
-   */
-
-  if (thread_get(thread, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the thread object");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = _init->sentry;
-
-  if (thread_load(thread, ctx) != ERROR_OK)
-    CORE_ESCAPE("unable to load the initial thread's context");
-
-  /*
-   * 8)
    */
 
   arguments.task = task;
@@ -334,14 +301,14 @@ t_error			kaneton_spawn(void)
     CORE_ESCAPE("unable to pass arguments to the thread");
 
   /*
-   * 9)
+   * 7)
    */
 
   if (task_start(task) != ERROR_OK)
     CORE_ESCAPE("unable to start the task");
 
   /*
-   * 10)
+   * 8)
    */
 
   if (thread_start(thread) != ERROR_OK)

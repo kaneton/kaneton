@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 13:03:51 2010]
+ * updated       julien quintard   [thu jan 27 22:56:19 2011]
  */
 
 /*
@@ -79,9 +79,6 @@ void			test_core_thread_wait_02_thread_02(void)
 
 void			test_core_thread_wait_02(void)
 {
-  o_thread*		o;
-  s_thread_context	ctx;
-  s_stack		stack;
   i_cpu			cpu;
 
   TEST_ENTER();
@@ -92,23 +89,11 @@ void			test_core_thread_wait_02(void)
 
   if (thread_reserve(_kernel->task,
 		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_thread_wait_02_thread_01,
 		     (i_thread*)&thread1) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread1, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread1, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_thread_wait_02_thread_01;
-
-  if (thread_load(thread1, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (thread_start(thread1) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
@@ -119,23 +104,11 @@ void			test_core_thread_wait_02(void)
 
   if (thread_reserve(_kernel->task,
 		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_thread_wait_02_thread_02,
 		     (i_thread*)&thread2) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread2, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread2, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_thread_wait_02_thread_02;
-
-  if (thread_load(thread2, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (thread_start(thread2) != ERROR_OK)
     TEST_ERROR("[thread_start] error");

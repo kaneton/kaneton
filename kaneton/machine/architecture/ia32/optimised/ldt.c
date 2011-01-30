@@ -125,9 +125,9 @@ t_error			ia32_ldt_build(t_uint16			entries,
    * 2)
    */
 
-  if (base % sizeof(t_ia32_ldte))
+  if (base % sizeof (t_ia32_ldte))
     {
-      base += sizeof(t_ia32_ldte) - (base % sizeof(t_ia32_ldte));
+      base += sizeof (t_ia32_ldte) - (base % sizeof (t_ia32_ldte));
     }
   /*
    * 3)
@@ -141,7 +141,7 @@ t_error			ia32_ldt_build(t_uint16			entries,
    */
 
   seg.base = base;
-  seg.limit = entries * sizeof(t_ia32_ldte);
+  seg.limit = entries * sizeof (t_ia32_ldte);
   seg.privilege = ia32_prvl_supervisor;
   seg.is_system = 1;
   seg.type.sys = ia32_type_ldt;
@@ -156,7 +156,7 @@ t_error			ia32_ldt_build(t_uint16			entries,
 
   if (clear)
     {
-      memset(ldt->descriptor, 0, entries * sizeof(t_ia32_ldte));
+      memset(ldt->descriptor, 0, entries * sizeof (t_ia32_ldte));
     }
 
   return ERROR_NONE;

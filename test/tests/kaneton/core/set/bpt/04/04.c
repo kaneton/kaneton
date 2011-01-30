@@ -41,7 +41,7 @@ void			test_core_set_bpt_04(void)
 
   if (set_reserve(bpt,
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
-                  sizeof(t_id),
+                  sizeof (t_id),
 		  ___kaneton$pagesz,
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");

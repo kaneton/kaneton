@@ -43,7 +43,7 @@ void			test_core_set_bpt_08(void)
 
   if (set_reserve(bpt,
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
-		  sizeof(t_id),
+		  sizeof (t_id),
 		  ___kaneton$pagesz,
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
@@ -135,7 +135,7 @@ void			test_core_set_bpt_08(void)
 
   if (set_reserve(bpt,
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
-		  sizeof(t_id),
+		  sizeof (t_id),
 		  ___kaneton$pagesz,
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
@@ -195,14 +195,14 @@ void			test_core_set_bpt_08(void)
 
   if (set_reserve(bpt,
 		  SET_OPTION_SORT | SET_OPTION_FREE,
-		  sizeof(t_id),
+		  sizeof (t_id),
 		  ___kaneton$pagesz,
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 10; i++)
     {
-      t_id*	o = malloc(sizeof(t_id));
+      t_id*	o = malloc(sizeof (t_id));
 
       *o = i * 10;
 

@@ -41,7 +41,7 @@ void			test_core_set_ll_04(void)
 
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE,
-                  sizeof(t_id),
+                  sizeof (t_id),
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 

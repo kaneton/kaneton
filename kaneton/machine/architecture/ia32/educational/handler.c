@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [wed jan 26 20:50:11 2011]
+ * updated       julien quintard   [sun jan 30 12:26:08 2011]
  */
 
 /*
@@ -66,9 +66,6 @@ extern m_kernel*	_kernel;
  */
 
 extern am		_architecture;
-
-// XXX
-int _XXX;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -321,7 +318,7 @@ t_error			architecture_handler_setup(void)
  *
  * steps:
  *
- * 1) XXX
+ * 1) locate the context within the interrupted thread's address space.
  * 2) retrieve the current thread identifier.
  * 3) retrieve the current context.
  * 4) display the interrupt information and context.
@@ -337,12 +334,6 @@ void			architecture_handler_spurious(t_uint32	n)
   o_task*		task;
   t_uint32		stack[8];
   as_context		ctx;
-
-  /*
-   * 1)
-   */
-
-  assert(ia32_context_ring0_stack() == ERROR_OK);
 
   /*
    * 2)
@@ -393,7 +384,7 @@ void			architecture_handler_spurious(t_uint32	n)
    * 6)
    */
 
-  assert(as_read(task->as, ctx.esp, sizeof(stack), stack) == ERROR_OK);
+  assert(as_read(task->as, ctx.esp, sizeof (stack), stack) == ERROR_OK);
 
   /*
    * 7)
@@ -412,7 +403,7 @@ void			architecture_handler_spurious(t_uint32	n)
  *
  * steps:
  *
- * 1) XXX
+ * 1) locate the context within the interrupted thread's address space.
  * 2) if this event has not been registered, trigger a spurious interrupt.
  * 3) retrieve the event object.
  * 4) set the exception error code in case the high-level handler needs it.
@@ -430,7 +421,7 @@ void			architecture_handler_exception(t_uint32	n,
    * 1)
    */
 
-  assert(ia32_context_ring0_stack() == ERROR_OK);
+  assert(architecture_context_locate() == ERROR_OK);
 
   /*
    * 2)
@@ -475,7 +466,7 @@ void			architecture_handler_exception(t_uint32	n,
  *
  * steps:
  *
- * 1) XXX
+ * 1) locate the context within the interrupted thread's address space.
  * 2) if this event has not been registered, trigger a spurious interrupt.
  * 3) retrieve the event object.
  * 4) notify the event manager so that the high-level handler gets triggered.
@@ -491,7 +482,7 @@ void			architecture_handler_irq(t_uint32	n)
    * 1)
    */
 
-  assert(ia32_context_ring0_stack() == ERROR_OK);
+  assert(architecture_context_locate() == ERROR_OK);
 
   /*
    * 2)
@@ -530,7 +521,7 @@ void			architecture_handler_irq(t_uint32	n)
  *
  * steps:
  *
- * 1) XXX
+ * 1) locate the context within the interrupted thread's address space.
  * 2) if this event has not been registered, trigger a spurious interrupt.
  * 3) retrieve the event object.
  * 4) notify the event manager so that the high-level handler gets triggered.
@@ -545,7 +536,7 @@ void			architecture_handler_syscall(t_uint32	n)
    * 1)
    */
 
-  assert(ia32_context_ring0_stack() == ERROR_OK);
+  assert(architecture_context_locate() == ERROR_OK);
 
   /*
    * 2)

@@ -41,7 +41,7 @@ void			test_core_set_ll_09(void)
    * reserve
    */
 
-  if (set_reserve(ll, SET_OPTION_SORT, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(ll, SET_OPTION_SORT, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*

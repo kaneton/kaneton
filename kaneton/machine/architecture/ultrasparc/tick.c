@@ -52,7 +52,7 @@ void			tick_calibrate(void)
       if (!strcmp(name, "cpu"))
 	{
 	  if (ofw_getprop(node, "clock-frequency", &clock_frequency,
-			  sizeof(clock_frequency), NULL) != ERROR_NONE)
+			  sizeof (clock_frequency), NULL) != ERROR_NONE)
 	    continue;
 
 	  printf("CPU clock frequency: %ld\n", clock_frequency);

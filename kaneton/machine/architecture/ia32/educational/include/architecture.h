@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../ia32/educational/include/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       julien quintard   [mon jan 17 16:02:10 2011]
+ * updated       julien quintard   [sun jan 30 13:03:56 2011]
  */
 
 #ifndef ARCHITECTURE_ARCHITECTURE_H
@@ -74,7 +74,7 @@
  */
 
 /*
- * this structure represents the architecture-manager-specific information,
+ * this structure contains the architecture-manager-specific information,
  * especially regarding the whole interrupt and context switch mechanism.
  *
  * the manager's attributes have the particularity to be placed at a very
@@ -86,7 +86,10 @@
  * treated.
  *
  * this particularity explains why these attributes have not been included
- * in the kernel manager's machine-specific data structure.
+ * in the kernel manager's machine-specific data structure i.e
+ * _kernel.machine.*.
+ *
+ * the following details the attributes embedded in this structure.
  *
  * the 'kernel.ds' attribute (@am_handler + 0) represents the kernel DS - Data
  * Segment selector. this selector is required in order to indicate the
@@ -102,20 +105,37 @@
  * interrupts. this stack is located within the kernel and is jumped on once
  * the interrupt shell has switched the address space to the kernel's.
  *
- * the 'kernel.kis.esp' (@ + 10) contains the stack pointer within the
- * KIS - Kernel Interrupt Stack.
+ * this 'kernel.kis.size' contains the size of the KIS - Kernel Interrupt
+ * Stack.
  *
- * the 'thread.pdbr' attribute (@ + 14) contains the PDBR of the thread
+ * the 'kernel.kis.pointer' (@ + 14) contains the stack pointer within the
+ * KIS - Kernel Interrupt Stack. whenever an interrupt is to be treated, the
+ * CPU stack pointer is placed at the address i.e within the KIS.
+ *
+ * the 'thread.pdbr' attribute (@ + 18) contains the PDBR of the thread
  * which has been interrupted.
  *
- * the 'thread.pile.esp' attribute (@ + 18) contains the value of the ESP
- * register i.e the pointer within the thread's pile.
+ * the 'thread.pointer' attribute (@ + 22) contains the value of the ESP
+ * register. note that this value references either the interrupted thread's
+ * stack or pile depending on its privileges. indeed, while the context
+ * of ring0 threads is stored in their current stack (no privilege change),
+ * it is stored in the pile for threads from other rings.
+ *
+ * note that the 'thread.*' attributes represent either the state of the
+ * thread which has just been interrupted or of the thread which is about
+ * to be resumed. indeed, while the ARCHITECTURE_CONTEXT_SAVE() macro-function
+ * updates these attributes, the ARCHITECTURE_CONTEXT_RESTORE() uses them
+ * in order to know which thread to resume. therefore, the process of
+ * context switching comes down to updating two attributes: thread.pdbr and
+ * thread.pointer.
  *
  * finally, the 'error' attribute represents the error code which the CPU
  * pushes on the stack for some exceptions.
  *
- * XXX careful not to change the order, save/restore context will break
- * XXX set the error directly within the shell
+ * note that this structure is accessed by the ARCHITECTURE_CONTEXT_SAVE()
+ * and ARCHITECTURE_CONTEXT_RESTORE() macro-functions, in assembly. since
+ * the position of the attributes matter, please take care to adjust the
+ * macro-functions according to your modifications.
  */
 
 typedef struct
@@ -128,21 +148,35 @@ typedef struct
     struct
     {
       t_vaddr		base;
-      t_reg32		esp;
+      t_vsize		size;
+      t_reg32		pointer;
     }			kis;
   }			__attribute__ ((packed)) kernel;
 
   struct
   {
     at_cr3		pdbr;
-
-    struct
-    {
-      t_reg32		esp;
-    }			__attribute__ ((packed)) pile;
+    t_reg32		pointer;
   }			__attribute__ ((packed)) thread;
 
   t_uint32		error;
 }			__attribute__ ((packed)) am;
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../architecture.c
+ */
+
+/*
+ * ../architecture.c
+ */
+
+t_error			architecture_dump(void);
+
+
+/*
+ * eop
+ */
 
 #endif

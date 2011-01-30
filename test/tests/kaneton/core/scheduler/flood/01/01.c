@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/scheduler/flood/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 12:04:10 2010]
+ * updated       julien quintard   [thu jan 27 22:30:44 2011]
  */
 
 /*
@@ -55,9 +55,6 @@ void			test_core_scheduler_flood_01_thread(void)
 void			test_core_scheduler_flood_01_content(void)
 {
   i_thread		thread;
-  s_thread_context	ctx;
-  s_stack		stack;
-  o_thread*		t;
   t_uint32		i;
   s_clock		clock;
   t_uint64		start;
@@ -69,23 +66,13 @@ void			test_core_scheduler_flood_01_content(void)
 
   for (i = 0; i < 25; i++)
     {
-      if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
+      if (thread_reserve(_kernel->task,
+			 THREAD_PRIORITY,
+			 THREAD_STACK_ADDRESS_NONE,
+			 THREAD_STACK_SIZE_LOW,
+			 (t_vaddr)test_core_scheduler_flood_01_thread,
+			 &thread) != ERROR_OK)
 	TEST_HANG("[thread_reserve] error");
-
-      stack.base = 0;
-      stack.size = THREAD_STACKSZ_LOW;
-
-      if (thread_stack(thread, stack) != ERROR_OK)
-	TEST_HANG("[thread_stack] error");
-
-      if (thread_get(thread, &t) != ERROR_OK)
-	TEST_HANG("[thread_get] error");
-
-      ctx.sp = t->stack + t->stacksz - 16;
-      ctx.pc = (t_vaddr)test_core_scheduler_flood_01_thread;
-
-      if (thread_load(thread, ctx) != ERROR_OK)
-	TEST_HANG("[thread_load] error");
 
       if (thread_start(thread) != ERROR_OK)
 	TEST_HANG("[thread_start] error");
@@ -138,28 +125,15 @@ void			test_core_scheduler_flood_01_content(void)
 void			test_core_scheduler_flood_01(void)
 {
   i_thread		thread;
-  s_thread_context	ctx;
-  s_stack		stack;
-  o_thread*		t;
   i_cpu			cpu;
 
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_scheduler_flood_01_content,
+		     &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread, &t) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = t->stack + t->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_scheduler_flood_01_content;
-
-  if (thread_load(thread, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");

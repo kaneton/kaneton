@@ -132,8 +132,8 @@ t_error			ia32_idt_build(t_uint16		entries,
    * 2)
    */
 
-  if (base % sizeof(t_ia32_idte))
-    base += sizeof(t_ia32_idte) - (base % sizeof(t_ia32_idte));
+  if (base % sizeof (t_ia32_idte))
+    base += sizeof (t_ia32_idte) - (base % sizeof (t_ia32_idte));
 
   /*
    * 3)
@@ -147,7 +147,7 @@ t_error			ia32_idt_build(t_uint16		entries,
    */
 
   if (clear)
-    memset(table->descriptor, 0, entries * sizeof(t_ia32_idte));
+    memset(table->descriptor, 0, entries * sizeof (t_ia32_idte));
 
   return ERROR_NONE;
 }
@@ -179,7 +179,7 @@ t_error			ia32_idt_activate(t_ia32_idt*		table)
    */
 
   idtr.address = (t_paddr)ia32_idt.descriptor;
-  idtr.size = ia32_idt.count * sizeof(t_ia32_idte);
+  idtr.size = ia32_idt.count * sizeof (t_ia32_idte);
   LIDT(idtr);
 
   return ERROR_NONE;
@@ -211,7 +211,7 @@ t_error			ia32_idt_import(t_ia32_idt*		table)
    * 2
    */
 
-  if (sidtr.size > table->count * sizeof(t_ia32_idte))
+  if (sidtr.size > table->count * sizeof (t_ia32_idte))
     return ERROR_UNKNOWN;
 
   /*

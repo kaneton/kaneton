@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [wed jan 26 20:50:31 2011]
+ * updated       julien quintard   [sun jan 30 13:31:12 2011]
  */
 
 /*
@@ -28,6 +28,12 @@
  */
 
 /*
+ * the event manager.
+ */
+
+extern m_event*		_event;
+
+/*
  * the architecture manager.
  */
 
@@ -44,7 +50,7 @@ extern am		_architecture;
 d_event			glue_event_dispatch =
   {
     NULL,
-    NULL,
+    glue_event_dump,
     NULL,
     glue_event_enable,
     glue_event_disable,
@@ -136,6 +142,34 @@ void			glue_event_pagefault(t_id		id,
 
   while (1)
     ;
+}
+
+/*
+ * this function displays additional machine-specific information on
+ * the event manager.
+ *
+ * steps:
+ *
+ * 1) display the machine-specific attributes.
+ */
+
+t_error			glue_event_dump(void)
+{
+  /*
+   * 1)
+   */
+
+  module_call(console, message,
+	      '#',
+	      "  machine:\n");
+
+  module_call(console, message,
+	      '#',
+	      "    idt: table(0x%x) size(0x%x)\n",
+	      _event->machine.idt.table,
+	      _event->machine.idt.size);
+
+  MACHINE_LEAVE();
 }
 
 /*

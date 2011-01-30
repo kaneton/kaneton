@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [mon jan 17 16:55:47 2011]
+ * updated       julien quintard   [sun jan 30 12:32:44 2011]
  */
 
 #ifndef GLUE_THREAD_H
@@ -92,17 +92,33 @@
  * indeed, whenever an interrupt or exception is triggered, the
  * thread's context is stored on the thread's pile i.e not its stack.
  *
- * note that terms have been introduced in order to distinguish the
- * thread's stack i.e 'stack' with its kernel stack i.e 'pile'.
+ * however, a special case exists for ring0 threads i.e kernel threads.
+ * when these threads are interrupted, their context is stored on the
+ * current stack since no change in privilege occurs.
+ *
+ * the 'context' attribute contains the location, within the thread's
+ * address space, of the thread's IA32 context. this context, depending on
+ * the thread's privilege, can be located either on the stack or the pile.
+ *
+ * note that the 'stack.pointer' and 'pile.pointer' are static values---i.e
+ * do not change over time---referencing the top of the stack/pile.
  */
 
 #define         machine_data_o_thread()					\
   struct								\
   {									\
+    t_vaddr		context;					\
+									\
+    struct								\
+    {									\
+      t_vaddr		pointer;					\
+    }			stack;						\
+									\
     struct								\
     {									\
       t_vaddr		base;						\
-      t_reg32		esp;						\
+      t_vsize		size;						\
+      t_vaddr		pointer;					\
     }			pile;						\
   }			machine;
 
@@ -128,7 +144,13 @@ t_error			glue_thread_show(i_thread		id,
 t_error			glue_thread_dump(void);
 
 t_error			glue_thread_reserve(i_task		task,
-					    i_thread*		thread);
+					    t_priority		priority,
+					    t_vaddr		stack,
+					    t_vsize		stacksz,
+					    t_vaddr		entry,
+					    i_thread*		id);
+
+t_error			glue_thread_release(i_thread		id);
 
 t_error			glue_thread_load(i_thread		id,
 					 s_thread_context	context);

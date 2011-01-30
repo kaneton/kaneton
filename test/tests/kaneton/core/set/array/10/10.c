@@ -39,7 +39,7 @@ void			test_core_set_array_10(void)
    * reserve
    */
 
-  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*

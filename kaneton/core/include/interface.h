@@ -54,17 +54,13 @@
 #define INTERFACE_TASK_ATTRIBUTE_PRIORITY 57
 #define INTERFACE_TASK_ATTRIBUTE_AS 58
 #define INTERFACE_TASK_ATTRIBUTE_SCHED 59
-#define INTERFACE_THREAD_RESERVE 63
 #define INTERFACE_THREAD_RELEASE 64
 #define INTERFACE_THREAD_PRIORITY 65
-#define INTERFACE_THREAD_STACK 67
 #define INTERFACE_THREAD_LOAD 68
 #define INTERFACE_THREAD_STORE 69
 #define INTERFACE_THREAD_ATTRIBUTE_TASK 70
 #define INTERFACE_THREAD_ATTRIBUTE_PRIORITY 71
 #define INTERFACE_THREAD_ATTRIBUTE_STATE 72
-#define INTERFACE_THREAD_ATTRIBUTE_STACK 74
-#define INTERFACE_THREAD_ATTRIBUTE_STACKSZ 75
 #define INTERFACE_TIMER_RESERVE 76
 #define INTERFACE_TIMER_RELEASE 77
 #define INTERFACE_TIMER_ATTRIBUTE_DELAY 81
@@ -314,11 +310,6 @@ typedef struct
 	}		task_attribute_sched;
 	struct
 	{
-	  i_task	arg1;
-	  t_priority	arg2;
-	}		thread_reserve;
-	struct
-	{
 	  t_id	arg1;
 	}		thread_release;
 	struct
@@ -326,11 +317,6 @@ typedef struct
 	  t_id	arg1;
 	  t_priority	arg2;
 	}		thread_priority;
-	struct
-	{
-	  t_id	arg1;
-	  s_stack	arg2;
-	}		thread_stack;
 	struct
 	{
 	  t_id	arg1;
@@ -352,14 +338,6 @@ typedef struct
 	{
 	  t_id	arg1;
 	}		thread_attribute_state;
-	struct
-	{
-	  t_id	arg1;
-	}		thread_attribute_stack;
-	struct
-	{
-	  t_id	arg1;
-	}		thread_attribute_stacksz;
 	struct
 	{
 	  t_type	arg1;
@@ -493,10 +471,6 @@ typedef struct
 	}		task_attribute_sched;
 	struct
 	{
-	  i_thread	result1;
-	}		thread_reserve;
-	struct
-	{
 	  s_thread_context	result1;
 	}		thread_store;
 	struct
@@ -511,14 +485,6 @@ typedef struct
 	{
 	  t_state	result1;
 	}		thread_attribute_state;
-	struct
-	{
-	  t_vaddr	result1;
-	}		thread_attribute_stack;
-	struct
-	{
-	  t_vsize	result1;
-	}		thread_attribute_stacksz;
 	struct
 	{
 	  i_timer	result1;
@@ -629,13 +595,9 @@ t_error		interface_task_attribute_as(o_syscall*	message);
 
 t_error		interface_task_attribute_sched(o_syscall*	message);
 
-t_error		interface_thread_reserve(o_syscall*	message);
-
 t_error		interface_thread_release(o_syscall*	message);
 
 t_error		interface_thread_priority(o_syscall*	message);
-
-t_error		interface_thread_stack(o_syscall*	message);
 
 t_error		interface_thread_load(o_syscall*	message);
 
@@ -646,10 +608,6 @@ t_error		interface_thread_attribute_task(o_syscall*	message);
 t_error		interface_thread_attribute_priority(o_syscall*	message);
 
 t_error		interface_thread_attribute_state(o_syscall*	message);
-
-t_error		interface_thread_attribute_stack(o_syscall*	message);
-
-t_error		interface_thread_attribute_stacksz(o_syscall*	message);
 
 t_error		interface_timer_reserve(o_syscall*	message);
 

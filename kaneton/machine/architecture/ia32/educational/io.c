@@ -65,7 +65,7 @@ t_error			architecture_io_clear(i_task		task)
    * 2)
    */
 
-  memset(&o->machine.io.map, 0xFF, sizeof(o->machine.io.map));
+  memset(&o->machine.io.map, 0xFF, sizeof (o->machine.io.map));
 
   MACHINE_LEAVE();
 }
@@ -177,7 +177,7 @@ t_error			architecture_io_grant(i_task		task,
 
       memcpy(((t_uint8*)tss) + tss->io,
 	     &o->machine.io.map,
-	     sizeof(o->machine.io.map));
+	     sizeof (o->machine.io.map));
     }
   else
     {
@@ -269,7 +269,7 @@ t_error			architecture_io_deny(i_task		task,
 
       memcpy(((t_uint8*)tss) + tss->io,
 	     &o->machine.io.map,
-	     sizeof(o->machine.io.map));
+	     sizeof (o->machine.io.map));
     }
   else
     {

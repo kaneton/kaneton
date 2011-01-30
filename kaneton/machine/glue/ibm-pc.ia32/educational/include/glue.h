@@ -8,18 +8,22 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/glue.h
  *
  * created       julien quintard   [mon jun 11 05:57:15 2007]
- * updated       julien quintard   [sun dec 19 12:03:58 2010]
+ * updated       julien quintard   [sun jan 30 13:19:50 2011]
  */
 
 #ifndef GLUE_GLUE_H
 #define GLUE_GLUE_H			1
 
 /*
- * ---------- includes --------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <architecture/architecture.h>
 #include <platform/platform.h>
+
+/*
+ * ---------- includes --------------------------------------------------------
+ */
 
 #include <glue/as.h>
 #include <glue/clock.h>

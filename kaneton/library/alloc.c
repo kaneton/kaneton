@@ -27,14 +27,14 @@
  */
 
 #define AREA_LIMIT(_area_)						\
-  (void*)((t_uint8*)(_area_) + sizeof(t_area) + (_area_)->size)
+  (void*)((t_uint8*)(_area_) + sizeof (t_area) + (_area_)->size)
 
 #define NEXT_CHUNK(_chunk_)						\
-  (t_chunk*)((t_uint8*)(_chunk_) + sizeof(t_chunk) + (_chunk_)->size)
+  (t_chunk*)((t_uint8*)(_chunk_) + sizeof (t_chunk) + (_chunk_)->size)
 
 #define ROUND_SIZE(_size_)						\
-  ((_size_) % sizeof(t_vaddr) ?						\
-   (_size_) + sizeof(t_vaddr) - (_size_) % sizeof(t_vaddr) :		\
+  ((_size_) % sizeof (t_vaddr) ?						\
+   (_size_) + sizeof (t_vaddr) - (_size_) % sizeof (t_vaddr) :		\
    (_size_))
 
 #define PAGED_SIZE(_size_)						\
@@ -144,15 +144,15 @@ void*			malloc(size_t				size)
 
 	      if (chunk->size > size)
 		{
-		  if (chunk->size - size < sizeof(t_chunk))
+		  if (chunk->size - size < sizeof (t_chunk))
 		    {
 		      size = chunk->size;
 		    }
 		  else
 		    {
-		      splitted = (t_chunk*)((t_uint8*)chunk + sizeof(t_chunk) +
+		      splitted = (t_chunk*)((t_uint8*)chunk + sizeof (t_chunk) +
 					    size);
-		      splitted->size = chunk->size - size - sizeof(t_chunk);
+		      splitted->size = chunk->size - size - sizeof (t_chunk);
 		      splitted->next_free = chunk->next_free;
 		      splitted->area = area;
 		      SIGN(CHUNK, splitted);
@@ -206,7 +206,7 @@ void*			malloc(size_t				size)
 	   * a)
 	   */
 
-	  pagesz = PAGED_SIZE(size + sizeof(t_area) + sizeof(t_chunk));
+	  pagesz = PAGED_SIZE(size + sizeof (t_area) + sizeof (t_chunk));
 
 	  stucked = 1;
 
@@ -239,7 +239,7 @@ void*			malloc(size_t				size)
 
       area = (t_area*)addr;
 
-      area->size = pagesz - sizeof(t_area);
+      area->size = pagesz - sizeof (t_area);
       area->prev_area = prev_area;
       area->next_area = NULL;
       SIGN(AREA, area);
@@ -259,19 +259,19 @@ void*			malloc(size_t				size)
       SIGN(CHUNK, chunk);
       allocated = chunk + 1;
 
-      if (2 * sizeof(t_chunk) + size < area->size)
+      if (2 * sizeof (t_chunk) + size < area->size)
 	{
 	  chunk->size = size;
 	  area->first_free_chunk = NEXT_CHUNK(chunk);
 	  area->first_free_chunk->area = area;
 	  area->first_free_chunk->next_free = NULL;
 	  area->first_free_chunk->size = area->size - size -
-	    2 * sizeof(t_chunk);
+	    2 * sizeof (t_chunk);
 	  SIGN(CHUNK, area->first_free_chunk);
 	}
       else
 	{
-	  chunk->size = area->size - sizeof(t_chunk);
+	  chunk->size = area->size - sizeof (t_chunk);
 	  area->first_free_chunk = NULL;
 	}
     }
@@ -387,13 +387,13 @@ void			free(void*				ptr)
     {
       next = chunk->next_free;
       chunk->next_free = next->next_free;
-      chunk->size += sizeof(t_chunk) + next->size;
+      chunk->size += sizeof (t_chunk) + next->size;
     }
 
   if (l != NULL && NEXT_CHUNK(l) == chunk)
     {
       l->next_free = chunk->next_free;
-      l->size += sizeof(t_chunk) + chunk->size;
+      l->size += sizeof (t_chunk) + chunk->size;
     }
 
   /*
@@ -401,7 +401,7 @@ void			free(void*				ptr)
    */
 
   if (area != _alloc.areas &&
-      area->first_free_chunk->size == area->size - sizeof(t_chunk))
+      area->first_free_chunk->size == area->size - sizeof (t_chunk))
     {
       area->prev_area->next_area = NULL;
 
@@ -633,7 +633,7 @@ int			alloc_init(paddr_t			addr,
    * 1)
    */
 
-  memset(&_alloc, 0x0, sizeof(t_alloc));
+  memset(&_alloc, 0x0, sizeof (t_alloc));
 
   first_area = _alloc.areas = (t_area*)addr;
 
@@ -648,7 +648,7 @@ int			alloc_init(paddr_t			addr,
    */
 
   first_chunk = (t_chunk*)(first_area + 1);
-  first_chunk->size = size - sizeof(t_area) - sizeof(t_chunk);
+  first_chunk->size = size - sizeof (t_area) - sizeof (t_chunk);
   first_chunk->next_free = NULL;
   first_chunk->area = first_area;
   SIGN(CHUNK, first_chunk);
@@ -657,7 +657,7 @@ int			alloc_init(paddr_t			addr,
    * 3)
    */
 
-  first_area->size = size - sizeof(t_area);
+  first_area->size = size - sizeof (t_area);
   first_area->first_free_chunk = first_chunk;
   first_area->prev_area = NULL;
   first_area->next_area = NULL;

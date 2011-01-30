@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/complete/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan 14 23:06:17 2011]
+ * updated       julien quintard   [thu jan 27 22:27:07 2011]
  */
 
 /*
@@ -44,9 +44,6 @@ static volatile i_thread	thread_03;
 
 void			test_core_scheduler_complete_01_thread_01(void)
 {
-  s_thread_context	ctx;
-  s_stack		stack;
-  o_thread*		t;
   i_cpu			cpu;
 
   /*
@@ -69,23 +66,11 @@ void			test_core_scheduler_complete_01_thread_01(void)
 
   if (thread_reserve(task_02,
 		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+		     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_scheduler_complete_01_thread_03,
 		     (i_thread*)&thread_03) != ERROR_OK)
     TEST_HANG("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread_03, stack) != ERROR_OK)
-    TEST_HANG("[thread_stack] error");
-
-  if (thread_get(thread_03, &t) != ERROR_OK)
-    TEST_HANG("[thread_get] error");
-
-  ctx.sp = t->stack + t->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_scheduler_complete_01_thread_03;
-
-  if (thread_load(thread_03, ctx) != ERROR_OK)
-    TEST_HANG("[thread_load] error");
 
   if (thread_start(thread_03) != ERROR_OK)
     TEST_HANG("[thread_start] error");
@@ -140,9 +125,6 @@ void			test_core_scheduler_complete_01(void)
   i_as			as;
   i_region		region;
   i_segment		segment;
-  s_thread_context	ctx;
-  s_stack		stack;
-  o_thread*		t;
   o_region*		r;
   i_cpu			cpu;
 
@@ -173,23 +155,11 @@ void			test_core_scheduler_complete_01(void)
 
   if (thread_reserve(_kernel->task,
 		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+		     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_scheduler_complete_01_thread_01,
 		     (i_thread*)&thread_01) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread_01, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread_01, &t) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = t->stack + t->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_scheduler_complete_01_thread_01;
-
-  if (thread_load(thread_01, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (thread_start(thread_01) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
@@ -223,23 +193,11 @@ void			test_core_scheduler_complete_01(void)
 
   if (thread_reserve(task_02,
 		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+		     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_scheduler_complete_01_thread_02,
 		     (i_thread*)&thread_02) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread_02, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread_02, &t) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = t->stack + t->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_scheduler_complete_01_thread_02;
-
-  if (thread_load(thread_02, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (thread_start(thread_02) != ERROR_OK)
     TEST_ERROR("[thread_start] error");

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       julien quintard   [thu jan 27 13:24:51 2011]
+ * updated       julien quintard   [sat jan 29 10:57:03 2011]
  */
 
 #ifndef ARCHITECTURE_CONTEXT_H
@@ -43,7 +43,7 @@
  *    kernel PDBR is equal to the PDBR of the interrupted thread
  *    (_architecture.thread.pdbr), do nothing. otherwise, load the kernel
  *    PDBR by changing the CPU's CR3.
- * 6) update the segment selectors DS, SS, ES, FS et GS with the kernel
+ * 6) update the segment selectors DS, ES, FS et GS with the kernel
  *    data selector since the system is now running in the kernel environment.
  * 7) save the current stack pointer i.e ESP in _architecture.thread.pile.esp.
  * 8) finally, use the KIS - Kernel Interrupt Stack by setting ESP with
@@ -70,7 +70,7 @@
 	*/								\
 									\
        "movl %cr3, %eax						\n"	\
-       "movl %eax, (_architecture + 14)				\n"	\
+       "movl %eax, (_architecture + 18)				\n"	\
 									\
        /*								\
 	* 4)								\
@@ -83,7 +83,7 @@
 	*/								\
 									\
        "movl (_architecture + 2), %eax				\n"	\
-       "cmp %eax, (_architecture + 14)				\n"	\
+       "cmp %eax, (_architecture + 18)				\n"	\
        "je 1f							\n"	\
        "movl %eax, %cr3						\n"	\
        "1:							\n"	\
@@ -102,13 +102,13 @@
 	* 7)								\
 	*/								\
 									\
-       "movl %esp, (_architecture + 18)				\n"	\
+       "movl %esp, (_architecture + 22)				\n"	\
 									\
        /*								\
 	* 8)								\
 	*/								\
 									\
-       "movl (_architecture + 10), %esp				");
+       "movl (_architecture + 14), %esp				");
 
 /*
  * this macro-function restores the context of the thread whose PDBR and pile
@@ -130,7 +130,7 @@
  *    the thread's pile i.e no longer using the KIS - Kernel Interrupt Stack.
  * 3) retrieve the DS - Data Segment selector from the pile: it has been
  *    push by ARCHITECTURE_CONTEXT_SAVE(). then, update the segment selectors
- *    DS, SS, ES, FS and GS.
+ *    DS, ES, FS and GS.
  * 4) retrieve the value of the general-purpose registers from the stack.
  */
 
@@ -141,7 +141,7 @@
 	*/								\
 									\
        "movl %cr3, %ebx						\n"	\
-       "movl (_architecture + 14), %eax				\n"	\
+       "movl (_architecture + 18), %eax				\n"	\
        "cmp %eax, %ebx						\n"	\
        "je 1f							\n"	\
        "movl %eax, %cr3						\n"	\
@@ -151,7 +151,7 @@
 	* 2)								\
 	*/								\
 									\
-       "movl (_architecture + 18), %edx				\n"	\
+       "movl (_architecture + 22), %edx				\n"	\
        "movl %edx, %esp						\n"	\
 									\
        /*								\
@@ -215,11 +215,15 @@ typedef struct
  * ../context.c
  */
 
+t_error			architecture_context_dump(as_context	context);
+
 t_error			architecture_context_build(i_thread	id);
+
+t_error			architecture_context_destroy(i_thread	id);
 
 t_error			architecture_context_setup(void);
 
-t_error			ia32_context_ring0_stack(void);
+t_error			architecture_context_locate(void);
 
 t_error			architecture_context_switch(i_thread	current,
 						    i_thread	future);

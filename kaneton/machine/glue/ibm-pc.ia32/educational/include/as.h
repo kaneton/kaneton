@@ -84,6 +84,8 @@
 t_error			glue_as_show(i_as			id,
 				     mt_margin			margin);
 
+t_error			glue_as_dump(void);
+
 t_error			glue_as_reserve(i_task			task,
 					i_as*			as);
 

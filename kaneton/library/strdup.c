@@ -23,7 +23,7 @@ char*			strdup(const char*			from)
 {
   char*			to;
 
-  if ((to = malloc((strlen(from) + 1) * sizeof(char))) == NULL)
+  if ((to = malloc((strlen(from) + 1) * sizeof (char))) == NULL)
     return (NULL);
 
   strcpy(to, from);

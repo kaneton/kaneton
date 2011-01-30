@@ -29,14 +29,14 @@ void			test_core_set_array_01(void)
 
   TEST_ENTER();
 
-  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   if (set_release(id) != ERROR_OK)
     TEST_ERROR("[set_release] error");
 
   if (set_reserve(array, SET_OPTION_ALLOCATE | SET_OPTION_FREE, 4,
-                  sizeof(t_id), &id) == ERROR_OK)
+                  sizeof (t_id), &id) == ERROR_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments");
 
   TEST_SIGNATURE(df093fiwg093h);

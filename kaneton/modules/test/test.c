@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec 17 12:05:50 2010]
+ * updated       julien quintard   [sun jan 30 12:45:17 2011]
  */
 
 /*
@@ -69,16 +69,16 @@ mm_test			_module_test;
  */
 
 t_uint32		module_test_checksum(void*		data,
-					     t_uint32		size)
+					     t_uint32		size,
+					     t_uint32*		crc)
 {
   t_uint8*		d = data;
-  t_uint32		crc = 0;
   t_uint32		i;
 
-  for (i = 0; i < size; i++)
-    crc ^= d[i];
+  for (*crc = 0, i = 0; i < size; i++)
+    *crc ^= d[i];
 
-  return (crc);
+  MODULE_LEAVE();
 }
 
 /*
@@ -110,7 +110,8 @@ t_error			module_test_send(t_uint8		type,
 
   magic = MODULE_TEST_MAGIC;
 
-  crc = module_test_checksum(message, length);
+  if (module_test_checksum(message, length, &crc) != ERROR_OK)
+    MACHINE_ESCAPE("unable to compute the message's CRC");
 
   /*
    * 3)
@@ -155,6 +156,7 @@ t_error			module_test_receive(t_uint8*		type,
   t_uint32		magic;
   t_uint32		length;
   t_uint32		crc;
+  t_uint32		c;
 
   /*
    * 1)
@@ -191,7 +193,10 @@ t_error			module_test_receive(t_uint8*		type,
    * 3)
    */
 
-  if (crc != module_test_checksum(message, length))
+  if (module_test_checksum(message, length, &c) != ERROR_OK)
+    MODULE_ESCAPE("unable to compute the message's CRC");
+
+  if (crc != c)
     MODULE_ESCAPE("invalid received message's CRC");
 
   MODULE_LEAVE();

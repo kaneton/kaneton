@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [wed jan 26 20:52:00 2011]
+ * updated       julien quintard   [fri jan 28 14:07:21 2011]
  */
 
 /*
@@ -86,7 +86,7 @@ t_error			glue_task_show(i_task			id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  I/O: map(0x%x) flush(%s)\n",
+	      "    I/O: map(0x%x) flush(%s)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      &o->machine.io.map,
 	      o->machine.io.flush == BOOLEAN_TRUE ? "true" : "false");

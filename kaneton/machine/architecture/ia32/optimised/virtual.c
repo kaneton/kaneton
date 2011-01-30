@@ -90,7 +90,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
    * 2)
    */
 
-  memcpy(&o->machine.pd, &init->machine.pd, sizeof(t_ia32_directory));
+  memcpy(&o->machine.pd, &init->machine.pd, sizeof (t_ia32_directory));
 
   if (ia32_pd_activate(o->machine.pd,
 		       IA32_PD_CACHED,
@@ -117,7 +117,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
    * 4)
    */
 
-  if ((preg = malloc(sizeof(o_region))) == NULL)
+  if ((preg = malloc(sizeof (o_region))) == NULL)
     return (ERROR_UNKNOWN);
 
   preg->address = IA32_ENTRY_ADDR(IA32_PD_MIRROR, 0);
@@ -133,7 +133,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
    * 4)
    */
 
-  if ((oseg = malloc(sizeof(o_segment))) == NULL)
+  if ((oseg = malloc(sizeof (o_segment))) == NULL)
     return (ERROR_UNKNOWN);
 
   oseg->type = SEGMENT_TYPE_SYSTEM;
@@ -144,7 +144,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
   if (segment_inject(asid, oseg, &seg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if ((preg = malloc(sizeof(o_region))) == NULL)
+  if ((preg = malloc(sizeof (o_region))) == NULL)
     return (ERROR_UNKNOWN);
 
   preg->address = IA32_APIC_REG_BASE;
@@ -220,7 +220,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
 
 	      if (segment_get(seg, &oseg) != ERROR_NONE)
 		{
-		  if ((pt_seg = malloc(sizeof(o_segment))) == NULL)
+		  if ((pt_seg = malloc(sizeof (o_segment))) == NULL)
 		    return (ERROR_UNKNOWN);
 
 		  pt_seg->type = SEGMENT_TYPE_SYSTEM;

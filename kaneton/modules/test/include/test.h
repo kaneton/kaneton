@@ -84,7 +84,8 @@ typedef struct
  */
 
 t_uint32		module_test_checksum(void*		data,
-					     t_uint32		size);
+					     t_uint32		size,
+					     t_uint32*		crc);
 
 t_error			module_test_send(t_uint8		type,
 					 char*			message,

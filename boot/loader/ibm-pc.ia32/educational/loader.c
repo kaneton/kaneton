@@ -134,7 +134,7 @@ int			bootloader(t_uint32			magic,
       "movl %0, %%esp\n\t"
       "pushl %1\n"
       :
-      : "g" (init->kstack + init->kstacksz - 4),
+      : "g" (init->kstack + init->kstacksz - 128),
         "g" (init)
      );
 

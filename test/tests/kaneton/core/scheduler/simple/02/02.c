@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ts/kaneton/core/scheduler/simple/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu dec 16 12:12:28 2010]
+ * updated       julien quintard   [thu jan 27 22:37:38 2011]
  */
 
 /*
@@ -90,32 +90,19 @@ void			test_core_scheduler_simple_02_thread_02(void)
 void			test_core_scheduler_simple_02(void)
 {
   i_thread		thread;
-  s_thread_context	ctx;
-  s_stack		stack;
-  o_thread*		t;
   i_cpu			cpu;
 
   /*
    * thread 1
    */
 
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_scheduler_simple_02_thread_01,
+		     &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread, &t) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = t->stack + t->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_scheduler_simple_02_thread_01;
-
-  if (thread_load(thread, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
@@ -124,23 +111,13 @@ void			test_core_scheduler_simple_02(void)
    * thread 2
    */
 
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_scheduler_simple_02_thread_02,
+		     &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread, &t) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = t->stack + t->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_scheduler_simple_02_thread_02;
-
-  if (thread_load(thread, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");

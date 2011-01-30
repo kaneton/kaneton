@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sat jan 15 06:12:51 2011]
+ * updated       julien quintard   [sun jan 30 13:26:50 2011]
  */
 
 /*
@@ -38,6 +38,12 @@
 extern m_kernel*	_kernel;
 
 /*
+ * the address space manager.
+ */
+
+extern m_as*		_as;
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -48,7 +54,7 @@ extern m_kernel*	_kernel;
 d_as			glue_as_dispatch =
   {
     glue_as_show,
-    NULL,
+    glue_as_dump,
     NULL,
     NULL,
     NULL,
@@ -93,9 +99,32 @@ t_error			glue_as_show(i_as			id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  machine: pd(0x%08x)\n",
+	      "  machine: pd(0x%x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->machine.pd);
+
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function displays additional machine-specific information on
+ * the address space manager.
+ *
+ * steps:
+ *
+ * 1) display the machine-specific attributes.
+ */
+
+t_error			glue_as_dump(void)
+{
+  /*
+   * 1)
+   */
+
+  module_call(console, message,
+	      '#',
+	      "  machine: pd(0x%x)\n",
+	      _as->machine.pd);
 
   MACHINE_LEAVE();
 }

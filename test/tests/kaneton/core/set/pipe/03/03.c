@@ -43,7 +43,7 @@ void			test_core_set_pipe_03(void)
 
   if (set_reserve(pipe,
 		  SET_OPTION_ALLOCATE,
-		  sizeof(t_test_object),
+		  sizeof (t_test_object),
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
@@ -85,13 +85,13 @@ void			test_core_set_pipe_03(void)
 
   if (set_reserve(pipe,
 		  SET_OPTION_FREE,
-		  sizeof(t_test_object),
+		  sizeof (t_test_object),
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 16; ++i)
     {
-      obj2 = malloc(sizeof(t_test_object));
+      obj2 = malloc(sizeof (t_test_object));
 
       obj2->id = (i * 234) % 6578;
 

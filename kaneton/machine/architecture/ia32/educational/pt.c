@@ -378,7 +378,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
    * 6)
    */
 
-  if ((o = malloc(sizeof(o_region))) == NULL)
+  if ((o = malloc(sizeof (o_region))) == NULL)
     MACHINE_ESCAPE("unable to allocate memory for the region object");
 
   o->segment = segment;

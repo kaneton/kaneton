@@ -2,13 +2,9 @@
 # ---------- general ----------------------------------------------------------
 #
 
-- pas de CORE_, de XXX, de IA32, de return, warning: dans kaneton + test
-
+- des XXX dans le code indiquent les choses a corriger et/ou ameliorer.
 - chercher les XXX restants et en faire des TODO
-- afficher PD, GDT, IDT dans le show de glue
-
-- changer pour virer thread_stack() qui ne sert a rien et l'integrer dans
-  thread_reserve()
+- kernel.c: reorganise
 - peut etre essayer de mettre event plus tot dans l'init kernel
 
 #
@@ -29,9 +25,6 @@
 
 - inutile d'avoir des pointeurs pour les managers!
 
-- matter dans le trac car du coup la plupart des tickets ont du etre resolus!
-- le trac n'est surement plus necessaire! ce fichier suffit!
-
 #
 # ---------- test -------------------------------------------------------------
 #
@@ -42,13 +35,6 @@
   en cours, de quel user etc.
 - mettre le timeout dans le manifest, en fonction de l'environment
     { xen: XXX, qemu: XXX }
-
-#
-# ---------- ia32 -------------------------------------------------------------
-#
-
-- renommer esp dans _arch en pile car tous les pointeurs sur fin de pile
-  sont nommes pile
 
 #
 # ---------- export -----------------------------------------------------------
@@ -65,6 +51,9 @@
 - faire un super test et en 1 semaine faire une tranche de challenge ou ils
   doivent optimiser kaneton!
   -> genre lancer tous les tests a la suite sans rebooter
+- faire une tranche optimisation ou tous les coups sont permis pour optimiser
+  leur implem et tous les soirs on poste les resultats. ca ca pourrait buter
+  quand meme.
 
 #
 # ---------- future -----------------------------------------------------------

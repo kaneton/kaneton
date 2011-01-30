@@ -299,14 +299,14 @@ t_error			set_new(o_set*				object)
        * a)
        */
 
-      if ((_set->container = malloc(sizeof(o_set))) == NULL)
+      if ((_set->container = malloc(sizeof (o_set))) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the set container");
 
       /*
        * b)
        */
 
-      memcpy(_set->container, object, sizeof(o_set));
+      memcpy(_set->container, object, sizeof (o_set));
     }
   else
     {
@@ -532,7 +532,7 @@ t_error			set_initialize(void)
 
   if (set_reserve(bpt,
 		  SET_OPTION_CONTAINER | SET_OPTION_ALLOCATE | SET_OPTION_SORT,
-		  sizeof(o_set),
+		  sizeof (o_set),
 		  ___kaneton$pagesz,
 		  &needless) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set container");

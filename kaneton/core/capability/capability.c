@@ -223,7 +223,7 @@ t_error			capability_reserve(t_id			object,
    * 2)
    */
   // XXX should be a 64-bit random number generation
-  new->descriptor = (t_uint64)sum2((char*)&new, sizeof(t_capability));
+  new->descriptor = (t_uint64)sum2((char*)&new, sizeof (t_capability));
 
   /*
    * 3)
@@ -336,7 +336,7 @@ t_error			capability_restrict(t_id		id,
   new->operations = operations;
 
   // XXX should be a 64-bit random number generation
-  new->descriptor = (t_uint64)sum2((char*)&new, sizeof(t_capability));
+  new->descriptor = (t_uint64)sum2((char*)&new, sizeof (t_capability));
 
   restricted.id = new->descriptor;
   if (_capability->f_checksum((char *)new, sizeof (t_capability), &restricted.check) !=
@@ -355,7 +355,7 @@ t_error			capability_restrict(t_id		id,
    */
   if (parent->children == ID_UNUSED)
       if (set_reserve(array, SET_OPTION_ALLOCATE, CAPABILITY_CHILDREN_INITSZ,
-		      sizeof(t_id), &parent->children) != ERROR_OK)
+		      sizeof (t_id), &parent->children) != ERROR_OK)
 	  CORE_ESCAPE("XXX");
 
   if (set_add(parent->children, &restricted.id) != ERROR_OK)
@@ -525,17 +525,17 @@ t_error			capability_initialize(void)
    * XXX
    */
 
-  if ((_capability = malloc(sizeof(m_capability))) == NULL)
+  if ((_capability = malloc(sizeof (m_capability))) == NULL)
     CORE_ESCAPE("XXX");
 
-  memset(_capability, 0x0, sizeof(m_capability));
+  memset(_capability, 0x0, sizeof (m_capability));
 
   /*
    * 2)
    */
 
   if (set_reserve(ll, SET_OPTION_ALLOCATE | SET_OPTION_SORT,
-		  sizeof(t_capability_descriptor),
+		  sizeof (t_capability_descriptor),
 		  &_capability->descriptors) != ERROR_OK)
     CORE_ESCAPE("XXX");
 

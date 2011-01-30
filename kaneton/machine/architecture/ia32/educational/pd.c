@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       julien quintard   [mon jan 17 15:46:40 2011]
+ * updated       julien quintard   [thu jan 27 18:11:17 2011]
  */
 
 /*
@@ -398,7 +398,7 @@ t_error			architecture_pd_map(t_paddr		paddr,
    * 6)
    */
 
-  if ((o = malloc(sizeof(o_region))) == NULL)
+  if ((o = malloc(sizeof (o_region))) == NULL)
     MACHINE_ESCAPE("unable to allocate memory for the region object");
 
   o->segment = segment;

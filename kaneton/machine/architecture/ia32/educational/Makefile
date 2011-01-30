@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [sun jan 16 13:36:42 2011]
+# updated       julien quintard   [sun jan 30 13:06:21 2011]
 #
 
 #
@@ -50,7 +50,8 @@ ARCHITECTURE_C		:=	architecture.c				\
 
 ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)
 
-ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
+ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/architecture.h \
+				$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/environment.h \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/handler.h	\

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jan 15 15:09:25 2011]
+ * updated       julien quintard   [sun jan 30 13:31:23 2011]
  */
 
 /*
@@ -33,6 +33,16 @@
 #include <kaneton.h>
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+/*
+ * the segment manager.
+ */
+
+extern m_segment*	_segment;
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -43,7 +53,7 @@
 d_segment		glue_segment_dispatch =
   {
     NULL,
-    NULL,
+    glue_segment_dump,
     NULL,
     NULL,
     NULL,
@@ -64,6 +74,34 @@ d_segment		glue_segment_dispatch =
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * this function displays additional machine-specific information on
+ * the segment manager.
+ *
+ * steps:
+ *
+ * 1) display the machine-specific attributes.
+ */
+
+t_error			glue_segment_dump(void)
+{
+  /*
+   * 1)
+   */
+
+  module_call(console, message,
+	      '#',
+	      "  machine:\n");
+
+  module_call(console, message,
+	      '#',
+	      "    gdt: table(0x%x) size(0x%x):\n",
+	      _segment->machine.gdt.table,
+	      _segment->machine.gdt.size);
+
+  MACHINE_LEAVE();
+}
 
 /*
  * this function reads directly from a segment to a buffer.

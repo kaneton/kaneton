@@ -415,10 +415,10 @@ t_error			set_insert_ll(i_set			setid,
    * 3)
    */
 
-  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+  if ((n = malloc(sizeof (s_set_ll_node))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
-  memset(n, 0x0, sizeof(s_set_ll_node));
+  memset(n, 0x0, sizeof (s_set_ll_node));
 
   /*
    * 4)
@@ -512,10 +512,10 @@ t_error			set_append_ll(i_set			setid,
    * 3)
    */
 
-  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+  if ((n = malloc(sizeof (s_set_ll_node))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
-  memset(n, 0x0, sizeof(s_set_ll_node));
+  memset(n, 0x0, sizeof (s_set_ll_node));
 
   /*
    * 4)
@@ -611,10 +611,10 @@ t_error			set_before_ll(i_set			setid,
    * 3)
    */
 
-  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+  if ((n = malloc(sizeof (s_set_ll_node))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
-  memset(n, 0x0, sizeof(s_set_ll_node));
+  memset(n, 0x0, sizeof (s_set_ll_node));
 
   /*
    * 4)
@@ -710,10 +710,10 @@ t_error			set_after_ll(i_set			setid,
    * 3)
    */
 
-  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+  if ((n = malloc(sizeof (s_set_ll_node))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
-  memset(n, 0x0, sizeof(s_set_ll_node));
+  memset(n, 0x0, sizeof (s_set_ll_node));
 
   /*
    * 4)
@@ -809,10 +809,10 @@ t_error			set_add_ll(i_set			setid,
    * 2)
    */
 
-  if ((n = malloc(sizeof(s_set_ll_node))) == NULL)
+  if ((n = malloc(sizeof (s_set_ll_node))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the linked-list node");
 
-  memset(n, 0x0, sizeof(s_set_ll_node));
+  memset(n, 0x0, sizeof (s_set_ll_node));
 
   /*
    * 3)
@@ -1329,7 +1329,7 @@ t_error			set_reserve_ll(t_options		options,
    * 2)
    */
 
-  memset(&o, 0x0, sizeof(o_set));
+  memset(&o, 0x0, sizeof (o_set));
 
   o.id = *id;
   o.size = 0;

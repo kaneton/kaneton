@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...est/tests/kaneton/core/task/wait/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan 14 23:05:36 2011]
+ * updated       julien quintard   [thu jan 27 22:46:37 2011]
  */
 
 /*
@@ -117,9 +117,6 @@ void			test_core_task_wait_01(void)
 {
   i_as			as;
   i_thread		thread;
-  o_thread*		o;
-  s_thread_context	ctx;
-  s_stack		stack;
   i_cpu			cpu;
   i_segment		segment;
   i_region		region;
@@ -160,24 +157,12 @@ void			test_core_task_wait_01(void)
 
   if (thread_reserve(_kernel->task,
 		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_task_wait_01_content_00,
 		     (i_thread*)&thread_00) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
  
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread_00, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread_00, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_task_wait_01_content_00;
-
-  if (thread_load(thread_00, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
-
   if (thread_start(thread_00) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
@@ -187,24 +172,12 @@ void			test_core_task_wait_01(void)
 
   if (thread_reserve(_kernel->task,
 		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_task_wait_01_content_01,
 		     (i_thread*)&thread_01) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
  
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread_01, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread_01, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_task_wait_01_content_01;
-
-  if (thread_load(thread_01, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
-
   if (thread_start(thread_01) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
@@ -241,23 +214,11 @@ void			test_core_task_wait_01(void)
 
   if (thread_reserve(task_01,
 		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_task_wait_01_thread,
 		     &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_task_wait_01_thread;
-
-  if (thread_load(thread, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (task_start(task_01) != ERROR_OK)
     TEST_ERROR("[task_start] error");

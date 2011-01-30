@@ -43,7 +43,7 @@ void			test_core_segment_permissions_04(void)
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_write(seg, 0, &i, sizeof(t_uint32)) == ERROR_OK)
+  if (segment_write(seg, 0, &i, sizeof (t_uint32)) == ERROR_OK)
     TEST_ERROR("[segment_write] error: allowed writing to a read "
 	       "only segment\n");
 

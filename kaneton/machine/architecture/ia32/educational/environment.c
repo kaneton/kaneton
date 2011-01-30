@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [mon jan 17 19:23:30 2011]
+ * updated       julien quintard   [sun jan 30 12:25:16 2011]
  */
 
 /*
@@ -237,7 +237,7 @@ t_error			architecture_environment_kernel(i_as	id)
    * 7)
    */
 
-  if ((r = malloc(sizeof(o_region))) == NULL)
+  if ((r = malloc(sizeof (o_region))) == NULL)
     MACHINE_ESCAPE("unable to allocate memory for the region object");
 
   r->address = ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR, 0);
@@ -372,7 +372,7 @@ t_error			architecture_environment_kernel(i_as	id)
 		   * #a)
 		   */
 
-		  if ((s = malloc(sizeof(o_segment))) == NULL)
+		  if ((s = malloc(sizeof (o_segment))) == NULL)
 		    MACHINE_ESCAPE("unable to allocate memory");
 
 		  s->address = ARCHITECTURE_PDE_ADDRESS(pd[pde.index]);

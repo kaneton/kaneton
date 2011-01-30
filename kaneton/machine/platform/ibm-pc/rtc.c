@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/machine/platform/ibm-pc/rtc.c
  *
  * created       julien quintard   [wed nov 24 10:17:08 2010]
- * updated       julien quintard   [fri dec 10 16:21:09 2010]
+ * updated       julien quintard   [sun jan 30 13:01:05 2011]
  */
 
 /*
@@ -94,25 +94,26 @@ void			platform_rtc_dump(ps_rtc_state*		rtc)
  * this function updates a register of the RTC.
  */
 
-void			platform_rtc_write(t_uint8		address,
+t_error			platform_rtc_write(t_uint8		address,
 					   t_uint8		value)
 {
   ARCHITECTURE_IO_OUT_8(PLATFORM_RTC_ADDRESS, address);
   ARCHITECTURE_IO_OUT_8(PLATFORM_RTC_DATA, value);
+
+  MACHINE_LEAVE();
 }
 
 /*
  * this function fetches the value of the given RTC register.
  */
 
-t_uint8			platform_rtc_read(t_uint8		address)
+t_error			platform_rtc_read(t_uint8		address,
+					  t_uint8*		value)
 {
-  t_uint8		value;
-
   ARCHITECTURE_IO_OUT_8(PLATFORM_RTC_ADDRESS, address);
-  ARCHITECTURE_IO_IN_8(PLATFORM_RTC_DATA, value);
+  ARCHITECTURE_IO_IN_8(PLATFORM_RTC_DATA, *value);
 
-  return (value);
+  MACHINE_LEAVE();
 }
 
 /*
@@ -129,7 +130,8 @@ t_error			platform_rtc_extract(t_uint8		address,
       {
 	t_uint8		bcd;
 
-	bcd = platform_rtc_read(address);
+	if (platform_rtc_read(address, &bcd) != ERROR_OK)
+	  MACHINE_ESCAPE("unable to read the RTC");
 
 	*value = (bcd >> 1) + (bcd >> 3) + (bcd & 0xf);
 
@@ -158,29 +160,37 @@ t_error			platform_rtc_load(ps_rtc_state*		rtc)
 {
   rtc->millisecond = 0;
 
-  platform_rtc_extract(PLATFORM_RTC_REGISTER_SECOND,
-		       &rtc->second);
+  if (platform_rtc_extract(PLATFORM_RTC_REGISTER_SECOND,
+			   &rtc->second) != ERROR_OK)
+    MACHINE_ESCAPE("unable to extract the RTC's seconds");
 
-  platform_rtc_extract(PLATFORM_RTC_REGISTER_MINUTE,
-		       &rtc->minute);
+  if (platform_rtc_extract(PLATFORM_RTC_REGISTER_MINUTE,
+			   &rtc->minute) != ERROR_OK)
+    MACHINE_ESCAPE("unable to extract the RTC's minutes");
 
-  platform_rtc_extract(PLATFORM_RTC_REGISTER_HOUR,
-		       &rtc->hour);
+  if (platform_rtc_extract(PLATFORM_RTC_REGISTER_HOUR,
+			   &rtc->hour) != ERROR_OK)
+    MACHINE_ESCAPE("unable to extract the RTC's hours");
 
-  platform_rtc_extract(PLATFORM_RTC_REGISTER_DAY_OF_MONTH,
-		       &rtc->day);
+  if (platform_rtc_extract(PLATFORM_RTC_REGISTER_DAY_OF_MONTH,
+			   &rtc->day) != ERROR_OK)
+    MACHINE_ESCAPE("unable to extract the RTC's days");
 
-  platform_rtc_extract(PLATFORM_RTC_REGISTER_MONTH,
-		       &rtc->month);
+  if (platform_rtc_extract(PLATFORM_RTC_REGISTER_MONTH,
+			   &rtc->month) != ERROR_OK)
+    MACHINE_ESCAPE("unable to extract the RTC's months");
 
-  platform_rtc_extract(PLATFORM_RTC_REGISTER_YEAR,
-		       &rtc->year);
+  if (platform_rtc_extract(PLATFORM_RTC_REGISTER_YEAR,
+			   &rtc->year) != ERROR_OK)
+    MACHINE_ESCAPE("unable to extract the RTC's years");
 
-  platform_rtc_extract(PLATFORM_RTC_REGISTER_WEEKDAY,
-		       &rtc->weekday);
+  if (platform_rtc_extract(PLATFORM_RTC_REGISTER_WEEKDAY,
+			   &rtc->weekday) != ERROR_OK)
+    MACHINE_ESCAPE("unable to extract the RTC's weekday");
 
-  platform_rtc_extract(PLATFORM_RTC_REGISTER_CENTURY,
-		       &rtc->century);
+  if (platform_rtc_extract(PLATFORM_RTC_REGISTER_CENTURY,
+			   &rtc->century) != ERROR_OK)
+    MACHINE_ESCAPE("unable to extract the RTC's century");
 
   MACHINE_LEAVE();
 }
@@ -259,6 +269,8 @@ t_error			platform_rtc_update(t_uint32		millisecond)
 
 t_error			platform_rtc_initialize(void)
 {
+  t_uint8		status;
+
   /*
    * 1)
    */
@@ -269,9 +281,13 @@ t_error			platform_rtc_initialize(void)
    * 2)
    */
 
-  platform_rtc_write(PLATFORM_RTC_REGISTER_STATUS_B,
-		     platform_rtc_read(PLATFORM_RTC_REGISTER_STATUS_B) |
-		     PLATFORM_RTC_FORMAT_BCD);
+  if (platform_rtc_read(PLATFORM_RTC_REGISTER_STATUS_B, &status) != ERROR_OK)
+    MACHINE_ESCAPE("unable to read the RTC");
+
+  if (platform_rtc_write(PLATFORM_RTC_REGISTER_STATUS_B,
+			 status |
+			 PLATFORM_RTC_FORMAT_BCD) != ERROR_OK)
+    MACHINE_ESCAPE("unable to write the RTC");
 
   /*
    * 2)

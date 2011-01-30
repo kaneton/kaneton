@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/include/tss.h
  *
  * created       renaud voltz   [mon apr 10 00:50:33 2006]
- * updated       julien quintard   [sun jan 16 21:36:58 2011]
+ * updated       julien quintard   [sat jan 29 10:53:34 2011]
  */
 
 #ifndef ARCHITECTURE_TSS_H
@@ -25,17 +25,26 @@
  */
 
 /*
- * this macro defines the location, i.e offset, of the IO map within the TSS.
- */
-
-#define ARCHITECTURE_TSS_IO_OFFSET	0x68
-
-/*
  * this macro defines the number of pages required to contain the system's
  * TSS.
  */
 
 #define ARCHITECTURE_TSS_SIZE		3 * ___kaneton$pagesz
+
+/*
+ * the two following macro can be used to ignore the SS0 and ESP0 TSS
+ * attributes. these are particularly useful when context switching to a
+ * ring0 thread since there is no need to specify a pile through SS0 and ESP0.
+ */
+
+#define ARCHITECTURE_TSS_SS0_NULL	0x0
+#define ARCHITECTURE_TSS_ESP0_NULL	0x0
+
+/*
+ * this macro defines the location, i.e offset, of the IO map within the TSS.
+ */
+
+#define ARCHITECTURE_TSS_IO		0x68
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -98,6 +107,9 @@ typedef struct
 /*
  * ../tss.c
  */
+
+t_error			architecture_tss_build(t_vaddr		address,
+					       as_tss**		tss);
 
 t_error			architecture_tss_update(as_tss*		tss,
 						t_uint16	ss0,

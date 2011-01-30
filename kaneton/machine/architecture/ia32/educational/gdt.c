@@ -230,7 +230,7 @@ t_error			architecture_gdt_build(t_paddr		base,
   if (gdt == NULL)
     MACHINE_ESCAPE("the 'gdt' argument is null");
 
-  if (size > (ARCHITECTURE_GDT_SIZE * sizeof(at_gdte)))
+  if (size > (ARCHITECTURE_GDT_SIZE * sizeof (at_gdte)))
     MACHINE_ESCAPE("the given size is too large as exceeding the GDT's "
 		   "theoretically maximum capacity");
 
@@ -238,21 +238,21 @@ t_error			architecture_gdt_build(t_paddr		base,
    * 1)
    */
 
-  if (base % sizeof(at_gdte))
-    base += sizeof(at_gdte) - (base % sizeof(at_gdte));
+  if (base % sizeof (at_gdte))
+    base += sizeof (at_gdte) - (base % sizeof (at_gdte));
 
   /*
    * 2)
    */
 
   gdt->table = (at_gdte*)base;
-  gdt->size = size / sizeof(at_gdte);
+  gdt->size = size / sizeof (at_gdte);
 
   /*
    * 3)
    */
 
-  memset(gdt->table, 0x0, gdt->size * sizeof(at_gdte));
+  memset(gdt->table, 0x0, gdt->size * sizeof (at_gdte));
 
   MACHINE_LEAVE();
 }
@@ -285,7 +285,7 @@ t_error			architecture_gdt_import(as_gdt*		gdt)
    */
 
   gdtr.address = (t_paddr)gdt->table;
-  gdtr.size = gdt->size * sizeof(at_gdte);
+  gdtr.size = gdt->size * sizeof (at_gdte);
 
   /*
    * 2)
@@ -297,7 +297,7 @@ t_error			architecture_gdt_import(as_gdt*		gdt)
    * 3)
    */
 
-  memcpy(&_segment->machine.gdt, gdt, sizeof(as_gdt));
+  memcpy(&_segment->machine.gdt, gdt, sizeof (as_gdt));
 
   MACHINE_LEAVE();
 }
@@ -346,7 +346,7 @@ t_error			architecture_gdt_export(as_gdt*		gdt)
    * 3)
    */
 
-  gdt->size = gdtr.size / sizeof(at_gdte);
+  gdt->size = gdtr.size / sizeof (at_gdte);
 
   MACHINE_LEAVE();
 }
@@ -488,7 +488,7 @@ t_error			architecture_gdt_delete(t_uint16	index)
    * 1)
    */
 
-  memset(&_segment->machine.gdt.table[index], 0x0, sizeof(at_gdte));
+  memset(&_segment->machine.gdt.table[index], 0x0, sizeof (at_gdte));
 
   MACHINE_LEAVE();
 }

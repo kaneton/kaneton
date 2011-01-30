@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [thu jan 27 13:27:18 2011]
+ * updated       julien quintard   [sun jan 30 13:24:31 2011]
  */
 
 /*
@@ -46,8 +46,7 @@ d_thread		glue_thread_dispatch =
     glue_thread_show,
     NULL,
     glue_thread_reserve,
-    NULL,
-    NULL,
+    glue_thread_release,
     NULL,
     NULL,
     NULL,
@@ -104,22 +103,31 @@ t_error			glue_thread_show(i_thread		id,
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "  machine:\n",
-	      MODULE_CONSOLE_MARGIN_VALUE(margin));
+	      "  machine: context(0x%x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      thread->machine.context);
 
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
-	      "    pile: base(0x%x) esp(0x%x)\n",
+	      "    stack: pointer(0x%x)\n",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      thread->machine.stack.pointer);
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "    pile: base(0x%x) size(0x%x) pointer(0x%x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      thread->machine.pile.base,
-	      thread->machine.pile.esp);
+	      thread->machine.pile.size,
+	      thread->machine.pile.pointer);
 
   module_call(console, message,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
 	      "    context: eax(0x%x) ebx(0x%x) ecx(0x%x) edx(0x%x) "
-	      "esi(0x%x) edi(0x%x) ebp(0x%x) esp(0x%x) eip(0x%x) "
+	      "esi(0x%x) edi(0x%x) ebp(0x%x) _esp(0x%x) esp(0x%x) eip(0x%x) "
 	      "eflags(0x%x) cs(0x%x) ds(0x%x) ss(0x%x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      ctx.eax,
@@ -129,12 +137,13 @@ t_error			glue_thread_show(i_thread		id,
 	      ctx.esi,
 	      ctx.edi,
 	      ctx.ebp,
+	      ctx._esp,
 	      ctx.esp,
 	      ctx.eip,
 	      ctx.eflags,
-	      ctx.cs,
-	      ctx.ds,
-	      ctx.ss);
+	      ctx.cs & 0xffff,
+	      ctx.ds & 0xffff,
+	      ctx.ss & 0xffff);
 
   MACHINE_LEAVE();
 }
@@ -202,14 +211,38 @@ t_error			glue_thread_dump(void)
  */
 
 t_error			glue_thread_reserve(i_task		task,
-					    i_thread*		thread)
+					    t_priority		priority,
+					    t_vaddr		stack,
+					    t_vsize		stacksz,
+					    t_vaddr		entry,
+					    i_thread*		id)
 {
   /*
    * 1)
    */
 
-  if (architecture_context_build(*thread) != ERROR_OK)
-    MACHINE_ESCAPE("unable to initialize the IA32 context");
+  if (architecture_context_build(*id) != ERROR_OK)
+    MACHINE_ESCAPE("unable to build the IA32 context");
+
+  MACHINE_LEAVE();
+}
+
+/*
+ * this function releases the thread's IA32-specific information.
+ *
+ * steps:
+ *
+ * 1) destory the IA32 context.
+ */
+
+t_error			glue_thread_release(i_thread		id)
+{
+  /*
+   * 1)
+   */
+
+  if (architecture_context_destroy(id) != ERROR_OK)
+    MACHINE_ESCAPE("unable to destory the IA32 context");
 
   MACHINE_LEAVE();
 }

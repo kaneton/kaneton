@@ -75,7 +75,7 @@ t_error			ia32_tss_init(t_ia32_tss*			tss)
    */
 
   descriptor.base = (t_uint32)tss;
-  descriptor.limit = sizeof(t_ia32_tss);
+  descriptor.limit = sizeof (t_ia32_tss);
   descriptor.privilege = IA32_PRIV_RING0;
   descriptor.is_system = 1;
   descriptor.type.sys = IA32_SEG_TYPE_TSS;

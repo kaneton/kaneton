@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...rchitecture/ia32/event/exception/06/06.c
+ * file          /home/mycure/kane...ia32/educational/event/exception/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [sun jan 16 13:48:03 2011]
+ * updated       julien quintard   [sun jan 30 13:10:17 2011]
  */
 
 /*
@@ -39,8 +39,6 @@ static volatile t_uint16	gs = (0x10 << 3);
 void			test_architecture_event_exception_06_handler(t_id id,
 								     t_vaddr data)
 {
-  t_uint32		error;
-
   thrown = 1;
 
   if (!(_architecture.error & gs))

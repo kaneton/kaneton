@@ -83,7 +83,7 @@ t_error		architecture_pmode_setup(void)
    */
 
   if (architecture_gdt_build(_init->machine.gdt,
-			     ARCHITECTURE_GDT_SIZE * sizeof(at_gdte),
+			     ARCHITECTURE_GDT_SIZE * sizeof (at_gdte),
 			     &gdt) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the GDT");
 

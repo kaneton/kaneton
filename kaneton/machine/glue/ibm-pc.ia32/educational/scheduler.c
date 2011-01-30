@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sun jan 16 20:00:26 2011]
+ * updated       julien quintard   [sun jan 30 13:20:47 2011]
  */
 
 /*
@@ -97,7 +97,7 @@ t_error			glue_scheduler_dump(void)
 {
   module_call(console, message,
 	      '#',
-	      "  machine: timer(%qu)\n",
+	      "  machine: timer(%qd)\n",
 	      _scheduler->machine.timer);
 
   MACHINE_LEAVE();
@@ -248,17 +248,11 @@ t_error			glue_scheduler_yield(void)
  *    scheduler's queue.
  *    for more information regarding this design choice, please refer to
  *    the scheduler_yield() function.
- * 3) allocate the idle thread's stack.
- * 4) initialize the thread's context especially its entry point.
- * 5) start the idle thread, making it eligeable.
+ * 3) start the idle thread, making it eligeable.
  */
 
 t_error			glue_scheduler_initialize(void)
 {
-  s_stack		stack;
-  s_thread_context	ctx;
-  o_thread*		o;
-
   /*
    * 1)
    */
@@ -277,34 +271,14 @@ t_error			glue_scheduler_initialize(void)
 
   if (thread_reserve(_kernel->task,
 		     THREAD_IDLE_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+		     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)glue_scheduler_idle,
 		     &_scheduler->idle) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the idle thread");
 
   /*
    * 3)
-   */
-
-  stack.base = 0;
-  stack.size = ___kaneton$pagesz;
-
-  if (thread_stack(_scheduler->idle, stack) != ERROR_OK)
-    MACHINE_ESCAPE("unable to set the stack for the thread");
-
-  /*
-   * 4)
-   */
-
-  if (thread_get(_scheduler->idle, &o) != ERROR_OK)
-    MACHINE_ESCAPE("unable to retrieve the thread object");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)glue_scheduler_idle;
-
-  if (thread_load(_scheduler->idle, ctx) != ERROR_OK)
-    MACHINE_ESCAPE("unable to load the thread context");
-
-  /*
-   * 5)
    */
 
   if (thread_start(_scheduler->idle) != ERROR_OK)

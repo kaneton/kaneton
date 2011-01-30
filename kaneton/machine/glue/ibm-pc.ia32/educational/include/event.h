@@ -82,6 +82,8 @@
 void			glue_event_pagefault(t_id		id,
 					     t_vaddr		data);
 
+t_error			glue_event_dump(void);
+
 t_error			glue_event_enable(void);
 
 t_error			glue_event_disable(void);

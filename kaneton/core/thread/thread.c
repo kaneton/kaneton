@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       julien quintard   [mon jan 17 17:16:55 2011]
+ * updated       julien quintard   [sun jan 30 12:18:36 2011]
  */
 
 /*
@@ -157,17 +157,24 @@ t_error			thread_show(i_thread			threadid,
 	      '#',
 	      MODULE_CONSOLE_MARGIN_FORMAT
 	      "  core: id(%qd) priority(%u) state(%s) waits(%qd) "
-	      "value(%d) stack(0x%x) stacksz(0x%x) timer(%qd) task(%qd)",
+	      "value(%d) entry(0x%x) timer(%qd) task(%qd)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
 	      o->id,
 	      o->priority,
 	      state,
 	      o->waits,
 	      o->value,
-	      o->stack,
-	      o->stacksz,
+	      o->entry,
 	      o->timer,
 	      o->task);
+
+  module_call(console, message,
+	      '#',
+	      MODULE_CONSOLE_MARGIN_FORMAT
+	      "    stack: base(0x%x) size(0x%x)",
+	      MODULE_CONSOLE_MARGIN_VALUE(margin),
+	      o->stack.base,
+	      o->stack.size);
 
   /*
    * 4)
@@ -344,14 +351,23 @@ t_error			thread_dump(void)
  * 1) retrieve the task object.
  * 2) reserve a thread identifier.
  * 3) initialize and fill the object.
- * 4) reserve a set for the waiting threads.
- * 5) add the object to the set of threads.
- * 6) add the thread identifier to the task's set of threads.
- * 7) call the machine.
+ * 4) set up the thread stack depending on the arguments.
+ *   A) if no stack is provided...
+ *     a) check the stack size.
+ *     b) set the stack size.
+ *     c) allocate a stack.
+ *   B) otherwise, use the provided stack address and size.
+ * 5) reserve a set for the waiting threads.
+ * 6) add the object to the set of threads.
+ * 7) add the thread identifier to the task's set of threads.
+ * 8) call the machine.
  */
 
 t_error			thread_reserve(i_task			taskid,
 				       t_priority		prior,
+				       t_vaddr			stack,
+				       t_vsize			stacksz,
+				       t_vaddr			entry,
 				       i_thread*		id)
 {
   o_task*		task;
@@ -386,7 +402,7 @@ t_error			thread_reserve(i_task			taskid,
    * 3)
    */
 
-  memset(&o, 0x0, sizeof(o_thread));
+  memset(&o, 0x0, sizeof (o_thread));
 
   o.id = *id;
   o.task = taskid;
@@ -394,12 +410,58 @@ t_error			thread_reserve(i_task			taskid,
   o.state = THREAD_STATE_STOP;
   o.waits = ID_UNUSED;
   o.value = WAIT_VALUE_UNKNOWN;
+  o.entry = entry;
   o.timer = ID_UNUSED;
 
   o.wait.state = WAIT_STATE_NONE;
 
   /*
    * 4)
+   */
+
+  if (stack == THREAD_STACK_ADDRESS_NONE)
+    {
+      /*
+       * A)
+       */
+
+      /*
+       * a)
+       */
+
+      if (stacksz < THREAD_STACK_SIZE_LOW)
+	CORE_ESCAPE("the provided stack size is too low");
+
+      /*
+       * b)
+       */
+
+      o.stack.size = stacksz;
+
+      /*
+       * c)
+       */
+
+      if (map_reserve(task->as,
+		      (task->class == TASK_CLASS_KERNEL ?
+		       MAP_OPTION_SYSTEM : MAP_OPTION_NONE),
+		      o.stack.size,
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      &(o.stack.base)) != ERROR_OK)
+	CORE_ESCAPE("unable to reserve a map for the thread's stack");
+    }
+  else
+    {
+      /*
+       * B)
+       */
+
+      o.stack.base = stack;
+      o.stack.size = stacksz;
+    }
+
+  /*
+   * 5)
    */
 
   if (set_reserve(array,
@@ -410,24 +472,25 @@ t_error			thread_reserve(i_task			taskid,
     CORE_ESCAPE("unable to reserve a set for the waiting tasks/threads");
 
   /*
-   * 5)
+   * 6)
    */
 
   if (set_add(_thread->threads, &o) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of threads");
 
   /*
-   * 6)
+   * 7)
    */
 
   if (set_add(task->threads, &o.id) != ERROR_OK)
     CORE_ESCAPE("unable to add the thread to the task's set of threads");
 
   /*
-   * 7)
+   * 8)
    */
 
-  if (machine_call(thread, reserve, taskid, id) != ERROR_OK)
+  if (machine_call(thread, reserve,
+		   taskid, prior, stack, stacksz, entry, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -478,9 +541,9 @@ t_error			thread_release(i_thread			threadid)
    * 4)
    */
 
-  if (o->stack != (t_vaddr)NULL)
+  if (o->stack.base != THREAD_STACK_ADDRESS_NONE)
     {
-      if (map_release(task->as, o->stack) != ERROR_OK)
+      if (map_release(task->as, o->stack.base) != ERROR_OK)
 	CORE_ESCAPE("unable to release the map for the thread's stack");
     }
 
@@ -1395,91 +1458,6 @@ t_error			thread_wait(i_thread			id,
 }
 
 /*
- * this function allocates a stack for the given thread.
- *
- * steps:
- *
- * 0) verify the arguments.
- * 1) retrieve the thread object.
- * 2) retrieve the task object.
- * 3) set the task depending on the argument.
- *   A) if no base address was provided, allocate a stack.
- *   B) otherwise, use the address provided.
- * 4) set the stack size in the object.
- * 5) call the machine.
- */
-
-t_error			thread_stack(i_thread			threadid,
-				     s_stack			stack)
-{
-  o_thread*		o;
-  o_task*		task;
-
-  /*
-   * 0)
-   */
-
-  if (stack.size < THREAD_STACKSZ_LOW)
-    CORE_ESCAPE("the provided stack size is too low");
-
-  /*
-   * 1)
-   */
-
-  if (thread_get(threadid, &o) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the thread object");
-
-  /*
-   * 2)
-   */
-
-  if (task_get(o->task, &task) != ERROR_OK)
-    CORE_ESCAPE("unable to retrieve the task object");
-
-  /*
-   * 3)
-   */
-
-  if (stack.base == 0)
-    {
-      /*
-       * A)
-       */
-
-      if (map_reserve(task->as,
-		      (task->class == TASK_CLASS_KERNEL ?
-		       MAP_OPTION_SYSTEM : MAP_OPTION_NONE),
-		      stack.size,
-		      PERMISSION_READ | PERMISSION_WRITE,
-		      &(o->stack)) != ERROR_OK)
-	CORE_ESCAPE("unable to reserve a map for the thread's stack");
-    }
-  else
-    {
-      /*
-       * B)
-       */
-
-      o->stack = stack.base;
-    }
-
-  /*
-   * 4)
-   */
-
-  o->stacksz = stack.size;
-
-  /*
-   * 5)
-   */
-
-  if (machine_call(thread, stack, threadid, stack) != ERROR_OK)
-    CORE_ESCAPE("an error occured in the machine");
-
-  CORE_LEAVE();
-}
-
-/*
  * this function pushes arguments on the thread's stack so that, when
  * the thread starts, it can retrieve the arguments in its address space.
  *
@@ -1800,17 +1778,13 @@ t_error			thread_get(i_thread			id,
  *    not been set up yet.
  * 7) reserve the kernel thread though this thread will never be scheduled
  *    per say.
- * 8) set the kernel thread stack as being the one currently in use i.e
- *    the stack allocated and set up by the boot loader.
- * 9) block the thread: this is to make things clear that this thread
+ * 8) block the thread: this is to make things clear that this thread
  *    is not supposed to be scheduled.
- * 10) call the machine.
+ * 9) call the machine.
  */
 
 t_error			thread_initialize(void)
 {
-  s_stack		stack;
-
   /*
    * 1)
    */
@@ -1841,7 +1815,7 @@ t_error			thread_initialize(void)
 
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE,
-		  sizeof(o_thread),
+		  sizeof (o_thread),
 		  &_thread->threads) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of threads");
 
@@ -1867,6 +1841,9 @@ t_error			thread_initialize(void)
 
   if (thread_reserve(_kernel->task,
 		     THREAD_PRIORITY,
+		     (t_vaddr)_init->kstack,
+		     (t_vsize)_init->kstacksz,
+		     (t_vaddr)NULL,
 		     &_kernel->thread) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the kernel thread");
 
@@ -1874,21 +1851,11 @@ t_error			thread_initialize(void)
    * 8)
    */
 
-  stack.base = (t_vaddr)_init->kstack;
-  stack.size = (t_vaddr)_init->kstacksz;
-
-  if (thread_stack(_kernel->thread, stack) != ERROR_OK)
-    CORE_ESCAPE("unable to set up the thread's stack");
-
-  /*
-   * 9)
-   */
-
   if (thread_block(_kernel->thread) != ERROR_OK)
     CORE_ESCAPE("unable to block the kernel thread");
 
   /*
-   * 10)
+   * 9)
    */
 
   if (machine_call(thread, initialize) != ERROR_OK)

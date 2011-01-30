@@ -662,25 +662,6 @@ t_error		interface_task_attribute_sched(o_syscall*	message)
 }
 
 /*
- * this function launchs the thread_reserve() function.
- */
-
-t_error		interface_thread_reserve(o_syscall*	message)
-{
-  t_error	error;
-  i_thread	result1;
-
-  error = thread_reserve(message->u.request.u.thread_reserve.arg1,
-			message->u.request.u.thread_reserve.arg2,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.thread_reserve.result1 = result1;
-
-  return (ERROR_OK);
-}
-
-/*
  * this function launchs the thread_release() function.
  */
 
@@ -705,22 +686,6 @@ t_error		interface_thread_priority(o_syscall*	message)
 
   error = thread_priority(message->u.request.u.thread_priority.arg1,
 			message->u.request.u.thread_priority.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_OK);
-}
-
-/*
- * this function launchs the thread_stack() function.
- */
-
-t_error		interface_thread_stack(o_syscall*	message)
-{
-  t_error	error;
-
-  error = thread_stack(message->u.request.u.thread_stack.arg1,
-			message->u.request.u.thread_stack.arg2);
 
   message->u.reply.error = error;
 
@@ -819,48 +784,6 @@ t_error		interface_thread_attribute_state(o_syscall*	message)
     {
       message->u.reply.error = ERROR_OK;
       message->u.reply.u.thread_attribute_state.result1 = o->state;
-    }
-
-  return (ERROR_OK);
-}
-
-/*
- * this function get the stack attribute of the o_thread object.
- */
-
-t_error		interface_thread_attribute_stack(o_syscall*	message)
-{
-  o_thread*		o;
-
-  if (thread_get(message->u.request.u.thread_attribute_stack.arg1, &o) != ERROR_OK)
-    {
-      message->u.reply.error = ERROR_KO;
-    }
-  else
-    {
-      message->u.reply.error = ERROR_OK;
-      message->u.reply.u.thread_attribute_stack.result1 = o->stack;
-    }
-
-  return (ERROR_OK);
-}
-
-/*
- * this function get the stacksz attribute of the o_thread object.
- */
-
-t_error		interface_thread_attribute_stacksz(o_syscall*	message)
-{
-  o_thread*		o;
-
-  if (thread_get(message->u.request.u.thread_attribute_stacksz.arg1, &o) != ERROR_OK)
-    {
-      message->u.reply.error = ERROR_KO;
-    }
-  else
-    {
-      message->u.reply.error = ERROR_OK;
-      message->u.reply.u.thread_attribute_stacksz.result1 = o->stacksz;
     }
 
   return (ERROR_OK);
@@ -1050,17 +973,13 @@ t_interface_dispatch dispatch[] =
   interface_task_attribute_priority,
   interface_task_attribute_as,
   interface_task_attribute_sched,
-  interface_thread_reserve,
   interface_thread_release,
   interface_thread_priority,
-  interface_thread_stack,
   interface_thread_load,
   interface_thread_store,
   interface_thread_attribute_task,
   interface_thread_attribute_priority,
   interface_thread_attribute_state,
-  interface_thread_attribute_stack,
-  interface_thread_attribute_stacksz,
   interface_timer_reserve,
   interface_timer_release,
   interface_timer_attribute_delay,
@@ -1091,7 +1010,7 @@ t_error			interface_notify(t_uint8*		buffer,
    */
 
   /*  if (size < sizeof (o_syscall))
-      return (ERROR_KO); XXX */
+      return (ERROR_KO); */
 
   if (message->u.request.operation >= INTERFACE_NSYSCALLS)
     return (ERROR_KO);
@@ -1100,7 +1019,7 @@ t_error			interface_notify(t_uint8*		buffer,
    * 2)
    */
   t_uint32 op =  message->u.request.operation;
-  (void) op; /* XXX: UNUSED VAR */
+  (void) op; /* UNUSED VAR */
 
   if (dispatch[message->u.request.operation](message) != ERROR_OK)
     return (ERROR_KO);

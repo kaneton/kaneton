@@ -176,8 +176,8 @@ t_error			architecture_idt_build(t_paddr		base,
    * 1)
    */
 
-  if (base % sizeof(at_idte))
-    base += sizeof(at_idte) - (base % sizeof(at_idte));
+  if (base % sizeof (at_idte))
+    base += sizeof (at_idte) - (base % sizeof (at_idte));
 
   /*
    * 2)
@@ -190,7 +190,7 @@ t_error			architecture_idt_build(t_paddr		base,
    * 3)
    */
 
-  memset(idt->table, 0x0, size * sizeof(at_idte));
+  memset(idt->table, 0x0, size * sizeof (at_idte));
 
   MACHINE_LEAVE();
 }
@@ -222,7 +222,7 @@ t_error			architecture_idt_import(as_idt*		idt)
    */
 
   idtr.address = (t_paddr)idt->table;
-  idtr.size = idt->size * sizeof(at_idte);
+  idtr.size = idt->size * sizeof (at_idte);
 
   /*
    * 2)
@@ -234,7 +234,7 @@ t_error			architecture_idt_import(as_idt*		idt)
    * 3)
    */
 
-  memcpy(&_event->machine.idt, idt, sizeof(as_idt));
+  memcpy(&_event->machine.idt, idt, sizeof (as_idt));
 
   MACHINE_LEAVE();
 }
@@ -282,7 +282,7 @@ t_error			architecture_idt_export(as_idt*		idt)
    * 3)
    */
 
-  idt->size = idtr.size / sizeof(at_idte);
+  idt->size = idtr.size / sizeof (at_idte);
 
   MACHINE_LEAVE();
 }
@@ -350,7 +350,7 @@ t_error			architecture_idt_delete(t_uint16	index)
    * 1)
    */
 
-  memset(&_event->machine.idt.table[index], 0x0, sizeof(at_idte));
+  memset(&_event->machine.idt.table[index], 0x0, sizeof (at_idte));
 
   MACHINE_LEAVE();
 }

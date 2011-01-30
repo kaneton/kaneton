@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/event/context/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [sat jan 15 22:37:42 2011]
+ * updated       julien quintard   [sun jan 30 12:47:41 2011]
  */
 
 /*
@@ -108,7 +108,7 @@ void			test_architecture_event_context_02(void)
                "pushl %%fs\n"
                "pushl %%gs\n"
                "movl %%esp, %1\n"
-	       "subl $20, %%esp" /* [XXX:improvement] this should not be necessary! why is it? */
+	       "subl $20, %%esp"
                : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
   if (thrown != 1)

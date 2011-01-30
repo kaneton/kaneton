@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/timer/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat jan 15 15:59:36 2011]
+ * updated       julien quintard   [thu jan 27 23:02:18 2011]
  */
 
 /*
@@ -129,30 +129,17 @@ void			test_core_timer_reserve_03_content(void)
 void			test_core_timer_reserve_03(void)
 {
   i_thread		thread;
-  o_thread*		o;
-  s_thread_context	ctx;
-  s_stack		stack;
   i_cpu			cpu;
 
   TEST_ENTER();
 
-  if (thread_reserve(_kernel->task, THREAD_PRIORITY, &thread) != ERROR_OK)
+  if (thread_reserve(_kernel->task,
+		     THREAD_PRIORITY,
+		     THREAD_STACK_ADDRESS_NONE,
+                     THREAD_STACK_SIZE_LOW,
+		     (t_vaddr)test_core_timer_reserve_03_content,
+		     &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
-
-  stack.base = 0;
-  stack.size = THREAD_STACKSZ_LOW;
-
-  if (thread_stack(thread, stack) != ERROR_OK)
-    TEST_ERROR("[thread_stack] error");
-
-  if (thread_get(thread, &o) != ERROR_OK)
-    TEST_ERROR("[thread_get] error");
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_vaddr)test_core_timer_reserve_03_content;
-
-  if (thread_load(thread, ctx) != ERROR_OK)
-    TEST_ERROR("[thread_load] error");
 
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");

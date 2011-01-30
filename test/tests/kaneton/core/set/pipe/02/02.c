@@ -36,7 +36,7 @@ void			test_core_set_pipe_02(void)
 
   TEST_ENTER();
 
-  if (set_reserve(pipe, SET_OPTION_NONE, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_NONE, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 64; ++i)

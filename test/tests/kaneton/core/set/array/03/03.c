@@ -44,7 +44,7 @@ void			test_core_set_array_03(void)
   if (set_reserve(array,
 		  SET_OPTION_ALLOCATE,
 		  4,
-		  sizeof(t_test_object),
+		  sizeof (t_test_object),
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
@@ -87,13 +87,13 @@ void			test_core_set_array_03(void)
   if (set_reserve(array,
 		  SET_OPTION_FREE,
 		  4,
-		  sizeof(t_test_object),
+		  sizeof (t_test_object),
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 16; ++i)
     {
-      obj2 = malloc(sizeof(t_test_object));
+      obj2 = malloc(sizeof (t_test_object));
 
       obj2->id = (i * 234) % 6578;
 

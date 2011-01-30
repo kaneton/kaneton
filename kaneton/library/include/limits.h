@@ -32,13 +32,13 @@
  * return max integer value for a type
  */
 
-#define __MINOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ?  (((__typeof__(t))1) << (sizeof(__typeof__(t)) * 8 - 1)) :  0))
+#define __MINOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ?  (((__typeof__(t))1) << (sizeof (__typeof__(t)) * 8 - 1)) :  0))
 
 /*
  * return min integer value for a type
  */
 
-#define __MAXOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ? ~(((__typeof__(t))1) << (sizeof(__typeof__(t)) * 8 - 1)) : -1))
+#define __MAXOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ? ~(((__typeof__(t))1) << (sizeof (__typeof__(t)) * 8 - 1)) : -1))
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -48,7 +48,7 @@
  * char type
  */
 
-#define CHAR_BITS	(sizeof(char) * 8)
+#define CHAR_BITS	(sizeof (char) * 8)
 
 #define SCHAR_MIN	(__MINOF_TYPE(signed char))
 #define SCHAR_MAX	(__MAXOF_TYPE(signed char))
@@ -60,7 +60,7 @@
  * short type
  */
 
-#define SHORT_BITS	(sizeof(short) * 8)
+#define SHORT_BITS	(sizeof (short) * 8)
 #define SHRT_MIN	(__MINOF_TYPE(signed short))
 #define SHRT_MAX	(__MAXOF_TYPE(signed short))
 #define USHRT_MAX	(__MAXOF_TYPE(unsigned short))
@@ -69,7 +69,7 @@
  * int type
  */
 
-#define INT_BITS	(sizeof(int) * 8)
+#define INT_BITS	(sizeof (int) * 8)
 #define INT_MIN		(__MINOF_TYPE(signed int))
 #define INT_MAX		(__MAXOF_TYPE(signed int))
 #define UINT_MAX	(__MAXOF_TYPE(unsigned int))
@@ -78,7 +78,7 @@
  * long type
  */
 
-#define LONG_BITS	(sizeof(long) * 8)
+#define LONG_BITS	(sizeof (long) * 8)
 #define SLONG_MIN	(__MINOF_TYPE(signed long))
 #define SLONG_MAX	(__MAXOF_TYPE(signed long))
 #define ULONG_MAX	(__MAXOF_TYPE(unsigned long))
@@ -87,7 +87,7 @@
  * long long type
  */
 
-#define LLONG_BITS	(sizeof(long long) * 8)
+#define LLONG_BITS	(sizeof (long long) * 8)
 #define LLONG_MIN	(__MINOF_TYPE(signed long long))
 #define LLONG_MAX	(__MAXOF_TYPE(signed long long))
 #define ULLONG_MAX	(__MAXOF_TYPE(unsigned long long))

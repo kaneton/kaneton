@@ -293,14 +293,14 @@ t_error			ia32_init_context(i_task		taskid,
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
     {
-      memset(&o->machine.u.sse, 0, sizeof(t_sse_state));
+      memset(&o->machine.u.sse, 0, sizeof (t_sse_state));
 
       o->machine.u.sse.fcw = 0x37f;
       o->machine.u.sse.ftw = 0xffff;
     }
   else
     {
-      memset(&o->machine.u.x87, 0, sizeof(t_x87_state));
+      memset(&o->machine.u.x87, 0, sizeof (t_x87_state));
 
       o->machine.u.x87.fcw = 0x37f;
       o->machine.u.x87.ftw = 0xffff;
@@ -330,9 +330,9 @@ t_error			ia32_duplicate_context(i_thread		old,
     return (ERROR_UNKNOWN);
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
-    memcpy(&to->machine.u.sse, &from->machine.u.sse, sizeof(t_sse_state));
+    memcpy(&to->machine.u.sse, &from->machine.u.sse, sizeof (t_sse_state));
   else
-    memcpy(&to->machine.u.x87, &from->machine.u.x87, sizeof(t_x87_state));
+    memcpy(&to->machine.u.x87, &from->machine.u.x87, sizeof (t_x87_state));
 
   return (ERROR_NONE);
 }
@@ -422,7 +422,7 @@ t_error			ia32_init_switcher(void)
 
   thread->machine.tss = (t_ia32_tss*)(t_vaddr)reg;
 
-  memset(thread->machine.tss, 0x0, sizeof(t_ia32_tss));
+  memset(thread->machine.tss, 0x0, sizeof (t_ia32_tss));
 
   /* XXX one TSS per CPU */
 

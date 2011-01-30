@@ -502,7 +502,7 @@ t_error			set_expand_array(o_set			*object,
    */
 
   if ((object->u.array.array = realloc(object->u.array.array,
-				       sz * sizeof(void*))) == NULL)
+				       sz * sizeof (void*))) == NULL)
     CORE_ESCAPE("unable to reallocate memory for the array");
 
   object->u.array.arraysz = sz;
@@ -1239,7 +1239,7 @@ t_error			set_remove_array(i_set			setid,
 
       if ((o->u.array.array = realloc(o->u.array.array,
 				      o->u.array.arraysz *
-				      sizeof(void*))) == NULL)
+				      sizeof (void*))) == NULL)
 	CORE_ESCAPE("unable to reallocate memory for the array");
     }
 
@@ -1325,7 +1325,7 @@ t_error			set_delete_array(i_set			setid,
 
       if ((o->u.array.array = realloc(o->u.array.array,
 				      o->u.array.arraysz *
-				      sizeof(void*))) == NULL)
+				      sizeof (void*))) == NULL)
 	CORE_ESCAPE("unable to reallocate memory for the array");
     }
 
@@ -1387,7 +1387,7 @@ t_error			set_flush_array(i_set			setid)
    */
 
   if ((o->u.array.array = realloc(o->u.array.array,
-				  o->u.array.initsz * sizeof(void*))) == NULL)
+				  o->u.array.initsz * sizeof (void*))) == NULL)
     CORE_ESCAPE("unable to reallocate memory for the array");
 
   for (i = 0; i < o->u.array.initsz; ++i)
@@ -1574,7 +1574,7 @@ t_error			set_reserve_array(t_options		options,
    * 2)
    */
 
-  memset(&o, 0x0, sizeof(o_set));
+  memset(&o, 0x0, sizeof (o_set));
 
   o.id = *id;
   o.size = 0;
@@ -1589,7 +1589,7 @@ t_error			set_reserve_array(t_options		options,
    * 3)
    */
 
-  if ((o.u.array.array = malloc(o.u.array.arraysz * sizeof(void*))) == NULL)
+  if ((o.u.array.array = malloc(o.u.array.arraysz * sizeof (void*))) == NULL)
     {
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set->id, o.id);

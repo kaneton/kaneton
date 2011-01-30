@@ -80,7 +80,7 @@ void			tlb_init(void)
   t_uint64		tag;
   t_uint64		data;
 
-  memset(itlb, 0, sizeof(itlb));
+  memset(itlb, 0, sizeof (itlb));
 
   for (i = 0; i < N_ITLB_ENTRY; i++)
     {
@@ -101,7 +101,7 @@ void			tlb_init(void)
 	}
     }
 
-  memset(dtlb, 0, sizeof(dtlb));
+  memset(dtlb, 0, sizeof (dtlb));
 
   for (i = 0; i < N_DTLB_ENTRY; i++)
     {
@@ -142,7 +142,7 @@ t_error			tlb_add(t_sint64			index,
       if (index < 0 || index >= N_ITLB_ENTRY || !itlb[index].valid)
 	return (ERROR_UNKNOWN);
 
-      memcpy(&itlb[index], entry, sizeof(t_sparc64_tlb_entry));
+      memcpy(&itlb[index], entry, sizeof (t_sparc64_tlb_entry));
       itlb[index].valid = 1;
 
       tag = (entry->context & 0xFFF) | (entry->virtual & ~(0xFFF));
@@ -161,7 +161,7 @@ t_error			tlb_add(t_sint64			index,
       if (index < 0 || index >= N_DTLB_ENTRY || !dtlb[index].valid)
 	return (ERROR_UNKNOWN);
 
-      memcpy(&dtlb[index], entry, sizeof(t_sparc64_tlb_entry));
+      memcpy(&dtlb[index], entry, sizeof (t_sparc64_tlb_entry));
       dtlb[index].valid = 1;
 
       tag = (entry->context & 0xFFF) | (entry->virtual & ~(0xFFF));
@@ -225,14 +225,14 @@ t_error			tlb_get(t_sint64			index,
 	if (index < 0 || index >= N_ITLB_ENTRY || !itlb[index].valid)
 	  return (ERROR_UNKNOWN);
 
-	memcpy(entry, &itlb[index], sizeof(t_sparc64_tlb_entry));
+	memcpy(entry, &itlb[index], sizeof (t_sparc64_tlb_entry));
 
 	return (ERROR_NONE);
       case sparc64_tlb_dtlb:
 	if (index < 0 || index >= N_DTLB_ENTRY || !dtlb[index].valid)
 	  return (ERROR_UNKNOWN);
 
-	memcpy(entry, &dtlb[index], sizeof(t_sparc64_tlb_entry));
+	memcpy(entry, &dtlb[index], sizeof (t_sparc64_tlb_entry));
 
 	return (ERROR_NONE);
       case sparc64_tlb_both:

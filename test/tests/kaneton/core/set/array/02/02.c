@@ -36,7 +36,7 @@ void			test_core_set_array_02(void)
 
   TEST_ENTER();
 
-  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof(t_id), &id) != ERROR_OK)
+  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof (t_id), &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 64; ++i)

@@ -92,7 +92,7 @@ t_error			set_reserve_pipe(t_options		options,
    * 2)
    */
 
-  memset(&o, 0x0, sizeof(o_set));
+  memset(&o, 0x0, sizeof (o_set));
 
   o.id = *id;
   o.size = 0;

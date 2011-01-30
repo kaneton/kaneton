@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [fri jan 14 20:09:07 2011]
+ * updated       julien quintard   [fri jan 28 17:17:54 2011]
  */
 
 /*

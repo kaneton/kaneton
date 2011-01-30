@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/include/idt.h
  *
  * created       renaud voltz   [fri feb 10 16:36:20 2006]
- * updated       julien quintard   [sun jan 16 01:38:25 2011]
+ * updated       julien quintard   [sun jan 30 12:22:23 2011]
  */
 
 #ifndef ARCHITECTURE_IDT_H
@@ -34,7 +34,7 @@
 						 (1LL << 41) |		\
 						 (1LL << 40))
 #define ARCHITECTURE_IDTE_INTERRUPT		((1LL << 42) |		\
-						 (1LL << 41)) // XXX +40
+						 (1LL << 41))
 
 /*
  * type definitions.

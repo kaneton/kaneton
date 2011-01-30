@@ -74,7 +74,7 @@ t_error		ofw_init(void)
   if (ofw_getprop(chosen,
 		  "stdout",
 		  &stdout,
-		  sizeof(stdout),
+		  sizeof (stdout),
 		  NULL) != ERROR_NONE)
     return ERROR_UNKNOWN;
 

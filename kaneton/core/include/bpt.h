@@ -406,67 +406,67 @@ typedef BPT_FLAGS_T		t_bpt_flags;
   ((t_bpt_head(T) *)((_node_)->buf))->_elem_ = (_value_)
 
 #define		BPT_INENTRY(T, _node_, _ndi_)                                 \
-  (t_bpt_inentry(T) *)((_node_)->buf + sizeof(t_bpt_head(T)) +                \
-                       (_ndi_) * sizeof(t_bpt_inentry(T)))
+  (t_bpt_inentry(T) *)((_node_)->buf + sizeof (t_bpt_head(T)) +                \
+                       (_ndi_) * sizeof (t_bpt_inentry(T)))
 
 #define		BPT_LFENTRY(T, _node_, _ndi_)                                 \
-  (t_bpt_lfentry(T) *)((_node_)->buf + sizeof(t_bpt_head(T)) +                \
-                       (_ndi_) * sizeof(t_bpt_lfentry(T)))
+  (t_bpt_lfentry(T) *)((_node_)->buf + sizeof (t_bpt_head(T)) +                \
+                       (_ndi_) * sizeof (t_bpt_lfentry(T)))
 
 #define		BPT_INIT_ENTRY(T, _node_, _ndi_)                              \
   memset(BPT_GET_HEAD(T, (_node_), type) == BPT_TYPE_INTERNAL ?               \
-         (_node_)->buf + sizeof(t_bpt_head(T)) +                              \
-         (_ndi_) * sizeof(t_bpt_inentry(T)) :                                 \
-         (_node_)->buf + sizeof(t_bpt_head(T)) +                              \
-         (_ndi_) * sizeof(t_bpt_lfentry(T)), 0x0,                             \
+         (_node_)->buf + sizeof (t_bpt_head(T)) +                              \
+         (_ndi_) * sizeof (t_bpt_inentry(T)) :                                 \
+         (_node_)->buf + sizeof (t_bpt_head(T)) +                              \
+         (_ndi_) * sizeof (t_bpt_lfentry(T)), 0x0,                             \
          BPT_GET_HEAD(T, (_node_), type) == BPT_TYPE_INTERNAL ?               \
-         sizeof(t_bpt_inentry(T)) : sizeof(t_bpt_lfentry(T)))
+         sizeof (t_bpt_inentry(T)) : sizeof (t_bpt_lfentry(T)))
 
 #define		BPT_IMPORT_ENTRY(T, _node_, _ndi_, _entry_)                   \
   memcpy(BPT_GET_HEAD(T, (_node_), type) == BPT_TYPE_INTERNAL ?               \
-         (_node_)->buf + sizeof(t_bpt_head(T)) +                              \
-         (_ndi_) * sizeof(t_bpt_inentry(T)) :                                 \
-         (_node_)->buf + sizeof(t_bpt_head(T)) +                              \
-         (_ndi_) * sizeof(t_bpt_lfentry(T)),                                  \
+         (_node_)->buf + sizeof (t_bpt_head(T)) +                              \
+         (_ndi_) * sizeof (t_bpt_inentry(T)) :                                 \
+         (_node_)->buf + sizeof (t_bpt_head(T)) +                              \
+         (_ndi_) * sizeof (t_bpt_lfentry(T)),                                  \
          (_entry_),                                                           \
          BPT_GET_HEAD(T, (_node_), type) == BPT_TYPE_INTERNAL ?               \
-         sizeof(t_bpt_inentry(T)) : sizeof(t_bpt_lfentry(T)))
+         sizeof (t_bpt_inentry(T)) : sizeof (t_bpt_lfentry(T)))
 
 #define		BPT_IMPORT_INENTRY(T, _node_, _ndi_, _entry_)                 \
-  memcpy((_node_)->buf + sizeof(t_bpt_head(T)) +                              \
-         (_ndi_) * sizeof(t_bpt_inentry(T)),                                  \
+  memcpy((_node_)->buf + sizeof (t_bpt_head(T)) +                              \
+         (_ndi_) * sizeof (t_bpt_inentry(T)),                                  \
          (_entry_),                                                           \
-         sizeof(t_bpt_inentry(T)))
+         sizeof (t_bpt_inentry(T)))
 
 #define		BPT_IMPORT_LFENTRY(T, _node_, _ndi_, _entry_)                 \
-  memcpy((_node_)->buf + sizeof(t_bpt_head(T)) +                              \
-         (_ndi_) * sizeof(t_bpt_lfentry(T)),                                  \
+  memcpy((_node_)->buf + sizeof (t_bpt_head(T)) +                              \
+         (_ndi_) * sizeof (t_bpt_lfentry(T)),                                  \
          (_entry_),                                                           \
-         sizeof(t_bpt_lfentry(T)))
+         sizeof (t_bpt_lfentry(T)))
 
 #define		BPT_EXPORT_ENTRY(T, _node_, _ndi_, _entry_)                   \
   memcpy((_entry_),                                                           \
          BPT_GET_HEAD(T, (_node_), type) == BPT_TYPE_INTERNAL ?               \
-         (_node_)->buf + sizeof(t_bpt_head(T)) +                              \
-         (_ndi_) * sizeof(t_bpt_inentry(T)) :                                 \
-         (_node_)->buf + sizeof(t_bpt_head(T)) +                              \
-         (_ndi_) * sizeof(t_bpt_lfentry(T)),                                  \
+         (_node_)->buf + sizeof (t_bpt_head(T)) +                              \
+         (_ndi_) * sizeof (t_bpt_inentry(T)) :                                 \
+         (_node_)->buf + sizeof (t_bpt_head(T)) +                              \
+         (_ndi_) * sizeof (t_bpt_lfentry(T)),                                  \
          BPT_GET_HEAD(T, (_node_), type) == BPT_TYPE_INTERNAL ?               \
-         sizeof(t_bpt_inentry(T)) : sizeof(t_bpt_lfentry(T)))
+         sizeof (t_bpt_inentry(T)) : sizeof (t_bpt_lfentry(T)))
 
 #define		BPT_COPY_ENTRY(T, _node1_, _node2_, _ndi1_, _ndi2_)           \
   memcpy(BPT_GET_HEAD(T, (_node1_), type) == BPT_TYPE_INTERNAL ?              \
-         (_node2_)->buf + sizeof(t_bpt_head(T)) +                             \
-         (_ndi2_) * sizeof(t_bpt_inentry(T)) :                                \
-         (_node2_)->buf + sizeof(t_bpt_head(T)) +                             \
-         (_ndi2_) * sizeof(t_bpt_lfentry(T)),                                 \
+         (_node2_)->buf + sizeof (t_bpt_head(T)) +                             \
+         (_ndi2_) * sizeof (t_bpt_inentry(T)) :                                \
+         (_node2_)->buf + sizeof (t_bpt_head(T)) +                             \
+         (_ndi2_) * sizeof (t_bpt_lfentry(T)),                                 \
          BPT_GET_HEAD(T, (_node1_), type) == BPT_TYPE_INTERNAL ?              \
-         (_node1_)->buf + sizeof(t_bpt_head(T)) +                             \
-         (_ndi1_) * sizeof(t_bpt_inentry(T)) :                                \
-         (_node1_)->buf + sizeof(t_bpt_head(T)) +                             \
-         (_ndi1_) * sizeof(t_bpt_lfentry(T)),                                 \
+         (_node1_)->buf + sizeof (t_bpt_head(T)) +                             \
+         (_ndi1_) * sizeof (t_bpt_inentry(T)) :                                \
+         (_node1_)->buf + sizeof (t_bpt_head(T)) +                             \
+         (_ndi1_) * sizeof (t_bpt_lfentry(T)),                                 \
          BPT_GET_HEAD(T, (_node1_), type) == BPT_TYPE_INTERNAL ?              \
-         sizeof(t_bpt_inentry(T)) : sizeof(t_bpt_lfentry(T)))
+         sizeof (t_bpt_inentry(T)) : sizeof (t_bpt_lfentry(T)))
 
 #define		BPT_SWAP_ENTRIES(T, _node_, _ndi1_, _ndi2_)                   \
   {                                                                           \
@@ -474,38 +474,38 @@ typedef BPT_FLAGS_T		t_bpt_flags;
       {                                                                       \
         t_bpt_inentry(T)	_swap_;                                       \
                                                                               \
-        memcpy(&_swap_, (_node_)->buf + sizeof(t_bpt_head(T)) + (_ndi1_) *    \
-               sizeof(t_bpt_inentry(T)), sizeof(t_bpt_inentry(T)));           \
-        memcpy((_node_)->buf + sizeof(t_bpt_head(T)) + (_ndi1_) *             \
-               sizeof(t_bpt_inentry(T)), (_node_)->buf +                      \
-               sizeof(t_bpt_head(T)) + (_ndi2_) *                             \
-               sizeof(t_bpt_inentry(T)), sizeof(t_bpt_inentry(T)));           \
-        memcpy((_node_)->buf + sizeof(t_bpt_head(T)) + (_ndi2_) *             \
-               sizeof(t_bpt_inentry(T)), &_swap_,                             \
-               sizeof(t_bpt_inentry(T)));                                     \
+        memcpy(&_swap_, (_node_)->buf + sizeof (t_bpt_head(T)) + (_ndi1_) *    \
+               sizeof (t_bpt_inentry(T)), sizeof (t_bpt_inentry(T)));           \
+        memcpy((_node_)->buf + sizeof (t_bpt_head(T)) + (_ndi1_) *             \
+               sizeof (t_bpt_inentry(T)), (_node_)->buf +                      \
+               sizeof (t_bpt_head(T)) + (_ndi2_) *                             \
+               sizeof (t_bpt_inentry(T)), sizeof (t_bpt_inentry(T)));           \
+        memcpy((_node_)->buf + sizeof (t_bpt_head(T)) + (_ndi2_) *             \
+               sizeof (t_bpt_inentry(T)), &_swap_,                             \
+               sizeof (t_bpt_inentry(T)));                                     \
       }                                                                       \
     else                                                                      \
       {                                                                       \
         t_bpt_lfentry(T)	_swap_;                                       \
                                                                               \
-        memcpy(&_swap_, (_node_)->buf + sizeof(t_bpt_head(T)) + (_ndi1_) *    \
-               sizeof(t_bpt_lfentry(T)), sizeof(t_bpt_lfentry(T)));           \
-        memcpy((_node_)->buf + sizeof(t_bpt_head(T)) + (_ndi1_) *             \
-               sizeof(t_bpt_lfentry(T)), (_node_)->buf +                      \
-               sizeof(t_bpt_head(T)) + (_ndi2_) *                             \
-               sizeof(t_bpt_lfentry(T)), sizeof(t_bpt_lfentry(T)));           \
-        memcpy((_node_)->buf + sizeof(t_bpt_head(T)) + (_ndi2_) *             \
-               sizeof(t_bpt_lfentry(T)), &_swap_,                             \
-               sizeof(t_bpt_lfentry(T)));                                     \
+        memcpy(&_swap_, (_node_)->buf + sizeof (t_bpt_head(T)) + (_ndi1_) *    \
+               sizeof (t_bpt_lfentry(T)), sizeof (t_bpt_lfentry(T)));           \
+        memcpy((_node_)->buf + sizeof (t_bpt_head(T)) + (_ndi1_) *             \
+               sizeof (t_bpt_lfentry(T)), (_node_)->buf +                      \
+               sizeof (t_bpt_head(T)) + (_ndi2_) *                             \
+               sizeof (t_bpt_lfentry(T)), sizeof (t_bpt_lfentry(T)));           \
+        memcpy((_node_)->buf + sizeof (t_bpt_head(T)) + (_ndi2_) *             \
+               sizeof (t_bpt_lfentry(T)), &_swap_,                             \
+               sizeof (t_bpt_lfentry(T)));                                     \
       }                                                                       \
   }
 
 #define		BPT_GET_ENTRY(T, _node_, _ndi_, _elem_)                       \
   (BPT_GET_HEAD(T, (_node_), type) == BPT_TYPE_INTERNAL ?                     \
-   ((t_bpt_inentry(T) *)((_node_)->buf + sizeof(t_bpt_head(T)) + (_ndi_) *    \
-    sizeof(t_bpt_inentry(T))))->_elem_ :                                      \
-   ((t_bpt_lfentry(T) *)((_node_)->buf + sizeof(t_bpt_head(T)) + (_ndi_) *    \
-    sizeof(t_bpt_lfentry(T))))->_elem_)
+   ((t_bpt_inentry(T) *)((_node_)->buf + sizeof (t_bpt_head(T)) + (_ndi_) *    \
+    sizeof (t_bpt_inentry(T))))->_elem_ :                                      \
+   ((t_bpt_lfentry(T) *)((_node_)->buf + sizeof (t_bpt_head(T)) + (_ndi_) *    \
+    sizeof (t_bpt_lfentry(T))))->_elem_)
 
 #define		BPT_GET_INENTRY(T, _node_, _ndi_, _elem_)                     \
   (BPT_INENTRY(T, (_node_), (_ndi_)))->_elem_
@@ -2664,7 +2664,7 @@ void			bpt_new_root_##T(t_bpt(T)		*bpt,         \
                                                                               \
   bpt_make_node(T, bpt, &root, BPT_TYPE_INTERNAL);                            \
                                                                               \
-  memset(&inentry, 0x0, sizeof(t_bpt_inentry(T)));                            \
+  memset(&inentry, 0x0, sizeof (t_bpt_inentry(T)));                            \
   bpt_key(T, bpt, node1, &inentry._key_);                                     \
   inentry._value_ = node1->addr;                                              \
                                                                               \
@@ -2672,7 +2672,7 @@ void			bpt_new_root_##T(t_bpt(T)		*bpt,         \
                                                                               \
   BPT_IMPORT_INENTRY(T, &root, ndi, &inentry);                                \
                                                                               \
-  memset(&inentry, 0x0, sizeof(t_bpt_inentry(T)));                            \
+  memset(&inentry, 0x0, sizeof (t_bpt_inentry(T)));                            \
   bpt_key(T, bpt, node2, &inentry._key_);                                     \
   inentry._value_ = node2->addr;                                              \
                                                                               \
@@ -2821,7 +2821,7 @@ int			bpt_split_node_##T(t_bpt(T)		*bpt,         \
           return (-1);                                                        \
         }                                                                     \
                                                                               \
-      memset(&inentry, 0x0, sizeof(t_bpt_inentry(T)));                        \
+      memset(&inentry, 0x0, sizeof (t_bpt_inentry(T)));                        \
       bpt_key(T, bpt, &node2, &inentry._key_);                                \
       inentry._value_ = node2.addr;                                           \
                                                                               \
@@ -3012,16 +3012,16 @@ int			bpt_init_##T(t_bpt(T)			*bpt,         \
   bpt->nodes = 0;                                                             \
   bpt->flags = flags;                                                         \
                                                                               \
-  if (bpt->nodesz < sizeof(t_bpt_head(T)))                                    \
+  if (bpt->nodesz < sizeof (t_bpt_head(T)))                                    \
     {                                                                         \
       bpt_debug(stderr, "[bptd] node size less than header size\n");          \
       return (-1);                                                            \
     }                                                                         \
                                                                               \
-  bpt->nikeys = (bpt->nodesz - sizeof(t_bpt_head(T))) /                       \
-    sizeof(t_bpt_inentry(T));                                                 \
-  bpt->nlkeys = (bpt->nodesz - sizeof(t_bpt_head(T))) /                       \
-    sizeof(t_bpt_lfentry(T));                                                 \
+  bpt->nikeys = (bpt->nodesz - sizeof (t_bpt_head(T))) /                       \
+    sizeof (t_bpt_inentry(T));                                                 \
+  bpt->nlkeys = (bpt->nodesz - sizeof (t_bpt_head(T))) /                       \
+    sizeof (t_bpt_lfentry(T));                                                 \
   bpt->height = BPT_INIT_HEIGHT;                                              \
                                                                               \
   bpt->data = data;                                                           \

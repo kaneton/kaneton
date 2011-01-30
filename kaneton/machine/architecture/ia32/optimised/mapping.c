@@ -204,7 +204,7 @@ t_error			ia32_map_pd(t_ia32_directory*	pd)
   t_vaddr		chunk;
   void*			tmp;
 
-  tmp = malloc(sizeof(o_region));
+  tmp = malloc(sizeof (o_region));
 
   if (region_space(kasid, PAGESZ, &chunk) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -230,7 +230,7 @@ t_error			ia32_map_pt(t_ia32_table*	pt)
   t_vaddr		chunk;
   void*			tmp;
 
-  tmp = malloc(sizeof(o_region));
+  tmp = malloc(sizeof (o_region));
 
   if (region_space(kasid, PAGESZ, &chunk) != ERROR_NONE)
     return (ERROR_UNKNOWN);

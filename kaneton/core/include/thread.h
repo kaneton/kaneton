@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [sun jan 16 14:41:00 2011]
+ * updated       julien quintard   [thu jan 27 22:02:43 2011]
  */
 
 #ifndef CORE_THREAD_H
@@ -38,12 +38,18 @@
 #define THREAD_PRIORITY_LOW		10
 
 /*
+ * these macro can be used whenever a stack must be allocated.
+ */
+
+#define THREAD_STACK_ADDRESS_NONE	(t_vaddr)NULL
+
+/*
  * the stack sizes.
  */
 
-#define THREAD_STACKSZ			500 * ___kaneton$pagesz
-#define THREAD_STACKSZ_HIGH		1000 * ___kaneton$pagesz
-#define THREAD_STACKSZ_LOW		1 * ___kaneton$pagesz
+#define THREAD_STACK_SIZE		500 * ___kaneton$pagesz
+#define THREAD_STACK_SIZE_HIGH		1000 * ___kaneton$pagesz
+#define THREAD_STACK_SIZE_LOW		1 * ___kaneton$pagesz
 
 /*
  * some initial size for the sets.
@@ -145,7 +151,7 @@ typedef struct
  *
  * the 'value' contains the thread's exit value, when it exits!
  *
- * finally the 'stack' and 'stacksz' reference the thread's stack.
+ * finally the 'stack' attribute references the thread's stack.
  *
  * note that a timer is provided should the thread need to trigger an
  * action. for instance the timer is used for the thread to sleep for some
@@ -174,8 +180,13 @@ typedef struct
 
   t_value			value;
 
-  t_vaddr			stack;
-  t_vsize			stacksz;
+  struct
+  {
+    t_vaddr			base;
+    t_vsize			size;
+  }				stack;
+
+  t_vaddr			entry;
 
   i_timer			timer;
 
@@ -212,6 +223,10 @@ typedef struct
 					       mt_margin);
   t_error			(*thread_dump)(void);
   t_error			(*thread_reserve)(i_task,
+						  t_priority,
+						  t_vaddr,
+						  t_vsize,
+						  t_vaddr,
 						  i_thread*);
   t_error			(*thread_release)(i_thread);
   t_error			(*thread_priority)(i_thread,
@@ -225,8 +240,6 @@ typedef struct
 					       i_thread,
 					       t_state,
 					       s_wait*);
-  t_error			(*thread_stack)(i_thread,
-						s_stack);
   t_error			(*thread_arguments)(i_thread,
 						    void*,
 						    t_size);
@@ -258,6 +271,9 @@ t_error			thread_dump(void);
 
 t_error			thread_reserve(i_task			taskid,
 				       t_priority		prior,
+				       t_vaddr			stack,
+				       t_vsize			stacksz,
+				       t_vaddr			entry,
 				       i_thread*		id);
 
 t_error			thread_release(i_thread			threadid);
@@ -281,9 +297,6 @@ t_error			thread_wait(i_thread			id,
 				    i_thread			target,
 				    t_state			state,
 				    s_wait*			wait);
-
-t_error			thread_stack(i_thread			threadid,
-				     s_stack			stack);
 
 t_error			thread_arguments(i_thread		threadid,
 					 void*			arguments,

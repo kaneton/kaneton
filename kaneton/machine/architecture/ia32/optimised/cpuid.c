@@ -40,7 +40,7 @@ t_uint32		ia32_cpu_is_genuine(void)
   t_uint32		edx;
   t_uint32		buff[4];
 
-  memset(buff, 0, sizeof(buff));
+  memset(buff, 0, sizeof (buff));
   CPUID(0x0, eax, ebx, ecx, edx);
 
   buff[0] = ebx;
@@ -69,7 +69,7 @@ char*			ia32_cpu_get_brand(char*		brand,
   if (!(eax & 0x80000000) || eax < 0x80000004)
     return (strncpy(brand, "Unknown", n));
 
-  memset(buff, 0, sizeof(buff));
+  memset(buff, 0, sizeof (buff));
 
   for (i = 0; i < 3; i++)
     {

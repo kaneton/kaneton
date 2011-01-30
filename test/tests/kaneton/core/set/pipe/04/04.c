@@ -42,7 +42,7 @@ void			test_core_set_pipe_04(void)
 
   if (set_reserve(pipe,
 		  SET_OPTION_ALLOCATE,
-                  sizeof(t_id),
+                  sizeof (t_id),
 		  &id) != ERROR_OK)
     TEST_ERROR("[set_reserve] error");
 

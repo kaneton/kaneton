@@ -206,7 +206,7 @@ t_error			set_build_bpt(o_set*			object,
    */
 
   if ((object->u.bpt.unused.array = malloc(object->u.bpt.unusedsz *
-					   sizeof(t_bpt_addr(set)))) == NULL)
+					   sizeof (t_bpt_addr(set)))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the array of unused blocks");
 
   /*
@@ -214,7 +214,7 @@ t_error			set_build_bpt(o_set*			object,
    */
 
   memset(object->u.bpt.unused.array, 0x0,
-	 object->u.bpt.unusedsz * sizeof(t_bpt_addr(set)));
+	 object->u.bpt.unusedsz * sizeof (t_bpt_addr(set)));
 
   object->u.bpt.unused.index = -1;
 
@@ -265,7 +265,7 @@ t_error			set_adjust_bpt(o_set*			object,
     {
       if ((object->u.bpt.unused.array =
 	   realloc(object->u.bpt.unused.array, size *
-		   sizeof(t_bpt_addr(set)))) == NULL)
+		   sizeof (t_bpt_addr(set)))) == NULL)
 	CORE_ESCAPE("unable to reallocate memory for the array of unused "
 		    "blocks");
 
@@ -721,7 +721,7 @@ t_error			set_add_bpt(i_set			setid,
    * 2)
    */
 
-  memset(&lfentry, 0x0, sizeof(t_bpt_lfentry(set)));
+  memset(&lfentry, 0x0, sizeof (t_bpt_lfentry(set)));
 
   lfentry.id = *((t_id*)data);
 
@@ -1058,7 +1058,7 @@ t_error			set_locate_bpt(i_set			setid,
    * 3)
    */
 
-  memcpy(&iterator->u.bpt.entry, &entry, sizeof(t_bpt_entry(set)));
+  memcpy(&iterator->u.bpt.entry, &entry, sizeof (t_bpt_entry(set)));
 
   CORE_LEAVE();
 }
@@ -1183,7 +1183,7 @@ t_error			set_reserve_bpt(t_options		options,
    * 2)
    */
 
-  memset(&o, 0x0, sizeof(o_set));
+  memset(&o, 0x0, sizeof (o_set));
 
   o.id = *id;
   o.size = 0;
