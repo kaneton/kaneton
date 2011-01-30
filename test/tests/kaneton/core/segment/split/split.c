@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/segment/split/split.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan 14 23:10:46 2011]
+ * updated       julien quintard   [sun jan 30 21:09:12 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -38,7 +38,7 @@ void			test_core_segment_split(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
@@ -60,7 +60,7 @@ void			test_core_segment_split(void)
   if (o1->id != seg)
     TEST_ERROR("invalid segment's identifier after split");
 
-  if (o1->as != _kernel->as)
+  if (o1->as != _kernel.as)
     TEST_ERROR("invalid segment's address space identifier after split");
 
   if (o1->options != SEGMENT_OPTION_NONE)
@@ -75,7 +75,7 @@ void			test_core_segment_split(void)
   if (o2->id != seg2)
     TEST_ERROR("invalid segment's identifier after split");
 
-  if (o2->as != _kernel->as)
+  if (o2->as != _kernel.as)
     TEST_ERROR("invalid segment's address space identifier after split");
 
   if (o2->options != SEGMENT_OPTION_NONE)

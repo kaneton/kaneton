@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../tests/kaneton/core/task/driver/driver.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 27 22:40:05 2011]
+ * updated       julien quintard   [sun jan 30 21:17:42 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -81,14 +81,14 @@ void			test_core_task_driver(void)
    * kernel
    */
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
 		      &segment) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     segment,
 		     0,
 		     REGION_OPTION_NONE,
@@ -97,12 +97,12 @@ void			test_core_task_driver(void)
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel->as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
   share_01 = r->address;
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,

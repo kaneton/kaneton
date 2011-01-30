@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...st/tests/kaneton/core/task/sleep/sleep.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 27 22:43:27 2011]
+ * updated       julien quintard   [sun jan 30 21:17:23 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -113,7 +113,7 @@ void			test_core_task_sleep(void)
    * segment
    */
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
@@ -124,7 +124,7 @@ void			test_core_task_sleep(void)
    * thread
    */
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
@@ -135,7 +135,7 @@ void			test_core_task_sleep(void)
   if (thread_start(thread_00) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     segment,
 		     0x0,
 		     REGION_OPTION_NONE,
@@ -144,7 +144,7 @@ void			test_core_task_sleep(void)
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel->as,
+  if (region_get(_kernel.as,
 		 region,
 		 &r) != ERROR_OK)
     TEST_ERROR("[region_get] error");

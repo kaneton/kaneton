@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       julien quintard   [sun jan 30 12:18:36 2011]
+ * updated       julien quintard   [sun jan 30 21:01:10 2011]
  */
 
 /*
@@ -59,7 +59,7 @@ extern s_init*		_init;
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -69,7 +69,7 @@ extern m_kernel*	_kernel;
  * the thread manager.
  */
 
-m_thread*		_thread = NULL;
+m_thread		_thread;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -261,13 +261,13 @@ t_error			thread_dump(void)
 
   module_call(console, message,
 	      '#', "  core: threads(%qd)\n",
-	      _thread->threads);
+	      _thread.threads);
 
   /*
    * 2)
    */
 
-  if (id_show(&_thread->id,
+  if (id_show(&_thread.id,
 	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
@@ -275,7 +275,7 @@ t_error			thread_dump(void)
    * 3)
    */
 
-  if (set_size(_thread->threads, &size) != ERROR_OK)
+  if (set_size(_thread.threads, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of threads");
 
   /*
@@ -284,14 +284,14 @@ t_error			thread_dump(void)
 
   module_call(console, message,
 	      '#', "    threads: id(%qd) size(%qd)\n",
-	      _thread->threads,
+	      _thread.threads,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _thread->threads, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _thread.threads, &i, s)
     {
       o_thread*		o;
 
-      if (set_object(_thread->threads, i, (void**)&o) != ERROR_OK)
+      if (set_object(_thread.threads, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       if (thread_show(o->id,
@@ -303,7 +303,7 @@ t_error			thread_dump(void)
    * 5)
    */
 
-  if (set_size(_thread->morgue.field, &size) != ERROR_OK)
+  if (set_size(_thread.morgue.field, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of dead threads");
 
   /*
@@ -312,19 +312,19 @@ t_error			thread_dump(void)
 
   module_call(console, message,
 	      '#', "    morgue: field(%qd) timer(%qd)\n",
-	      _thread->morgue.field,
-	      _thread->morgue.timer);
+	      _thread.morgue.field,
+	      _thread.morgue.timer);
 
   module_call(console, message,
 	      '#', "      field: id(%qd) size(%qd)\n",
-	      _thread->morgue.field,
+	      _thread.morgue.field,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _thread->morgue.field, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _thread.morgue.field, &i, s)
     {
       i_thread*		id;
 
-      if (set_object(_thread->morgue.field, i, (void**)&id) != ERROR_OK)
+      if (set_object(_thread.morgue.field, i, (void**)&id) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       module_call(console, message,
@@ -395,7 +395,7 @@ t_error			thread_reserve(i_task			taskid,
    * 2)
    */
 
-  if (id_reserve(&_thread->id, id) != ERROR_OK)
+  if (id_reserve(&_thread.id, id) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a thread identifier");
 
   /*
@@ -475,7 +475,7 @@ t_error			thread_reserve(i_task			taskid,
    * 6)
    */
 
-  if (set_add(_thread->threads, &o) != ERROR_OK)
+  if (set_add(_thread.threads, &o) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of threads");
 
   /*
@@ -561,7 +561,7 @@ t_error			thread_release(i_thread			threadid)
    * 6)
    */
 
-  if (id_release(&_thread->id, o->id) != ERROR_OK)
+  if (id_release(&_thread.id, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to release the thread identifier");
 
   /*
@@ -575,7 +575,7 @@ t_error			thread_release(i_thread			threadid)
    * 8)
    */
 
-  if (set_remove(_thread->threads, threadid) != ERROR_OK)
+  if (set_remove(_thread.threads, threadid) != ERROR_OK)
     CORE_ESCAPE("unable to remove the thread identifier from the set of "
 		"threads");
 
@@ -1040,14 +1040,14 @@ t_error			thread_exit(i_thread			id,
    * ~)
    */
 
-  if (_thread->morgue.timer == ID_UNUSED)
+  if (_thread.morgue.timer == ID_UNUSED)
     {
       if (timer_reserve(TIMER_TYPE_FUNCTION,
 			TIMER_ROUTINE(thread_bury),
 			TIMER_DATA(NULL),
 			THREAD_MORGUE_DELAY,
 			TIMER_OPTION_REPEAT,
-			&_thread->morgue.timer) != ERROR_OK)
+			&_thread.morgue.timer) != ERROR_OK)
 	MACHINE_ESCAPE("unable to reserve the timer");
     }
 
@@ -1170,7 +1170,7 @@ t_error			thread_exit(i_thread			id,
        * b)
        */
 
-      if (set_add(_thread->morgue.field, &object->id) != ERROR_OK)
+      if (set_add(_thread.morgue.field, &object->id) != ERROR_OK)
 	CORE_ESCAPE("unable to add the thread to the morgue");
     }
 
@@ -1223,7 +1223,7 @@ void			thread_bury(i_timer			timer,
    * 1)
    */
 
-  while (set_head(_thread->morgue.field, &i) == ERROR_TRUE)
+  while (set_head(_thread.morgue.field, &i) == ERROR_TRUE)
     {
       i_thread*		id;
       o_thread*		thread;
@@ -1234,7 +1234,7 @@ void			thread_bury(i_timer			timer,
        * a)
        */
 
-      assert(set_object(_thread->morgue.field, i, (void**)&id) == ERROR_OK);
+      assert(set_object(_thread.morgue.field, i, (void**)&id) == ERROR_OK);
 
       assert(thread_get(*id, &thread) == ERROR_OK);
 
@@ -1262,7 +1262,7 @@ void			thread_bury(i_timer			timer,
        * e)
        */
 
-      assert(set_delete(_thread->morgue.field, i) == ERROR_OK);
+      assert(set_delete(_thread.morgue.field, i) == ERROR_OK);
 
       /*
        * f)
@@ -1399,7 +1399,7 @@ t_error			thread_wait(i_thread			id,
        * c)
        */
 
-      if (set_add(_thread->morgue.field, &o->id) != ERROR_OK)
+      if (set_add(_thread.morgue.field, &o->id) != ERROR_OK)
 	CORE_ESCAPE("unable to add the thread to the morgue");
 
       CORE_LEAVE();
@@ -1727,7 +1727,7 @@ t_error			thread_current(i_thread*		thread)
 
 t_error			thread_exist(i_thread			threadid)
 {
-  if (set_exist(_thread->threads, threadid) != ERROR_TRUE)
+  if (set_exist(_thread.threads, threadid) != ERROR_TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -1757,7 +1757,7 @@ t_error			thread_get(i_thread			id,
    * 1)
    */
 
-  if (set_get(_thread->threads, id, (void**)object) != ERROR_OK)
+  if (set_get(_thread.threads, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of threads");
 
   CORE_LEAVE();
@@ -1769,7 +1769,7 @@ t_error			thread_get(i_thread			id,
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize the thread manager's structure.
+ * 2) initialize the thread manager's structure.
  * 3) build the identifier object.
  * 4) reserve the set of threads.
  * 5) reserve the set of dead threads i.e the morgue.
@@ -1796,17 +1796,13 @@ t_error			thread_initialize(void)
    * 2)
    */
 
-  if ((_thread = malloc(sizeof (m_thread))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the thread manager's "
-		"structure");
-
-  memset(_thread, 0x0, sizeof (m_thread));
+  memset(&_thread, 0x0, sizeof (m_thread));
 
   /*
    * 3)
    */
 
-  if (id_build(&_thread->id) != ERROR_OK)
+  if (id_build(&_thread.id) != ERROR_OK)
     CORE_ESCAPE("unable to build the identifier object");
 
   /*
@@ -1816,7 +1812,7 @@ t_error			thread_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE,
 		  sizeof (o_thread),
-		  &_thread->threads) != ERROR_OK)
+		  &_thread.threads) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of threads");
 
   /*
@@ -1826,32 +1822,32 @@ t_error			thread_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (i_thread),
-		  &_thread->morgue.field) != ERROR_OK)
+		  &_thread.morgue.field) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of dead threads i.e the morgue");
 
   /*
    * 6)
    */
 
-  _thread->morgue.timer = ID_UNUSED;
+  _thread.morgue.timer = ID_UNUSED;
 
   /*
    * 7)
    */
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     (t_vaddr)_init->kstack,
 		     (t_vsize)_init->kstacksz,
 		     (t_vaddr)NULL,
-		     &_kernel->thread) != ERROR_OK)
+		     &_kernel.thread) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the kernel thread");
 
   /*
    * 8)
    */
 
-  if (thread_block(_kernel->thread) != ERROR_OK)
+  if (thread_block(_kernel.thread) != ERROR_OK)
     CORE_ESCAPE("unable to block the kernel thread");
 
   /*
@@ -1878,7 +1874,6 @@ t_error			thread_initialize(void)
  * 5) release the set of dead threads.
  * 6) release the set of threads.
  * 7) destroy the identifier object.
- * 8) release the manager's structure memory.
  */
 
 t_error			thread_clean(void)
@@ -1904,7 +1899,7 @@ t_error			thread_clean(void)
    * 3)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _thread->threads, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _thread.threads, &i, s)
     {
       i_thread*		thread;
 
@@ -1912,7 +1907,7 @@ t_error			thread_clean(void)
        * a)
        */
 
-      if (set_object(_thread->threads, i, (void**)&thread) != ERROR_OK)
+      if (set_object(_thread.threads, i, (void**)&thread) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       /*
@@ -1927,9 +1922,9 @@ t_error			thread_clean(void)
    * 4)
    */
 
-  if (_thread->morgue.timer != ID_UNUSED)
+  if (_thread.morgue.timer != ID_UNUSED)
     {
-      if (timer_release(_thread->morgue.timer) != ERROR_OK)
+      if (timer_release(_thread.morgue.timer) != ERROR_OK)
 	CORE_ESCAPE("unable to release the timer");
     }
 
@@ -1937,28 +1932,22 @@ t_error			thread_clean(void)
    * 5)
    */
 
-  if (set_release(_thread->morgue.field) != ERROR_OK)
+  if (set_release(_thread.morgue.field) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of dead threads");
 
   /*
    * 6)
    */
 
-  if (set_release(_thread->threads) != ERROR_OK)
+  if (set_release(_thread.threads) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of threads");
 
   /*
    * 7)
    */
 
-  if (id_destroy(&_thread->id) != ERROR_OK)
+  if (id_destroy(&_thread.id) != ERROR_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
-
-  /*
-   * 8)
-   */
-
-  free(_thread);
 
   CORE_LEAVE();
 }

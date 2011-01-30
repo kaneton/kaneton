@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...kaneton/core/segment/permissions/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan 14 23:01:02 2011]
+ * updated       julien quintard   [sun jan 30 21:08:47 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -38,14 +38,14 @@ void			test_core_segment_permissions_05(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
 		      &seg_ref) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,

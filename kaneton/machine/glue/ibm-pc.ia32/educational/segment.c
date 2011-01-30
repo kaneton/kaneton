@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun jan 30 13:31:23 2011]
+ * updated       julien quintard   [sun jan 30 20:42:19 2011]
  */
 
 /*
@@ -40,7 +40,7 @@
  * the segment manager.
  */
 
-extern m_segment*	_segment;
+extern m_segment	_segment;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -97,8 +97,8 @@ t_error			glue_segment_dump(void)
   module_call(console, message,
 	      '#',
 	      "    gdt: table(0x%x) size(0x%x):\n",
-	      _segment->machine.gdt.table,
-	      _segment->machine.gdt.size);
+	      _segment.machine.gdt.table,
+	      _segment.machine.gdt.size);
 
   MACHINE_LEAVE();
 }

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ests/kaneton/core/region/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2030]
- * updated       julien quintard   [fri jan 14 23:03:33 2011]
+ * updated       julien quintard   [sun jan 30 21:16:25 2011]
  */
 
 /*
@@ -23,8 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
-
+extern m_kernel		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -43,14 +42,14 @@ void			test_core_region_reserve_03(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
                       10 * ___kaneton$pagesz,
                       PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
                       &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
                      seg,
                      0,
                      REGION_OPTION_NONE,
@@ -59,7 +58,7 @@ void			test_core_region_reserve_03(void)
                      &reg1) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
                      seg,
                      3 * ___kaneton$pagesz,
                      REGION_OPTION_NONE,
@@ -68,7 +67,7 @@ void			test_core_region_reserve_03(void)
                      &reg2) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
                      seg,
                      6 * ___kaneton$pagesz,
                      REGION_OPTION_NONE,
@@ -77,13 +76,13 @@ void			test_core_region_reserve_03(void)
                      &reg3) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel->as, reg1, &r1) != ERROR_OK)
+  if (region_get(_kernel.as, reg1, &r1) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
-  if (region_get(_kernel->as, reg2, &r2) != ERROR_OK)
+  if (region_get(_kernel.as, reg2, &r2) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
-  if (region_get(_kernel->as, reg3, &r3) != ERROR_OK)
+  if (region_get(_kernel.as, reg3, &r3) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
   p = (t_uint8*)r1->address;
@@ -98,13 +97,13 @@ void			test_core_region_reserve_03(void)
   for (; p < (t_uint8*)r3->address + 4 * ___kaneton$pagesz; p++)
     *p = 0x0;
 
-  if (region_release(_kernel->as, reg1) != ERROR_OK)
+  if (region_release(_kernel.as, reg1) != ERROR_OK)
     TEST_ERROR("[region_release] error");
 
-  if (region_release(_kernel->as, reg2) != ERROR_OK)
+  if (region_release(_kernel.as, reg2) != ERROR_OK)
     TEST_ERROR("[region_release] error");
 
-  if (region_release(_kernel->as, reg3) != ERROR_OK)
+  if (region_release(_kernel.as, reg3) != ERROR_OK)
     TEST_ERROR("[region_release] error");
 
   if (segment_release(seg) != ERROR_OK)

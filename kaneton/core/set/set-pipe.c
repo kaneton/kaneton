@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set-pipe.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       julien quintard   [fri jan 14 20:06:10 2011]
+ * updated       julien quintard   [sun jan 30 20:35:16 2011]
  */
 
 /*
@@ -38,7 +38,7 @@
  * the set manager's structure.
  */
 
-extern m_set*		_set;
+extern m_set		_set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -85,7 +85,7 @@ t_error			set_reserve_pipe(t_options		options,
    * 1)
    */
 
-  if (id_reserve(&_set->id, id) != ERROR_OK)
+  if (id_reserve(&_set.id, id) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set identifier");
 
   /*

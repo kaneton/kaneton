@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set-bpt.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri jan 14 20:05:22 2011]
+ * updated       julien quintard   [sun jan 30 20:35:34 2011]
  */
 
 /*
@@ -45,7 +45,7 @@
  * the set manager's structure.
  */
 
-extern m_set*		_set;
+extern m_set		_set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -1171,11 +1171,11 @@ t_error			set_reserve_bpt(t_options		options,
 
   if (options & SET_OPTION_CONTAINER)
     {
-      *id = _set->sets;
+      *id = _set.sets;
     }
   else
     {
-      if (id_reserve(&_set->id, id) != ERROR_OK)
+      if (id_reserve(&_set.id, id) != ERROR_OK)
 	CORE_ESCAPE("unable to reserve an identifier");
     }
 
@@ -1200,7 +1200,7 @@ t_error			set_reserve_bpt(t_options		options,
       set_destroy_bpt(&o);
 
       if (!(options & SET_OPTION_CONTAINER))
-	id_release(&_set->id, o.id);
+	id_release(&_set.id, o.id);
 
       CORE_ESCAPE("unable to build the array of unused blocks");
     }
@@ -1216,7 +1216,7 @@ t_error			set_reserve_bpt(t_options		options,
 	       NULL, NULL, &o.u.bpt.unused) != 0)
     {
       if (!(options & SET_OPTION_CONTAINER))
-	id_release(&_set->id, o.id);
+	id_release(&_set.id, o.id);
 
       CORE_ESCAPE("unable to initialize the tree");
     }
@@ -1236,7 +1236,7 @@ t_error			set_reserve_bpt(t_options		options,
       set_destroy_bpt(&o);
 
       if (!(options & SET_OPTION_CONTAINER))
-	id_release(&_set->id, o.id);
+	id_release(&_set.id, o.id);
 
       CORE_ESCAPE("unable to register the new set descriptor");
     }
@@ -1299,7 +1299,7 @@ t_error			set_release_bpt(i_set			setid)
    * 5)
    */
 
-  if (id_release(&_set->id, o->id) != ERROR_OK)
+  if (id_release(&_set.id, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to release the set identifier");
 
   /*

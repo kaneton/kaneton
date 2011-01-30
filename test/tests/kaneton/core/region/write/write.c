@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../tests/kaneton/core/region/write/write.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan 14 23:04:03 2011]
+ * updated       julien quintard   [sun jan 30 21:16:36 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -38,14 +38,14 @@ void			test_core_region_write(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
 		      &seg) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     seg,
 		     0,
 		     REGION_OPTION_FORCE,
@@ -54,7 +54,7 @@ void			test_core_region_write(void)
 		     &reg) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel->as, reg, &r) != ERROR_OK)
+  if (region_get(_kernel.as, reg, &r) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
   p = (t_uint8*)r->address;

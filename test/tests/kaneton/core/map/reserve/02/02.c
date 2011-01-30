@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...t/tests/kaneton/core/map/reserve/02/02.c
+ * file          /home/mycure/kane...t/tests/kaneton/core/map/reserve/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [mon nov 29 18:46:03 2010]
+ * updated       julien quintard   [sun jan 30 21:10:58 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -40,7 +40,7 @@ void			test_core_map_reserve_02(void)
 
   for (i = 0; i < 10; i++)
     {
-      if (map_reserve(_kernel->as,
+      if (map_reserve(_kernel.as,
 		      MAP_OPTION_NONE,
 		      ((i % 100) + 1) * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
@@ -57,7 +57,7 @@ void			test_core_map_reserve_02(void)
 	    TEST_ERROR("the data read is different from the one written");
         }
 
-      if (map_release(_kernel->as, addr) != ERROR_OK)
+      if (map_release(_kernel.as, addr) != ERROR_OK)
 	TEST_ERROR("[map_release] error");
     }
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       julien quintard   [tue dec 14 22:30:48 2010]
+ * updated       julien quintard   [sun jan 30 20:52:51 2011]
  */
 
 // XXX THIS MANAGER MUST BE RE-DEVELOPED IN ITS ENTIRETY!!!
@@ -73,13 +73,13 @@
  * the capability manager variable.
  */
 
-m_capability*		_capability = NULL;
+m_capability		_capability;
 
 /*
  * the kernel manager variable.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -106,7 +106,7 @@ t_error			capability_show(t_id			id)
 {
   t_capability_descriptor*	descriptor;
 
-  if (set_get(_capability->descriptors, id, (void**)&descriptor) != ERROR_OK)
+  if (set_get(_capability.descriptors, id, (void**)&descriptor) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   module_call(console, message,
@@ -161,7 +161,7 @@ t_error			capability_dump(void)
    * 1)
    */
 
-  if (set_size(_capability->descriptors, &size) != ERROR_OK)
+  if (set_size(_capability.descriptors, &size) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   /*
@@ -176,9 +176,9 @@ t_error			capability_dump(void)
    * 3)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _capability->descriptors, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _capability.descriptors, &i, state)
     {
-      if (set_object(_capability->descriptors, i, (void**)&data) != ERROR_OK)
+      if (set_object(_capability.descriptors, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("XXX");
 
       if (capability_show(data->id) != ERROR_OK)
@@ -214,8 +214,8 @@ t_error			capability_reserve(t_id			object,
    * 1)
    */
 
-  new->node.cell = _kernel->cell;
-  new->node.task = _kernel->task;
+  new->node.cell = _kernel.cell;
+  new->node.task = _kernel.task;
   new->object = object;
   new->operations = operations;
 
@@ -230,7 +230,7 @@ t_error			capability_reserve(t_id			object,
    */
 
   descriptor.id = new->descriptor;
-  if (_capability->f_checksum((char *)new, sizeof (t_capability), &descriptor.check) !=
+  if (_capability.f_checksum((char *)new, sizeof (t_capability), &descriptor.check) !=
       ERROR_OK)
     CORE_ESCAPE("XXX");
   descriptor.capability = *new;
@@ -240,7 +240,7 @@ t_error			capability_reserve(t_id			object,
   /*
    * 4)
    */
-  if (set_add(_capability->descriptors, &descriptor) != ERROR_OK)
+  if (set_add(_capability.descriptors, &descriptor) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -292,7 +292,7 @@ t_error			capability_release(t_id			id)
   /*
    * 3)
    */
-  if (set_remove(_capability->descriptors, descriptor->id) != ERROR_OK)
+  if (set_remove(_capability.descriptors, descriptor->id) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -339,14 +339,14 @@ t_error			capability_restrict(t_id		id,
   new->descriptor = (t_uint64)sum2((char*)&new, sizeof (t_capability));
 
   restricted.id = new->descriptor;
-  if (_capability->f_checksum((char *)new, sizeof (t_capability), &restricted.check) !=
+  if (_capability.f_checksum((char *)new, sizeof (t_capability), &restricted.check) !=
       ERROR_OK)
     CORE_ESCAPE("XXX");
   restricted.capability = *new;
   restricted.parent = parent->id;
   restricted.children = ID_UNUSED;
 
-  if (set_add(_capability->descriptors, &restricted) != ERROR_OK)
+  if (set_add(_capability.descriptors, &restricted) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
 
@@ -406,7 +406,7 @@ t_error			capability_invalidate(t_id		p,
 	CORE_ESCAPE("XXX");
     }
 
-  if (set_remove(_capability->descriptors, restricted->id) != ERROR_OK)
+  if (set_remove(_capability.descriptors, restricted->id) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -418,7 +418,7 @@ t_error			capability_invalidate(t_id		p,
 
 t_error			capability_exist(t_id			id)
 {
-  if (set_exist(_capability->descriptors, id) != ERROR_TRUE)
+  if (set_exist(_capability.descriptors, id) != ERROR_TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -431,7 +431,7 @@ t_error			capability_exist(t_id			id)
 t_error			capability_get(t_id			id,
 				       t_capability_descriptor** descriptor)
 {
-  if (set_get(_capability->descriptors, id, (void**)descriptor) != ERROR_OK)
+  if (set_get(_capability.descriptors, id, (void**)descriptor) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -464,7 +464,7 @@ t_error			capability_give(t_id			id,
   /*
    * 3)
    */
-  if (_capability->f_checksum((char *)&descriptor->capability,
+  if (_capability.f_checksum((char *)&descriptor->capability,
 			     sizeof (t_capability),
 			     &descriptor->check) != ERROR_OK)
     CORE_ESCAPE("XXX");
@@ -494,7 +494,7 @@ t_error			capability_verify(t_capability*		provided)
   /*
    * 2)
    */
-  if (_capability->f_checksum((char *)provided, sizeof (t_capability), &check) !=
+  if (_capability.f_checksum((char *)provided, sizeof (t_capability), &check) !=
       ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -525,10 +525,7 @@ t_error			capability_initialize(void)
    * XXX
    */
 
-  if ((_capability = malloc(sizeof (m_capability))) == NULL)
-    CORE_ESCAPE("XXX");
-
-  memset(_capability, 0x0, sizeof (m_capability));
+  memset(&_capability, 0x0, sizeof (m_capability));
 
   /*
    * 2)
@@ -536,13 +533,13 @@ t_error			capability_initialize(void)
 
   if (set_reserve(ll, SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (t_capability_descriptor),
-		  &_capability->descriptors) != ERROR_OK)
+		  &_capability.descriptors) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
   /*
    * 3)
    */
-  _capability->f_checksum = simple_checksum;
+  _capability.f_checksum = simple_checksum;
 
 #if (DEBUG & DEBUG_CAPABILITY)
   capability_dump();
@@ -592,23 +589,17 @@ t_error			capability_clean(void)
    * 1)
    */
 
-  while (set_head(_capability->descriptors, &i) == ERROR_TRUE)
+  while (set_head(_capability.descriptors, &i) == ERROR_TRUE)
     {
-      if (set_object(_capability->descriptors, i, (void**)&data) != ERROR_OK)
+      if (set_object(_capability.descriptors, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("XXX");
 
       if (capability_release(data->id) != ERROR_OK)
 	CORE_ESCAPE("XXX");
     }
 
-  if (set_release(_capability->descriptors) != ERROR_OK)
+  if (set_release(_capability.descriptors) != ERROR_OK)
     CORE_ESCAPE("XXX");
-
-  /*
-   * 2)
-   */
-
-  free(_capability);
 
   CORE_LEAVE();
 }

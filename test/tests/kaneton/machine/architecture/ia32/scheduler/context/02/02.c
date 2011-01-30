@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/scheduler/context/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [thu jan 27 23:06:58 2011]
+ * updated       julien quintard   [sun jan 30 21:21:48 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -121,7 +121,7 @@ void			test_architecture_scheduler_context_02_content(void)
    * thread 1
    */
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
@@ -136,7 +136,7 @@ void			test_architecture_scheduler_context_02_content(void)
    * thread 2
    */
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
@@ -200,7 +200,7 @@ void			test_architecture_scheduler_context_02(void)
    * thread 1
    */
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,

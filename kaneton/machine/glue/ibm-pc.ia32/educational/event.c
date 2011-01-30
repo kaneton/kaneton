@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sun jan 30 13:31:12 2011]
+ * updated       julien quintard   [sun jan 30 20:41:21 2011]
  */
 
 /*
@@ -31,7 +31,7 @@
  * the event manager.
  */
 
-extern m_event*		_event;
+extern m_event		_event;
 
 /*
  * the architecture manager.
@@ -166,8 +166,8 @@ t_error			glue_event_dump(void)
   module_call(console, message,
 	      '#',
 	      "    idt: table(0x%x) size(0x%x)\n",
-	      _event->machine.idt.table,
-	      _event->machine.idt.size);
+	      _event.machine.idt.table,
+	      _event.machine.idt.size);
 
   MACHINE_LEAVE();
 }

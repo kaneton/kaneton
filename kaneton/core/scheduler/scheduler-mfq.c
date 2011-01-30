@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sat jan 15 07:28:41 2011]
+ * updated       julien quintard   [sun jan 30 20:23:09 2011]
  */
 
 /*
@@ -98,13 +98,13 @@ machine_include(scheduler);
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * the cpu manager.
  */
 
-extern m_cpu*		_cpu;
+extern m_cpu		_cpu;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -114,7 +114,7 @@ extern m_cpu*		_cpu;
  * the scheduler manager.
  */
 
-m_scheduler*		_scheduler = NULL;
+m_scheduler		_scheduler;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -442,15 +442,15 @@ t_error			scheduler_dump(void)
   module_call(console, message,
 	      '#',
 	      "  core: quantum(%u) idle(%qd) schedulers(%qd)\n",
-	      _scheduler->quantum,
-	      _scheduler->idle,
-	      _scheduler->schedulers);
+	      _scheduler.quantum,
+	      _scheduler.idle,
+	      _scheduler.schedulers);
 
   /*
    * 2)
    */
 
-  if (set_size(_scheduler->schedulers, &size) != ERROR_OK)
+  if (set_size(_scheduler.schedulers, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of schedulers");
 
   /*
@@ -460,16 +460,16 @@ t_error			scheduler_dump(void)
   module_call(console, message,
 	      '#',
 	      "    schedulers: id(%qd) size(%qd)\n",
-	      _scheduler->schedulers,
+	      _scheduler.schedulers,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _scheduler->schedulers, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _scheduler.schedulers, &i, s)
     {
       /*
        * a)
        */
 
-      if (set_object(_scheduler->schedulers,
+      if (set_object(_scheduler.schedulers,
 		     i,
 		     (void**)&scheduler) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the scheduler object");
@@ -619,13 +619,13 @@ t_error			scheduler_quantum(t_quantum		quantum)
    * 1)
    */
 
-  _scheduler->quantum = quantum;
+  _scheduler.quantum = quantum;
 
   /*
    * 2)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _scheduler->schedulers, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _scheduler.schedulers, &i, s)
     {
       o_scheduler*		scheduler;
       s_iterator		j;
@@ -635,7 +635,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
        * a)
        */
 
-      if (set_object(_scheduler->schedulers,
+      if (set_object(_scheduler.schedulers,
 		     i,
 		     (void**)&scheduler) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the scheduler from the set");
@@ -802,7 +802,7 @@ t_error			scheduler_yield(void)
    */
 
   scheduler->priority = SCHEDULER_PRIORITY_LOW;
-  scheduler->timeslice = _scheduler->quantum;
+  scheduler->timeslice = _scheduler.quantum;
 
   /*
    * 3)
@@ -947,7 +947,7 @@ t_error			scheduler_elect(void)
    * 2)
    */
 
-  scheduler->timeslice -= _scheduler->quantum;
+  scheduler->timeslice -= _scheduler.quantum;
 
   /*
    * 3)
@@ -1263,9 +1263,9 @@ t_error			scheduler_elect(void)
 	 * c)
 	 */
 
-	future_thread = _kernel->thread;
+	future_thread = _kernel.thread;
 	future_priority = SCHEDULER_PRIORITY_HIGH;
-	future_timeslice = _scheduler->quantum;
+	future_timeslice = _scheduler.quantum;
 
 	break;
       }
@@ -1296,7 +1296,7 @@ t_error			scheduler_elect(void)
   if (cpu_current(&cpu) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the current CPU object");
 
-  if (cpu_update(cpu, _scheduler->quantum) != ERROR_OK)
+  if (cpu_update(cpu, _scheduler.quantum) != ERROR_OK)
     CORE_ESCAPE("unable to update the current CPU's statistics");
 
   /*							  [endblock::switch] */
@@ -1821,7 +1821,7 @@ t_error			scheduler_update(i_thread		id)
 
 t_error			scheduler_exist(i_cpu			id)
 {
-  if (set_exist(_scheduler->schedulers, id) != ERROR_TRUE)
+  if (set_exist(_scheduler.schedulers, id) != ERROR_TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -1850,7 +1850,7 @@ t_error			scheduler_get(i_cpu			id,
    * 1)
    */
 
-  if (set_get(_scheduler->schedulers, id, (void**)object) != ERROR_OK)
+  if (set_get(_scheduler.schedulers, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of schedulers");
 
   CORE_LEAVE();
@@ -1888,7 +1888,7 @@ t_error			scheduler_current(o_scheduler**		scheduler)
    * 2)
    */
 
-  if (set_get(_scheduler->schedulers, cpu, (void**)scheduler) != ERROR_OK)
+  if (set_get(_scheduler.schedulers, cpu, (void**)scheduler) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the scheduler from the set");
 
   CORE_LEAVE();
@@ -1902,7 +1902,7 @@ t_error			scheduler_current(o_scheduler**		scheduler)
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize the manager's structure.
+ * 2) initialize the manager's structure.
  * 3) initialize the quantum.
  * 4) retrieve the number of CPUs.
  * 5) reserve the set of schedulers.
@@ -1949,23 +1949,19 @@ t_error			scheduler_initialize(void)
    * 2)
    */
 
-  if ((_scheduler = malloc(sizeof (m_scheduler))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the scheduler "
-		"manager structure");
-
-  memset(_scheduler, 0x0, sizeof (m_scheduler));
+  memset(&_scheduler, 0x0, sizeof (m_scheduler));
 
   /*
    * 3)
    */
 
-  _scheduler->quantum = SCHEDULER_QUANTUM;
+  _scheduler.quantum = SCHEDULER_QUANTUM;
 
   /*
    * 4)
    */
 
-  if (set_size(_cpu->cpus, &ncpus) != ERROR_OK)
+  if (set_size(_cpu.cpus, &ncpus) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the number of active CPUs");
 
   /*
@@ -1976,14 +1972,14 @@ t_error			scheduler_initialize(void)
 		  SET_OPTION_ALLOCATE,
 		  ncpus,
 		  sizeof (o_scheduler),
-		  &_scheduler->schedulers) != ERROR_OK)
+		  &_scheduler.schedulers) != ERROR_OK)
     CORE_ESCAPE("unable to reserve a set for the schedulers");
 
   /*
    * 6)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _cpu->cpus, &it, st)
+  set_foreach(SET_OPTION_FORWARD, _cpu.cpus, &it, st)
     {
       o_scheduler	scheduler;
 
@@ -1991,7 +1987,7 @@ t_error			scheduler_initialize(void)
        * a)
        */
 
-      if (set_object(_cpu->cpus, it, (void**)&o) != ERROR_OK)
+      if (set_object(_cpu.cpus, it, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the CPU object");
 
       /*
@@ -2000,7 +1996,7 @@ t_error			scheduler_initialize(void)
 
       scheduler.cpu = o->id;
       scheduler.thread = ID_UNUSED;
-      scheduler.timeslice = _scheduler->quantum;
+      scheduler.timeslice = _scheduler.quantum;
       scheduler.priority = SCHEDULER_PRIORITY_HIGH;
       scheduler.state = SCHEDULER_STATE_STOP;
 
@@ -2104,7 +2100,7 @@ t_error			scheduler_initialize(void)
        * g)
        */
 
-      if (set_append(_scheduler->schedulers, &scheduler) != ERROR_OK)
+      if (set_append(_scheduler.schedulers, &scheduler) != ERROR_OK)
 	CORE_ESCAPE("unable to append the CPU's scheduler to the set");
     }
 
@@ -2119,8 +2115,8 @@ t_error			scheduler_initialize(void)
    * 8)
    */
 
-  scheduler->thread = _kernel->thread;
-  scheduler->priority = SCHEDULER_PRIORITY(_kernel->thread);
+  scheduler->thread = _kernel.thread;
+  scheduler->priority = SCHEDULER_PRIORITY(_kernel.thread);
 
   /*
    * 9)
@@ -2152,7 +2148,6 @@ t_error			scheduler_initialize(void)
  *     i) retrieve the queue object.
  *     ii) release the set corresponding to the queue.
  *   e) release the set of expired queues.
- * 4) free the manager's structure.
  *
  *						     [endblock::clean::comment]
  */
@@ -2185,13 +2180,13 @@ t_error			scheduler_clean(void)
    * 3)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _scheduler->schedulers, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _scheduler.schedulers, &i, s)
     {
       /*
        * a)
        */
 
-      if (set_object(_scheduler->schedulers,
+      if (set_object(_scheduler.schedulers,
 		     i,
 		     (void**)&scheduler) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the scheduler object");
@@ -2258,12 +2253,6 @@ t_error			scheduler_clean(void)
       if (set_release(scheduler->expired) != ERROR_OK)
 	CORE_ESCAPE("unable to release the set of expired queues");
     }
-
-  /*
-   * 4)
-   */
-
-  free(_scheduler);
 
   /*							   [endblock::clean] */
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [fri jan 28 17:17:54 2011]
+ * updated       julien quintard   [sun jan 30 20:05:49 2011]
  */
 
 /*
@@ -52,7 +52,7 @@ machine_include(event);
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -62,7 +62,7 @@ extern m_kernel*	_kernel;
  * the event manager.
  */
 
-m_event*		_event = NULL;
+m_event			_event;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -165,17 +165,17 @@ t_error			event_dump(void)
 
   module_call(console, message,
 	      '#', "event manager:\n",
-	      _event->events);
+	      _event.events);
 
   module_call(console, message,
 	      '#', "  core: events(%qd)\n",
-	      _event->events);
+	      _event.events);
 
   /*
    * 2)
    */
 
-  if (set_size(_event->events, &size) != ERROR_OK)
+  if (set_size(_event.events, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of events");
 
   /*
@@ -184,12 +184,12 @@ t_error			event_dump(void)
 
   module_call(console, message,
 	      '#', "    events: id(%qd) size(%qd)\n",
-	      _event->events,
+	      _event.events,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _event->events, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _event.events, &i, state)
     {
-      if (set_object(_event->events, i, (void**)&data) != ERROR_OK)
+      if (set_object(_event.events, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object from the set of events");
 
       if (event_show(data->id,
@@ -262,10 +262,10 @@ t_error			event_notify(i_event			id)
 	message.id = id;
 	message.data = o->data;
 
-	node.cell = _kernel->cell;
+	node.cell = _kernel.cell;
 	node.task = o->handler.task;
 
-	if (message_send(_kernel->task,
+	if (message_send(_kernel.task,
 			 node,
 			 MESSAGE_TYPE_EVENT,
 			 (t_vaddr)&message,
@@ -391,7 +391,7 @@ t_error			event_reserve(i_event			id,
    * 3)
    */
 
-  if (set_add(_event->events, &o) != ERROR_OK)
+  if (set_add(_event.events, &o) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of events");
 
   /*
@@ -426,7 +426,7 @@ t_error			event_release(i_event			id)
    * 2)
    */
 
-  if (set_remove(_event->events, id) != ERROR_OK)
+  if (set_remove(_event.events, id) != ERROR_OK)
     CORE_ESCAPE("unable to remove the object from the set of events");
 
   CORE_LEAVE();
@@ -438,7 +438,7 @@ t_error			event_release(i_event			id)
 
 t_error			event_exist(i_event			id)
 {
-  if (set_exist(_event->events, id) != ERROR_TRUE)
+  if (set_exist(_event.events, id) != ERROR_TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -467,7 +467,7 @@ t_error			event_get(i_event			id,
    * 1)
    */
 
-  if (set_get(_event->events, id, (void**)object) != ERROR_OK)
+  if (set_get(_event.events, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the event object from the set");
 
   CORE_LEAVE();
@@ -479,7 +479,7 @@ t_error			event_get(i_event			id,
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize the event manager's structure.
+ * 2) initialize the event manager's structure.
  * 3) reserve the set of events.
  * 4) call the machine.
  */
@@ -497,10 +497,7 @@ t_error			event_initialize(void)
    * 2)
    */
 
-  if ((_event = malloc(sizeof (m_event))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the event manager's structure");
-
-  memset(_event, 0x0, sizeof (m_event));
+  memset(&_event, 0x0, sizeof (m_event));
 
   /*
    * 3)
@@ -509,7 +506,7 @@ t_error			event_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (o_event),
-		  &_event->events) != ERROR_OK)
+		  &_event.events) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of events");
 
   /*
@@ -531,7 +528,6 @@ t_error			event_initialize(void)
  * 2) call the machine.
  * 3) release every event object.
  * 4) release the set of events.
- * 5) free the event manager's structure.
  */
 
 t_error			event_clean(void)
@@ -557,9 +553,9 @@ t_error			event_clean(void)
    * 3)
    */
 
-  while (set_head(_event->events, &i) == ERROR_TRUE)
+  while (set_head(_event.events, &i) == ERROR_TRUE)
     {
-      if (set_object(_event->events, i, (void**)&o) != ERROR_OK)
+      if (set_object(_event.events, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to find the event object corresponding to "
 		    "its identifier");
 
@@ -571,14 +567,8 @@ t_error			event_clean(void)
    * 4)
    */
 
-  if (set_release(_event->events) != ERROR_OK)
+  if (set_release(_event.events) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of events");
-
-  /*
-   * 5)
-   */
-
-  free(_event);
 
   CORE_LEAVE();
 }

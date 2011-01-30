@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set-ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri jan 14 20:05:39 2011]
+ * updated       julien quintard   [sun jan 30 20:34:59 2011]
  */
 
 /*
@@ -46,7 +46,7 @@
  * the set manager.
  */
 
-extern m_set*		_set;
+extern m_set		_set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -1317,11 +1317,11 @@ t_error			set_reserve_ll(t_options		options,
 
   if (options & SET_OPTION_CONTAINER)
     {
-      *id = _set->sets;
+      *id = _set.sets;
     }
   else
     {
-      if (id_reserve(&_set->id, id) != ERROR_OK)
+      if (id_reserve(&_set.id, id) != ERROR_OK)
 	CORE_ESCAPE("unable to reserve the set identifier");
     }
 
@@ -1347,7 +1347,7 @@ t_error			set_reserve_ll(t_options		options,
   if (set_new(&o) != ERROR_OK)
     {
       if (!(options & SET_OPTION_CONTAINER))
-	id_release(&_set->id, o.id);
+	id_release(&_set.id, o.id);
 
       CORE_ESCAPE("unable to register the set descriptor");
     }
@@ -1388,7 +1388,7 @@ t_error			set_release_ll(i_set			setid)
    * 3)
    */
 
-  if (id_release(&_set->id, o->id) != ERROR_OK)
+  if (id_release(&_set.id, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to release the set identifier");
 
   /*

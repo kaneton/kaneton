@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       julien quintard   [fri jan 14 20:05:09 2011]
+ * updated       julien quintard   [sun jan 30 20:34:47 2011]
  */
 
 /*
@@ -111,7 +111,7 @@
  * the set manager.
  */
 
-m_set*			_set = NULL;
+m_set			_set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -141,7 +141,7 @@ t_error			set_dump(void)
    * 1)
    */
 
-  if (set_descriptor(_set->sets, &o) != ERROR_OK)
+  if (set_descriptor(_set.sets, &o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -150,13 +150,13 @@ t_error			set_dump(void)
 
   module_call(console, message,
 	      '#', "set manager: sets(%qd)\n",
-	      _set->sets);
+	      _set.sets);
 
   /*
    * 3)
    */
 
-  if (id_show(&_set->id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+  if (id_show(&_set.id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
   /*
@@ -289,7 +289,7 @@ t_error			set_new(o_set*				object)
    * 1)
    */
 
-  if (object->id == _set->sets)
+  if (object->id == _set.sets)
     {
       /*
        * A)
@@ -299,14 +299,14 @@ t_error			set_new(o_set*				object)
        * a)
        */
 
-      if ((_set->container = malloc(sizeof (o_set))) == NULL)
+      if ((_set.container = malloc(sizeof (o_set))) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the set container");
 
       /*
        * b)
        */
 
-      memcpy(_set->container, object, sizeof (o_set));
+      memcpy(_set.container, object, sizeof (o_set));
     }
   else
     {
@@ -318,7 +318,7 @@ t_error			set_new(o_set*				object)
        * a)
        */
 
-      if (set_add(_set->sets, object) != ERROR_OK)
+      if (set_add(_set.sets, object) != ERROR_OK)
 	CORE_ESCAPE("unable to add the set descriptor to the set container");
     }
 
@@ -343,7 +343,7 @@ t_error			set_destroy(i_set			setid)
    * 1)
    */
 
-  if (setid == _set->sets)
+  if (setid == _set.sets)
     {
       /*
        * A)
@@ -353,7 +353,7 @@ t_error			set_destroy(i_set			setid)
        * a)
        */
 
-      free(_set->container);
+      free(_set.container);
     }
   else
     {
@@ -365,7 +365,7 @@ t_error			set_destroy(i_set			setid)
        * a)
        */
 
-      if (set_remove(_set->sets, setid) != ERROR_OK)
+      if (set_remove(_set.sets, setid) != ERROR_OK)
 	CORE_ESCAPE("unable to remove the descriptor from the set container");
     }
 
@@ -404,7 +404,7 @@ t_error			set_descriptor(i_set			setid,
    * 1)
    */
 
-  if (setid == _set->sets)
+  if (setid == _set.sets)
     {
       /*
        * A)
@@ -414,7 +414,7 @@ t_error			set_descriptor(i_set			setid,
        * a)
        */
 
-      *object = _set->container;
+      *object = _set.container;
     }
   else
     {
@@ -426,7 +426,7 @@ t_error			set_descriptor(i_set			setid,
        * a)
        */
 
-      if (set_get(_set->sets, setid, (void**)object) != ERROR_OK)
+      if (set_get(_set.sets, setid, (void**)object) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the descriptor object from "
 		    "the set container");
     }
@@ -485,7 +485,7 @@ t_error			set_get(i_set				setid,
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize the set manager's structure.
+ * 2) initialize the set manager's structure.
  * 3) build the identifier object used to generate set identifiers.
  * 4) reserve an identifier for the set container.
  * 5) reserve the set container which will hold the set descriptors i.e
@@ -507,23 +507,20 @@ t_error			set_initialize(void)
    * 2)
    */
 
-  if ((_set = malloc(sizeof (m_set))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the set manager's structure");
-
-  memset(_set, 0x0, sizeof (m_set));
+  memset(&_set, 0x0, sizeof (m_set));
 
   /*
    * 3)
    */
 
-  if (id_build(&_set->id) != ERROR_OK)
+  if (id_build(&_set.id) != ERROR_OK)
     CORE_ESCAPE("unable to build the identifier object");
 
   /*
    * 4)
    */
 
-  if (id_reserve(&_set->id, &_set->sets) != ERROR_OK)
+  if (id_reserve(&_set.id, &_set.sets) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the identifier for the set container");
 
   /*
@@ -549,7 +546,6 @@ t_error			set_initialize(void)
  * 2) release every set object the set container contains.
  * 3) release the set container.
  * 4) destroys the identifier object.
- * 5) free the set manager's structure.
  */
 
 t_error			set_clean(void)
@@ -567,11 +563,11 @@ t_error			set_clean(void)
    * 2)
    */
 
-  while (set_head(_set->sets, &iterator) == ERROR_TRUE)
+  while (set_head(_set.sets, &iterator) == ERROR_TRUE)
     {
       o_set*		o;
 
-      if (set_object(_set->sets, iterator, (void**)&o) != ERROR_OK)
+      if (set_object(_set.sets, iterator, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object from the set");
 
       if (set_release(o->id) != ERROR_OK)
@@ -582,21 +578,15 @@ t_error			set_clean(void)
    * 3)
    */
 
-  if (set_release(_set->sets) != ERROR_OK)
+  if (set_release(_set.sets) != ERROR_OK)
     CORE_ESCAPE("unable to release the set container");
 
   /*
    * 4)
    */
 
-  if (id_destroy(&_set->id) != ERROR_OK)
+  if (id_destroy(&_set.id) != ERROR_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
-
-  /*
-   * 5)
-   */
-
-  free(_set);
 
   CORE_LEAVE();
 }

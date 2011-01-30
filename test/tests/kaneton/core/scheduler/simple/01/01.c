@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ts/kaneton/core/scheduler/simple/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 27 22:36:52 2011]
+ * updated       julien quintard   [sun jan 30 21:19:29 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -59,7 +59,7 @@ void			test_core_scheduler_simple_01(void)
    * thread
    */
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,

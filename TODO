@@ -2,7 +2,6 @@
 # ---------- general ----------------------------------------------------------
 #
 
-- des XXX dans le code indiquent les choses a corriger et/ou ameliorer.
 - chercher les XXX restants et en faire des TODO
 - kernel.c: reorganise
 - peut etre essayer de mettre event plus tot dans l'init kernel

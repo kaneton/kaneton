@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/io.c
  *
  * created       julien quintard   [sun jan  9 22:11:18 2011]
- * updated       julien quintard   [fri jan 14 21:41:41 2011]
+ * updated       julien quintard   [sun jan 30 20:45:26 2011]
  */
 
 /*
@@ -32,7 +32,7 @@
  * the thread manager.
  */
 
-extern m_thread*	_thread;
+extern m_thread		_thread;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -163,7 +163,7 @@ t_error			architecture_io_grant(i_task		task,
    * 4)
    */
 
-  tss = (as_tss*)_thread->machine.tss;
+  tss = (as_tss*)_thread.machine.tss;
 
   /*
    * 5)
@@ -255,7 +255,7 @@ t_error			architecture_io_deny(i_task		task,
    * 4)
    */
 
-  tss = (as_tss*)_thread->machine.tss;
+  tss = (as_tss*)_thread.machine.tss;
 
   /*
    * 5)

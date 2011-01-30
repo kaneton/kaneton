@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       julien quintard   [fri dec 17 16:04:41 2010]
+ * updated       julien quintard   [sun jan 30 20:10:24 2011]
  */
 
 /*
@@ -55,7 +55,7 @@ machine_include(message);
  * kernel manager structure
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -65,7 +65,7 @@ extern m_kernel*	_kernel;
  * message manager variable.
  */
 
-m_message*		_message = NULL;
+m_message		_message;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -316,7 +316,7 @@ t_error			message_send(i_task			task,
    * 1)
    */
 
-  if (destination.cell != _kernel->cell)
+  if (destination.cell != _kernel.cell)
     {
       /* XXX distr */
       CORE_ESCAPE("XXX");
@@ -340,15 +340,15 @@ t_error			message_send(i_task			task,
    * 4)
    */
 
-  if (destination.task == _kernel->task && type == 0)
+  if (destination.task == _kernel.task && type == 0)
     {
       void*		buffer;
       i_node		source;
 
-      assert(task != _kernel->task);
+      assert(task != _kernel.task);
       assert(size != 0);
 
-      source.cell = _kernel->cell;
+      source.cell = _kernel.cell;
       source.task = task;
 
       if (task_get(task, &otsk) != ERROR_OK)
@@ -401,7 +401,7 @@ t_error			message_send(i_task			task,
 
   if (size)
     {
-      if (task == _kernel->task)
+      if (task == _kernel.task)
 	{
 	  /*
 	   * a)
@@ -433,7 +433,7 @@ t_error			message_send(i_task			task,
 
   msg.as = ID_UNUSED;
   msg.size = size;
-  msg.sender.cell = _kernel->cell;
+  msg.sender.cell = _kernel.cell;
   msg.sender.task = task;
 
   /*
@@ -498,7 +498,7 @@ t_error			message_transmit(i_task			task,
    * 1)
    */
 
-  if (destination.cell != _kernel->cell)
+  if (destination.cell != _kernel.cell)
     {
       /* XXX distr */
       CORE_ESCAPE("XXX");
@@ -544,7 +544,7 @@ t_error			message_transmit(i_task			task,
 		    size) != ERROR_OK)
 	  CORE_ESCAPE("XXX");
 
-      sender.cell = _kernel->cell;
+      sender.cell = _kernel.cell;
       sender.task = task;
 
       if (message_return_info(pmsg->blocked, ERROR_OK, size,
@@ -566,7 +566,7 @@ t_error			message_transmit(i_task			task,
       msg.as = otsk->as;
       msg.data = (void*)data;
       msg.size = size;
-      msg.sender.cell = _kernel->cell;
+      msg.sender.cell = _kernel.cell;
       msg.sender.task = task;
       msg.blocked = thread;
 
@@ -824,7 +824,7 @@ t_error			message_poll(i_task			task,
     }
   else
     {
-      if (task == _kernel->task)
+      if (task == _kernel.task)
 	{
 	  /*
 	   * b)
@@ -963,24 +963,21 @@ t_error			message_initialize(void)
    * 1)
    */
 
-  if ((_message = malloc(sizeof (m_message))) == NULL)
-    CORE_ESCAPE("XXX");
-
-  memset(_message, 0x0, sizeof (m_message));
+  memset(&_message, 0x0, sizeof (m_message));
 
   /*
    * 2)
    */
 
-  if (message_register(_kernel->task, MESSAGE_TYPE_INTERFACE,
+  if (message_register(_kernel.task, MESSAGE_TYPE_INTERFACE,
 		       sizeof (o_syscall)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (message_register(_kernel->task, MESSAGE_TYPE_EVENT,
+  if (message_register(_kernel.task, MESSAGE_TYPE_EVENT,
 		       sizeof (o_event_message)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
-  if (message_register(_kernel->task, MESSAGE_TYPE_TIMER,
+  if (message_register(_kernel.task, MESSAGE_TYPE_TIMER,
 		       sizeof (o_timer_message)) != ERROR_OK)
     CORE_ESCAPE("XXX");
 
@@ -1025,14 +1022,8 @@ t_error			message_clean(void)
    * 2)
    */
 
-  if (message_flush(_kernel->task)  != ERROR_OK)
+  if (message_flush(_kernel.task)  != ERROR_OK)
     CORE_ESCAPE("XXX");
-
-  /*
-   * 3)
-   */
-
-  free(_message);
 
   CORE_LEAVE();
 }

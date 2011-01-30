@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/timer/precision/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [thu jan 27 22:59:53 2011]
+ * updated       julien quintard   [sun jan 30 21:12:12 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -113,7 +113,7 @@ void			test_core_timer_precision_01(void)
 
   TEST_ENTER();
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,

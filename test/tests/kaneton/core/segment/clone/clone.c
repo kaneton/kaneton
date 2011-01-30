@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/segment/clone/clone.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [fri jan 14 23:01:19 2011]
+ * updated       julien quintard   [sun jan 30 21:09:02 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -39,7 +39,7 @@ void			test_core_segment_clone(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
@@ -54,13 +54,13 @@ void			test_core_segment_clone(void)
   if (segment_write(seg, 0, buff, ___kaneton$pagesz) != ERROR_OK)
     TEST_ERROR("[segment_write] error");
 
-  if (segment_clone(_kernel->as, seg, &seg2) != ERROR_OK)
+  if (segment_clone(_kernel.as, seg, &seg2) != ERROR_OK)
     TEST_ERROR("[segment_clone] error");
 
   if (segment_get(seg2, &o) != ERROR_OK)
     TEST_ERROR("[segment_get] error");
 
-  if (o->as != _kernel->as)
+  if (o->as != _kernel.as)
     TEST_ERROR("invalid segment's address space identfiier after cloning");
 
   if (o->permissions != (PERMISSION_READ | PERMISSION_WRITE))

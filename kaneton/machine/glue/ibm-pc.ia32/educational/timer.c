@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/timer.c
  *
  * created       julien quintard   [mon jun 11 05:41:14 2007]
- * updated       julien quintard   [sat jan 15 17:00:12 2011]
+ * updated       julien quintard   [sun jan 30 20:42:39 2011]
  */
 
 /*

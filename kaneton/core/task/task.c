@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [wed jan 26 20:52:45 2011]
+ * updated       julien quintard   [sun jan 30 20:54:20 2011]
  */
 
 /*
@@ -49,13 +49,7 @@ machine_include(task);
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
-
-/*
- * the thread manager.
- */
-
-extern m_thread*	_thread;
+extern m_kernel		_kernel;
 
 /*
  * the init structure provided by the boot loader.
@@ -78,7 +72,7 @@ extern i_segment	_system;
  * the task manager.
  */
 
-m_task*			_task = NULL;
+m_task			_task;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -395,13 +389,13 @@ t_error			task_dump(void)
 
   module_call(console, message,
 	      '#', "  core: tasks(%qd)\n",
-	      _task->tasks);
+	      _task.tasks);
 
   /*
    * 2)
    */
 
-  if (id_show(&_task->id,
+  if (id_show(&_task.id,
 	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
@@ -409,7 +403,7 @@ t_error			task_dump(void)
    * 3)
    */
 
-  if (set_size(_task->tasks, &size) != ERROR_OK)
+  if (set_size(_task.tasks, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of tasks");
 
   /*
@@ -418,14 +412,14 @@ t_error			task_dump(void)
 
   module_call(console, message,
 	      '#', "    tasks: id(%qd) size(%qd)\n",
-	      _task->tasks,
+	      _task.tasks,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _task->tasks, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _task.tasks, &i, s)
     {
       o_task*		o;
 
-      if (set_object(_task->tasks, i, (void**)&o) != ERROR_OK)
+      if (set_object(_task.tasks, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
 
       if (task_show(o->id,
@@ -437,7 +431,7 @@ t_error			task_dump(void)
    * 5)
    */
 
-  if (set_size(_task->morgue.field, &size) != ERROR_OK)
+  if (set_size(_task.morgue.field, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of dead tasks");
 
   /*
@@ -446,19 +440,19 @@ t_error			task_dump(void)
 
   module_call(console, message,
 	      '#', "    morgue: field(%qd) timer(%qd)\n",
-	      _task->morgue.field,
-	      _task->morgue.timer);
+	      _task.morgue.field,
+	      _task.morgue.timer);
 
   module_call(console, message,
 	      '#', "      field: id(%qd) size(%qd)\n",
-	      _task->morgue.field,
+	      _task.morgue.field,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _task->morgue.field, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _task.morgue.field, &i, s)
     {
       i_task*		id;
 
-      if (set_object(_task->tasks, i, (void**)&id) != ERROR_OK)
+      if (set_object(_task.tasks, i, (void**)&id) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
 
       module_call(console, message,
@@ -597,14 +591,14 @@ t_error			task_reserve(t_class			class,
    * 2)
    */
 
-  if (id_reserve(&_task->id, &o.id) != ERROR_OK)
+  if (id_reserve(&_task.id, &o.id) != ERROR_OK)
     CORE_ESCAPE("unable to reserve an identifier for the task");
 
   /*
    * 3)
    */
 
-  if (_kernel->task != ID_UNUSED)
+  if (_kernel.task != ID_UNUSED)
     {
       o_task*		parent;
 
@@ -674,7 +668,7 @@ t_error			task_reserve(t_class			class,
    * 9)
    */
 
-  if (set_add(_task->tasks, &o) != ERROR_OK)
+  if (set_add(_task.tasks, &o) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of tasks");
 
   /*
@@ -754,7 +748,7 @@ t_error			task_release(i_task			id)
    */
 
   if ((o->as != ID_UNUSED) &&
-      (o->as != _kernel->as))
+      (o->as != _kernel.as))
     {
       if (as_release(o->as) != ERROR_OK)
 	CORE_ESCAPE("unable to release the task's address space");
@@ -788,14 +782,14 @@ t_error			task_release(i_task			id)
    * 9)
    */
 
-  if (id_release(&_task->id, o->id) != ERROR_OK)
+  if (id_release(&_task.id, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to release the task identifier");
 
   /*
    * 10)
    */
 
-  if (set_remove(_task->tasks, o->id) != ERROR_OK)
+  if (set_remove(_task.tasks, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to remove the object from the set of tasks");
 
   CORE_LEAVE();
@@ -1433,14 +1427,14 @@ t_error			task_exit(i_task			id,
    * ~)
    */
 
-  if (_task->morgue.timer == ID_UNUSED)
+  if (_task.morgue.timer == ID_UNUSED)
     {
       if (timer_reserve(TIMER_TYPE_FUNCTION,
 			TIMER_ROUTINE(task_bury),
 			TIMER_DATA(NULL),
 			TASK_MORGUE_DELAY,
 			TIMER_OPTION_REPEAT,
-			&_task->morgue.timer) != ERROR_OK)
+			&_task.morgue.timer) != ERROR_OK)
 	MACHINE_ESCAPE("unable to reserve the timer");
     }
 
@@ -1621,7 +1615,7 @@ t_error			task_exit(i_task			id,
        * b)
        */
 
-      if (set_add(_task->morgue.field, &object->id) != ERROR_OK)
+      if (set_add(_task.morgue.field, &object->id) != ERROR_OK)
 	CORE_ESCAPE("unable to add the task to the morgue");
     }
 
@@ -1708,7 +1702,7 @@ void			task_bury(i_timer			timer,
    * 1)
    */
 
-  while (set_head(_task->morgue.field, &i) == ERROR_TRUE)
+  while (set_head(_task.morgue.field, &i) == ERROR_TRUE)
     {
       i_task*		task;
       o_task*		object;
@@ -1717,7 +1711,7 @@ void			task_bury(i_timer			timer,
        * a)
        */
 
-      assert(set_object(_task->morgue.field, i, (void**)&task) == ERROR_OK);
+      assert(set_object(_task.morgue.field, i, (void**)&task) == ERROR_OK);
 
       assert(task_get(*task, &object) == ERROR_OK);
 
@@ -1737,7 +1731,7 @@ void			task_bury(i_timer			timer,
        * d)
        */
 
-      assert(set_delete(_task->morgue.field, i) == ERROR_OK);
+      assert(set_delete(_task.morgue.field, i) == ERROR_OK);
     }
 }
 
@@ -1866,7 +1860,7 @@ t_error			task_wait(i_thread			id,
        * c)
        */
 
-      if (set_add(_task->morgue.field, &o->id) != ERROR_OK)
+      if (set_add(_task.morgue.field, &o->id) != ERROR_OK)
 	CORE_ESCAPE("unable to add the task to the morgue");
 
       CORE_LEAVE();
@@ -2081,7 +2075,7 @@ t_error			task_current(i_task*			task)
 
 t_error			task_exist(i_task			id)
 {
-  if (set_exist(_task->tasks, id) != ERROR_TRUE)
+  if (set_exist(_task.tasks, id) != ERROR_TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -2110,7 +2104,7 @@ t_error			task_get(i_task				id,
    * 1)
    */
 
-  if (set_get(_task->tasks, id, (void**)object) != ERROR_OK)
+  if (set_get(_task.tasks, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of tasks");
 
   CORE_LEAVE();
@@ -2132,7 +2126,7 @@ t_error			task_get(i_task				id,
  * steps:
  *
  * 1) display the message.
- * 2) allocate and initialize the task manager's structure.
+ * 2) initialize the task manager's structure.
  * 3) build the task manager's identifier object.
  * 4) reserve the set of tasks.
  * 5) reserve the set of dead tasks i.e the morgue.
@@ -2174,16 +2168,13 @@ t_error			task_initialize(void)
    * 2)
    */
 
-  if ((_task = malloc(sizeof (m_task))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the task manager's structure");
-
-  memset(_task, 0x0, sizeof (m_task));
+  memset(&_task, 0x0, sizeof (m_task));
 
   /*
    * 3)
    */
 
-  if (id_build(&_task->id) != ERROR_OK)
+  if (id_build(&_task.id) != ERROR_OK)
     CORE_ESCAPE("unable to build the identifier object");
 
   /*
@@ -2193,7 +2184,7 @@ t_error			task_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (o_task),
-		  &_task->tasks) != ERROR_OK)
+		  &_task.tasks) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of tasks");
 
   /*
@@ -2203,14 +2194,14 @@ t_error			task_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (i_task),
-		  &_task->morgue.field) != ERROR_OK)
+		  &_task.morgue.field) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of dead tasks i.e the morgue");
 
   /*
    * 6)
    */
 
-  _task->morgue.timer = ID_UNUSED;
+  _task.morgue.timer = ID_UNUSED;
 
   /*
    * 7)
@@ -2219,22 +2210,22 @@ t_error			task_initialize(void)
   if (task_reserve(TASK_CLASS_KERNEL,
 		   TASK_BEHAVIOUR_KERNEL,
 		   TASK_PRIORITY_KERNEL,
-		   &_kernel->task) != ERROR_OK)
+		   &_kernel.task) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the kernel task");
 
   /*
    * 8)
    */
 
-  if (as_reserve(_kernel->task,
-		 &_kernel->as) != ERROR_OK)
+  if (as_reserve(_kernel.task,
+		 &_kernel.as) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the kernel address space");
 
   /*
    * 9)
    */
 
-  if (task_start(_kernel->task) != ERROR_OK)
+  if (task_start(_kernel.task) != ERROR_OK)
     CORE_ESCAPE("unable to start the kernel task");
 
   /*
@@ -2263,7 +2254,7 @@ t_error			task_initialize(void)
        * c)
        */
 
-      if (segment_inject(_kernel->as, segment, &segments[i]) != ERROR_OK)
+      if (segment_inject(_kernel.as, segment, &segments[i]) != ERROR_OK)
 	CORE_ESCAPE("unable to inject the segment object pre-reserved "
 		    "by the boot loader");
 
@@ -2302,7 +2293,7 @@ t_error			task_initialize(void)
        * c)
        */
 
-      if (region_inject(_kernel->as, region, &useless) != ERROR_OK)
+      if (region_inject(_kernel.as, region, &useless) != ERROR_OK)
 	CORE_ESCAPE("unable to inject the region object pre-reserved "
 		    "by the boot loader");
     }
@@ -2332,7 +2323,6 @@ t_error			task_initialize(void)
  * 5) release the morgue's set.
  * 6) release the set of tasks.
  * 7) release the identifier object.
- * 8) release the manager structure's memory.
  */
 
 t_error			task_clean(void)
@@ -2358,7 +2348,7 @@ t_error			task_clean(void)
    * 3)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _task->tasks, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _task.tasks, &i, s)
     {
       i_task*		task;
 
@@ -2366,7 +2356,7 @@ t_error			task_clean(void)
        * a)
        */
 
-      if (set_object(_task->tasks, i, (void**)&task) != ERROR_OK)
+      if (set_object(_task.tasks, i, (void**)&task) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the task identifier");
 
       /*
@@ -2381,9 +2371,9 @@ t_error			task_clean(void)
    * 4)
    */
 
-  if (_task->morgue.timer != ID_UNUSED)
+  if (_task.morgue.timer != ID_UNUSED)
     {
-      if (timer_release(_task->morgue.timer) != ERROR_OK)
+      if (timer_release(_task.morgue.timer) != ERROR_OK)
 	CORE_ESCAPE("unable to release the timer");
     }
 
@@ -2391,28 +2381,22 @@ t_error			task_clean(void)
    * 5)
    */
 
-  if (set_release(_task->morgue.field) != ERROR_OK)
+  if (set_release(_task.morgue.field) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of dead tasks");
 
   /*
    * 6)
    */
 
-  if (set_release(_task->tasks) != ERROR_OK)
+  if (set_release(_task.tasks) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of tasks");
 
   /*
    * 7)
    */
 
-  if (id_destroy(&_task->id) != ERROR_OK)
+  if (id_destroy(&_task.id) != ERROR_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
-
-  /*
-   * 8)
-   */
-
-  free(_task);
 
   CORE_LEAVE();
 }

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../tests/kaneton/core/timer/repeat/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:01 2010]
- * updated       julien quintard   [thu jan 27 23:01:15 2011]
+ * updated       julien quintard   [sun jan 30 21:12:39 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -96,7 +96,7 @@ void			test_core_timer_repeat_02(void)
 
   TEST_ENTER();
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,

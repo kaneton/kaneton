@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ture/ia32/educational/as/switch/switch.c
+ * file          /home/mycure/kane...ine/architecture/ia32/as/switch/switch.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 27 14:42:20 2011]
+ * updated       julien quintard   [sun jan 30 21:19:47 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -91,7 +91,7 @@ void			test_architecture_as_switch(void)
   ptr1 = (int*)r->address;
   ptr2 = (int*)addr;
 
-  if (as_get(_kernel->as, &ko) != ERROR_OK)
+  if (as_get(_kernel.as, &ko) != ERROR_OK)
     TEST_ERROR("[as_get] error");
 
   kdir = ko->machine.pd;

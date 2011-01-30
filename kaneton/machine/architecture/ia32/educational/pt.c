@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       julien quintard   [mon jan 17 15:45:04 2011]
+ * updated       julien quintard   [sun jan 30 20:47:50 2011]
  */
 
 /*
@@ -33,13 +33,13 @@
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * the address space manager which contains the kernel PD.
  */
 
-extern m_as*		_as;
+extern m_as		_as;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -67,7 +67,7 @@ t_error			architecture_pt_dump(at_pt		pt,
    * 1)
    */
 
-  if (as_physical(_kernel->as, (t_vaddr)pt, &paddr) != ERROR_OK)
+  if (as_physical(_kernel.as, (t_vaddr)pt, &paddr) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the page tabel's physical address");
 
   /*
@@ -292,7 +292,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
    * 1)
    */
 
-  if (region_space(_kernel->as,
+  if (region_space(_kernel.as,
 		   ___kaneton$pagesz,
 		   &vaddr) != ERROR_OK)
     MACHINE_ESCAPE("unable to find space within the kernel's address space");
@@ -308,7 +308,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
    * 3)
    */
 
-  if (!(_as->machine.pd[ARCHITECTURE_PD_INDEX(vaddr)] &
+  if (!(_as.machine.pd[ARCHITECTURE_PD_INDEX(vaddr)] &
 	ARCHITECTURE_PDE_PRESENT))
     {
       o_segment*	o;
@@ -317,7 +317,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
        * a)
        */
 
-      if (segment_reserve(_kernel->as,
+      if (segment_reserve(_kernel.as,
 			  ___kaneton$pagesz,
 			  PERMISSION_READ | PERMISSION_WRITE,
 			  SEGMENT_OPTION_SYSTEM,
@@ -335,7 +335,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
        * c)
        */
 
-      if (architecture_pd_insert(_as->machine.pd,
+      if (architecture_pd_insert(_as.machine.pd,
 				 ARCHITECTURE_PD_INDEX(vaddr),
 				 o->address,
 				 ARCHITECTURE_PDE_PRESENT |
@@ -391,7 +391,7 @@ t_error			architecture_pt_map(t_paddr		paddr,
    * 7)
    */
 
-  if (region_inject(_kernel->as, o, &region) != ERROR_OK)
+  if (region_inject(_kernel.as, o, &region) != ERROR_OK)
     MACHINE_ESCAPE("unable to inject the region associated with the mapped "
 		   "page");
 
@@ -443,7 +443,7 @@ t_error			architecture_pt_unmap(at_pt		table)
    * 1)
    */
 
-  if (!(_as->machine.pd[ARCHITECTURE_PD_INDEX(vaddr)] &
+  if (!(_as.machine.pd[ARCHITECTURE_PD_INDEX(vaddr)] &
 	ARCHITECTURE_PDE_PRESENT))
     MACHINE_ESCAPE("the page table referencing the page directory does "
 		   "not seem to be used");
@@ -468,7 +468,7 @@ t_error			architecture_pt_unmap(at_pt		table)
    * 4)
    */
 
-  if (as_get(_kernel->as, &o) != ERROR_OK)
+  if (as_get(_kernel.as, &o) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the kernel address space object");
 
   /*

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [sat jan 15 14:53:38 2011]
+ * updated       julien quintard   [sun jan 30 20:53:44 2011]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -70,7 +70,7 @@
  * the timeslice granularity.
  */
 
-#define SCHEDULER_GRANULARITY		_scheduler->quantum
+#define SCHEDULER_GRANULARITY		_scheduler.quantum
 
 /*
  * scheduling priorities.

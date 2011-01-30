@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/core/as/translation/translation.h
  *
  * created       julien quintard   [wed apr 15 05:15:32 2009]
- * updated       julien quintard   [thu dec 16 14:56:34 2010]
+ * updated       julien quintard   [sun jan 30 21:27:12 2011]
  */
 
 #ifndef TESTS_KANETON_CORE_AS_TRANSLATION_TRANSLATION_H
@@ -31,7 +31,7 @@
 									\
     v = (_v_);								\
 									\
-    if (as_physical(_kernel->as, v, &p) != ERROR_OK)			\
+    if (as_physical(_kernel.as, v, &p) != ERROR_OK)			\
       TEST_ERROR("[as_physical] error");				\
     									\
     if (p != (_p_))							\
@@ -45,7 +45,7 @@
 									\
     p = (_p_);								\
 									\
-    if (as_virtual(_kernel->as, p, &v) != ERROR_OK)			\
+    if (as_virtual(_kernel.as, p, &v) != ERROR_OK)			\
       TEST_ERROR("[as_virtual] error");					\
 									\
     if (v != (_v_))							\

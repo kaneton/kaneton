@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/architecture/ia32/event/map/map.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat jan 15 17:07:26 2011]
+ * updated       julien quintard   [sun jan 30 21:21:09 2011]
  */
 
 /*
@@ -23,8 +23,8 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
-extern m_as*		_as;
+extern m_kernel		_kernel;
+extern m_as		_as;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -60,12 +60,12 @@ void			test_architecture_event_map(void)
 
   ARCHITECTURE_SIDT(idtr);
 
-  if (as_physical(_kernel->as, idtr.address, &paddr) != ERROR_OK)
+  if (as_physical(_kernel.as, idtr.address, &paddr) != ERROR_OK)
     TEST_ERROR("[as_physical] error");
 
-  set_foreach(SET_OPTION_FORWARD, _as->ass, &it, state)
+  set_foreach(SET_OPTION_FORWARD, _as.ass, &it, state)
     {
-      if (set_object(_as->ass, it, (void**)&o) != ERROR_OK)
+      if (set_object(_as.ass, it, (void**)&o) != ERROR_OK)
 	TEST_ERROR("[set_object] error");
 
       if (as_virtual(o->id, paddr, &vaddr) != ERROR_OK)

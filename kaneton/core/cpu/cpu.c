@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       julien quintard   [wed jan 26 20:55:33 2011]
+ * updated       julien quintard   [sun jan 30 20:04:19 2011]
  */
 
 /*
@@ -63,7 +63,7 @@ extern s_init*		_init;
  * the cpu manager.
  */
 
-m_cpu*			_cpu = NULL;
+m_cpu			_cpu;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -146,13 +146,13 @@ t_error			cpu_dump(void)
 
   module_call(console, message,
 	      '#', "  core: cpus(%qd)\n",
-	      _cpu->cpus);
+	      _cpu.cpus);
 
   /*
    * 2)
    */
 
-  if (set_size(_cpu->cpus, &size) != ERROR_OK)
+  if (set_size(_cpu.cpus, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
   /*
@@ -161,12 +161,12 @@ t_error			cpu_dump(void)
 
   module_call(console, message,
 	      '#', "    cpus: id(%qd) size(%qd)\n",
-	      _cpu->cpus,
+	      _cpu.cpus,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _cpu->cpus, &i, st)
+  set_foreach(SET_OPTION_FORWARD, _cpu.cpus, &i, st)
     {
-      if (set_object(_cpu->cpus, i, (void**)&data) != ERROR_OK)
+      if (set_object(_cpu.cpus, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the CPU identifier");
 
       if (cpu_show(data->id,
@@ -230,7 +230,7 @@ t_error			cpu_multiprocessor(void)
    * 1)
    */
 
-  assert(set_size(_cpu->cpus, &size) == ERROR_OK);
+  assert(set_size(_cpu.cpus, &size) == ERROR_OK);
 
   /*
    * 2)
@@ -270,7 +270,7 @@ t_error			cpu_select(i_cpu*			id)
    * 1)
    */
 
-  if (set_size(_cpu->cpus, &size) != ERROR_OK)
+  if (set_size(_cpu.cpus, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
   /*
@@ -416,7 +416,7 @@ t_error			cpu_migrate(i_task			task,
 
 t_error			cpu_exist(i_cpu				id)
 {
-  if (set_exist(_cpu->cpus, id) != ERROR_TRUE)
+  if (set_exist(_cpu.cpus, id) != ERROR_TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -445,7 +445,7 @@ t_error			cpu_get(i_cpu				id,
    * 1)
    */
 
-  if (set_get(_cpu->cpus, id, (void**)object) != ERROR_OK)
+  if (set_get(_cpu.cpus, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of CPUs");
 
   CORE_LEAVE();
@@ -457,7 +457,7 @@ t_error			cpu_get(i_cpu				id,
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize memory for the manager's structure.
+ * 2) initialize memory for the manager's structure.
  * 3) reserve the set of CPUs.
  * 4) inject every CPU object provided by the boot loader through the
  *    init structure into the set of CPUs.
@@ -479,10 +479,7 @@ t_error			cpu_initialize(void)
    * 2)
    */
 
-  if ((_cpu = malloc(sizeof (m_cpu))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the CPU manager's structure");
-
-  memset(_cpu, 0x0, sizeof (m_cpu));
+  memset(&_cpu, 0x0, sizeof (m_cpu));
 
   /*
    * 3)
@@ -492,7 +489,7 @@ t_error			cpu_initialize(void)
 		  SET_OPTION_ALLOCATE,
 		  _init->ncpus,
 		  sizeof (o_cpu),
-		  &_cpu->cpus) != ERROR_OK)
+		  &_cpu.cpus) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of CPUs");
 
   /*
@@ -501,7 +498,7 @@ t_error			cpu_initialize(void)
 
   for (i = 0; i < _init->ncpus; i++)
     {
-      if (set_append(_cpu->cpus, &_init->cpus[i]) != ERROR_OK)
+      if (set_append(_cpu.cpus, &_init->cpus[i]) != ERROR_OK)
 	CORE_ESCAPE("unable to add the object to the set of CPUs");
     }
 
@@ -529,7 +526,6 @@ t_error			cpu_initialize(void)
  *
  * 1) display a message.
  * 2) call the machine.
- * 3) free the manager structure.
  */
 
 t_error			cpu_clean(void)
@@ -547,12 +543,6 @@ t_error			cpu_clean(void)
 
   if (machine_call(cpu, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
-
-  /*
-   * 3)
-   */
-
-  free(_cpu);
 
   CORE_LEAVE();
 }

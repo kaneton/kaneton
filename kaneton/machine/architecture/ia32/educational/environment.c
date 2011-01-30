@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [sun jan 30 12:25:16 2011]
+ * updated       julien quintard   [sun jan 30 20:43:53 2011]
  */
 
 /*
@@ -45,25 +45,25 @@ extern s_init*		_init;
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * the thread manager.
  */
 
-extern m_thread*	_thread;
+extern m_thread		_thread;
 
 /*
  * the segment manager.
  */
 
-extern m_segment*	_segment;
+extern m_segment	_segment;
 
 /*
  * the event manager.
  */
 
-extern m_event*		_event;
+extern m_event		_event;
 
 /*
  * the architecture manager.
@@ -483,12 +483,12 @@ t_error			architecture_environment_server(i_as	id)
    * 5)
    */
 
-  if (region_locate(_kernel->as,
-		    _thread->machine.tss,
+  if (region_locate(_kernel.as,
+		    _thread.machine.tss,
 		    &region) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the TSS lies");
 
-  if (region_get(_kernel->as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   if (region_reserve(as->id,
@@ -496,7 +496,7 @@ t_error			architecture_environment_server(i_as	id)
 		     0x0,
 		     REGION_OPTION_FORCE |
 		     REGION_OPTION_NONE,
-		     _thread->machine.tss,
+		     _thread.machine.tss,
 		     r->size,
 		     &region) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the TSS");
@@ -505,12 +505,12 @@ t_error			architecture_environment_server(i_as	id)
    * 6)
    */
 
-  if (region_locate(_kernel->as,
-		    (t_vaddr)_segment->machine.gdt.table,
+  if (region_locate(_kernel.as,
+		    (t_vaddr)_segment.machine.gdt.table,
 		    &region) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the GDT lies");
 
-  if (region_get(_kernel->as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   if (region_reserve(as->id,
@@ -518,7 +518,7 @@ t_error			architecture_environment_server(i_as	id)
 		     0x0,
 		     REGION_OPTION_FORCE |
 		     REGION_OPTION_NONE,
-		     (t_vaddr)_segment->machine.gdt.table,
+		     (t_vaddr)_segment.machine.gdt.table,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the GDT");
@@ -527,12 +527,12 @@ t_error			architecture_environment_server(i_as	id)
    * 7)
    */
 
-  if (region_locate(_kernel->as,
-		    (t_vaddr)_event->machine.idt.table,
+  if (region_locate(_kernel.as,
+		    (t_vaddr)_event.machine.idt.table,
 		    &region) == ERROR_FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the IDT lies");
 
-  if (region_get(_kernel->as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   if (region_reserve(as->id,
@@ -540,7 +540,7 @@ t_error			architecture_environment_server(i_as	id)
 		     0x0,
 		     REGION_OPTION_FORCE |
 		     REGION_OPTION_NONE,
-		     (t_vaddr)_event->machine.idt.table,
+		     (t_vaddr)_event.machine.idt.table,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the IDT");

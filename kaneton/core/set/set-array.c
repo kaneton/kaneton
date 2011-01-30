@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set-array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri jan 14 20:05:58 2011]
+ * updated       julien quintard   [sun jan 30 20:35:07 2011]
  */
 
 /*
@@ -50,7 +50,7 @@
  * the manager's structure.
  */
 
-extern m_set*		_set;
+extern m_set		_set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -1562,11 +1562,11 @@ t_error			set_reserve_array(t_options		options,
 
   if (options & SET_OPTION_CONTAINER)
     {
-      *id = _set->sets;
+      *id = _set.sets;
     }
   else
     {
-      if (id_reserve(&_set->id, id) != ERROR_OK)
+      if (id_reserve(&_set.id, id) != ERROR_OK)
 	CORE_ESCAPE("unable to reserve an identifier");
     }
 
@@ -1592,7 +1592,7 @@ t_error			set_reserve_array(t_options		options,
   if ((o.u.array.array = malloc(o.u.array.arraysz * sizeof (void*))) == NULL)
     {
       if (!(options & SET_OPTION_CONTAINER))
-	id_release(&_set->id, o.id);
+	id_release(&_set.id, o.id);
 
       CORE_ESCAPE("unable to allocate memory for the array");
     }
@@ -1609,7 +1609,7 @@ t_error			set_reserve_array(t_options		options,
       free(o.u.array.array);
 
       if (!(options & SET_OPTION_CONTAINER))
-	id_release(&_set->id, o.id);
+	id_release(&_set.id, o.id);
 
       CORE_ESCAPE("unable to register the new set descriptor");
     }
@@ -1651,7 +1651,7 @@ t_error			set_release_array(i_set			setid)
    * 3)
    */
 
-  if (id_release(&_set->id, o->id) != ERROR_OK)
+  if (id_release(&_set.id, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to release the set's identifier");
 
   /*

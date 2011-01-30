@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /data/mycure/repo...t/tests/kaneton/core/map/reserve/01/01.c
+ * file          /home/mycure/kane...t/tests/kaneton/core/map/reserve/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon nov 29 18:45:45 2010]
+ * updated       julien quintard   [sun jan 30 21:10:53 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -37,7 +37,7 @@ void			test_core_map_reserve_01(void)
 
   TEST_ENTER();
 
-  if (map_reserve(_kernel->as,
+  if (map_reserve(_kernel.as,
 		  MAP_OPTION_NONE,
 		  ___kaneton$pagesz,
 		  PERMISSION_READ | PERMISSION_WRITE,

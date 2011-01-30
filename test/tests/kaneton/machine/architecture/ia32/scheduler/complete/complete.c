@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/scheduler/complete/complete.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 27 23:04:17 2011]
+ * updated       julien quintard   [sun jan 30 21:21:32 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -100,14 +100,14 @@ void			test_architecture_scheduler_complete(void)
    * kernel
    */
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
 		      &segment) != ERROR_OK)
     TEST_ERROR("[map_reserve] error");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     segment,
 		     0,
 		     REGION_OPTION_NONE,
@@ -116,14 +116,14 @@ void			test_architecture_scheduler_complete(void)
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel->as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
   share_01 = r->address;
 
   memset((void*)share_01, 0x0, ___kaneton$pagesz);
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,

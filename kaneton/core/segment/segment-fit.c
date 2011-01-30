@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/segment/segment-fit.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jan 15 04:52:13 2011]
+ * updated       julien quintard   [sun jan 30 20:34:16 2011]
  */
 
 /*
@@ -98,7 +98,7 @@ machine_include(segment);
  * the segment manager.
  */
 
-m_segment*		_segment = NULL;
+m_segment		_segment;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -223,15 +223,15 @@ t_error			segment_dump(void)
 
   module_call(console, message,
 	      '#', "  core: base(0x%08x) size(0x%08x) segments(%qd)\n",
-	      _segment->base,
-	      _segment->size,
-	      _segment->segments);
+	      _segment.base,
+	      _segment.size,
+	      _segment.segments);
 
   /*
    * 2)
    */
 
-  if (set_size(_segment->segments, &size) != ERROR_OK)
+  if (set_size(_segment.segments, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of segments");
 
   /*
@@ -240,12 +240,12 @@ t_error			segment_dump(void)
 
   module_call(console, message,
 	      '#', "    segments: id(%qd) size(%qd)\n",
-	      _segment->segments,
+	      _segment.segments,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _segment->segments, &i, s)
+  set_foreach(SET_OPTION_FORWARD, _segment.segments, &i, s)
     {
-      if (set_object(_segment->segments, i, (void**)&data) != ERROR_OK)
+      if (set_object(_segment.segments, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object's identifier from the set");
 
       if (segment_show(data->id,
@@ -328,13 +328,13 @@ t_error			segment_fit_first(i_as			asid,
    * 2)
    */
 
-  if (set_head(_segment->segments, &i) == ERROR_FALSE)
+  if (set_head(_segment.segments, &i) == ERROR_FALSE)
     {
       /*
        * a)
        */
 
-      if (_segment->size < size)
+      if (_segment.size < size)
 	CORE_ESCAPE("there is not enough memory to satisfy the segment "
 		    "reservation");
 
@@ -342,7 +342,7 @@ t_error			segment_fit_first(i_as			asid,
        * b)
        */
 
-      *address = _segment->base;
+      *address = _segment.base;
 
       CORE_LEAVE();
     }
@@ -351,16 +351,16 @@ t_error			segment_fit_first(i_as			asid,
    * 3)
    */
 
-  if (set_object(_segment->segments, i, (void**)&head) != ERROR_OK)
+  if (set_object(_segment.segments, i, (void**)&head) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the very first segment object");
 
   /*
    * 4)
    */
 
-  if ((head->address - _segment->base) >= size)
+  if ((head->address - _segment.base) >= size)
     {
-      *address = _segment->base;
+      *address = _segment.base;
 
       CORE_LEAVE();
     }
@@ -369,7 +369,7 @@ t_error			segment_fit_first(i_as			asid,
    * 5)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _segment->segments, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _segment.segments, &i, state)
     {
       o_segment*	next;
       s_iterator	j;
@@ -378,7 +378,7 @@ t_error			segment_fit_first(i_as			asid,
        * a)
        */
 
-      if (set_object(_segment->segments,
+      if (set_object(_segment.segments,
 		     i,
 		     (void**)&current) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the segment object corresponding "
@@ -388,14 +388,14 @@ t_error			segment_fit_first(i_as			asid,
        * b)
        */
 
-      if (set_next(_segment->segments, i, &j) == ERROR_FALSE)
+      if (set_next(_segment.segments, i, &j) == ERROR_FALSE)
 	break;
 
       /*
        * c)
        */
 
-      if (set_object(_segment->segments, j, (void**)&next) != ERROR_OK)
+      if (set_object(_segment.segments, j, (void**)&next) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the next segment in the set");
 
       /*
@@ -414,17 +414,17 @@ t_error			segment_fit_first(i_as			asid,
    * 6)
    */
 
-  if (set_tail(_segment->segments, &i) == ERROR_FALSE)
+  if (set_tail(_segment.segments, &i) == ERROR_FALSE)
     CORE_ESCAPE("unable to locate the last segment in the set");
 
-  if (set_object(_segment->segments, i, (void**)&tail) != ERROR_OK)
+  if (set_object(_segment.segments, i, (void**)&tail) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 7)
    */
 
-  if (((_segment->base + _segment->size) -
+  if (((_segment.base + _segment.size) -
        (tail->address + tail->size)) >= size)
     {
       *address = tail->address + tail->size;
@@ -690,7 +690,7 @@ t_error			segment_inject(i_as			asid,
    * 4)
    */
 
-  if (set_add(_segment->segments, object) != ERROR_OK)
+  if (set_add(_segment.segments, object) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of segments");
 
   if (set_add(as->segments, &object->id) != ERROR_OK)
@@ -848,10 +848,10 @@ t_error			segment_resize(i_segment		old,
    * 1)
    */
 
-  if (set_locate(_segment->segments, old, &it) != ERROR_OK)
+  if (set_locate(_segment.segments, old, &it) != ERROR_OK)
     CORE_ESCAPE("unable to locate the object in the set of segments");
 
-  if (set_object(_segment->segments, it, (void**)&o) != ERROR_OK)
+  if (set_object(_segment.segments, it, (void**)&o) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -889,7 +889,7 @@ t_error			segment_resize(i_segment		old,
        * a)
        */
 
-      if (set_next(_segment->segments, it, &next) == ERROR_TRUE)
+      if (set_next(_segment.segments, it, &next) == ERROR_TRUE)
 	{
 	  /*
 	   * #A)
@@ -901,7 +901,7 @@ t_error			segment_resize(i_segment		old,
 	   * i)
 	   */
 
-	  if (set_object(_segment->segments, next, (void**)&onext) != ERROR_OK)
+	  if (set_object(_segment.segments, next, (void**)&onext) != ERROR_OK)
 	    CORE_ESCAPE("unable to retrieve the segment object");
 
 	  /*
@@ -920,7 +920,7 @@ t_error			segment_resize(i_segment		old,
 	   * i)
 	   */
 
-	  address = _segment->base + _segment->size;
+	  address = _segment.base + _segment.size;
 	}
 
       /*
@@ -1487,7 +1487,7 @@ t_error			segment_reserve(i_as			asid,
    * 6)
    */
 
-  if (set_add(_segment->segments, o) != ERROR_OK)
+  if (set_add(_segment.segments, o) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of segments");
 
   if (set_add(as->segments, &o->id) != ERROR_OK)
@@ -1545,7 +1545,7 @@ t_error			segment_release(i_segment		segid)
     CORE_ESCAPE("unable to remove the segment identifier from the "
 		"address space");
 
-  if (set_remove(_segment->segments, segid) != ERROR_OK)
+  if (set_remove(_segment.segments, segid) != ERROR_OK)
     CORE_ESCAPE("unable to remove the object from the set of segments");
 
   CORE_LEAVE();
@@ -1687,13 +1687,13 @@ t_error			segment_locate(t_paddr			address,
    * 1)
    */
 
-  set_foreach(SET_OPTION_FORWARD, _segment->segments, &i, state)
+  set_foreach(SET_OPTION_FORWARD, _segment.segments, &i, state)
     {
       /*
        * a)
        */
 
-      assert(set_object(_segment->segments, i, (void**)&object) == ERROR_OK);
+      assert(set_object(_segment.segments, i, (void**)&object) == ERROR_OK);
 
       /*
        * b)
@@ -1721,7 +1721,7 @@ t_error			segment_locate(t_paddr			address,
 
 t_error			segment_exist(i_segment			segid)
 {
-  if (set_exist(_segment->segments, segid) != ERROR_TRUE)
+  if (set_exist(_segment.segments, segid) != ERROR_TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -1750,7 +1750,7 @@ t_error			segment_get(i_segment			segid,
    * 1)
    */
 
-  if (set_get(_segment->segments, segid, (void**)object) != ERROR_OK)
+  if (set_get(_segment.segments, segid, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of segments");
 
   CORE_LEAVE();
@@ -1763,7 +1763,7 @@ t_error			segment_get(i_segment			segid,
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize the segment manager's structure.
+ * 2) initialize the segment manager's structure.
  * 3) record the base and size in the manager's structure.
  * 4) reserve the set of segments which will contain the system's segments.
  * 5) call the machine.
@@ -1799,18 +1799,14 @@ t_error			segment_initialize(t_paddr		base,
    * 2)
    */
 
-  if ((_segment = malloc(sizeof (m_segment))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the segment manager's "
-		"structure");
-
-  memset(_segment, 0x0, sizeof (m_segment));
+  memset(&_segment, 0x0, sizeof (m_segment));
 
   /*
    * 3)
    */
 
-  _segment->base = base;
-  _segment->size = size;
+  _segment.base = base;
+  _segment.size = size;
 
   /*
    * 4)
@@ -1820,7 +1816,7 @@ t_error			segment_initialize(t_paddr		base,
 		  SET_OPTION_SORT | SET_OPTION_FREE,
 		  sizeof (o_segment),
 		  SEGMENT_BPT_NODESZ,
-		  &_segment->segments) != ERROR_OK)
+		  &_segment.segments) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the segments set");
 
   /*
@@ -1844,7 +1840,6 @@ t_error			segment_initialize(t_paddr		base,
  *   a) retrieve the segment object.
  *   b) release the segment.
  * 4) release the set of segments.
- * 5) free the segment manager's structure.
  */
 
 t_error			segment_clean(void)
@@ -1870,13 +1865,13 @@ t_error			segment_clean(void)
    * 3)
    */
 
-  while (set_head(_segment->segments, &i) == ERROR_TRUE)
+  while (set_head(_segment.segments, &i) == ERROR_TRUE)
     {
       /*
        * a)
        */
 
-      if (set_object(_segment->segments, i, (void**)&data) != ERROR_OK)
+      if (set_object(_segment.segments, i, (void**)&data) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object corresponding to "
 		    "its identifier");
 
@@ -1892,14 +1887,8 @@ t_error			segment_clean(void)
    * 4)
    */
 
-  if (set_release(_segment->segments) != ERROR_OK)
+  if (set_release(_segment.segments) != ERROR_OK)
     CORE_ESCAPE("unable to release the segments set");
-
-  /*
-   * 5)
-   */
-
-  free(_segment);
 
   CORE_LEAVE();
 }

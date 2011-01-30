@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2070]
- * updated       julien quintard   [sun jan 16 13:48:28 2011]
+ * updated       julien quintard   [sun jan 30 21:20:45 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 extern am			_architecture;
 
@@ -57,14 +57,14 @@ void			test_architecture_event_exception_07_handler(t_id id,
 	 !(_architecture.error & (1 << 4)))))
     TEST_ERROR("invalid error code");
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
 		      &segid) != ERROR_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     segid,
 		     0,
 		     REGION_OPTION_FORCE,
@@ -84,7 +84,7 @@ void			test_architecture_event_exception_07(void)
 
   TEST_ENTER();
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
@@ -92,7 +92,7 @@ void			test_architecture_event_exception_07(void)
     TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < 10; i++)
-    if (region_reserve(_kernel->as,
+    if (region_reserve(_kernel.as,
 		       segid,
 		       0,
 		       REGION_OPTION_NONE,
@@ -101,13 +101,13 @@ void			test_architecture_event_exception_07(void)
 		       &regids[i]) != ERROR_OK)
       TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel->as, regids[9], &reg) != ERROR_OK)
+  if (region_get(_kernel.as, regids[9], &reg) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
   address = reg->address;
 
   for (i = 0; i < 10; i++)
-    if (region_release(_kernel->as, regids[i]) != ERROR_OK)
+    if (region_release(_kernel.as, regids[i]) != ERROR_OK)
       TEST_ERROR("[region_release] error");
 
   if (segment_release(segid) != ERROR_OK)

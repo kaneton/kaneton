@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [thu jan 27 22:02:43 2011]
+ * updated       julien quintard   [sun jan 30 20:56:52 2011]
  */
 
 #ifndef CORE_THREAD_H
@@ -101,11 +101,11 @@
 #define THREAD_IDLE_PRIORITY						\
   (									\
     {									\
-      extern m_kernel*	_kernel;					\
+      extern m_kernel	_kernel;					\
 									\
       o_task*		_task_;						\
 									\
-      assert(task_get(_kernel->task, &_task_) == ERROR_OK);		\
+      assert(task_get(_kernel.task, &_task_) == ERROR_OK);		\
 									\
        ((THREAD_IDLE_QUEUE - SCHEDULER_PRIORITY_LOW) *			\
 	((TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW) *	\

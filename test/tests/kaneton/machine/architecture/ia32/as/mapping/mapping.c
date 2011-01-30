@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/as/mapping/mapping.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [mon jan 17 15:49:04 2011]
+ * updated       julien quintard   [sun jan 30 21:20:04 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_as*		_as;
+extern m_as		_as;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -41,9 +41,9 @@ void			test_architecture_as_mapping(void)
 
   TEST_ENTER();
  
-  set_foreach(SET_OPTION_FORWARD, _as->ass, &it, st)
+  set_foreach(SET_OPTION_FORWARD, _as.ass, &it, st)
     {
-      if (set_object(_as->ass, it, (void**)&oas) != ERROR_OK)
+      if (set_object(_as.ass, it, (void**)&oas) != ERROR_OK)
 	TEST_ERROR("[set_object] error");
 
       set_foreach(SET_OPTION_FORWARD, oas->regions, &it2, st2)
@@ -90,7 +90,7 @@ void			test_architecture_as_mapping(void)
 
 	  for (br = 0, pde = pde_start; !br && pde <= pde_end; pde++)
 	    {
-	      if (!(_as->machine.pd[pde] & ARCHITECTURE_PDE_PRESENT))
+	      if (!(_as.machine.pd[pde] & ARCHITECTURE_PDE_PRESENT))
 		TEST_ERROR("the region at 0x%x seems to be incorrectly "
 			   "mapped i.e no page table",
 			   start);

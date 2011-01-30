@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/educational/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       julien quintard   [thu jan 27 14:37:02 2011]
+ * updated       julien quintard   [sun jan 30 20:46:01 2011]
  */
 
 /*
@@ -100,13 +100,13 @@ extern s_init*		_init;
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * the address space manager which contains the kernel PD.
  */
 
-extern m_as*		_as;
+extern m_as		_as;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -153,7 +153,7 @@ t_error			architecture_paging_setup(void)
    * 1)
    */
 
-  _as->machine.pd = (at_pd)_init->machine.pd;
+  _as.machine.pd = (at_pd)_init->machine.pd;
 
   /*
    * 2)
@@ -215,7 +215,7 @@ t_error			architecture_paging_import(at_pd	pd,
    * 1)
    */
 
-  _as->machine.pd = pd;
+  _as.machine.pd = pd;
 
   /*
    * 2)
@@ -253,7 +253,7 @@ t_error			architecture_paging_export(at_pd*	pd,
    * 1)
    */
 
-  *pd = _as->machine.pd;
+  *pd = _as.machine.pd;
 
   /*
    * 2)
@@ -369,7 +369,7 @@ t_error			architecture_paging_map(i_as		id,
    * 4)
    */
 
-  if (as->id != _kernel->as)
+  if (as->id != _kernel.as)
     {
       /*
        * A)
@@ -548,7 +548,7 @@ t_error			architecture_paging_map(i_as		id,
    * 8)
    */
 
-  if (as->id != _kernel->as)
+  if (as->id != _kernel.as)
     {
       if (architecture_pd_unmap(pd) != ERROR_OK)
 	MACHINE_ESCAPE("unable to unmap the page directory");
@@ -632,7 +632,7 @@ t_error			architecture_paging_unmap(i_as		id,
    * 2)
    */
 
-  if (as->id != _kernel->as)
+  if (as->id != _kernel.as)
     {
       /*
        * A)
@@ -703,7 +703,7 @@ t_error			architecture_paging_unmap(i_as		id,
 	   * ii)
 	   */
 
-	  if (as->id == _kernel->as)
+	  if (as->id == _kernel.as)
 	    {
 	      if (architecture_tlb_invalidate(
                     ARCHITECTURE_PAGING_ADDRESS(pde.index,
@@ -739,7 +739,7 @@ t_error			architecture_paging_unmap(i_as		id,
 	   * ii)
 	   */
 
-	  if (as->id == _kernel->as)
+	  if (as->id == _kernel.as)
 	    {
 	      if (architecture_tlb_invalidate(
 		    ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR,
@@ -769,7 +769,7 @@ t_error			architecture_paging_unmap(i_as		id,
    * 5)
    */
 
-  if (as->id != _kernel->as)
+  if (as->id != _kernel.as)
     {
       if (architecture_pd_unmap(pd) != ERROR_OK)
 	MACHINE_ESCAPE("unable to unmap the page directory");
@@ -848,7 +848,7 @@ t_error			architecture_paging_read(i_segment	id,
    * 4)
    */
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     id,
 		     offset,
 		     REGION_OPTION_NONE,
@@ -861,7 +861,7 @@ t_error			architecture_paging_read(i_segment	id,
    * 5)
    */
 
-  if (region_get(_kernel->as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -874,7 +874,7 @@ t_error			architecture_paging_read(i_segment	id,
    * 7)
    */
 
-  if (region_release(_kernel->as, region) != ERROR_OK)
+  if (region_release(_kernel.as, region) != ERROR_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();
@@ -950,7 +950,7 @@ t_error			architecture_paging_write(i_segment	id,
    * 4)
    */
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     id,
 		     offset,
 		     REGION_OPTION_NONE,
@@ -963,7 +963,7 @@ t_error			architecture_paging_write(i_segment	id,
    * 5)
    */
 
-  if (region_get(_kernel->as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -976,7 +976,7 @@ t_error			architecture_paging_write(i_segment	id,
    * 7)
    */
 
-  if (region_release(_kernel->as, region) != ERROR_OK)
+  if (region_release(_kernel.as, region) != ERROR_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();
@@ -1074,7 +1074,7 @@ t_error			architecture_paging_copy(i_region	dst,
    * 4)
    */
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     src,
 		     from,
 		     REGION_OPTION_NONE,
@@ -1087,7 +1087,7 @@ t_error			architecture_paging_copy(i_region	dst,
    * 5)
    */
 
-  if (region_get(_kernel->as,
+  if (region_get(_kernel.as,
 		 source.region.id,
 		 &source.region.object) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
@@ -1119,7 +1119,7 @@ t_error			architecture_paging_copy(i_region	dst,
    * 8)
    */
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     dst,
 		     to,
 		     REGION_OPTION_NONE,
@@ -1132,7 +1132,7 @@ t_error			architecture_paging_copy(i_region	dst,
    * 9)
    */
 
-  if (region_get(_kernel->as,
+  if (region_get(_kernel.as,
 		 destination.region.id,
 		 &destination.region.object) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
@@ -1149,10 +1149,10 @@ t_error			architecture_paging_copy(i_region	dst,
    * 11)
    */
 
-  if (region_release(_kernel->as, source.region.id) != ERROR_OK)
+  if (region_release(_kernel.as, source.region.id) != ERROR_OK)
     MACHINE_ESCAPE("unable to release the region");
 
-  if (region_release(_kernel->as, destination.region.id) != ERROR_OK)
+  if (region_release(_kernel.as, destination.region.id) != ERROR_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sun jan 30 13:24:31 2011]
+ * updated       julien quintard   [sun jan 30 21:01:55 2011]
  */
 
 /*
@@ -31,7 +31,7 @@
  * the thread manager.
  */
 
-extern m_thread*	_thread;
+extern m_thread		_thread;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -178,26 +178,26 @@ t_error			glue_thread_dump(void)
   module_call(console, message,
 	      '#',
 	      "      kernel: CS(0x%x) DS(0x%x)\n",
-	      _thread->machine.selectors.kernel.cs,
-	      _thread->machine.selectors.kernel.ds);
+	      _thread.machine.selectors.kernel.cs,
+	      _thread.machine.selectors.kernel.ds);
 
   module_call(console, message,
 	      '#',
 	      "      driver: CS(0x%x) DS(0x%x)\n",
-	      _thread->machine.selectors.driver.cs,
-	      _thread->machine.selectors.driver.ds);
+	      _thread.machine.selectors.driver.cs,
+	      _thread.machine.selectors.driver.ds);
 
   module_call(console, message,
 	      '#',
 	      "      service: CS(0x%x) DS(0x%x)\n",
-	      _thread->machine.selectors.service.cs,
-	      _thread->machine.selectors.service.ds);
+	      _thread.machine.selectors.service.cs,
+	      _thread.machine.selectors.service.ds);
 
   module_call(console, message,
 	      '#',
 	      "      guest: CS(0x%x) DS(0x%x)\n",
-	      _thread->machine.selectors.guest.cs,
-	      _thread->machine.selectors.guest.ds);
+	      _thread.machine.selectors.guest.cs,
+	      _thread.machine.selectors.guest.ds);
 
   MACHINE_LEAVE();
 }

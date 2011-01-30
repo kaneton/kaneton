@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sun jan 30 12:27:26 2011]
+ * updated       julien quintard   [sun jan 30 21:01:47 2011]
  */
 
 /*
@@ -77,13 +77,13 @@ extern am		_architecture;
  * kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * thread manager.
  */
 
-extern m_thread*	_thread;
+extern m_thread		_thread;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -263,33 +263,33 @@ t_error			architecture_context_build(i_thread	id)
     {
       case TASK_CLASS_KERNEL:
 	{
-	  ctx.cs = _thread->machine.selectors.kernel.cs;
-	  ctx.ds = _thread->machine.selectors.kernel.ds;
-	  ctx.ss = _thread->machine.selectors.kernel.ds;
+	  ctx.cs = _thread.machine.selectors.kernel.cs;
+	  ctx.ds = _thread.machine.selectors.kernel.ds;
+	  ctx.ss = _thread.machine.selectors.kernel.ds;
 
 	  break;
 	}
       case TASK_CLASS_DRIVER:
 	{
-	  ctx.cs = _thread->machine.selectors.driver.cs;
-	  ctx.ds = _thread->machine.selectors.driver.ds;
-	  ctx.ss = _thread->machine.selectors.driver.ds;
+	  ctx.cs = _thread.machine.selectors.driver.cs;
+	  ctx.ds = _thread.machine.selectors.driver.ds;
+	  ctx.ss = _thread.machine.selectors.driver.ds;
 
 	  break;
 	}
       case TASK_CLASS_SERVICE:
 	{
-	  ctx.cs = _thread->machine.selectors.service.cs;
-	  ctx.ds = _thread->machine.selectors.service.ds;
-	  ctx.ss = _thread->machine.selectors.service.ds;
+	  ctx.cs = _thread.machine.selectors.service.cs;
+	  ctx.ds = _thread.machine.selectors.service.ds;
+	  ctx.ss = _thread.machine.selectors.service.ds;
 
 	  break;
 	}
       case TASK_CLASS_GUEST:
 	{
-	  ctx.cs = _thread->machine.selectors.guest.cs;
-	  ctx.ds = _thread->machine.selectors.guest.ds;
-	  ctx.ss = _thread->machine.selectors.guest.ds;
+	  ctx.cs = _thread.machine.selectors.guest.cs;
+	  ctx.ds = _thread.machine.selectors.guest.ds;
+	  ctx.ss = _thread.machine.selectors.guest.ds;
 
 	  break;
 	}
@@ -335,7 +335,7 @@ t_error			architecture_context_build(i_thread	id)
    * 9)
    */
 
-  if (thread->id != _kernel->thread)
+  if (thread->id != _kernel.thread)
     {
       if (architecture_context_set(thread->id, &ctx) != ERROR_OK)
 	MACHINE_ESCAPE("unable to set the context");
@@ -413,7 +413,7 @@ t_error			architecture_context_setup(void)
    * 1)
    */
 
-  if (as_get(_kernel->as, &as) != ERROR_OK)
+  if (as_get(_kernel.as, &as) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the address space object");
 
   /*
@@ -422,7 +422,7 @@ t_error			architecture_context_setup(void)
 
   _architecture.kernel.kis.size = ARCHITECTURE_HANDLER_KIS_SIZE;
 
-  if (map_reserve(_kernel->as,
+  if (map_reserve(_kernel.as,
 		  MAP_OPTION_SYSTEM,
 		  _architecture.kernel.kis.size,
 		  PERMISSION_READ | PERMISSION_WRITE,
@@ -436,18 +436,18 @@ t_error			architecture_context_setup(void)
    * 3)
    */
 
-  if (map_reserve(_kernel->as,
+  if (map_reserve(_kernel.as,
 		  MAP_OPTION_SYSTEM,
 		  ARCHITECTURE_TSS_SIZE,
 		  PERMISSION_READ | PERMISSION_WRITE,
-		  &_thread->machine.tss) != ERROR_OK)
+		  &_thread.machine.tss) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve the TSS memory area");
 
   /*
    * 4)
    */
 
-  if (architecture_tss_build(_thread->machine.tss, &tss) != ERROR_OK)
+  if (architecture_tss_build(_thread.machine.tss, &tss) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the initial TSS");
 
   /*
@@ -474,49 +474,49 @@ t_error			architecture_context_setup(void)
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
 	ARCHITECTURE_PRIVILEGE_KERNEL,
-	&_thread->machine.selectors.kernel.cs) != ERROR_OK)
+	&_thread.machine.selectors.kernel.cs) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the kernel code segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
 	ARCHITECTURE_PRIVILEGE_KERNEL,
-	&_thread->machine.selectors.kernel.ds) != ERROR_OK)
+	&_thread.machine.selectors.kernel.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the kernel data segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_DRIVER_CODE,
 	ARCHITECTURE_PRIVILEGE_DRIVER,
-	&_thread->machine.selectors.driver.cs) != ERROR_OK)
+	&_thread.machine.selectors.driver.cs) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the driver code segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_DRIVER_DATA,
 	ARCHITECTURE_PRIVILEGE_DRIVER,
-	&_thread->machine.selectors.driver.ds) != ERROR_OK)
+	&_thread.machine.selectors.driver.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the driver data segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_SERVICE_CODE,
 	ARCHITECTURE_PRIVILEGE_SERVICE,
-	&_thread->machine.selectors.service.cs) != ERROR_OK)
+	&_thread.machine.selectors.service.cs) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the service code segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_SERVICE_DATA,
 	ARCHITECTURE_PRIVILEGE_SERVICE,
-	&_thread->machine.selectors.service.ds) != ERROR_OK)
+	&_thread.machine.selectors.service.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the service data segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_GUEST_CODE,
 	ARCHITECTURE_PRIVILEGE_GUEST,
-	&_thread->machine.selectors.guest.cs) != ERROR_OK)
+	&_thread.machine.selectors.guest.cs) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the guest code segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_GUEST_DATA,
 	ARCHITECTURE_PRIVILEGE_GUEST,
-	&_thread->machine.selectors.guest.ds) != ERROR_OK)
+	&_thread.machine.selectors.guest.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the guest data segment selector");
 
   MACHINE_LEAVE();
@@ -650,7 +650,7 @@ t_error			architecture_context_switch(i_thread	current,
    * 2)
    */
 
-  tss = (as_tss*)_thread->machine.tss;
+  tss = (as_tss*)_thread.machine.tss;
 
   /*
    * 3)

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/io/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       julien quintard   [fri jan 14 20:03:08 2011]
+ * updated       julien quintard   [sun jan 30 20:07:13 2011]
  */
 
 /*
@@ -41,7 +41,7 @@ machine_include(io);
  * I/O manager structure.
  */
 
-m_io*			_io = NULL;
+m_io			_io;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -152,7 +152,7 @@ t_error			io_write_8(i_task			task,
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize memory for the manager structure.
+ * 2) initialize memory for the manager structure.
  * 3) call the machine.
  */
 
@@ -169,10 +169,7 @@ t_error			io_initialize(void)
    * 2)
    */
 
-  if ((_io = malloc(sizeof (m_io))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the IO manager's structure");
-
-  memset(_io, 0x0, sizeof (m_io));
+  memset(&_io, 0x0, sizeof (m_io));
 
   /*
    * 3)
@@ -191,7 +188,6 @@ t_error			io_initialize(void)
  *
  * 1) display a message.
  * 2) call the machine.
- * 3) free the manager structure.
  */
 
 t_error			io_clean(void)
@@ -209,12 +205,6 @@ t_error			io_clean(void)
 
   if (machine_call(io, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
-
-  /*
-   * 3)
-   */
-
-  free(_io);
 
   CORE_LEAVE();
 }

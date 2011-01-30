@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...sts/kaneton/core/scheduler/flood/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 27 22:30:44 2011]
+ * updated       julien quintard   [sun jan 30 21:18:35 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -66,7 +66,7 @@ void			test_core_scheduler_flood_01_content(void)
 
   for (i = 0; i < 25; i++)
     {
-      if (thread_reserve(_kernel->task,
+      if (thread_reserve(_kernel.task,
 			 THREAD_PRIORITY,
 			 THREAD_STACK_ADDRESS_NONE,
 			 THREAD_STACK_SIZE_LOW,
@@ -127,7 +127,7 @@ void			test_core_scheduler_flood_01(void)
   i_thread		thread;
   i_cpu			cpu;
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,

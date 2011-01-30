@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...achine/glue/ibm-pc.ia32/educational/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sun jan 30 13:26:50 2011]
+ * updated       julien quintard   [sun jan 30 20:40:54 2011]
  */
 
 /*
@@ -35,13 +35,13 @@
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * the address space manager.
  */
 
-extern m_as*		_as;
+extern m_as		_as;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -124,7 +124,7 @@ t_error			glue_as_dump(void)
   module_call(console, message,
 	      '#',
 	      "  machine: pd(0x%x)\n",
-	      _as->machine.pd);
+	      _as.machine.pd);
 
   MACHINE_LEAVE();
 }
@@ -138,7 +138,7 @@ t_error			glue_as_dump(void)
 t_error			glue_as_reserve(i_task			task,
 					i_as*			as)
 {
-  if (*as == _kernel->as)
+  if (*as == _kernel.as)
     {
       if (architecture_environment_kernel(*as) != ERROR_OK)
 	MACHINE_ESCAPE("unable to initialize the kernel's address space");

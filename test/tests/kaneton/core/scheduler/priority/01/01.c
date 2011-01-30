@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../kaneton/core/scheduler/priority/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [thu jan 27 22:32:32 2011]
+ * updated       julien quintard   [sun jan 30 21:18:51 2011]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- externs ---------------------------------------------------------
  */
 
-extern m_kernel*		_kernel;
+extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -63,7 +63,7 @@ void			test_core_scheduler_priority_01_content(void)
    * thread 1
    */
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY_HIGH,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
@@ -78,7 +78,7 @@ void			test_core_scheduler_priority_01_content(void)
    * thread 2
    */
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
@@ -143,7 +143,7 @@ void			test_core_scheduler_priority_01(void)
   i_thread		thread;
   i_cpu			cpu;
 
-  if (thread_reserve(_kernel->task,
+  if (thread_reserve(_kernel.task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,

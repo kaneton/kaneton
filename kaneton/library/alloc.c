@@ -68,7 +68,7 @@ t_alloc			_alloc;
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -210,7 +210,7 @@ void*			malloc(size_t				size)
 
 	  stucked = 1;
 
-	  assert(map_reserve(_kernel->as,
+	  assert(map_reserve(_kernel.as,
 			     MAP_OPTION_SYSTEM,
 			     pagesz,
 			     PERMISSION_READ | PERMISSION_WRITE,
@@ -220,7 +220,7 @@ void*			malloc(size_t				size)
 
 	  if (_alloc.reserve == 0)
 	    {
-	      assert(map_reserve(_kernel->as,
+	      assert(map_reserve(_kernel.as,
 				 MAP_OPTION_SYSTEM,
 				 ___kaneton$pagesz,
 				 PERMISSION_READ | PERMISSION_WRITE,
@@ -405,7 +405,7 @@ void			free(void*				ptr)
     {
       area->prev_area->next_area = NULL;
 
-      if (map_release(_kernel->as, (t_vaddr)area) != ERROR_OK)
+      if (map_release(_kernel.as, (t_vaddr)area) != ERROR_OK)
 	module_call(console, print,
 		    "warning: unable to release area.\n");
     }
@@ -598,7 +598,7 @@ void*			realloc(void* 				ptr,
 
 void			alloc_setup(void)
 {
-  assert(map_reserve(_kernel->as,
+  assert(map_reserve(_kernel.as,
 		     MAP_OPTION_SYSTEM,
 		     ___kaneton$pagesz,
 		     PERMISSION_READ | PERMISSION_WRITE,

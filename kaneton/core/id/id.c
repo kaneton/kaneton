@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/id/id.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri jan 14 20:06:30 2011]
+ * updated       julien quintard   [sun jan 30 20:06:28 2011]
  */
 
 /*
@@ -46,7 +46,7 @@
  * the identifier manager structure.
  */
 
-m_id*			_id = NULL;
+m_id			_id;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -182,7 +182,7 @@ t_error			id_destroy(o_id*			object)
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize the manager's structure.
+ * 2) initialize the manager's structure.
  */
 
 t_error			id_initialize(void)
@@ -198,11 +198,7 @@ t_error			id_initialize(void)
    * 2)
    */
 
-  if ((_id = malloc(sizeof (m_id))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the identifier mananger's "
-		"structure");
-
-  memset(_id, 0x0, sizeof (m_id));
+  memset(&_id, 0x0, sizeof (m_id));
 
   CORE_LEAVE();
 }
@@ -211,7 +207,6 @@ t_error			id_initialize(void)
  * this function cleans the identifier manager.
  *
  * 1) display a message.
- * 2) free the mananger structure's memory.
  */
 
 t_error			id_clean(void)
@@ -222,12 +217,6 @@ t_error			id_clean(void)
 
   module_call(console, message,
 	      '+', "cleaning the identifier manager\n");
-
-  /*
-   * 2)
-   */
-
-  free(_id);
 
   CORE_LEAVE();
 }

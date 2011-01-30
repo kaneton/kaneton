@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [wed jan 26 20:55:19 2011]
+ * updated       julien quintard   [sun jan 30 21:02:15 2011]
  */
 
 /*
@@ -52,7 +52,7 @@ extern s_init*		_init;
  * the kernel manager.
  */
 
-m_kernel*		_kernel = NULL;
+m_kernel		_kernel;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -107,9 +107,9 @@ t_error			kernel_dump(void)
 	      '#',
 	      "  core: cell(%qd) task(%qd) as(%qd) thread(%qd) "
 	      "node(%qd:%qd) endian(%s) wordsz(%u) framesz(%u) pagesz(%u)\n",
-	      _kernel->cell,
-	      _kernel->task, _kernel->as, _kernel->thread,
-	      _kernel->node.cell, _kernel->node.task,
+	      _kernel.cell,
+	      _kernel.task, _kernel.as, _kernel.thread,
+	      _kernel.node.cell, _kernel.node.task,
 	      endian,
 	      ___kaneton$wordsz, ___kaneton$framesz, ___kaneton$pagesz);
 
@@ -138,8 +138,8 @@ t_error			kernel_dump(void)
  *
  * steps:
  *
- * 1) allocate and initialize the kernel structure but also set the
- *    kernel identifiers---task, as and thread---as being not initialised.
+ * 1) initialize the kernel structure but also set the kernel
+ *    identifiers---task, as and thread---as being not initialised.
  * 2) initialize the identifier manager.
  * 3) initialize the set manager.
  * 4) initialize the address space manager.
@@ -176,15 +176,11 @@ t_error			kernel_initialize(void)
    * 1)
    */
 
-  if ((_kernel = malloc(sizeof (m_kernel))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the kernel "
-		"manager structure");
+  memset(&_kernel, 0x0, sizeof (m_kernel));
 
-  memset(_kernel, 0x0, sizeof (m_kernel));
-
-  _kernel->task = ID_UNUSED;
-  _kernel->as = ID_UNUSED;
-  _kernel->thread = ID_UNUSED;
+  _kernel.task = ID_UNUSED;
+  _kernel.as = ID_UNUSED;
+  _kernel.thread = ID_UNUSED;
 
   /*
    * 2)
@@ -301,10 +297,10 @@ t_error			kernel_initialize(void)
 
   random_seed();
 
-  _kernel->cell = random_generate();
+  _kernel.cell = random_generate();
 
-  _kernel->node.cell = _kernel->cell;
-  _kernel->node.task = _kernel->task;
+  _kernel.node.cell = _kernel.cell;
+  _kernel.node.task = _kernel.task;
 
   /*
    * 18)
@@ -352,7 +348,6 @@ t_error			kernel_initialize(void)
  * 15) clean the address space manager.
  * 16) clean the set manager.
  * 17) clean the identifier manager.
- * 18) free the kernel manager's structure.
  */
 
 t_error			kernel_clean(void)
@@ -475,12 +470,6 @@ t_error			kernel_clean(void)
 
   if (id_clean() != ERROR_OK)
     CORE_ESCAPE("unable to clean the identifier manager");
-
-  /*
-   * 18)
-   */
-
-  free(_kernel);
 
   CORE_LEAVE();
 }

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [sun jan 30 12:26:08 2011]
+ * updated       julien quintard   [sun jan 30 20:44:20 2011]
  */
 
 /*
@@ -59,7 +59,7 @@
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * the architecture manager.
@@ -212,14 +212,14 @@ t_error			architecture_handler_setup(void)
    * 1)
    */
 
-  if (segment_reserve(_kernel->as,
+  if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_SYSTEM,
 		      &segment) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve a segment");
 
-  if (region_reserve(_kernel->as,
+  if (region_reserve(_kernel.as,
 		     segment,
 		     0x0,
 		     REGION_OPTION_NONE,
@@ -228,7 +228,7 @@ t_error			architecture_handler_setup(void)
 		     &region) != ERROR_OK)
     MACHINE_ESCAPE("unable to reserve a region for the segment");
 
-  if (region_get(_kernel->as, region, &o) != ERROR_OK)
+  if (region_get(_kernel.as, region, &o) != ERROR_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*

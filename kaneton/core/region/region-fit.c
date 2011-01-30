@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/region/region-fit.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [mon jan 17 19:12:41 2011]
+ * updated       julien quintard   [sun jan 30 20:11:16 2011]
  */
 
 /*
@@ -64,7 +64,7 @@ machine_include(region);
  * the region manager structure.
  */
 
-m_region*		_region = NULL;
+m_region		_region;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -172,8 +172,8 @@ t_error			region_dump(void)
 
   module_call(console, message,
 	      '#', "  core: base(0x%08x) size(0x%08x)\n",
-	      _region->base,
-	      _region->size);
+	      _region.base,
+	      _region.size);
 
   /*
    * 2)
@@ -247,11 +247,11 @@ t_error			region_fit_first(i_as			asid,
 
   if (set_head(as->regions, &i) != ERROR_TRUE)
     {
-      if ((_region->size - _region->base) < size)
+      if ((_region.size - _region.base) < size)
 	CORE_ESCAPE("there is not enough memory to satisfy the reservation "
 		    "request");
 
-      *address = _region->base;
+      *address = _region.base;
 
       CORE_LEAVE();
     }
@@ -267,9 +267,9 @@ t_error			region_fit_first(i_as			asid,
    * 4)
    */
 
-  if ((head->address - _region->base) >= size)
+  if ((head->address - _region.base) >= size)
     {
-      *address = _region->base;
+      *address = _region.base;
 
       CORE_LEAVE();
     }
@@ -326,7 +326,7 @@ t_error			region_fit_first(i_as			asid,
    * 7)
    */
 
-  if (((_region->base + _region->size) -
+  if (((_region.base + _region.size) -
        (tail->address + tail->size)) >= size)
     {
       *address = tail->address + tail->size;
@@ -743,7 +743,7 @@ t_error			region_resize(i_as			as,
 	   * #1)
 	   */
 
-	  if ((reg->address + size) >= (_region->base + _region->size))
+	  if ((reg->address + size) >= (_region.base + _region.size))
 	    CORE_ESCAPE("unable to resize the region since it would reach the "
 			"end of the available region space");
 	}
@@ -1021,8 +1021,8 @@ t_error			region_reserve(i_as			asid,
        * a)
        */
 
-      if ((address < _region->base) ||
-	  (address >= (_region->base + _region->size)))
+      if ((address < _region.base) ||
+	  (address >= (_region.base + _region.size)))
 	CORE_ESCAPE("the provided address is either too low or too high");
 
       /*
@@ -1361,7 +1361,7 @@ t_error			region_get(i_as				asid,
  *
  * 0) verify the arguments.
  * 1) display a message.
- * 2) allocate and initialize the region manager's structure.
+ * 2) initialize the region manager's structure.
  * 3) set the base and size attributes. note that the base address is
  *    incremented by the page size. this is done in order to render the
  *    first page unuseable. this has the impact to produce a page fault
@@ -1402,18 +1402,14 @@ t_error			region_initialize(t_vaddr		base,
    * 2)
    */
 
-  if ((_region = malloc(sizeof (m_region))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the region manager's "
-		"structure");
-
-  memset(_region, 0x0, sizeof (m_region));
+  memset(&_region, 0x0, sizeof (m_region));
 
   /*
    * 3)
    */
 
-  _region->base = base + ___kaneton$pagesz;
-  _region->size = size - ___kaneton$pagesz;
+  _region.base = base + ___kaneton$pagesz;
+  _region.size = size - ___kaneton$pagesz;
 
   /*
    * 4)
@@ -1436,7 +1432,6 @@ t_error			region_initialize(t_vaddr		base,
  *
  * 1) display a message.
  * 2) call the machine.
- * 3) free the manager's structure.
  *
  *						     [endblock::clean::comment]
  */
@@ -1458,12 +1453,6 @@ t_error			region_clean(void)
 
   if (machine_call(region, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
-
-  /*
-   * 3)
-   */
-
-  free(_region);
 
   /*							   [endblock::clean] */
 

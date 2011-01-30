@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       julien quintard   [fri jan 14 20:08:33 2011]
+ * updated       julien quintard   [sun jan 30 20:52:43 2011]
  */
 
 /*
@@ -55,7 +55,7 @@ machine_include(as);
  * the kernel manager.
  */
 
-extern m_kernel*	_kernel;
+extern m_kernel		_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -65,7 +65,7 @@ extern m_kernel*	_kernel;
  * the address space manager.
  */
 
-m_as*			_as = NULL;
+m_as			_as;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -208,17 +208,17 @@ t_error			as_dump(void)
 
   module_call(console, message,
 	      '#', "address space manager: ass(%qd)\n",
-	      _as->ass);
+	      _as.ass);
 
   module_call(console, message,
 	      '#', "  core: ass(%qd)\n",
-	      _as->ass);
+	      _as.ass);
 
   /*
    * 2)
    */
 
-  if (id_show(&_as->id,
+  if (id_show(&_as.id,
 	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
@@ -226,7 +226,7 @@ t_error			as_dump(void)
    * 3)
    */
 
-  if (set_size(_as->ass, &size) != ERROR_OK)
+  if (set_size(_as.ass, &size) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the size of the set");
 
   /*
@@ -235,12 +235,12 @@ t_error			as_dump(void)
 
   module_call(console, message,
 	      '#', "    address spaces: id(%qd) size(%qd)\n",
-	      _as->ass,
+	      _as.ass,
 	      size);
 
-  set_foreach(SET_OPTION_FORWARD, _as->ass, &i, st)
+  set_foreach(SET_OPTION_FORWARD, _as.ass, &i, st)
     {
-      if (set_object(_as->ass, i, (void**)&o) != ERROR_OK)
+      if (set_object(_as.ass, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the address space object");
 
       if (as_show(o->id,
@@ -1042,7 +1042,7 @@ t_error			as_reserve(i_task			task,
    * 1)
    */
 
-  if (id_reserve(&_as->id, id) != ERROR_OK)
+  if (id_reserve(&_as.id, id) != ERROR_OK)
     CORE_ESCAPE("unable to reserve an identifier");
 
   /*
@@ -1100,7 +1100,7 @@ t_error			as_reserve(i_task			task,
    * 8)
    */
 
-  if (set_add(_as->ass, &o) != ERROR_OK)
+  if (set_add(_as.ass, &o) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of address spaces");
 
   /*
@@ -1160,7 +1160,7 @@ t_error			as_release(i_as				id)
    * 4)
    */
 
-  if (id_release(&_as->id, o->id) != ERROR_OK)
+  if (id_release(&_as.id, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to release the identifier");
 
   /*
@@ -1187,7 +1187,7 @@ t_error			as_release(i_as				id)
    * 7)
    */
 
-  if (set_remove(_as->ass, o->id) != ERROR_OK)
+  if (set_remove(_as.ass, o->id) != ERROR_OK)
     CORE_ESCAPE("unable to remove the object from the set of address spaces");
 
   CORE_LEAVE();
@@ -1199,7 +1199,7 @@ t_error			as_release(i_as				id)
 
 t_error			as_exist(i_as				id)
 {
-  if (set_exist(_as->ass, id) != ERROR_TRUE)
+  if (set_exist(_as.ass, id) != ERROR_TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -1229,7 +1229,7 @@ t_error			as_get(i_as				id,
    * 1)
    */
 
-  if (set_get(_as->ass, id, (void**)object) != ERROR_OK)
+  if (set_get(_as.ass, id, (void**)object) != ERROR_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of "
 		"address spaces");
 
@@ -1242,7 +1242,7 @@ t_error			as_get(i_as				id,
  * steps:
  *
  * 1) display a message.
- * 2) allocate and initialize the address space manager's structure.
+ * 2) initialize the address space manager's structure.
  * 3) initialize the identifier object in order to be able to generate
  *    the address spaces' identifier.
  * 4) reserve the set which will contain the future address spaces.
@@ -1262,17 +1262,13 @@ t_error			as_initialize(void)
    * 2)
    */
 
-  if ((_as = malloc(sizeof (m_as))) == NULL)
-    CORE_ESCAPE("unable to allocate memory for the address space "
-		"manager's structure");
-
-  memset(_as, 0x0, sizeof (m_as));
+  memset(&_as, 0x0, sizeof (m_as));
 
   /*
    * 3)
    */
 
-  if (id_build(&_as->id) != ERROR_OK)
+  if (id_build(&_as.id) != ERROR_OK)
     CORE_ESCAPE("unable to initialize the identifier object");
 
   /*
@@ -1282,7 +1278,7 @@ t_error			as_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (o_as),
-		  &_as->ass) != ERROR_OK)
+		  &_as.ass) != ERROR_OK)
     CORE_ESCAPE("unable to reserve the set of address spaces");
 
   /*
@@ -1306,7 +1302,6 @@ t_error			as_initialize(void)
  *    never released in order to keep the kernel running.
  * 4) release the set of address spaces.
  * 5) destroy the identifier object.
- * 6) frees the address space manager structure's memory.
  */
 
 t_error			as_clean(void)
@@ -1332,15 +1327,15 @@ t_error			as_clean(void)
    * 3)
    */
 
-  while (set_head(_as->ass, &i) == ERROR_TRUE)
+  while (set_head(_as.ass, &i) == ERROR_TRUE)
     {
-      if (set_object(_as->ass, i, (void**)&o) != ERROR_OK)
+      if (set_object(_as.ass, i, (void**)&o) != ERROR_OK)
 	CORE_ESCAPE("unable to retrieve the object from the set of "
 		    "address spaces");
 
-      if (o->id == _kernel->as)
+      if (o->id == _kernel.as)
 	{
-	  if (set_remove(_as->ass, o->id) != ERROR_OK)
+	  if (set_remove(_as.ass, o->id) != ERROR_OK)
 	    CORE_ESCAPE("unable to remove the kernel address space identifier "
 			"from the set of address spaces");
 	}
@@ -1355,21 +1350,15 @@ t_error			as_clean(void)
    * 4)
    */
 
-  if (set_release(_as->ass) != ERROR_OK)
+  if (set_release(_as.ass) != ERROR_OK)
     CORE_ESCAPE("unable to release the set of address spaces");
 
   /*
    * 5)
    */
 
-  if (id_destroy(&_as->id) != ERROR_OK)
+  if (id_destroy(&_as.id) != ERROR_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
-
-  /*
-   * 6)
-   */
-
-  free(_as);
 
   CORE_LEAVE();
 }
