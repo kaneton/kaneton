@@ -3,12 +3,13 @@
 #
 
 - chercher les XXX restants et en faire des TODO
-- kernel.c: reorganise
-- peut etre essayer de mettre event plus tot dans l'init kernel
 
 #
 # ---------- assignments ------------------------------------------------------
 #
+
+- virer les block/endblock
+- virer interface?
 
 - segmentation (GDT) dans k0
 - IDT dans k1
@@ -18,15 +19,22 @@
   exception occurs, dumper la page directory/table lors d'un page fault etc.
 - donner des references de chapitres importants dans doc IA32
 
-#
-# ---------- core -------------------------------------------------------------
-#
+- comment on va tester k1 si c'est juste pour catcher les exceptions?
+ -> faudra quand meme qu'ils sauvent les registres (pusha) puis lorsque
+    c'est fini, popa puis iret
+ -> comme ca on gere tous les events en ring0 donc ca inclue le timer
+ => tester les tests de k1 en faisant juste pusha/popa dans save/restore
 
-- inutile d'avoir des pointeurs pour les managers!
+- filer un test d'exemple pour chaque tranche pour qu'ils sachent a quoi
+  s'attendre.
 
 #
 # ---------- test -------------------------------------------------------------
 #
+
+- faire plutot qu'un script evaluate, un script qui extrait les snapshots
+  et les range dans history
+- puis, un script qui evalue les tarballs dans history
 
 - systeme de test en non-bloquant: list retourne la liste du serveur, display
   aussi et test retourne direct avec un email envoye quand termine.
@@ -34,6 +42,8 @@
   en cours, de quel user etc.
 - mettre le timeout dans le manifest, en fonction de l'environment
     { xen: XXX, qemu: XXX }
+
+- finir d'ecrire SettingUp dans le Wiki sur le testing
 
 #
 # ---------- export -----------------------------------------------------------

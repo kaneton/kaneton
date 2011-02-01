@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun jan 30 21:02:15 2011]
+ * updated       julien quintard   [mon jan 31 14:20:40 2011]
  */
 
 /*
@@ -146,11 +146,10 @@ t_error			kernel_dump(void)
  * 5) initialize the segment manager.
  * 6) initialize the region manager.
  * 7) initialize the map manager
- * 8) initialize the I/O manager.
- * 9) initialize the CPU manager.
- * 10) initialize the task manager.
- * 11) initialize the thread manager.
- * 12) now that _everything_ related to memory manager is ready, set up
+ * 8) initialize the CPU manager.
+ * 9) initialize the task manager.
+ * 10) initialize the thread manager.
+ * 11) now that _everything_ related to memory manager is ready, set up
  *     the fine grain memory allocator in order to work with the kernel
  *     managers rather than the pre-allocated memory area provided by
  *     the boot loader.
@@ -158,9 +157,10 @@ t_error			kernel_dump(void)
  *     its reponsability to reserve the kernel task, thread and address
  *     space and then to inject the init's segments and regions in the
  *     kernel's address space.
- * 13) initialize the event manager.
- * 14) initialize the timer manager.
- * 15) initialize the clock manager.
+ * 12) initialize the event manager.
+ * 13) initialize the timer manager.
+ * 14) initialize the clock manager.
+ * 15) initialize the I/O manager.
  * 16) initialize the scheduler manager.
  * 17) generate the random kaneton cell identifier and sets up the
  *     kaneton node identifier.
@@ -169,7 +169,6 @@ t_error			kernel_dump(void)
  * 20) call the machine.
  */
 
-// XXX re-organiser
 t_error			kernel_initialize(void)
 {
   /*
@@ -230,7 +229,6 @@ t_error			kernel_initialize(void)
    * 8)
    */
 
-  // XXX
   if (cpu_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the CPU manager");
 
@@ -238,55 +236,53 @@ t_error			kernel_initialize(void)
    * 9)
    */
 
-
-  /*
-   * 10)
-   */
-
   if (task_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the task manager");
 
   /*
-   * 11)
+   * 10)
    */
 
   if (thread_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the thread manager");
 
   /*
-   * 12)
+   * 11)
    */
 
   alloc_setup();
 
   /*
-   * 13)
+   * 12)
    */
 
   if (event_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the event manager");
 
   /*
-   * 14)
+   * 13)
    */
 
   if (timer_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the timer manager");
 
   /*
-   * 15)
+   * 14)
    */
 
   if (clock_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the clock manager");
 
   /*
-   * 16)
+   * 15)
    */
 
-  // XXX
   if (io_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the I/O manager");
+
+  /*
+   * 16)
+   */
 
   if (scheduler_initialize() != ERROR_OK)
     CORE_ESCAPE("unable to initialize the scheduler manager");
@@ -335,13 +331,13 @@ t_error			kernel_initialize(void)
  * 2) clean the message manager.
  * 3) clean the capability manager.
  * 4) clean the scheduler manager.
- * 5) clean the clock manager.
- * 6) clean the timer manager.
- * 7) clean the event manager.
- * 8) clean the thread manager.
- * 9) clean the task manager.
- * 10) clean the CPU manager.
- * 11) clean the I/O manager.
+ * 5) clean the I/O manager.
+ * 6) clean the clock manager.
+ * 7) clean the timer manager.
+ * 8) clean the event manager.
+ * 9) clean the thread manager.
+ * 10) clean the task manager.
+ * 11) clean the CPU manager.
  * 12) clean the map manager.
  * 13) clean the region manager.
  * 14) clean the segment manager.
@@ -384,50 +380,50 @@ t_error			kernel_clean(void)
    * 5)
    */
 
+  if (io_clean() != ERROR_OK)
+    CORE_ESCAPE("unable to clean the I/O manager");
+
+  /*
+   * 6)
+   */
+
   if (clock_clean() != ERROR_OK)
     CORE_ESCAPE("unable to clean the clock manager");
 
   /*
-   * 6)
+   * 7)
    */
 
   if (timer_clean() != ERROR_OK)
     CORE_ESCAPE("unable to clean the timer manager");
 
   /*
-   * 7)
+   * 8)
    */
 
   if (event_clean() != ERROR_OK)
     CORE_ESCAPE("unable to clean the event manager");
 
   /*
-   * 8)
+   * 9)
    */
 
   if (thread_clean() != ERROR_OK)
     CORE_ESCAPE("unable to clean the thread manager");
 
   /*
-   * 9)
+   * 10)
    */
 
   if (task_clean() != ERROR_OK)
     CORE_ESCAPE("unable to clean the task manager");
 
   /*
-   * 10)
+   * 11)
    */
 
   if (cpu_clean() != ERROR_OK)
     CORE_ESCAPE("unable to clean the CPU manager");
-
-  /*
-   * 11)
-   */
-
-  if (io_clean() != ERROR_OK)
-    CORE_ESCAPE("unable to clean the I/O manager");
 
   /*
    * 12)

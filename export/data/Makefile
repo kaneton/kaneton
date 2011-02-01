@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/mycure/kaneton.STABLE/export/output/kaneton/Makefile
+# file          /home/mycure/kaneton/export/data/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [fri oct 22 13:46:39 2010]
+# updated       julien quintard   [mon jan 31 14:27:40 2011]
 #
 
 #
@@ -147,7 +147,7 @@ info:
 	$(call env_print,,,)
 
 	$(call env_print,"--- ",blue,$(ENV_OPTION_NO_NEWLINE))
-	$(call env_print,http://www.kaneton.org,,)
+	$(call env_print,http://kaneton.opaak.org,,)
 
 	$(call env_print,,,)
 

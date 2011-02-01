@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       julien quintard   [sun jan 30 20:52:43 2011]
+ * updated       julien quintard   [mon jan 31 13:58:09 2011]
  */
 
 /*

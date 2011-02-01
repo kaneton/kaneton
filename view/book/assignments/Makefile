@@ -31,15 +31,15 @@ PAPER			:=		assignments
 
 SOURCES			:=		introduction.tex		\
 					requirements.tex		\
-					documentation.tex		\
 					support.tex			\
 					k0.tex				\
 					snapshot.tex			\
 					k1.tex				\
 					k2.tex				\
 					k3.tex				\
+					k4.tex				\
 					further.tex			\
-					faq.tex
+					licences.tex
 
 #
 # ---------- rules ------------------------------------------------------------

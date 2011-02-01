@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       julien quintard   [sun jan 30 20:47:50 2011]
+ * updated       julien quintard   [mon jan 31 13:56:51 2011]
  */
 
 /*

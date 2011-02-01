@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/book/assignments/future/k0.tex
+% file          /home/mycure/kaneton/view/book/assignments/k0.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [sat nov 29 16:07:29 2008]
+% updated       julien quintard   [tue feb  1 21:39:34 2011]
 %
 
 %
@@ -18,7 +18,51 @@
 \chapter{k0}
 \label{chapter:k0}
 
-\name{k0} is an introduction to low-level programming.
+\name{k0} is an introduction to low-level programming through the development
+of a simplistic boot loader. Note that this stage is not critical because
+the following stages will not rely on this boot loader as \name{GRUB - GRand
+Unified Bootloader} will be used instead.
+
+Through this stage, the student will manipulate several concepts including:
+
+\begin{enumerate}
+  \item
+    \term{Assembly Language}
+
+    The boot loader will be entirely developed in the Intel \name{x86}
+    assembly language.
+  \item
+    \term{\name{BIOS - Basic Input/Output System} Interrupts}
+
+    The \name{BIOS} provides basic functionalities for reading the floppy,
+    displaying text to the screen \etc{} These functionalities will be used
+    in the first exercices to get used to the low-level development
+    environment.
+  \item
+    \term{Processor Modes}
+
+    The \name{Intel} microprocessor can run in different modes depending on
+    the word length---16 or 32 bits---, the protection capabilities \etc{}
+
+    \-
+
+    While the simplest mode will be used at first, enabling students to
+    use the \name{BIOS}' features, a more evolved mode will finally be used
+    as required before handing the execution to the kernel \ie{} the
+    \name{Protected Mode}.
+  \item
+    \term{\name{ELF - Executable and Linking Format}}
+
+    The boot loader, written in assembly, is packed in a raw format so that
+    to be detected as a valid boot loader by the computer's \name{BIOS}.
+
+    \-
+
+    However, the kernel, probably written in \name{C} or \name{C++}, will
+    be packed in an advanced format referred to as \name{ELF}. Although this
+    format has numerous capabilities, the boot loader will basically
+    find the entry point and jump on it.
+\end{enumerate}
 
 \newpage
 
@@ -26,463 +70,613 @@
 % ---------- text -------------------------------------------------------------
 %
 
-\section{Abstract}
+%
+% submission
+%
 
-k0 is an introduction to low level programming. During this first step of
-the kaneton project, you will deal with:
+\section{Submission}
 
-\begin{enumerate}
-  \item
-    {\bf Intel x86}
+Every student is expected to submit a snapshot containing the following
+structure. Note that the evaluation system is automatic. Therefore, any
+snapshot which does not conform with this structure will obviously be assigned
+the grade of zero:
 
-    x86 assembly and architecture
-  \item
-    {\bf BIOS interrupts}
-
-    How to use BIOS services
-  \item
-    {\bf ELF binaries}
-
-    Structure and execution of an ELF file
-\end{enumerate}
-
-The final goal is to write a complete ELF bootloader, which could be used to
-load a kernel.
-
-\clearpage
-
-\section{Tarball}
-
-What we expect is a .tar.bz2 tarball which contains the following structure :
 \begin{verbatim}
-        ex1/ex1.S
-        ex2/ex2.S
-        ex3/ex3.S
-        ex4/ex4.S
-        ex5/ex5.S
-        ex6/ex6.S
+  ex1/
+    ex1.S
+  ex2/
+    ex2.S
+  ex3/
+    ex3.S
+  ex4/
+    ex4.S
+  ex5/
+    ex5.S
+  ex6/
+    ex6.S
 \end{verbatim}
 
-The tarball should contain these files and nothing more. Please be careful with
-the extension of the source files. the S is uppercase !
+The submitted snapshot should therefore contain nothing more than these
+six directories and files. Please be careful with the extension of the source
+files; the 'S' is uppercase!
 
-Each file should contain the labels (functions) that are expected, and should
-end with the bootsector signature.
+The \name{k0} stage is composed of several exercises. For ever exercise,
+the student is asked to write function in assembly language taking arguments
+in some registers and providing output in others. Note that no register should
+be modified unless explicitly stated.
 
-Here is a sample of what a file should look like :
+Every exercise is attached to a specific file, \code{ex2.S} for instance.
+Such a file must therefore contain the labels of the functions that the student
+is supposed to provide.
+
+In addition, every file should end with the bootsector signature, making the
+functions of the file useable within a boot loader. This signature, composed
+of the bytes \code{0xaa55} must be located at the $511$th and $512$th byte
+of the first boot sector. Thus, the boot sector must be filled with something
+until the $511$th byte is reached, at which position the signature must be
+put.
+
+The example below illustrates such an exercise file, containing two
+labels and the bootsector signature:
 
 \begin{verbatim}
-.code16
+  .code16
 
-requested_function_1:
-	mov $0x42, %ah
-	mov %bl, %bl
-local_label:
-	int $0x10
-	xor %dh, %dh
-        jmp local_label
-	ret
+  requested_function_1:
+    mov $0x42, %ah
+    mov %bl, %bl
+
+  local_label:
+    int $0x10
+    xor %dh, %dh
+    jmp local_label
+    ret
 
 signature:
-	.org 510, 0
-	.short 0xaa55
-
+  .org 510, 0
+  .short 0xaa55
 \end{verbatim}
 
-\section{Testing}
+Some exercises will require students to output text on the screen. Bear in
+mind that exercises are evaluated automatically. Therefore, color is not
+taken into account. Besides, students should never try to clear the screen
+of the text printed by the \name{BIOS} or the emulator. By doing so, the
+evaluation system would catch the sequence and consider it as text being
+printed by your functions.
 
-You will need to test your own code. Since you are using gcc to build, your
-source file is going through the CPP preprocessor. This means you can use
-the \#include directives in your files.
+Finally, as explained next in this document, students will need to test
+their functions in order to make sure they behave properly. Students must
+remember to remove these tests from the submitted snapshot. Thus, your
+source files should never include a label \code{\_start} or any label starting
+with \code{\_\_}. Note however that the bootsector signatures must remain.
 
-We suggest you to write separate test files which include your source file.
-For example, to write a test file for exercise 1, you can write this :
+%
+% development
+%
+
+\section{Development}
+
+Students are advised to use \name{GCC - GNU Compiler Collection} to assemble
+their source files and \name{GNU LD} to link them into binary files. Note
+that students must therefore follow the \name{GAS -GNU Assembler} syntax.
+
+The following example illustrates this two-step process:
 
 \begin{verbatim}
+  $> gcc -c bootsect.S -o bootsect.o
+  $> ld bootsect.o -o bootsect ---oformat binary ---Ttext 0x7c00
+\end{verbatim}
 
+In order to execute your code, students should use the \name{QEMU} emulator,
+as follows:
+
+\begin{verbatim}
+  $> qemu -fda bootsect
+\end{verbatim}
+
+Let us recall that \name{x86} microprocessors start exeucting in 16-bit. A
+directive must therefore be used to specify the assembler that the code
+must be generated in 16-bit. Note that students will later be asked to
+switch to a 32-bit mode referred to as the \name{Protected Mode}. As such,
+another directive will have to be used, hence mixing both 16- and 32-bit
+code.
+
+%
+% resources
+%
+
+\section{Resources}
+
+Students will find additional resources related to the \name{k0} stage
+on the \name{Wiki} at \location{http://wiki.opaak.org}.
+
+%
+% test
+%
+
+\section{Test}
+
+Students will need to test the functions they implement. In order to keep
+the test environment from the exercise files, it is advise to rely on
+the \name{CPP - C Pre-Processor} for including the exercises' functions
+within the test file.
+
+The following example illustrates a test file which includes the first
+exercise's file:
+
+\begin{verbatim}
 .globl _start
+
 _start:
-        mov 0x42, %al
-        call print_char
+  mov 0x42, %al
+  call print_char
+
 loop:
-        jmp loop
+  jmp loop
 
 #include "ex1.S"
-
 \end{verbatim}
 
-This way, your code file will never contain test code, so you don't risk giving
-us your test code in your source file.
-
-
-Your code will be tested automatically by our test suite. We are going to link
-your code with our test code. The whole thing has to fit in 512 bytes once assembled. This means that you have to write your code efficiently, to prevent generating too much binary code, which would make it impossible for it to fit together with our test code in 512 bytes.
-To prevent that, each exercise indicated the maximum size our test code will take, in bytes.
-For each exercise, you have to run a test to make sure your code will fit with our test code during the tests.
-To do that, you need to make a simple test file which just contains, for exercise 1, for instance :
-
-\begin{verbatim}
-
-.space 175,0
-
-#include "ex1.S"
-
-\end{verbatim}
-
-The value 175 has to be replaced by the value indicated for each exercice.
-
-Then you need to try to run gcc on that file. If gcc returns without error, it means that your code is small enough to be linked with our test code, otherwise, you will get this kind of error message :
-
-\begin{verbatim}
-ex1.S: Assembler messages:
-ex1.S:12: Error: attempt to move .org backwards
-\end{verbatim}
-
-This means you have to optimize your code until it fits, otherwise you will fail some tests on this exercise.
+This way, the test code is always kept apart from the exercises so that
+the risk for students to submit their tests is limited.
 
 %
-% String display
+% evaluation
 %
 
-\newpage
+\section{Evaluation}
+
+The student's code will be evaluated by testing every function automatically.
+
+The evaluation process will therefore go as follows. First, the student
+exercise file will be linked with an evaluation file containing the entry
+point. This main function will then triggers some function calls and verify
+that these functions behave according to the specifications define in this
+document.
+
+Let us recall that the whole binary---composed of the student exercise file
+and the evaluation function---must fit in a bootsector \ie{} $512$ bytes.
+
+Therefore, for every exercise, the size of the evaluation code is given
+as an indication. As such, students should make sure the size of their code
+does not exceed the remaining capacity of a bootsector.
+
+In order to make sure a student's exercise does not exceed this capacity,
+the following directive can be used:
+
+\begin{verbatim}
+  .space 42,0
+
+  #include "ex1.S"
+\end{verbatim}
+
+Note that the value $42$ will have to be replaced by the size of the
+evaluation code given in each exercise.
+
+If the assembler refuses to generate a binary given a test file containing
+this directive, this would mean that the exercise code takes too much space,
+in which case the student would have to optimise it. The error the assembler
+returns in such scenarios is similar to the one below:
+
+\begin{verbatim}
+  ex1.S: Assembler messages:
+  ex1.S:12: Error: attempt to move .org backwards
+\end{verbatim}
+
+%
+% exercises
+%
 
 \section{Exercises}
 
-\subsection{String display}
+This section discusses the various exercises contained in this stage.
 
-\subsubsection*{Overview}
-In this first exercise you will learn how to use Video BIOS Services to
-print strings on the screen.
+% console
+\subsection{Console}
 
-\subsubsection*{Assignments}
-The work is divided up into several steps. First, try to print a char and
-to move the cursor on the screen and then, use those functions to display
-a string.
+Through this exercise the student will learn how to use \name{BIOS} services
+in order to print strings to the console.
 
-\subsubsection*{File}
-\begin{itemize}
-  \item \location{ex1/ex1.S}
-\end{itemize}
+\begin{center}
+  \begin{tabular}{|p{5cm}|p{5cm}|l}
+    \cline{1-2}
 
-\subsubsection*{Free space required}
-175 bytes
+    \centering{\textbf{File}} &
+    \centering{\textbf{Space}} &
+    \\
 
-\subsubsection*{Interface}
+    \cline{1-2}
+
+    \centering{\location{ex1/ex1.S}} &
+    \centering{$175$ bytes} &
+    \\
+
+    \cline{1-2}
+  \end{tabular}
+\end{center}
+
+This exercise is divided into several steps through the implementation
+of the following functions.
+
 \command{print\_char}
 {
-  Print the character which ASCII code is \argument{\%al} at current cursor
-  position.
+  This function prints the character whose \name{ASCII} code is given in
+  \argument{\%al}.
+
+  \-
+
+  Note that the character is displayed at current cursor's position.
 }
 
 \command{cursor\_set}
 {
-  Set cursor position at row \argument{\%dh} and column \argument{\%dl}.
+  This function set the cursor's position at row \argument{\%dh} and
+  column \argument{\%dl}.
 }
 
 \command{print\_string}
 {
-  Print the string pointed by \argument{\%si} at row \argument{\%dh} and
-  column \argument{\%dl}.
+  Finally, this function prints the string referred to by \argument{\%si} at
+  the position given by row \argument{\%dh} and column \argument{\%dl}.
 }
 
-%
-% Registers dump
-%
+% registers
+\subsection{Registers}
 
-\newpage
+In this exercise, students are invited to implement several functions
+well-known from \name{POSIX} programmers. These functions will finally be
+used to provide a function used to dump the state of the $16$-bit registers.
 
-\subsection{Registers dump}
+\begin{center}
+  \begin{tabular}{|p{5cm}|p{5cm}|l}
+    \cline{1-2}
 
-\subsubsection*{Overview}
-This exercice requires more assembly skill. Its only point is to make you
-practice.
+    \centering{\textbf{File}} &
+    \centering{\textbf{Space}} &
+    \\
 
-\subsubsection*{Assignments}
-You will code three famous libc-like functions and use them to program
-a function which will dump the values stored in some registers.
+    \cline{1-2}
 
-\subsubsection*{File}
-\begin{itemize}
-  \item \location{ex2/ex2.S}
-\end{itemize}
+    \centering{\location{ex2/ex2.S}} &
+    \centering{$155$ bytes} &
+    \\
 
-\subsubsection*{Free space required}
-155 bytes
+    \cline{1-2}
+  \end{tabular}
+\end{center}
 
-\subsubsection*{Interface}
 \command{malloc}
 {
-  This function allocates memory in a very simple way. Declare the heap and
-  declare a break value at its beginning.
-  Your malloc must allocate \argument{\%ax} bytes and return the address
-  in \argument{\%di}.
+  This function allocates \argument{\%ax} bytes of memory and returns the
+  address in \argument{\%di}.
+
+  \-
+
+  First, the base address of the head should be statically declare. Then,
+  whenever the function is called, the next available address is used and
+  incremented.
 }
 
 \command{itoa\_hex}
 {
-  Convert the integer in \argument{\%ax} into string using hexadecimal
-  representation and store in \argument{\%si} the address of the string.
-  The format must follow the regular expression 0x[0-9a-f]\{4\}.
-  42 must for instance be printed as 0x002a. You could use this function
-  to check your malloc, since the buffer where you will store the result
-  string has to be allocated somewhere in memory.
+  This function converts the integer in \argument{\%ax} into a string
+  using the hexadecimal representation, the address of the string being
+  returned in \argument{\%si}
+
+  \-
+
+  Note that the hexadecimal format must comply with the regular expression
+  \code{0x[0-9a-f]\{4\}}. For example, the number $42$ should be converted
+  to the string \code{'0x002a'}.
+
+  \-
+
+  This function could for instance be used by students to check the address
+  returned by the \code{malloc()} function.
 }
 
 \command{dump\_registers}
 {
-  Program a function which dumps the registers. You will start writing
-  at current cursor position, i.e. you \emph{must not} modify it. You have to
-  follow this output:
+  This function dumps the values of the registers \name{ax}, \name{bx},
+  \name{cx}, \name{dx}, \name{si} and \name{di}.
+
+  \-
+
+  This function must start displaying at the current cursor's position.
+  Besides, the evaluation system expects the function to come back to the
+  first line should the end of the screen be reached.
+
+  \-
+
+  In essence, the output should be exactly identical to the one below:
 }
-\begin{verbatim}
-        ax = 0x1234
-        bx = 0x0000
-        cx = 0xabcd
-        dx = 0x00ff
-        si = 0x1000
-        di = 0x0ff8
-\end{verbatim}
+  \begin{verbatim}
+    ax = 0x1234
+    bx = 0x0000
+    cx = 0xabcd
+    dx = 0x00ff
+    si = 0x1000
+    di = 0x0ff8
+  \end{verbatim}
 
-\command{}
-{
-  {\em Important:}
+% keyboard
+\subsection{Keyboard}
 
-  You have to handle the end of the screen. When you are on the last line of
-  the screen, going to the next line means going back to the first line.
-  You can know if the cursor is at the last line by reading its position
-  with the appropriate BIOS call.
+In this exercise, the aim is to implement a basic keyboard driver by
+relying on the \name{BIOS} services.
 
-  {\em Warning:}
+\begin{center}
+  \begin{tabular}{|p{5cm}|p{5cm}|l}
+    \cline{1-2}
 
-  Start output at current cursor position, even if it is not at the beginning
-  of a line. To simulate a line return, just move
-  the cursor to the first column of the line under. Even though it could be
-  ugly, don't move the cursor before printing and don't erase the characters
-  printed by \textbf{qemu}!
+    \centering{\textbf{File}} &
+    \centering{\textbf{Space}} &
+    \\
 
-  Also, Qemu will have already displayed some stuff before you run this
-  function. It means the output will probably be ugly (mixed up with qemu BIOS
-  messages), but it's important that you don't try to make it look nice, or
-  you won't pass the tests. So your output will be mixed up in qemu BIOS stuff
-  and will probably have some fancy colors too, but it's not a problem.
-}
+    \cline{1-2}
 
-%
-% Keyboard inputs
-%
+    \centering{\location{ex3/ex3.S}} &
+    \centering{$155$ bytes} &
+    \\
 
-\newpage
+    \cline{1-2}
+  \end{tabular}
+\end{center}
 
-\subsection{Keyboard inputs}
-
-\subsubsection*{Overview}
-Now that you are more familiar with BIOS services and assembly programming,
-you're going to write a basic keyboard driver.
-
-\subsubsection*{Assignments}
-First, you will program a function which gets keycodes from the keyboard
-buffer, and then, use this function to print entered text on the screen.
-
-\subsubsection*{File}
-\begin{itemize}
-  \item \location{ex3/ex3.S}
-\end{itemize}
-
-\subsubsection*{Free space required}
-155 bytes
-
-\subsubsection*{Interface}
 \command{get\_key}
 {
-  Get an ASCII code from the keyboard buffer and store it in \argument{\%al}.
+  This function returns in \argument{\%al} the \name{ASCII} code of the
+  key which has been pressed.
 }
 
 \command{getln}
 {
-  This function prints characters typed on the keyboard until the ENTER key
-  is pressed. Pressing ENTER will result in a newline being printed and the
-  function will return.
-  The modifiers like SHIFT, ALT, CTRL or caps lock won't be tested. Advanced
-  typing using the arrows, BACKSPACE and DELETE is not required either.
-  You don't have to handle the end of line special case, it won't be tested.
+  This function reads and prints every character received from the keyboard.
+  When \name{ENTER} is entered however, a \name{newline} is printed and
+  the function returns.
+
+  \-
+
+  Note that none of the modifiers such as \name{SHIFT}, \name{ALT},
+  \name{CTRL}, \name{CAPS LOCK} \etc{} will be tested. Likewise, the arrows,
+  \name{BACKSPACE} \etc{} will also be ignored.
+
+  \-
+
+  Finally, the end of line does not have to be handled as it will not
+  be tested.
 }
 
-%
-% Floppy drive
-%
+% floppy
+\subsection{Floppy}
 
-\newpage
+This interrupts introduced other \name{BIOS} interrupts enabling the $16-bit$
+programmer to control the floopy drive. The objective of this exercise is
+to read the second sector from the floppy drive in order to checker
+whether it is a valid bootsector.
 
-\subsection{Floppy drive}
+Note that the second sector is considered because the first has already
+been loaded into memory. This technique is used by boot loaders, such as
+\name{GRUB}, to provide \name{chain loading}.
 
-\subsubsection*{Overview}
-During this exercise you are going to work with floppy drives using BIOS
-interrupts. The final goal is to load the second sector from the floppy drive
-in order to check whether it's a bootsector or not. In this exercise, we load the
-second sector, because the first sector is already loaded. This technique is used
-for example by GRUB to perform \emph{chainloading}.
+\begin{center}
+  \begin{tabular}{|p{5cm}|p{5cm}|l}
+    \cline{1-2}
 
-\subsubsection*{Assignments}
-The drive must be initialized before any reading. Then, get the second sector of
-the floppy, and check the signature. A valid bootsector ends with 0xaa55.
+    \centering{\textbf{File}} &
+    \centering{\textbf{Space}} &
+    \\
 
-Be careful, sectors are actually numbered starting from 1, and not 0.
+    \cline{1-2}
 
-\subsubsection*{File}
-\begin{itemize}
-  \item \location{ex4/ex4.S}
-\end{itemize}
+    \centering{\location{ex4/ex4.S}} &
+    \centering{$155$ bytes} &
+    \\
 
-\subsubsection*{Free space required}
-155 bytes
+    \cline{1-2}
+  \end{tabular}
+\end{center}
 
-\subsubsection*{Interface}
 \command{floppy\_init}
 {
-  Initialize floppy drive.
+  This function initializes the floppy drive.
 }
 
 \command{is\_bootsector}
 {
-  Initializes the floppy drive, load the second sector of the floppy and
-  check whether it is a valid
-  bootsector. It must print the following output at current cursor
-  position for the following cases - respectively valid, and invalid $0x0042$
-  signatures:
+  This function calls the initialization of the floppy drive, loads the
+  second sector into memory and checks that it is a valid bootsector.
+
+  \-
+
+  Noteworthy is that sectors are numbered starting with 1, not 0.
+
+  \-
+
+  Once the sector checked, the function prints a string, along with the
+  read boot signature. Note that the function must prints at the current
+  cursor's position.
+
+  \-
+
+  The following illustrates both cases, respectively a valid and invalid
+  bootsector.
 }
 \begin{verbatim}
-        magic found: 0xaa55
-\end{verbatim}
-\command{}
-{
-  or
-}
-\begin{verbatim}
-        wrong magic: 0x0042
+  magic found: 0xaa55
+  wrong magic: 0x0042
 \end{verbatim}
 
-\command{}
-{
-  The magic number which should be printed is the one that has been read in
-  the sector which has been loaded.
-  This function has to initialize the floppy drive, you can call your previous
-  function to do that.
-}
+% mode
+\subsection{Mode}
 
-%
-% Operating mode switching
-%
+Until know, the code students have been developing were written in $16$-bit,
+hence evolving in \name{Real Mode}. This mode is a relique of the past. As
+most kernels are written in $32$-bit, the boot loader must prepare the
+environment so as to fit the needs of the kernel.
 
-\newpage
+Through this exercise, the students are going to switch from the \name{Real
+Mode} to the \name{Protected Mode}. This process requires the developer to
+set up some hardware data structures indicating the microprocessor how it
+must behave. The data structure of interest if the \name{GDT - Global
+Descriptor Table}.
 
-\subsection{Operating mode switching}
+\begin{center}
+  \begin{tabular}{|p{5cm}|p{5cm}|l}
+    \cline{1-2}
 
-\subsubsection*{Overview}
-Since kernels generally use 32-bit mode, it's time to know how to switch from
-\emph{real} 16-bit mode to \emph{protected} 32-bit mode.
+    \centering{\textbf{File}} &
+    \centering{\textbf{Space}} &
+    \\
 
-\subsubsection*{Assignments}
-You will first read \emph{Intel IA-32 mode switching procedure} on the wiki
-and code a function to switch to that mode. Then, you will have to display a
-string in 32-bit mode.
+    \cline{1-2}
 
-{\em Warning:}
+    \centering{\location{ex5/ex5.S}} &
+    \centering{$225$ bytes} &
+    \\
 
-Don't forget that the code executed after switching to protected mode must be
-32-byte assembled code. Moreover, BIOS interrupts cannot be used in protected
-mode, see \emph{VGA text Framebuffer} on the Wiki to know how to do.
+    \cline{1-2}
+  \end{tabular}
+\end{center}
 
-\subsubsection*{File}
-\begin{itemize}
-  \item \location{ex5/ex5.S}
-\end{itemize}
+Students should read the necessary material, especially the \name{Intel}
+manual \name{Volume 2A} which contains a chapter on the \name{Protected Mode}.
 
-\subsubsection*{Free space required}
-225 bytes
+The following describes the steps to follow for performing a switch to the
+\name{Protected Mode}:
 
-\subsubsection*{Interface}
+\begin{enumerate}
+  \item
+    Create and fill the \name{GDT} with the necessary entries;
+  \item
+    Disable the interrupts through the \code{cli} instruction which masks
+    the hardware maskable interrupts;
+  \item
+    Set the \name{PE} flag in the control register \name{CR0};
+  \item
+    Immediately perform a long jump in order to change the \name{CS - Code
+    Segment} selector, referencing the appropriate \name{GDT} entry;
+  \item
+    Update the other segment selectors \name{DS}, \name{ES}, \name{FS},
+    \name{GS} and \name{SS}.
+\end{enumerate}
+
+Do not forget that the code executed after switching from the \name{Real Mode}
+to the \name{Protected Mode} must be assembled in 32-bit.
+
+In addition, \name{BIOS} interrupts cannot be used in \name{Protected Mode}.
+Therefore, the basic functionalities must be re-implemented in $32$-bit and
+without the support of the \name{BIOS} services.
+
 \command{pmode\_switch}
 {
-  Switch from real mode to protected mode.
-  Note that when calling this function, the CPU will push the return address
-  as a 16-bit address, but when returning from it, the CPU will pop a 32 bit
-  return address since it will have switched from real (16-bit) to protected
-  (32-bit) mode. Consider that you don't have to do anything special to get
-  this to work : the caller of this function will have to push the 16-bit zero
-  value on the stack before calling, so that the instruction pointer does get
-  a valid 32-bit return address.
+  This function switches from the \name{Real Mode} to the \name{Protected
+  Mode}.
 
-  Don't forget to push zero before calling it for your tests too.
+  \-
+
+  Note that when calling this function, the \name{CPU} will push the return
+  address as a $16$-bit value, since operating in \name{Real Mode}. However,
+  when returning, the \name{CPU} will pop a $32$-bit value since now operating
+  in \name{Protected Mode}.
+
+  \-
+
+  The student should not worry about this detail when implementing this
+  function. Indeed, it is the responsability of the caller to push another
+  $16$-bit zero on the stack before calling so that when pop-ed in $32$-bit
+  both values coincide.
 }
 
 \command{print\_string32}
 {
-  Print the string \argument{\%esi} on the screen at row \argument{\%ecx}
-  and column \argument{\%edx}. The rows and columns are starting at index 0.
-  So the upper left corner has coordinates (0,0).
-  We don't care about colors, you can change them or not.
-  You don't have to handle the end of line, this will not be tested.
+  This function prints the string whose address is given in \argument{\%esi}.
+
+  \-
+
+  The location is specified through the row by \argument{\%ecx} and the
+  column by \argument{\%edx}. Note that the row and column are starting at
+  index 0. As such, the upper left corner has coordinates $(0,0)$.
+
+  \-
+
+  Finally, the student should ignore the end of line as this will not be
+  tested. Besides, colors can be changed but will not be considered by
+  the evaluation system.
 }
 
-%
-% ELF Loader
-%
+% elf
+\subsection{ELF}
 
-\newpage
+The finally exercise of the \name{k0} stage consists in writing the core
+functionality of any boot loader: loading the kernel binary from a device
+into memory and executing it.
 
-\subsection{ELF Loader}
+Since most kernels are written in high-level languages such as \name{C} or
+\name{C++}, such binary are actually packaged according to a flexible format,
+the most common one of \name{UNIX} systems being the \name{ELF - Executable
+and Linking Format}.
 
-\subsubsection*{Overview}
-Any bootloader must be able to load a kernel binary and to execute it.
-The \emph{Executable and Linking Format} is a binary executable format used on
-many UNIX platform. The goal of this part is to give an introduction to the
-ELF structure so that you will learn how to load and execute such a file.
+\begin{center}
+  \begin{tabular}{|p{5cm}|p{5cm}|l}
+    \cline{1-2}
 
-\subsubsection*{Assignments}
-You will write a complete bootloader which loads and executes an ELF file
-- located right after the bootsector - and then relocate it in memory
-before jumping on it.
+    \centering{\textbf{File}} &
+    \centering{\textbf{Space}} &
+    \\
 
-An ELF binary is provided to be loaded with your bootsector (see \emph{Files}
-on the Wiki). To build a disk image with your bootsector on the first sector,
-and the kernel on the next ones, you can use the following command:
+    \cline{1-2}
+
+    \centering{\location{ex6/ex6.S}} &
+    \centering{$145$ bytes} &
+    \\
+
+    \cline{1-2}
+  \end{tabular}
+\end{center}
+
+Note that an \name{ELF} example binary is provided on the \name{Wiki}. As
+mentioned earlier, boot loaders are usually located on the first sector
+of the boot image being on a floppy or hard drive. Then follows, on one or
+more sectors the kernel, the role of the boot loader being to load the kernel
+sectors and execute it.
+
+The following command shows how to create a bootable image given a boot loader
+binary and an \name{ELF} kernel:
 
 \begin{verbatim}
-42sh$ cat bootsector kernel.elf /dev/zero | dd bs=512 count=2880 of=disk.img
+  $> cat bootsector kernel.elf /dev/zero | dd bs=512 count=2880 of=disk.img
 \end{verbatim}
 
-To load and execute an ELF file, you will have to parse the ELF header at the
-beginning of the file. Each ELF file is divided into \emph{segments} which are
-located into different offsets, and must be separately relocated at different
-memory locations. The segment list of the executable file is described by the
-\emph{Program Headers} table - \emph{Phdr} - in the ELF header (read \emph{ELF Header} on the Wiki).
+The \name{ELF} is a complex format composed of headers, segments and tables
+referencing them. The kernel binary will therefore have to be parsed in order
+to extract the code and its entry point on which the boot loader will have
+to jump to transfer the execution flow to the kernel.
 
-\subsubsection*{File}
-\begin{itemize}
-  \item \location{ex6/ex6.S}
-\end{itemize}
-
-\subsubsection*{Free space required}
-145 bytes
-
-\subsubsection*{Interface}
+An overview of the \name{ELF} is given on the \name{Wiki} though the student
+may want to read a more detailed documentation.
 
 \command{kernel\_preload}
 {
-  This function has to load into memory the number of sectors given into
-  \argument{\%al}, from the drive given into \argument{\%dl}, starting from
+  This function loads into memory the number of sectors given into
+  \argument{\%al}, from the drive specified in \argument{\%dl}, starting from
   the second sector.
 
-  The function must switch to protected mode, and return into \argument{\%eax}
-  the address of the memory area where sectors are loaded.
+  \-
 
-  You have to handle the case of a kernel which resides on more than a single
-  track, which requires several calls to the appropriate BIOS call.
+  In addition, the function must switch to the \name{Protected Mode} and
+  return into \argument{\%eax} the address of the memory area where sectors
+  have been loaded \ie{} the location of the \name{ELF} in memory.
+
+  \-
+
+  Noteworthy is that this function must succeed even if the kernel image
+  spans over multiple sectors.
 }
 
 \command{elf\_load}
 {
-  Load and execute the elf file located at address \argument{\%esi}.
-  Consider that the caller has called \command{kernel\_preload} before calling
-  this function, so this function doesn't need to call it.
+  This function executes the \name{ELF} located at the address given in
+  \argument{\%esi}, assuming that the \name{kernel\_preload()} function has
+  been called prior to this function.
 }
