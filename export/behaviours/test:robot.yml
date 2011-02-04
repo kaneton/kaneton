@@ -1,7 +1,7 @@
 #
 # ---------- information ------------------------------------------------------
 #
-# this behaviour is used in order to create a kaneton snapshot contributors
+# this behaviour is used in order to create a kaneton snapshot robots
 # to invoke the test system.
 #
 
@@ -26,7 +26,7 @@
 # XXX
 -
   operation: fremove
-  path: export/output/test:contributor.tar.bz2
+  path: export/output/test:robot.tar.bz2
 
 -
   operation: fremove
@@ -35,4 +35,4 @@
 
 -
   operation: tarball
-  filename: test:contributor
+  filename: test:robot
