@@ -1,0 +1,38 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this behaviour is used in order to create a kaneton snapshot contributors
+# to invoke the test system.
+#
+
+-
+  operation: localexport
+
+-
+  operation: initenv
+
+-
+  operation: import
+  filename: sets/sweep
+
+-
+  operation: import
+  filename: sets/chop
+
+-
+  operation: import
+  filename: sets/ibm-pc.ia32
+
+# XXX
+-
+  operation: fremove
+  path: export/output/test:contributor.tar.bz2
+
+-
+  operation: fremove
+  path: export/output/test:student.tar.bz2
+# XXX
+
+-
+  operation: tarball
+  filename: test:contributor
