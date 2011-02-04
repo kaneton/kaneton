@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/utilities/README
+# file          /home/mycure/kaneton/test/utilities/README
 #
 # created       julien quintard   [tue nov  2 07:37:15 2010]
-# updated       julien quintard   [tue nov  2 07:37:17 2010]
+# updated       julien quintard   [fri feb  4 15:30:58 2011]
 #
 
 #
@@ -71,6 +71,7 @@ school and year, through the following command line.
   $> make capability-school@epita::2011
   $> make capability-student@epita::2011:group8
   $> make capability-contributor
+  $> make capability-robot
 
 Finally, the databases containing the current state of the tests as well
 as the limit for every stage are generated according to the configurations
@@ -79,6 +80,7 @@ found in test/configuration/
   $> make database-school@epita::2009
   $> make database-student@epita::2009:group2
   $> make database-contributor
+  $> make database-robot
 
 Note that the inventory.py script is used elsewhere in the tests/ directory
 in order to generate an array containing the addresses of the tests. This

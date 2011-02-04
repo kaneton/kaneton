@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/report.py
 #
 # created       julien quintard   [tue oct 26 11:12:10 2010]
-# updated       julien quintard   [sun oct 31 13:46:11 2010]
+# updated       julien quintard   [wed feb  2 14:41:38 2011]
 #
 
 #
@@ -26,6 +26,9 @@ import miscellaneous
 #
 
 Extension = ".rpt"
+
+StateInProgress = "in progress"
+StateDone = "done"
 
 #
 # ---------- functions --------------------------------------------------------

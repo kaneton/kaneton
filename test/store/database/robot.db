@@ -1,0 +1,12 @@
+quotas:
+  qemu:
+    ibm-pc.ia32/educational: {kaneton: -1}
+  xen:
+    ibm-pc.ia32/educational: {kaneton: -1}
+reports:
+  qemu:
+    ibm-pc.ia32/educational:
+      kaneton: []
+  xen:
+    ibm-pc.ia32/educational:
+      kaneton: []

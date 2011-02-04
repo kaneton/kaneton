@@ -9,7 +9,7 @@
 # file          /home/mycure/kaneton/test/robot/robot.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [mon dec 13 09:25:33 2010]
+# updated       julien quintard   [fri feb  4 15:37:16 2011]
 #
 
 #
@@ -52,11 +52,9 @@ import ktp
 # the subversion address to the kaneton repository.
 Repository = "svn+ssh://subversion@repositories.passeism.org/kaneton"
 
-# the email address to which the reports must be sent.
-Email = "contributors@kaneton.opaak.org"
-
 # environments.
-Environments = [ "qemu", "xen" ]
+Environments = [ ktp.environment.QEMU,
+                 ktp.environment.Xen ]
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -64,9 +62,6 @@ Environments = [ "qemu", "xen" ]
 
 # the temporary directory.
 g_directory = None
-
-# the message to send as a notification to the contributors.
-g_message = None
 
 #
 # ---------- functions --------------------------------------------------------
@@ -88,158 +83,22 @@ def                     Error(message):
   sys.exit(42)
 
 #
-# this function walk through the unit and counts the number of successful
-# tests.
-#
-def                     Count(tests):
-  success = 0
-  total = 0
-
-  # explore the tests.
-  for test in tests:
-    if tests[test]["status"] == True:
-      success += 1
-
-    total += 1
-
-  return (success, total)
-
-#
-# this function displays a brief summary of the given report.
-#
-def                     Summarize(report, margin=""):
-  content = None
-
-  success = None
-  total = None
-
-  status = None
-  length = None
-  count = None
-
-  unit = None
-  tests = None
-
-  # initialize the content
-  content = str()
-
-  # for the units of the report.
-  for unit in report["data"]:
-    # retrieve the tests.
-    tests = report["data"][unit]
-
-    # compute the status of all the tests of the given unit.
-    (success, total) = Count(tests)
-
-    # generate the count.
-    count = " [" + str(success) + "/" + str(total) + "]"
-
-    # generate the unit's status.
-    length = 79 - len(unit) - len(margin) - 4 - len(count)
-    status = length * " " + count
-
-    # display the unit name.
-    content += margin + unit + status + "\n"
-
-  return content
-
-#
-# this function displays a detailed version of the given report.
-#
-def                     Detail(report, margin = ""):
-  content = None
-
-  success = None
-  total = None
-
-  status = None
-  length = None
-  count = None
-
-  unit = None
-  tests = None
-  test = None
-
-  # initialize the content.
-  content = str()
-
-  # for the units of the report.
-  for unit in report["data"]:
-    # retrieve the tests.
-    tests = report["data"][unit]
-
-    # compute the status of all the tests of the given unit.
-    (success, total) = Count(tests)
-
-    # generate the count.
-    count = " [" + str(success) + "/" + str(total) + "]"
-
-    # generate the unit's status.
-    length = 79 - len(unit) - len(margin) - 4 - len(count) - 1
-    status = length * " " + count
-
-    # display the unit name.
-    content += """\
-%(margin)s%(unit)s:%(status)s
-""" % { "margin": margin,
-        "unit": unit,
-        "status": status }
-
-    for test in tests:
-      # display name.
-      content += """\
-%(margin)s  %(test)s:
-""" % { "margin": margin,
-        "test": test }
-
-      # display status.
-      content += """\
-%(margin)s    status: %(status)s
-""" % { "margin": margin,
-        "status": tests[test]["status"] }
-
-      # display description.
-      content += """\
-%(margin)s    description: %(description)s
-""" % { "margin": margin,
-        "description": tests[test]["description"] }
-
-      # display duration.
-      content += """\
-%(margin)s    duration: %(duration)s
-""" % { "margin": margin,
-        "duration": tests[test]["duration"] }
-
-      # display output.
-      content += """\
-%(margin)s    output: %(output)s
-""" % { "margin": margin,
-        "output": tests[test]["output"] }
-
-  return content
-
-#
 # this function retrieves the latest kaneton snapshot through
 # Subversion.
 #
 def                     Checkout():
-  global g_message
-
   # launch Subversion.
   if ktp.process.Invoke("svn",
                         [ "co",
                           Repository,
                           g_directory]) == ktp.StatusError:
-    # notify the error.
-    g_message = "unable to check out the kaneton repository"
+    Error("unable to check out the kaneton repository")
 
 #
 # this function triggers some test through the kaneton
 # test client.
 #
 def                     Test():
-  global g_message
-
   report = None
   summary = None
   detail = None
@@ -280,11 +139,9 @@ def                     Test():
   # if the construction was successful, exit the loop.
   if status == ktp.StatusError:
     if not output:
-      g_message = "an error occured while initializing the kaneton environment"
+      Error("an error occured while initializing the kaneton environment")
     else:
-      g_message = output
-
-    return
+      Error(output)
 
   # for every environment to test...
   for environment in Environments:
@@ -308,124 +165,9 @@ def                     Test():
     # if the construction was successful, exit the loop.
     if status == ktp.StatusError:
       if not output:
-        g_message = "an error occured while launching the test client"
+        Error("an error occured while launching the test client")
       else:
-        g_message = output
-
-      return
-
-    # look for the generated report.
-    paths = ktp.miscellaneous.Search(g_directory + "/test/store/report",
-                                     "^.*\.rpt$",
-                                     ktp.miscellaneous.OptionFile)
-
-    # check the reports.
-    if len(paths) != 1:
-      return "it seems that more reports than expected are present "    \
-             "in the store"
-
-    path = paths[0]
-
-    # load the report.
-    report = ktp.report.Load(path)
-
-    # add to the summary.
-    summary += """\
-environment(%(environment)s) :: platform(%(platform)s) :: architecture(%(architecture)s) :: suite(%(suite)s) :: duration(%(duration)ss)
-%(summary)s
-""" % { "environment": environment,
-        "platform": report["meta"]["platform"],
-        "architecture": report["meta"]["architecture"],
-        "suite": report["meta"]["suite"],
-        "duration": report["meta"]["duration"],
-        "summary": Summarize(report, "    ") }
-
-    # add to the detail.
-    detail += """\
-environment(%(environment)s) :: platform(%(platform)s) :: architecture(%(architecture)s) :: suite(%(suite)s) :: duration(%(duration)ss)
-%(detail)s
-""" % { "environment": environment,
-        "platform": report["meta"]["platform"],
-        "architecture": report["meta"]["architecture"],
-        "suite": report["meta"]["suite"],
-        "duration": report["meta"]["duration"],
-        "detail": Detail(report, "    ") }
-
-    # remove the report.
-    ktp.miscellaneous.Remove(path)
-
-  # build the final report.
-  report = """
----[ Summary
-
-%(summary)s
-
----[ Detail
-
-%(detail)s
-""" % { "summary": summary,
-        "detail": detail }
-
-  return report
-
-#
-# this function emails the given report.
-#
-def                     Send(report):
-  configuration = None
-  content = None
-  message = None
-  stream = None
-  date = None
-
-  # create a temporary file.
-  configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-  # create a configuration file.
-  content = """\
-set realname = "opaak admin"
-set from = "admin@opaak.org"
-set use_from = yes\
-"""
-
-  # store the temporary mutt configuration file.
-  ktp.miscellaneous.Push(content, configuration)
-
-  # create a temporary file.
-  message = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-  # store the temporary message.
-  ktp.miscellaneous.Push(report, message)
-
-  # create a stream file.
-  stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-  # retrieve the current date.
-  date = time.strftime("%Y/%m/%d %H:%M:%S")
-
-  # email the capability to the supposed recipient.
-  status = ktp.process.Invoke("mutt",
-                              [ "-F", configuration,
-                                "-s", "'kaneton robot :: " + date + "'",
-                                Email,
-                                "<" + message ])
-
-  # retrieve the output.
-  output = ktp.miscellaneous.Pull(stream)
-
-  # remove the stream file.
-  ktp.miscellaneous.Remove(stream)
-
-  # check the status.
-  if status == ktp.StatusError:
-    if output:
-      print(output)
-
-    Error("an error occured while sending the report")
-
-  # remove the temporary files.
-  ktp.miscellaneous.Remove(message)
-  ktp.miscellaneous.Remove(configuration)
+        Error(output)
 
 #
 # this function initializes the script.
@@ -454,21 +196,8 @@ def                     Main():
   # checkout the kaneton repository.
   Checkout()
 
-  # if an error occured, report it.
-  if g_message:
-    Send(g_message)
-    Error(g_message)
-
   # trigger the tests.
-  report = Test()
-
-  # if an error occured, report it.
-  if g_message:
-    Send(g_message)
-    Error(g_message)
-
-  # email the report.
-  Send(report)
+  Test()
 
   # clean the temporary stuff.
   Clean()

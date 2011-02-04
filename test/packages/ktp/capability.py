@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/capability.py
 #
 # created       julien quintard   [mon oct 25 19:58:10 2010]
-# updated       julien quintard   [sun oct 31 13:45:54 2010]
+# updated       julien quintard   [wed feb  2 15:56:43 2011]
 #
 
 #

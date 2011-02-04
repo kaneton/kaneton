@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [sat dec 18 21:26:18 2010]
+# updated       julien quintard   [thu feb  3 12:39:36 2011]
 #
 
 #
@@ -225,52 +225,20 @@ def                     Detail(report, margin = ""):
 #
 # this function dumps any Python data structure in a hierarchical way.
 #
-THRESHOLD = 72
 def                     Dump(data, margin = "", alignment = 26):
   key = None
   length = None
-  element = None
-  link = None
-  chunk = None
 
   if isinstance(data, dict):
     for key in data:
       if not isinstance(data[key], dict) and not isinstance(data[key], list):
         length = len(margin) + len(str(key)) + 1
 
-        if len(str(data[key])) > (THRESHOLD - alignment):
-          link = "..."
-        else:
-          link = ""
-
         env.display(env.HEADER_OK,
                     margin + str(key) + ":" +
                     (alignment - length) * " " +
-                    str(data[key])[:(THRESHOLD - alignment)] + link,
+                    str(data[key]),
                     env.OPTION_NONE)
-
-        if len(str(data[key])) <= (THRESHOLD - alignment):
-          continue
-
-        index = 0
-
-        while True:
-          index = index + (THRESHOLD - alignment)
-
-          chunk = str(data[key])[index:index + (THRESHOLD - alignment)]
-
-          if len(str(data[key])[index:]) > (THRESHOLD - alignment):
-            link = "..."
-          else:
-            link = ""
-
-          env.display(env.HEADER_OK,
-                      alignment * " " +
-                      str(chunk),
-                      env.OPTION_NONE)
-
-          if len(str(data[key])[index:]) <= (THRESHOLD - alignment):
-            break
       else:
         env.display(env.HEADER_OK,
                     margin + str(key) + ":",
@@ -281,26 +249,10 @@ def                     Dump(data, margin = "", alignment = 26):
     for element in data:
       Dump(element, margin)
   else:
-    length = len(margin)
-    index = 0
-
-    while True:
-      chunk = str(data)[index:index + (THRESHOLD - alignment)]
-
-      if len(str(data)[index:]) > (THRESHOLD - alignment):
-        link = "..."
-      else:
-        link = ""
-
-        env.display(env.HEADER_OK,
-                    alignment * " " +
-                    str(chunk),
-                    env.OPTION_NONE)
-
-        if len(str(data)[index:]) <= (THRESHOLD - alignment):
-          break
-
-      index = index + (THRESHOLD - alignment)
+    env.display(env.HEADER_OK,
+                alignment * " " +
+                str(data),
+                env.OPTION_NONE)
 
 #
 # this function asks the server for information related to
@@ -323,7 +275,7 @@ def                     Information(server, capability, arguments):
   # retrieve the information.
   information = ktp.xmlrpc.Call(server.Information(capability))
 
-  # display the information by exploring the tree.
+  # display a message.
   env.display(env.HEADER_OK,
               "information:",
               env.OPTION_NONE)
@@ -338,6 +290,7 @@ def                     Test(server, capability, arguments):
   snapshot = None
   suite = None
   environment = None
+  identifier = None
 
   # warning
   Warning()
@@ -351,7 +304,7 @@ def                     Test(server, capability, arguments):
   environment = arguments[0]
   suite = arguments[1]
 
-  # display the information by exploring the tree.
+  # display a message.
   env.display(env.HEADER_OK,
               "generating the kaneton snapshot",
               env.OPTION_NONE)
@@ -361,7 +314,7 @@ def                     Test(server, capability, arguments):
              "test:" + capability["identifier"],
              env.OPTION_QUIET)
 
-  # display the information by exploring the tree.
+  # display a message.
   env.display(env.HEADER_OK,
               "loading the kaneton snapshot",
               env.OPTION_NONE)
@@ -371,32 +324,24 @@ def                     Test(server, capability, arguments):
                         "test:" + capability["identifier"] + ".tar.bz2",
                       env.OPTION_NONE)
 
-  # display the information by exploring the tree.
+  # display a message.
   env.display(env.HEADER_OK,
               "requesting the server",
               env.OPTION_NONE)
 
   # trigger a test.
-  report = ktp.xmlrpc.Call(server.Test(capability,
-                                       ktp.miscellaneous.Binary(snapshot),
-                                       g_platform,
-                                       g_architecture,
-                                       environment,
-                                       suite))
-
-  # store the report.
-  ktp.report.Store(report,
-                   env._TEST_STORE_REPORT_DIR_ + "/" +                  \
-                     report["meta"]["identifier"] +                     \
-                     ktp.report.Extension)
+  identifier = ktp.xmlrpc.Call(server.Test(capability,
+                                           ktp.miscellaneous.Binary(snapshot),
+                                           g_platform,
+                                           g_architecture,
+                                           environment,
+                                           suite))
 
   # display the received report.
   env.display(env.HEADER_OK,
-              "report(" + report["meta"]["identifier"] + "):",
+              "the snapshot has been scheduled for testing under the "  \
+              "identifier: " + identifier,
               env.OPTION_NONE)
-
-  # display a summary
-  Summarize(report, "  ")
 
 #
 # this function requests the server for re-testing a snapshot.
@@ -416,7 +361,7 @@ def                     Retest(server, capability, arguments):
   # retrieve the arguments.
   identifier = arguments[0]
 
-  # display the information by exploring the tree.
+  # display a message.
   env.display(env.HEADER_OK,
               "requesting the server",
               env.OPTION_NONE)
@@ -448,7 +393,7 @@ def                     Submit(server, capability, arguments):
   # retrieve the arguments.
   stage = arguments[0]
 
-  # display the information by exploring the tree.
+  # display a message.
   env.display(env.HEADER_OK,
               "generating the kaneton snapshot",
               env.OPTION_NONE)
@@ -458,7 +403,7 @@ def                     Submit(server, capability, arguments):
              "test:" + capability["identifier"],
              env.OPTION_QUIET)
 
-  # display the information by exploring the tree.
+  # display a message.
   env.display(env.HEADER_OK,
               "loading the kaneton snapshot",
               env.OPTION_NONE)
@@ -468,7 +413,7 @@ def                     Submit(server, capability, arguments):
                         "test:" + capability["identifier"] + ".tar.bz2",
                       env.OPTION_NONE)
 
-  # display the information by exploring the tree.
+  # display a message.
   env.display(env.HEADER_OK,
               "requesting the server",
               env.OPTION_NONE)
@@ -498,9 +443,18 @@ def                     Display(server, capability, arguments):
 
   identifier = arguments[0]
 
+  # display a message.
+  env.display(env.HEADER_OK,
+              "requesting the server",
+              env.OPTION_NONE)
+
   # retrieve the report.
-  report = ktp.report.Load(env._TEST_STORE_REPORT_DIR_ + "/" +          \
-                             identifier + ktp.report.Extension)
+  report = ktp.xmlrpc.Call(server.Fetch(capability, identifier))
+
+  # display a message.
+  env.display(env.HEADER_OK,
+              "displaying the report",
+              env.OPTION_NONE)
 
   # dump the report.
   env.display(env.HEADER_OK,
@@ -513,19 +467,19 @@ def                     Display(server, capability, arguments):
               env.OPTION_NONE)
   Dump(report["meta"], "    ")
 
-  # dump the data section
-  env.display(env.HEADER_OK,
-              "  data:",
-              env.OPTION_NONE)
+  # dump the data section, if possible.
+  if report["meta"]["state"] == ktp.report.StateDone:
+    env.display(env.HEADER_OK,
+                "  data:",
+                env.OPTION_NONE)
 
-  Detail(report, "    ")
+    Detail(report, "    ")
 
 #
 # this function lists the reports.
 #
 def                     List(server, capability, arguments):
-  identifiers = None
-  identifier = None
+  list = None
   report = None
 
   # check the arguments
@@ -533,33 +487,40 @@ def                     List(server, capability, arguments):
     Usage()
     sys.exit(42)
 
+  # display a message.
+  env.display(env.HEADER_OK,
+              "requesting the server",
+              env.OPTION_NONE)
+
+  # retrieve the list.
+  list = ktp.xmlrpc.Call(server.List(capability))
+
+  # display a message.
+  env.display(env.HEADER_OK,
+              "listing the reports",
+              env.OPTION_NONE)
+
   # display a message
   env.display(env.HEADER_OK,
               "reports:",
               env.OPTION_NONE)
 
-  # retrieve the list of report identifiers.
-  identifiers = ktp.report.List(env._TEST_STORE_REPORT_DIR_)
-
-  # display the identifiers.
-  for identifier in identifiers:
-    # load the report.
-    report = ktp.report.Load(env._TEST_STORE_REPORT_DIR_ + "/" +        \
-                               identifier + ktp.report.Extension)
-
+  # display the list.
+  for report in list:
     # display report's identifier.
     env.display(env.HEADER_OK,
-                "  " + report["meta"]["identifier"] + ":",
+                "  " + report["identifier"] + ":",
                 env.OPTION_NONE)
 
     # display the report's meta.
     env.display(env.HEADER_OK,
-                "    " + report["meta"]["environments"]["stress"] +     \
+                "    " + report["environments"]["stress"] +             \
                   " :: " +                                              \
-                  report["meta"]["platform"] + " :: " +                 \
-                  report["meta"]["architecture"] + " :: " +             \
-                  report["meta"]["suite"] + " :: " +                    \
-                  report["meta"]["date"],
+                  report["platform"] + " :: " +                         \
+                  report["architecture"] + " :: " +                     \
+                  report["suite"] + " :: " +                            \
+                  report["date"] + " :: " +                             \
+                  report["state"],
                 env.OPTION_NONE)
 
 #

@@ -5,14 +5,13 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/suites/bugs.suite
+# file          /home/mycure/kaneton/test/suites/bugs.suite
 #
 # created       julien quintard   [tue nov  2 07:33:43 2010]
-# updated       julien quintard   [sun dec  5 21:02:01 2010]
+# updated       julien quintard   [fri feb  4 15:32:36 2011]
 #
 
 name: bugs
 description: This suite contains the tests which fail on the official kaneton implementation.
 components:
-  bugs:
-    - kaneton/machine/architecture/ia32/event/context/02/
+  bugs: []

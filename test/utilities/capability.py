@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/utilities/capability.py
+# file          /home/mycure/kaneton/test/utilities/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [tue nov  2 16:28:13 2010]
+# updated       julien quintard   [fri feb  4 15:30:28 2011]
 #
 
 #
@@ -299,6 +299,49 @@ def                     contributor():
               env.OPTION_NONE)
 
 #
+# robot()
+#
+# this function generates a capability for the robot.
+#
+def                     robot():
+  name = None
+
+  # display.
+  env.display(env.HEADER_OK,
+              "generating the robot's capability",
+              env.OPTION_NONE)
+
+  # retrieve the server's code.
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server" +          \
+                         ktp.code.Extension)
+
+  # compute the name.
+  name = "robot"
+
+  # compute the file name.
+  file = env._TEST_STORE_CAPABILITY_DIR_ + "/" + name +                 \
+      ktp.capability.Extension
+
+  # create the capability.
+  capability = ktp.capability.Create(code,
+                                     name,
+                                     "contributors",
+                                     [ { "name":
+                                           "contributors",
+                                         "email":
+                                           "contributors@kaneton.opaak.org"
+                                         } ])
+
+  # store it.
+  ktp.capability.Store(file,
+                       capability)
+
+  # display.
+  env.display(env.HEADER_OK,
+              "robot's capability generated and stored",
+              env.OPTION_NONE)
+
+#
 # main()
 #
 # this is the main function.
@@ -340,6 +383,7 @@ def                     main():
 
 c_components = {
   "contributor": contributor,
+  "robot": robot,
   "school@school::year": school,
   "student@school::year::name": student
 }

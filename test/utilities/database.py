@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/utilities/database.py
+# file          /home/mycure/kaneton/test/utilities/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [sat oct 30 10:27:13 2010]
+# updated       julien quintard   [fri feb  4 15:32:07 2011]
 #
 
 #
@@ -159,11 +159,10 @@ def                     school():
               "students' database generated and stored",
               env.OPTION_NONE)
 
-
 #
 # contributor()
 #
-# this function creates a database for the contributors.
+# this function creates a database for the contributor.
 #
 def                     contributor():
   configuration = None
@@ -190,6 +189,38 @@ def                     contributor():
   # display message.
   env.display(env.HEADER_OK,
               "contributor's database generated and stored",
+              env.OPTION_NONE)
+
+#
+# robot()
+#
+# this function creates a database for the robot.
+#
+def                     robot():
+  configuration = None
+  database = None
+
+  # display message.
+  env.display(env.HEADER_OK,
+              "generating database from robot's configuration",
+              env.OPTION_NONE)
+
+  # load the configuration.
+  configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
+                                           "/robot" +                   \
+                                           ktp.configuration.Extension)
+
+  # generate the database.
+  database = ktp.database.Generate(configuration)
+
+  # store the database.
+  ktp.database.Store(database,
+                     env._TEST_STORE_DATABASE_DIR_ + "/robot" +         \
+                       ktp.database.Extension)
+
+  # display message.
+  env.display(env.HEADER_OK,
+              "robot's database generated and stored",
               env.OPTION_NONE)
 
 #
@@ -234,6 +265,7 @@ def                     main():
 
 c_components = {
   "contributor": contributor,
+  "robot": robot,
   "school@school::year": school,
   "student@school::year::name": student
 }
