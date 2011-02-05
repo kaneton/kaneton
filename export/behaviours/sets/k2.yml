@@ -5,133 +5,58 @@
 # students to undertake the k2 project.
 #
 
+#
+# glue
+#
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::dump::comment
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/glue/ibm-pc.ia32/educational/as.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/educational/as.c
 
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::dump::vars
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/glue/ibm-pc.ia32/educational/include/as.h
+  dst: kaneton/machine/glue/ibm-pc.ia32/educational/include/as.h
 
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::dump
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/glue/ibm-pc.ia32/educational/region.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/educational/region.c
+
+#
+# architecture
+#
+-
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/environment.c
+  dst: kaneton/machine/architecture/ia32/educational/environment.c
 
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::quantum::comment
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/pd.c
+  dst: kaneton/machine/architecture/ia32/educational/pd.c
 
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::quantum::vars
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/pd.h
+  dst: kaneton/machine/architecture/ia32/educational/include/pd.h
 
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::quantum
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/pt.c
+  dst: kaneton/machine/architecture/ia32/educational/pt.c
 
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::yield::comment
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/pt.h
+  dst: kaneton/machine/architecture/ia32/educational/include/pt.h
 
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::yield::vars
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/paging.c
+  dst: kaneton/machine/architecture/ia32/educational/paging.c
 
 -
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::yield
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::current::vars
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::current
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::switch::comment
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::switch::vars
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::switch
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::add::comment
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::add::vars
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::add
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::remove::comment
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::remove::vars
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::remove
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::update::comment
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::update
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::initialize::comment
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::initialize
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::clean::comment
-
--
-  operation: bremove
-  id: kaneton/core/scheduler/scheduler.c::clean
-
--
-  operation: bremove
-  id: kaneton/core/include/scheduler.h::macro::constants
-
--
-  operation: bremove
-  id: kaneton/core/include/scheduler.h::macro::functions
-
--
-  operation: bremove
-  id: kaneton/core/include/scheduler.h::t_scheduled
-
--
-  operation: bremove
-  id: kaneton/core/include/scheduler.h::o_scheduler::1
-
--
-  operation: bremove
-  id: kaneton/core/include/scheduler.h::o_scheduler::2
-
--
-  operation: breplace
-  id: kaneton/machine/architecture/ia32/educational/include/context.h::macros::context
-  data: |
-     #define	IA32_SAVE_CONTEXT()
-     #define IA32_RESTORE_CONTEXT()
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/paging.h
+  dst: kaneton/machine/architecture/ia32/educational/include/paging.h

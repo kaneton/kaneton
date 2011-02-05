@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [sat dec 18 21:27:41 2010]
+# updated       julien quintard   [sat feb  5 11:40:07 2011]
 #
 
 #
@@ -203,7 +203,7 @@ def			copy(source, destination, options):
   if os.path.isdir(source):
     shutil.copytree(source, destination, True)
   else:
-    shutil.copyfile(source, destination)
+    shutil.copy2(source, destination)
 
 
 

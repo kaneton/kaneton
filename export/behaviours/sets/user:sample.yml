@@ -20,13 +20,14 @@
   operation: fremove
   path: environment/profile/user/jean.guyader
 
--
-  operation: fremove
-  path: environment/profile/user/julien.quintard
+# XXX
+#-
+#  operation: fremove
+#  path: environment/profile/user/julien.quintard
 
 -
   operation: fremove
-  path: environment/profile/user/matthieu.bucchianeri
+  path: environment/profile/user/robot
 
 -
   operation: fremove

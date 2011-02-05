@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /Users/francois/kaneton/tool/export/modules/freplace.py
+# file          /home/mycure/kaneton/export/modules/freplace.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
-# updated       francois goudal   [wed nov 12 05:26:29 2008]
+# updated       julien quintard   [sat feb  5 11:32:56 2011]
 #
 
 #

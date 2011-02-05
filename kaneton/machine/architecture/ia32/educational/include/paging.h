@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ecture/ia32/educational/include/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri jan 14 14:55:30 2011]
+ * updated       julien quintard   [sat feb  5 14:55:07 2011]
  */
 
 #ifndef ARCHITECTURE_PAGING_H
@@ -47,8 +47,6 @@
  * ---------- prototypes ------------------------------------------------------
  *
  *	../paging.c
- *	../pd.c
- *	../pt.c
  */
 
 /*

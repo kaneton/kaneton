@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...itecture/ia32/educational/architecture.c
  *
  * created       julien quintard   [sun jan 16 13:30:38 2011]
- * updated       julien quintard   [sun jan 30 12:24:38 2011]
+ * updated       julien quintard   [sat feb  5 12:52:46 2011]
  */
 
 /*

@@ -5,37 +5,16 @@
 # machine remains.
 #
 
+#
+# architectures/platforms
+#
 -
   operation: fremove
   path: boot/loader/null.null
 
 -
   operation: fremove
-  path: boot/loader/octane.mips64
-
--
-  operation: fremove
   path: boot/loader/qemu-mips.mips64
-
--
-  operation: fremove
-  path: environment/profile/kaneton/architecture/mips64
-
--
-  operation: fremove
-  path: environment/profile/kaneton/architecture/null
-
--
-  operation: fremove
-  path: environment/profile/kaneton/platform/null
-
--
-  operation: fremove
-  path: environment/profile/kaneton/platform/octane
-
--
-  operation: fremove
-  path: environment/profile/kaneton/platform/qemu-mips
 
 -
   operation: fremove
@@ -76,3 +55,14 @@
 -
   operation: fremove
   path: kaneton/machine/platform/sun4u
+
+#
+# optimised
+#
+-
+  operation: fremove
+  path: kaneton/machine/glue/ibm-pc.ia32/optimised
+
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ia32/optimised

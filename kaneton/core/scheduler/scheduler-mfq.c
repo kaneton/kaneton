@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sun jan 30 20:23:09 2011]
+ * updated       julien quintard   [sat feb  5 10:39:19 2011]
  */
 
 /*
@@ -405,8 +405,6 @@ t_error			scheduler_show(i_cpu			id,
 /*
  * this function dumps the scheduler manager.
  *
- *							 [block::dump::comment]
- *
  * steps:
  *
  * 1) display general information on the scheduler manager.
@@ -415,21 +413,14 @@ t_error			scheduler_show(i_cpu			id,
  *   a) retrieve the scheduler object.
  *   b) show the scheduler object.
  * 4) call the machine.
- *						      [endblock::dump::comment]
  */
 
 t_error			scheduler_dump(void)
 {
-  /*							 [block::dump::vars] */
-
   o_scheduler*		scheduler;
   t_setsz		size;
   s_iterator		i;
   t_state		s;
-
-  /*						      [endblock::dump::vars] */
-
-  /*							       [block::dump] */
 
   /*
    * 1)
@@ -489,8 +480,6 @@ t_error			scheduler_dump(void)
 
   if (machine_call(scheduler, dump) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
-
-  /*							    [endblock::dump] */
 
   CORE_LEAVE();
 }
@@ -572,8 +561,6 @@ t_error			scheduler_stop(i_cpu			id)
 /*
  * this function modifies the quantum.
  *
- *						      [block::quantum::comment]
- *
  * steps:
  *
  * 0) verify the arguments.
@@ -592,20 +579,12 @@ t_error			scheduler_stop(i_cpu			id)
  *       #1) retrieve the thread object.
  *       #2) re-compute the thread's timeslice.
  * 3) call the machine.
- *
- *						   [endblock::quantum::comment]
  */
 
 t_error			scheduler_quantum(t_quantum		quantum)
 {
-  /*						      [block::quantum::vars] */
-
   s_iterator		i;
   t_state		s;
-
-  /*						   [endblock::quantum::vars] */
-
-  /*							    [block::quantum] */
 
   /*
    * 0)
@@ -742,8 +721,6 @@ t_error			scheduler_quantum(t_quantum		quantum)
   if (machine_call(scheduler, quantum, quantum) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  /*							 [endblock::quantum] */
-
   CORE_LEAVE();
 }
 
@@ -754,8 +731,6 @@ t_error			scheduler_quantum(t_quantum		quantum)
  *
  * note that this function has been designed in order to ensure a context
  * switch.
- *
- *							[block::yield::comment]
  *
  * steps:
  *
@@ -777,18 +752,11 @@ t_error			scheduler_quantum(t_quantum		quantum)
  *    note that changing the priority is not permanent since the
  *    scheduler_elect() recomputes the priorities of expired threads.
  * 3) call the machine.
- *						     [endblock::yield::comment]
  */
 
 t_error			scheduler_yield(void)
 {
-  /*							[block::yield::vars] */
-
   o_scheduler*		scheduler;
-
-  /*						     [endblock::yield::vars] */
-
-  /*							      [block::yield] */
 
   /*
    * 1)
@@ -811,8 +779,6 @@ t_error			scheduler_yield(void)
   if (machine_call(scheduler, yield) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  /*							   [endblock::yield] */
-
   CORE_LEAVE();
 }
 
@@ -828,8 +794,6 @@ t_error			scheduler_yield(void)
  * finally, this function may detect that the scheduler has been stopped.
  * should this occur, the elected thread is saved and the original kernel
  * thread is specially scheduled, hence returning to its initial state.
- *
- *						       [block::switch::comment]
  *
  * steps:
  *
@@ -903,14 +867,10 @@ t_error			scheduler_yield(void)
  * 9) call the machine.
  * 10) install the elected thread as the scheduler's current thread.
  * 11) retrieve the current CPU object and update its statistics.
- *
- *						    [endblock::switch::comment]
  */
 
 t_error			scheduler_elect(void)
 {
-  /*						       [block::switch::vars] */
-
   i_thread		current_thread;
   t_priority		current_priority;
   t_timeslice		current_timeslice;
@@ -925,10 +885,6 @@ t_error			scheduler_elect(void)
   i_cpu			cpu;
   s_iterator		i;
   t_state		s;
-
-  /*						    [endblock::switch::vars] */
-
-  /*							     [block::switch] */
 
   /*
    * 1)
@@ -1299,14 +1255,11 @@ t_error			scheduler_elect(void)
   if (cpu_update(cpu, _scheduler.quantum) != ERROR_OK)
     CORE_ESCAPE("unable to update the current CPU's statistics");
 
-  /*							  [endblock::switch] */
-
   CORE_LEAVE();
 }
 
 /*
  * this function adds a thread to its task's scheduler.
- *							  [block::add::comment]
  *
  * steps:
  *
@@ -1315,24 +1268,16 @@ t_error			scheduler_elect(void)
  * 3) compute the thread's priority.
  * 4) add the thread to the right queue.
  * 5) call the machine.
- *
- *						       [endblock::add::comment]
  */
 
 t_error			scheduler_add(i_thread			id)
 {
-  /*							  [block::add::vars] */
-
   o_thread*		thread;
   o_task*		task;
   o_scheduler*		scheduler;
   t_priority		priority;
   o_scheduler_queue*	queue;
   o_scheduler_candidate	candidate;
-
-  /*						       [endblock::add::vars] */
-
-  /*								[block::add] */
 
   /*
    * 1)
@@ -1378,15 +1323,11 @@ t_error			scheduler_add(i_thread			id)
   if (machine_call(scheduler, add, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  /*							     [endblock::add] */
-
   CORE_LEAVE();
 }
 
 /*
  * this function removes a thread from its task's scheduler.
- *
- *						       [block::remove::comment]
  *
  * steps:
  *
@@ -1401,23 +1342,15 @@ t_error			scheduler_add(i_thread			id)
  *    to the removal of the current thread since, assuming the thread is
  *    not in a running state, the scheduler will never re-inject it in
  *    its queues.
- *
- *						    [endblock::remove::comment]
  */
 
 t_error			scheduler_remove(i_thread		id)
 {
-  /*						       [block::remove::vars] */
-
   o_thread*		thread;
   o_task*		task;
   o_scheduler*		scheduler;
   t_priority		priority;
   o_scheduler_queue*	queue;
-
-  /*						    [endblock::remove::vars] */
-
-  /*							     [block::remove] */
 
   /*
    * 1)
@@ -1493,8 +1426,6 @@ t_error			scheduler_remove(i_thread		id)
 	CORE_ESCAPE("unable to yield the execution");
     }
 
-  /*							  [endblock::remove] */
-
   CORE_LEAVE();
 }
 
@@ -1509,8 +1440,6 @@ t_error			scheduler_remove(i_thread		id)
  * currently scheduled thread, removing it would incurr a yield. in this
  * case, the thread would no longer be scheduled and would therefore not
  * have the chance to add itself back to the scheduler.
- *
- *						       [block::update::comment]
  *
  * steps:
  *
@@ -1556,14 +1485,10 @@ t_error			scheduler_remove(i_thread		id)
  * 3) if the function reaches this point, the thread has not been found: an
  *    error is therefore returned.
  * 4) call the machine.
- *
- *						    [endblock::update::comment]
  */
 
 t_error			scheduler_update(i_thread		id)
 {
-  /*							     [block::update] */
-
   o_thread*		thread;
   o_task*		task;
   o_scheduler*		scheduler;
@@ -1809,8 +1734,6 @@ t_error			scheduler_update(i_thread		id)
   if (machine_call(scheduler, update, id) != ERROR_OK)
     CORE_ESCAPE("an erro occured in the machine");
 
-  /*							  [endblock::update] */
-
   CORE_LEAVE();
 }
 
@@ -1897,8 +1820,6 @@ t_error			scheduler_current(o_scheduler**		scheduler)
 /*
  * this function initializes the scheduler manager.
  *
- *						   [block::initialize::comment]
- *
  * steps:
  *
  * 1) display a message.
@@ -1923,14 +1844,10 @@ t_error			scheduler_current(o_scheduler**		scheduler)
  * 7) retrieve the currently running scheduler.
  * 8) set the scheduler's current thread as being the kernel thread.
  * 9) call the machine.
- *
- *						[endblock::initialize::comment]
  */
 
 t_error			scheduler_initialize(void)
 {
-  /*							 [block::initialize] */
-
   o_scheduler*		scheduler;
   t_setsz		ncpus;
   s_iterator		it;
@@ -2125,14 +2042,11 @@ t_error			scheduler_initialize(void)
   if (machine_call(scheduler, initialize) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  /*						      [endblock::initialize] */
-
   CORE_LEAVE();
 }
 
 /*
  * this function just reinitializes the scheduler manager.
- *							[block::clean::comment]
  *
  * steps:
  *
@@ -2148,14 +2062,10 @@ t_error			scheduler_initialize(void)
  *     i) retrieve the queue object.
  *     ii) release the set corresponding to the queue.
  *   e) release the set of expired queues.
- *
- *						     [endblock::clean::comment]
  */
 
 t_error			scheduler_clean(void)
 {
-  /*							      [block::clean] */
-
   o_scheduler*		scheduler;
   t_state		s;
   s_iterator		i;
@@ -2253,8 +2163,6 @@ t_error			scheduler_clean(void)
       if (set_release(scheduler->expired) != ERROR_OK)
 	CORE_ESCAPE("unable to release the set of expired queues");
     }
-
-  /*							   [endblock::clean] */
 
   CORE_LEAVE();
 }

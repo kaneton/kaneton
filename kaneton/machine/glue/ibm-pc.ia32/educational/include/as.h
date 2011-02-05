@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...lue/ibm-pc.ia32/educational/include/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [mon jan 17 15:43:52 2011]
+ * updated       julien quintard   [sat feb  5 15:40:42 2011]
  */
 
 #ifndef GLUE_AS_H

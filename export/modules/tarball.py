@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /Users/francois/kaneton/tool/export/modules/remove.py
+# file          /home/mycure/kaneton/export/modules/tarball.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
-# updated       francois goudal   [wed nov 12 05:26:29 2008]
+# updated       julien quintard   [sat feb  5 11:42:05 2011]
 #
 
 #
@@ -43,6 +43,7 @@ def module_action(export_dir, arg):
     env.display(env.HEADER_OK, 'action tarball ' + arg['filename'], env.OPTION_NONE)
     directory = env.cwd(env.OPTION_NONE)
     env.cd(env.path(export_dir, env.OPTION_DIRECTORY), env.OPTION_NONE)
+    env.remove(env._EXPORT_DIR_ + "/output/" + arg['filename'] + ".tar.bz2", env.OPTION_NONE)
     env.pack("kaneton", env._EXPORT_DIR_ + "/output/" + arg['filename'] + ".tar.bz2", env.OPTION_NONE)
     env.cd(directory, env.OPTION_NONE)
     return 0

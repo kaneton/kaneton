@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       julien quintard   [mon jan 31 13:54:35 2011]
+ * updated       julien quintard   [sat feb  5 10:36:05 2011]
  */
 
 /*
@@ -236,8 +236,6 @@ t_error			map_release(i_as			as,
   CORE_LEAVE();
 }
 
-/*							     [block::resize] */
-
 /*
  * this function resizes a given map identified by the map's virtual address.
  *
@@ -418,8 +416,6 @@ t_error			map_resize(i_as				as,
 
   CORE_LEAVE();
 }
-
-/*							  [endblock::resize] */
 
 /*
  * this function initialize the map manager.

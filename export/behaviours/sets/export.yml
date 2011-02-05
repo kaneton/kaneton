@@ -1,0 +1,23 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operation removes all the exported kaneton implementations.
+#
+
+-
+  operation: fremove
+  path: export/output/snapshot.tar.bz2
+
+-
+  operation: fremove
+  path: export/output/test:contributor.tar.bz2
+
+-
+  operation: fremove
+  path: export/output/test:robot.tar.bz2
+
+-
+  operation: fremove
+  path: export/output/test:student.tar.bz2
+
+

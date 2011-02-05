@@ -9,14 +9,6 @@
 #
 
 #
-# Makefile
-#
--
-  operation: freplace
-  src: export/data/Makefile
-  dst: Makefile
-
-#
 # directories
 #
 -
@@ -51,6 +43,11 @@
   operation: fremove
   path: view
 
+-
+  operation: freplace
+  src: export/data/snapshot/Makefile
+  dst: Makefile
+
 #
 # test
 #
@@ -65,7 +62,7 @@
 
 -
   operation: fremove
-  path: test/grades
+  path: test/environments
 
 -
   operation: fremove
@@ -77,7 +74,7 @@
 
 -
   operation: fremove
-  path: test/points
+  path: test/robot
 
 -
   operation: fremove
@@ -86,6 +83,14 @@
 -
   operation: fremove
   path: test/server
+
+-
+  operation: fremove
+  path: test/stages
+
+-
+  operation: fremove
+  path: test/store
 
 -
   operation: fremove
@@ -100,32 +105,9 @@
   path: test/utilities
 
 -
-  operation: fremove
-  path: test/store/bundle
-
--
-  operation: fremove
-  path: test/store/certificate
-
--
-  operation: fremove
-  path: test/store/code
-
--
-  operation: fremove
-  path: test/store/database
-
--
-  operation: fremove
-  path: test/store/key
-
--
-  operation: fremove
-  path: test/store/statement
-
--
-  operation: fremove
-  path: test/store/snapshot
+  operation: freplace
+  src: export/data/snapshot/test/Makefile
+  dst: test/Makefile
 
 #
 # tools
@@ -133,6 +115,10 @@
 -
   operation: fremove
   path: tool/ctc
+
+-
+  operation: fremove
+  path: tool/firmware
 
 -
   operation: fremove
@@ -155,5 +141,6 @@
   path: tool/script
 
 -
-  operation: fremove
-  path: tool/view
+  operation: freplace
+  src: export/data/snapshot/tool/Makefile
+  dst: tool/Makefile

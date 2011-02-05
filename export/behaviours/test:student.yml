@@ -27,15 +27,9 @@
   operation: import
   filename: sets/user:test
 
-# XXX
 -
-  operation: fremove
-  path: export/output/test:contributor.tar.bz2
-
--
-  operation: fremove
-  path: test/store/capability/contributor.cap
-# XXX
+  operation: import
+  filename: sets/export
 
 -
   operation: tarball

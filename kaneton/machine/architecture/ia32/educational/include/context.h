@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       julien quintard   [sat jan 29 10:57:03 2011]
+ * updated       julien quintard   [sat feb  5 10:40:42 2011]
  */
 
 #ifndef ARCHITECTURE_CONTEXT_H
@@ -17,8 +17,6 @@
 /*
  * ---------- macro functions -------------------------------------------------
  */
-
-/*						    [block::macros::context] */
 
 /*
  * this macro-function saves the context of the thread which had just
@@ -169,8 +167,6 @@
 	*/								\
 									\
        "popa							");
-
-/*						 [endblock::macros::context] */
 
 /*
  * ---------- dependencies ----------------------------------------------------

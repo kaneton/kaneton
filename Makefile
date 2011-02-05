@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/mycure/kaneton.STABLE/Makefile
+# file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [fri nov  5 16:17:02 2010]
+# updated       julien quintard   [sat feb  5 10:59:02 2011]
 #
 
 #
@@ -24,7 +24,7 @@
 .SILENT:
 
 .PHONY:		main initialize clean clear prototypes			\
-		headers build install test info view view-		\
+		headers build install info view view-			\
 		export export- cheat cheat- play play- record record-
 
 #
@@ -56,7 +56,7 @@ else
   prototypes								\
   headers								\
   build install								\
-  test info								\
+  info									\
   view view-								\
   export export-							\
   cheat cheat-								\
@@ -201,9 +201,5 @@ cheat- cheat:
 
 cheat-%:
 	$(call env_launch,$(_CHEAT_SCRIPT_),$*,)
-
-#
-# ---------- check ------------------------------------------------------------
-#
 
 endif

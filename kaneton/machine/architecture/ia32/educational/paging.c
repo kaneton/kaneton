@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/educational/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       julien quintard   [sun jan 30 20:46:01 2011]
+ * updated       julien quintard   [sat feb  5 15:06:56 2011]
  */
 
 /*
@@ -36,7 +36,7 @@
  * table as it is the case for the other page directory entries but the
  * page directory itself. this way, the page directory, whenever the
  * mirroring page directory entry is used, is considered by the microprocessor
- * as page table and its entries as page tables entries.
+ * as a page table and its entries as page tables entries.
  *
  * the following schema depicts this organization:
  *
@@ -64,8 +64,8 @@
  *       pte 1023 references 0x011e3000 (the page directory: pde 1023)
  *
  * this technique---assuming the kernel page directory is mapped, but this is
- * quite obvious---enables the kernel to modify any page directory/table
- * without mapping any intermediate page table. indeed, the kernel only needs
+ * quite obvious---enables the kernel to modify any kernel page table without
+ * mapping any intermediate page table. indeed, the kernel only needs
  * to reference the page table it wishes to modify through its mirrored
  * page directory entry.
  *

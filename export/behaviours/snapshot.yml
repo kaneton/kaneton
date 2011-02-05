@@ -1,0 +1,55 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this behaviour is used in order to create a kaneton snapshot for students.
+#
+
+# XXX
+#-
+#  operation: svnexport
+-
+  operation: localexport
+
+-
+  operation: import
+  filename: sets/sweep
+
+-
+  operation: import
+  filename: sets/k0
+
+-
+  operation: import
+  filename: sets/k1
+
+-
+  operation: import
+  filename: sets/k2
+
+-
+  operation: import
+  filename: sets/k3
+
+-
+  operation: import
+  filename: sets/k4
+
+-
+  operation: import
+  filename: sets/chop
+
+-
+  operation: import
+  filename: sets/ibm-pc.ia32
+
+-
+  operation: import
+  filename: sets/user:sample
+
+-
+  operation: import
+  filename: sets/export
+
+-
+  operation: tarball
+  filename: snapshot

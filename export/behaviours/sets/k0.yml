@@ -1,0 +1,31 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operations removes parts of the source code in order for
+# students to undertake the k0 project.
+#
+
+#
+# boot
+#
+-
+  operation: fremove
+  path: boot/strap
+
+-
+  operation: fremove
+  path: boot/loader/ibm-pc.ia32
+
+-
+  operation: mkdir
+  path: boot/loader/ibm-pc.ia32/educational
+
+-
+  operation: freplace
+  src: export/data/snapshot/boot/loader/ibm-pc.ia32/educational/Makefile
+  dst: boot/loader/ibm-pc.ia32/educational/Makefile
+
+-
+  operation: freplace
+  src: export/data/snapshot/boot/loader/ibm-pc.ia32/educational/loader
+  dst: boot/loader/ibm-pc.ia32/educational/loader

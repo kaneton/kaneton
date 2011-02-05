@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/export/export.py
+# file          /home/mycure/kaneton/export/export.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
-# updated       julien quintard   [fri nov  5 16:25:20 2010]
+# updated       julien quintard   [sat feb  5 11:43:43 2011]
 #
 
 #
@@ -116,6 +116,7 @@ def main():
   modules_load()
 
   work_dir = env.temporary(env.OPTION_DIRECTORY)
+
   g_export_dir =  work_dir + "/kaneton"
 
   env.display(env.HEADER_OK, 'exporting to ' + g_export_dir, env.OPTION_NONE)

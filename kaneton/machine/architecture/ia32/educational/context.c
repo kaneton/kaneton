@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [mon jan 31 13:48:09 2011]
+ * updated       julien quintard   [sat feb  5 12:54:46 2011]
  */
 
 /*
@@ -430,7 +430,7 @@ t_error			architecture_context_setup(void)
     MACHINE_ESCAPE("unable to reserve the TSS memory area");
 
   _architecture.kernel.kis.pointer =
-    _architecture.kernel.kis.base + (ARCHITECTURE_HANDLER_KIS_SIZE - 16);
+    _architecture.kernel.kis.base + (_architecture.kernel.kis.size - 16);
 
   /*
    * 3)

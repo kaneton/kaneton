@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [sun jan 30 20:53:44 2011]
+ * updated       julien quintard   [sat feb  5 10:35:42 2011]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -45,8 +45,6 @@
 #define SCHEDULER_STATE_START		1
 #define SCHEDULER_STATE_STOP		2
 
-/*						   [block::macro::constants] */
-
 /*
  * initial value for the scheduler quantum in milliseconds.
  */
@@ -79,13 +77,9 @@
 #define SCHEDULER_PRIORITY_HIGH		SCHEDULER_NPRIORITIES - 1
 #define SCHEDULER_PRIORITY_LOW		0
 
-/*						[endblock::macro::constants] */
-
 /*
  * ---------- macro functions -------------------------------------------------
  */
-
-/*						   [block::macro::functions] */
 
 /*
  * this macro-function computes the thread's high precision character
@@ -176,13 +170,9 @@
     }									\
   )
 
-/*						[endblock::macro::functions] */
-
 /*
  * ---------- types -----------------------------------------------------------
  */
-
-/*							[block::t_scheduled] */
 
 /*
  * this structure represents a scheduler's queue element.
@@ -211,8 +201,6 @@ typedef struct
   i_set				candidates;
 }				o_scheduler_queue;
 
-/*						     [endblock::t_scheduled] */
-
 /*
  * the scheduler object which managers thread candidates for a
  * given CPU specified by _cpu_.
@@ -232,14 +220,9 @@ typedef struct
 
 typedef struct
 {
-  /*						     [block::o_scheduler::1] */
-
   i_cpu				cpu;
 
-  /*						  [endblock::o_scheduler::1] */
-
   i_thread			thread;
-  /*						     [block::o_scheduler::2] */
   t_timeslice			timeslice;
   t_priority			priority;
 
@@ -247,8 +230,6 @@ typedef struct
   i_set				expired;
 
   t_state			state;
-
-  /*						  [endblock::o_scheduler::2] */
 
   machine_data(o_scheduler);
 }				o_scheduler;

@@ -30,6 +30,43 @@
 - filer un test d'exemple pour chaque tranche pour qu'ils sachent a quoi
   s'attendre.
 
+- dire qu'il y a des FIXME[...] a remplir. si on avait laisse le code, ca vous
+  aurait contraint a suivre notre structure/organisation. donc on a prefere
+  ovus laissez faire mais ca implique que vous mettiez a jour des portions
+  de code qui doivent utiliser le code que vous avez ajoute.
+
+glue/event.c
+architecture/environment.c
+
+- donner des tips genre: macro opur generer le handler bas niveau qui
+  ensuite appelle une fonction C
+ => en gros deux fichiers: un qui contient des fonctions de manip d'IDT
+    et un pour mettre en place les handlers d'interrupts: exceptions, IRQs
+    etc.
+- attention: une fois l'interruption geree, le systeme retourne a l'execution
+  du thread etc.
+
+- dire que _architecture.error doit etre rempli des qu'une
+  interruption/exception dispose d'un code d'erreur.
+
+- ne pas reserver de timer scheduler dans initialize mais dans start & le detruire dans stop
+
+- revoir les tests! core/timer et architecture/event -> il en doit pas y avoir de thread!
+  -> solution: reserver un event, activer les event, et normalement le scheduler ne se lancera pas (car pas start)
+     et donc il nous suffit de boucler en attendant (avec clock) et verifier que l'event a eu lieu.
+
+- ils doivent egalement retoucher timer.c
+
+- une fois tout virer, prendre les tests de k1 et les branler sur la tarball etudiante k1
+  -> ca devrait faire zero passed. puis rajouter le code qu'il faut et retester.
+
+- dans les deux cas, ils doivent coder la partie glue et tout ce qu'il faut dans arch
+
+- prendre le code qu'on a enlever
+
+- modifier le code de scheduler dans export/data/ pour prendre en compte le fait que
+  le timer est reserve dans start
+
 #
 # ---------- test -------------------------------------------------------------
 #
@@ -46,13 +83,19 @@
 - mettre le timeout dans le manifest, en fonction de l'environment
     { xen: XXX, qemu: XXX }
 
+- tester avec un vrai user car l'export request dans client ne marchera
+  surement pas!
+
 #
 # ---------- export -----------------------------------------------------------
 #
 
-- fini le ARCH=IA32 ce sera tjs IA32/EDUCATIONAL, changer les fichiers
-- bien verifier que ca compiler/clear ie que les Makefiles sont bons
-- on peut fournir le boot loader en .lo pour eviter qu'ils grugent libia32
+- scheduler.h: des trucs a virer?
+- virer tout dans glue/region?
+- virer tout dans glue/event?
+- virer handler.c, pd.c, pt.c, tlb.c
+
+- WARNING: j'ai laisse l'env user julien.quintard
 
 #
 # ---------- evaluation -------------------------------------------------------

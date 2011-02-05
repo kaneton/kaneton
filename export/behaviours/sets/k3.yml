@@ -1,0 +1,40 @@
+#
+# ---------- information ------------------------------------------------------
+#
+# this set of operations removes parts of the source code in order for
+# students to undertake the k3 project.
+#
+
+#
+# core
+#
+-
+  operation: freplace
+  src: export/data/snapshot/kaneton/core/scheduler/scheduler-mfq.c
+  dst: kaneton/core/scheduler/scheduler-mfq.c
+
+-
+  operation: freplace
+  src: export/data/snapshot/kaneton/core/include/scheduler.h
+  dst: kaneton/core/include/scheduler.h
+
+#
+# glue
+#
+-
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/glue/ibm-pc.ia32/educational/scheduler.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/educational/scheduler.c
+
+#
+# architecture
+#
+-
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/context.c
+  dst: kaneton/machine/architecture/ia32/educational/context.c
+
+-
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/context.h
+  dst: kaneton/machine/architecture/ia32/educational/include/context.h

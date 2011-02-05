@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/region/region-fit.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [sun jan 30 20:11:16 2011]
+ * updated       julien quintard   [sat feb  5 10:37:35 2011]
  */
 
 /*
@@ -72,7 +72,6 @@ m_region		_region;
 
 /*
  * this function shows a region's attributes.
- *							 [block::show::comment]
  *
  * steps:
  *
@@ -80,15 +79,12 @@ m_region		_region;
  * 2) build the options string.
  * 3) display the attributes.
  * 4) call the machine.
- *						      [endblock::show::comment]
  */
 
 t_error			region_show(i_as			asid,
 				    i_region			regid,
 				    mt_margin			margin)
 {
-  /*							       [block::show] */
-
   o_region*		o;
   char			options[2];
 
@@ -143,26 +139,20 @@ t_error			region_show(i_as			asid,
   if (machine_call(region, show, asid, regid, margin) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  /*							    [endblock::show] */
-
   CORE_LEAVE();
 }
 
 /*
  * this function dumps all the regions of the given address space.
- *							 [block::dump::comment]
  *
  * steps:
  *
  * 1) display general information.
  * 2) call the machine.
- *						      [endblock::dump::comment]
  */
 
 t_error			region_dump(void)
 {
-  /*							       [block::dump] */
-
   /*
    * 1)
    */
@@ -181,8 +171,6 @@ t_error			region_dump(void)
 
   if (machine_call(region, dump) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
-
-  /*							    [endblock::dump] */
 
   CORE_LEAVE();
 }
@@ -397,8 +385,6 @@ t_error			region_space(i_as			asid,
  * of regions. therefore if the set has not be configured to clone the
  * objects to add, the object should have been pre-allocated.
  *
- *						       [block::inject::comment]
- *
  * steps:
  *
  * 0) verify the arguments.
@@ -406,15 +392,12 @@ t_error			region_space(i_as			asid,
  * 2) fill the remaining region attributes, especially the identifier.
  * 3) add the object to the address space's set of regions.
  * 4) call the machine.
- *						    [endblock::inject::comment]
  */
 
 t_error			region_inject(i_as			as,
 				      o_region*			object,
 				      i_region*			id)
 {
-  /*							     [block::inject] */
-
   o_as*			o;
 
   /*
@@ -468,12 +451,8 @@ t_error			region_inject(i_as			as,
   if (machine_call(region, inject, as, object, id) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  /*							  [endblock::inject] */
-
   CORE_LEAVE();
 }
-
-/*							      [block::split] */
 
 /*
  * this function splits a region into two regions according to the
@@ -586,10 +565,6 @@ t_error			region_split(i_as			asid,
 
   CORE_LEAVE();
 }
-
-/*							   [endblock::split] */
-
-/*							     [block::resize] */
 
 /*
  * this function resizes a region according to the given size which can be
@@ -823,10 +798,6 @@ t_error			region_resize(i_as			as,
   CORE_LEAVE();
 }
 
-/*							  [endblock::resize] */
-
-/*							   [block::coalesce] */
-
 /*
  * this function merges two adjacent regions into a single one.
  *
@@ -922,13 +893,9 @@ t_error			region_coalesce(i_as			asid,
   CORE_LEAVE();
 }
 
-/*							[endblock::coalesce] */
-
 /*
  * this function reserves a region in order to map the given segment
  * at a precise offset, for a specific size and according to several options.
- *
- *						      [block::reserve::comment]
  *
  * steps:
  *
@@ -948,8 +915,6 @@ t_error			region_coalesce(i_as			asid,
  * 7) add the object to the address space's set of regions.
  * 8) call the machine.
  * 9) return the region's identifier.
- *
- *						   [endblock::reserve::comment]
  */
 
 t_error			region_reserve(i_as			asid,
@@ -960,8 +925,6 @@ t_error			region_reserve(i_as			asid,
 				       t_vsize			size,
 				       i_region*		region)
 {
-  /*							    [block::reserve] */
-
   o_segment*		segment;
   o_as*			as;
   o_region*		o;
@@ -1096,15 +1059,11 @@ t_error			region_reserve(i_as			asid,
 
   *region = o->id;
 
-  /*							 [endblock::reserve] */
-
   CORE_LEAVE();
 }
 
 /*
  * this function releases an existing region from the given address space.
- *
- *						      [block::release::comment]
  *
  * steps:
  *
@@ -1112,15 +1071,11 @@ t_error			region_reserve(i_as			asid,
  * 2) retrieve the address space object.
  * 3) retrieve the region object.
  * 4) remove the region from the address space's set of regions.
- *
- *						   [endblock::release::comment]
  */
 
 t_error			region_release(i_as			asid,
 				       i_region			regid)
 {
-  /*							    [block::release] */
-
   o_as*			as;
 
   /*
@@ -1144,8 +1099,6 @@ t_error			region_release(i_as			asid,
   if (set_remove(as->regions, regid) != ERROR_OK)
     CORE_ESCAPE("unable to remove the object from the address space's "
 		"set of regions");
-
-  /*							 [endblock::release] */
 
   CORE_LEAVE();
 }
@@ -1222,21 +1175,15 @@ t_error			region_locate(i_as			as,
 /*
  * this function removes every region that belongs to the give address space.
  *
- *							[block::flush::comment]
- *
  * steps:
  *
  * 1) call the machine.
  * 2) retrieve the address space object.
  * 3) go through the existing regions and release them all.
- *
- *						     [endblock::flush::comment]
  */
 
 t_error			region_flush(i_as			asid)
 {
-  /*							      [block::flush] */
-
   o_as*			as;
   s_iterator		it;
   i_region*		obj;
@@ -1267,8 +1214,6 @@ t_error			region_flush(i_as			asid)
       if (region_release(asid, *obj) != ERROR_OK)
 	CORE_ESCAPE("unable to release the region");
     }
-
-  /*							   [endblock::flush] */
 
   CORE_LEAVE();
 }
@@ -1318,8 +1263,6 @@ t_error			region_get(i_as				asid,
 				   i_region			regid,
 				   o_region**			object)
 {
-  /*								[block::get] */
-
   o_as*			as;
 
   /*
@@ -1344,8 +1287,6 @@ t_error			region_get(i_as				asid,
     CORE_ESCAPE("unable to retrieve the region from the address space's set "
 		"of regions");
 
-  /*							     [endblock::get] */
-
   CORE_LEAVE();
 }
 
@@ -1354,8 +1295,6 @@ t_error			region_get(i_as				asid,
  *
  * the _base_ and _size_ arguments represents the virtual space i.e its
  * base address and available size.
- *
- *						   [block::initialize::comment]
  *
  * steps:
  *
@@ -1368,14 +1307,11 @@ t_error			region_get(i_as				asid,
  *    every time the first page is referenced. this is a common practice
  *    since most pointers are manually initialised by programmers to NULL.
  * 4) calls the machine.
- *						[endblock::initialize::comment]
  */
 
 t_error			region_initialize(t_vaddr		base,
 					  t_vsize		size)
 {
-  /*							 [block::initialize] */
-
   /*
    * 0)
    */
@@ -1418,28 +1354,20 @@ t_error			region_initialize(t_vaddr		base,
   if (machine_call(region, initialize, base, size) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
-  /*						      [endblock::initialize] */
-
   CORE_LEAVE();
 }
 
 /*
  * this function cleans the region manager.
  *
- *							[block::clean::comment]
- *
  * steps:
  *
  * 1) display a message.
  * 2) call the machine.
- *
- *						     [endblock::clean::comment]
  */
 
 t_error			region_clean(void)
 {
-  /*							      [block::clean] */
-
   /*
    * 1)
    */
@@ -1453,8 +1381,6 @@ t_error			region_clean(void)
 
   if (machine_call(region, clean) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
-
-  /*							   [endblock::clean] */
 
   CORE_LEAVE();
 }

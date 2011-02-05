@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /Users/francois/kaneton/tool/export/modules/breplace.py
+# file          /home/mycure/kaneton/export/modules/breplace.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
-# updated       francois goudal   [wed nov 12 05:26:29 2008]
+# updated       julien quintard   [sat feb  5 10:33:33 2011]
 #
 
 #
@@ -51,7 +51,7 @@ def module_action(export_dir, arg):
     dstf = open(tmpfilepath, 'w')
     line = srcf.readline()
     startpattern = re.compile(".*[[]block\:\:" + label + "[]].*")
-    endpattern = re.compile(".*[[]endblock\:\:" + label + "[]].*")
+    endpattern = re.compile(".*[[]/block\:\:" + label + "[]].*")
     while line != "":
         if strip == 0:
             if startpattern.match(line) != None:

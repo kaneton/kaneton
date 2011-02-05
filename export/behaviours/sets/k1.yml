@@ -5,250 +5,55 @@
 # students to undertake the k1 project.
 #
 
+#
+# glue
+#
 -
-  operation: bremove
-  id: kaneton/core/region/region.c::show::comment
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::show
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::dump::comment
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::dump
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::inject::comment
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::inject
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::split
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::resize
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::coalesce
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::reserve::comment
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::reserve
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::release::comment
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::release
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::flush::comment
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::flush
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::get
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::initialize::comment
-
--
-  operation: breplace
-  id: kaneton/core/region/region.c::initialize
-  data: |
-     return(ERROR_UNKNOWN); 
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::clean::comment
-
--
-  operation: bremove
-  id: kaneton/core/region/region.c::clean
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/glue/ibm-pc.ia32/educational/event.c
+  dst: kaneton/machine/glue/ibm-pc.ia32/educational/event.c
 
 -
   operation: freplace
-  src: export/data/kaneton_core_region_Makefile
-  dst: kaneton/core/region/Makefile
+  src: export/data/snapshot/kaneton/machine/glue/ibm-pc.ia32/educational/include/event.h
+  dst: kaneton/machine/glue/ibm-pc.ia32/educational/include/event.h
+
+#
+# architecture
+#
+-
+  operation: fremove
+  path: kaneton/machine/architecture/ia32/educational/handler.c
 
 -
   operation: fremove
-  path: kaneton/core/region/region-fit.c
+  path: kaneton/machine/architecture/ia32/educational/include/handler.h
 
 -
-  operation: breplace
-  id: kaneton/machine/glue/ibm-pc.ia32/educational/region.c::dispatch
-  data: |
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL
+  operation: fremove
+  path: kaneton/machine/architecture/ia32/educational/idt.c
 
 -
-  operation: bremove
-  id: kaneton/machine/glue/ibm-pc.ia32/educational/region.c::functions
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/idt.h
+  dst: kaneton/machine/architecture/ia32/educational/include/idt.h
 
 -
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/paging.c::globals
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/environment.c
+  dst: kaneton/machine/architecture/ia32/educational/environment.c
 
 -
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/paging.c::functions
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/context.c
+  dst: kaneton/machine/architecture/ia32/educational/context.c
 
 -
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_dump
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/architecture.h
+  dst: kaneton/machine/architecture/ia32/educational/include/architecture.h
 
 -
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_build
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_base
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_activate::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_activate
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_get_cr3
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_add_table::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_add_table
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_get_table::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_get_table
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_delete_table::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pd.c::pd_delete_table
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_dump
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_build::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_build
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_add_page::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_add_page
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_get_page::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_get_page
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_delete_page::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/pt.c::pt_delete_page
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/tlb.c::tlb_invalidate
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/tlb.c::tlb_flush
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::map_pd
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::map_pt
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::map_region::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::map_region
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::unmap_region::comment
-
--
-  operation: bremove
-  id: kaneton/machine/architecture/ia32/generic/mapping.c::unmap_region
-
--
-  operation: bremove
-  id: kaneton/core/map/map.c::resize
-
--
-  operation: bremove
-  id: kaneton/core/interface/interface.c::map_resize
-
--
-  operation: breplace
-  id: kaneton/core/interface/interface.c::dispatch::map_resize
-  data: |
-    NULL,
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/Makefile
+  dst: kaneton/machine/architecture/ia32/educational/Makefile

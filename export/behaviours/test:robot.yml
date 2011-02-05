@@ -23,15 +23,9 @@
   operation: import
   filename: sets/ibm-pc.ia32
 
-# XXX
 -
-  operation: fremove
-  path: export/output/test:robot.tar.bz2
-
--
-  operation: fremove
-  path: export/output/test:student.tar.bz2
-# XXX
+  operation: import
+  filename: sets/export
 
 -
   operation: tarball

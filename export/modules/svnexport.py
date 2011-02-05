@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /Users/francois/kaneton/tool/export/modules/remove.py
+# file          /home/mycure/kaneton/export/modules/svnexport.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
-# updated       francois goudal   [wed nov 12 05:26:29 2008]
+# updated       julien quintard   [sat feb  5 11:14:04 2011]
 #
 
 #
@@ -41,6 +41,6 @@ def module_init():
 #
 def module_action(export_dir, arg):
     env.display(env.HEADER_OK, 'action svnexport', env.OPTION_NONE)
-    env.launch("svn", "export svn+ssh://subversion@repositories.opaak.org/kaneton " + export_dir,env.OPTION_NONE)
+    env.launch("svn", "export svn+ssh://subversion@repositories.passeism.org/kaneton " + export_dir,env.OPTION_NONE)
 
     return 0
