@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/scripts/evaluate.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/evaluate.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [mon dec 20 08:28:31 2010]
+# updated       julien quintard   [fri feb  4 13:16:10 2011]
 #
 
 #

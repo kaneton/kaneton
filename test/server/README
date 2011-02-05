@@ -1,0 +1,52 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/KANETON-TEST-SYSTEM/server/README
+#
+# created       julien quintard   [wed feb  2 23:07:42 2011]
+# updated       julien quintard   [sat feb  5 10:20:04 2011]
+#
+
+The server side of the test system is composed of two scripts which
+then trigger other scripts located in the scripts/ directory.
+
+Note that both scripts must be launched in order for the server to work.
+
+#
+# ---------- registrar --------------------------------------------------------
+#
+
+The registrar waits for incoming requests enabling the clients to list their
+reports, consult a report, submit a final snapshot for a given stage or
+even trigger a test suite in order to validate an implementation.
+
+In this last case, the provided snapshot is saved, its report is set up
+so as to include all the metadata information and the test is scheduled
+by adding the snapshot identifier to the scheduler's queue.
+
+#
+# ---------- scheduler --------------------------------------------------------
+#
+
+The scheduler script waits for identifier to be recorded in the queue. When
+this occurs, the report is loaded in order to retrieve the metadata such
+as the testing environment, the test suite to trigger and so forth. The
+snapshot is then extracted, a bootable image is generated and the test
+suite is launched.
+
+In the end, an email is sent to the user so as to inform her of the
+availability of the test report.
+
+In addition, the scheduler triggers some hooks, located in the hooks/
+directory. Please refer to the README file for more information on those
+hooks.
+
+#
+# ---------- server.sh --------------------------------------------------------
+#
+
+This shell scripts spawns both the previous scripts.

@@ -1,0 +1,33 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/KANETON-TEST-SYSTEM/hooks/README
+#
+# created       julien quintard   [thu feb  3 22:54:35 2011]
+# updated       julien quintard   [sat feb  5 10:05:24 2011]
+#
+
+This directory contains additional scripts which are triggered whenever
+a testing process completes.
+
+The hook dispatcher file 'hooks.hk' contains the list of the hooks
+to trigger.
+
+Note that a crontab 'hooks.cron' is provided and should be loaded in order
+for the 'cron.py' script to be triggered once a day.
+
+#
+# ---------- supervisor -------------------------------------------------------
+#
+
+XXX
+
+#
+# ---------- challenge --------------------------------------------------------
+#
+
+XXX

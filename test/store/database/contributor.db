@@ -1,22 +1,19 @@
+quotas:
+  qemu:
+    ibm-pc.ia32/educational: {bugs: -1, k1: -1, k2: -1, k3: -1, kaneton: -1}
+  xen: {bugs: -1, k1: -1, k2: -1, k3: -1, kaneton: -1}
 reports:
   qemu:
     ibm-pc.ia32/educational:
+      bugs: []
       k1: []
       k2: []
       k3: []
+      kaneton: []
   xen:
     ibm-pc.ia32/educational:
+      bugs: []
       k1: []
       k2: []
       k3: []
-settings:
-  qemu:
-    ibm-pc.ia32/educational:
-      k1: {quota: -1, requests: 0}
-      k2: {quota: -1, requests: 0}
-      k3: {quota: -1, requests: 0}
-  xen:
-    ibm-pc.ia32/educational:
-      k1: {quota: -1, requests: 0}
-      k2: {quota: -1, requests: 0}
-      k3: {quota: -1, requests: 0}
+      kaneton: []

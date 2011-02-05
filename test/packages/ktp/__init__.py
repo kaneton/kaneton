@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/__init__.py
 #
 # created       julien quintard   [mon oct 25 19:43:41 2010]
-# updated       julien quintard   [wed feb  2 15:56:30 2011]
+# updated       julien quintard   [thu feb  3 22:58:31 2011]
 #
 
 #
@@ -42,6 +42,7 @@ import code
 import configuration
 import database
 import environment
+import hook
 import key
 import log
 import manifest

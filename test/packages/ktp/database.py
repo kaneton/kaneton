@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/database.py
 #
 # created       julien quintard   [mon oct 25 20:23:05 2010]
-# updated       julien quintard   [mon nov  1 18:55:35 2010]
+# updated       julien quintard   [thu feb  3 23:58:14 2011]
 #
 
 #

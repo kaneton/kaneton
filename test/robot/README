@@ -5,13 +5,13 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/robot/README
+# file          /home/mycure/kaneton/test/robot/README
 #
 # created       julien quintard   [tue dec  7 21:53:26 2010]
-# updated       julien quintard   [tue dec  7 22:05:05 2010]
+# updated       julien quintard   [fri feb  4 18:25:10 2011]
 #
 
-The robot enables the contributor to be notified of the state of the current
+The robot enables the contributors to be notified of the state of the current
 research implementation.
 
 The robot script starts by retrieving the current kaneton implementation by
@@ -24,3 +24,10 @@ identity.
 Once the repository checked-out, the script initialize the environment
 and triggers a test through the test client script located in the kaneton
 directory.
+
+Since the address email registered within the robot's capability is the
+kaneton contributors' mailing-list, an email is sent to the mailing-list
+summarising the testing of the kaneton research implementation.
+
+Note that the robot script logs information. Therefore, a directory
+store/log/ must be available for logs to be created and updated.

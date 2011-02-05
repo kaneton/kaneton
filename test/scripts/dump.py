@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/scripts/dump.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/dump.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [mon dec 20 08:28:23 2010]
+# updated       julien quintard   [thu feb  3 00:01:11 2011]
 #
 
 #

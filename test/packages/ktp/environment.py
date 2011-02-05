@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/environment.py
 #
 # created       julien quintard   [mon oct 25 20:23:05 2010]
-# updated       julien quintard   [sun dec  5 22:15:23 2010]
+# updated       julien quintard   [wed feb  2 22:57:01 2011]
 #
 
 #
@@ -24,6 +24,9 @@ import re
 #
 
 Extension = ".env"
+
+QEMU = "qemu"
+Xen = "xen"
 
 #
 # ---------- functions --------------------------------------------------------

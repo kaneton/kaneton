@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/log.py
 #
 # created       julien quintard   [mon oct 25 19:58:10 2010]
-# updated       julien quintard   [wed feb  2 15:58:00 2011]
+# updated       julien quintard   [wed feb  2 20:31:59 2011]
 #
 
 #
@@ -33,15 +33,15 @@ Extension = ".log"
 #
 def                     Record(directory, message):
   handle = None
-  dat = None
+  header = None
   path = None
 
   path = directory + "/" + time.strftime("%Y%m%d") + Extension
 
-  dat = time.strftime("[%Y/%m/%d %H:%M:%S] ")
+  header = time.strftime("[%Y/%m/%d %H:%M:%S] ")
 
   handle = open(path, "a")
 
-  handle.write(dat + message + "\n")
+  handle.write(header + message + "\n")
 
   handle.close()

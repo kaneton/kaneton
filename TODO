@@ -34,29 +34,17 @@
 # ---------- test -------------------------------------------------------------
 #
 
-- pour le robot, faire une capability speciale avec comme email la ML
-
-- distribuer deux capabilities aux etudiants: une pour k0 et une autre pour
-  les autres stages
-
 - XXX dans test/?
 
-- faire un script qui prends les etudiants et une tranche et balance sur la
-  ML un resume
+- terminer les scripts select.py/file.py et evaluate.py: voire README
+- peut etre revoir les capabilities pour inclure un champ group, student,
+  school, year comme ca on se prendrait moins la tete a les retrouver
 
-- permettre de soumettre k0 bien qu'ils n'ont pas la tarball. filer un
-  petit script en python qui prend en argument une capability + le snapshot
-  a rendre. -> si un snapshot.tar.bz2 dans test/client/ alors on pose la
-  question au user
-
-- faire plutot qu'un script evaluate, un script qui extrait les snapshots
-  et les range dans history -> file.py
-- puis, un script qui evalue les tarballs dans history -> evaluate.py
+- terminer le hook supervisor
+- ecrire le hook challenge
 
 - mettre le timeout dans le manifest, en fonction de l'environment
     { xen: XXX, qemu: XXX }
-
-- finir d'ecrire SettingUp dans le Wiki sur le testing
 
 #
 # ---------- export -----------------------------------------------------------

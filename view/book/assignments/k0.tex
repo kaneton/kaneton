@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k0.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [tue feb  1 21:46:10 2011]
+% updated       julien quintard   [fri feb  4 23:19:35 2011]
 %
 
 %
@@ -150,10 +150,44 @@ remember to remove these tests from the submitted snapshot. Thus, your
 source files should never include a label \code{\_start} or any label starting
 with \code{\_\_}. Note however that the bootsector signatures must remain.
 
-Note that this stage differs from the following ones regarding the submission.
-Students are asked to send, by email, their snapshot to the addres below:
+Note that this stage differs slightly from the following ones regarding
+the submission. Indeed, the following stages taking place within the
+microkernel, the test client automatically packages the student's current
+implementation and sends it to the server.
 
-XXX
+For this stage however, the student is asked to package its source files
+manually, according to the hierarchical structure given above. Then,
+the freshly created snapshot must be placed in the client directory
+under the name \code{snapshot.tar.bz2} \ie{} at the precise location:
+\location{test/client/snapshot.tar.bz2}.
+
+Finally, the test client can be used to submit the stage \name{k0}. The
+client, noticing the presence of the snapshot, will use it instead of
+generating a snapshot from the current kaneton implementation.
+
+The lines below illustrates this process.
+
+\begin{verbatim}
+  $k0> ls
+  ex1/ ex2/ ex3/ ex4/ ex5/ ex6/
+  $k0> tar cjvf k0.tar.bz2 *
+  [...]
+  $k0> mv k0.tar.bz2 ~/kaneton/test/client/snapshot.tar.bz2
+  $k0> cd ~/kaneton/test/client/
+  $kaneton/test/client> ls
+  client.py Makefile README snapshot.tar.bz2
+  $kaneton/test/client> make submit-k0
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /home/chiche/kaneton/environment/profile/user/florent.chichery/florent.chichery.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] loading the snapshot '/home/chiche/kaneton/test/client/snapshot.tar.bz2'
+  [+] requesting the server
+  [+] the snapshot has been submitted successfully
+  $kaneton/test/client>
+\end{verbatim}
 
 %
 % development

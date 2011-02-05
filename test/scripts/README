@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/README
 #
 # created       julien quintard   [mon nov  1 21:45:10 2010]
-# updated       julien quintard   [mon dec  6 16:24:27 2010]
+# updated       julien quintard   [sat feb  5 09:39:19 2011]
 #
 
 This directory contains standalone scripts for performing various
@@ -47,33 +47,6 @@ Example:
  $> ./stress.py --i kaneton.img --environment xen --suite k2
 
 #
-# ---------- distribute -------------------------------------------------------
-#
-
-The distribute standalone script takes a set of capabilities and emails them
-to their recipient.
-
-Example:
-
-  $> ./distribute --pattern "^epita::2011.*$"
-
-#
-# ---------- evaluate ---------------------------------------------------------
-#
-
-The evaluate script takes the student capabilities, retrieve the snapshots
-from their databases according to the given stage.
-
-These snapshots are then tested against a set of test suites before evaluating
-the results based on a set of points.
-
-The script then issues a statement containing the students' grades.
-
-Example:
-
-  $> ./evaluate --stage k1 --pattern "^epita::.*$"
-
-#
 # ---------- dump -------------------------------------------------------------
 #
 
@@ -90,3 +63,48 @@ The test script takes a report, potentially new, tests it and completes it
 with the results.
 
   $> ./test.py --report 20101205:224913
+
+#
+# ---------- distribute -------------------------------------------------------
+#
+
+The distribute standalone script takes a set of capabilities and emails them
+to their recipient.
+
+Example:
+
+  $> ./distribute --pattern "^epita::2011.*$"
+
+#
+# ---------- select -----------------------------------------------------------
+#
+
+The select script takes retrieves the submitted snapshots and saves them
+in a directory according to the student's school, year and group/student
+name.
+
+  $> ./select --pattern "^epita::2011.*$"
+
+XXX recupere stages/k1.stg qui contient un champ deadline
+XXX rajouter peut etre un path en pattern genre: [school]/[year]/[group]/
+XXX mettre du log
+
+#
+# ---------- evaluate ---------------------------------------------------------
+#
+
+XXX rajouter du log
+XXX virer history
+XXX recuperer les snapshots a partir de history
+
+The evaluate script takes the student capabilities, retrieve the snapshots
+from their databases according to the given stage.
+
+These snapshots are then tested against a set of test suites before evaluating
+the results based on a set of points.
+
+The script then issues a statement containing the students' grades.
+
+Example:
+
+  $> ./evaluate --stage k1 --pattern "^epita::.*$"

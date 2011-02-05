@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/scripts/stress.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [mon dec 20 08:29:19 2010]
+# updated       julien quintard   [fri feb  4 13:10:01 2011]
 #
 
 #
@@ -65,16 +65,13 @@ import ktp
 # directories
 SuitesDirectory = TestDirectory + "/suites"
 TestsDirectory = TestDirectory + "/tests"
+StoreDirectory = TestDirectory + "/store"
 
-# indexes
-QEMUIndex = 0
-XenIndex = 1
-
-# environments: qemu/xen.
-Environments = [ "qemu", "xen" ]
+# stores
+LogStore = StoreDirectory + "/log"
 
 # timeout in seconds: qemu/xen.
-Timeouts = [ 300, 30 ]
+Timeouts = { ktp.environment.QEMU: 300, ktp.environment.Xen: 30 }
 
 # magic number for serial communications.
 Magic = 0xF4859632
@@ -160,28 +157,6 @@ def                     Receive(line):
   return (StatusOk, (type, message))
 
 #
-# ---------- functions --------------------------------------------------------
-#
-
-#
-# this function displays an error message, cleans the script before
-# exiting.
-#
-def                     Error(namespace, message):
-  # display the script name.
-  print("[stress]")
-
-  # print the message.
-  if message:
-    print(message)
-
-  # clean the script.
-  Clean(namespace)
-
-  # exit with an error code.
-  sys.exit(42)
-
-#
 # this function calls a test and return the result.
 #
 def                     Call(namespace,
@@ -218,7 +193,8 @@ def                     Call(namespace,
       continue
 
     # handle the signature command.
-    if (type == TypeCommand) and (message[:len(SignatureToken)] == SignatureToken):
+    if (type == TypeCommand) and                                        \
+       (message[:len(SignatureToken)] == SignatureToken):
       namespace.signature += message[len(SignatureToken) + 1:]
       continue
 
@@ -240,12 +216,37 @@ def                     Call(namespace,
   return (StatusOk, "%.3f" % (end - start))
 
 #
+# ---------- functions --------------------------------------------------------
+#
+
+#
+# this function displays an error message, cleans the script before
+# exiting.
+#
+def                     Error(namespace, message):
+  # display the script name.
+  print("[stress]")
+
+  # print the message.
+  if message:
+    print(message)
+
+  # clean the script.
+  Clean(namespace)
+
+  # exit with an error code.
+  sys.exit(42)
+
+#
 # this function creates a bootable cdrom image from the
 # snapshot image.
 #
 def                     ISO(namespace):
   # create a temporary file.
   namespace.iso = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+  ktp.log.Record(LogStore,
+                 "#(stress) message(creating the ISO)")
 
   # create an ISO file.
   if ktp.process.Invoke("mkisofs",
@@ -266,6 +267,9 @@ def                     Manifests(namespace):
   component = None
   test = None
   name = None
+
+  ktp.log.Record(LogStore,
+                 "#(stress) message(loading the manifests)")
 
   # read the file.
   stream = ktp.suite.Load(SuitesDirectory + "/" +                       \
@@ -320,6 +324,9 @@ def                     Results(namespace):
   component = None
   test = None
 
+  ktp.log.Record(LogStore,
+                 "#(stress) message(initializing the results)")
+
   # initialize the results
   namespace.results = {}
 
@@ -329,10 +336,13 @@ def                     Results(namespace):
 
     # for every test.
     for test in namespace.manifests[component]:
-      namespace.results[component][test] = { "duration": None,
-                                             "output": None,
-                                             "status": None,
-                                             "description": namespace.manifests[component][test]["description"] }
+      namespace.results[component][test] =                              \
+        {
+          "duration": None,
+          "output": None,
+          "status": None,
+          "description": namespace.manifests[component][test]["description"]
+        }
 
 #
 # this is the alarm handler.
@@ -356,14 +366,23 @@ def                     QEMU(namespace,
   message = None
   duration = None
 
+  ktp.log.Record(LogStore,
+                 "#(stress) environment(QEMU)")
+
   # build a stream file.
   stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
+  ktp.log.Record(LogStore,
+                 "#(stress) message(setting up the timer)")
+
   # set the alarm signal.
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(Timeouts[QEMUIndex])
+  signal.alarm(Timeouts[ktp.environment.QEMU])
 
   try:
+    ktp.log.Record(LogStore,
+                   "#(stress) message(launching QEMU)")
+
     # invoke the qemu virtual machine.
     monitor = ktp.process.Invoke("qemu",
                                  [ "-nographic",
@@ -376,12 +395,18 @@ def                     QEMU(namespace,
     # wait a few seconds to be sure QEMU has started.
     time.sleep(3)
 
+    ktp.log.Record(LogStore,
+                   "#(stress) message(reading the output)")
+
     # read the status file.
     content = ktp.miscellaneous.Pull(stream)
 
     # check if this operation has been successful.
     if not content:
       raise Exception("[error] unable to retrieve QEMU's log file")
+
+    ktp.log.Record(LogStore,
+                   "#(stress) message(extracting the serial port)")
 
     # retrieve the serial port.
     match = re.search("char device redirected to (.*)$", content, re.MULTILINE)
@@ -393,18 +418,30 @@ def                     QEMU(namespace,
     # set the port.
     port = match.group(1)
 
+    ktp.log.Record(LogStore,
+                   "#(stress) message(initiating the serial communication)")
+
     # initialize the serial line.
     line = serial.Serial(port, 57600)
 
     # wait for the serial handshake to proceed.
     time.sleep(3)
 
+    ktp.log.Record(LogStore,
+                   "#(stress) message(triggering the test)")
+
     # trigger the test.
     (status, duration) =                                                \
        Call(namespace, line, symbol)
 
+    ktp.log.Record(LogStore,
+                   "#(stress) message(retrieving the test output)")
+
     # set the output
     output = namespace.text
+
+    ktp.log.Record(LogStore,
+                   "#(stress) message(terminating the VM)")
 
     # destroy the virtual machine instance.
     try:
@@ -418,6 +455,9 @@ def                     QEMU(namespace,
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
   except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(stress) message(destroying the VM)")
+
     # destroy the virtual machine by terminating
     # the process.
     try:
@@ -435,6 +475,9 @@ def                     QEMU(namespace,
     # set the status.
     status = ktp.StatusError
 
+    ktp.log.Record(LogStore,
+                   "#(stress) message(generating the error output)")
+
     # retrieve the emulator's output.
     output = """
 %(emulator)s
@@ -446,6 +489,9 @@ def                     QEMU(namespace,
 
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
+
+  ktp.log.Record(LogStore,
+                 "#(stress) message(resetting the timer)")
 
   # reset the alarm.
   signal.alarm(0)
@@ -470,8 +516,14 @@ def                     Xen(namespace,
   port = None
   duration = None
 
+  ktp.log.Record(LogStore,
+                 "#(stress) environment(Xen)")
+
   # create a temporary file.
   namespace.configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+  ktp.log.Record(LogStore,
+                 "#(stress) message(generating the Xen configuration)")
 
   # configuration.
   configuration = """
@@ -491,11 +543,17 @@ serial = "pty"
   # build a stream file.
   stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
+  ktp.log.Record(LogStore,
+                 "#(stress) message(setting up the timer)")
+
   # set the alarm signal.
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(Timeouts[XenIndex])
+  signal.alarm(Timeouts[ktp.environment.Xen])
 
   try:
+    ktp.log.Record(LogStore,
+                   "#(stress) message(launching Xen)")
+
     # invoke the xen virtual machine.
     monitor = ktp.process.Invoke("xm",
                                  [ "create",
@@ -506,6 +564,9 @@ serial = "pty"
     # wait a few seconds to be sure Xen has started.
     time.sleep(3)
 
+    ktp.log.Record(LogStore,
+                   "#(stress) message(retrieving the QEMU log file)")
+
     # read the status file.
     content = ktp.miscellaneous.Pull("/var/log/xen/qemu-dm-" +          \
                                        namespace.name + ".log")
@@ -513,6 +574,9 @@ serial = "pty"
     # check if this operation has been successful.
     if not content:
       raise Exception("[error] unable to retrieve QEMU's log file")
+
+    ktp.log.Record(LogStore,
+                   "#(stress) message(extracting the serial port)")
 
     # retrieve the serial port.
     match = re.search("char device redirected to (.*)$", content, re.MULTILINE)
@@ -524,18 +588,30 @@ serial = "pty"
     # set the port.
     port = match.group(1)
 
+    ktp.log.Record(LogStore,
+                   "#(stress) message(initiating the serial communication)")
+
     # initialize the serial line.
     line = serial.Serial(port, 57600)
 
     # wait for the serial handshake to proceed.
     time.sleep(3)
-    
+
+    ktp.log.Record(LogStore,
+                   "#(stress) message(triggering the test)")
+
     # trigger the test.
     (status, duration) =                                                \
        Call(namespace, line, symbol)
 
+    ktp.log.Record(LogStore,
+                   "#(stress) message(retrieving the test output)")
+
     # set the output
     output = namespace.text
+
+    ktp.log.Record(LogStore,
+                   "#(stress) message(terminating the VM)")
 
     # destroy the virtual machine instance.
     ktp.process.Invoke("xm",
@@ -545,6 +621,9 @@ serial = "pty"
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
   except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(stress) message(destroying the VM)")
+
     # destroy the virtual machine instance.
     ktp.process.Invoke("xm",
                        [ "destroy",
@@ -552,6 +631,9 @@ serial = "pty"
 
     # set the status.
     status = ktp.StatusError
+
+    ktp.log.Record(LogStore,
+                   "#(stress) message(generating the error output)")
 
     # retrieve the emulator's output.
     output = """
@@ -564,6 +646,9 @@ serial = "pty"
 
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
+
+  ktp.log.Record(LogStore,
+                 "#(stress) message(resetting the timer)")
 
   # reset the alarm.
   signal.alarm(0)
@@ -586,24 +671,23 @@ def                     Suite(namespace):
   # initialize the results.
   Results(namespace)
 
+  ktp.log.Record(LogStore,
+                 "#(stress) message(going through the test suite)")
+
   # launch the tests.
   for component in namespace.manifests:
-    # verbose messaging.
-    if namespace.verbose:
-      print(component)
-
     for test in namespace.manifests[component]:
-      # verbose.
-      if namespace.verbose:
-        # XXX[change for python 2.7 ... 3 with python("  " + test, end="")]
-        print "  " + test,
+      ktp.log.Record(LogStore,
+                     "#(stress) test(" +                                \
+                       namespace.manifests[component][test]["symbol"] + \
+                       ")")
 
       # launch the testing process according to the environment.
-      if namespace.environment == Environments[QEMUIndex]:
+      if namespace.environment == ktp.environment.QEMU:
         (status, duration, output) =                                    \
             QEMU(namespace,
                  namespace.manifests[component][test]["symbol"])
-      elif namespace.environment == Environments[XenIndex]:
+      elif namespace.environment == ktp.environment.Xen:
         (status, duration, output) =                                    \
             Xen(namespace,
                 namespace.manifests[component][test]["symbol"])
@@ -628,15 +712,18 @@ def                     Suite(namespace):
 [signature] invalid
 """
 
-      # verbose messaging.
-      if namespace.verbose:
-        print(":: " +                                                   \
-                str(namespace.results[component][test]["status"]))
+      ktp.log.Record(LogStore,
+                     "#(stress) status(" + str(status) + ") " +         \
+                       "duration(" + str(duration) + ") " +             \
+                       "output(" + str(output) + ")")
 
 #
 # this function initializes the script.
 #
 def                     Initialize(namespace):
+  ktp.log.Record(LogStore,
+                 "#(stress) message(initializing)")
+
   # initialize the local variables.
   namespace.iso = None
   namespace.configuration = None
@@ -647,6 +734,9 @@ def                     Initialize(namespace):
 # this function cleans what has been created by this script.
 #
 def                     Clean(namespace):
+  ktp.log.Record(LogStore,
+                 "#(stress) message(cleaning)")
+
   if namespace.iso:
     ktp.miscellaneous.Remove(namespace.iso)
 
@@ -688,11 +778,6 @@ def                     Main():
                         help = "the test suite to be used to stress "   \
                           "the kaneton implementation",
                         dest = "suite")
-  g_parser.add_argument("--verbose", '-v',
-                        default = False,
-                        action = "store_true",
-                        help = "activate the verbose messaging",
-                        dest = "verbose")
 
   # parse the arguments.
   namespace = g_parser.parse_args()

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [fri feb  4 15:32:07 2011]
+# updated       julien quintard   [fri feb  4 21:32:31 2011]
 #
 
 #
@@ -60,6 +60,56 @@ def			usage():
     env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
 
 #
+# personal()
+#
+# this function generates a personal database.
+#
+def                     personal(school,
+                                 id):
+  members = None
+  member = None
+
+  # load the group capability.
+  capability = ktp.capability.Load(env._TEST_STORE_CAPABILITY_DIR_ +    \
+                                     "/" + id + ktp.capability.Extension)
+
+  # display.
+  env.display(env.HEADER_OK,
+              "generating database for the group's student members",
+              env.OPTION_NONE)
+
+  # retrieve the members.
+  members = capability["members"]
+
+  # go through the members.
+  for member in members:
+    # generate a name.
+    name = member["name"].lower().replace(" ", ".")
+
+    # load the configuration.
+    configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ +\
+                                             "/" + school + "#student" + \
+                                             ktp.configuration.Extension)
+
+    # generate the database.
+    database = ktp.database.Generate(configuration)
+
+    # store the database.
+    ktp.database.Store(database,
+                       env._TEST_STORE_DATABASE_DIR_ + "/" +            \
+                         name + ktp.database.Extension)
+
+    # display.
+    env.display(env.HEADER_OK,
+                "  " + name,
+                env.OPTION_NONE)
+
+  # display.
+  env.display(env.HEADER_OK,
+              "databases for the group's student members generated",
+              env.OPTION_NONE)
+
+#
 # student()
 #
 # this function generates a database for the given student.
@@ -69,10 +119,11 @@ def                     student():
   array = None
   id = None
   database = None
+  capability = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating database for the student",
+              "generating database for the student group",
               env.OPTION_NONE)
 
   # compute the id.
@@ -84,7 +135,7 @@ def                     student():
 
   # load the configuration.
   configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
-                                           "/" + school +               \
+                                           "/" + school + "#group" +    \
                                            ktp.configuration.Extension)
 
   # generate the database.
@@ -102,8 +153,11 @@ def                     student():
 
   # display message.
   env.display(env.HEADER_OK,
-              "student's database generated and stored",
+              "student's group database generated and stored",
               env.OPTION_NONE)
+
+  # generate the personal databases.
+  personal(school, id)
 
 #
 # school()
@@ -138,7 +192,7 @@ def                     school():
 
     # load the configuration.
     configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
-                                             "/" + id +                   \
+                                             "/" + id + "#group" +        \
                                              ktp.configuration.Extension)
 
     # generate the database.
@@ -153,6 +207,9 @@ def                     school():
                 "  " +
                 name,
                 env.OPTION_NONE)
+
+    # generate the personal databases.
+    personal(id, name)
 
   # display message.
   env.display(env.HEADER_OK,

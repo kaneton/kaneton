@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/scripts/construct.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [mon dec 20 08:28:00 2010]
+# updated       julien quintard   [fri feb  4 23:26:58 2011]
 #
 
 #
@@ -67,16 +67,11 @@ StoreDirectory = TestDirectory + "/store"
 
 # stores
 BundleStore = StoreDirectory + "/bundle"
-
-# indexes
-QEMUIndex = 0
-XenIndex = 1
-
-# environments: qemu/xen
-Environments = [ "qemu", "xen" ]
+LogStore = StoreDirectory + "/log"
 
 # timeout in seconds: qemu/xen.
-Timeouts = [ 1000, 100 ]
+Timeouts = { ktp.environment.QEMU: 1000,
+             ktp.environment.Xen: 100 }
 
 # disk size in mega bytes.
 DiskSize = 10
@@ -121,6 +116,9 @@ def                     Disk(namespace):
   # build a temporary file.
   namespace.disk = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
+  ktp.log.Record(LogStore,
+                 "#(construct) message(creating the disk image)")
+
   # initialize the size of the file.
   if ktp.process.Invoke("dd",
                         [ "if=/dev/zero",
@@ -129,6 +127,9 @@ def                     Disk(namespace):
                           "count=" + str(DiskSize) ]) == ktp.StatusError:
     Error(namespace,
           "unable to create a temporary disk image")
+
+  ktp.log.Record(LogStore,
+                 "#(construct) message(creating the disk's file system)")
 
   # create an ext2 file system for this file.
   if ktp.process.Invoke("mkfs.ext2",
@@ -141,6 +142,9 @@ def                     Disk(namespace):
   # build a temporary directory.
   directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
 
+  ktp.log.Record(LogStore,
+                 "#(construct) message(mounting the disk image)")
+
   # mount the disk into the temporary directory.
   if ktp.process.Invoke("mount",
                         [ "-o", "loop",
@@ -149,6 +153,9 @@ def                     Disk(namespace):
     Error(namespace,
           "unable to mount the temporary disk image")
 
+  ktp.log.Record(LogStore,
+                 "#(construct) message(copying the snapshot to the disk)")
+
   # check if the snapshot exists.
   if not os.path.exists(namespace.snapshot):
     Error(namespace,
@@ -156,6 +163,9 @@ def                     Disk(namespace):
 
   # copy the snapshot into the mounted directory.
   ktp.miscellaneous.Copy(namespace.snapshot, directory + "/kaneton.tar.bz2")
+
+  ktp.log.Record(LogStore,
+                 "#(construct) message(copying the bundle to the disk)")
 
   # check if the bundle exists.
   if not os.path.exists(BundleStore + "/" +                             \
@@ -170,6 +180,9 @@ def                     Disk(namespace):
                            namespace.architecture + "/kaneton.lo",
                          directory)
 
+  ktp.log.Record(LogStore,
+                 "#(construct) message(generating the environment file)")
+
   # generate the environment.
   environment = """\
 export KANETON_USER='test'
@@ -183,6 +196,9 @@ export KANETON_ARCHITECTURE='%(architecture)s'\
 
   # save the environment in a file.
   ktp.miscellaneous.Push(environment, directory + "/environment.sh")
+
+  ktp.log.Record(LogStore,
+                 "#(construct) message(unmounting the disk image)")
 
   # umount the temporary directory
   if ktp.process.Invoke("umount",
@@ -212,17 +228,26 @@ def                     QEMU(namespace):
   port = None
   redirect = None
 
+  ktp.log.Record(LogStore,
+                 "#(construct) environment(QEMU)")
+
   # create a stream file.
   stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
   # create a redirection file.
   redirect = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
+  ktp.log.Record(LogStore,
+                 "#(construct) message(setting the timer)")
+
   # set the alarm signal
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(Timeouts[QEMUIndex])
+  signal.alarm(Timeout[ktp.environment.QEMU])
 
   try:
+    ktp.log.Record(LogStore,
+                   "#(construct) message(launching QEMU)")
+
     # launch QEMU active logging in background in order to retrieve
     # the process handle.
     monitor = ktp.process.Invoke("qemu",
@@ -239,12 +264,18 @@ def                     QEMU(namespace):
     # wait a few seconds to be sure QEMU has started.
     time.sleep(3)
 
+    ktp.log.Record(LogStore,
+                   "#(construct) message(reading the output)")
+
     # read the status file.
     content = ktp.miscellaneous.Pull(stream)
 
     # check if this operation has been successful.
     if not content:
       raise Exception("[error] unable to retrieve QEMU's log file")
+
+    ktp.log.Record(LogStore,
+                   "#(construct) message(extracting the serial port)")
 
     # retrieve the serial port.
     match = re.search("char device redirected to (.*)$", content, re.MULTILINE)
@@ -255,6 +286,9 @@ def                     QEMU(namespace):
 
     # set the port.
     port = match.group(1)
+
+    ktp.log.Record(LogStore,
+                   "#(construct) message(waiting for the VM to terminate)")
 
     # wait for the virtual machine to terminate.
     while True:
@@ -271,10 +305,16 @@ def                     QEMU(namespace):
     # retrieve the output.
     namespace.output = ktp.miscellaneous.Pull(redirect)
 
+    ktp.log.Record(LogStore,
+                   "#(construct) message(VM terminated)")
+
     # remove the files.
     ktp.miscellaneous.Remove(redirect)
     ktp.miscellaneous.Remove(stream)
   except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(construct) message(destorying the VM)")
+
     # destroy the virtual machine by terminating
     # the process.
     try:
@@ -289,6 +329,9 @@ def                     QEMU(namespace):
 #    [when ready remove: os.kill, Wait and Pull]
 #    output = ktp.process.Terminate(monitor)
 
+    ktp.log.Record(LogStore,
+                   "#(construct) message(wait a bit)")
+
     # reset the alarm.
     signal.alarm(0)
 
@@ -297,6 +340,9 @@ def                     QEMU(namespace):
 
     # retrieve the output.
     namespace.output = ktp.miscellaneous.Pull(redirect)
+
+    ktp.log.Record(LogStore,
+                   "#(construct) output(" + str(output) + ")")
 
     # remove the files.
     ktp.miscellaneous.Remove(redirect)
@@ -309,6 +355,9 @@ def                     QEMU(namespace):
     # stop the script.
     Error(namespace,
           str(exception))
+
+  ktp.log.Record(LogStore,
+                 "#(construct) message(resetting the timer)")
 
   # reset the alarm.
   signal.alarm(0)
@@ -324,6 +373,12 @@ def                     Xen(namespace):
   match = None
   port = None
   stream = None
+
+  ktp.log.Record(LogStore,
+                 "#(construct) environment(Xen)")
+
+  ktp.log.Record(LogStore,
+                 "#(construct) message(generating the Xen configuration)")
 
   # create a temporary file.
   namespace.configuration =                                             \
@@ -350,11 +405,17 @@ serial = "pty"\
   # create a stream file.
   stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
+  ktp.log.Record(LogStore,
+                 "#(construct) message(setting the timer)")
+
   # set the alarm signal
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(Timeouts[XenIndex])
+  signal.alarm(Timeouts[ktp.environment.Xen])
 
   try:
+    ktp.log.Record(LogStore,
+                   "#(construct) message(launching Xen)")
+
     # launch the xen virtual machine.
     #
     # note that the 'xm' binary automatically sets the system
@@ -368,6 +429,9 @@ serial = "pty"\
     # wait a few seconds to be sure Xen has started.
     time.sleep(3)
 
+    ktp.log.Record(LogStore,
+                   "#(construct) message(retrieving the QEMU log file)")
+
     # read the status file.
     content = ktp.miscellaneous.Pull("/var/log/xen/qemu-dm-" +          \
                                        namespace.name + ".log")
@@ -375,6 +439,9 @@ serial = "pty"\
     # check if this operation has been successful.
     if not content:
       raise Exception("[error] unable to retrieve QEMU's log file")
+
+    ktp.log.Record(LogStore,
+                   "#(construct) message(extracting the serial port)")
 
     # retrieve the serial port.
     match = re.search("char device redirected to (.*)$", content, re.MULTILINE)
@@ -385,6 +452,9 @@ serial = "pty"\
 
     # set the port.
     port = match.group(1)
+
+    ktp.log.Record(LogStore,
+                   "#(construct) message(waiting for the VM to terminate)")
 
     # wait for the virtual machine to terminate.
     while True:
@@ -404,9 +474,15 @@ serial = "pty"\
     # read the serial file.
     namespace.output = ktp.miscellaneous.Pull(stream)
 
+    ktp.log.Record(LogStore,
+                   "#(construct) message(VM terminated)")
+
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
   except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(construct) message(destroying the VM)")
+
     # destroy the virtual machine
     ktp.process.Invoke("xm",
                        [ "destroy",
@@ -418,6 +494,9 @@ serial = "pty"\
     # remove the stream file.
     ktp.miscellaneous.Remove(stream)
 
+    ktp.log.Record(LogStore,
+                   "#(construct) output(" + str(output) + ")")
+
     # display the output.
     if namespace.output:
       print(namespace.output)
@@ -425,6 +504,9 @@ serial = "pty"\
     # stop the script.
     Error(namespace,
           str(exception))
+
+  ktp.log.Record(LogStore,
+                 "#(construct) message(resetting the timer)")
 
   # reset the alarm.
   signal.alarm(0)
@@ -438,6 +520,9 @@ def                     Retrieve(namespace):
   # create a temporary directory.
   directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
 
+  ktp.log.Record(LogStore,
+                 "#(construct) message(mounting the disk image)")
+
   # mount the disk.
   if ktp.process.Invoke("mount",
                         [ "-o" "loop",
@@ -446,9 +531,15 @@ def                     Retrieve(namespace):
     Error(namespace,
           "unable to mount the temporary disk image")
 
+  ktp.log.Record(LogStore,
+                 "#(construct) message(checking the presence of error files)")
+
   # check if an error occured. if so, print the log followed
   # by the error message before existing.
   if os.path.exists(directory + "/.error"):
+    ktp.log.Record(LogStore,
+                   "#(construct) message(retrieving the error messages)")
+
     # print the output.
     if namespace.output:
       print(namespace.output)
@@ -468,6 +559,9 @@ def                     Retrieve(namespace):
       # print the log.
       print(log)
 
+    ktp.log.Record(LogStore,
+                   "#(construct) message(unmounting the disk image)")
+
     # umount the snapshot.
     if ktp.process.Invoke("umount",
                           [ directory ]) == ktp.StatusError:
@@ -481,6 +575,9 @@ def                     Retrieve(namespace):
     Error(namespace,
           None)
   else:
+    ktp.log.Record(LogStore,
+                   "#(construct) message(retrieving the bootable image)")
+
     # otherwise, no error occured. therefore, copy the image.
     if not os.path.exists(directory + "/kaneton.img"):
       Error(namespace,
@@ -488,6 +585,9 @@ def                     Retrieve(namespace):
 
     # copy the generated image to its target.
     ktp.miscellaneous.Copy(directory + "/kaneton.img", namespace.image)
+
+    ktp.log.Record(LogStore,
+                   "#(construct) message(unmounting the disk image)")
 
     # umount the snapshot.
     if ktp.process.Invoke("umount",
@@ -502,6 +602,9 @@ def                     Retrieve(namespace):
 # this function initializes the script.
 #
 def                     Initialize(namespace):
+  ktp.log.Record(LogStore,
+                 "#(construct) message(initializing)")
+
   # initialize the variables.
   namespace.disk = None
   namespace.configuration = None
@@ -510,6 +613,9 @@ def                     Initialize(namespace):
 # this function cleans what has been created by this script.
 #
 def                     Clean(namespace):
+  ktp.log.Record(LogStore,
+                 "#(construct) message(cleaning)")
+
   # remove the disk file.
   if namespace.disk:
     ktp.miscellaneous.Remove(namespace.disk)
@@ -575,9 +681,9 @@ def                     Main():
   Disk(namespace)
 
   # launch the compilation process according to the environment.
-  if namespace.environment == Environments[QEMUIndex]:
+  if namespace.environment == ktp.environment.QEMU:
     QEMU(namespace)
-  elif namespace.environment == Environments[XenIndex]:
+  elif namespace.environment == ktp.environment.Xen:
     Xen(namespace)
   else:
     Error(namespace,

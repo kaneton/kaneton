@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [fri feb  4 15:30:28 2011]
+# updated       julien quintard   [sat feb  5 00:07:26 2011]
 #
 
 #
@@ -121,6 +121,62 @@ def                     extract(path):
   return container
 
 #
+# personal()
+#
+# this function takes an existing capability and generates
+# a personal capability for everyone of the members.
+#
+def                     personal(code,
+                                 capability):
+  members = None
+  member = None
+  name = None
+  file = None
+  community = None
+
+  # display.
+  env.display(env.HEADER_OK,
+              "generating the students' personal capabilities",
+              env.OPTION_NONE)
+
+  # retrieve the members.
+  members = capability["members"]
+
+  # make the group capability identifier the community of the personal ones.
+  community = capability["identifier"]
+
+  # for every member.
+  for member in members:
+    # generate a name.
+    name = member["name"].lower().replace(" ", ".")
+
+    # compute the file name.
+    file = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                      \
+        name + ktp.capability.Extension
+
+    # create a specific capability for the member.
+    capability = ktp.capability.Create(code,
+                                       name,
+                                       ktp.capability.TypeStudent,
+                                       community,
+                                       [ { "name": member["name"],
+                                           "email": member["email"] } ])
+
+    # store it.
+    ktp.capability.Store(file,
+                         capability)
+
+    # display.
+    env.display(env.HEADER_OK,
+                "  " + name,
+                env.OPTION_NONE)
+
+  # display.
+  env.display(env.HEADER_OK,
+              "students' personal capabilities generated",
+              env.OPTION_NONE)
+
+#
 # generate()
 #
 # this function takes a data structure and generate
@@ -149,6 +205,7 @@ def                     generate(code,
     # create the capability.
     capability = ktp.capability.Create(code,
                                        name,
+                                       ktp.capability.TypeGroup,
                                        "students",
                                        students[student])
 
@@ -161,6 +218,9 @@ def                     generate(code,
                 "  " + name,
                 env.OPTION_NONE)
 
+    # generate the personal capabilities.
+    personal(code, capability)
+
 #
 # student()
 #
@@ -170,11 +230,14 @@ def                     student():
   name = None
   email = None
   file = None
-  people = []
+  people = None
+  persons = []
+  member = None
+  members = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating the student's capability:",
+              "generating the student's group capability:",
               env.OPTION_NONE)
 
   # compute the name.
@@ -197,10 +260,10 @@ def                     student():
                   "  unable to extract the name and email from the student '" +
                   g_path + "'",
                   env.OPTION_NONE)
-
+    else:
       # register the member.
-      people += [ { "name": match.group(1),
-                    "email": match.group(2) } ]
+      persons += [ { "name": match.group(1),
+                     "email": match.group(2) } ]
 
   # compute the file name.
   file = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                        \
@@ -213,8 +276,9 @@ def                     student():
   # create the capability.
   capability = ktp.capability.Create(code,
                                      name,
+                                     ktp.capability.TypeGroup,
                                      "students",
-                                     people)
+                                     persons)
 
   # store it.
   ktp.capability.Store(file,
@@ -227,8 +291,11 @@ def                     student():
 
   # display.
   env.display(env.HEADER_OK,
-              "student's capability generated and stored",
+              "student's group capability generated and stored",
               env.OPTION_NONE)
+
+  # generate the personal capabilities.
+  personal(code, capability)
 
 #
 # school()
@@ -285,9 +352,13 @@ def                     contributor():
   # create the capability.
   capability = ktp.capability.Create(code,
                                      name,
+                                     ktp.capability.TypeStudent,
                                      "contributors",
-                                     [ { "name": "admin",
-                                         "email": "admin@opaak.org" } ])
+                                     [ { "name":
+                                           "contributors",
+                                         "email":
+                                           "contributors@kaneton.opaak.org"
+                                         } ])
 
   # store it.
   ktp.capability.Store(file,
@@ -325,6 +396,7 @@ def                     robot():
   # create the capability.
   capability = ktp.capability.Create(code,
                                      name,
+                                     ktp.capability.TypeStudent,
                                      "contributors",
                                      [ { "name":
                                            "contributors",

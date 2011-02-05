@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/queue.py
 #
 # created       julien quintard   [mon oct 25 19:58:10 2010]
-# updated       julien quintard   [wed feb  2 15:58:41 2011]
+# updated       julien quintard   [wed feb  2 20:59:25 2011]
 #
 
 #
@@ -16,6 +16,8 @@
 #
 
 import os
+
+import ktp
 
 #
 # ---------- functions --------------------------------------------------------
@@ -31,8 +33,27 @@ def                     Push(directory,
 
   path = directory + "/" + identifier
 
-  handle = open(path, "w")
+  ktp.miscellaneous.Push("",
+                         path)
 
-  handle.write(identifier)
+#
+# this function returns the next queue'd identifier, or None if none.
+#
+def                     Pop(directory):
+  identifier = None
+  entries = None
+  entry = None
+  path = None
 
-  handle.close()
+  entries = os.listdir(directory)
+
+  for entry in entries:
+    path = directory + "/" + entry
+
+    identifier = entry
+
+    ktp.miscellaneous.Remove(path)
+
+    return identifier
+
+  return None

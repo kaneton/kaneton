@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [thu feb  3 12:39:36 2011]
+# updated       julien quintard   [fri feb  4 22:59:08 2011]
 #
 
 #
@@ -83,66 +83,27 @@ def                     Warning():
 # tests.
 #
 def                     Count(tests):
-  success = 0
+  passed = 0
+  failed = 0
   total = 0
 
   # explore the tests.
   for test in tests:
     if tests[test]["status"] == True:
-      success += 1
+      passed += 1
+    else:
+      failed += 1
 
     total += 1
 
-  return (success, total)
-
-#
-# this function displays a brief summary of the given report.
-#
-def                     Summarize(report, margin = ""):
-  success = None
-  total = None
-
-  status = None
-  length = None
-  count = None
-
-  color = None
-
-  unit = None
-  tests = None
-
-  # for the units of the report.
-  for unit in report["data"]:
-    # retrieve the tests.
-    tests = report["data"][unit]
-
-    # compute the status of all the tests of the given unit.
-    (success, total) = Count(tests)
-
-    # set the colour according to the status.
-    if success == total:
-      color = env.COLOR_GREEN
-    else:
-      color = env.COLOR_RED
-
-    # generate the count.
-    count = " [" + str(success) + "/" + str(total) + "]"
-
-    # generate the unit's status.
-    length = 79 - len(unit) - len(margin) - 4 - len(count)
-    status = length * " " +                                               \
-             env.colorize(count, color, env.OPTION_BOLD)
-
-    # display the unit name.
-    env.display(env.HEADER_OK,
-                margin + unit + status,
-                env.OPTION_NONE)
+  return (success, failed, total)
 
 #
 # this function displays a detailed version of the given report.
 #
 def                     Detail(report, margin = ""):
-  success = None
+  passed = None
+  failed = None
   total = None
 
   status = None
@@ -161,16 +122,16 @@ def                     Detail(report, margin = ""):
     tests = report["data"][unit]
 
     # compute the status of all the tests of the given unit.
-    (success, total) = Count(tests)
+    (passed, failed, total) = Count(tests)
 
     # set the colour according to the status.
-    if success == total:
+    if passed == total:
       color = env.COLOR_GREEN
     else:
       color = env.COLOR_RED
 
     # generate the count.
-    count = " [" + str(success) + "/" + str(total) + "]"
+    count = " [" + str(passed) + "/" + str(total) + "]"
 
     # generate the unit's status.
     length = 79 - len(unit) - len(margin) - 4 - len(count) - 1
@@ -244,10 +205,10 @@ def                     Dump(data, margin = "", alignment = 26):
                     margin + str(key) + ":",
                     env.OPTION_NONE)
 
-        Dump(data[key], margin + "  ")
+        Dump(data[key], margin + "  ", alignment)
   elif isinstance(data, list):
     for element in data:
-      Dump(element, margin)
+      Dump(element, margin, alignment)
   else:
     env.display(env.HEADER_OK,
                 alignment * " " +
@@ -393,25 +354,38 @@ def                     Submit(server, capability, arguments):
   # retrieve the arguments.
   stage = arguments[0]
 
-  # display a message.
-  env.display(env.HEADER_OK,
-              "generating the kaneton snapshot",
-              env.OPTION_NONE)
+  # check if there is a 'snapshot.tar.bz2' in the client/ directory.
+  if env.path(env._TEST_CLIENT_DIR_ + "/snapshot.tar.bz2",
+              env.OPTION_EXIST):
+    # display a message.
+    env.display(env.HEADER_OK,
+                "loading the snapshot '" +                              \
+                  env._TEST_CLIENT_DIR_ + "/snapshot.tar.bz2'",
+                env.OPTION_NONE)
 
-  # export the current kaneton implementation.
-  env.launch(env._EXPORT_SCRIPT_,
-             "test:" + capability["identifier"],
-             env.OPTION_QUIET)
+    # read the snapshot.
+    snapshot = env.pull(env._TEST_CLIENT_DIR_ + "/snapshot.tar.bz2",
+                        env.OPTION_NONE)
+  else:
+    # display a message.
+    env.display(env.HEADER_OK,
+                "generating the kaneton snapshot",
+                env.OPTION_NONE)
 
-  # display a message.
-  env.display(env.HEADER_OK,
-              "loading the kaneton snapshot",
-              env.OPTION_NONE)
+    # export the current kaneton implementation.
+    env.launch(env._EXPORT_SCRIPT_,
+               "test:" + capability["identifier"],
+               env.OPTION_QUIET)
 
-  # read the snapshot.
-  snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                   \
-                        "test:" + capability["identifier"] + ".tar.bz2",
-                      env.OPTION_NONE)
+    # display a message.
+    env.display(env.HEADER_OK,
+                "loading the kaneton snapshot",
+                env.OPTION_NONE)
+
+    # read the snapshot.
+    snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                 \
+                          "test:" + capability["identifier"] + ".tar.bz2",
+                        env.OPTION_NONE)
 
   # display a message.
   env.display(env.HEADER_OK,

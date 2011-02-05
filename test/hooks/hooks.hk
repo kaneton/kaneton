@@ -1,0 +1,7 @@
+supervisor:
+  scheduler:
+    path: supervisor/watcher.py
+    options: "--pattern='^epita.*$' --suite=k1"
+  cron:
+    path: supervisor/notifier.py
+    options: ""

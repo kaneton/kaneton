@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/scripts/test.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/test.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [mon dec 20 08:29:04 2010]
+# updated       julien quintard   [thu feb  3 12:44:07 2011]
 #
 
 #
@@ -54,6 +54,7 @@ ScriptsDirectory = TestDirectory + "/scripts"
 ReportStore = StoreDirectory + "/report"
 SnapshotStore = StoreDirectory + "/snapshot"
 CapabilityStore = StoreDirectory + "/capability"
+LogStore = StoreDirectory + "/log"
 
 # scripts
 ConstructScript = ScriptsDirectory + "/construct.py"
@@ -94,6 +95,42 @@ def                     Error(namespace,
   sys.exit(42)
 
 #
+# this function computes a summary indicating the successfulness of the
+# testing.
+#
+def                     Summary(report):
+  passed = None
+  failed = None
+  total = None
+  component = None
+  test = None
+
+  ktp.log.Record(LogStore,
+                 "#(test) message(computing the summary)")
+
+  # initialize the counters.
+  passed = 0
+  failed = 0
+  total = 0
+
+  if ("data" in report) and (report["data"]):
+    # go through the report.
+    for component in report["data"]:
+      for test in report["data"][component]:
+        # update the total number of tests
+        total = total + 1
+
+        # has this test been passed?
+        if report["data"][component][test]["status"] == True:
+          passed = passed + 1
+        else:
+          failed = failed + 1
+
+  report["meta"]["summary"] = { "passed": passed,
+                                "failed": failed,
+                                "total": total }
+
+#
 # this function tests the given snapshot according to the configuration.
 #
 def                     Test(namespace):
@@ -105,11 +142,32 @@ def                     Test(namespace):
   start = None
   end = None
   index = None
+  date = None
 
   try:
     # load the report.
     report = ktp.report.Load(ReportStore + "/" +                        \
                                namespace.report + ktp.report.Extension)
+
+    # retrieve the current date.
+    date = time.strftime("%Y/%m/%d %H:%M:%S")
+
+    ktp.log.Record(LogStore,
+                   "#(test) date(" + date + ")")
+
+    # reset some of the report attributes.
+    report["meta"]["date"] = date
+    report["meta"]["duration"] = None
+
+    report["data"] = None
+
+    # remove any previous error.
+    if "error" in report["meta"]:
+      del report["meta"]["error"]
+
+    # remove any previous summary.
+    if "summary" in report["meta"]:
+      del report["meta"]["summary"]
 
     # create a temporary files for the received snapshot, the about-to-be
     # generated image etc.
@@ -120,11 +178,15 @@ def                     Test(namespace):
     # retrieve the current time.
     start = time.time()
 
-    if namespace.verbose:
-      print("constructing the image '" + image + "'")
+    ktp.log.Record(LogStore,
+                   "#(test) message(constructing the image '" +    \
+                     image + "')");
 
     # try to build the kaneton image...
     for index in range(0, Rounds[ConstructPhase]):
+      ktp.log.Record(LogStore,
+                     "#(test) round(" + str(index) + ")")
+
       # launch the construct script which generates a bootable image.
       status =                                                          \
         ktp.process.Invoke(ConstructScript,
@@ -148,6 +210,10 @@ def                     Test(namespace):
       # remove the stream file.
       ktp.miscellaneous.Remove(stream)
 
+      ktp.log.Record(LogStore,
+                     "#(test) status(" + str(status) + ") " +           \
+                       "output(" + str(output) + ")")
+
       # if the construction was successful, exit the loop.
       if status == ktp.StatusOk:
         break
@@ -156,10 +222,13 @@ def                     Test(namespace):
     if status == ktp.StatusError:
       Error(namespace, output + "\n[rounds] " + str(Rounds[ConstructPhase]))
 
-    if namespace.verbose:
-      print("stressing the image '" + image + "'")
+    ktp.log.Record(LogStore,
+                   "#(test) message(stressing the image)")
 
     for index in range(0, Rounds[StressPhase]):
+      ktp.log.Record(LogStore,
+                     "#(test) round(" + str(index) + ")")
+
       # launch the build script which generates a bootable image.
       status =                                                          \
         ktp.process.Invoke(StressScript,
@@ -168,8 +237,7 @@ def                     Test(namespace):
                              "--environment",                           \
                                  report["meta"]["environments"]["stress"],
                              "--suite", report["meta"]["suite"],
-                             "--bulletin", bulletin,
-                             "--verbose" ],
+                             "--bulletin", bulletin ],
                            stream = stream,
                            option = ktp.process.OptionNone)
 
@@ -178,6 +246,10 @@ def                     Test(namespace):
 
       # remove the stream file.
       ktp.miscellaneous.Remove(stream)
+
+      ktp.log.Record(LogStore,
+                     "#(test) status(" + str(status) + ") " +           \
+                       "output(" + str(output) + ")")
 
       # if the stress was successful, exit the loop.
       if status == ktp.StatusOk:
@@ -190,14 +262,23 @@ def                     Test(namespace):
     # retrieve the current time.
     end = time.time()
 
+    ktp.log.Record(LogStore,
+                   "#(test) duration(" + "%.3f" % (end - start) + ")")
+
     # complete the report according to the bulletin.
     report["meta"]["duration"] = "%.3f" % (end - start)
     report["data"] = ktp.bulletin.Load(bulletin)
+
+    # compute a summary of the test.
+    Summary(report)
 
     # store the report.
     ktp.report.Store(report,
                      ReportStore + "/" +                                \
                        report["meta"]["identifier"] + ktp.report.Extension)
+
+    ktp.log.Record(LogStore,
+                   "#(test) message(updated the report")
   except Exception, exception:
     Error(namespace, ktp.trace.Generate())
   finally:
@@ -209,111 +290,22 @@ def                     Test(namespace):
     if image:
       ktp.miscellaneous.Remove(image)
 
-#
-# this function emails the generated report to its owner.
-#
-def                     Email(namespace):
-  report = None
-  capability = None
-  content = None
-  emails = None
-  message = None
-  configuration = None
-
-  try:
-    # load the report.
-    report = ktp.report.Load(ReportStore + "/" +                        \
-                               namespace.report + ktp.report.Extension)
-
-    # load the capability.
-    capability = ktp.capability.Load(CapabilityStore + "/" +            \
-                                       report["meta"]["user"] +         \
-                                       ktp.capability.Extension)
-
-    # create a temporary file.
-    configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-    # create a configuration file.
-    content = """\
-set realname = "opaak admin"
-set from = "admin@opaak.org"
-set use_from = yes\
-"""
-
-    # store the temporary mutt configuration file.
-    ktp.miscellaneous.Push(content, configuration)
-
-    # create the message.
-    content = """\
-This email contains the report referred to as:
-
-  %(identifier)s
-
-In order to consult this report, please place it in your store
-directory, at the location:
-
-  kaneton/test/store/report/\
-""" % { "identifier": report["meta"]["identifier"] }
-
-    # create a temporary file.
-    message = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-    # store the temporary message.
-    ktp.miscellaneous.Push(content, message)
-
-    # initialize the emails variable.
-    emails = []
-    # compute the email addresses.
-    for member in capability["members"]:
-      emails += [ member["email"] ]
-
-    # create a stream file.
-    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-    # email the capability to the supposed recipient.
-    status = ktp.process.Invoke("mutt",
-                                [ "-F", configuration,
-                                  "-s", "'kaneton report'",
-                                  "-a", ReportStore + "/" +             \
-                                    report["meta"]["identifier"] +      \
-                                    ktp.report.Extension,
-                                  " ".join(emails),
-                                  "<" + message ])
-
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
-
-    # check the status.
-    if status == ktp.StatusError:
-      raise Exception(output)
-  except Exception, exception:
-    # display the exception.
-    if exception:
-      print(str(exception))
-
-    # display the error message.
-    Error(namespace,
-          "an error occured while sending the email to '" +             \
-          report["meta"]["identifier"] + "'")
-  finally:
-    # remove the temporary files.
-    ktp.miscellaneous.Remove(message)
-    ktp.miscellaneous.Remove(configuration)
+    ktp.log.Record(LogStore,
+                   "#(test) message(cleaned the temporary files")
 
 #
 # this function initializes the script.
 #
 def                     Initialize(namespace):
-  pass
+  ktp.log.Record(LogStore,
+                 "#(test) message(initializing)")
 
 #
 # this function cleans the script.
 #
 def                     Clean(namespace):
-  pass
+  ktp.log.Record(LogStore,
+                 "#(test) message(cleaning)")
 
 #
 # this is the main function
@@ -331,17 +323,6 @@ def                     Main():
                         required = True,
                         help = "the identifier of the report to evaluate",
                         dest = "report")
-  g_parser.add_argument("--email", '-e',
-                        default = False,
-                        action = "store_true",
-                        help = "this option tells the script to send "  \
-                          "the report by email to its owner",
-                        dest = "email")
-  g_parser.add_argument("--verbose", '-v',
-                        default = False,
-                        action = "store_true",
-                        help = "activate the verbose messaging",
-                        dest = "verbose")
 
   # parse the arguments.
   namespace = g_parser.parse_args()
@@ -351,10 +332,6 @@ def                     Main():
 
   # test the given report's snapshot i,e re-generate the report.
   Test(namespace)
-
-  # potentially email the report to its user.
-  if namespace.email:
-    Email(namespace)
 
   # clean the script.
   Clean(namespace)

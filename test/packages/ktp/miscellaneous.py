@@ -8,7 +8,7 @@
 # file          /home/mycure/KANE...EST-SYSTEM/packages/ktp/miscellaneous.py
 #
 # created       julien quintard   [mon oct 25 19:51:49 2010]
-# updated       julien quintard   [sat nov  6 15:23:36 2010]
+# updated       julien quintard   [fri feb  4 20:26:29 2011]
 #
 
 #
@@ -20,6 +20,8 @@ import tempfile
 import os
 import shutil
 import re
+
+import ktp
 
 #
 # ---------- definitions ------------------------------------------------------
@@ -185,3 +187,84 @@ def                     Transfer(source, destination):
 
   output.close()
   input.close()
+
+def                     Email(source,
+                              destination,
+                              subject,
+                              body):
+  capability = None
+  content = None
+  configuration = None
+  message = None
+  stream = None
+  report = None
+  status = None
+  output = None
+  emails = None
+
+  # create a temporary file.
+  configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+  # create a configuration file.
+  content = """\
+set realname = "%(from)s"
+set from = "%(from)s"
+set use_from = yes\
+""" % { "from": source }
+
+  # store the temporary mutt configuration file.
+  ktp.miscellaneous.Push(content, configuration)
+
+  # create a temporary file.
+  message = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+  # store the temporary message.
+  ktp.miscellaneous.Push(body, message)
+
+  # create a stream file.
+  stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+  # email the capability to the supposed recipient.
+  status = ktp.process.Invoke("mutt",
+                              [ "-F", configuration,
+                                "-s", subject,
+                                " ".join(destination),
+                                "<" + message ])
+
+  # retrieve the output.
+  output = ktp.miscellaneous.Pull(stream)
+
+  # remove the stream file.
+  ktp.miscellaneous.Remove(stream)
+
+  # remove the temporary files.
+  ktp.miscellaneous.Remove(message)
+  ktp.miscellaneous.Remove(configuration)
+
+#
+# this function transforms a Python data structure into a string
+# representation.
+#
+def                     Stringify(data, margin = "", alignment = 26):
+  string = str()
+  key = None
+  length = None
+
+  if isinstance(data, dict):
+    for key in data:
+      if not isinstance(data[key], dict) and not isinstance(data[key], list):
+        length = len(margin) + len(str(key)) + 1
+
+        string += margin + str(key) + ":" +                             \
+            (alignment - length) * " " + str(data[key]) + "\n"
+      else:
+        string += margin + str(key) + ":" + "\n"
+
+        string += Stringify(data[key], margin + "  ", alignment)
+  elif isinstance(data, list):
+    for element in data:
+      string += Stringify(element, margin, alignment)
+  else:
+    string += alignment * " " + str(data) + "\n"
+
+  return string

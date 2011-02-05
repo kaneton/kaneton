@@ -1,0 +1,17 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/KANETON-TEST-SYSTEM/stages/k0.stg
+#
+# created       julien quintard   [tue nov  2 06:01:29 2010]
+# updated       julien quintard   [sat feb  5 10:24:30 2011]
+#
+
+name: k0
+description: This stage focuses on the assembly language and the boot process through BIOS services.
+deadline: XXX
+history: %school%/%year%/%group%/sources/k0/%student%.tar.bz2

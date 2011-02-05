@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/stages/k3.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [mon dec  6 07:31:58 2010]
+# updated       julien quintard   [sat feb  5 10:23:25 2011]
 #
 
 name: k3
@@ -30,3 +30,5 @@ configurations:
       stress: xen
     suite: k3
     weight: 0.8
+deadline: XXX
+history: %school%/%year%/%group%/sources/k3.tar.bz2

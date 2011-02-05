@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/robot/robot.py
+# file          /home/mycure/ZZZ/test/robot/robot.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri feb  4 15:37:16 2011]
+# updated       julien quintard   [fri feb  4 16:20:46 2011]
 #
 
 #
@@ -49,6 +49,12 @@ import ktp
 # ---------- constants --------------------------------------------------------
 #
 
+# directories
+StoreDirectory = TestDirectory + "/store"
+
+# stores
+LogStore = StoreDirectory + "/log"
+
 # the subversion address to the kaneton repository.
 Repository = "svn+ssh://subversion@repositories.passeism.org/kaneton"
 
@@ -68,45 +74,32 @@ g_directory = None
 #
 
 #
-# this function displays an error message, cleans the script before
-# exiting.
-#
-def                     Error(message):
-  # print the message.
-  if message:
-    print(message)
-
-  # clean the script.
-  Clean()
-
-  # exit with an error code.
-  sys.exit(42)
-
-#
 # this function retrieves the latest kaneton snapshot through
 # Subversion.
 #
 def                     Checkout():
+  ktp.log.Record(LogStore,
+                 "#(robot) message(checking out the repository)")
+
   # launch Subversion.
   if ktp.process.Invoke("svn",
                         [ "co",
                           Repository,
                           g_directory]) == ktp.StatusError:
-    Error("unable to check out the kaneton repository")
+    ktp.log.Record(LogStore,
+                   "#(robot) error(unable to checkout the kaneton repository)")
 
 #
 # this function triggers some test through the kaneton
 # test client.
 #
 def                     Test():
-  report = None
-  summary = None
-  detail = None
-  reports = None
-  report = None
   stream = None
   status = None
   output = None
+
+  ktp.log.Record(LogStore,
+                 "#(robot) message(setting the environment variables)")
 
   # set the kaneton environment variables.
   os.putenv("KANETON_PYTHON", "/usr/bin/python")
@@ -115,9 +108,8 @@ def                     Test():
   os.putenv("KANETON_PLATFORM", "ibm-pc")
   os.putenv("KANETON_ARCHITECTURE", "ia32/educational")
 
-  # initialize the summary and detail strings.
-  summary = str()
-  detail = str()
+  ktp.log.Record(LogStore,
+                 "#(robot) message(initializing the snapshot environment)")
 
   # create a temporary file.
   stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
@@ -139,12 +131,23 @@ def                     Test():
   # if the construction was successful, exit the loop.
   if status == ktp.StatusError:
     if not output:
-      Error("an error occured while initializing the kaneton environment")
+      ktp.log.Record(LogStore,
+                     "#(robot) error(unable to initialize the environment)")
     else:
-      Error(output)
+      ktp.log.Record(LogStore,
+                     "#(robot) error(" + str(output) + ")")
+
+  ktp.log.Record(LogStore,
+                 "#(robot) message(testing the environments)")
 
   # for every environment to test...
   for environment in Environments:
+    ktp.log.Record(LogStore,
+                   "#(robot) environment(" + environment + ")")
+
+    ktp.log.Record(LogStore,
+                   "#(robot) message(invoking the test client)")
+
     # create a temporary file.
     stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
@@ -165,15 +168,20 @@ def                     Test():
     # if the construction was successful, exit the loop.
     if status == ktp.StatusError:
       if not output:
-        Error("an error occured while launching the test client")
+        ktp.log.Record(LogStore,
+                       "#(robot) error(unable to trigger the test client)")
       else:
-        Error(output)
+        ktp.log.Record(LogStore,
+                       "#(robot) error(" + str(output) + ")")
 
 #
 # this function initializes the script.
 #
 def                     Initialize():
   global g_directory
+
+  ktp.log.Record(LogStore,
+                 "#(robot) message(initializing)")
 
   # create a temporary directory.
   g_directory = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionDirectory)
@@ -182,6 +190,9 @@ def                     Initialize():
 # this function cleans what has been created by this script.
 #
 def                     Clean():
+  ktp.log.Record(LogStore,
+                 "#(robot) message(cleaning)")
+
   # remove the disk directory.
   if g_directory:
     ktp.miscellaneous.Remove(g_directory)

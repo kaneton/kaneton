@@ -6,51 +6,33 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/server/server.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/server/registrar.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [thu dec 16 22:50:49 2010]
+# updated       julien quintard   [fri feb  4 16:59:11 2011]
 #
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script must be run on the server-side. the server waits for XML RPCs
-# which trigger one of the following actions: information, test or submit.
+# this script, which must be run on the server, waits for XML RPCs.
 #
 # for every action, the requesting client provides a user capability. this
-# capability is first verified. then, the user's database is loaded.
+# capability is first verified.
 #
-# the information command returns information on the requesting user's profile
-# by inspecting the user's database. In addition, this command returns the
-# available suites, stages and environments.
+# the 'information' command returns information on the requesting user's
+# profile by inspecting the user's database. In addition, this command
+# returns the available suites, stages and environments.
 #
-# the test command takes a snapshot, an environment and a suite to run. first,
-# the construct script is called in order to turn the snapshot into a
-# bootable image. then, the stress script is called in order to trigger
-# the tests belonging to the given test suite. finally, a report is build
-# and saved but also sent back to the client.
+# the 'test' command takes a snapshot, an environment and a suite to run. the
+# report is initially set up, and recorded for the scheduler to test it.
 #
-# the submit command takes a snapshot and saves it as the final work of the
-# student. later on, the administrator will be able to use the
-# 'scripts/evaluate.py' script in order to generate the students' grades for
-# a specific stage.
+# the 'submit' command takes a snapshot and saves it as the final work of the
+# student. later on, the administrator will be able to use other scripts
+# in order to evaluate such submissions.
 #
-# for more information about the scripts called from the server's internals,
-# please refer to the scripts/ directory.
-#
-# IMPORTANT! should the server fail to produce relevant reports, the
-#   administrator should look for two possible explanations:
-#     1) there are too many mounted loop devices.
-#        one can detect these temporary mounts through either:
-#          $> mount
-#        or:
-#          $> losetup -a
-#     2) there already is a virtual machine running, being Xen or QEMU
-#        for QEMU, once can detect such running virtual machine through:
-#          $> ps aux | grep -i qemu
-#        for Xen, the following command must only return the Domain-0:
-#          $> xm list
+# finally, the 'retest' command takes an existing report identifier and
+# re-queue it in the scheduler.
 #
 
 #
@@ -86,8 +68,6 @@ import ktp
 #
 
 # directories
-ScriptsDirectory = TestDirectory + "/scripts"
-ServerDirectory = TestDirectory + "/server"
 StoreDirectory = TestDirectory + "/store"
 SuitesDirectory = TestDirectory + "/suites"
 StagesDirectory = TestDirectory + "/stages"
@@ -100,6 +80,8 @@ CodeStore = StoreDirectory + "/code"
 CertificateStore = StoreDirectory + "/certificate"
 ReportStore = StoreDirectory + "/report"
 SnapshotStore = StoreDirectory + "/snapshot"
+QueueStore = StoreDirectory + "/queue"
+LogStore = StoreDirectory + "/log"
 
 # ca
 CACertificate = CertificateStore + "/ca" + ktp.certificate.Extension
@@ -111,21 +93,11 @@ ServerCertificate = CertificateStore + "/server" + ktp.certificate.Extension
 ServerKey = KeyStore + "/server" + ktp.key.Extension
 ServerCode = CodeStore + "/server" + ktp.code.Extension
 
-# scripts
-TestScript = ScriptsDirectory + "/test.py"
-
 # maintenance
 MaintenanceLock = TestDirectory + "/.maintenance"
 
-# indexes
-QEMUIndex = 0
-XenIndex = 1
-
-# environments: qemu/xen.
-Environments = [ "qemu", "xen" ]
-
 # test construct environment
-TestConstructEnvironment = Environments[QEMUIndex]
+TestConstructEnvironment = ktp.environment.Xen
 
 # the contributors community.
 ContributorsCommunity = "contributors"
@@ -217,26 +189,6 @@ class SSLXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
       self.connection.shutdown()
 
 #
-# ---------- functions --------------------------------------------------------
-#
-
-#
-# this function initializes the test system.
-#
-def                     Initialize():
-  global g_code
-
-  # load the server's code which is used in order to validate the
-  # students' capabilities.
-  g_code = ktp.code.Load(ServerCode)
-
-#
-# this function cleans the test system.
-#
-def                     Clean():
-  pass
-
-#
 # ---------- routines ---------------------------------------------------------
 #
 
@@ -255,25 +207,42 @@ def                     Information(capability):
   environments = None
   environment = None
 
-  print("[routine] Information()")
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Information) message(entering)")
 
   try:
     # verify that the maintenance mode has not been activated.
     if os.path.exists(MaintenanceLock) == True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Information) " +            \
+                       "error(maintenance detected)")
+
       return (ktp.StatusError, "the system is currently under "         \
                 "maintenance ... please try again later")
 
     # verify the given capability.
     if ktp.capability.Validate(g_code, capability) != True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Information) " +            \
+                       "error(invalid capability)")
+
       return (ktp.StatusError, "invalid capability")
 
     # retrieve the profile inside the capability.
     profile = capability
 
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Information) profile(" +      \
+                     str(profile) + ")")
+
     # extract the user's database.
     database = ktp.database.Load(DatabaseStore + "/" +                  \
                                    profile["identifier"] +              \
                                    ktp.database.Extension)
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Information) database(" +     \
+                     str(database) + ")")
 
     # build the information.
     information = {}
@@ -314,15 +283,25 @@ def                     Information(capability):
                                       environment + ktp.environment.Extension)
 
       information["environments"][stream["name"]] = stream["description"]
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Information) information(" +  \
+                     str(information) + ")")
   except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Information) exception(" +    \
+                     str(exception) + ") trace(" +                      \
+                     ktp.trace.Generate() + ")")
+
     return (ktp.StatusError, ktp.trace.Generate())
 
-  print("[/routine] Information()")
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Information) message(leaving)")
 
   return (ktp.StatusOk, information)
 
 #
-# this method triggers a test suite for the given snapshot.
+# this function triggers a test suite for the given snapshot.
 #
 def                     Test(capability,
                              snapshot,
@@ -334,53 +313,74 @@ def                     Test(capability,
   machine = None
   database = None
   identifier = None
-  date = None
   report = None
-  status = None
-  output = None
-  stream = None
 
-  print("[routine] Test()")
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Test) message(entering)")
 
   try:
     # verify that the maintenance mode has not been activated.
     if os.path.exists(MaintenanceLock) == True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Test) error(maintenance detected)")
+
       return (ktp.StatusError, "the system is currently under "         \
                 "maintenance ... please try again later")
 
     # verify the given capability.
     if ktp.capability.Validate(g_code, capability) != True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Test) error(invalid capability)")
+
       return (ktp.StatusError, "invalid capability")
 
     # retrieve the profile inside the capability.
     profile = capability
 
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) profile(" +             \
+                     str(profile) + ")")
+
     # compute the machine.
     machine = platform + "." + architecture
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) machine(" + machine + ")")
 
     # retrieve the user's database.
     database = ktp.database.Load(DatabaseStore + "/" +                  \
                                    profile["identifier"] +              \
                                    ktp.database.Extension)
 
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) database(" +            \
+                     str(database) + ")")
+
     # verify the database consistency.
     if (not "quotas" in database) or                                    \
        (not environment in database["quotas"]) or                       \
        (not machine in database["quotas"][environment]) or              \
        (not suite in database["quotas"][environment][machine]):
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Test) error(unallowed action)")
+
       return (ktp.StatusError, "the action does not seem to be "        \
                 "allowed for your profile")
 
     # check that the quota has not been reached.
     if (len(database["reports"][environment][machine][suite]) ==        \
           database["quotas"][environment][machine][suite]):
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Test) error(reached quota)")
+
       return (ktp.StatusError, "the tests quota seems to have been reached")
 
     # create a unique identifier for the test context.
     identifier = time.strftime("%Y%m%d:%H%M%S")
 
-    # retrieve the current date.
-    date = time.strftime("%Y/%m/%d %H:%M:%S")
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) identifier(" +          \
+                     identifier + ")")
 
     # update the database by recording the test identifier.
     database["reports"][environment][machine][suite] += [ identifier ]
@@ -390,10 +390,16 @@ def                     Test(capability,
                        DatabaseStore + "/" + profile["identifier"] +    \
                          ktp.database.Extension)
 
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) message(database updated)")
+
     # store the snapshot.
     ktp.miscellaneous.Push(str(snapshot),
                            SnapshotStore + "/" + identifier +           \
                              ktp.snapshot.Extension)
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) message(snapshot saved)")
 
     # build the initial report.
     report = {
@@ -401,7 +407,7 @@ def                     Test(capability,
                  {
                    "user": profile["identifier"],
                    "identifier": identifier,
-                   "date": date,
+                   "date": None,
                    "environments":
                      {
                        "construct": TestConstructEnvironment,
@@ -410,132 +416,114 @@ def                     Test(capability,
                    "platform": platform,
                    "architecture": architecture,
                    "suite": suite,
-                   "duration": None
+                   "duration": None,
+                   "state": ktp.report.StateInProgress
                  },
                "data":
                  None
              }
 
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) report(" +              \
+                     str(report) + ")")
+
     # store the initial report.
     ktp.report.Store(report,
                      ReportStore + "/" + identifier + ktp.report.Extension)
 
-    # generate a temporary file.
-    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) message(initial report saved)")
 
-    # launch the test script.
-    status =                                                            \
-      ktp.process.Invoke(TestScript,
-                         [ "--report", identifier ],
-                         stream = stream,
-                         option = ktp.process.OptionNone)
+    # queue the identifier so that the scheduler picked it for testing.
+    ktp.queue.Push(QueueStore,
+                   identifier)
 
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
-
-    # test the success of the stress script invocation.
-    if status == ktp.StatusError:
-      return (ktp.StatusError, ktp.miscellaneous.Binary(output))
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) message(snapshot queued)")
   except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Test) exception(" +           \
+                     str(exception) + ") trace(" +                      \
+                     ktp.trace.Generate() + ")")
+
     return (ktp.StatusError, ktp.trace.Generate())
-  finally:
-    # remove temporary files.
-    if stream:
-      ktp.miscellaneous.Remove(stream)
 
-  # load the final report in order to send it back to the client.
-  report = ktp.report.Load(ReportStore + "/" + identifier +             \
-                             ktp.report.Extension)
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Test) message(leaving)")
 
-  print("[/routine] Test()")
-
-  return (ktp.StatusOk, report)
+  return (ktp.StatusOk, identifier)
 
 #
-# this method re-triggers a test suite for the given report.
+# this function re-triggers a test suite for the given report.
 #
 def                     Retest(capability,
                                identifier):
   profile = None
-  database = None
-  date = None
-  report = None
-  status = None
-  output = None
-  stream = None
 
-  print("[routine] Retest()")
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Retest) message(entering)")
 
   try:
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Retest) identifier(" +        \
+                     identifier + ")")
+
     # verify that the maintenance mode has not been activated.
     if os.path.exists(MaintenanceLock) == True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Retest) " +                 \
+                       "error(maintenance detected)")
+
       return (ktp.StatusError, "the system is currently under "         \
                 "maintenance ... please try again later")
 
     # verify the given capability.
     if ktp.capability.Validate(g_code, capability) != True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Retest) error(invalid capability)")
+
       return (ktp.StatusError, "invalid capability")
 
     # retrieve the profile inside the capability.
     profile = capability
 
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Retest) profile(" +           \
+                     str(profile) + ")")
+
     # check that the requesting user is a contributor.
     if profile["community"] != ContributorsCommunity:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Retest) error(not a contributor)")
+
       return (ktp.StatusError, "only a contributor can request "        \
                 "this operation")
 
-    # load the final report in order to send it back to the client.
+    # try to load the report to make sure the identifier is valid.
     report = ktp.report.Load(ReportStore + "/" + identifier +           \
                                ktp.report.Extension)
 
-    # retrieve the current date.
-    date = time.strftime("%Y/%m/%d %H:%M:%S")
+    # queue the identifier so that the scheduler picked it for testing.
+    ktp.queue.Push(QueueStore,
+                   identifier)
 
-    # reset some of the report attributes.
-    report["meta"]["date"] = date
-    report["meta"]["duration"] = None
-    report["data"] = None
-
-    # store the initial report.
-    ktp.report.Store(report,
-                     ReportStore + "/" + identifier + ktp.report.Extension)
-
-    # generate a temporary file.
-    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-    # launch the test script.
-    status =                                                            \
-      ktp.process.Invoke(TestScript,
-                         [ "--report", identifier,
-                           "--email" ],
-                         stream = stream,
-                         option = ktp.process.OptionNone)
-
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
-
-    # test the success of the stress script invocation.
-    if status == ktp.StatusError:
-      return (ktp.StatusError, ktp.miscellaneous.Binary(output))
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Retest) message(snapshot queued)")
   except Exception, exception:
-    return (ktp.StatusError, ktp.trace.Generate())
-  finally:
-    # remove temporary files.
-    if stream:
-      ktp.miscellaneous.Remove(stream)
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Retest) exception(" +         \
+                     str(exception) + ") trace(" +                      \
+                     ktp.trace.Generate() + ")")
 
-  print("[/routine] Retest()")
+    return (ktp.StatusError, ktp.trace.Generate())
+
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Retest) message(leaving)")
 
   return (ktp.StatusOk, None)
 
 #
-# this method submits a snapshot.
+# this function submits a snapshot.
 #
 def                     Submit(capability,
                                snapshot,
@@ -545,34 +533,58 @@ def                     Submit(capability,
   identifier = None
   date = None
 
-  print("[routine] Submit()")
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Submit) message(entering)")
 
   try:
     # verify that the maintenance mode has not been activated.
     if os.path.exists(MaintenanceLock) == True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Submit) " +                 \
+                       "error(maintenance detected)")
+
       return (ktp.StatusError, "the system is currently under "         \
                 "maintenance ... please try again later")
 
     # verify the given capability.
     if ktp.capability.Validate(g_code, capability) != True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Submit) error(invalid capability)")
+
       return (ktp.StatusError, "invalid capability")
 
     # retrieve the profile inside the capability.
     profile = capability
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Submit) profile(" +           \
+                     str(profile) + ")")
 
     # retrieve the user's database.
     database = ktp.database.Load(DatabaseStore + "/" +                  \
                                    profile["identifier"] +              \
                                    ktp.database.Extension)
 
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Submit) database(" +          \
+                     str(database) + ")")
+
     # verify the database consistency.
     if (not "deliveries" in database) or                                \
        (not stage in database["deliveries"]):
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Submit) " +                 \
+                       "error(unallowed operation)")
+
       return (ktp.StatusError, "the action does not seem to be "        \
                 "allowed for your profile")
 
     # check that no snapshot has been submitted already.
     if database["deliveries"][stage] != None:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Submit) " +                 \
+                       "error(prior submission detected)")
+
       return (ktp.StatusError, "a snapshot seems to have already "      \
                 "been submitted")
 
@@ -582,10 +594,17 @@ def                     Submit(capability,
     # retrieve the current date.
     date = time.strftime("%Y/%m/%d %H:%M:%S")
 
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Submit) identifier(" +        \
+                     identifier + ")")
+
     # store the snapshot.
     ktp.miscellaneous.Push(str(snapshot),
                            SnapshotStore + "/" + identifier +           \
                              ktp.snapshot.Extension)
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Submit) message(snapshot saved)")
 
     # set the snapshot identifier in the database.
     database["deliveries"][stage] = {
@@ -596,18 +615,193 @@ def                     Submit(capability,
     # store the database.
     ktp.database.Store(database, DatabaseStore + "/" +                  \
                          profile["identifier"] + ktp.database.Extension)
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Submit) " +                   \
+                     "message(submission recorded)");
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Submit) database(" +          \
+                     str(database) + ")")
   except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Submit) exception(" +         \
+                     str(exception) + ") trace(" +                      \
+                     ktp.trace.Generate() + ")")
+
     return (ktp.StatusError, ktp.trace.Generate())
 
-  print("[/routine] Submit()")
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Submit) message(leaving)")
 
   return (ktp.StatusOk, None)
 
 #
-# ---------- entry point ------------------------------------------------------
+# this function returns a summary of the reports associated with the
+# given user.
+#
+def                     List(capability):
+  profile = None
+  database = None
+  environment = None
+  machine = None
+  suite = None
+  identifier = None
+  report = None
+  summary = []
+
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(List) message(entering)")
+
+  try:
+    # verify that the maintenance mode has not been activated.
+    if os.path.exists(MaintenanceLock) == True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(List) error(maintenance detected)")
+
+      return (ktp.StatusError, "the system is currently under "         \
+                "maintenance ... please try again later")
+
+    # verify the given capability.
+    if ktp.capability.Validate(g_code, capability) != True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(List) error(invalid capability)")
+
+      return (ktp.StatusError, "invalid capability")
+
+    # retrieve the profile inside the capability.
+    profile = capability
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(List) profile(" +             \
+                     str(profile) + ")")
+
+    # retrieve the user's database.
+    database = ktp.database.Load(DatabaseStore + "/" +                  \
+                                   profile["identifier"] +              \
+                                   ktp.database.Extension)
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(List) database(" +            \
+                     str(database) + ")")
+
+    for environment in database["reports"]:
+      for machine in database["reports"][environment]:
+        for suite in database["reports"][environment][machine]:
+          for identifier in database["reports"][environment][machine][suite]:
+            report = ktp.report.Load(ReportStore + "/" + identifier +   \
+                                       ktp.report.Extension)
+
+            summary += [ report["meta"] ]
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(List) summary(" +             \
+                     str(summary) + ")")
+  except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(List) exception(" +           \
+                     str(exception) + ") trace(" +                      \
+                     ktp.trace.Generate() + ")")
+
+    return (ktp.StatusError, ktp.trace.Generate())
+
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(List) message(leaving)")
+
+  return (ktp.StatusOk, summary)
+
+#
+# this function returns the report identified by the given identifier.
+#
+def                     Fetch(capability,
+                              identifier):
+  profile = None
+  report = None
+
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Fetch) message(entering)")
+
+  try:
+    # verify that the maintenance mode has not been activated.
+    if os.path.exists(MaintenanceLock) == True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Fetch) " +                  \
+                       "error(maintenance detected)")
+
+      return (ktp.StatusError, "the system is currently under "         \
+                "maintenance ... please try again later")
+
+    # verify the given capability.
+    if ktp.capability.Validate(g_code, capability) != True:
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Fetch) error(invalid capability)")
+
+      return (ktp.StatusError, "invalid capability")
+
+    # retrieve the profile inside the capability.
+    profile = capability
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Fetch) profile(" +            \
+                     str(profile) + ")")
+
+    report = ktp.report.Load(ReportStore + "/" + identifier +           \
+                               ktp.report.Extension)
+
+    if (report["meta"]["user"] != profile["identifier"]) and            \
+       (profile["community"] != ContributorsCommunity):
+      ktp.log.Record(LogStore,
+                     "#(registrar) function(Fetch) error(un-owned report)")
+
+      return (ktp.StatusError, "this report does not belong to you")
+
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Fetch) report(" +             \
+                     str(report) + ")")
+  except Exception, exception:
+    ktp.log.Record(LogStore,
+                   "#(registrar) function(Fetch) exception(" +          \
+                     str(exception) + ") trace(" +                      \
+                     ktp.trace.Generate() + ")")
+
+    return (ktp.StatusError, ktp.trace.Generate())
+
+  ktp.log.Record(LogStore,
+                 "#(registrar) function(Fetch) message(leaving)")
+
+  return (ktp.StatusOk, report)
+
+#
+# ---------- functions --------------------------------------------------------
 #
 
-if __name__ == '__main__':
+#
+# this function initializes the test system.
+#
+def                     Initialize():
+  global g_code
+
+  ktp.log.Record(LogStore,
+                 "#(registrar) message(initializing)")
+
+  # load the server's code which is used in order to validate the
+  # students' capabilities.
+  g_code = ktp.code.Load(ServerCode)
+
+#
+# this function cleans the test system.
+#
+def                     Clean():
+  ktp.log.Record(LogStore,
+                 "#(registrar) message(cleaning)")
+
+#
+# this is the main function.
+#
+def                     Main():
+  server = None
+  information = None
+
   # create the server.
   server = SSLXMLRPCServer((ServerHost, ServerPort),
                            SSLXMLRPCRequestHandler)
@@ -617,17 +811,29 @@ if __name__ == '__main__':
   server.register_function(Test)
   server.register_function(Retest)
   server.register_function(Submit)
+  server.register_function(List)
+  server.register_function(Fetch)
 
-  # print information
+  # log the startup.
   information = server.socket.getsockname()
-  print("[meta] serving on " +                                          \
-          information[0] + ":" + str(information[1]))
 
-  # initialize the system.
-  Initialize()
+  ktp.log.Record(LogStore,
+                 "#(registrar) @("+ information[0] + ":" +              \
+                   str(information[1]) + ")")
 
   # loop endlessly waiting for requests.
   server.serve_forever()
+
+#
+# ---------- entry point ------------------------------------------------------
+#
+
+if __name__ == '__main__':
+  # initialize the system.
+  Initialize()
+
+  # call the main function
+  Main()
 
   # clean the system.
   Clean()

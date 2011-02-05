@@ -6,10 +6,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/scripts/distribute.py
+# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/distribute.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [mon dec 20 08:28:12 2010]
+# updated       julien quintard   [fri feb  4 23:32:52 2011]
 #
 
 #
@@ -53,6 +53,7 @@ StoreDirectory = TestDirectory + "/store"
 
 # stores
 CapabilityStore = StoreDirectory + "/capability"
+LogStore = StoreDirectory + "/log"
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -74,49 +75,39 @@ def                     Distribute(namespace):
   name = None
   match = None
   capability = None
-  content = None
-  configuration = None
   message = None
-  stream = None
 
-  # create a temporary file.
-  configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-  # create a configuration file.
-  content = """\
-set realname = "opaak admin"
-set from = "admin@opaak.org"
-set use_from = yes\
-"""
-
-  # store the temporary mutt configuration file.
-  ktp.miscellaneous.Push(content, configuration)
-
-  # create a temporary file.
-  message = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+  ktp.log.Record(LogStore,
+                 "#(distribute) message(distributing the capabilities)")
 
   # retrieve the capability names.
   names = ktp.capability.List(CapabilityStore)
 
-  # display a text.
-  print("recipients:")
-
   # treat every capability.
   for name in names:
+    ktp.log.Record(LogStore,
+                   "#(distribute) name(" + name + ")")
+
     # apply the pattern onto the name.
     match = re.search(namespace.pattern, name, re.MULTILINE)
 
     # ignore the name should it fail to match the pattern.
     if not match:
+      ktp.log.Record(LogStore,
+                     "#(distribute) warning(non-matching pattern)")
+
       continue
 
     # load the capability in order to retrieve the email.
     capability = ktp.capability.Load(CapabilityStore + "/" +            \
                                        name + ktp.capability.Extension)
 
+    ktp.log.Record(LogStore,
+                   "#(distribute) capability(" + str(capability) + ")")
+
     # create the message.
-    content = """\
-This email contains the capability of the student referred to as:
+    message = """\
+This email contains the capability of the student or group referred to as:
 
   %(identifier)s
 
@@ -126,49 +117,24 @@ directory, at the location:
   kaneton/environment/profile/user/${KANETON_USER}/${KANETON_USER}.cap\
 """ % { "identifier": capability["identifier"] }
 
-    # store the temporary message.
-    ktp.miscellaneous.Push(content, message)
+    ktp.log.Record(LogStore,
+                   "#(distribute) body(" + message + ")")
 
     # initialize the emails variable.
     emails = []
+
     # compute the email addresses.
     for member in capability["members"]:
       emails += [ member["email"] ]
 
-    # create a stream file.
-    stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+    ktp.log.Record(LogStore,
+                   "#(distribute) emails(" + str(emails) + ")")
 
-    # email the capability to the supposed recipient.
-    status = ktp.process.Invoke("mutt",
-                                [ "-F", configuration,
-                                  "-s", "'kaneton capability'",
-                                  "-a", CapabilityStore + "/" + \
-                                    name + ktp.capability.Extension,
-                                  " ".join(emails),
-                                  "<" + message ])
-
-    # retrieve the output.
-    output = ktp.miscellaneous.Pull(stream)
-
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
-
-    # check the status.
-    if status == ktp.StatusError:
-      # display the output.
-      if output:
-        print(output)
-
-      # display the error message.
-      print("an error occured while sending the email to '" +           \
-              capability["email"] + "'")
-
-    # display a message.
-    print("  " + capability["identifier"])
-
-  # remove the temporary files.
-  ktp.miscellaneous.Remove(message)
-  ktp.miscellaneous.Remove(configuration)
+    # send the email.
+    ktp.miscellaneous.Email("admin@opaak.org",
+                            emails,
+                            "'kaneton capability'",
+                            message)
 
 #
 # this is the main function
