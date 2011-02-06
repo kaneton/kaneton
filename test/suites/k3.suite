@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/suites/k3.suite
+# file          /home/mycure/kaneton/test/suites/k3.suite
 #
 # created       julien quintard   [tue nov  2 07:34:01 2010]
-# updated       julien quintard   [sun dec  5 20:28:59 2010]
+# updated       julien quintard   [sun feb  6 11:35:01 2011]
 #
 
 name: k3
@@ -23,3 +23,9 @@ components:
   scheduler:
     - kaneton/core/scheduler/
     - kaneton/machine/architecture/ia32/scheduler/
+
+  event:
+    - kaneton/machine/architecture/ia32/event/exception/06/
+    - kaneton/machine/architecture/ia32/event/exception/07/
+    - kaneton/machine/architecture/ia32/event/flags/
+    - kaneton/machine/architecture/ia32/event/map/

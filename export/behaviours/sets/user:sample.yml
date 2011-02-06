@@ -28,7 +28,3 @@
 -
   operation: fremove
   path: environment/profile/user/robot
-
--
-  operation: fremove
-  path: environment/profile/user/test

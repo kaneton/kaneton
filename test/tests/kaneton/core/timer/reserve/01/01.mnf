@@ -1,6 +1,6 @@
 name: core/timer/reserve/01
-description: This test reserves a thread which sets up a single timer.
+description: This test sets up a single timer.
 symbol: test_core_timer_reserve_01
-signature: ri09fsfwpokeok43za90fiowigowehgrh
+signature: za90fiowigowehgrh
 output:
 points: 1

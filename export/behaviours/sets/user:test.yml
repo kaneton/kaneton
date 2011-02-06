@@ -26,8 +26,4 @@
 
 -
   operation: fremove
-  path: environment/profile/user/matthieu.bucchianeri
-
--
-  operation: fremove
   path: environment/profile/user/sample

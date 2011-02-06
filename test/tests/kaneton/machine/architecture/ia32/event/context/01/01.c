@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../architecture/ia32/event/context/01/01.c
+ * file          /home/mycure/kane...e/ia32/educational/event/context/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat jan 15 22:37:24 2011]
+ * updated       julien quintard   [sat feb  5 20:55:28 2011]
  */
 
 /*
@@ -55,6 +55,9 @@ void			test_architecture_event_context_01(void)
 		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
+  if (event_enable() != ERROR_OK)
+    TEST_ERROR("[event_enable] error");
+
   asm volatile("pushl %%eax\n"
 	       "pushl %%ebx\n"
 	       "pushl %%ecx\n"
@@ -74,6 +77,9 @@ void			test_architecture_event_context_01(void)
 	       "pushl %%ebp\n"
 	       "movl %%esp, %1"
 	       : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
+
+  if (event_disable() != ERROR_OK)
+    TEST_ERROR("[event_disable] error");
 
   if (thrown != 1)
     TEST_ERROR("the triggered exception has not been caught");

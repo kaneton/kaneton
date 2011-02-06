@@ -4,11 +4,8 @@
 # this behaviour is used in order to create a kaneton snapshot for students.
 #
 
-# XXX
-#-
-#  operation: svnexport
 -
-  operation: localexport
+  operation: svnexport
 
 -
   operation: import

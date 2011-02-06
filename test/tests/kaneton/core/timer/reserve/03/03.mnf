@@ -1,6 +1,6 @@
 name: core/timer/reserve/03
 description: This test reserves several timers which are triggered once each. The test then verifies that every timer has been properly triggered.
 symbol: test_core_timer_reserve_03
-signature: 3r9w230ai9ekf923itvmqop3jfwsdv093
+signature: vmqop3jfwsdv093
 output:
 points: 3

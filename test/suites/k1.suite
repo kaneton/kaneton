@@ -5,17 +5,27 @@
 #
 # license       
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/suites/k1.suite
+# file          /home/mycure/kaneton/test/suites/k1.suite
 #
 # created       julien quintard   [tue nov  2 07:33:52 2010]
-# updated       julien quintard   [sun dec  5 20:28:24 2010]
+# updated       julien quintard   [sun feb  6 11:35:30 2011]
 #
 
 name: k1
 description: This test suite focuses on the event processing.
 components:
   event:
-    - kaneton/machine/architecture/ia32/event/
+    - kaneton/machine/architecture/ia32/event/context/
+    - kaneton/machine/architecture/ia32/event/data/
+    - kaneton/machine/architecture/ia32/event/exception/01/
+    - kaneton/machine/architecture/ia32/event/exception/02/
+    - kaneton/machine/architecture/ia32/event/exception/03/
+    - kaneton/machine/architecture/ia32/event/exception/04/
+    - kaneton/machine/architecture/ia32/event/exception/05/
+    - kaneton/machine/architecture/ia32/event/idt/
+    - kaneton/machine/architecture/ia32/event/interrupt/
+    - kaneton/machine/architecture/ia32/event/irq/
+    - kaneton/machine/architecture/ia32/event/pic/
 
   timer:
     - kaneton/core/timer/

@@ -46,6 +46,8 @@ architecture/environment.c
 - attention: une fois l'interruption geree, le systeme retourne a l'execution
   du thread etc.
 
+- revoir les tests avec des threads: sont-elles vraiment necessaires?
+
 - dire que _architecture.error doit etre rempli des qu'une
   interruption/exception dispose d'un code d'erreur.
 

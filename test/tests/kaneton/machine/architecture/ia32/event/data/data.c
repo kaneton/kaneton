@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...hine/architecture/ia32/event/data/data.c
+ * file          /home/mycure/kane...cture/ia32/educational/event/data/data.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sat jan 15 22:38:04 2011]
+ * updated       julien quintard   [sat feb  5 21:14:04 2011]
  */
 
 /*
@@ -49,7 +49,13 @@ void			test_architecture_event_data(void)
 		    EVENT_DATA(0x42424242)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
+  if (event_enable() != ERROR_OK)
+    TEST_ERROR("[event_enable] error");
+
   asm volatile("int $3");
+
+  if (event_disable() != ERROR_OK)
+    TEST_ERROR("[event_disable] error");
 
   if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != ERROR_OK)
     TEST_ERROR("[event_release] error");

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...tests/kaneton/core/timer/reserve/03/03.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun jan 30 21:11:43 2011]
+ * updated       julien quintard   [sat feb  5 20:50:21 2011]
  */
 
 /*
@@ -18,12 +18,6 @@
 #include <kaneton.h>
 
 #include "03.h"
-
-/*
- * ---------- externs ---------------------------------------------------------
- */
-
-extern m_kernel			_kernel;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -55,7 +49,7 @@ void			test_core_timer_reserve_03_handler_04(void)
   timed |= (1 << 3);
 }
 
-void			test_core_timer_reserve_03_content(void)
+void			test_core_timer_reserve_03(void)
 {
   i_timer		tid;
   s_clock		clock;
@@ -68,7 +62,7 @@ void			test_core_timer_reserve_03_content(void)
 		    1000,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[timer_reserve] error");
+    TEST_ERROR("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
 		    TIMER_ROUTINE(test_core_timer_reserve_03_handler_02),
@@ -76,7 +70,7 @@ void			test_core_timer_reserve_03_content(void)
 		    200,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[timer_reserve] error");
+    TEST_ERROR("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
 		    TIMER_ROUTINE(test_core_timer_reserve_03_handler_03),
@@ -84,7 +78,7 @@ void			test_core_timer_reserve_03_content(void)
 		    500,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[timer_reserve] error");
+    TEST_ERROR("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
 		    TIMER_ROUTINE(test_core_timer_reserve_03_handler_04),
@@ -92,19 +86,22 @@ void			test_core_timer_reserve_03_content(void)
 		    700,
 		    TIMER_OPTION_NONE,
 		    &tid) != ERROR_OK)
-    TEST_HANG("[timer_reserve] error");
+    TEST_ERROR("[timer_reserve] error");
 
   if (clock_current(&clock) != ERROR_OK)
-    TEST_HANG("[clock_current] error");
+    TEST_ERROR("[clock_current] error");
 
   start = CLOCK_UNIQUE(&clock);
+
+  if (event_enable() != ERROR_OK)
+    TEST_ERROR("[event_enable] error");
 
   while (1)
     {
       t_uint64		current;
 
       if (clock_current(&clock) != ERROR_OK)
-	TEST_HANG("[clock_current] error");
+	TEST_ERROR("[clock_current] error");
 
       current = CLOCK_UNIQUE(&clock);
 
@@ -112,51 +109,13 @@ void			test_core_timer_reserve_03_content(void)
 	break;
     }
 
-  if (timed != 0xf)
-    TEST_HANG("the timers have not been properly triggered");
-
-  TEST_SIGNATURE(3r9w230ai9ekf923it);
-
-  if (cpu_current(&cpu) != ERROR_OK)
-    TEST_HANG("[cpu_current] error");
-
-  if (scheduler_stop(cpu) != ERROR_OK)
-    TEST_HANG("[scheduler_stop] error");
-
-  TEST_HANG("unreachable");
-}
-
-void			test_core_timer_reserve_03(void)
-{
-  i_thread		thread;
-  i_cpu			cpu;
-
-  TEST_ENTER();
-
-  if (thread_reserve(_kernel.task,
-		     THREAD_PRIORITY,
-		     THREAD_STACK_ADDRESS_NONE,
-                     THREAD_STACK_SIZE_LOW,
-		     (t_vaddr)test_core_timer_reserve_03_content,
-		     &thread) != ERROR_OK)
-    TEST_ERROR("[thread_reserve] error");
-
-  if (thread_start(thread) != ERROR_OK)
-    TEST_ERROR("[thread_start] error");
-
-  if (cpu_current(&cpu) != ERROR_OK)
-    TEST_HANG("[cpu_current] error");
-
-  if (scheduler_start(cpu) != ERROR_OK)
-    TEST_ERROR("[scheduler_start] error");
-
-  if (event_enable() != ERROR_OK)
-    TEST_ERROR("[event_enable] error");
-
-  TEST_SIGNATURE(vmqop3jfwsdv093);
-
   if (event_disable() != ERROR_OK)
     TEST_ERROR("[event_disable] error");
+
+  if (timed != 0xf)
+    TEST_ERROR("the timers have not been properly triggered");
+
+  TEST_SIGNATURE(vmqop3jfwsdv093);
 
   TEST_LEAVE();
 }
