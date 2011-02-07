@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ia32/educational/event/exception/06/06.c
+ * file          /home/mycure/kane...rchitecture/ia32/event/exception/06/06.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2060]
- * updated       julien quintard   [sat feb  5 21:05:26 2011]
+ * updated       julien quintard   [sun feb  6 16:07:43 2011]
  */
 
 /*
@@ -57,15 +57,9 @@ void			test_architecture_event_exception_06(void)
 		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (event_enable() != ERROR_OK)
-    TEST_ERROR("[event_enable] error");
-
   asm volatile("mov %0, %%gs"
 	       :
 	       : "m" (gs));
-
-  if (event_disable() != ERROR_OK)
-    TEST_ERROR("[event_disable] error");
 
   if (thrown != 1)
     TEST_ERROR("the exception has not been caught");

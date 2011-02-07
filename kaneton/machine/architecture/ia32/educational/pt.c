@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       julien quintard   [mon jan 31 13:56:51 2011]
+ * updated       julien quintard   [mon feb  7 11:03:26 2011]
  */
 
 /*
@@ -79,7 +79,8 @@ t_error			architecture_pt_dump(at_pt		pt,
 	      MODULE_CONSOLE_MARGIN_FORMAT
 	      "[page table] paddr(0x%08x) vaddr(0x%08x)\n",
 	      MODULE_CONSOLE_MARGIN_VALUE(margin),
-	      paddr, (t_vaddr)pt);
+	      paddr,
+	      (t_vaddr)pt);
 
   /*
    * 3)

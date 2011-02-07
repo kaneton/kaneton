@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/book/assignments/k2.tex
+% file          /home/mycure/kaneton/view/book/assignments/k3.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [mon may 17 15:30:43 2010]
+% updated       julien quintard   [mon feb  7 12:55:54 2011]
 %
 
 %
@@ -19,6 +19,16 @@
 \label{chapter:k2}
 
 \name{k2} consists in the development of multitasking in the kaneton kernel.
+
+Indeed, most kernel mechanisms rely on events. For instance kernels track
+time through an external timer event which enables operating systems to be
+preemptive \ie{} pause the current running process because and resume another
+one. This mechanism consisting in \name{context switching} between threads
+of execution allows kernels to give the illusion of parallelism though,
+at any time, a single thread is executing.
+
+advice:
+  appeler context\_locate
 
 \newpage
 

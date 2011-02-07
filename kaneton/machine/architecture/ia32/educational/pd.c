@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chine/architecture/ia32/educational/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       julien quintard   [sun jan 30 20:47:26 2011]
+ * updated       julien quintard   [mon feb  7 10:55:07 2011]
  */
 
 /*
@@ -195,7 +195,6 @@ t_error			architecture_pd_build(at_pd		pd)
  * 0) verify the arguments.
  * 1) construct the page directory entry.
  */
-
 
 t_error			architecture_pd_insert(at_pd		pd,
 					       at_pdei		index,

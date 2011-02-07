@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/include/idt.h
  *
  * created       renaud voltz   [fri feb 10 16:36:20 2006]
- * updated       julien quintard   [sat feb  5 14:04:55 2011]
+ * updated       julien quintard   [sun feb  6 14:53:49 2011]
  */
 
 #ifndef ARCHITECTURE_IDT_H
@@ -101,5 +101,53 @@
   ARCHITECTURE_IDT_IRQ_BASE + 14
 #define ARCHITECTURE_IDT_IRQ_ATA2					\
   ARCHITECTURE_IDT_IRQ_BASE + 15
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * this structure defines an IDT entry composed of an offset i.e the
+ * handler to be triggered for instance, a segment selector and a type.
+ */
+
+typedef t_uint64	at_idte;
+
+/*
+ * this structure represents an in-memory IDT descriptor.
+ */
+
+typedef struct
+{
+  at_idte*		table;
+  t_uint16		size;
+}			as_idt;
+
+/*
+ * this structure represents the IDTR - IDT register which is the
+ * hardware structure for locating the current IDT.
+ */
+
+typedef struct
+{
+  t_uint16		size;
+  t_paddr		address;
+}			__attribute__ ((packed)) as_idtr;
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../idt.c
+ */
+
+/*
+ * eop
+ */
 
 #endif

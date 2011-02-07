@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/talk/presentations/Makefile
 #
 # created       julien quintard   [sun jun 10 00:03:39 2007]
-# updated       julien quintard   [thu apr  9 14:42:40 2009]
+# updated       julien quintard   [sun feb  6 20:51:24 2011]
 #
 
 #
@@ -28,7 +28,10 @@ include			../../../environment/env.mk
 #
 
 SUBDIRS			:=		kaneton				\
-					k0				
+					k0				\
+					k1				\
+					k2				\
+					k3				
 
 #
 # ---------- rules ------------------------------------------------------------

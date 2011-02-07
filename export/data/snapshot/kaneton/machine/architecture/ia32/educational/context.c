@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sat feb  5 15:56:44 2011]
+ * updated       julien quintard   [sun feb  6 14:56:17 2011]
  */
 
 /*
@@ -214,7 +214,7 @@ t_error			architecture_context_build(i_thread	id)
        * a)
        */
 
-      thread->machine.pile.size = ___kaneton$pagesz;
+      thread->machine.pile.size = ARCHITECTURE_HANDLER_PILE_SIZE;
 
       /*
        * b)
@@ -420,7 +420,7 @@ t_error			architecture_context_setup(void)
    * 2)
    */
 
-  _architecture.kernel.kis.size = 2 * ___kaneton$pagesz;
+  _architecture.kernel.kis.size = ARCHITECTURE_HANDLER_KIS_SIZE;
 
   if (map_reserve(_kernel.as,
 		  MAP_OPTION_SYSTEM,

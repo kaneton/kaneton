@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [sat feb  5 15:13:32 2011]
+ * updated       julien quintard   [mon feb  7 12:21:07 2011]
  */
 
 /*
@@ -209,8 +209,9 @@ t_error			architecture_environment_kernel(i_as	id)
    * 5)
    */
 
-  /* FIXME[make 'pd' the current system page directory by storing it
-           in a data structure such as a manager] */
+  /* FIXME[make 'pd' the system's current page directory by updating the
+           necessary IA32 hardware structure and possibly storing the
+           value in a globally accessible variable such as a manager]
 
   /*
    * 6)
@@ -513,7 +514,8 @@ t_error			architecture_environment_server(i_as	id)
    * 7)
    */
 
-  /* FIXME[map the IDT in the address space] */
+  /* FIXME[reserve a region for the system's IDT very much as for
+           the GDT above] */
 
   /*
    * 8)

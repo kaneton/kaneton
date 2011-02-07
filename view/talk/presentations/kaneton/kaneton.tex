@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...w/talk/presentations/kaneton/kaneton.tex
 %
 % created       julien quintard   [mon may 14 21:02:29 2007]
-% updated       julien quintard   [mon may 17 10:17:42 2010]
+% updated       julien quintard   [sun feb  6 20:50:37 2011]
 %
 
 %
@@ -299,19 +299,18 @@
 \begin{frame}
   \frametitle{k1}
 
-  \term{k1} consists for students to provide the kaneton microkernel a
-  memory management unit so that applications as well as the kernel itself
-  can reserve, share \etc{} memory.
+  \term{k1} consists for students to provide the kaneton microkernel the
+  capacity to handle events.
 
   \-
 
-  During this stage, a lecture on general kernel principles, a lecture on
-  portability as well as lectures on memory management will be taught.
+  During this stage, a lecture on general kernel principles and a lecture on
+  interrupts will be taught.
 
   \-
 
-  \name{Francois Goudal} will be in charge of this stage which will last
-  for three weeks.
+  \name{Julien Quintard} will be in charge of this stage which will last
+  for a single week.
 
   \-
 
@@ -324,7 +323,27 @@
 \begin{frame}
   \frametitle{k2}
 
-  In \term{k2}, students will have to provide kaneton with execution contexts
+  \term{k2} consists for students to provide the kaneton microkernel a
+  memory management unit so that applications as well as the kernel itself
+  can reserve, share \etc{} memory.
+
+  \-
+
+  During this stage, a lecture on portability as well as lectures on
+  memory management will be taught.
+
+  \-
+
+  \name{Francois Goudal} will be in charge of this stage which will last
+  for three weeks.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{k3}
+
+  In \term{k3}, students will have to provide kaneton with execution contexts
   such that the kernel can execute multiple threads at the \textit{same} time.
 
   \-
@@ -336,30 +355,6 @@
 
   \name{Benoit Marcot} will be in charge of this stage which will last for
   three weeks.
-\end{frame}
-
-% 4)
-
-\begin{frame}
-  \frametitle{k3}
-
-  In \term{k3}, students will have to implement servers on top of their freshly
-  developed microkernel.
-
-  \-
-
-  These developments will include device drivers as well as services.
-
-  \-
-
-  Lectures discussing virtualization, devices, communication, file systems,
-  security as well as advanced research kernels will be taught during this
-  stage.
-
-  \-
-
-  \name{Julien Quintard \& Jean Guyader} will be in charge of this stage
-  which will last for three weeks.
 \end{frame}
 
 % 5)
@@ -378,20 +373,9 @@
 
   \-
 
-  Note however that, every test suite run decreases your maximum mark by
-  one point. Therefore, a student or group of students, relying on the test
-  suite six times will, at best, achieve a 14/14 mark.
-
-  \-
-
   Additionally, an exam will take place at the end of the semester to make
   sure that the notions tackled throughout the course are well understood
   by every student.
-
-  \-
-
-  Students can test and submit their work through the \name{EPITA}-specific
-  intranet: \location{http://epita.opaak.org}.
 \end{frame}
 
 %
@@ -526,8 +510,7 @@
   \-
 
   Every group is expected to send an email to
-  \name{Julien Quintard}\footnote{\location{julien.quintard@cl.cam.ac.uk}}
-  before the $18$th of February with the group composition.
+  \location{admin@opaak.org}.
 
   \-
 
@@ -568,37 +551,9 @@
 
   Although it is always best to test your implementation on a real machine,
   it takes time to reboot a real computer. You should therefore use an
-  emulator such a \name{QEmu} or \name{Bochs} as they will enable you to
+  emulator such a \name{QEMU} or \name{Bochs} as they will enable you to
   test your kernel very quickly but they will also let you develop on
   a non-\name{IBM-PC}/\name{IA-32} machine such as a \name{Mac} for example.
-
-  \-
-
-  Our own automatic test suite doesn't test your tarballs on a real physical
-  machine, because we needed to be able to run tests automatically and in
-  parallel, so you can get your traces fast enough.
-  We use hardware virtualization for that, based on Xen HVM, which is the
-  closest way of testing without using a real machine (better than Qemu).
-  If you have the possibility to run Xen HVMs on your computer, or in your lab
-  we strongly suggest that you try your kernel on it too, before uploading.
-  Note that you will always need Qemu to develop, since Xen HVM doesn't provide
-  a good way to debug. So you should only try it on a Xen HVM when it works on
-  Qemu, just to make sure.
-
-\end{frame}
-
-% 5)
-
-\begin{frame}
-  \frametitle{Requirements}
-
-  As a reminder, students must have a rack containing a \name{POSIX} compliant
-  operating system.
-
-  \-
-
-  This rack should be installed and ready so that you use it for the
-  \name{k0} practical session.
 \end{frame}
 
 %
@@ -670,9 +625,9 @@
 
   \begin{itemize}
     \item
-      Send an email to
-      \name{Julien Quintard}\footnote{\location{julien.quintard@cl.cam.ac.uk}}
-      regarding the composition of your group;
+      Send an email to \location{admin@opaak.org} regarding the composition
+      of your group, before \textbf{Wednesday 16th 2pm} or you will be put
+      in a group by force;
     \item
       Subscribe to the students mailing-list
       \location{students@kaneton.opaak.org} by sending an email to
@@ -681,11 +636,11 @@
       Watch closely the \name{Wiki} at \location{http://wiki.opaak.org} by
       subscribing the \name{RSS} feed for example;
     \item
-      Feel free to edit and add content to the \name{Wiki}, this is
-      \textbf{your} system-related zone;
-    \item
       We advise SRS/GISTR lab roots to set up a \name{Xen}-based environment
-      as testing on emulators only will become difficult over time.
+      as testing on emulators only will become difficult over time;
+    \item
+      Students must have a ``rack'' containing a \name{POSIX}-compilant
+      operating system for the \name{k0} practical session.
   \end{itemize}
 \end{frame}
 

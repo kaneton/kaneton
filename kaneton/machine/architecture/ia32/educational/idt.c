@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       julien quintard   [sun jan 30 20:44:58 2011]
+ * updated       julien quintard   [sun feb  6 15:34:40 2011]
  */
 
 /*
@@ -150,6 +150,10 @@ t_error			architecture_idt_dump(void)
 /*
  * this function builds an IDT according to the given parameters.
  *
+ * note that the base address is either physical or virtual depending
+ * on the activation of the paging mechanism though a t_paddr type is
+ * used here.
+ *
  * steps:
  *
  * 0) verify the arguments.
@@ -198,6 +202,10 @@ t_error			architecture_idt_build(t_paddr		base,
 
 /*
  * this function imports the given IDT making it the current IDT.
+ *
+ * note that the IDT base address is either physical or virtual depending
+ * on the activation of the paging mechanism though the IDTR structure
+ * uses a t_paddr type.
  *
  * steps:
  *

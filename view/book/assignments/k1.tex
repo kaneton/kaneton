@@ -8,6 +8,331 @@
 % file          /home/mycure/kaneton/view/book/assignments/k1.tex
 %
 % created       julien quintard   [tue feb  1 21:40:19 2011]
-% updated       julien quintard   [tue feb  1 21:40:19 2011]
+% updated       julien quintard   [mon feb  7 11:16:50 2011]
 %
 
+%
+% ---------- k1 ---------------------------------------------------------------
+%
+
+\chapter{k1}
+\label{chapter:k1}
+
+\name{k1} is the first stage taking place within the \name{kaneton}
+microkernel. This stage focuses on the event processing mechanism, one of
+the most fundamental kernel component. This mechanism provides the kernel
+the capacity to react to internal or external stimuli and to perform
+computations based on their nature.
+
+The event processing mechanism enables the kernel to catch errors, known
+as \name{exceptions} on \name{Intel} architectures, such as division by
+zero, page faults \etc{} but also to communicate with external devices.
+Indeed, although the easiest way to communicate with devices consists in
+probing \name{I/O} ports until the device's state changes to something
+expected, \name{interrupt}s provide a mechanism consisting for devices
+to generate asynchronously an event which will, as its name suggests, suspends
+the kernel's activity for the interrupt to be handled.
+
+Such events are extremely important as they are also used to simulate
+multitasking \ie{} the ability to execute multiple threads of execution
+in parallel. Note that the mechanism underlying this concept will be
+discussed in \name{k3}.
+
+\newpage
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+%
+% requirements
+%
+
+\section{Requirements}
+
+Every student should read the \name{IA-32 Architectures Software
+Developer's Manual, Volume 3A: System Programming Guide, Part 1} which
+is available on the \name{Wiki}. More precisely students should focus
+on the chapter \name{Interrupt and Exception Handling} which contains
+all the necessary material to complete this stage.
+
+Finally, if not already the case, students should also read the chapters
+\name{Protected-Mode Memory Management} and \name{Protection} as interrupt
+handling makes use of the protected mode capabilities.
+
+%
+% assignments
+%
+
+\section{Assignments}
+
+The \name{k1} stage, focusing on the event processing mechanism, takes place
+entirely in the \name{event} manager. However, since every processing is
+highly machine-dependent, related code can also be found in the \name{glue},
+component whose main task is to redirect calls to the functionalities provided
+by the \name{platform} and \name{architecture}.
+
+Although, as students will soon notice, the distributed snapshot includes a
+complete core event manager, the glue's is completely empty while the
+architecture does not provide any functionality related to the event
+processing mechanism.
+
+Therefore, the \name{k1} assignments consist for the student to equip the
+kaneton educational implementation with the necessary functionalities making
+the event manager fully operational.
+
+Though the stage tries to give the most freedom to students regarding their
+implementation, skeleton source files have been provided, hence acting
+as entry point for students to start experimenting.
+
+% core
+\subsection{Core}
+
+Although the event manager is obviously the most important manager when
+it comes to the event processing mechanism, the student should consider
+the timer manager as well.
+
+Indeed, the timer manager relies on the underlying hardware timer event
+for providing the possibility to trigger functions after some time. The
+student may be interested in this manager as being a perfect application
+of the event manager.
+
+% event
+\subsubsection*{event}
+
+\begin{itemize}
+  \item
+    \location{kaneton/core/event/event.c}
+  \item
+    \location{kaneton/core/include/event.h}
+\end{itemize}
+
+The core event manager provides the high level interface enabling the kernel
+and its servers to plug an event handler with a specific event number \ie{}
+event identifier. Note that event identifiers are machine-dependent; for
+instance the event \code{\#32} on \name{Intel} architectures represents the
+timer. The core event manager thus does not understand the meaning of the event
+identifiers and it is therefore the responsability of the machine, through
+the glue component, to perform the necessary operations according to the
+underlying platform/architecture.
+
+Although the core manager is complete, the student will probably find it
+useful to browse its source code to better understand its purpose.
+
+% glue
+\subsection{Glue}
+
+As mentioned earlier, the timer manager relies on the hardware timer event.
+The student will notice in
+\location{kaneton/machine/glue/ibm-pc.ia32/educational/timer.c} that this
+event is actually reserved and linked with a handler located within the
+core timer manager.
+
+% event
+\subsubsection*{event}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/glue/ibm-pc.ia32/educational/event.c}
+  \item
+    \location{kaneton/machine/glue/ibm-pc.ia32/educational/include/event.h}
+\end{itemize}
+
+The glue event manager makes the binding between a core request and the
+underlying platform and architecture functionalities.
+
+The student will notice that the glue is empty when it comes to the
+event manager. Indeed, it is the student's responsability to complete the
+glue in order to equip some of the event manager's functionalities with a
+machine-specific behaviour.
+
+% architecture
+\subsection{Architecture}
+
+The architecture must be completed in order to provide functionalities for
+controlling the microprocessor's capability to handle the interrupts and
+exceptions.
+
+For that purpose, skeleton source files are provided for the student to
+implement functions regarding the management of the \name{IDT - Interrupt
+Descriptor Table} and the set up of the interrupt handlers.
+
+% idt
+\subsubsection*{idt}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/idt.c}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/include/idt.h}
+\end{itemize}
+
+The file \location{idt.c} must be completed by students in order to
+implement functions related to the \name{IDT} management such as building
+an \name{IDT} from a given address, inserting an entry in the \name{IDT}
+according to some arguments, deleting an existing \name{IDT} entry \etc{}
+
+Note that in order to create \name{IDT} entries, students should have a look
+at the function \code{architecture\_gdt\_selector()} which enables the
+caller to generate a segment selector according to several parameters.
+
+% handler
+\subsubsection*{handler}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/handler.c}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/include/handler.h}
+\end{itemize}
+
+\name{Intel} interrupts can be classified according to their purpose into
+one of the following categories: exceptions, \name{IRQ - Interrupt Request}s,
+\name{IPI - Inter-Processor Interrupt}s and system calls \aka{}
+\name{syscall}s. Noteworthy is that \name{IPI}s can be ignored since the
+educational implementation only supports mono-processor architectures.
+
+The objective is for students to implement the low-level interrupt handlers
+which are triggered whenever the associated interrupt is received. Such a
+handler, sometimes referred to as \name{lower half}, performs two basic
+operations. First, the environment is secure for the execution of the
+interrupted thread to be resumed properly, once the interrupt treated.
+Second, the high-level event handler function registered through
+\code{event\_reserve()} is triggered; this function is sometimes referred
+to as the \name{higher half}.
+
+The file \location{handler.c} should thus contain the interrupt handlers
+associated with all the interrupts the kernel wishes to handle. Besides,
+this file should make use of the functions provided in \location{idt.c}
+for setting up the system's \name{IDT}.
+
+% architecture
+\subsubsection*{architecture}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/include/architecture.h}
+\end{itemize}
+
+The student should also take care to record, whenever appropriate, the
+error code associated with the interrupt in \code{\_architecture.error}.
+
+A special attention must be given to the \code{\_architecture} structure.
+Indeed, because this structure is being used by the testing system, its
+organisation should never be modified.
+
+% platform
+\subsection{Platform}
+
+% pic
+\subsubsection*{PIC}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/platform/ibm-pc/pic.c}
+  \item
+    \location{kaneton/machine/platform/ibm-pc/include/pic.h}
+\end{itemize}
+
+The platform plays a minor role in the event processing mechanism. However,
+students should have a look at the \name{PIC - Programmable Interrupt
+Controller} which may prove useful in this stage.
+
+%
+% example
+%
+
+\section{Example}
+
+This section presents an example which students can use to better understand
+the use of the event manager. This example illustrates a breakpoint exception
+being generating manually through the \code{int} assembly instruction.
+The exception is then caught by the kernel which notices that an event handler
+has been registered and thus triggers it.
+
+\begin{verbatim}
+void                    exception_bp(t_id                       id,
+                                     t_vaddr                    data)
+{
+  printf("[event %qd] breakpoint exception caught\n",
+         id);
+}
+
+void                    example(void)
+{
+  if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_BP,
+                    EVENT_TYPE_FUNCTION,
+                    EVENT_ROUTINE(exception_bp),
+                    EVENT_DATA(NULL)) != ERROR_OK)
+    {
+      printf("[event_reserve] error");
+      return;
+    }
+
+  asm volatile("int $3");
+
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != ERROR_OK)
+    {
+      printf("[event_release] error");
+      return;
+    }
+}
+\end{verbatim}
+
+%
+% advices
+%
+
+\section{Advices}
+
+This section contains advices that students are welcome to consider:
+
+\begin{itemize}
+  \item
+    Students should write macro-functions for setting the fields within
+    the \name{IDT} entries, making it easier to transform a single address
+    into scattered fragments placed at different position within an entry.
+
+    \-
+
+    In addition, the opposite should also be set up in order to easily
+    retrieve a field from an \name{IDT} entry.
+  \item
+    The interrupt handlers located in \location{handler.c} should be
+    composed of two parts.
+
+    \-
+
+    The first one, composing the entry point of the \name{ISR - Interrupt
+    Service Routine}, should be written in assembly in order to prevent
+    the compiler from generating additional instructions.
+
+    \-
+
+    The second one, called by the first one and written in \name{C}, triggers
+    the high-level event handlers registered for this event.
+  \item
+    The assembly part of the interrupt handlers are actually all very similar,
+    differing slightly depending on the nature of the interrupt: exception,
+    \name{IRQ}, \name{IPI} \etc{} and depending on the presence of an
+    error code.
+
+    \-
+
+    Therefore, instead of writing all these assembly functions manually,
+    one could really on a macro-function for generating the assembly
+    code automatically.
+  \item
+    In order to ease the debugging process, students should get used to
+    writing functions for dumping the state of the processor's structure,
+    such as the \name{IDT}.
+  \item
+    An interrupt handler, noticing that no high-level handler has been
+    registered for this event identifier, should display a message on the
+    console warning that this interrupt was unexpected.
+
+    \-
+
+    This way, the developer will easily notice exceptions occuring as well
+    as unhandled IRQs.
+\end{itemize}

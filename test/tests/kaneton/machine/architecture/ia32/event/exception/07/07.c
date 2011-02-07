@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...rchitecture/ia32/event/exception/07/07.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2070]
- * updated       julien quintard   [sun feb  6 11:39:33 2011]
+ * updated       julien quintard   [sun feb  6 16:07:53 2011]
  */
 
 /*
@@ -121,17 +121,11 @@ void			test_architecture_event_exception_07(void)
 		    EVENT_DATA(NULL)) != ERROR_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (event_enable() != ERROR_OK)
-    TEST_ERROR("[event_enable] error");
-
   ptr = (t_uint8*)address + 0x42;
 
   *ptr = 0x42;
 
   asm volatile("nop");
-
-  if (event_disable() != ERROR_OK)
-    TEST_ERROR("[event_disable] error");
 
   if (thrown != 1)
     TEST_ERROR("the exception has not been caught");

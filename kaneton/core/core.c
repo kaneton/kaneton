@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat feb  5 20:52:25 2011]
+ * updated       julien quintard   [mon feb  7 11:08:35 2011]
  */
 
 /*
@@ -81,6 +81,11 @@ i_segment		_system;
  * 12) shutdown the system.
  */
 
+void                    example(void)
+{
+  // XXX
+}
+
 void			kaneton(s_init*				init)
 {
   i_cpu			cpu;
@@ -125,8 +130,9 @@ void			kaneton(s_init*				init)
 
   assert(kernel_initialize() == ERROR_OK);
 
+  // XXX
   {
-    test_architecture_event_context_02();
+    example();
     printf("BACK\n");
     while (1);
   }

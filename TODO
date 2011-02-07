@@ -17,45 +17,10 @@
 - IDT dans k1
 - etc.
 
-- donner des tips: commencer par trigger une interrupt, dumper quand une
-  exception occurs, dumper la page directory/table lors d'un page fault etc.
-- donner des references de chapitres importants dans doc IA32
-
-- comment on va tester k1 si c'est juste pour catcher les exceptions?
- -> faudra quand meme qu'ils sauvent les registres (pusha) puis lorsque
-    c'est fini, popa puis iret
- -> comme ca on gere tous les events en ring0 donc ca inclue le timer
- => tester les tests de k1 en faisant juste pusha/popa dans save/restore
-
-- filer un test d'exemple pour chaque tranche pour qu'ils sachent a quoi
-  s'attendre.
-
 - dire qu'il y a des FIXME[...] a remplir. si on avait laisse le code, ca vous
   aurait contraint a suivre notre structure/organisation. donc on a prefere
   ovus laissez faire mais ca implique que vous mettiez a jour des portions
   de code qui doivent utiliser le code que vous avez ajoute.
-
-glue/event.c
-architecture/environment.c
-
-- donner des tips genre: macro opur generer le handler bas niveau qui
-  ensuite appelle une fonction C
- => en gros deux fichiers: un qui contient des fonctions de manip d'IDT
-    et un pour mettre en place les handlers d'interrupts: exceptions, IRQs
-    etc.
-- attention: une fois l'interruption geree, le systeme retourne a l'execution
-  du thread etc.
-
-- revoir les tests avec des threads: sont-elles vraiment necessaires?
-
-- dire que _architecture.error doit etre rempli des qu'une
-  interruption/exception dispose d'un code d'erreur.
-
-- ne pas reserver de timer scheduler dans initialize mais dans start & le detruire dans stop
-
-- revoir les tests! core/timer et architecture/event -> il en doit pas y avoir de thread!
-  -> solution: reserver un event, activer les event, et normalement le scheduler ne se lancera pas (car pas start)
-     et donc il nous suffit de boucler en attendant (avec clock) et verifier que l'event a eu lieu.
 
 - ils doivent egalement retoucher timer.c
 
@@ -79,7 +44,8 @@ architecture/environment.c
 - peut etre revoir les capabilities pour inclure un champ group, student,
   school, year comme ca on se prendrait moins la tete a les retrouver
 
-- terminer le hook supervisor
+- terminer le hook supervisor: ajouter aussi le nombre de soumissions pour la
+  tranche --stage
 - ecrire le hook challenge
 
 - mettre le timeout dans le manifest, en fonction de l'environment
@@ -87,6 +53,8 @@ architecture/environment.c
 
 - tester avec un vrai user car l'export request dans client ne marchera
   surement pas!
+- ajouter un truc dans la capability ou utilise community: contributors/students
+  pour l'export
 
 #
 # ---------- export -----------------------------------------------------------

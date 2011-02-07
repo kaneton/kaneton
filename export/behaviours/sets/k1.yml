@@ -22,16 +22,19 @@
 # architecture
 #
 -
-  operation: fremove
-  path: kaneton/machine/architecture/ia32/educational/handler.c
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/handler.c
+  dst: kaneton/machine/architecture/ia32/educational/handler.c
 
 -
-  operation: fremove
-  path: kaneton/machine/architecture/ia32/educational/include/handler.h
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/handler.h
+  dst: kaneton/machine/architecture/ia32/educational/include/handler.h
 
 -
-  operation: fremove
-  path: kaneton/machine/architecture/ia32/educational/idt.c
+  operation: freplace
+  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/idt.c
+  dst: kaneton/machine/architecture/ia32/educational/idt.c
 
 -
   operation: freplace
@@ -52,8 +55,3 @@
   operation: freplace
   src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/architecture.h
   dst: kaneton/machine/architecture/ia32/educational/include/architecture.h
-
--
-  operation: freplace
-  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/Makefile
-  dst: kaneton/machine/architecture/ia32/educational/Makefile

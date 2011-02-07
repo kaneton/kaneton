@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/handler.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [sun jan 30 20:44:20 2011]
+ * updated       julien quintard   [mon feb  7 11:04:14 2011]
  */
 
 /*
@@ -31,18 +31,10 @@
  * small area of memory along its data (within sections .handler_code and
  * .handler_data) and is mapped in every address space.
  *
- * the interrupt shell, still executing in the task's address space, then
- * switches to the kernel address space and executes the interrupt handler
- * by using the KIS - Kernel Interrupt Stack. this stack has nothing to do
- * with the kernel thread's stack. indeed, this stack is used to treat
- * interrupts within the kernel address space.
- *
- * finally, once the interrupt has been treated, the original address space
- * and pile is restored---through the ARCHITECTURE_CONTEXT_RESTORE()
- * macro function---and the 'iret' instruction is called. at this point, the
- * microprocessor detects that the privilege had changed and must therefore
- * be restored. the thread's context, i.e registers' content, is therefore
- * restored while jumping back on the thread's stack.
+ * the interrupt shells basically consists in saving and restoring the
+ * interrupt thread's context. this mechanism is however taken care of by
+ * the macro-functions ARCHITECTURE_CONTEXT_SAVE() and
+ * ARCHITECTURE_CONTEXT_RESTORE().
  */
 
 /*
