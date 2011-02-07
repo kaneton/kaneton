@@ -4,3 +4,6 @@ symbol: test_core_region_get
 signature: 8t3uiegisijf2w93w
 output:
 points: 1
+timeout:
+  qemu: 3
+  xen: 3

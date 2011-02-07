@@ -4,3 +4,6 @@ symbol: test_architecture_event_exception_03
 signature: 3jov9we340g9i3
 output:
 points: 1
+timeout:
+  qemu: 4
+  xen: 3

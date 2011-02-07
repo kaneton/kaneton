@@ -4,3 +4,6 @@ symbol: test_core_set_ll_07
 signature: klvk34gh34g450h
 output: "0 elements: \n3 elements: 16 4 2\n"
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_architecture_as_switch
 signature: vsdowkf43g3hg3g30hg
 output:
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

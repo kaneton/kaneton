@@ -4,3 +4,6 @@ symbol: test_core_segment_reserve_03
 signature: fg90i3i2fwoai43hg
 output:
 points: 1
+timeout:
+  qemu: 4
+  xen: 3

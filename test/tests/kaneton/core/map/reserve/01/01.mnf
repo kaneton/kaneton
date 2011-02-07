@@ -4,3 +4,6 @@ symbol: test_core_map_reserve_01
 signature: fjerioj32t4o330a0
 output:
 points: 1
+timeout:
+  qemu: 3
+  xen: 3

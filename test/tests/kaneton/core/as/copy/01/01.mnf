@@ -4,3 +4,6 @@ symbol: test_core_as_copy_01
 signature: rr3fiw3w20aafi9gre9g
 output:
 points: 3
+timeout:
+  qemu: 4
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_core_timer_precision_01
 signature: sdff3f0jg4g0934
 output:
 points: 3
+timeout:
+  qemu: 12
+  xen: 3

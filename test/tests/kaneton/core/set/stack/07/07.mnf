@@ -4,3 +4,6 @@ symbol: test_core_set_stack_07
 signature: soifkwo3kg43h09
 output: "1 elements: 42\n"
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

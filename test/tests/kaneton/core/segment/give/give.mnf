@@ -4,3 +4,6 @@ symbol: test_core_segment_give
 signature: 34i90iaopwrkrekhgoph349
 output:
 points: 4
+timeout:
+  qemu: 3
+  xen: 3

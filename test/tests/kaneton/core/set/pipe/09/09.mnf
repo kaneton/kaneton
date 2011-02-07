@@ -4,3 +4,6 @@ symbol: test_core_set_pipe_09
 signature: 983r2uoskdfg34gh34h
 output: "20 elements: 0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76\n"
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

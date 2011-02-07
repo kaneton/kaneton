@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k2.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [mon feb  7 12:55:46 2011]
+% updated       julien quintard   [mon feb  7 20:38:36 2011]
 %
 
 %
@@ -62,8 +62,9 @@ Although kaneton already embeds several managers related to memory management,
 the microkernel is devoid of an implementation on the \name{IA32} educational
 architecture.
 
-The following discusses the managers involved in the memory management
-along with the files students will have to complete.
+The assignments for this stage consists for the student to implement the
+missing functionalities especially related to the \name{Intel} microprocessor
+architecture.
 
 % core
 \subsection{Core}
@@ -102,7 +103,7 @@ and a set of regions. In other words, an address space object references all
 the physical memory owned by the address space along with the areas of
 virtual memory mapping the segments, making these segments accessible directly.
 
-Although the core as manager is complete, students should definitely look at
+Although the as manager's core is complete, students should definitely look at
 it.
 
 % region
@@ -124,8 +125,8 @@ should browse its source code to fully understand its purpose.
 % glue
 \subsection{Glue}
 
-The glue segment manager implements the segment manager's machine through
-the \name{Intel} segmentation model while the glue region manager relies on
+The segment manager's glue implements the segment manager's machine through
+the \name{Intel} segmentation model while the region manager's glue relies on
 the paging mechanism for providing virtual memory.
 
 The particularity of the \name{ia32} architecture compared to the kaneton
@@ -144,7 +145,7 @@ permissions according to the permissions associated with the segment to map.
     \location{kaneton/machine/glue/ibm-pc.ia32/educational/include/as.h}
 \end{itemize}
 
-The glue as manager is already complete though the student may want to extend
+The as manager's glue is already complete though the student may want to extend
 it.
 
 A particular attention should be paid to the \code{glue\_as\_reserve()}
@@ -161,14 +162,14 @@ either the kernel address space, or one of the server's.
     \location{kaneton/machine/glue/ibm-pc.ia32/educational/include/region.h}
 \end{itemize}
 
-The glue region manager must perform the necessary operations in order to
+The region manager's glue must perform the necessary operations in order to
 satisfy the core request according to the underlying machine.
 
 For instance, given a \code{region\_reserve()} request, the glue should
 probably rely on the architecture in order to map the segment by updating
 the page directory and tables accordingly.
 
-The student must therefore complete the glue region manager by implementing
+The student must therefore complete the region manager's glue by implementing
 the necessary functions in order to provide the virtual memory mechanism.
 
 % architecture

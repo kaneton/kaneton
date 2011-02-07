@@ -4,3 +4,6 @@ symbol: test_core_region_resize_03
 signature: ftr3wg0eeg90w2fg4
 output:
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

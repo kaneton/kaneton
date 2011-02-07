@@ -4,3 +4,6 @@ symbol: test_core_set_array_07
 signature: ssfwi3v0934h
 output: "0 elements: \n3 elements: 18 3 8\n"
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_architecture_scheduler_context_02
 signature: vmwif34wgk4eh09iwj30sdfnwo00fg43kmg0h
 output:
 points: 4
+timeout:
+  qemu: 14
+  xen: 8

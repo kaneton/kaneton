@@ -4,3 +4,6 @@ symbol: test_architecture_event_pic_02
 signature: vniwojw0f32wg3hh
 output:
 points: 1
+timeout:
+  qemu: 4
+  xen: 3

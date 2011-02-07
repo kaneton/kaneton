@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k1.tex
 %
 % created       julien quintard   [tue feb  1 21:40:19 2011]
-% updated       julien quintard   [mon feb  7 11:16:50 2011]
+% updated       julien quintard   [mon feb  7 20:38:20 2011]
 %
 
 %
@@ -73,7 +73,7 @@ component whose main task is to redirect calls to the functionalities provided
 by the \name{platform} and \name{architecture}.
 
 Although, as students will soon notice, the distributed snapshot includes a
-complete core event manager, the glue's is completely empty while the
+complete event manager's core, the glue is completely empty while the
 architecture does not provide any functionality related to the event
 processing mechanism.
 
@@ -107,16 +107,16 @@ of the event manager.
     \location{kaneton/core/include/event.h}
 \end{itemize}
 
-The core event manager provides the high level interface enabling the kernel
+The event manager's core provides the high level interface enabling the kernel
 and its servers to plug an event handler with a specific event number \ie{}
 event identifier. Note that event identifiers are machine-dependent; for
 instance the event \code{\#32} on \name{Intel} architectures represents the
-timer. The core event manager thus does not understand the meaning of the event
-identifiers and it is therefore the responsability of the machine, through
-the glue component, to perform the necessary operations according to the
-underlying platform/architecture.
+timer. The event manager's core thus does not understand the meaning of the
+event identifiers and it is therefore the responsability of the machine,
+through the glue component, to perform the necessary operations according
+to the underlying platform/architecture.
 
-Although the core manager is complete, the student will probably find it
+Although the manager's core is complete, the student will probably find it
 useful to browse its source code to better understand its purpose.
 
 % glue
@@ -126,7 +126,7 @@ As mentioned earlier, the timer manager relies on the hardware timer event.
 The student will notice in
 \location{kaneton/machine/glue/ibm-pc.ia32/educational/timer.c} that this
 event is actually reserved and linked with a handler located within the
-core timer manager.
+timer manager's core.
 
 % event
 \subsubsection*{event}
@@ -138,7 +138,7 @@ core timer manager.
     \location{kaneton/machine/glue/ibm-pc.ia32/educational/include/event.h}
 \end{itemize}
 
-The glue event manager makes the binding between a core request and the
+The event manager's glue makes the binding between a core request and the
 underlying platform and architecture functionalities.
 
 The student will notice that the glue is empty when it comes to the
@@ -210,6 +210,8 @@ for setting up the system's \name{IDT}.
 \subsubsection*{architecture}
 
 \begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/architecture.c}
   \item
     \location{kaneton/machine/architecture/ia32/educational/include/architecture.h}
 \end{itemize}

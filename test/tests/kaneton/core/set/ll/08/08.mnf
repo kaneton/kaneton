@@ -4,3 +4,6 @@ symbol: test_core_set_ll_08
 signature: skldv4io3g30pw21s
 output: "0 elements: \n0 elements: \n0 elements: \n"
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

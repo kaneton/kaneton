@@ -4,3 +4,6 @@ symbol: test_architecture_scheduler_stack
 signature: f03fj23f09g230g2nweof32w9ri3gkjehk
 output:
 points: 2
+timeout:
+  qemu: 13
+  xen: 9

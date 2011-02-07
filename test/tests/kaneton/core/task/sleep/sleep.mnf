@@ -4,3 +4,6 @@ symbol: test_core_task_sleep
 signature: f0w9jq23fojg309hg34niowef02r9nvoawvv
 output:
 points: 2
+timeout:
+  qemu: 33
+  xen: 30

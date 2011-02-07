@@ -4,3 +4,6 @@ symbol: test_core_as_translation
 signature: r3289u9idsjjsfwe9tg9
 output:
 points: 3
+timeout:
+  qemu: 144
+  xen: 8

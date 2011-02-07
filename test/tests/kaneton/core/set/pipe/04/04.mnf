@@ -4,3 +4,6 @@ symbol: test_core_set_pipe_04
 signature: vopkvg03g34h3
 output: "0 elements: \n3 elements: 16 8 4\n"
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

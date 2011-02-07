@@ -4,3 +4,6 @@ symbol: test_architecture_region_inject
 signature: w09ciekwijg4hg9
 output:
 points: 3
+timeout:
+  qemu: 4
+  xen: 3

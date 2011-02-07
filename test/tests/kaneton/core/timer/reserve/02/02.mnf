@@ -4,3 +4,6 @@ symbol: test_core_timer_reserve_02
 signature: awf90iwvmsd3jfgwg
 output:
 points: 2
+timeout:
+  qemu: 12
+  xen: 3

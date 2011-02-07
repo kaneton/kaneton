@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...n/kaneton/core/scheduler/scheduler-mfq.c
+ * file          /home/mycure/kane...t/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sat feb  5 17:02:13 2011]
+ * updated       julien quintard   [mon feb  7 15:13:55 2011]
  */
 
 /*
@@ -448,10 +448,6 @@ t_error			scheduler_initialize(void)
    */
 
   scheduler->thread = _kernel.thread;
-  scheduler->priority = 0; /* FIXME[compute the priority of the kernel thread
-                                    though not really important since this
-                                    thread should never be put in the
-                                    scheduler's queues] */
 
   /*
    * 9)

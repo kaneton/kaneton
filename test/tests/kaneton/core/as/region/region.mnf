@@ -4,3 +4,6 @@ symbol: test_core_as_region
 signature: r32iijogdpzfepwg0t
 output:
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

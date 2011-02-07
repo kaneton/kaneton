@@ -4,3 +4,6 @@ symbol: test_core_scheduler_yield
 signature: f923ufwjvc90fg29gncvwq2jfd0f309k30bbb
 output:
 points: 3
+timeout:
+  qemu: 12
+  xen: 9

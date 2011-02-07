@@ -4,3 +4,6 @@ symbol: test_core_set_bpt_01
 signature: s90if3ja4g93
 output:
 points: 1
+timeout:
+  qemu: 3
+  xen: 3

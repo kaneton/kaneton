@@ -4,3 +4,6 @@ symbol: test_core_thread_wait_04
 signature: 0ir32qeiojdgreh39ut90tgiesswe40r23ur90a0fewgug2309fwe90gie09g
 output:
 points: 3
+timeout:
+  qemu: 27
+  xen: 24

@@ -4,3 +4,6 @@ symbol: test_architecture_event_map
 signature: cmnweiovw0fg934gh
 output:
 points: 2
+timeout:
+  qemu: 4
+  xen: 3

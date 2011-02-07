@@ -4,3 +4,6 @@ symbol: test_core_set_bpt_04
 signature: 0f9iw3gih30h934h
 output: "5 elements: 45 64 80 122 98654\n8 elements: 2 45 64 122 123 123 987 98654\n"
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

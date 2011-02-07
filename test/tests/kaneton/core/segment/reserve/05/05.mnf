@@ -4,3 +4,6 @@ symbol: test_core_segment_reserve_05
 signature: r223t9it9585hwe
 output:
 points: 2
+timeout:
+  qemu: 4
+  xen: 3

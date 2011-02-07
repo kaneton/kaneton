@@ -4,3 +4,6 @@ symbol: test_core_id_reserve_02
 signature: t4390teasoifj0g394
 output:
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_architecture_scheduler_context_01
 signature: nsjcwo3f9o0wgkerhgmvvwif90wfjoag90gh
 output:
 points: 3
+timeout:
+  qemu: 14
+  xen: 9

@@ -4,3 +4,6 @@ symbol: test_core_task_kernel
 signature: fwe90gevzdvmcw0egdv90wsifc3rfi43g09i34
 output:
 points: 2
+timeout:
+  qemu: 12
+  xen: 9

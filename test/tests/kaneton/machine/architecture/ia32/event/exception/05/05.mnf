@@ -4,3 +4,6 @@ symbol: test_architecture_event_exception_05
 signature: 90fiwwmsi93fghgf
 output:
 points: 2
+timeout:
+  qemu: 4
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_core_segment_resize
 signature: ergklzdkg4g34h
 output:
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_core_set_array_06
 signature: 9i320awfsdog33h
 output: "14 elements: 4 454 80 456 98654 42 122 45 64 90 12346 67 90 123456\n"
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

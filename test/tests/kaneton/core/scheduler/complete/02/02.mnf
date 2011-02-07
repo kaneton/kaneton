@@ -4,3 +4,6 @@ symbol: test_core_scheduler_complete_02
 signature: 23rfjsovcewrnbe04zdvcowejfwegbeihbe0
 output:
 points: 5
+timeout:
+  qemu: 14
+  xen: 10

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sun feb  6 14:56:17 2011]
+ * updated       julien quintard   [mon feb  7 15:53:52 2011]
  */
 
 /*
@@ -518,77 +518,6 @@ t_error			architecture_context_setup(void)
 	ARCHITECTURE_PRIVILEGE_GUEST,
 	&_thread.machine.selectors.guest.ds) != ERROR_OK)
     MACHINE_ESCAPE("unable to build the guest data segment selector");
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function locates the context of the thread being currently
- * executed/interrupted depending on its task's class.
- *
- * since this thread has been interrupted, its context must be located so
- * that function such as architecture_context_get() and
- * architecture_context_set() can manipulate it.
- *
- * note that this function must be called right after the thread has been
- * interrupted so that the kernel handler can access the context.
- *
- * steps:
- *
- * 1) retrieve the current thread and task objects.
- * 2) depending on the thread's task class.
- *   A) if the thread is a kernel thread, this means that, when it has been
- *      interrupted, its context has been stored on its own stack.
- *      luckily, the ARCHITECTURE_CONTEXT_SAVE() sets the stack pointer,
- *      i.e ESP, in _architecture.thread.pointer just after having pushed
- *      the context. this pointer indicates the location of the context
- *      and is therefore retrieve and recorded in the thread object.
- *   B) otherwise, the thread comes from another ring. therefore its context
- *      has been saved at the top of its pile. the thread object is therefore
- *      updated accordingly though one might notice that this address does
- *      not actually change.
- */
-
-t_error			architecture_context_locate(void)
-{
-  i_thread		current;
-  o_thread*		thread;
-  o_task*		task;
-
-  /*
-   * 1)
-   */
-
-  if (thread_current(&current) != ERROR_OK)
-    MACHINE_ESCAPE("unable to retrieve the current thread identifier");
-
-  if (thread_get(current, &thread) != ERROR_OK)
-    MACHINE_ESCAPE("unable to retrieve the thread object");
-
-  if (task_get(thread->task, &task) != ERROR_OK)
-    MACHINE_ESCAPE("unable to retrieve the task object");
-
-  /*
-   * 2)
-   */
-
-  if (task->class == TASK_CLASS_KERNEL)
-    {
-      /*
-       * A)
-       */
-
-      thread->machine.context = _architecture.thread.pointer;
-    }
-  else
-    {
-      /*
-       * B)
-       */
-
-      thread->machine.context =
-	thread->machine.pile.pointer - sizeof (as_context);
-    }
 
   MACHINE_LEAVE();
 }

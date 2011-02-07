@@ -4,3 +4,6 @@ symbol: test_core_timer_repeat_02
 signature: zxccnw32r32g
 output:
 points: 3
+timeout:
+  qemu: 14
+  xen: 3

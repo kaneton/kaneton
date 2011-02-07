@@ -4,3 +4,6 @@ symbol: test_core_segment_inject
 signature: fg32aaaargkse3gg43
 output:
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

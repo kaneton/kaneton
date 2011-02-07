@@ -4,3 +4,6 @@ symbol: test_core_set_bpt_10
 signature: 0g9iek4g3ih34hi9034
 output: "1 elements: 42\n"
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

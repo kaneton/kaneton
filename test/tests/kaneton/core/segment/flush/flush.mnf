@@ -4,3 +4,6 @@ symbol: test_core_segment_flush
 signature: i23932rkfargl320g940
 output:
 points: 4
+timeout:
+  qemu: 5
+  xen: 3

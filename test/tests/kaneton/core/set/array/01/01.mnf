@@ -4,3 +4,6 @@ symbol: test_core_set_array_01
 signature: df093fiwg093h
 output:
 points: 1
+timeout:
+  qemu: 3
+  xen: 3

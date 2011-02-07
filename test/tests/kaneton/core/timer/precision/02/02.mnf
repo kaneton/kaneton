@@ -4,3 +4,6 @@ symbol: test_core_timer_precision_02
 signature: cvmw0293g3ghh
 output:
 points: 4
+timeout:
+  qemu: 12
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_architecture_as_mapping
 signature: 90fi2ksoorpgk3
 output:
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

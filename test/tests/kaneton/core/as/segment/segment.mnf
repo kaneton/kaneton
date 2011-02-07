@@ -4,3 +4,6 @@ symbol: test_core_as_segment
 signature: r9329i54yszjw0909r34t
 output:
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

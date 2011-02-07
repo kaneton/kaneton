@@ -4,3 +4,6 @@ symbol: test_core_segment_coalesce
 signature: 043t90iesroikf29hg34h
 output:
 points: 3
+timeout:
+  qemu: 4
+  xen: 3

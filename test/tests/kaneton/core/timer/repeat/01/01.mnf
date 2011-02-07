@@ -4,3 +4,6 @@ symbol: test_core_timer_repeat_01
 signature: sdiocvjigi4h4h3
 output:
 points: 2
+timeout:
+  qemu: 14
+  xen: 3

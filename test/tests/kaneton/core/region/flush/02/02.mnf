@@ -4,3 +4,6 @@ symbol: test_core_region_flush_02
 signature: r3t04ge0giea9wgggg
 output:
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_core_task_guest
 signature: mvwdfi90r02ig3ghj34nmcoiawqdjqwd32i093g4
 output:
 points: 4
+timeout:
+  qemu: 12
+  xen: 9

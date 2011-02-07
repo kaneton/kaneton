@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sat feb  5 17:43:32 2011]
+ * updated       julien quintard   [mon feb  7 15:32:47 2011]
  */
 
 /*
@@ -119,7 +119,7 @@ t_error			glue_scheduler_start(i_cpu		cpu)
    */
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
-		    TIMER_ROUTINE(glue_scheduler_switch_handler),
+		    TIMER_ROUTINE(glue_scheduler_switch),
 		    TIMER_DATA(NULL),
 		    _scheduler.quantum,
 		    TIMER_OPTION_REPEAT,
@@ -189,7 +189,7 @@ t_error			glue_scheduler_stop(i_cpu		cpu)
  * 5) perform a context switch between the two threads.
  */
 
-void			glue_scheduler_switch_handler(void)
+void			glue_scheduler_switch(void)
 {
   o_scheduler*		scheduler;
   i_thread		current;

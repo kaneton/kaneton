@@ -4,3 +4,6 @@ symbol: test_core_scheduler_simple_01
 signature: mf23r09gfi029gi23
 output:
 points: 1
+timeout:
+  qemu: 4
+  xen: 3

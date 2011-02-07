@@ -4,3 +4,6 @@ symbol: test_core_set_array_10
 signature: 0z9sdifw39ig34g
 output: "1 elements: 42\n"
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_core_segment_copy
 signature: t9030awfoir4oj39t34
 output:
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

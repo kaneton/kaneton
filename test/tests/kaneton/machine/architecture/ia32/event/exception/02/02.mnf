@@ -4,3 +4,6 @@ symbol: test_architecture_event_exception_02
 signature: 2f9023foivvke30gh934
 output:
 points: 1
+timeout:
+  qemu: 4
+  xen: 3

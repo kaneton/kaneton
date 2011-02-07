@@ -4,3 +4,6 @@ symbol: test_core_set_stack_06
 signature: zmdlkwiov34gh34
 output: "0 elements: \n0 elements: \n0 elements: \n"
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

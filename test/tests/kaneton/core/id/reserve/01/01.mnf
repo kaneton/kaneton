@@ -4,3 +4,6 @@ symbol: test_core_id_reserve_01
 signature: 9i43sdkfwaoir23wt
 output:
 points: 1
+timeout:
+  qemu: 3
+  xen: 3

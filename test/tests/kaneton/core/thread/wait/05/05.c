@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/tests/kaneton/core/thread/wait/05/05.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun jan 30 21:10:32 2011]
+ * updated       julien quintard   [mon feb  7 21:23:42 2011]
  */
 
 /*
@@ -54,7 +54,6 @@ void			test_core_thread_wait_05_thread_01(void)
 
   if (thread_sleep(thread1, 3000) != ERROR_OK)
     TEST_HANG("[thread_sleep] error");
-
 
   if (cpu_current(&cpu) != ERROR_OK)
     TEST_HANG("[cpu_current] error");

@@ -4,3 +4,6 @@ symbol: test_core_thread_wait_01
 signature: wee3ri20raopr9823w0wekodf3afdwfa0rw98uefskdq0aa
 output:
 points: 3
+timeout:
+  qemu: 12
+  xen: 9

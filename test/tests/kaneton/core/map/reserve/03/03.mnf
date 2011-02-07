@@ -4,3 +4,6 @@ symbol: test_core_map_reserve_03
 signature: 9t43teiafgw23gh0
 output:
 points: 3
+timeout:
+  qemu: 17
+  xen: 3

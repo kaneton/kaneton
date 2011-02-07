@@ -4,3 +4,6 @@ symbol: test_core_set_stack_01
 signature: f0i9eokpg34h
 output:
 points: 1
+timeout:
+  qemu: 3
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_core_segment_reserve_02
 signature: i2309g0ggh34h3
 output:
 points: 1
+timeout:
+  qemu: 4
+  xen: 3

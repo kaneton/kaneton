@@ -4,3 +4,6 @@ symbol: test_architecture_event_pic_03
 signature: mzsdqwdwfjwgomre
 output:
 points: 1
+timeout:
+  qemu: 4
+  xen: 3

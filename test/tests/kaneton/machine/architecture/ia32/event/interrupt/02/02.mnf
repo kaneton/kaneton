@@ -4,3 +4,6 @@ symbol: test_architecture_event_interrupt_02
 signature: cd09iwfjg9gerkg43hg
 output:
 points: 1
+timeout:
+  qemu: 4
+  xen: 3

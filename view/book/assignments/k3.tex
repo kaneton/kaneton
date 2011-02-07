@@ -8,27 +8,24 @@
 % file          /home/mycure/kaneton/view/book/assignments/k3.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [mon feb  7 12:55:54 2011]
+% updated       julien quintard   [mon feb  7 20:45:53 2011]
 %
 
 %
-% ---------- k1 ---------------------------------------------------------------
+% ---------- k3 ---------------------------------------------------------------
 %
 
-\chapter{k2}
-\label{chapter:k2}
+\chapter{k3}
+\label{chapter:k3}
 
-\name{k2} consists in the development of multitasking in the kaneton kernel.
+\name{k3} consists in providing the kaneton microkernel with a multitasking
+environment.
 
-Indeed, most kernel mechanisms rely on events. For instance kernels track
-time through an external timer event which enables operating systems to be
-preemptive \ie{} pause the current running process because and resume another
-one. This mechanism consisting in \name{context switching} between threads
-of execution allows kernels to give the illusion of parallelism though,
-at any time, a single thread is executing.
-
-advice:
-  appeler context\_locate
+kaneton relies on the concept of \name{task} which contains an address space
+and one or more \name{thread}s. The \name{scheduler} takes threads and
+decides which one should be executed next. By switching between one thread and
+another at a fast pace, the kernel gives the user the illusion to execute
+programs in parallel.
 
 \newpage
 
@@ -37,45 +34,18 @@ advice:
 %
 
 %
-% objectives
-%
-
-\section{Objectives}
-
-This project aims at learning multitasking concepts in kernels. The students will have to implement part of the task switching code, that will allow to distribute the CPU time between several threads.
-
-The students will also have to implement a scheduling algorithm.
-
-%
 % requirements
 %
 
 \section{Requirements}
 
-The students must know the concepts of Interrupts, in order to get an event on a regular basis. The students must also be familiar with the concept of thread context. Eventually, the students must know some scheduling algorithms, such as Round-Robin.
+Every student will find in the chapter \name{Task Management} of the
+\name{IA-32 Architectures Software Developer's Manual, Volume 3A: System
+Programming Guide, Part 1}.
 
-%
-% snapshot
-%
-
-\section{Snapshot}
-
-There are 6 managers in the kaneton design that are used to handle multitasking :
-
-\begin{itemize}
-\item \textbf{cpu :} Since the kaneton is designed to run on multiprocessor platforms, the CPU manager is used to handle these. In your implementation, you don't have to support this, a single CPU will be used.
-
-\item \textbf{event :} To build a preemptive scheduler, one must have an external event that will trigger the task switching. This is provided by interrupts while the event manager provides the interrupts and exceptions handling.
-
-\item \textbf{scheduler :} The scheduler is responsible for performing a task switch.
-
-\item \textbf{task :} This manager handles the task objects. A task means an address space and one or more threads running within this address space.
-
-\item \textbf{thread :} A thread belongs to a task and has its own execution context.
-
-\item \textbf{time :} The time manager provides a way to setup timers, so you can setup a callback function on a regular basis.
-
-\end{itemize}
+In addition, students should not hesistate to dive into the chapters
+\name{Interrupt and Exception Handling} and \name{Protection} which contain
+material directly related to this stage.
 
 %
 % assignments
@@ -83,132 +53,174 @@ There are 6 managers in the kaneton design that are used to handle multitasking 
 
 \section{Assignments}
 
-\subsection*{Abstract}
+The objective in this stage is for students to \textit{(i)} complete the
+scheduler manager's core by implementing their own algorithm and \textit{(ii)}
+implement the hardware \name{Intel} context switch.
 
-The students must only work on the scheduler manager. The other managers are fully provided in the snapshot.
+% core
+\subsection{Core}
 
-Especially, most of the work will be on the core part, only a few things have to be done on the machine part.
+XXX 4 managers: task, thread, scheduler and cpu
 
-\subsection*{Files}
+% scheduler
+\subsubsection*{scheduler}
 
-\begin{tabular}{| l | l |}
-  \hline
-  machine-independent & {\em kaneton/core/scheduler/scheduler.c}\\\hline
-  machine-independent & {\em kaneton/core/include/scheduler.c}\\\hline
-  machine-dependent & {\em kaneton/machine/architecture/ia32/include/context.h}\\\hline
-\end{tabular}
+\begin{itemize}
+  \item
+    \location{kaneton/core/scheduler/scheduler.c}
+  \item
+    \location{kaneton/core/include/scheduler.h}
+\end{itemize}
 
-\subsection*{Required implementation}
+XXX
 
-\function{t\_error}{scheduler\_initialize}{\type{void}}
-{
-  This function initializes the ressources of the scheduler manager.
-}
+- dans scheduler.h on a la structure d'un scheduler. a noter que le
+  scheduler manager est concu pour les systemes multiprocs. ainsi il
+  y a un scheduler par CPU, ceux-ci etant stockes dans un set.
 
-\function{t\_error}{scheduler\_clean}{\type{void}}
-{
-  This function releases the ressources of the scheduler manager.
-}
+- the student is welcome to add the necessary to the scheduler structure
+  or even to change everything including the code already provided as long
+  as the scheduler interface remains.
 
-\function{t\_error}{scheduler\_add}{\type{i\_thread} \argument{thread}}
-{
-  This functions adds the thread \argument{thread} to the scheduler, so it can
-  be executed.
-}
+  show/dump: affiche c'est cool super pas important
+  quantum: change la duree minimum d'execution d'un thread. warning: must
+    be a multiple of the timer delay. the threads already in the scheduler
+    may need to be updated in order to adjust their timeslices.
+  yield: very important, the objective is the give up the execution right
+    away! the student must therefore find a way to do this.
+  elect: objective, find the next thread to schedule though it could be the
+    same. here is the core algorithm: decrease the timeslice of the current
+    thread, try to find a more important thread to schedule or the current
+    one if it has not expired, or any active one or the idle. that is the
+    basic idea though students are welcome to do as they want.
+    important: if the scheduler state is stop, return the future thread
+    as being the kernel thread i.e \_kernel.thread
+  add: add the thread to the active threads
+  remove: remove the thread from the scheduler. note that if the thread
+   is currently being scheduled, the execution should be yielded. students
+   should read the code of the thread manager as a specific behaviour is
+   expected from some of those functions.
+  update: retrieve the thread and update its priority and timeslice, moving
+   the thread to another queue for example, if required.
 
-\function{t\_error}{scheduler\_remove}{\type{i\_thread} \argument{thread}}
-{
-  This function removes the thread \argument{thread} from the scheduler, so it
-  is not going to be executed anymore.
+  students should update whatever they need in this manager.
 
-  \-
+%
+% glue
+%
 
-  If the thread is being executed when this function is called, then another
-  thread must be elected before the removal.
-}
+\subsection{Glue}
 
-\function{t\_error}{scheduler\_update}{\type{i\_thread} \argument{thread}}
-{
-  This function removes and adds back the thread \argument{thread} from the
-  scheduler, to take into account some possible modifications that can have
-  been done to it.
-}
+XXX students should also have a look at the cpu, task glue managers. more
+important is to thorougly study the thread manager's glue which calls the
+architecture context functions: context-setup in initialize, context-build
+in reserve and context-destroy in clean.
 
-\function{t\_error}{scheduler\_switch}{\type{void}}
-{
-  This function has to be called on a regular basis, it will elect a new thread
-  to be executed and transfer the execution to it by switching the contexts.
+% scheduler
+\subsubsection*{scheduler}
 
-  \-
+\begin{itemize}
+  \item
+    \location{kaneton/machine/glue/ibm-pc.ia32/educational/scheduler.c}
+  \item
+    \location{kaneton/machine/glue/ibm-pc.ia32/educational/include/scheduler.h}
+\end{itemize}
 
-  If no thread can be executed, then scheduler->idle must be elected.
-  
-  \-
+XXX
 
-  The algorithm for the election is free, but it must be fair, and the
-  prioriries of the threads must be working. You can implement a simple
-  Round-Robin algorithm with priorities, for example.
-}
+as the student can notice a few thins are already set up in the glue
+scheduler manager:
+- a timer is reserved when the scheduler is started. note that since the
+ machine knows a single CPU is supported, hence there will be a single
+ scheduler, the CPU argument to scheduler\_start is ignored.
+- the handler triggered by this timer is also provided: scheduler\_switch().
+  this function basically calls elect() and then requests the architecture
+  function context\_switch() to perform the actual context switch between
+  the current and the future thread.
+  note that the provided functions assume that scheduler->thread contains
+  the current elected thread. students can change that as long as the rest
+  is updated accordingly.
 
-\function{t\_error}{scheduler\_quantum}{\type{t\_quantum} \argument{quantum}}
-{
-  This function provides a way to set how often the scheduler
-  (scheduler\_switch) is called. The period is set using \argument{quantum} (in
-  milliseconds).
-}
+this file therefore contains the core of the scheduler, the function which
+is called on a regular basis and ask the manager to elect a new thread. then
+the context switch is requested.
 
-\function{t\_error}{scheduler\_yield}{\type{i\_cpu} \argument{cpuid}}
-{
-  This function provides a way for a thread to relinquish the CPU.
+%
+% architecture
+%
 
-  \-
+\subsection{Architecture}
 
-  When a thread calls this function, the scheduler must find another thread
-  to execute, if possible, and switch to it immediately.
+XXX the basic idea is to rely on interrupts
 
-  \-
+% context
+\subsubsection*{context}
 
-  Since you are not working on SMP, you can ignore the \argument{cpuid}
-  argument.
-}
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/context.c}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/include/context.h}
+\end{itemize}
 
-\function{t\_error}{scheduler\_current}{\type{i\_thread*} \argument{thread}}
-{
-  This function should return the current running thread in the parameter
-  \argument{thread}.
-}
+XXX
 
-\function{}{IA32\_SAVE\_CONTEXT}{}
-{
-  This macro must define the assembly code necessary to save a thread context.
-}
+- warning: depending on the thread's privilege (ring0 or other) the information
+ will be stored on the stack or the pile (aka the thread's kernel/ring0 stack).
+ until now, and more precisely in k1, interrupts and exceptions were
+ interrupted the only thread i.e the kernel thread which evolves in ring0.
+ thus everything was pushed on the kernel thread's current stack. this must
+ be adapted by using the SAVE and RESTORE macros.
 
-\function{}{IA32\_RESTORE\_CONTEXT}{}
-{
-  This macro must define the assembly code that will restore a thread context
-  that has been saved with IA32\_SAVE\_CONTEXT.
-}
+- note that as a effect, the location of the thread's context is either
+ on the stack or the pile. thus, once an interrupt occur, the location of
+ the context should be set for the kernel to read/write the interrupted
+ thread's context. the address of the context should be set in
+ thread->machine.context.
 
-\subsection*{Optional implementation}
+- the objective is to save the interrupted thread's context, then to
+ load the kernel address space by using architecture.kernel.pdbr and
+ more precisely to jump on the KIS - Kernel Interrupt Stack which is used
+ specifically to handle interrupts: architecture.kernel.kis.pointer contains
+ the stack pointer.
 
-The following functions are not going to be tested by our test suite, you are
-not forced to do them although we strongly recommend you to do it, since they
-are very helpful for debugging your implementation.
+- the context switch is basically composed of the switch() function coupled
+ with the two macros SAVE and RESTORE.
 
-\-
+- the switch() function takes the current and future thread. the idea
+ behind this function is to update the architecture structure for the
+ RESTORE macro-function to know what to restore and perhaps to update the
+ TSS if necessary.
 
-Since this is not tested, the output format is up to you.
+- SAVE should be called by the asm part of an interrupt handler in
+ order to save the thread context. note that the context expected to be
+ saved is given in context.h though it can be adapted to your needs. once
+ the context saved, the KIS must be set up by loading the kernel PDBR.
+ finally some registers may need to be updated for the KIS handler.
 
-\function{t\_error}{scheduler\_dump}{\type{void}}
-{
-  This function will print some information about the scheduler, like the list
-  of threads that are registered in the scheduler, their states, and the
-  currently running thread.
-}
+- RESTORE does the opposite moving from the KIS back to the thread stack
+ or pile depending on its privilege, restoring its context and returning from
+ the interrupt.
 
-\subsection*{Important}
+XXX
 
-It is strongly advise that you test every class of task as the context
-switch between two kernel tasks for instance does not involve the whole
-process. Take care to test your context switch between multiple threads
-belonging to tasks of different classes.
+% context
+\subsubsection*{context}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/context.c}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/include/context.h}
+\end{itemize}
+
+XXX the architecture structure which is at the center of context switch
+ mechanism
+
+%
+% advices
+%
+
+\section{Advices}
+
+  appeler context\_locate

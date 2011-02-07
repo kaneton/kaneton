@@ -4,3 +4,6 @@ symbol: test_core_set_pipe_07
 signature: 09fi23zefwkmlg43
 output: "1 elements: 42\n"
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

@@ -4,3 +4,6 @@ symbol: test_core_timer_precision_03
 signature: ti20e9wfc20392
 output:
 points: 5
+timeout:
+  qemu: 12
+  xen: 3

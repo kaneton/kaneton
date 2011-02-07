@@ -4,3 +4,6 @@ symbol: test_core_region_write
 signature: 0t09i490eirgi340g
 output:
 points: 1
+timeout:
+  qemu: 3
+  xen: 3

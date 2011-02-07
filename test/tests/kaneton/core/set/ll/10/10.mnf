@@ -4,3 +4,6 @@ symbol: test_core_set_ll_10
 signature: sldkvklm332qqhh
 output: "1 elements: 42\n"
 points: 3
+timeout:
+  qemu: 3
+  xen: 3

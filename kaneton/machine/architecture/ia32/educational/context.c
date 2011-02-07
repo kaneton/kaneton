@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../architecture/ia32/educational/context.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sat feb  5 12:54:46 2011]
+ * updated       julien quintard   [mon feb  7 16:06:35 2011]
  */
 
 /*
@@ -613,7 +613,7 @@ t_error			architecture_context_locate(void)
  *    these attribute are composed of the future thread's PDBR as well as
  *    the location of its context. let us recall that the context is either
  *    located on the thread's stack or pile, according to its privilege.
- * 9) update the TSS according to the thread's task class.
+ * 8) update the TSS according to the thread's task class.
  *   A) if the thread is a kernel thread, ignore the SS0 and ESP0 fields
  *      since these fields are reserved to threads which could happen to
  *      change privilege.
@@ -621,9 +621,9 @@ t_error			architecture_context_locate(void)
  *      the processor, noticing the thread to restore comes from another
  *      privilege, will switch back to the thread's stack by retrieving
  *      its location and segment from the thread's context.
- * 10) if the future thread belongs to another task and has no right to
- *     perform I/O operations (service or guest tasks) or that the task
- *     I/O map has been marked as dirty, refresh the TSS's I/O map.
+ * 9) if the future thread belongs to another task and has no right to
+ *    perform I/O operations (service or guest tasks) or that the task
+ *    I/O map has been marked as dirty, refresh the TSS's I/O map.
  *   a) copy the task's I/O map.
  *   b) mark it as fresh.
  */
@@ -637,7 +637,6 @@ t_error			architecture_context_switch(i_thread	current,
   o_as*			as;
   at_cr3		pdbr;
   as_tss*		tss;
-  t_uint16		selector;
 
   /*
    * 1)
@@ -697,15 +696,6 @@ t_error			architecture_context_switch(i_thread	current,
    * 8)
    */
 
-  if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
-				ARCHITECTURE_PRIVILEGE_RING0,
-				&selector) != ERROR_OK)
-    MACHINE_ESCAPE("unable to build the kernel data segment selector");
-
-  /*
-   * 9)
-   */
-
   if (task->class == TASK_CLASS_KERNEL)
     {
       /*
@@ -724,6 +714,13 @@ t_error			architecture_context_switch(i_thread	current,
        * B)
        */
 
+      t_uint16		selector;
+
+      if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
+				    ARCHITECTURE_PRIVILEGE_RING0,
+				    &selector) != ERROR_OK)
+	MACHINE_ESCAPE("unable to build the kernel data segment selector");
+
       if (architecture_tss_update(tss,
 				  selector,
 				  to->machine.pile.pointer,
@@ -732,7 +729,7 @@ t_error			architecture_context_switch(i_thread	current,
     }
 
   /*
-   * 10)
+   * 9)
    */
 
   if (((from->task != to->task) &&

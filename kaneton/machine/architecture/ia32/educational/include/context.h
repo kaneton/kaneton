@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       julien quintard   [sat feb  5 10:40:42 2011]
+ * updated       julien quintard   [mon feb  7 16:19:23 2011]
  */
 
 #ifndef ARCHITECTURE_CONTEXT_H
@@ -22,7 +22,7 @@
  * this macro-function saves the context of the thread which had just
  * been interrupted.
  *
- * note that at this point, the stack is use is the thread's pile i.e ring0
+ * note that at this point, the stack in use is the thread's pile i.e ring0
  * stack; except for the kernel threads since there is no change in privilege.
  *
  * steps:

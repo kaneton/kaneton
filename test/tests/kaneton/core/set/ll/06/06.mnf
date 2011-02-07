@@ -4,3 +4,6 @@ symbol: test_core_set_ll_06
 signature: xcklvg34okgh
 output: "14 elements: 4 454 90 456 67 12346 90 64 45 122 42 98654 80 123456\n"
 points: 2
+timeout:
+  qemu: 3
+  xen: 3

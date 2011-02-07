@@ -4,3 +4,6 @@ symbol: test_core_task_service
 signature: 90cwscfmwefw32g9f0veofo23w9fri92309gig
 output:
 points: 3
+timeout:
+  qemu: 12
+  xen: 9

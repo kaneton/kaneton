@@ -4,3 +4,6 @@ symbol: test_core_set_pipe_01
 signature: f09ig390390iqawf
 output:
 points: 1
+timeout:
+  qemu: 3
+  xen: 3

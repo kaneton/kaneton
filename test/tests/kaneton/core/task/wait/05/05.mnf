@@ -4,3 +4,6 @@ symbol: test_core_task_wait_05
 signature: cwqf02ig0i3hiyi2f2qf23ggxvmwpoiecfpqwkf092i9g0h4hzxcmnqwr9gibh094ih03gh03hk
 output:
 points: 3
+timeout:
+  qemu: 27
+  xen: 24

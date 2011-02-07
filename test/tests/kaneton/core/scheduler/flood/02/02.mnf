@@ -4,3 +4,6 @@ symbol: test_core_scheduler_flood_02
 signature: vw0vwrivb90wt9ihg4cv0fkvr0igyhhh34
 output:
 points: 5
+timeout:
+  qemu: 114
+  xen: 4

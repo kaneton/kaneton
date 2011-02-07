@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/test/tests/README
+# file          /home/mycure/kaneton/test/tests/README
 #
 # created       julien quintard   [sun dec  5 19:29:51 2010]
-# updated       julien quintard   [sun dec  5 19:43:32 2010]
+# updated       julien quintard   [mon feb  7 21:01:38 2011]
 #
 
 This directory contains tests that will be triggered either manually
@@ -29,4 +29,4 @@ the test system expect to find in those manifests:
 	  to the tests of the same manager i.e the number of points cannot
 	  be used to compare the difficulty between core/id/reserve/01 and
 	  scheduler/complete/02
-
+  timeout: the timeout in seconds depending on the environment.

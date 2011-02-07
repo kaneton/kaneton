@@ -4,3 +4,6 @@ symbol: test_architecture_event_exception_07
 signature: 0i3rfw90ug8938hy3
 output:
 points: 3
+timeout:
+  qemu: 4
+  xen: 3

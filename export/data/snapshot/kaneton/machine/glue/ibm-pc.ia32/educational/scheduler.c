@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sat feb  5 17:02:58 2011]
+ * updated       julien quintard   [mon feb  7 15:32:59 2011]
  */
 
 /*
@@ -51,16 +51,16 @@ d_scheduler		glue_scheduler_dispatch =
   {
     NULL,
     glue_scheduler_dump,
-    NULL,
+    glue_scheduler_start,
     glue_scheduler_stop,
     glue_scheduler_quantum,
-    glue_scheduler_yield,
     NULL,
     NULL,
     NULL,
     NULL,
-    glue_scheduler_initialize,
-    glue_scheduler_clean
+    NULL,
+    NULL,
+    NULL
   };
 
 /*
@@ -104,6 +104,32 @@ t_error			glue_scheduler_dump(void)
 }
 
 /*
+ * this function starts the scheduler.
+ *
+ * steps:
+ *
+ * 1) reserve a timer so that a context switch is triggered every quantum
+ *    milliseconds.
+ */
+
+t_error                 glue_scheduler_start(i_cpu              cpu)
+{
+  /*
+   * 1)
+   */
+
+  if (timer_reserve(TIMER_TYPE_FUNCTION,
+                    TIMER_ROUTINE(glue_scheduler_switch),
+                    TIMER_DATA(NULL),
+                    _scheduler.quantum,
+                    TIMER_OPTION_REPEAT,
+                    &_scheduler.machine.timer) != ERROR_OK)
+    MACHINE_ESCAPE("unable to reserve the timer");
+
+  MACHINE_LEAVE();
+}
+
+/*
  * this function contributes to stopping the scheduler by manually triggering
  * the timer interrupt in order to induce an immediate scheduler election.
  *
@@ -113,6 +139,7 @@ t_error			glue_scheduler_dump(void)
  * 1) retrieve the current CPU's scheduler.
  * 2) if the CPU to stop is the current one, yield the execution in order
  *    to induce a scheduler election.
+ * 3) release the scheduler timer.
  */
 
 t_error			glue_scheduler_stop(i_cpu		cpu)
@@ -136,6 +163,13 @@ t_error			glue_scheduler_stop(i_cpu		cpu)
 	MACHINE_ESCAPE("unable to yield the execution");
     }
 
+  /*
+   * 3)
+   */
+
+  if (timer_release(_scheduler.machine.timer) != ERROR_OK)
+    MACHINE_ESCAPE("unable to release the timer");
+
   MACHINE_LEAVE();
 }
 
@@ -153,7 +187,7 @@ t_error			glue_scheduler_stop(i_cpu		cpu)
  * 5) perform a context switch between the two threads.
  */
 
-void			glue_scheduler_switch_handler(void)
+void			glue_scheduler_switch(void)
 {
   o_scheduler*		scheduler;
   i_thread		current;
@@ -208,95 +242,6 @@ t_error			glue_scheduler_quantum(t_quantum	quantum)
   if (timer_update(_scheduler.machine.timer, quantum) != ERROR_OK)
     MACHINE_ESCAPE("unable to adjust the timer's delay to the "
 		   "scheduler's quantum");
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function yields the execution by manually triggering the timer
- * hardware interrupt, hence inducing a scheduler election and context switch.
- *
- * steps:
- *
- * 1) manually trigger the interrupt #2 i.e the timer.
- */
-
-t_error			glue_scheduler_yield(void)
-{
-  /*
-   * 1)
-   */
-
-  asm volatile ("int $32");
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function initializes the scheduler manager's glue.
- *
- * steps:
- *
- * 1) reserve a timer so that a context switch is triggered every quantum
- *    milliseconds.
- * 2) reserve the idle thread. this thread ensures that there is always
- *    at least one thread in the scheduler's queues, hence that the CPU
- *    always has something to do.
- *    note that the idle thread's priority is computed in order to be
- *    slightly higher than the lowest one. more precisely, the priority
- *    is computed in order for the idle thread to end up in the next to last
- *    scheduler's queue.
- *    for more information regarding this design choice, please refer to
- *    the scheduler_yield() function.
- * 3) start the idle thread, making it eligeable.
- */
-
-t_error			glue_scheduler_initialize(void)
-{
-  /*
-   * 1)
-   */
-
-  if (timer_reserve(TIMER_TYPE_FUNCTION,
-		    TIMER_ROUTINE(glue_scheduler_switch_handler),
-		    TIMER_DATA(NULL),
-		    _scheduler.quantum,
-		    TIMER_OPTION_REPEAT,
-		    &_scheduler.machine.timer) != ERROR_OK)
-    MACHINE_ESCAPE("unable to reserve the timer");
-
-  /*
-   * 2)
-   */
-
-  /* FIXME[reserve the idle thread] */
-
-  /*
-   * 3)
-   */
-
-  if (thread_start(_scheduler.idle) != ERROR_OK)
-    MACHINE_ESCAPE("unable to set the thread as running");
-
-  MACHINE_LEAVE();
-}
-
-/*
- * this function cleans the scheduler manager's glue.
- *
- * steps:
- *
- * 1) release the scheduler timer.
- */
-
-t_error			glue_scheduler_clean(void)
-{
-  /*
-   * 1)
-   */
-
-  if (timer_release(_scheduler.machine.timer) != ERROR_OK)
-    MACHINE_ESCAPE("unable to release the timer");
 
   MACHINE_LEAVE();
 }
