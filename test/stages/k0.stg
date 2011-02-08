@@ -14,4 +14,4 @@
 name: k0
 description: This stage focuses on the assembly language and the boot process through BIOS services.
 deadline: XXX
-history: %school%/%year%/%group%/sources/k0/%student%.tar.bz2
+history: "%school%/%year%/%group%/sources/k0/%student%.tar.bz2"

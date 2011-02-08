@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...t/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [mon feb  7 15:13:55 2011]
+ * updated       julien quintard   [tue feb  8 12:44:40 2011]
  */
 
 /*
@@ -70,29 +70,6 @@ m_scheduler		_scheduler;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this function displays information regarding the given scheduler.
- */
-
-t_error			scheduler_show(i_cpu			id,
-				       mt_margin		margin)
-{
-  /* FIXME[code to complete] */
-
-  CORE_LEAVE();
-}
-
-/*
- * this function dumps the scheduler manager.
- */
-
-t_error			scheduler_dump(void)
-{
-  /* FIXME[code to complete] */
-
-  CORE_LEAVE();
-}
 
 /*
  * this function starts the given scheduler.
@@ -183,9 +160,6 @@ t_error			scheduler_quantum(t_quantum		quantum)
  * this function enables the current thread to voluntarily relinquish its
  * execution, hence permitting another thread to be scheduled immediately
  * on this CPU.
- *
- * note that this function has been designed in order to ensure a context
- * switch.
  */
 
 t_error			scheduler_yield(void)
@@ -217,7 +191,7 @@ t_error			scheduler_elect(void)
 }
 
 /*
- * this function adds a thread to its task's scheduler.
+ * this function adds a thread to the scheduler.
  */
 
 t_error			scheduler_add(i_thread			id)
@@ -228,7 +202,7 @@ t_error			scheduler_add(i_thread			id)
 }
 
 /*
- * this function removes a thread from its task's scheduler.
+ * this function removes a thread from the scheduler.
  */
 
 t_error			scheduler_remove(i_thread		id)

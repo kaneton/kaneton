@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [mon feb  7 10:37:57 2011]
+ * updated       julien quintard   [tue feb  8 22:19:49 2011]
  */
 
 #ifndef CORE_CORE_H
@@ -134,7 +134,7 @@
  * ../../core/core.c
  */
 
-void                    example(void);
+t_error                    example(void);
 
 void			kaneton(s_init*				init);
 

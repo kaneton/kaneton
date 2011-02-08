@@ -85,7 +85,7 @@ t_error			glue_scheduler_start(i_cpu		cpu);
 
 t_error			glue_scheduler_stop(i_cpu		cpu);
 
-void			glue_scheduler_switch_handler(void);
+void			glue_scheduler_switch(void);
 
 t_error			glue_scheduler_quantum(t_quantum	quantum);
 

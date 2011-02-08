@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ts/kaneton/core/scheduler/simple/01/01.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun jan 30 21:19:29 2011]
+ * updated       julien quintard   [tue feb  8 21:55:37 2011]
  */
 
 /*
@@ -29,7 +29,7 @@ extern m_kernel			_kernel;
  * ---------- globals ---------------------------------------------------------
  */
 
-static volatile t_uint32	executed = 1;
+static volatile t_uint32	executed = 0;
 
 /*
  * ---------- test ------------------------------------------------------------

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sat feb  5 10:39:19 2011]
+ * updated       julien quintard   [tue feb  8 12:44:29 2011]
  */
 
 /*
@@ -591,7 +591,6 @@ t_error			scheduler_quantum(t_quantum		quantum)
    */
 
   if (quantum == 0)
-
     CORE_ESCAPE("unable to update the quantum to zero");
 
   /*
@@ -1259,7 +1258,7 @@ t_error			scheduler_elect(void)
 }
 
 /*
- * this function adds a thread to its task's scheduler.
+ * this function adds a thread to the scheduler.
  *
  * steps:
  *
@@ -1327,7 +1326,7 @@ t_error			scheduler_add(i_thread			id)
 }
 
 /*
- * this function removes a thread from its task's scheduler.
+ * this function removes a thread from the scheduler.
  *
  * steps:
  *

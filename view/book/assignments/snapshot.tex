@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/snapshot.tex
 %
 % created       julien quintard   [fri may 23 21:47:38 2008]
-% updated       julien quintard   [fri feb  4 23:04:25 2011]
+% updated       julien quintard   [tue feb  8 20:38:28 2011]
 %
 
 %
@@ -19,7 +19,7 @@
 \label{chapter:snapshot}
 
 This chapter introduces the snapshot which provides students everything
-necessary for starting the development of the \name{kaneton} micro-kernel.
+necessary for starting the development of the \name{kaneton} microkernel.
 
 \newpage
 
@@ -28,9 +28,178 @@ necessary for starting the development of the \name{kaneton} micro-kernel.
 %
 
 Although \name{k0} is a standalone project, the following stages, namely,
-\name{k1}, \name{k2}, \name{k3} and \name{k4} take place in the micro-kernel
-itself. The student therefore needs the educational snapshot which can be
-downloaded from the kaneton website.
+\name{k1}, \name{k2} and \name{k3} take place within the microkernel. In
+addition, students require the educational snapshot in order to submit
+their implementation. Thus, the student should download the educational
+snapshot from the kaneton website \location{http://kaneton.opaak.org}. Once
+downloaded, students should read the dedicated article on the \name{Opaak}
+\name{Wiki} and follow the steps in order to configure their kaneton
+environment.
 
-Once the snapshot is downloaded, just extract it and start configuring it
-as explained on the \name{Opaak} \name{Wiki}.
+%
+% testing
+%
+
+\section{Testing}
+
+The kaneton test system enables students to test their implementation against
+a set of test suites. However, the number of test suites students are allowed
+to request is limited. As such, the kaneton test system should be seen more as
+a validation system. Students are therefore invited to implement their own
+test suite in order to thorougly test their kaneton implementation.
+
+A test capability must first be acquired in order to use the test system. The
+following assumes that students possess such a capability. If not, he or
+she should contact the kaneton contributors by email at:
+
+\begin{center}
+  \location{admin@opaak.org}
+\end{center}
+
+The following set of commands shows how to retrieve information regarding the
+student test profile, list the requests performed so far and display the
+test report regarding a precise request.
+
+\begin{verbatim}
+  $> cd test/client/
+  $test/client> make information
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /home/chiche/kaneton/environment/profile/user/chiche/chiche.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] information:
+  [+]   profile:
+  [+]     identifier:           chiche
+  [+]     community:            students
+  [+]     members:
+  [+]       name:               Florent Chichery
+  [+]       email:              chiche@epita.fr
+  [+]   suites:
+  [+]     k3:                   This test suite contains tests related to the execution.
+  [+]     k2:                   This test suite focuses on the memory management.
+  [+]     k1:                   This test suite focuses on the event processing.
+  [+]   stages:
+  [+]     k3:                   This stage evaluates the kaneton's execution functionalities.
+  [+]     k2:                   This stage evaluates the kaneton's memory management.
+  [+]     k1:                   This stage evaluates the kaneton's event procesing capabilities.
+  [+]   environments:
+  [+]     xen:                  The 'xen' environment is used to thoroughly test a kaneton implementation in a Xen hardware-assisted virtual machine.
+  [+]     qemu:                 The 'qemu' environment is used to test a kaneton implementation through the QEMU processor emulator.
+  [+]   database:
+  [+]     reports:
+  [+]       xen:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:
+  [+]                           20110206:113544
+  [+]                           20110206:114823
+  [+]           k2:
+  [+]                           20110205:222312
+  [+]           k1:
+  [+]                           20110205:211847
+  [+]                           20110205:213502
+  [+]                           20110205:214408
+  [+]     quotas:
+  [+]       xen:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:             3
+  [+]           k2:             3
+  [+]           k1:             3
+  $test/client> make list
+  [+] requesting the server
+  [+] listing the reports
+  [+] reports:
+  [+]   20110206:113544:
+  [+]     xen :: ibm-pc :: ia32/educational :: k3 :: 2011/02/06 11:39:49 :: done
+  [+]   20110206:114823:
+  [+]     xen :: ibm-pc :: ia32/educational :: k3 :: 2011/02/06 11:51:54 :: done
+  [+]   20110205:222312:
+  [+]     xen :: ibm-pc :: ia32/educational :: k2 :: 2011/02/05 22:24:15 :: done
+  [+]   20110205:211847:
+  [+]     xen :: ibm-pc :: ia32/educational :: k1 :: 2011/02/05 21:18:50 :: done
+  [+]   20110205:213502:
+  [+]     xen :: ibm-pc :: ia32/educational :: k1 :: 2011/02/05 21:36:52 :: done
+  [+]   20110205:214408:
+  [+]     xen :: ibm-pc :: ia32/educational :: k1 :: 2011/02/05 21:47:10 :: done
+  $test/client> make display-20110205:214408
+  [+] requesting the server
+  [+] displaying the report
+  [+] report:
+  [+]   meta:
+  [+]     duration:             214.546
+  [+]     environments:
+  [+]       stress:             xen
+  [+]       construct:          xen
+  [+]     summary:
+  [+]       failed:             1
+  [+]       total:              24
+  [+]       passed:             23
+  [+]     platform:             ibm-pc
+  [+]     state:                done
+  [+]     architecture:         ia32/educational
+  [+]     date:                 2011/02/05 21:47:10
+  [+]     suite:                k1
+  [+]     identifier:           20110205:214408
+  [+]     user:                 chiche
+  [+]   data:
+  [+]     event:                                                          [14/15]
+  [+]       machine/architecture/event/exception/04:
+  [+]         status: True
+  [+]         description: This test reserves the division-by-zero event and triggers it. The event is then released.
+  [+]         duration: 0.014
+  [+]         output: 
+  [+]       machine/architecture/event/context/01:
+  [+]         status: True
+  [+]         description: This test reserves an event slot and manually triggers this event. Then, the test verifies that the registers have been restored to their original state.
+  [+]         duration: 0.014
+  [+]         output: 
+  ...
+  $test/client> 
+\end{verbatim}
+
+Finally, the following command illustrates a student triggering a test
+suite on the \name{Xen} environment.
+
+\begin{verbatim}
+  $test/client> make test-xen::k1
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /home/chiche/kaneton/environment/profile/user/chiche/chiche.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] generating the kaneton snapshot
+  [+] loading the kaneton snapshot
+  [+] requesting the server
+  [+] the snapshot has been scheduled for testing under the identifier: 20110208:175055
+  $test/client> 
+\end{verbatim}
+
+Once the testing complete, the student will receive an email with a summary
+of the report, though she will also be able to consult the report through
+the \code{make display} command.
+
+%
+% submission
+%
+
+\section{Submission}
+
+In order to submit an implementation for evaluation, the student simply
+has to issue the \name{submit} command, as shown below.
+
+\begin{verbatim}
+  $test/client> make submit-k2
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /home/chiche/kaneton/environment/profile/user/chiche/chiche.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] generating the kaneton snapshot
+  [+] loading the kaneton snapshot
+  [+] requesting the server
+  [+] the snapshot has been submitted successfully
+  $test/client> 
+\end{verbatim}

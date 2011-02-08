@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [mon feb  7 15:32:59 2011]
+ * updated       julien quintard   [tue feb  8 13:03:19 2011]
  */
 
 /*
@@ -26,12 +26,6 @@
 /*
  * ---------- externs ---------------------------------------------------------
  */
-
-/*
- * the kernel manager.
- */
-
-extern m_kernel		_kernel;
 
 /*
  * the scheduler manager.
@@ -77,17 +71,6 @@ extern void		glue_scheduler_idle ();
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * the idle thread's source code.
- */
-
-asm (".text				\n"
-     "glue_scheduler_idle:		\n"
-     "1:				\n"
-     "	hlt				\n"
-     "	jmp 1b				\n"
-     ".text				\n");
 
 /*
  * this function dumps the scheduler manager's machine part.

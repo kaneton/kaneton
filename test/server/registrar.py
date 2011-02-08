@@ -692,6 +692,11 @@ def                     List(capability):
             report = ktp.report.Load(ReportStore + "/" + identifier +   \
                                        ktp.report.Extension)
 
+            # ignore error reports as Python is unable to transmit
+            # the whole error messages.
+            if "error" in report["meta"]:
+              continue
+
             summary += [ report["meta"] ]
 
     ktp.log.Record(LogStore,

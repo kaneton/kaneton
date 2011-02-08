@@ -38,6 +38,13 @@
 # ---------- test -------------------------------------------------------------
 #
 
+- tester avec un vrai user car l'export request dans client ne marchera
+  surement pas!
+- ajouter un truc dans la capability ou utilise community: contributors/students
+  pour l'export
+
+- revoir la doc dans development
+
 - XXX dans test/?
 
 - terminer les scripts select.py/file.py et evaluate.py: voire README
@@ -47,14 +54,6 @@
 - terminer le hook supervisor: ajouter aussi le nombre de soumissions pour la
   tranche --stage
 - ecrire le hook challenge
-
-- mettre le timeout dans le manifest, en fonction de l'environment
-    { xen: XXX, qemu: XXX }
-
-- tester avec un vrai user car l'export request dans client ne marchera
-  surement pas!
-- ajouter un truc dans la capability ou utilise community: contributors/students
-  pour l'export
 
 #
 # ---------- export -----------------------------------------------------------

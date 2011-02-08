@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [fri feb  4 22:59:08 2011]
+# updated       julien quintard   [tue feb  8 17:45:46 2011]
 #
 
 #
@@ -96,7 +96,7 @@ def                     Count(tests):
 
     total += 1
 
-  return (success, failed, total)
+  return (passed, failed, total)
 
 #
 # this function displays a detailed version of the given report.
@@ -493,7 +493,7 @@ def                     List(server, capability, arguments):
                   report["platform"] + " :: " +                         \
                   report["architecture"] + " :: " +                     \
                   report["suite"] + " :: " +                            \
-                  report["date"] + " :: " +                             \
+                  str(report["date"]) + " :: " +                        \
                   report["state"],
                 env.OPTION_NONE)
 

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/xmlrpc.py
+# file          /home/mycure/kaneton/test/packages/ktp/xmlrpc.py
 #
 # created       julien quintard   [mon oct 25 19:44:10 2010]
-# updated       julien quintard   [tue oct 26 22:36:11 2010]
+# updated       julien quintard   [tue feb  8 17:39:08 2011]
 #
 
 #

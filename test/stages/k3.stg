@@ -31,4 +31,4 @@ configurations:
     suite: k3
     weight: 0.8
 deadline: XXX
-history: %school%/%year%/%group%/sources/k3.tar.bz2
+history: "%school%/%year%/%group%/sources/k3.tar.bz2"
