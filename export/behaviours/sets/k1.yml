@@ -50,8 +50,3 @@
   operation: freplace
   src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/context.c
   dst: kaneton/machine/architecture/ia32/educational/context.c
-
--
-  operation: freplace
-  src: export/data/snapshot/kaneton/machine/architecture/ia32/educational/include/architecture.h
-  dst: kaneton/machine/architecture/ia32/educational/include/architecture.h

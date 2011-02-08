@@ -134,8 +134,6 @@
  * ../../core/core.c
  */
 
-t_error                    example(void);
-
 void			kaneton(s_init*				init);
 
 t_error			kaneton_spawn(void);

@@ -20,10 +20,9 @@
   operation: fremove
   path: environment/profile/user/jean.guyader
 
-# XXX
-#-
-#  operation: fremove
-#  path: environment/profile/user/julien.quintard
+-
+  operation: fremove
+  path: environment/profile/user/julien.quintard
 
 -
   operation: fremove
