@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri feb  4 13:10:01 2011]
+# updated       julien quintard   [tue feb  8 21:27:22 2011]
 #
 
 #
@@ -69,9 +69,6 @@ StoreDirectory = TestDirectory + "/store"
 
 # stores
 LogStore = StoreDirectory + "/log"
-
-# timeout in seconds: qemu/xen.
-Timeouts = { ktp.environment.QEMU: 300, ktp.environment.Xen: 30 }
 
 # magic number for serial communications.
 Magic = 0xF4859632
@@ -354,7 +351,8 @@ def                     Handler(signum, frame):
 # this function runs QEMU.
 #
 def                     QEMU(namespace,
-                             symbol):
+                             symbol,
+                             timeout):
   stream = None
   monitor = None
   output = None
@@ -377,7 +375,7 @@ def                     QEMU(namespace,
 
   # set the alarm signal.
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(Timeouts[ktp.environment.QEMU])
+  signal.alarm(6 + timeout)
 
   try:
     ktp.log.Record(LogStore,
@@ -503,7 +501,8 @@ def                     QEMU(namespace,
 # the run virtual machine and runs it.
 #
 def                     Xen(namespace,
-                            symbol):
+                            symbol,
+                            timeout):
   configuration = None
   stream = None
   monitor = None
@@ -548,7 +547,7 @@ serial = "pty"
 
   # set the alarm signal.
   signal.signal(signal.SIGALRM, Handler)
-  signal.alarm(Timeouts[ktp.environment.Xen])
+  signal.alarm(6 + timeout)
 
   try:
     ktp.log.Record(LogStore,
@@ -686,11 +685,13 @@ def                     Suite(namespace):
       if namespace.environment == ktp.environment.QEMU:
         (status, duration, output) =                                    \
             QEMU(namespace,
-                 namespace.manifests[component][test]["symbol"])
+                 namespace.manifests[component][test]["symbol"],
+                 namespace.manifests[component][test]["timeout"]["qemu"])
       elif namespace.environment == ktp.environment.Xen:
         (status, duration, output) =                                    \
             Xen(namespace,
-                namespace.manifests[component][test]["symbol"])
+                namespace.manifests[component][test]["symbol"],
+                 namespace.manifests[component][test]["timeout"]["xen"])
       else:
         Error(namespace,
               "unknown environment '" + namespace.environment + "'")

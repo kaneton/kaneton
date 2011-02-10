@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [fri feb  4 21:32:31 2011]
+# updated       julien quintard   [wed feb  9 06:45:42 2011]
 #
 
 #
@@ -60,7 +60,7 @@ def			usage():
     env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
 
 #
-# personal()
+# student()
 #
 # this function generates a personal database.
 #
@@ -110,11 +110,11 @@ def                     personal(school,
               env.OPTION_NONE)
 
 #
-# student()
+# group()
 #
 # this function generates a database for the given student.
 #
-def                     student():
+def                     group():
   school = None
   array = None
   id = None
@@ -240,7 +240,7 @@ def                     contributor():
 
   # store the database.
   ktp.database.Store(database,
-                     env._TEST_STORE_DATABASE_DIR_ + "/contributor" +   \
+                     env._TEST_STORE_DATABASE_DIR_ + "/" + env._USER_ + \
                        ktp.database.Extension)
 
   # display message.
@@ -324,7 +324,7 @@ c_components = {
   "contributor": contributor,
   "robot": robot,
   "school@school::year": school,
-  "student@school::year::name": student
+  "group@school::year::name": group
 }
 
 #

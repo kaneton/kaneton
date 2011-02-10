@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/server/registrar.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [fri feb  4 16:59:11 2011]
+# updated       julien quintard   [wed feb  9 07:01:21 2011]
 #
 
 #
@@ -98,9 +98,6 @@ MaintenanceLock = TestDirectory + "/.maintenance"
 
 # test construct environment
 TestConstructEnvironment = ktp.environment.Xen
-
-# the contributors community.
-ContributorsCommunity = "contributors"
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -249,7 +246,8 @@ def                     Information(capability):
 
     # add the profile.
     information["profile"] = { "identifier": profile["identifier"],
-                               "community": profile["community"],
+                               "type": profile["type"],
+                               "attributes": profile["attributes"],
                                "members": profile["members"] }
 
     # add the database.
@@ -368,7 +366,11 @@ def                     Test(capability,
                 "allowed for your profile")
 
     # check that the quota has not been reached.
-    if (len(database["reports"][environment][machine][suite]) ==        \
+    if (not "reports" in database) or                                   \
+       (not environment in database["reports"]) or                      \
+       (not machine in database["reports"][environment]) or             \
+       (not suite in database["reports"][environment][machine]) or      \
+       (len(database["reports"][environment][machine][suite]) >=        \
           database["quotas"][environment][machine][suite]):
       ktp.log.Record(LogStore,
                      "#(registrar) function(Test) error(reached quota)")
@@ -492,7 +494,7 @@ def                     Retest(capability,
                      str(profile) + ")")
 
     # check that the requesting user is a contributor.
-    if profile["community"] != ContributorsCommunity:
+    if profile["type"] != ktp.capability.TypeContributor:
       ktp.log.Record(LogStore,
                      "#(registrar) function(Retest) error(not a contributor)")
 
@@ -685,19 +687,20 @@ def                     List(capability):
                    "#(registrar) function(List) database(" +            \
                      str(database) + ")")
 
-    for environment in database["reports"]:
-      for machine in database["reports"][environment]:
-        for suite in database["reports"][environment][machine]:
-          for identifier in database["reports"][environment][machine][suite]:
-            report = ktp.report.Load(ReportStore + "/" + identifier +   \
-                                       ktp.report.Extension)
+    if "reports" in database:
+      for environment in database["reports"]:
+        for machine in database["reports"][environment]:
+          for suite in database["reports"][environment][machine]:
+            for identifier in database["reports"][environment][machine][suite]:
+              report = ktp.report.Load(ReportStore + "/" + identifier + \
+                                         ktp.report.Extension)
 
-            # ignore error reports as Python is unable to transmit
-            # the whole error messages.
-            if "error" in report["meta"]:
-              continue
+              # ignore error reports as Python is unable to transmit
+              # the whole error messages.
+              if "error" in report["meta"]:
+                continue
 
-            summary += [ report["meta"] ]
+              summary += [ report["meta"] ]
 
     ktp.log.Record(LogStore,
                    "#(registrar) function(List) summary(" +             \
@@ -754,7 +757,7 @@ def                     Fetch(capability,
                                ktp.report.Extension)
 
     if (report["meta"]["user"] != profile["identifier"]) and            \
-       (profile["community"] != ContributorsCommunity):
+       (profile["type"] != ktp.capability.TypeContributors):
       ktp.log.Record(LogStore,
                      "#(registrar) function(Fetch) error(un-owned report)")
 

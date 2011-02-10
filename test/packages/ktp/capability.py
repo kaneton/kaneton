@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/packages/ktp/capability.py
 #
 # created       julien quintard   [mon oct 25 19:58:10 2010]
-# updated       julien quintard   [sat feb  5 00:09:06 2011]
+# updated       julien quintard   [wed feb  9 06:42:08 2011]
 #
 
 #
@@ -28,8 +28,9 @@ import re
 
 Extension = ".cap"
 
-TypeStudent = "student"
+TypeContributor = "contributor"
 TypeGroup = "group"
+TypeStudent = "student"
 
 #
 # ---------- functions --------------------------------------------------------
@@ -60,17 +61,17 @@ def                     List(directory):
 def                     Create(code,
                                identifier,
                                type,
-                               community,
+                               attributes,
                                members):
   h = hmac.new(code, pickle.dumps( (identifier,
                                     type,
-                                    community,
+                                    str(attributes),
                                     str(members)) ))
   token = h.hexdigest()
 
   capability = { "identifier": identifier,
                  "type": type,
-                 "community": community,
+                 "attributes": attributes,
                  "members": members,
                  "token": token }
 
@@ -85,7 +86,7 @@ def                     Validate(code,
   h = hmac.new(code,
                pickle.dumps( (capability["identifier"],
                               capability["type"],
-                              capability["community"],
+                              str(capability["attributes"]),
                               str(capability["members"]) )))
   token = h.hexdigest()
 

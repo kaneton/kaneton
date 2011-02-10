@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/client/client.py
+# file          /home/mycure/ZZZ/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [tue feb  8 17:45:46 2011]
+# updated       julien quintard   [wed feb  9 07:03:50 2011]
 #
 
 #
@@ -272,7 +272,7 @@ def                     Test(server, capability, arguments):
 
   # export the current kaneton implementation.
   env.launch(env._EXPORT_SCRIPT_,
-             "test:" + capability["identifier"],
+             "test:" + capability["type"],
              env.OPTION_QUIET)
 
   # display a message.
@@ -282,7 +282,7 @@ def                     Test(server, capability, arguments):
 
   # read the snapshot.
   snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                   \
-                        "test:" + capability["identifier"] + ".tar.bz2",
+                        "test:" + capability["type"] + ".tar.bz2",
                       env.OPTION_NONE)
 
   # display a message.
@@ -374,7 +374,7 @@ def                     Submit(server, capability, arguments):
 
     # export the current kaneton implementation.
     env.launch(env._EXPORT_SCRIPT_,
-               "test:" + capability["identifier"],
+               "test:" + capability["type"],
                env.OPTION_QUIET)
 
     # display a message.
@@ -384,7 +384,7 @@ def                     Submit(server, capability, arguments):
 
     # read the snapshot.
     snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                 \
-                          "test:" + capability["identifier"] + ".tar.bz2",
+                          "test:" + capability["type"] + ".tar.bz2",
                         env.OPTION_NONE)
 
   # display a message.
