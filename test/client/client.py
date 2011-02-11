@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/ZZZ/kaneton/test/client/client.py
+# file          /home/mycure/kaneton/test/client/client.py
 #
 # created       julien quintard   [mon mar 23 00:09:51 2009]
-# updated       julien quintard   [wed feb  9 07:03:50 2011]
+# updated       julien quintard   [thu feb 10 10:36:33 2011]
 #
 
 #
@@ -77,111 +77,6 @@ def                     Warning():
               "  architecture:           " + str(g_architecture),
               env.OPTION_NONE)
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
-
-#
-# this function walk through the unit and counts the number of successful
-# tests.
-#
-def                     Count(tests):
-  passed = 0
-  failed = 0
-  total = 0
-
-  # explore the tests.
-  for test in tests:
-    if tests[test]["status"] == True:
-      passed += 1
-    else:
-      failed += 1
-
-    total += 1
-
-  return (passed, failed, total)
-
-#
-# this function displays a detailed version of the given report.
-#
-def                     Detail(report, margin = ""):
-  passed = None
-  failed = None
-  total = None
-
-  status = None
-  length = None
-  count = None
-
-  color = None
-
-  unit = None
-  tests = None
-  test = None
-
-  # for the units of the report.
-  for unit in report["data"]:
-    # retrieve the tests.
-    tests = report["data"][unit]
-
-    # compute the status of all the tests of the given unit.
-    (passed, failed, total) = Count(tests)
-
-    # set the colour according to the status.
-    if passed == total:
-      color = env.COLOR_GREEN
-    else:
-      color = env.COLOR_RED
-
-    # generate the count.
-    count = " [" + str(passed) + "/" + str(total) + "]"
-
-    # generate the unit's status.
-    length = 79 - len(unit) - len(margin) - 4 - len(count) - 1
-    status = length * " " +                                               \
-             env.colorize(count, color, env.OPTION_BOLD)
-
-    # display the unit name.
-    env.display(env.HEADER_OK,
-                margin + env.colorize(unit,
-                                      env.COLOR_NONE,
-                                      env.OPTION_BOLD) + ":" + status,
-                env.OPTION_NONE)
-
-    for test in tests:
-      # select color.
-      if tests[test]["status"] == True:
-        color = env.COLOR_GREEN
-      else:
-        color = env.COLOR_RED
-
-      # display name.
-      env.display(env.HEADER_OK,
-                  margin + "  " + test + ":",
-                  env.OPTION_NONE)
-
-      # display status.
-      env.display(env.HEADER_OK,
-                  margin + "    status: " +
-                  env.colorize(str(tests[test]["status"]),
-                               color,
-                               env.OPTION_NONE),
-                  env.OPTION_NONE)
-
-      # display description.
-      env.display(env.HEADER_OK,
-                  margin + "    description: " +
-                  tests[test]["description"],
-                  env.OPTION_NONE)
-
-      # display duration.
-      env.display(env.HEADER_OK,
-                  margin + "    duration: " +
-                  str(tests[test]["duration"]),
-                  env.OPTION_NONE)
-
-      # display output.
-      env.display(env.HEADER_OK,
-                  margin + "    output: " +
-                  tests[test]["output"],
-                  env.OPTION_NONE)
 
 #
 # this function dumps any Python data structure in a hierarchical way.
@@ -403,101 +298,6 @@ def                     Submit(server, capability, arguments):
               env.OPTION_NONE)
 
 #
-# this function displays a report.
-#
-def                     Display(server, capability, arguments):
-  report = None
-  identifier = None
-  unit = None
-
-  # check the arguments
-  if len(arguments) != 1:
-    Usage()
-    sys.exit(42)
-
-  identifier = arguments[0]
-
-  # display a message.
-  env.display(env.HEADER_OK,
-              "requesting the server",
-              env.OPTION_NONE)
-
-  # retrieve the report.
-  report = ktp.xmlrpc.Call(server.Fetch(capability, identifier))
-
-  # display a message.
-  env.display(env.HEADER_OK,
-              "displaying the report",
-              env.OPTION_NONE)
-
-  # dump the report.
-  env.display(env.HEADER_OK,
-              "report:",
-              env.OPTION_NONE)
-
-  # dump the meta section.
-  env.display(env.HEADER_OK,
-              "  meta:",
-              env.OPTION_NONE)
-  Dump(report["meta"], "    ")
-
-  # dump the data section, if possible.
-  if report["meta"]["state"] == ktp.report.StateDone:
-    env.display(env.HEADER_OK,
-                "  data:",
-                env.OPTION_NONE)
-
-    Detail(report, "    ")
-
-#
-# this function lists the reports.
-#
-def                     List(server, capability, arguments):
-  list = None
-  report = None
-
-  # check the arguments
-  if len(arguments) != 0:
-    Usage()
-    sys.exit(42)
-
-  # display a message.
-  env.display(env.HEADER_OK,
-              "requesting the server",
-              env.OPTION_NONE)
-
-  # retrieve the list.
-  list = ktp.xmlrpc.Call(server.List(capability))
-
-  # display a message.
-  env.display(env.HEADER_OK,
-              "listing the reports",
-              env.OPTION_NONE)
-
-  # display a message
-  env.display(env.HEADER_OK,
-              "reports:",
-              env.OPTION_NONE)
-
-  # display the list.
-  for report in list:
-    # display report's identifier.
-    env.display(env.HEADER_OK,
-                "  " + report["identifier"] + ":",
-                env.OPTION_NONE)
-
-    # display the report's meta.
-    env.display(env.HEADER_OK,
-                "    " + report["environments"]["stress"] +             \
-                  " :: " +                                              \
-                  report["platform"] + " :: " +                         \
-                  report["architecture"] + " :: " +                     \
-                  report["suite"] + " :: " +                            \
-                  str(report["date"]) + " :: " +                        \
-                  report["state"],
-                env.OPTION_NONE)
-
-#
 # this is the main function.
 #
 def                     Main():
@@ -558,8 +358,6 @@ def                     Main():
 
 c_commands = {
   "information": Information,
-  "list": List,
-  "display-[identifier]": Display,
   "test-[environment]::[suite]": Test,
   "retest-[identifier]": Retest,
   "submit-[stage]": Submit

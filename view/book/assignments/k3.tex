@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k3.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [tue feb  8 22:07:15 2011]
+% updated       julien quintard   [fri feb 11 09:30:43 2011]
 %
 
 %
@@ -27,6 +27,34 @@ These threads are the actual active entity being managed by the
 \name{scheduler} which decides which one should be executed next. By switching
 between threads at a fast pace, the kernel gives the user the illusion to
 execute programs in parallel.
+
+This stage will allow students to learn the following concepts:
+
+\begin{itemize}
+  \item
+    \term{Scheduler Algorithms}
+
+    \-
+
+    Throughout this stage's lectures, students will learn how scheduler
+    algorithms can vary depending on the system's target, from general-purpose
+    to specialized algorithms such as for real-time systems for instance.
+
+    \-
+
+    In addition, students will have to implement their own algorithm, hence
+    providing the kaneton microkernel with a mechanism for controlling the
+    threads' execution.
+  \item
+    \term{Hardware Context Switch}
+
+    \-
+
+    Students will also have to implement the low-level context switch
+    mechanism which relies on interrupts. Through this implementation students
+    will manipulate \name{TSS - Task State Segment}s and the \name{KIS - Kernel
+    Interrupt Stack} among others.
+\end{itemize}
 
 \newpage
 
@@ -66,7 +94,7 @@ manager provides functions for managing the global execution entities \ie{}
 tasks. The \name{thread} manager handle the active entities referred to as
 threads. The \name{cpu} manager controls the multiple processors present
 on the machine. Finally, the \name{scheduler} manager maintains the multiple
-schedulers, one for each \name{CPU}, each of which is reponsible for the
+schedulers, one for each \name{CPU}, each of which is responsible for the
 execution of a colletion of threads.
 
 % scheduler

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k1.tex
 %
 % created       julien quintard   [tue feb  1 21:40:19 2011]
-% updated       julien quintard   [mon feb  7 20:38:20 2011]
+% updated       julien quintard   [thu feb 10 21:48:36 2011]
 %
 
 %
@@ -38,6 +38,42 @@ multitasking \ie{} the ability to execute multiple threads of execution
 in parallel. Note that the mechanism underlying this concept will be
 discussed in \name{k3}.
 
+In this stage, students will therefore address the following concepts:
+
+\begin{itemize}
+  \item
+    \term{Event Mechanism Theory}
+
+    \-
+
+    The way event processing mechanisms are implemented depending on the
+    architecture will be studied through the lectures.
+  \item
+    \term{IDT - Interrupt Descriptor Table}
+
+    \-
+
+    The \name{IDT} will be manually build and managed in order to specify
+    the \name{CPU} how to handle the interrupts being exceptions,
+    \name{IRQ - Interrupt Request}s \etc{}
+  \item
+    \term{ISR - Interrupt Service Routing}
+
+    \-
+
+    Once an interrupt is triggered, a handler---referred to as an \name{ISR}
+    on \name{Intel} architectures---is launched. This handler is responsible
+    for saving and restoring the state of the interrupted execution context
+    among others.
+  \item
+    \term{PIC - Programmable Interrupt Controller}
+
+    \-
+
+    The student will also discover the existence of a chipset known as the
+    \name{PIC} whose purpose is directly linked to the interrupt handling.
+\end{itemize}
+
 \newpage
 
 %
@@ -51,7 +87,7 @@ discussed in \name{k3}.
 \section{Requirements}
 
 Every student should read the \name{IA-32 Architectures Software
-Developer's Manual, Volume 3A: System Programming Guide, Part 1} which
+  Developer's Manual, Volume 3A: System Programming Guide, Part 1} which
 is available on the \name{Wiki}. More precisely students should focus
 on the chapter \name{Interrupt and Exception Handling} which contains
 all the necessary material to complete this stage.

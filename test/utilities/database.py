@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/database.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [wed feb  9 06:45:42 2011]
+# updated       julien quintard   [fri feb 11 10:50:39 2011]
 #
 
 #
@@ -62,102 +62,122 @@ def			usage():
 #
 # student()
 #
-# this function generates a personal database.
+# this function generates a database for the members of the given group.
 #
-def                     personal(school,
-                                 id):
-  members = None
+def                     student():
+  components = None
+  school = None
+  year = None
+  group = None
+  capability = None
+  name = None
+  path = None
+  configuration = None
+  database = None
   member = None
-
-  # load the group capability.
-  capability = ktp.capability.Load(env._TEST_STORE_CAPABILITY_DIR_ +    \
-                                     "/" + id + ktp.capability.Extension)
 
   # display.
   env.display(env.HEADER_OK,
-              "generating database for the group's student members",
+              "generating database for the students of the group '" +   \
+                g_path + "'",
               env.OPTION_NONE)
 
-  # retrieve the members.
-  members = capability["members"]
+  # retrieve the components.
+  components = g_path.strip("/").split("/")
 
-  # go through the members.
-  for member in members:
-    # generate a name.
-    name = member["name"].lower().replace(" ", ".")
+  # compute the school, year and group.
+  school = components[0]
+  year = components[1]
+  group = components[2]
+
+  # compute the name.
+  name = school + "::" + year + "::" + group
+
+  # load the group capability.
+  capability = ktp.capability.Load(env._TEST_STORE_CAPABILITY_DIR_ +  \
+                                     "/" + name + ktp.capability.Extension)
+
+  # go through the group members.
+  for member in capability["members"]:
+    # display message.
+    env.display(env.HEADER_OK,
+                "  " + member["login"],
+                env.OPTION_NONE)
+
+    # compute the name.
+    name = school + "::" + year + "::" + group + "::" + member["login"]
+
+    # compute the file name.
+    path = env._TEST_STORE_DATABASE_DIR_ + "/" + name + ktp.database.Extension
 
     # load the configuration.
-    configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ +\
-                                             "/" + school + "#student" + \
+    configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
+                                             "/" + school + "::" +        \
+                                             year + "#student" +          \
                                              ktp.configuration.Extension)
 
     # generate the database.
     database = ktp.database.Generate(configuration)
 
     # store the database.
-    ktp.database.Store(database,
-                       env._TEST_STORE_DATABASE_DIR_ + "/" +            \
-                         name + ktp.database.Extension)
+    ktp.database.Store(database, path)
 
-    # display.
-    env.display(env.HEADER_OK,
-                "  " + name,
-                env.OPTION_NONE)
-
-  # display.
+  # display message.
   env.display(env.HEADER_OK,
-              "databases for the group's student members generated",
+              "the group members' databases have been generated succesfully",
               env.OPTION_NONE)
 
 #
 # group()
 #
-# this function generates a database for the given student.
+# this function generates a database for the given group.
 #
 def                     group():
+  components = None
   school = None
-  array = None
-  id = None
+  year = None
+  group = None
+  name = None
+  path = None
+  configuration = None
   database = None
-  capability = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating database for the student group",
+              "generating database for the group '" + g_path + "'",
               env.OPTION_NONE)
 
-  # compute the id.
-  id = g_path.replace("/", "::")
+  # retrieve the components.
+  components = g_path.strip("/").split("/")
 
-  # compute the school.
-  array = g_path.split("/")
-  school = "::".join(array[:len(array) - 1])
+  # compute the school, year and group.
+  school = components[0]
+  year = components[1]
+  group = components[2]
+
+  # compute the name.
+  name = school + "::" + year + "::" + group
+
+  # compute the file name.
+  path = env._TEST_STORE_DATABASE_DIR_ + "/" + name + ktp.database.Extension
 
   # load the configuration.
   configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
-                                           "/" + school + "#group" +    \
+                                           "/" + school + "::" +        \
+                                           year + "#group" +            \
                                            ktp.configuration.Extension)
 
   # generate the database.
   database = ktp.database.Generate(configuration)
 
   # store the database.
-  ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" +    \
-                       id + ktp.database.Extension)
-
-  # display.
-  env.display(env.HEADER_OK,
-              "  " +
-              id,
-              env.OPTION_NONE)
+  ktp.database.Store(database, path)
 
   # display message.
   env.display(env.HEADER_OK,
-              "student's group database generated and stored",
+              "the group database '" + name + "' has been " +           \
+                "generated succesfully",
               env.OPTION_NONE)
-
-  # generate the personal databases.
-  personal(school, id)
 
 #
 # school()
@@ -168,14 +188,18 @@ def                     group():
 def                     school():
   students = None
   student = None
-  id = None
-  configuration = None
-  database = None
+  school = None
+  group = None
   name = None
+  configuration = None
+  name = None
+  capability = None
+  database = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating databases for the students",
+              "generating students' databases for the school '" +       \
+                g_path + "'",
               env.OPTION_NONE)
 
   # retrieve the list of students.
@@ -184,36 +208,66 @@ def                     school():
 
   # for each student.
   for student in students:
-    # compute the school id.
-    id = g_path.replace("/", "::")
+    # display.
+    env.display(env.HEADER_OK,
+                "  " + student,
+                env.OPTION_NONE)
 
-    # compute the student name.
-    name = id + "::" + student
+    # retrieve the components.
+    components = g_path.strip("/").split("/")
+
+    # compute the school, year and group.
+    school = components[0]
+    year = components[1]
+    group = student
+
+    # compute the group capability/database name.
+    name = school + "::" + year + "::" + group
+
+    # compute the file name.
+    path = env._TEST_STORE_DATABASE_DIR_ + "/" + name + ktp.database.Extension
+
+    # load the group capability.
+    capability = ktp.capability.Load(env._TEST_STORE_CAPABILITY_DIR_ +  \
+                                       "/" + name + ktp.capability.Extension)
 
     # load the configuration.
     configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
-                                             "/" + id + "#group" +        \
+                                             "/" + school + "::" +        \
+                                             year + "#group" +            \
                                              ktp.configuration.Extension)
 
     # generate the database.
     database = ktp.database.Generate(configuration)
 
     # store the database.
-    ktp.database.Store(database, env._TEST_STORE_DATABASE_DIR_ + "/" +  \
-                         name + ktp.database.Extension)
+    ktp.database.Store(database, path)
 
-    # display.
-    env.display(env.HEADER_OK,
-                "  " +
-                name,
-                env.OPTION_NONE)
+    # go through the list of members attached to this group.
+    for member in capability["members"]:
+      # compute the name.
+      name = school + "::" + year + "::" + group + "::" + member["login"]
 
-    # generate the personal databases.
-    personal(id, name)
+      # compute the file name.
+      path = env._TEST_STORE_DATABASE_DIR_ + "/" +                      \
+        name + ktp.database.Extension
+
+      # load the configuration.
+      configuration = ktp.configuration.Load(env._TEST_CONFIGURATION_DIR_ + \
+                                               "/" + school + "::" +        \
+                                               year + "#student" +          \
+                                               ktp.configuration.Extension)
+
+      # generate the database.
+      database = ktp.database.Generate(configuration)
+
+      # store the database.
+      ktp.database.Store(database, path)
 
   # display message.
   env.display(env.HEADER_OK,
-              "students' database generated and stored",
+              "the school's group capabilities have been generated " +  \
+                "succesfully",
               env.OPTION_NONE)
 
 #
@@ -227,7 +281,7 @@ def                     contributor():
 
   # display message.
   env.display(env.HEADER_OK,
-              "generating database from contributor's configuration",
+              "generating database for the contributor",
               env.OPTION_NONE)
 
   # load the configuration.
@@ -245,7 +299,8 @@ def                     contributor():
 
   # display message.
   env.display(env.HEADER_OK,
-              "contributor's database generated and stored",
+              "the contributor database has been generated for '" +     \
+                env._USER_ + "'",
               env.OPTION_NONE)
 
 #
@@ -259,7 +314,7 @@ def                     robot():
 
   # display message.
   env.display(env.HEADER_OK,
-              "generating database from robot's configuration",
+              "generating database for the robot",
               env.OPTION_NONE)
 
   # load the configuration.
@@ -277,7 +332,7 @@ def                     robot():
 
   # display message.
   env.display(env.HEADER_OK,
-              "robot's database generated and stored",
+              "the robot's database has been generated succesfully",
               env.OPTION_NONE)
 
 #
@@ -324,7 +379,8 @@ c_components = {
   "contributor": contributor,
   "robot": robot,
   "school@school::year": school,
-  "group@school::year::name": group
+  "group@school::year::group": group,
+  "student@school::year::group": student
 }
 
 #

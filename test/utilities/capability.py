@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [wed feb  9 06:01:03 2011]
+# updated       julien quintard   [fri feb 11 10:56:30 2011]
 #
 
 #
@@ -58,143 +58,71 @@ def			usage():
     env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
 
 #
-# extract()
+# student()
 #
-# this function takes the path to a history directory and
-# extract the names, emails and id of every student.
+# this function generates the capabilities for the group's members.
 #
-# finally, the function returns the information in a data
-# structure.
-#
-def                     extract(path):
-  container = {}
-  students = None
-  members = None
-  member = None
-  people = None
-
-  # display.
-  env.display(env.HEADER_OK,
-              "extracting the students from the history '" + path + "'",
-              env.OPTION_NONE)
-
-  # retrieve the list of students.
-  students = env.list(env._HISTORY_DIR_ + "/" + path,
-                      env.OPTION_DIRECTORY)
-
-  # for each student, extract the information from the
-  # 'people' file.
-  for student in students:
-    # read the 'people' file.
-    people = env.pull(env._HISTORY_DIR_ + "/" + path + "/" +
-                      student + "/people", env.OPTION_NONE)
-
-    # extract every line
-    members = people.strip("\n").split("\n")
-
-    # initialize the people list.
-    people = []
-
-    # for every member, extract the first email email.
-    for member in members:
-      # apply a regexp to locate the elements.
-      match = re.match("^(.+) <(.+)>$", member)
-
-      if not match:
-        env.display(env.HEADER_ERROR,
-                    "  unable to extract the name and email from the "
-                    "student '" + student + "'",
-                    env.OPTION_NONE)
-
-      # register the member.
-      people += [ { "name": match.group(1),
-                    "email": match.group(2) } ]
-
-    # add the student.
-    container[student] = people
-
-  # display.
-  env.display(env.HEADER_OK,
-              "students information retrieved",
-              env.OPTION_NONE)
-
-  return container
-
-#
-# personal()
-#
-# this function takes an existing capability and generates
-# a personal capability for everyone of the members.
-#
-def                     personal(code,
-                                 capability):
-  attributes = None
-  members = None
-  member = None
-  name = None
-  path = None
-
-  # retrieve the members and attributes.
-  members = capability["members"]
-  attributes = capability["attributes"]
-
-  # for every member.
-  for member in members:
-    # generate a name.
-    name = member["name"].lower().replace(" ", ".")
-
-    # compute the file name.
-    path = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                      \
-      name + ktp.capability.Extension
-
-    # create a specific capability for the member.
-    capability = ktp.capability.Create(code,
-                                       name,
-                                       ktp.capability.TypeStudent,
-                                       attributes,
-                                       [ { "name": member["name"],
-                                           "email": member["email"] } ])
-
-    # store it.
-    ktp.capability.Store(path,
-                         capability)
-
-    # display.
-    env.display(env.HEADER_OK,
-                "    " + name,
-                env.OPTION_NONE)
-
-#
-# generate()
-#
-# this function takes a data structure and generate
-# a capability for every student.
-#
-def                     generate(code,
-                                 students):
+def                     student():
+  code = None
   components = None
-  student = None
   school = None
   year = None
   group = None
   name = None
+  people = None
+  members = None
+  member = None
   path = None
+  capability = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating the students' capabilities:",
+              "generating a capability for the group '" + g_path + "'",
               env.OPTION_NONE)
 
-  # for every student, generate a capability and store it.
-  for student in students:
-    # extract the components from the path.
-    components = g_path.strip("/").split("/")
+  # retrieve the server's code.
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server" +          \
+                         ktp.code.Extension)
 
-    # compute the school, year, group and unique name.
-    school = components[0]
-    year = components[1]
-    group = student
-    name = school + "::" + year + "::" + group
+  # compute the school, year, group and identifier name.
+  components = g_path.strip("/").split("/")
+
+  # compute the school, year and group.
+  school = components[0]
+  year = components[1]
+  group = components[2]
+
+  # read the 'people' file.
+  people = env.pull(env._HISTORY_DIR_ + "/" + g_path + "/people",
+                    env.OPTION_NONE).strip("\n").split("\n")
+
+  # initialize the members list.
+  members = []
+
+  # for every member, extract name and email.
+  for member in people:
+    # apply a regexp to locate the elements.
+    match = re.match("^(.+) <(.+)>$", member)
+
+    if not match:
+      env.display(env.HEADER_ERROR,
+                  "  unable to extract the name and email from the student '" +
+                  g_path + "'",
+                  env.OPTION_NONE)
+      continue
+    else:
+      # remember the member.
+      member = { "name": match.group(1),
+                 "email": match.group(2),
+                 "login": match.group(1).lower().replace(" ", ".") }
+
+    # display.
+    env.display(env.HEADER_OK,
+                "  " + member["login"],
+                env.OPTION_NONE)
+
+    # compute the unique name.
+    name = school + "::" + year + "::" + group + "::" + member["login"]
 
     # compute the file name.
     path = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                      \
@@ -203,23 +131,20 @@ def                     generate(code,
     # create the capability.
     capability = ktp.capability.Create(code,
                                        name,
-                                       ktp.capability.TypeGroup,
+                                       ktp.capability.TypeStudent,
                                        { "school": school,
                                          "year": year,
                                          "group": group },
-                                       students[student])
+                                       [ member ])
 
     # store it.
     ktp.capability.Store(path,
                          capability)
 
-    # display.
-    env.display(env.HEADER_OK,
-                "  " + name,
-                env.OPTION_NONE)
-
-    # generate the personal capabilities.
-    personal(code, capability)
+  # display.
+  env.display(env.HEADER_OK,
+              "the group member capabilities have been generated succesfully",
+              env.OPTION_NONE)
 
 #
 # group()
@@ -227,19 +152,26 @@ def                     generate(code,
 # this function generates a capability for a specific group.
 #
 def                     group():
+  code = None
   components = None
+  school = None
+  year = None
+  group = None
   name = None
-  email = None
-  path = None
   people = None
-  persons = []
-  member = None
   members = None
+  member = None
+  path = None
+  capability = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating the student's group capability:",
+              "generating a capability for the group '" + g_path + "'",
               env.OPTION_NONE)
+
+  # retrieve the server's code.
+  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server" +          \
+                         ktp.code.Extension)
 
   # compute the school, year, group and identifier name.
   components = g_path.strip("/").split("/")
@@ -252,13 +184,13 @@ def                     group():
 
   # read the 'people' file.
   people = env.pull(env._HISTORY_DIR_ + "/" + g_path + "/people",
-                    env.OPTION_NONE)
+                    env.OPTION_NONE).strip("\n").split("\n")
 
-  # extract every line
-  members = people.strip("\n").split("\n")
+  # initialize the members list.
+  members = []
 
   # for every member, extract name and email.
-  for member in members:
+  for member in people:
     # apply a regexp to locate the elements.
     match = re.match("^(.+) <(.+)>$", member)
 
@@ -267,18 +199,15 @@ def                     group():
                   "  unable to extract the name and email from the student '" +
                   g_path + "'",
                   env.OPTION_NONE)
+      continue
     else:
       # register the member.
-      persons += [ { "name": match.group(1),
+      members += [ { "name": match.group(1),
                      "email": match.group(2) } ]
 
   # compute the file name.
   path = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                        \
     name + ktp.capability.Extension
-
-  # retrieve the server's code.
-  code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server" +          \
-                         ktp.code.Extension)
 
   # create the capability.
   capability = ktp.capability.Create(code,
@@ -287,7 +216,7 @@ def                     group():
                                      { "school": school,
                                        "year": year,
                                        "group": group },
-                                     persons)
+                                     members)
 
   # store it.
   ktp.capability.Store(path,
@@ -295,16 +224,9 @@ def                     group():
 
   # display.
   env.display(env.HEADER_OK,
-              "  " + name,
+              "the group capability '" + name + "' has been " +         \
+                "generated succesfully",
               env.OPTION_NONE)
-
-  # display.
-  env.display(env.HEADER_OK,
-              "student's group capability generated and stored",
-              env.OPTION_NONE)
-
-  # generate the personal capabilities.
-  personal(code, capability)
 
 #
 # school()
@@ -313,24 +235,124 @@ def                     group():
 # by their school and year.
 #
 def                     school():
+  code = None
+  students = None
+  student = None
+  people = None
+  members = None
+  member = None
+  match = None
+  components = None
+  school = None
+  year = None
+  group = None
+  name = None
+  path = None
+  capability = None
+
   # display.
   env.display(env.HEADER_OK,
-              "generating students' capabilities",
+              "generating students' capabilities for the school '" +    \
+                g_path + "'",
               env.OPTION_NONE)
 
   # retrieve the server's code.
   code = ktp.code.Load(env._TEST_STORE_CODE_DIR_ + "/server" +          \
                          ktp.code.Extension)
 
-  # read the file and extract the students information.
-  students = extract(g_path)
+  # extract the components from the path.
+  components = g_path.strip("/").split("/")
 
-  # generate the capabilities.
-  generate(code, students)
+  # compute the school and year.
+  school = components[0]
+  year = components[1]
+
+  # retrieve the list of students.
+  students = env.list(env._HISTORY_DIR_ + "/" + g_path,
+                      env.OPTION_DIRECTORY)
+
+  # for each student, extract the information from the
+  # 'people' file.
+  for student in students:
+    # display.
+    env.display(env.HEADER_OK,
+                "  " + student,
+                env.OPTION_NONE)
+
+    # complete the attributes with the group name.
+    group = student
+    name = school + "::" + year + "::" + group
+
+    # read the 'people' file.
+    people = env.pull(env._HISTORY_DIR_ + "/" + g_path + "/" +
+                      student + "/people",
+                      env.OPTION_NONE).strip("\n").split("\n")
+
+    # initialize the members list.
+    members = []
+
+    # for every member, extract the first email email.
+    for member in people:
+      # apply a regexp to locate the elements.
+      match = re.match("^(.+) <(.+)>$", member)
+
+      if not match:
+        env.display(env.HEADER_ERROR,
+                    "  unable to extract the name and email from the "
+                    "student '" + student + "'",
+                    env.OPTION_NONE)
+        continue
+      else:
+        # register the member.
+        members += [ { "name": match.group(1),
+                       "email": match.group(2),
+                       "login": match.group(1).lower().replace(" ", ".") } ]
+
+    # compute the file name.
+    path = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                      \
+      name + ktp.capability.Extension
+
+    # create the capability.
+    capability = ktp.capability.Create(code,
+                                       name,
+                                       ktp.capability.TypeGroup,
+                                       { "school": school,
+                                         "year": year,
+                                         "group": group },
+                                       members)
+
+    # store it.
+    ktp.capability.Store(path,
+                         capability)
+
+    # go through the list of members attached to this group.
+    for member in members:
+      # generate a student name.
+      name = school+ "::" + year + "::" + group + "::" + member["login"]
+
+      # compute the file name.
+      path = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                    \
+        name + ktp.capability.Extension
+
+      # create a specific capability for the member.
+      capability = ktp.capability.Create(code,
+                                         name,
+                                         ktp.capability.TypeStudent,
+                                         { "school": school,
+                                           "year": year,
+                                           "group": group },
+                                         [ { "name": member["name"],
+                                             "email": member["email"],
+                                             "login": member["login"] } ])
+
+      # store it.
+      ktp.capability.Store(path,
+                           capability)
 
   # display.
   env.display(env.HEADER_OK,
-              "students' capabilities generated and stored",
+              "the school student capabilities have been generated " +  \
+                "succesfully",
               env.OPTION_NONE)
 
 #
@@ -341,11 +363,12 @@ def                     school():
 #
 def                     contributor():
   path = None
+  link = None
   name = None
 
   # display.
   env.display(env.HEADER_OK,
-              "generating the contributor's capability",
+              "generating a contributor's capability",
               env.OPTION_NONE)
 
   # retrieve the server's code.
@@ -356,7 +379,11 @@ def                     contributor():
   name = env._USER_
 
   # compute the file name.
-  path = env._TEST_CAPABILITY_
+  path = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                        \
+    name + ktp.capability.Extension
+
+  # compute the link.
+  link = env._TEST_CAPABILITY_
 
   # create the capability.
   capability = ktp.capability.Create(code,
@@ -364,15 +391,25 @@ def                     contributor():
                                      ktp.capability.TypeContributor,
                                      {},
                                      [ { "name": env._TEST_NAME_,
-                                         "email": env._TEST_EMAIL_ } ])
+                                         "email": env._TEST_EMAIL_,
+                                         "login":
+                                           env._TEST_NAME_.lower().
+                                             replace(" ", ".") } ])
 
   # store it.
   ktp.capability.Store(path,
                        capability)
 
+  # remove the previous link.
+  env.remove(link, env.OPTION_NONE)
+
+  # create a link from the profile.
+  env.link(link, path, env.OPTION_NONE)
+
   # display.
   env.display(env.HEADER_OK,
-              "capability generated and stored for '" + name + "'",
+              "the contributor capability has been generated " +        \
+              "succesfully for '" + name + "'",
               env.OPTION_NONE)
 
 #
@@ -381,6 +418,8 @@ def                     contributor():
 # this function generates a capability for the robot.
 #
 def                     robot():
+  path = None
+  link = None
   name = None
 
   # display.
@@ -396,7 +435,11 @@ def                     robot():
   name = "robot"
 
   # compute the file name.
-  file = env._PROFILE_DIR_ + "/user/robot/robot" + ktp.capability.Extension
+  path = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                        \
+    name + ktp.capability.Extension
+
+  # compute the link.
+  link = env._PROFILE_DIR_ + "/user/robot/robot" + ktp.capability.Extension
 
   # create the capability.
   capability = ktp.capability.Create(code,
@@ -406,16 +449,24 @@ def                     robot():
                                      [ { "name":
                                            "Robot",
                                          "email":
-                                           "contributors@kaneton.opaak.org"
+                                           "contributors@kaneton.opaak.org",
+                                         "login":
+                                           "robot"
                                          } ])
 
   # store it.
-  ktp.capability.Store(file,
+  ktp.capability.Store(path,
                        capability)
+
+  # remove the previous link.
+  env.remove(link, env.OPTION_NONE)
+
+  # create a link from the profile.
+  env.link(link, path, env.OPTION_NONE)
 
   # display.
   env.display(env.HEADER_OK,
-              "robot's capability generated and stored",
+              "the robot's capability has been generated succesfully",
               env.OPTION_NONE)
 
 #
@@ -462,7 +513,8 @@ c_components = {
   "contributor": contributor,
   "robot": robot,
   "school@school::year": school,
-  "group@school::year::name": group
+  "group@school::year::group": group,
+  "student@school::year::group": student
 }
 
 #

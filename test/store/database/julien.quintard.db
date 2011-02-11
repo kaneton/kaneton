@@ -1,7 +1,8 @@
 quotas:
   qemu:
     ibm-pc.ia32/educational: {bugs: -1, k1: -1, k2: -1, k3: -1, kaneton: -1}
-  xen: {bugs: -1, k1: -1, k2: -1, k3: -1, kaneton: -1}
+  xen:
+    ibm-pc.ia32/educational: {bugs: -1, k1: -1, k2: -1, k3: -1, kaneton: -1}
 reports:
   qemu:
     ibm-pc.ia32/educational:

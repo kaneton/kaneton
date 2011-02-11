@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/README
 #
 # created       julien quintard   [tue nov  2 07:37:15 2010]
-# updated       julien quintard   [wed feb  9 06:02:13 2011]
+# updated       julien quintard   [fri feb 11 10:03:04 2011]
 #
 
 #
@@ -68,8 +68,9 @@ Then, a random code is generated so that capabilities cannot be forged.
 The students' and contributor's capabilities are generated for a specific
 school and year, through the following command line.
 
-  $> make capability-school@epita::2011
-  $> make capability-group@epita::2011:group8
+  $> make capability-school@epita::2010
+  $> make capability-group@epita::2010:group8
+  $> make capability-student@epita::2010:group8
   $> make capability-contributor
   $> make capability-robot
 
@@ -79,6 +80,7 @@ found in test/configuration/
 
   $> make database-school@epita::2009
   $> make database-group@epita::2009:group2
+  $> make database-student@epita::2009:group2
   $> make database-contributor
   $> make database-robot
 

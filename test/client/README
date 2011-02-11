@@ -8,23 +8,22 @@
 # file          /home/mycure/kaneton/test/client/README
 #
 # created       julien quintard   [tue nov  2 05:48:57 2010]
-# updated       julien quintard   [wed dec  8 21:44:46 2010]
+# updated       julien quintard   [thu feb 10 11:17:07 2011]
 #
 
 The client script provides the user the possibility to request actions
 from the test server.
 
-  $> make
+  $> cd ~/kaneton/test/client/
+  $~/kaneton/test/client> make
   [!] usage: client.py [command]
 
   [!] commands:
-  [!]   information
-  [!]   submit-[stage]
-  [!]   test-[environment]::[suite]
-  [!]   list
-  [!]   display-[identifier]
   [!]   retest-[identifier]
-  $> 
+  [!]   information
+  [!]   test-[environment]::[suite]
+  [!]   submit-[stage]
+  $~/kaneton/test/client> 
 
 #
 # ---------- information ------------------------------------------------------
@@ -35,100 +34,66 @@ the number of tests consumed, the number of tests left etc.
 
 The example below illustrates this command.
 
-  $> make information
+  $~/kaneton/test/client> make information
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
   [+] information:
   [+]   profile:
-  [+]     name:                 contributor
-  [+]     community:            contributors
-  [+]     email:                admin@opaak.org
+  [+]     attributes:
+  [+]     identifier:           julien.quintard
+  [+]     type:                 contributor
+  [+]     members:
+  [+]       name:               Julien Quintard
+  [+]       email:              julien.quintard@gmail.com
+  [+]   suites:
+  [+]     k3:                   This test suite contains tests related to the execution.
+  [+]     k2:                   This test suite focuses on the memory management.
+  [+]     k1:                   This test suite focuses on the event processing.
+  [+]     bugs:                 This suite contains the tests which fail on the official kaneton implementation.
+  [+]     kaneton:              This test suite triggers all the tests.
+  [+]   stages:
+  [+]     k3:                   This stage evaluates the kaneton's execution functionalities.
+  [+]     k2:                   This stage evaluates the kaneton's memory management.
+  [+]     k1:                   This stage evaluates the kaneton's event procesing capabilities.
+  [+]     k0:                   This stage focuses on the assembly language and the boot process through BIOS services.
+  [+]   environments:
+  [+]     xen:                  The 'xen' environment is used to thoroughly test a kaneton implementation in a Xen hardware-assisted virtual machine.
+  [+]     qemu:                 The 'qemu' environment is used to test a kaneton implementation through the QEMU processor emulator.
   [+]   database:
+  [+]     quotas:
+  [+]       xen:
+  [+]         k3:               -1
+  [+]         k2:               -1
+  [+]         k1:               -1
+  [+]         bugs:             -1
+  [+]         kaneton:          -1
+  [+]       qemu:
+  [+]         ibm-pc.ia32/educational:
+  [+]           k3:             -1
+  [+]           k2:             -1
+  [+]           k1:             -1
+  [+]           bugs:           -1
+  [+]           kaneton:        -1
   [+]     reports:
   [+]       xen:
   [+]         ibm-pc.ia32/educational:
-  [+]           k3:             []
-  [+]           k2:             ['20101027-141903', '20101027-142207', '20101027-142253', '20101027-143342', '20101027-143529']
-  [+]           k1:             []
-  [+]       qemu:
-  [+]         ibm-pc.ia32/educational:
-  [+]           k3:             []
-  [+]           k2:             []
-  [+]           k1:             []
-  [+]     settings:
-  [+]       xen:
-  [+]         ibm-pc.ia32/educational:
   [+]           k3:
-  [+]             requests:     0
-  [+]             quota:        -1
   [+]           k2:
-  [+]             requests:     8
-  [+]             quota:        -1
   [+]           k1:
-  [+]             requests:     0
-  [+]             quota:        -1
+  [+]           bugs:
+  [+]           kaneton:
   [+]       qemu:
   [+]         ibm-pc.ia32/educational:
   [+]           k3:
-  [+]             requests:     0
-  [+]             quota:        -1
   [+]           k2:
-  [+]             requests:     0
-  [+]             quota:        -1
   [+]           k1:
-  [+]             requests:     0
-  [+]             quota:        -1
-
-#
-# ---------- list -------------------------------------------------------------
-#
-
-The 'list' command returns a list of the report identifiers of previously
-triggered test suites.
-
-Note that every report identifier comes with the meta data attributes so
-that the user can quickly locate the report of interest.
-
-  $> make list
-  [+] reports:
-  [+]   20101027-152111:
-  [+]     xen :: ibm-pc :: ia32/educational :: k2 :: 2010/10/27 15:21:11
-  [+]   20101027-143529:
-  [+]     xen :: ibm-pc :: ia32/educational :: k2 :: 2010/10/27 14:35:29
-
-#
-# ---------- display ----------------------------------------------------------
-#
-
-The 'display' command displays in detail the report identifier by the given
-name, as shown below.
-
-The syntax for this command is display::[identifier].
-
-  $> make display-20101027:143529
-  [+] report:
-  [+]   meta:
-  [+]     environment:          xen
-  [+]     platform:             ibm-pc
-  [+]     architecture:         ia32/educational
-  [+]     date:                 2010/10/27 14:35:29
-  [+]     suite:                k2
-  [+]     identifier:           20101027-143529
-  [+]   data:
-  [+]     id:                                                             [3/3]
-  [+]       simple:
-  [+]         status: True
-  [+]         description: This test reserves a single identifier.
-  [+]         duration: 0.005
-  [+]         output: 
-  [+]       clone:
-  [+]         status: True
-  [+]         description: This test reserves, clones and releases identifiers.
-  [+]         duration: 0.095
-  [+]         output: 
-  [+]       multiple:
-  [+]         status: True
-  [+]         description: This test reserves thousands of identifiers, checking that no collisions occured.
-  [+]         duration: 0.011
-  [+]         output: 
+  [+]           bugs:
+  [+]           kaneton:
+  $~/kaneton/test/client> 
 
 #
 # ---------- test -------------------------------------------------------------
@@ -137,17 +102,23 @@ The syntax for this command is display::[identifier].
 The 'test' command issues a request for a test suite to be run in the given
 environment so that to stress the current kaneton implementation.
 
-Note that this command displays a summary of the report once the test suite
-performed.
+The syntax for this command is test-[environment]::[suite] where [suite]
+can be any of the 'k1', 'k2', 'k3' etc. stages while [environment] can
+be 'xen' or 'qemu'. For more information regarding the available suites,
+stages, environments etc., please refer to the 'information' command.
 
-The syntax for this command is test::[environment]::[suite] where [suite]
-can be any of the 'k0', 'k1', 'k2', 'k3' etc. stages while [environment] can
-be 'xen' or 'qemu'.
+  $~/kaneton/test/client> make test-xen::k1
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
 
-  $> make test-xen::k2
-  [+] report(20101029-231656)
-  [+]   id                                                               [3/3]
-  [+]   segment                                                          [5/8]
+  [+] generating the kaneton snapshot
+  [+] loading the kaneton snapshot
+  [+] requesting the server
+  [+] the snapshot has been scheduled for testing under the identifier: 20110210:105955
+  $~/kaneton/test/client>
 
 #
 # ---------- submit -----------------------------------------------------------
@@ -157,20 +128,38 @@ Finally, the 'submit' command enables students to definitely submit a
 kaneton implementation so that their work gets evaluated afterwards according
 to a specific stage.
 
-The syntax for this command is submit::[stage].
+The syntax for this command is submit-[stage].
 
-  $> make submit-k3
+  $~/kaneton/test/client> make submit-k3
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] generating the kaneton snapshot
+  [+] loading the kaneton snapshot
+  [+] requesting the server
   [+] the snapshot has been submitted successfully
+  $~/kaneton/test/client> 
 
 #
 # ---------- retest -----------------------------------------------------------
 #
 
 The 'retest' command provides the administrator the possibility to re-launch
-the test suite on the given identified test. This command is useful should
-an unexpected error have occured.
+the test suite according to the given identifier. This command is useful should
+an unexpected error occur.
 
-The syntax for this command is retest::[identifier].
+The syntax for this command is retest-[identifier].
 
-  $> make retest-20101027:143529
+  $~/kaneton/test/client> make retest-20110210:105955
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /data/mycure/repositories/kaneton/environment/profile/user/julien.quintard/julien.quintard.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] requesting the server
   [+] the snapshot has been re-tested successfully
+  $~/kaneton/test/client> 

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/snapshot.tex
 %
 % created       julien quintard   [fri may 23 21:47:38 2008]
-% updated       julien quintard   [tue feb  8 20:38:28 2011]
+% updated       julien quintard   [thu feb 10 21:18:46 2011]
 %
 
 %
@@ -28,8 +28,8 @@ necessary for starting the development of the \name{kaneton} microkernel.
 %
 
 Although \name{k0} is a standalone project, the following stages, namely,
-\name{k1}, \name{k2} and \name{k3} take place within the microkernel. In
-addition, students require the educational snapshot in order to submit
+\name{k1}, \name{k2} and \name{k3} take place within the microkernel snapshot.
+In addition, students require the educational snapshot in order to submit
 their implementation. Thus, the student should download the educational
 snapshot from the kaneton website \location{http://kaneton.opaak.org}. Once
 downloaded, students should read the dedicated article on the \name{Opaak}
@@ -37,10 +37,10 @@ downloaded, students should read the dedicated article on the \name{Opaak}
 environment.
 
 %
-% testing
+% test
 %
 
-\section{Testing}
+\section{Test}
 
 The kaneton test system enables students to test their implementation against
 a set of test suites. However, the number of test suites students are allowed
@@ -56,9 +56,8 @@ she should contact the kaneton contributors by email at:
   \location{admin@opaak.org}
 \end{center}
 
-The following set of commands shows how to retrieve information regarding the
-student test profile, list the requests performed so far and display the
-test report regarding a precise request.
+The following command shows how to retrieve information regarding the
+student test profile.
 
 \begin{verbatim}
   $> cd test/client/
@@ -71,8 +70,9 @@ test report regarding a precise request.
 
   [+] information:
   [+]   profile:
+  [+]     attributes:
   [+]     identifier:           chiche
-  [+]     community:            students
+  [+]     type:                 student
   [+]     members:
   [+]       name:               Florent Chichery
   [+]       email:              chiche@epita.fr
@@ -106,55 +106,10 @@ test report regarding a precise request.
   [+]           k3:             3
   [+]           k2:             3
   [+]           k1:             3
-  $test/client> make list
-  [+] requesting the server
-  [+] listing the reports
-  [+] reports:
-  [+]   20110206:113544:
-  [+]     xen :: ibm-pc :: ia32/educational :: k3 :: 2011/02/06 11:39:49 :: done
-  [+]   20110206:114823:
-  [+]     xen :: ibm-pc :: ia32/educational :: k3 :: 2011/02/06 11:51:54 :: done
-  [+]   20110205:222312:
-  [+]     xen :: ibm-pc :: ia32/educational :: k2 :: 2011/02/05 22:24:15 :: done
-  [+]   20110205:211847:
-  [+]     xen :: ibm-pc :: ia32/educational :: k1 :: 2011/02/05 21:18:50 :: done
-  [+]   20110205:213502:
-  [+]     xen :: ibm-pc :: ia32/educational :: k1 :: 2011/02/05 21:36:52 :: done
-  [+]   20110205:214408:
-  [+]     xen :: ibm-pc :: ia32/educational :: k1 :: 2011/02/05 21:47:10 :: done
-  $test/client> make display-20110205:214408
-  [+] requesting the server
-  [+] displaying the report
-  [+] report:
-  [+]   meta:
-  [+]     duration:             214.546
-  [+]     environments:
-  [+]       stress:             xen
-  [+]       construct:          xen
-  [+]     summary:
-  [+]       failed:             1
-  [+]       total:              24
-  [+]       passed:             23
-  [+]     platform:             ibm-pc
-  [+]     state:                done
-  [+]     architecture:         ia32/educational
-  [+]     date:                 2011/02/05 21:47:10
-  [+]     suite:                k1
-  [+]     identifier:           20110205:214408
-  [+]     user:                 chiche
-  [+]   data:
-  [+]     event:                                                          [14/15]
-  [+]       machine/architecture/event/exception/04:
-  [+]         status: True
-  [+]         description: This test reserves the division-by-zero event and triggers it. The event is then released.
-  [+]         duration: 0.014
-  [+]         output: 
-  [+]       machine/architecture/event/context/01:
-  [+]         status: True
-  [+]         description: This test reserves an event slot and manually triggers this event. Then, the test verifies that the registers have been restored to their original state.
-  [+]         duration: 0.014
-  [+]         output: 
-  ...
+  [+]   deliveries:
+  [+]     k1:                   None
+  [+]     k2:                   None
+  [+]     k3:                   None
   $test/client> 
 \end{verbatim}
 
@@ -176,9 +131,8 @@ suite on the \name{Xen} environment.
   $test/client> 
 \end{verbatim}
 
-Once the testing complete, the student will receive an email with a summary
-of the report, though she will also be able to consult the report through
-the \code{make display} command.
+Once the testing complete, the student will receive an email containing
+a detailed report.
 
 %
 % submission

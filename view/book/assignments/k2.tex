@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k2.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [tue feb  8 15:24:53 2011]
+% updated       julien quintard   [thu feb 10 22:07:13 2011]
 %
 
 %
@@ -30,6 +30,46 @@ model present on \name{Intel} architectures. Besides, though implemented
 differently, most architectures now provide a paging system, hence easing
 the task consisting in porting a kernel on several microprocessor
 architectures.
+
+Through this stage, students will learn the notions listed below:
+
+\begin{itemize}
+  \item
+    \term{Paging}
+
+    \-
+
+    Students will have to implement low-level functions for setting up,
+    updating and deleting \name{PD - Page Directories} and
+    \name{PT - Page Table}s. In addition, students will have to
+    implement higher-level functions in order to ease the common operation
+    consisting in mapping a \name{region} to a \name{segment}.
+  \item
+    \term{Debugging}
+
+    \-
+
+    Unfortunately, the paging mechanism has the tendency to generate an
+    awful number of subtile mistakes which are difficult to spot. Debugging
+    therefore plays an important role in this stage as students able to
+    quickly identify the source of the error will be far more efficient than
+    the ones who cannot.
+
+    \-
+
+    Thus, students will have to rely on exceptions and the interrupt handling
+    mechanism set up throughout \name{k1} in order to easily locate the
+    page which is responsible for the error.
+  \item
+    \term{Hardware Techniques}
+
+    \-
+
+    Finally, students will learn that a number of hardware techniques
+    and optimisations have been invented over the years such as the
+    \name{Identiy Mapping} or the \name{Mirroring Technique}, some of which
+    students may need to use.
+\end{itemize}
 
 \newpage
 

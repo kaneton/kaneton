@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k0.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [tue feb  8 17:19:42 2011]
+% updated       julien quintard   [thu feb 10 21:40:26 2011]
 %
 
 %
@@ -26,6 +26,14 @@ Unified Bootloader} will be used instead.
 Through this stage, the student will manipulate several concepts including:
 
 \begin{enumerate}
+  \item
+    \term{Computer Boot Process}
+
+    \-
+
+    The several phases a computer runs through in order to check the
+    machine's state, to the location of the bootable devices until the
+    execution is transferred to the first valid boot sector found.
   \item
     \term{Assembly Language}
 
@@ -71,125 +79,6 @@ Through this stage, the student will manipulate several concepts including:
 %
 
 %
-% submission
-%
-
-\section{Submission}
-
-Every student is expected to submit a snapshot containing the following
-structure. Note that the evaluation system is automatic. Therefore, any
-snapshot which does not conform with this structure will obviously be assigned
-the grade of zero:
-
-\begin{verbatim}
-  ex1/
-    ex1.S
-  ex2/
-    ex2.S
-  ex3/
-    ex3.S
-  ex4/
-    ex4.S
-  ex5/
-    ex5.S
-  ex6/
-    ex6.S
-\end{verbatim}
-
-The submitted snapshot should therefore contain nothing more than these
-six directories and files. Please be careful with the extension of the source
-files; the 'S' is uppercase!
-
-The \name{k0} stage is composed of several exercises. For ever exercise,
-the student is asked to write function in assembly language taking arguments
-in some registers and providing output in others. Note that no register should
-be modified unless explicitly stated.
-
-Every exercise is attached to a specific file, \code{ex2.S} for instance.
-Such a file must therefore contain the labels of the functions that the student
-is supposed to provide.
-
-In addition, every file should end with the bootsector signature, making the
-functions of the file useable within a boot loader. This signature, composed
-of the bytes \code{0xaa55} must be located at the $511$th and $512$th byte
-of the first boot sector. Thus, the boot sector must be filled with something
-until the $511$th byte is reached, at which position the signature must be
-put.
-
-The example below illustrates such an exercise file, containing two
-labels and the bootsector signature:
-
-\begin{verbatim}
-  .code16
-
-  requested_function_1:
-    mov $0x42, %ah
-    mov %bl, %bl
-
-  local_label:
-    int $0x10
-    xor %dh, %dh
-    jmp local_label
-    ret
-
-signature:
-  .org 510, 0
-  .short 0xaa55
-\end{verbatim}
-
-Some exercises will require students to output text on the screen. Bear in
-mind that exercises are evaluated automatically. Therefore, color is not
-taken into account. Besides, students should never try to clear the screen
-of the text printed by the \name{BIOS} or the emulator. By doing so, the
-evaluation system would catch the sequence and consider it as text being
-printed by your functions.
-
-Finally, as explained next in this document, students will need to test
-their functions in order to make sure they behave properly. Students must
-remember to remove these tests from the submitted snapshot. Thus, your
-source files should never include a label \code{\_start} or any label starting
-with \code{\_\_}. Note however that the bootsector signatures must remain.
-
-Note that this stage differs slightly from the following ones regarding
-the submission. Indeed, the following stages taking place within the
-microkernel, the test client automatically packages the student's current
-implementation and sends it to the server.
-
-For this stage however, the student is asked to package its source files
-manually, according to the hierarchical structure given above. Then,
-the freshly created snapshot must be placed in the client directory
-under the name \code{snapshot.tar.bz2} \ie{} at the precise location:
-\location{test/client/snapshot.tar.bz2}.
-
-Finally, the test client can be used to submit the stage \name{k0}. The
-client, noticing the presence of the snapshot, will use it instead of
-generating a snapshot from the current kaneton implementation.
-
-The lines below illustrates this process.
-
-\begin{verbatim}
-  $k0> ls
-  ex1/ ex2/ ex3/ ex4/ ex5/ ex6/
-  $k0> tar cjvf k0.tar.bz2 *
-  [...]
-  $k0> mv k0.tar.bz2 ~/kaneton/test/client/snapshot.tar.bz2
-  $k0> cd ~/kaneton/test/client/
-  $~/kaneton/test/client> ls
-  client.py Makefile README snapshot.tar.bz2
-  $~/kaneton/test/client> make submit-k0
-  [+] configuration:
-  [+]   server:                 https://test.opaak.org:8421
-  [+]   capability:             /home/chiche/kaneton/environment/profile/user/florent.chichery/florent.chichery.cap
-  [+]   platform:               ibm-pc
-  [+]   architecture:           ia32/educational
-
-  [+] loading the snapshot '/home/chiche/kaneton/test/client/snapshot.tar.bz2'
-  [+] requesting the server
-  [+] the snapshot has been submitted successfully
-  $~/kaneton/test/client>
-\end{verbatim}
-
-%
 % development
 %
 
@@ -230,10 +119,10 @@ Students will find additional resources related to the \name{k0} stage
 on the \name{Wiki} at \location{http://wiki.opaak.org}.
 
 %
-% testing
+% test
 %
 
-\section{Testing}
+\section{Test}
 
 Students will need to test the functions they implement. In order to keep
 the test environment from the exercise files, it is advise to rely on
@@ -260,6 +149,124 @@ This way, the test code is always kept apart from the exercises so that
 the risk for students to submit their tests is limited.
 
 %
+% submission
+%
+
+\section{Submission}
+
+Every student is expected to submit a snapshot containing the following
+structure. Note that the evaluation system is automatic. Therefore, any
+snapshot which does not conform with this structure will obviously be assigned
+the grade of zero:
+
+\begin{verbatim}
+  ex1/
+    ex1.S
+  ex2/
+    ex2.S
+  ex3/
+    ex3.S
+  ex4/
+    ex4.S
+  ex5/
+    ex5.S
+  ex6/
+    ex6.S
+\end{verbatim}
+
+The submitted snapshot should therefore contain nothing more than these
+six directories and files. Please be careful with the extension of the source
+files; the 'S' is uppercase!
+
+The \name{k0} stage is composed of several exercises. For ever exercise,
+the student is asked to write functions in assembly language taking arguments
+in some registers and providing output in others. Note that these functions
+should take care not to modify any register unless explicitly stated.
+
+Every exercise is attached to a specific file, \code{ex2.S} for instance.
+Such a file must therefore contain the labels of the functions that the student
+is supposed to provide.
+
+In addition, every file should end with the bootsector signature, making the
+functions of the file useable within a boot loader. This signature, composed
+of the bytes \code{0xaa55} must be located at the $511$th and $512$th byte
+of the first boot sector. Thus, the boot sector must be filled up until the
+$511$th byte is reached, at which position the signature must be put.
+
+The example below illustrates such an exercise file, containing two
+labels and the bootsector signature:
+
+\begin{verbatim}
+  .code16
+
+  requested_function_1:
+    mov $0x42, %ah
+    mov %bl, %bl
+
+  local_label:
+    int $0x10
+    xor %dh, %dh
+    jmp local_label
+    ret
+
+signature:
+  .org 510, 0
+  .short 0xaa55
+\end{verbatim}
+
+Some exercises will require students to output text on the screen. Bear in
+mind that exercises are evaluated automatically. Therefore, color is not
+taken into account. Besides, students should never try to clear the screen
+of the text printed by the \name{BIOS} or the emulator. By doing so, the
+evaluation system would catch the sequence and consider it as text being
+printed by your functions.
+
+Finally, as explained previously, students will need to test their functions
+in order to make sure they behave properly. Students must remember to remove
+these tests from the submitted snapshot. Thus, your source files should never
+include a label \code{\_start} or any label starting with \code{\_\_}. Note
+however that the bootsector signatures must remain.
+
+Note that this stage differs slightly from the following ones regarding
+the submission. Indeed, in the following stages, which take place within the
+microkernel, the test client automatically packages the student's current
+implementation and sends it to the server.
+
+For this stage however, the student is asked to package its source files
+manually, according to the hierarchical structure given above. Then,
+the freshly created snapshot must be placed in the client directory
+under the name \code{snapshot.tar.bz2} \ie{} at the precise location:
+\location{test/client/snapshot.tar.bz2}.
+
+Finally, the test client can be used to submit the stage \name{k0}. The
+client, noticing the presence of the snapshot, will use it instead of
+generating a snapshot from the current kaneton implementation.
+
+The lines below illustrates this process.
+
+\begin{verbatim}
+  $k0> ls
+  ex1/ ex2/ ex3/ ex4/ ex5/ ex6/
+  $k0> tar cjvf k0.tar.bz2 *
+  [...]
+  $k0> mv k0.tar.bz2 ~/kaneton/test/client/snapshot.tar.bz2
+  $k0> cd ~/kaneton/test/client/
+  $~/kaneton/test/client> ls
+  client.py Makefile README snapshot.tar.bz2
+  $~/kaneton/test/client> make submit-k0
+  [+] configuration:
+  [+]   server:                 https://test.opaak.org:8421
+  [+]   capability:             /home/chiche/kaneton/environment/profile/user/florent.chichery/florent.chichery.cap
+  [+]   platform:               ibm-pc
+  [+]   architecture:           ia32/educational
+
+  [+] loading the snapshot '/home/chiche/kaneton/test/client/snapshot.tar.bz2'
+  [+] requesting the server
+  [+] the snapshot has been submitted successfully
+  $~/kaneton/test/client>
+\end{verbatim}
+
+%
 % evaluation
 %
 
@@ -269,7 +276,7 @@ The student's code will be evaluated by testing every function automatically.
 
 The evaluation process will therefore go as follows. First, the student
 exercise file will be linked with an evaluation file containing the entry
-point. This main function will then triggers some function calls and verify
+point. This main function will then trigger some function calls and verify
 that these functions behave according to the specifications define in this
 document.
 
@@ -294,7 +301,7 @@ evaluation code given in each exercise.
 
 If the assembler refuses to generate a binary given a test file containing
 this directive, this would mean that the exercise code takes too much space,
-in which case the student would have to optimise it. The error the assembler
+in which case the student will have to optimise it. The error the assembler
 returns in such scenarios is similar to the one below:
 
 \begin{verbatim}

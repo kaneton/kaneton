@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/initialize.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [mon may 11 21:42:25 2009]
+# updated       julien quintard   [thu feb 10 19:24:31 2011]
 #
 
 #
