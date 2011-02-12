@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [fri feb 11 10:56:30 2011]
+# updated       julien quintard   [sat feb 12 11:33:13 2011]
 #
 
 #
@@ -403,8 +403,11 @@ def                     contributor():
   # remove the previous link.
   env.remove(link, env.OPTION_NONE)
 
-  # create a link from the profile.
-  env.link(link, path, env.OPTION_NONE)
+  # create a link from the profile. XXX[this could probably be improved]
+  env.link(link,
+           "../../../../test/store/capability/" + name +                
+             ktp.capability.Extension,
+           env.OPTION_NONE)
 
   # display.
   env.display(env.HEADER_OK,
@@ -461,8 +464,11 @@ def                     robot():
   # remove the previous link.
   env.remove(link, env.OPTION_NONE)
 
-  # create a link from the profile.
-  env.link(link, path, env.OPTION_NONE)
+  # create a link from the profile. XXX[this could probably be improved]
+  env.link(link,
+           "../../../../test/store/capability/" + name +                
+             ktp.capability.Extension,
+           env.OPTION_NONE)
 
   # display.
   env.display(env.HEADER_OK,
