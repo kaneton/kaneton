@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/server/registrar.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [wed feb  9 07:01:21 2011]
+# updated       julien quintard   [thu feb 10 11:15:39 2011]
 #
 
 #
@@ -370,7 +370,7 @@ def                     Test(capability,
        (not environment in database["reports"]) or                      \
        (not machine in database["reports"][environment]) or             \
        (not suite in database["reports"][environment][machine]) or      \
-       (len(database["reports"][environment][machine][suite]) >=        \
+       (len(database["reports"][environment][machine][suite]) ==        \
           database["quotas"][environment][machine][suite]):
       ktp.log.Record(LogStore,
                      "#(registrar) function(Test) error(reached quota)")
@@ -639,147 +639,6 @@ def                     Submit(capability,
   return (ktp.StatusOk, None)
 
 #
-# this function returns a summary of the reports associated with the
-# given user.
-#
-def                     List(capability):
-  profile = None
-  database = None
-  environment = None
-  machine = None
-  suite = None
-  identifier = None
-  report = None
-  summary = []
-
-  ktp.log.Record(LogStore,
-                 "#(registrar) function(List) message(entering)")
-
-  try:
-    # verify that the maintenance mode has not been activated.
-    if os.path.exists(MaintenanceLock) == True:
-      ktp.log.Record(LogStore,
-                     "#(registrar) function(List) error(maintenance detected)")
-
-      return (ktp.StatusError, "the system is currently under "         \
-                "maintenance ... please try again later")
-
-    # verify the given capability.
-    if ktp.capability.Validate(g_code, capability) != True:
-      ktp.log.Record(LogStore,
-                     "#(registrar) function(List) error(invalid capability)")
-
-      return (ktp.StatusError, "invalid capability")
-
-    # retrieve the profile inside the capability.
-    profile = capability
-
-    ktp.log.Record(LogStore,
-                   "#(registrar) function(List) profile(" +             \
-                     str(profile) + ")")
-
-    # retrieve the user's database.
-    database = ktp.database.Load(DatabaseStore + "/" +                  \
-                                   profile["identifier"] +              \
-                                   ktp.database.Extension)
-
-    ktp.log.Record(LogStore,
-                   "#(registrar) function(List) database(" +            \
-                     str(database) + ")")
-
-    if "reports" in database:
-      for environment in database["reports"]:
-        for machine in database["reports"][environment]:
-          for suite in database["reports"][environment][machine]:
-            for identifier in database["reports"][environment][machine][suite]:
-              report = ktp.report.Load(ReportStore + "/" + identifier + \
-                                         ktp.report.Extension)
-
-              # ignore error reports as Python is unable to transmit
-              # the whole error messages.
-              if "error" in report["meta"]:
-                continue
-
-              summary += [ report["meta"] ]
-
-    ktp.log.Record(LogStore,
-                   "#(registrar) function(List) summary(" +             \
-                     str(summary) + ")")
-  except Exception, exception:
-    ktp.log.Record(LogStore,
-                   "#(registrar) function(List) exception(" +           \
-                     str(exception) + ") trace(" +                      \
-                     ktp.trace.Generate() + ")")
-
-    return (ktp.StatusError, ktp.trace.Generate())
-
-  ktp.log.Record(LogStore,
-                 "#(registrar) function(List) message(leaving)")
-
-  return (ktp.StatusOk, summary)
-
-#
-# this function returns the report identified by the given identifier.
-#
-def                     Fetch(capability,
-                              identifier):
-  profile = None
-  report = None
-
-  ktp.log.Record(LogStore,
-                 "#(registrar) function(Fetch) message(entering)")
-
-  try:
-    # verify that the maintenance mode has not been activated.
-    if os.path.exists(MaintenanceLock) == True:
-      ktp.log.Record(LogStore,
-                     "#(registrar) function(Fetch) " +                  \
-                       "error(maintenance detected)")
-
-      return (ktp.StatusError, "the system is currently under "         \
-                "maintenance ... please try again later")
-
-    # verify the given capability.
-    if ktp.capability.Validate(g_code, capability) != True:
-      ktp.log.Record(LogStore,
-                     "#(registrar) function(Fetch) error(invalid capability)")
-
-      return (ktp.StatusError, "invalid capability")
-
-    # retrieve the profile inside the capability.
-    profile = capability
-
-    ktp.log.Record(LogStore,
-                   "#(registrar) function(Fetch) profile(" +            \
-                     str(profile) + ")")
-
-    report = ktp.report.Load(ReportStore + "/" + identifier +           \
-                               ktp.report.Extension)
-
-    if (report["meta"]["user"] != profile["identifier"]) and            \
-       (profile["type"] != ktp.capability.TypeContributors):
-      ktp.log.Record(LogStore,
-                     "#(registrar) function(Fetch) error(un-owned report)")
-
-      return (ktp.StatusError, "this report does not belong to you")
-
-    ktp.log.Record(LogStore,
-                   "#(registrar) function(Fetch) report(" +             \
-                     str(report) + ")")
-  except Exception, exception:
-    ktp.log.Record(LogStore,
-                   "#(registrar) function(Fetch) exception(" +          \
-                     str(exception) + ") trace(" +                      \
-                     ktp.trace.Generate() + ")")
-
-    return (ktp.StatusError, ktp.trace.Generate())
-
-  ktp.log.Record(LogStore,
-                 "#(registrar) function(Fetch) message(leaving)")
-
-  return (ktp.StatusOk, report)
-
-#
 # ---------- functions --------------------------------------------------------
 #
 
@@ -819,8 +678,6 @@ def                     Main():
   server.register_function(Test)
   server.register_function(Retest)
   server.register_function(Submit)
-  server.register_function(List)
-  server.register_function(Fetch)
 
   # log the startup.
   information = server.socket.getsockname()

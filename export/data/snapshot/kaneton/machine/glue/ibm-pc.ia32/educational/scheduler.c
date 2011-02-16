@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [tue feb  8 13:03:19 2011]
+ * updated       julien quintard   [tue feb 15 21:03:52 2011]
  */
 
 /*
@@ -56,17 +56,6 @@ d_scheduler		glue_scheduler_dispatch =
     NULL,
     NULL
   };
-
-/*
- * ---------- prototype -------------------------------------------------------
- */
-
-/*
- * this prototype has been placed here in order to prevent the prototypes
- * generator from taking the assembler idle function into account.
- */
-
-extern void		glue_scheduler_idle ();
 
 /*
  * ---------- functions -------------------------------------------------------

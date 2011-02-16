@@ -342,7 +342,7 @@ def                     QEMU(namespace):
     namespace.output = ktp.miscellaneous.Pull(redirect)
 
     ktp.log.Record(LogStore,
-                   "#(construct) output(" + str(output) + ")")
+                   "#(construct) output(" + str(namespace.output) + ")")
 
     # remove the files.
     ktp.miscellaneous.Remove(redirect)
@@ -495,7 +495,7 @@ serial = "pty"\
     ktp.miscellaneous.Remove(stream)
 
     ktp.log.Record(LogStore,
-                   "#(construct) output(" + str(output) + ")")
+                   "#(construct) output(" + str(namespace.output) + ")")
 
     # display the output.
     if namespace.output:
