@@ -8,10 +8,10 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/stages/k0.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [sat feb  5 10:24:30 2011]
+# updated       julien quintard   [sat feb 19 23:49:17 2011]
 #
 
 name: k0
 description: This stage focuses on the assembly language and the boot process through BIOS services.
-deadline: XXX
+deadline: "2011/02/19 23:42:00"
 history: "%school%/%year%/%group%/sources/k0/%student%.tar.bz2"

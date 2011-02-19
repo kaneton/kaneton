@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/README
 #
 # created       julien quintard   [mon nov  1 21:45:10 2010]
-# updated       julien quintard   [sat feb  5 09:39:19 2011]
+# updated       julien quintard   [sat feb 19 23:38:31 2011]
 #
 
 This directory contains standalone scripts for performing various
@@ -76,18 +76,13 @@ Example:
   $> ./distribute --pattern "^epita::2011.*$"
 
 #
-# ---------- select -----------------------------------------------------------
+# ---------- file -------------------------------------------------------------
 #
 
-The select script takes retrieves the submitted snapshots and saves them
-in a directory according to the student's school, year and group/student
-name.
+This script retrieves the submitted snapshots and saves them in a directory
+according to the student's school, year and group/student name.
 
-  $> ./select --pattern "^epita::2011.*$"
-
-XXX recupere stages/k1.stg qui contient un champ deadline
-XXX rajouter peut etre un path en pattern genre: [school]/[year]/[group]/
-XXX mettre du log
+  $> ./file --pattern "^epita::2011.*$" --stage k0
 
 #
 # ---------- evaluate ---------------------------------------------------------

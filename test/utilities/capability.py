@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/utilities/capability.py
 #
 # created       julien quintard   [sun mar 22 18:05:23 2009]
-# updated       julien quintard   [sat feb 12 11:33:13 2011]
+# updated       julien quintard   [sat feb 19 23:54:42 2011]
 #
 
 #
@@ -134,7 +134,8 @@ def                     student():
                                        ktp.capability.TypeStudent,
                                        { "school": school,
                                          "year": year,
-                                         "group": group },
+                                         "group": group,
+                                         "student": member["login"] },
                                        [ member ])
 
     # store it.
@@ -203,7 +204,8 @@ def                     group():
     else:
       # register the member.
       members += [ { "name": match.group(1),
-                     "email": match.group(2) } ]
+                     "email": match.group(2),
+                     "login": match.group(1).lower().replace(" ", ".") } ]
 
   # compute the file name.
   path = env._TEST_STORE_CAPABILITY_DIR_ + "/" +                        \
@@ -340,7 +342,8 @@ def                     school():
                                          ktp.capability.TypeStudent,
                                          { "school": school,
                                            "year": year,
-                                           "group": group },
+                                           "group": group,
+                                           "student": member["login"] },
                                          [ { "name": member["name"],
                                              "email": member["email"],
                                              "login": member["login"] } ])

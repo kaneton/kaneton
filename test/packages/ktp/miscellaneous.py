@@ -8,7 +8,7 @@
 # file          /home/mycure/KANE...EST-SYSTEM/packages/ktp/miscellaneous.py
 #
 # created       julien quintard   [mon oct 25 19:51:49 2010]
-# updated       julien quintard   [fri feb  4 20:26:29 2011]
+# updated       julien quintard   [sun feb 20 01:00:57 2011]
 #
 
 #
@@ -157,11 +157,14 @@ def                     Dig(target):
   steps = None
   step = None
 
+  if target[0] == "/":
+    path = "/"
+
   steps = os.path.dirname(target).strip("/").split("/")
 
   for step in steps:
     if not path:
-      path = "/" + step
+      path = step
     else:
       path = path + "/" + step
 
@@ -191,7 +194,8 @@ def                     Transfer(source, destination):
 def                     Email(source,
                               destination,
                               subject,
-                              body):
+                              body,
+                              attachment = None):
   capability = None
   content = None
   configuration = None
@@ -201,6 +205,7 @@ def                     Email(source,
   status = None
   output = None
   emails = None
+  a = None
 
   # create a temporary file.
   configuration = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
@@ -218,6 +223,12 @@ set use_from = yes\
   # create a temporary file.
   message = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
+  # prepare the -a option depending on the presence of an attachment.
+  if attachment:
+    a = [ "-a", attachment ]
+  else:
+    a = []
+
   # store the temporary message.
   ktp.miscellaneous.Push(body, message)
 
@@ -226,6 +237,7 @@ set use_from = yes\
 
   # email the capability to the supposed recipient.
   status = ktp.process.Invoke("mutt",
+                              a +
                               [ "-F", configuration,
                                 "-s", subject,
                                 " ".join(destination),
