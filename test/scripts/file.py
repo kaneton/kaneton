@@ -9,13 +9,14 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/file.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [sun feb 20 01:24:26 2011]
+# updated       julien quintard   [sun feb 20 01:35:46 2011]
 #
 
 #
 # ---------- information ------------------------------------------------------
 #
-# XXX
+# this script takes, for every student, the submission associated with
+# a stage and copies it in an history directory.
 #
 
 #
@@ -128,7 +129,7 @@ def                     File(namespace):
                                        ktp.capability.Extension)
 
     ktp.log.Record(LogStore,
-                   "#(file) capability(" + capability + ")")
+                   "#(file) capability(" + str(capability) + ")")
 
     # load the database.
     database = ktp.database.Load(DatabaseStore + "/" +                  \
@@ -136,7 +137,7 @@ def                     File(namespace):
                                    ktp.database.Extension)
 
     ktp.log.Record(LogStore,
-                   "#(file) database(" + database + ")")
+                   "#(file) database(" + str(database) + ")")
 
     # if no deliveries for this stage, continue.
     if (not "deliveries" in database) or                                \
