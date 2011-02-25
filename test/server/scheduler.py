@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/server/scheduler.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [sat feb  5 10:21:24 2011]
+# updated       julien quintard   [fri feb 25 20:17:16 2011]
 #
 
 #
@@ -62,7 +62,6 @@ import ktp
 # directories
 ScriptsDirectory = TestDirectory + "/scripts"
 StoreDirectory = TestDirectory + "/store"
-HooksDirectory = TestDirectory + "/hooks"
 
 # stores
 ReportStore = StoreDirectory + "/report"
@@ -201,6 +200,9 @@ environment(%(environment)s) :: platform(%(platform)s) :: architecture(%(archite
   for member in capability["members"]:
     emails += [ member["email"] ]
 
+  # add the admin@opaak.org address to the list of emails.
+  emails += [ "admin@opaak.org" ]
+
   # send the email.
   ktp.miscellaneous.Email("admin@opaak.org",
                           emails,
@@ -269,63 +271,6 @@ def                     Test(identifier):
       ktp.miscellaneous.Remove(stream)
 
 #
-# this function triggers the activated hooks.
-#
-def                     Hooks(identifier):
-  hooks = None
-  hook = None
-  report = None
-  stream = None
-  output = None
-
-  ktp.log.Record(LogStore,
-                 "#(scheduler) message(triggering the hooks)")
-
-  # load the dispatcher.
-  hooks = ktp.hook.Load(HooksDirectory)
-
-  # go through the hooks.
-  for hook in hooks:
-    try:
-      ktp.log.Record(LogStore,
-                     "#(scheduler) hook(" + hook + ")")
-
-      # generate a temporary file.
-      stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
-
-      # check the hook.
-      if not hooks[hook]["scheduler"]["path"]:
-        continue
-
-      # launch the test script.
-      status =                                                          \
-        ktp.process.Invoke(HooksDirectory + "/" +                       \
-                             hooks[hook]["scheduler"]["path"],
-                           [ "--identifier", identifier,
-                             hooks[hook]["scheduler"]["options"] ],
-                           stream = stream,
-                           option = ktp.process.OptionNone)
-
-      ktp.log.Record(LogStore,
-                     "#(scheduler) message(hook completed)");
-
-      # retrieve the output.
-      output = ktp.miscellaneous.Pull(stream)
-
-      ktp.log.Record(LogStore,
-                     "#(scheduler) status(" + str(status) + ") " +      \
-                       "output(" + str(output) + ")")
-    except Exception, exception:
-      ktp.log.Record(LogStore,
-                     "#(scheduler) exception(" +                        \
-                       str(exception) + ") trace(" +                    \
-                       ktp.trace.Generate() + ")")
-    finally:
-      # remove temporary files.
-      if stream:
-        ktp.miscellaneous.Remove(stream)
-
-#
 # this function initializes the script
 #
 def                     Initialize():
@@ -360,9 +305,6 @@ def                     Main():
 
       # email the report's user of the completion.
       Email(identifier)
-
-      # trigger the hooks.
-      Hooks(identifier)
 
     ktp.log.Record(LogStore,
                    "#(scheduler) message(sleeping)")

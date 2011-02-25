@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k0.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [thu feb 17 21:29:17 2011]
+% updated       julien quintard   [wed feb 23 10:49:57 2011]
 %
 
 %
@@ -586,7 +586,7 @@ Descriptor Table}.
 \end{center}
 
 Students should read the necessary material, especially the \name{Intel}
-manual \name{Volume 2A} which contains a chapter on the \name{Protected Mode}.
+manual \name{Volume 3A} which contains a chapter on the \name{Protected Mode}.
 
 The following describes the steps to follow for performing a switch to the
 \name{Protected Mode}:
@@ -707,13 +707,17 @@ may want to read a more detailed documentation.
 {
   This function loads into memory the number of sectors given into
   \argument{\%al}, from the drive specified in \argument{\%dl}, starting from
-  the second sector.
+  the second sector. Note that it is the responsability of this function
+  to initialize the drive.
 
   \-
 
   In addition, the function must switch to the \name{Protected Mode} and
   return into \argument{\%eax} the address of the memory area where sectors
-  have been loaded \ie{} the location of the \name{ELF} in memory.
+  have been loaded \ie{} the location of the \name{ELF} in memory. Since the
+  code calling this function is obviously running in $16$-bit, an additional
+  $16$-bit zero will be pushed before calling \code{kernel\_preload} in
+  order to successfully retrieve the return address in its $32$-bit format.
 
   \-
 

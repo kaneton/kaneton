@@ -1,7 +1,6 @@
-supervisor:
-  scheduler:
-    path: supervisor/watcher.py
-    options: "--pattern='^epita.*$' --suite=k1"
-  cron:
-    path: supervisor/notifier.py
-    options: ""
+monitor:
+  path: monitor/monitor.py
+  options: "--pattern='^epita.*$' --suite=k1"
+examiner:
+  path: examiner/examiner.py
+  options: "--pattern='^epita.*$' --stage=k1"

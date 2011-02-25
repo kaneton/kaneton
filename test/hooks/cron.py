@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/hooks/cron.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri feb  4 13:20:43 2011]
+# updated       julien quintard   [fri feb 25 20:19:35 2011]
 #
 
 #
@@ -79,15 +79,11 @@ def                     Main():
       # generate a temporary file.
       stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
 
-      # check the hook.
-      if not hooks[hook]["cron"]["path"]:
-        continue
-
       # launch the test script.
       status =                                                          \
         ktp.process.Invoke(HooksDirectory + "/" +                       \
-                             hooks[hook]["cron"]["path"],
-                           [ hooks[hook]["cron"]["options"] ],
+                             hooks[hook]["path"],
+                           [ hooks[hook]["options"] ],
                            stream = stream,
                            option = ktp.process.OptionNone)
 
