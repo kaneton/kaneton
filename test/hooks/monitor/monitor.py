@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/hooks/monitor/monitor.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri feb 25 23:14:41 2011]
+# updated       julien quintard   [sat mar  5 20:38:40 2011]
 #
 
 #
@@ -79,10 +79,23 @@ def                     Email(namespace, sheet):
   ktp.log.Record(LogStore,
                  "#(monitor) message(emailing)")
 
+  # initalize the content.
+  content = str()
+
   # build the message
-  content = """
-%(sheet)s\
-""" % { "sheet": ktp.miscellaneous.Stringify(sheet) }
+  for record in sheet:
+    if not sheet[record]:
+      content += """\
+%(name)s:
+""" % { "name": record }
+    else:
+      content += """\
+%(name)s: summary(%(summary)s) identifier(%(identifier)s)
+""" % { "name": record,
+        "summary":
+          str(sheet[record]["meta"]["summary"]["passed"]) + "/" +
+            str(sheet[record]["meta"]["summary"]["total"]),
+        "identifier": sheet[record]["meta"]["identifier"] }
 
   ktp.log.Record(LogStore,
                  "#(monitor) content(" + content + ")") 
@@ -195,18 +208,11 @@ def                     Monitor(namespace):
                 champion["meta"]["summary"]["passed"]):
             champion = report
 
-    # if not report has been found, ignore this student.
-    if not champion:
-      ktp.log.Record(LogStore,
-                     "#(monitor) warning(no report found)")
-
-      continue
-
     ktp.log.Record(LogStore,
                    "#(monitor) champion(" + str(champion) + ")")
 
     # store the student's best report.
-    sheet[capability["identifier"]] = champion["meta"]
+    sheet[capability["identifier"]] = champion
 
   return sheet
 

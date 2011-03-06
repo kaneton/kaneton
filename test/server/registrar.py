@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/server/registrar.py
 #
 # created       julien quintard   [mon mar 23 12:39:26 2009]
-# updated       julien quintard   [thu feb 10 11:15:39 2011]
+# updated       julien quintard   [sat mar  5 20:09:07 2011]
 #
 
 #
@@ -68,6 +68,7 @@ import ktp
 #
 
 # directories
+ServerDirectory = TestDirectory + "/server"
 StoreDirectory = TestDirectory + "/store"
 SuitesDirectory = TestDirectory + "/suites"
 StagesDirectory = TestDirectory + "/stages"
@@ -94,7 +95,7 @@ ServerKey = KeyStore + "/server" + ktp.key.Extension
 ServerCode = CodeStore + "/server" + ktp.code.Extension
 
 # maintenance
-MaintenanceLock = TestDirectory + "/.maintenance"
+MaintenanceLock = ServerDirectory + "/.maintenance"
 
 # test construct environment
 TestConstructEnvironment = ktp.environment.Xen
@@ -378,7 +379,12 @@ def                     Test(capability,
       return (ktp.StatusError, "the tests quota seems to have been reached")
 
     # create a unique identifier for the test context.
-    identifier = time.strftime("%Y%m%d:%H%M%S")
+    while True:
+      identifier = time.strftime("%Y%m%d:%H%M%S")
+
+      if not os.path.exists(SnapshotStore + "/" + identifier +          \
+                              ktp.snapshot.Extension):
+        break
 
     ktp.log.Record(LogStore,
                    "#(registrar) function(Test) identifier(" +          \
@@ -591,7 +597,12 @@ def                     Submit(capability,
                 "been submitted")
 
     # create a unique identifier for the submission.
-    identifier = time.strftime("%Y%m%d:%H%M%S")
+    while True:
+      identifier = time.strftime("%Y%m%d:%H%M%S")
+
+      if not os.path.exists(SnapshotStore + "/" + identifier +          \
+                              ktp.snapshot.Extension):
+        break
 
     # retrieve the current date.
     date = time.strftime("%Y/%m/%d %H:%M:%S")

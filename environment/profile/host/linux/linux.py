@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane.../environment/profile/host/linux/linux.py
+# file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [mon oct 25 18:49:57 2010]
+# updated       julien quintard   [sat mar  5 09:13:35 2011]
 #
 
 #
@@ -161,11 +161,11 @@ def			unpack(file, directory, options):
 #
 def			load(file, device, path, options):
   if options == OPTION_DEVICE:
-    launch(_MCOPY_, "-o -n " + file + " " + device + path, OPTION_NONE)
-
-  if options == OPTION_IMAGE:
-    launch(_MCOPY_, "-o -n " + "-i" + device + " " +
-           file + " ::" + path, OPTION_NONE)
+    return launch(_MCOPY_, "-o -n " + file + " " + device + path,
+                  OPTION_NONE)
+  elif options == OPTION_IMAGE:
+    return launch(_MCOPY_, "-o -n " + "-i" + device + " " +
+                  file + " ::" + path, OPTION_NONE)
 
 
 

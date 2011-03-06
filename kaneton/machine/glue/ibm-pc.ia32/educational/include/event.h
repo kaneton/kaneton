@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../ibm-pc.ia32/educational/include/event.h
  *
  * created       julien quintard   [wed jun  6 16:15:26 2007]
- * updated       julien quintard   [sun jan 16 13:41:50 2011]
+ * updated       julien quintard   [wed mar  2 20:27:57 2011]
  */
 
 #ifndef GLUE_EVENT_H
@@ -80,7 +80,7 @@
  */
 
 void			glue_event_pagefault(t_id		id,
-					     t_vaddr		data);
+					     t_data		data);
 
 t_error			glue_event_dump(void);
 
@@ -91,7 +91,7 @@ t_error			glue_event_disable(void);
 t_error			glue_event_reserve(i_event		id,
 					   t_type		type,
 					   u_event_handler	handler,
-					   t_vaddr		data);
+					   t_data		data);
 
 t_error			glue_event_release(i_event		id);
 

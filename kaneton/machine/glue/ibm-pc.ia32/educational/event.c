@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sun jan 30 20:41:21 2011]
+ * updated       julien quintard   [wed mar  2 20:28:13 2011]
  */
 
 /*
@@ -79,7 +79,7 @@ d_event			glue_event_dispatch =
  */
 
 void			glue_event_pagefault(t_id		id,
-					     t_vaddr		data)
+					     t_data		data)
 {
   i_thread		thread;
   t_uint32              address;
@@ -223,7 +223,7 @@ t_error			glue_event_disable(void)
 t_error			glue_event_reserve(i_event		id,
 					   t_type		type,
 					   u_event_handler	handler,
-					   t_vaddr		data)
+					   t_data		data)
 {
   /*
    * 0)

@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/hooks/examiner/examiner.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri feb 25 23:15:57 2011]
+# updated       julien quintard   [sat mar  5 20:42:26 2011]
 #
 
 #
@@ -74,14 +74,26 @@ g_parser = None
 #
 def                     Email(namespace, sheet):
   content = None
+  record = None
 
   ktp.log.Record(LogStore,
                  "#(examiner) message(emailing)")
 
+  # initalize the content.
+  content = str()
+
   # build the message
-  content = """
-%(sheet)s\
-""" % { "sheet": ktp.miscellaneous.Stringify(sheet) }
+  for record in sheet:
+    if not sheet[record]:
+      content += """\
+%(name)s:
+""" % { "name": record }
+    else:
+      content += """\
+%(name)s: identifier(%(identifier)s) date(%(date)s)
+""" % { "name": record,
+        "identifier": sheet[record]["snapshot"],
+        "date": sheet[record]["date"] }
 
   ktp.log.Record(LogStore,
                  "#(examiner) content(" + content + ")") 
@@ -140,12 +152,15 @@ def                     Examine(namespace):
 
     # ignore this database if no deliveries are present.
     if (not "deliveries" in database) or                                \
-       (not namespace.stage in database["deliveries"]) or               \
-       (not database["deliveries"][namespace.stage]):
+       (not namespace.stage in database["deliveries"]):
       ktp.log.Record(LogStore,
-                     "#(examiner) warning(no deliveries present)")
+                     "#(examiner) warning(no delivery)")
 
       continue
+
+    ktp.log.Record(LogStore,
+                   "#(examiner) delivery(" +                            \
+                     str(database["deliveries"][namespace.stage]) + ")")
 
     # store the student's best report.
     sheet[capability["identifier"]] = database["deliveries"][namespace.stage]

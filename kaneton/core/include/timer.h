@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [wed dec 15 10:39:51 2010]
+ * updated       julien quintard   [wed mar  2 20:27:39 2011]
  */
 
 #ifndef CORE_TIMER_H
@@ -78,7 +78,7 @@
  */
 
 #define TIMER_DATA(_data_)						\
-  (t_vaddr)((_data_))
+  (t_data)((_data_))
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -89,7 +89,7 @@
  */
 
 typedef t_error			(*t_timer_routine)(i_timer,
-						   t_vaddr);
+						   t_data);
 
 /*
  * this type is the generic timer handler.
@@ -122,7 +122,7 @@ typedef struct
   t_delay			repeat;
 
   u_timer_handler		handler;
-  t_vaddr			data;
+  t_data			data;
 
   machine_data(o_timer);
 }				o_timer;
@@ -135,7 +135,7 @@ typedef struct
 {
   i_timer			id;
 
-  t_vaddr			data;
+  t_data			data;
 }				o_timer_message;
 
 /*
@@ -168,7 +168,7 @@ typedef struct
   t_error			(*timer_notify)(i_timer);
   t_error			(*timer_reserve)(t_type,
 						 u_timer_handler,
-						 t_vaddr,
+						 t_data,
 						 t_delay,
 						 t_options,
 						 i_timer*);
@@ -190,7 +190,7 @@ typedef struct
  */
 
 void			timer_handler(i_event			event,
-				      t_vaddr			data);
+				      t_data			data);
 
 t_error			timer_check(void);
 
@@ -203,7 +203,7 @@ t_error			timer_notify(i_timer			id);
 
 t_error			timer_reserve(t_type			type,
 				      u_timer_handler		handler,
-				      t_vaddr			data,
+				      t_data			data,
 				      t_delay			delay,
 				      t_options			options,
 				      i_timer*			id);

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/timer/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [sun jan 30 20:39:26 2011]
+ * updated       julien quintard   [wed mar  2 20:27:23 2011]
  */
 
 /*
@@ -103,7 +103,7 @@ m_timer			_timer;
  */
 
 void			timer_handler(i_event			event,
-				      t_vaddr			data)
+				      t_data			data)
 {
   /*
    * 1)
@@ -536,7 +536,7 @@ t_error			timer_notify(i_timer			id)
 
 t_error			timer_reserve(t_type			type,
 				      u_timer_handler		handler,
-				      t_vaddr			data,
+				      t_data			data,
 				      t_delay			delay,
 				      t_options			options,
 				      i_timer*			id)

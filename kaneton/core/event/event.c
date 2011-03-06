@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [sun jan 30 20:05:49 2011]
+ * updated       julien quintard   [wed mar  2 20:26:12 2011]
  */
 
 /*
@@ -356,7 +356,7 @@ t_error			event_disable(void)
 t_error			event_reserve(i_event			id,
 				      t_type			type,
 				      u_event_handler		handler,
-				      t_vaddr			data)
+				      t_data			data)
 {
   o_event		o;
 

@@ -1,0 +1,50 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/KANETON-TEST-SYSTEM/stages/kr.stg
+#
+# created       julien quintard   [tue nov  2 06:01:29 2010]
+# updated       julien quintard   [tue mar  1 12:37:52 2011]
+#
+
+name: kr
+description: This stage evaluates the kaneton implementation of 'rattrapages' students.
+configurations:
+  - name: QEMU
+    platform: ibm-pc
+    architecture: ia32/educational
+    environments:
+      construct: xen
+      stress: qemu
+    suite: k1
+    weight: 0.1
+  - name: QEMU
+    platform: ibm-pc
+    architecture: ia32/educational
+    environments:
+      construct: xen
+      stress: qemu
+    suite: k1
+    weight: 0.1
+  - name: Xen
+    platform: ibm-pc
+    architecture: ia32/educational
+    environments:
+      construct: xen
+      stress: xen
+    suite: k2
+    weight: 0.4
+  - name: Xen
+    platform: ibm-pc
+    architecture: ia32/educational
+    environments:
+      construct: xen
+      stress: xen
+    suite: k2
+    weight: 0.4
+deadline: XXX
+history: "%school%/%year%/%group%/sources/k2.tar.bz2"

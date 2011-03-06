@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sun jan 30 12:45:17 2011]
+ * updated       julien quintard   [sat mar  5 11:54:45 2011]
  */
 
 /*
@@ -455,8 +455,13 @@ t_error			module_test_run(void)
 	      if (commands[i].function(message + offset) != ERROR_OK)
 		MODULE_ESCAPE("an error occured in the triggered "
 			      "command");
+
+	      break;
 	    }
 	}
+
+      if (commands[i].command == NULL)
+	MODULE_ESCAPE("unknown command name");
     }
 
   MODULE_LEAVE();

@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri feb  4 23:26:58 2011]
+# updated       julien quintard   [sat mar  5 23:47:38 2011]
 #
 
 #
@@ -160,6 +160,11 @@ def                     Disk(namespace):
   if not os.path.exists(namespace.snapshot):
     Error(namespace,
           "the snapshot does not seem to exist")
+
+  # check if the snapshot is not too big.
+  if os.path.getsize(namespace.snapshot) > (DiskSize * 1024 * 1024 * 2/3):
+    Error(namespace,
+          "the snapshot is too big to fit on the disk image")
 
   # copy the snapshot into the mounted directory.
   ktp.miscellaneous.Copy(namespace.snapshot, directory + "/kaneton.tar.bz2")

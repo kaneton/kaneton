@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [wed dec 15 10:40:16 2010]
+ * updated       julien quintard   [wed mar  2 20:27:04 2011]
  */
 
 #ifndef CORE_EVENT_H
@@ -60,7 +60,7 @@
  */
 
 #define EVENT_DATA(_data_)						\
-  (t_vaddr)((_data_))
+  (t_data)((_data_))
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -71,7 +71,7 @@
  */
 
 typedef void			(*t_event_routine)(i_event,
-						   t_vaddr);
+						   t_data);
 
 /*
  * message object for extra-kernel events i.e message notification
@@ -82,7 +82,7 @@ typedef struct
 {
   i_event			id;
 
-  t_vaddr			data;
+  t_data			data;
 
   machine_data(o_event_message);
 }				o_event_message;
@@ -111,7 +111,7 @@ typedef struct
   t_type			type;
 
   u_event_handler		handler;
-  t_vaddr			data;
+  t_data			data;
 
   machine_data(o_event);
 }				o_event;
@@ -142,7 +142,7 @@ typedef struct
   t_error			(*event_reserve)(i_event,
 						 t_type,
 						 u_event_handler,
-						 t_vaddr);
+						 t_data);
   t_error			(*event_release)(i_event);
   t_error			(*event_initialize)(void);
   t_error			(*event_clean)(void);
@@ -172,7 +172,7 @@ t_error			event_disable(void);
 t_error			event_reserve(i_event			id,
 				      t_type			type,
 				      u_event_handler		handler,
-				      t_vaddr			data);
+				      t_data			data);
 
 t_error			event_release(i_event			id);
 

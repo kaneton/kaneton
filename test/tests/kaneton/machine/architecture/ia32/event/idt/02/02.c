@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...hine/architecture/ia32/event/idt/02/02.c
+ * file          /home/mycure/kane...cture/ia32/educational/event/idt/02/02.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2020]
- * updated       julien quintard   [sat jan 15 23:53:48 2011]
+ * updated       julien quintard   [thu mar  3 17:42:25 2011]
  */
 
 /*
@@ -62,7 +62,7 @@ void			test_architecture_event_idt_02(void)
 		   i);
 
       if (ARCHITECTURE_IDTE_SELECTOR_GET(idte[i]) != cs)
-        TEST_ERROR("IDT entry %u references an invalidt segment selector",
+        TEST_ERROR("IDT entry %u references an invalid segment selector",
 		   i);
     }
 

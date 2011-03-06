@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/types.h
  *
  * created       julien quintard   [wed jun  6 22:38:37 2007]
- * updated       julien quintard   [thu jan 27 20:41:52 2011]
+ * updated       julien quintard   [wed mar  2 20:26:08 2011]
  */
 
 #ifndef CORE_TYPES_H
@@ -53,5 +53,6 @@ typedef t_sint64		t_delay;
 typedef t_uint32		t_width;
 typedef t_uint64		t_flags;
 typedef t_uint32		t_privilege;
+typedef t_uint32		t_data;
 
 #endif

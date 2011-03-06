@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [tue feb  8 21:27:22 2011]
+# updated       julien quintard   [sat mar  5 11:36:29 2011]
 #
 
 #
@@ -117,6 +117,9 @@ def                     Checksum(data):
 # this function writes to the serial channel.
 #
 def                     Emit(line, command):
+  ktp.log.Record(LogStore,
+                 "#(stress) emit(" + command + ")")
+
   format = "<IBII" + str(len(command) + 1) + "s"
 
   packet = struct.pack(format,
@@ -148,6 +151,9 @@ def                     Receive(line):
 
   message = line.read(length).strip("\r")
 
+  ktp.log.Record(LogStore,
+                 "#(stress) receive(" + message + ")")
+
   if (crc != Checksum(message)):
     return (StatusError, (TypeNone, "invalid CRC"))
 
@@ -161,6 +167,9 @@ def                     Call(namespace,
                              symbol):
   start = None
   end = None
+
+  ktp.log.Record(LogStore,
+                 "#(stress) call(" + symbol + ")")
 
   # send the command.
   Emit(line, CallToken + " " + symbol)

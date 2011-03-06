@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/tool/mbl/grub/grub.py
 #
 # created       julien quintard   [tue jun 26 11:33:57 2007]
-# updated       julien quintard   [mon may 11 21:44:29 2009]
+# updated       julien quintard   [sat mar  5 09:19:34 2011]
 #
 
 #
@@ -162,16 +162,32 @@ def			install():
   # depending on the boot mode and boot device, install the kaneton binaries
   # and the grub menu file.
   if env._BOOT_MODE_ == "peripheral":
-    env.load(g_menu, env._MDEVICE_, "/boot/grub/menu.lst", env.OPTION_DEVICE)
+    if env.load(g_menu, env._MDEVICE_, "/boot/grub/menu.lst",
+                env.OPTION_DEVICE) != 0:
+      env.display(env.HEADER_ERROR,
+                  "unable to load the menu.lst file",
+                  env.OPTION_NONE)
+      sys.exit(42)
 
     for component in g_components:
       if not env.path(component, env.OPTION_EXIST):
         env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
       else:
-        env.load(component, env._MDEVICE_, "/modules/", env.OPTION_DEVICE)
+        if env.load(component, env._MDEVICE_, "/modules/",
+                    env.OPTION_DEVICE) != 0:
+          env.display(env.HEADER_ERROR,
+                      "unable to load the component '" + component + "'",
+                      env.OPTION_NONE)
+          sys.exit(42)
+
         env.display(env.HEADER_OK, "  " + component, env.OPTION_NONE)
   elif env._BOOT_MODE_ == "network":
-    env.load(g_menu, env._MDEVICE_, "/boot/grub/menu.lst", env.OPTION_DEVICE)
+    if env.load(g_menu, env._MDEVICE_, "/boot/grub/menu.lst",
+                env.OPTION_DEVICE) != 0:
+      env.display(env.HEADER_ERROR,
+                  "unable to load the menu.lst file",
+                  env.OPTION_NONE)
+      sys.exit(42)
 
     for component in g_components:
       if not env.path(component, env.OPTION_EXIST):
@@ -180,13 +196,24 @@ def			install():
         env.copy(component, env._TFTP_DIRECTORY_, env.OPTION_NONE)
         env.display(env.HEADER_OK, "  " + component, env.OPTION_NONE)
   elif env._BOOT_MODE_ == "image":
-    env.load(g_menu, env._IMAGE_, "/boot/grub/menu.lst", env.OPTION_IMAGE)
+    if env.load(g_menu, env._IMAGE_, "/boot/grub/menu.lst",
+                env.OPTION_IMAGE) != 0:
+      env.display(env.HEADER_ERROR,
+                  "unable to load the menu.lst file",
+                  env.OPTION_NONE)
+      sys.exit(42)
 
     for component in g_components:
       if not env.path(component, env.OPTION_EXIST):
         env.display(env.HEADER_ERROR, "  " + component, env.OPTION_NONE)
       else:
-        env.load(component, env._IMAGE_, "/modules/", env.OPTION_IMAGE)
+        if env.load(component, env._IMAGE_, "/modules/",
+                    env.OPTION_IMAGE) != 0:
+          env.display(env.HEADER_ERROR,
+                      "unable to load the component '" + component + "'",
+                      env.OPTION_NONE)
+          sys.exit(42)
+
         env.display(env.HEADER_OK, "  " + component, env.OPTION_NONE)
   else:
     env.display(env.HEADER_ERROR, "unknown boot mode '" + env._BOOT_MODE_ +
