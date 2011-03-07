@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/evaluate.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri feb  4 13:16:10 2011]
+# updated       julien quintard   [mon mar  7 07:43:50 2011]
 #
 
 #
@@ -34,9 +34,9 @@
 # upon completion, the student's final grade is computed by adding the
 # multiple weighted points of the test configurations.
 #
-# finally, noteworthy is that the --deadline option can be used in order to
-# exclude---and assign a grade of zero---to any snapshot having been submitted
-# after the given deadline date.
+# note that the server should be put to rest for the duration of the
+# evaluation in order to prevent multiple virtual machines from running
+# concurrently.
 #
 
 #
@@ -78,6 +78,7 @@ CapabilityStore = StoreDirectory + "/capability"
 SnapshotStore = StoreDirectory + "/snapshot"
 ReportStore = StoreDirectory + "/report"
 StatementStore = StoreDirectory + "/statement"
+LogStore = StoreDirectory + "/log"
 
 # scripts
 TestScript = ScriptsDirectory + "/test.py"
@@ -119,12 +120,27 @@ def                     Test(namespace, snapshot, configuration):
   report = None
   stream = None
 
+  ktp.log.Record(LogStore,
+                 "#(evaluate) message(testing the snapshot in " +       \
+                   "a specific configuration)")
+
   try:
     # create a unique identifier for the test context.
-    identifier = time.strftime("%Y%m%d:%H%M%S")
+    while True:
+      identifier = time.strftime("%Y%m%d:%H%M%S")
+
+      if not os.path.exists(SnapshotStore + "/" + identifier +          \
+                              ktp.snapshot.Extension):
+        break
+
+    ktp.log.Record(LogStore,
+                   "#(evaluate) identifier(" + identifier + ")")
 
     # retrieve the current data.
     date = time.strftime("%Y/%m/%d %H:%M:%S")
+
+    ktp.log.Record(LogStore,
+                   "#(evaluate) date(" + date + ")")
 
     # initialize the report.
     report = {
@@ -146,9 +162,15 @@ def                     Test(namespace, snapshot, configuration):
                  None
              }
 
+    ktp.log.Record(LogStore,
+                   "#(evaluate) report(" + str(report) + ")")
+
     # store the report.
     ktp.report.Store(report,
                      ReportStore + "/" + identifier + ktp.report.Extension)
+
+    ktp.log.Record(LogStore,
+                   "#(evaluate) message(copying the snapshot)")
 
     # store the snapshot has being to one related to the report.
     ktp.miscellaneous.Copy(SnapshotStore + "/" +                        \
@@ -158,6 +180,9 @@ def                     Test(namespace, snapshot, configuration):
 
     # generate a temporary file.
     stream = ktp.miscellaneous.Temporary(ktp.miscellaneous.OptionFile)
+
+    ktp.log.Record(LogStore,
+                   "#(evaluate) message(launching the test script)")
 
     # launch the test script.
     status =                                                            \
@@ -169,17 +194,33 @@ def                     Test(namespace, snapshot, configuration):
     # retrieve the output.
     output = ktp.miscellaneous.Pull(stream)
 
-    # remove the stream file.
-    ktp.miscellaneous.Remove(stream)
+    ktp.log.Record(LogStore,
+                   "#(evaluate) status(" + str(status) + ") " +         \
+                     "output(" + str(output) + ")")
 
-    # test the success of the stress script invocation.
+    # load the report.
+    report = ktp.report.Load(ReportStore + "/" + identifier +           \
+                               ktp.report.Extension)
+
+    # update the report's meta section if the whole process failed.
     if status == ktp.StatusError:
-      raise Exception(output)
+      # include the error message within the report's meta data.
+      report["meta"]["error"] = output
+
+      ktp.log.Record(LogStore,
+                     "#(evaluate) message(recorded the error in the report)");
+
+    # change the report's state to 'done'.
+    report["meta"]["state"] = ktp.report.StateDone
+
+    # store the report.
+    ktp.report.Store(report,
+                     ReportStore + "/" + identifier + ktp.report.Extension)
   except Exception, exception:
-    # display the error, if verbose has been activated.
-    if namespace.verbose:
-      print("[trace] " + ktp.trace.Generate())
-      print("[exception] " + str(exception))
+    ktp.log.Record(LogStore,
+                   "#(evaluate) exception(" +                           \
+                     str(exception) + ") trace(" +                      \
+                     ktp.trace.Generate() + ")")
   finally:
     # remove the temporary files.
     if stream:
@@ -199,6 +240,9 @@ def                     Points(namespace, manifests):
   manifest = None
   points = None
 
+  ktp.log.Record(LogStore,
+                 "#(evaluate) message(computing the points)")
+
   # initialize the points to zero.
   points = 0
 
@@ -215,11 +259,14 @@ def                     Points(namespace, manifests):
 def                     Score(namespace, manifests, report):
   score = None
 
+  ktp.log.Record(LogStore,
+                 "#(evaluate) message(computing the score)")
+
   # initialize the score.
   score = 0
 
   # go through the report.
-  if "data" in report:
+  if ("data" in report) and (report["data"]):
     for component in report["data"]:
       for test in report["data"][component]:
         # has this test been passed?
@@ -230,74 +277,18 @@ def                     Score(namespace, manifests, report):
   return score
 
 #
-# this function returns true if the given delivery has reached to
-# deadline.
-#
-def                     Dead(namespace, delivery):
-  submission = None
-  deadline = None
-
-  # if not deadline has been provided, everything is alright.
-  if not namespace.deadline:
-    return False
-
-  # retrieve the submission date.
-  submission = time.strptime(delivery["date"], "%Y/%m/%d %H:%M:%S")
-
-  # retrieve the deadline.
-  deadline = time.strptime(namespace.deadline, "%Y/%m/%d %H:%M:%S")
-
-  # if the delivery occured before the deadline, return OK.
-  if submission < deadline:
-    return False
-
-  # verbose messaging.
-  if namespace.verbose:
-    print("  [deadline] reached")
-
-  return True
-
-#
-# this function stores the submitted snapshot in the history directory,
-# should this functionality have been activated.
-#
-def                     History(namespace, name, delivery):
-  path = None
-
-  # if no history directory has been provided, ignore this functionality.
-  if not namespace.history:
-    return
-
-  # compute the destination path.
-  path = os.path.abspath(namespace.history) + "/" +                     \
-           name.replace("::", "/") + "/" +                              \
-           "sources/" +                                                 \
-           namespace.stage + ".tar.bz2"
-
-  # create the directories to the destination path.
-  ktp.miscellaneous.Dig(path)
-
-  # copy the snapshot.
-  ktp.miscellaneous.Copy(SnapshotStore + "/" +                          \
-                           delivery["snapshot"] +                       \
-                           ktp.snapshot.Extension,
-                         path)
-
-  # verbose messaging.
-  if namespace.verbose:
-    print("  [history] saved")
-
-#
 # this function evaluates the students' deliveries.
 #
 def                     Evaluate(namespace):
   statement = {}
   stage = None
+  deadline = None
   names = None
   name = None
   match = None
   capability = None
   database = None
+  submission = None
   configuration = None
   suite = None
   manifests = None
@@ -307,66 +298,107 @@ def                     Evaluate(namespace):
   stage = ktp.stage.Load(StagesDirectory + "/" +                        \
                            namespace.stage + ktp.stage.Extension)
 
+  ktp.log.Record(LogStore,
+                 "#(evaluate) stage(" + str(stage) + ")")
+
+  # retrieve the submission deadline.
+  deadline = time.strptime(stage["deadline"], "%Y/%m/%d %H:%M:%S")
+
   # retrieve the capability names.
   names = ktp.capability.List(CapabilityStore)
 
   # treat every capability.
   for name in names:
+    ktp.log.Record(LogStore,
+                   "#(evaluate) name(" + name + ")")
+
     # apply the pattern onto the name.
     match = re.search(namespace.pattern, name, re.MULTILINE)
 
     # ignore the name should it fail to match the pattern.
     if not match:
-      continue
+      ktp.log.Record(LogStore,
+                     "#(evaluate) warning(non-matching pattern)")
 
-    # verbose messaging.
-    if namespace.verbose:
-      print("[name] " + name)
+      continue
 
     # load the capability.
     capability = ktp.capability.Load(CapabilityStore + "/" +            \
                                        name +                           \
                                        ktp.capability.Extension)
 
+    ktp.log.Record(LogStore,
+                   "#(evaluate) capability(" + str(capability) + ")")
+
     # load the database.
     database = ktp.database.Load(DatabaseStore + "/" +                  \
                                    capability["identifier"] +           \
                                    ktp.database.Extension)
 
+    ktp.log.Record(LogStore,
+                   "#(evaluate) database(" + str(database) + ")")
+
     # if no deliveries, continue.
-    if not "deliveries" in database:
+    if (not "deliveries" in database) or                                \
+       (not namespace.stage in database["deliveries"]):
+      ktp.log.Record(LogStore,
+                     "#(evaluate) warning(no delivery)")
+
       continue
 
     # initialize the statement.
     statement[capability["identifier"]] =                               \
       {
         "members": capability["members"],
-        "date": database["deliveries"][namespace.stage]["date"],
-        "snapshot": database["deliveries"][namespace.stage]["snapshot"],
+        "date": None,
+        "snapshot": None,
         "configurations": {},
         "grade": 0.0
       }
 
-    # store the snapshot in the history, if required.
-    History(namespace, name, database["deliveries"][namespace.stage])
+    # if nothing has been delivered, continue.
+    if not database["deliveries"][namespace.stage]:
+      ktp.log.Record(LogStore,
+                     "#(evaluate) warning(no delivery)")
 
-    # has the deadline been reached?
-    if Dead(namespace, database["deliveries"][namespace.stage]) == True:
+      continue
+
+    # set the delivery.
+    statement[capability["identifier"]]["date"] =                       \
+      database["deliveries"][namespace.stage]["date"]
+    statement[capability["identifier"]]["snapshot"] =                   \
+      database["deliveries"][namespace.stage]["snapshot"]
+
+    # retrieve the submission deadline.
+    submission =                                                        \
+      time.strptime(database["deliveries"][namespace.stage]["date"],
+                    "%Y/%m/%d %H:%M:%S")
+
+    # if the deadline has been reached, ignore this submission.
+    if submission > deadline:
+      ktp.log.Record(LogStore,
+                     "#(evaluate) warning(deadline reached)")
+
       continue
 
     # for every stage configuration, test the snapshot.
     for configuration in stage["configurations"]:
-      # verbose messaging.
-      if namespace.verbose:
-        print("  [configuration] " + configuration["name"])
+      ktp.log.Record(LogStore,
+                     "#(evaluate) configuration(" + str(configuration) + ")")
 
       # load the suite associated with this configuration.
       suite = ktp.suite.Load(SuitesDirectory + "/" +                    \
                              configuration["suite"] +                   \
                              ktp.suite.Extension)
 
+      ktp.log.Record(LogStore,
+                     "#(evaluate) suite(" + str(suite) + ")")
+
       # load all the manifests related to this suite.
       manifests = ktp.suite.Manifests(suite)
+
+      ktp.log.Record(LogStore,
+                     "#(evaluate) manifests(" + str(manifests) + ")")
 
       # launch the test.
       report = Test(namespace,
@@ -391,19 +423,25 @@ def                     Evaluate(namespace):
           statement[capability["identifier"]][                          \
             "configurations"][configuration["name"]]["points"]
 
+      ktp.log.Record(LogStore,
+                     "#(evaluate) statement(" +                         \
+                       str(statement[capability["identifier"]]) + ")")
+
   return statement
 
 #
 # this function initializes the script.
 #
 def                     Initialize(namespace):
-  pass
+  ktp.log.Record(LogStore,
+                 "#(evaluate) message(initializing)")
 
 #
 # this function cleans the script.
 #
 def                     Clean(namespace):
-  pass
+  ktp.log.Record(LogStore,
+                 "#(evaluate) message(cleaning)")
 
 #
 # this is the main function
@@ -429,41 +467,20 @@ def                     Main():
                           "snapshots should be evaluated",
                         dest = "stage")
   g_parser.add_argument("--statement", '-t',
-                        default = StatementStore + "/" +                \
-                          time.strftime("%Y%m%d-%H%M%S") +              \
-                          ktp.statement.Extension,
+                        default = time.strftime("%Y%m%d-%H%M%S"),
                         help = "the path to the output statement file",
                         dest = "statement")
-  g_parser.add_argument("--verbose", '-v',
-                        default = False,
-                        action = "store_true",
-                        help = "activate the verbose messaging",
-                        dest = "verbose")
   g_parser.add_argument("--cap", '-c',
                         default = 20.0,
                         type = float,
                         help = "the grading cap",
                         dest = "cap")
-  g_parser.add_argument("--history", '-y',
-                        default = None,
-                        help = "the path to a history directory "       \
-                          "receiving the saved snapshots",
-                        dest = "history")
-  g_parser.add_argument("--deadline", '-d',
-                        default = None,
-                        help = "the deadline for which to consider "    \
-                          "students' snapshots",
-                        dest = "deadline")
 
   # parse the arguments.
   namespace = g_parser.parse_args()
 
   # initialize the script.
   Initialize(namespace)
-
-  # display a message.
-  print("WARNING! the server should be stopped in order to prevent "    \
-          "virtual machines to be run concurrently")
 
   # evaluate the submissions.
   statement = Evaluate(namespace)
@@ -474,18 +491,20 @@ def                     Main():
                           {
                             "stage": namespace.stage,
                             "cap": namespace.cap,
-                            "deadline": namespace.deadline
                           },
                         "data":
                           statement
                       },
-                      namespace.statement)
+                      StatementStore + "/" +                            \
+                        namespace.statement +                           \
+                        ktp.statement.Extension)
+
+  ktp.log.Record(LogStore,
+                 "#(evaluate) message(statement stored in '" +          \
+                   namespace.statement + "')")
 
   # clean the script.
   Clean(namespace)
-
-  # display a message.
-  print("the statement has been saved in '" + namespace.statement + "'")
 
 #
 # ---------- entry point ------------------------------------------------------

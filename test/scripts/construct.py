@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/construct.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [sat mar  5 23:47:38 2011]
+# updated       julien quintard   [sun mar  6 17:18:34 2011]
 #
 
 #
@@ -700,8 +700,9 @@ def                     Main():
   # clean the temporary stuff.
   Clean(namespace)
 
-  # display a message.
-  print("the kaneton image has been constructed in '" + namespace.image + "'")
+  ktp.log.Record(LogStore,
+                 "#(construct) message(image constructed in '" +        \
+                   namespace.image + "')")
 
 #
 # ---------- entry point ------------------------------------------------------

@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/test.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [thu feb  3 12:44:07 2011]
+# updated       julien quintard   [sun mar  6 17:19:15 2011]
 #
 
 #
@@ -336,9 +336,9 @@ def                     Main():
   # clean the script.
   Clean(namespace)
 
-  # display a message.
-  print("the report has been completed or re-generated in '" +          \
-            namespace.report + "'")
+  ktp.log.Record(LogStore,
+                 "#(test) message(report stored in '" +                 \
+                   namespace.report + "')")
 
 #
 # ---------- entry point ------------------------------------------------------

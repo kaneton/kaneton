@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/file.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [sun feb 20 01:35:46 2011]
+# updated       julien quintard   [sun mar  6 16:48:53 2011]
 #
 
 #
@@ -149,13 +149,14 @@ def                     File(namespace):
       continue
 
     # retrieve the submission deadline.
-    submission = time.strptime(database["deliveries"][namespace.stage]["date"],
-                               "%Y/%m/%d %H:%M:%S")
+    submission =                                                        \
+      time.strptime(database["deliveries"][namespace.stage]["date"],
+                    "%Y/%m/%d %H:%M:%S")
 
     # if the deadline has been reached, ignore this submission.
     if submission > deadline:
       ktp.log.Record(LogStore,
-                     "#(file) message(deadline reached)")
+                     "#(file) warning(deadline reached)")
 
       continue
 

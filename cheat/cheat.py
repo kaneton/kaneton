@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton.STABLE/cheat/cheat.py
+# file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [fri nov  5 16:17:49 2010]
+# updated       julien quintard   [mon mar  7 12:08:57 2011]
 #
 
 #
@@ -471,7 +471,8 @@ def                     prepare():
     # for the work from the same year, simply compare the same stages.
     if year == g_year:
       # retrieve the students in this year.
-      students = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year,
+      students = sorted(env.list(env._HISTORY_DIR_ + "/" +              \
+                                   g_school + "/" + year,
                                  env.OPTION_DIRECTORY))
 
       # for every student.
@@ -489,7 +490,8 @@ def                     prepare():
                                          env.OPTION_NONE)),
             "snapshot": env._HISTORY_DIR_ + "/" + g_school + "/" + year + "/" +
                         student + "/sources/" + g_stage + ".tar.bz2",
-            "sources": g_directory + "/" + year + "/" + student + "/" + g_stage,
+            "sources": g_directory + "/" + year + "/" +                 \
+                       student + "/" + g_stage,
             "fingerprint": g_directory + "/" + year + "/" + student + "/" +
                            g_stage + ".ctf",
             "base": base,
@@ -498,7 +500,8 @@ def                     prepare():
           } ]
 
     # for older work, take the most recent work from every older student.
-    if year < g_year:
+# XXX this feature has been disabled.
+    if (year < g_year) and (0 == 1):
       # retrieve the students in this year.
       students = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year,
                                  env.OPTION_DIRECTORY))
@@ -577,15 +580,15 @@ def                     extract():
     if not (env.path(student["sources"] + "/kaneton/",
                      env.OPTION_EXIST)):
       env.display(env.HEADER_ERROR,
-                  "the extracted student snapshot '" + student + "' does not "
-                  "contain a 'kaneton/' directory",
+                  "the extracted student snapshot '" + student["name"] +
+                  "' does not contain a 'kaneton/' directory",
                   env.OPTION_NONE)
 
     if len(env.list(student["sources"],
                     env.OPTION_FILE | env.OPTION_DIRECTORY)) != 1:
       env.display(env.HEADER_ERROR,
-                  "the extracted student snapshot '" + student + "' contains "
-                  "more than just the 'kaneton/' directory",
+                  "the extracted student snapshot '" + student["name"] +
+                  "' contains more than just the 'kaneton/' directory",
                   env.OPTION_NONE)
 
   # extract the bases.

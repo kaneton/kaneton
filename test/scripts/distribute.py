@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/distribute.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [fri feb  4 23:32:52 2011]
+# updated       julien quintard   [fri feb 25 21:17:50 2011]
 #
 
 #
@@ -107,14 +107,15 @@ def                     Distribute(namespace):
 
     # create the message.
     message = """\
-This email contains the capability of the student or group referred to as:
+This email contains an attached capability for the student or group referred
+to as:
 
   %(identifier)s
 
 In order to use this capability, please place it in your user profile
 directory, at the location:
 
-  kaneton/environment/profile/user/${KANETON_USER}/${KANETON_USER}.cap\
+  environment/profile/user/${KANETON_USER}/${KANETON_USER}.cap\
 """ % { "identifier": capability["identifier"] }
 
     ktp.log.Record(LogStore,
@@ -134,7 +135,9 @@ directory, at the location:
     ktp.miscellaneous.Email("admin@opaak.org",
                             emails,
                             "'kaneton capability'",
-                            message)
+                            message,
+                            CapabilityStore + "/" +                     \
+                              name + ktp.capability.Extension)
 
 #
 # this is the main function

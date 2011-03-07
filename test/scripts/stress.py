@@ -9,7 +9,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/scripts/stress.py
 #
 # created       julien quintard   [mon apr 13 04:06:49 2009]
-# updated       julien quintard   [sat mar  5 11:36:29 2011]
+# updated       julien quintard   [sun mar  6 17:19:01 2011]
 #
 
 #
@@ -807,6 +807,10 @@ def                     Main():
   # save the results if necessary.
   if namespace.bulletin:
     ktp.bulletin.Store(namespace.results, namespace.bulletin)
+
+    ktp.log.Record(LogStore,
+                   "#(stress) message(bulleting saved in '" +           \
+                     namespace.bulletin + "')")
 
 #
 # ---------- entry point ------------------------------------------------------

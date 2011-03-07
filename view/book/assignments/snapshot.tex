@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/snapshot.tex
 %
 % created       julien quintard   [fri may 23 21:47:38 2008]
-% updated       julien quintard   [thu feb 10 21:18:46 2011]
+% updated       julien quintard   [mon mar  7 14:42:42 2011]
 %
 
 %
@@ -36,6 +36,59 @@ downloaded, students should read the dedicated article on the \name{Opaak}
 \name{Wiki} and follow the steps in order to configure their kaneton
 environment.
 
+Note that in order for both the testing and submission processes to work
+properly, students must comply with the following rules:
+
+\begin{itemize}
+  \item
+    The test and submission procedures rely on a mechanism which essentially
+    consists in archiving the whole kaneton development directoy, cleaning it
+    from the object files and versoning directories such as \location{.svn/},
+    \location{.git/} \etc{} before compressing it and sending it to the server.
+
+    \-
+
+    Once on the server, the snapshot is installed on a small disk image and
+    passed to a specific virtual machine whose purpose is to compile the
+    kaneton microkernel, generating a bootable image. Thus, the snapshot
+    provided to the server should be small enough, around $400$KB, in order
+    to fit on the disk image.
+
+    \-
+
+    Students should therefore make sure to avoid placing needless data in
+    the development directory such as architecture manuals, copies of
+    the whole source code etc. Students can check the snapshot size of their
+    current development environment through the following command:
+
+    \begin{verbatim}
+      $> cd kaneton/export/
+      $kaneton/export> make export-test:group
+      [...]
+      $kaneton/export> ls -l output/
+      total 404K
+      -rw------- 1 mycure mycure 398K Mar  7 13:40 test:group.tar.bz2
+      $kaneton/export> 
+    \end{verbatim}
+
+    In this example, the snapshot has a size of $398$KB. Note that every
+    snapshot exceeding the size of $5$MB will for sure generate an error
+    once tested or evaluted.
+  \item
+    The \name{test} user profile located in
+    \location{environment/profile/user/} should never be removed as
+    it is used by the testing and evaluation procedures.
+\end{itemize}
+
+Finally, note that a test capability must first be acquired in order to be
+able to use the test and evaluation system. The following assumes that
+students possess such a capability. If not, he or she should contact the
+kaneton contributors by email at:
+
+\begin{center}
+  \location{admin@opaak.org}
+\end{center}
+
 %
 % test
 %
@@ -47,14 +100,6 @@ a set of test suites. However, the number of test suites students are allowed
 to request is limited. As such, the kaneton test system should be seen more as
 a validation system. Students are therefore invited to implement their own
 test suite in order to thorougly test their kaneton implementation.
-
-A test capability must first be acquired in order to use the test system. The
-following assumes that students possess such a capability. If not, he or
-she should contact the kaneton contributors by email at:
-
-\begin{center}
-  \location{admin@opaak.org}
-\end{center}
 
 The following command shows how to retrieve information regarding the
 student test profile.
@@ -157,3 +202,6 @@ has to issue the \name{submit} command, as shown below.
   [+] the snapshot has been submitted successfully
   $test/client> 
 \end{verbatim}
+
+Note that any submitted snapshot must comply with the rules related to the
+testing procedure since the evaluation process is essentially the same.
