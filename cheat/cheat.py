@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [mon mar  7 12:08:57 2011]
+# updated       julien quintard   [mon mar  7 17:12:04 2011]
 #
 
 #
@@ -438,7 +438,8 @@ def                     prepare():
               env.OPTION_NONE)
 
   # create a temporary directory for holding unpacked snapshots.
-  g_directory = env.temporary(env.OPTION_DIRECTORY)
+# xxx  g_directory = env.temporary(env.OPTION_DIRECTORY)
+  g_directory = "/tmp/tmpSvsWOQ"
 
   # set the output file path.
   g_output = env._HISTORY_DIR_ + "/" + g_school + "/" + g_year + "/" +  \
@@ -500,7 +501,7 @@ def                     prepare():
           } ]
 
     # for older work, take the most recent work from every older student.
-# XXX this feature has been disabled.
+# XXX this feature has been disabled because it generates too much code to process.
     if (year < g_year) and (0 == 1):
       # retrieve the students in this year.
       students = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year,
@@ -1208,12 +1209,12 @@ def             shear():
            None)
 
 #
-# clean()
+# clear()
 #
-# this function cleans the files and directories created by the
+# this function clears the files and directories created by the
 # verification process.
 #
-def                     clean():
+def                     clear():
   # remove the temporary directory which contains all the extracted
   # snapshots etc.
   env.remove(g_directory, env.OPTION_NONE)
@@ -1273,10 +1274,10 @@ def			main():
   # generate the HTML output.
   output()
 
-  # clean the temporary files and directories.
-  clean()
+  # clear the temporary files and directories.
+  clear()
 
-  # a final message.
+  # final message.
   env.display(env.HEADER_OK,
               "cheating verification processed successfully",
               env.OPTION_NONE)

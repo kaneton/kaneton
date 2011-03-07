@@ -28,5 +28,9 @@
   filename: sets/export
 
 -
+  operation: fremove
+  path: export/output/test:contributor.tar.bz2
+
+-
   operation: tarball
   filename: test:contributor

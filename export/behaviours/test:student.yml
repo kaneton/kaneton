@@ -32,5 +32,9 @@
   filename: sets/export
 
 -
+  operation: fremove
+  path: export/output/test:student.tar.bz2
+
+-
   operation: tarball
   filename: test:student
