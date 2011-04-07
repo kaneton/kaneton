@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...chitecture/ia32/educational/include/pt.h
  *
  * created       julien quintard   [mon jan 10 09:31:37 2011]
- * updated       julien quintard   [fri jan 14 21:10:02 2011]
+ * updated       julien quintard   [thu apr  7 15:38:25 2011]
  */
 
 #ifndef ARCHITECTURE_PT_H

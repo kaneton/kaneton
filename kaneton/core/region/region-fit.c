@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/region/region-fit.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [sat feb  5 10:37:35 2011]
+ * updated       julien quintard   [fri mar 25 17:45:28 2011]
  */
 
 /*
@@ -22,6 +22,19 @@
  * itself is meanginless outside its address space. besides, there is no
  * global set of regions as there is for segments. instead, the address
  * space maintains a set containing its region objects.
+ *
+ * [XXX:improvement] the function region_inject() calls set_add(). should
+ *                   set_add() need to expand the array, malloc() would be
+ *                   called which, may it need extra memory, would call
+ *                   map_reserve() and, in turn, region_reserve() and
+ *                   region_space(). region_space() could then return
+ *                   the address of the memory area that the caller was
+ *                   trying to inject in order to secure it.
+ *                   a solution could consist in temporarily protecting
+ *                   areas of memory through a region_protect() function
+ *                   which would rely on a small and static array to store
+ *                   the addresses and sizes the region_space() should not
+ *                   return, making them exceptions.
  */
 
 /*

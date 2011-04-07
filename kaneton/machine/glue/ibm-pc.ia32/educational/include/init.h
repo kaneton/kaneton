@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/ibm-pc.ia32/educational/include/init.h
  *
  * created       julien quintard   [wed jun  6 16:16:48 2007]
- * updated       julien quintard   [sun dec 19 13:39:38 2010]
+ * updated       julien quintard   [thu apr  7 14:55:37 2011]
  */
 
 #ifndef GLUE_INIT_H

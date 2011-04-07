@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...loader/ibm-pc.ia32/educational/libia32.h
  *
  * created       matthieu bucchianeri   [mon jun 25 23:02:50 2007]
- * updated       julien quintard   [sat dec 18 10:57:02 2010]
+ * updated       julien quintard   [thu apr  7 15:27:40 2011]
  */
 
 #ifndef BOOTLOADER_LIBIA32_H
@@ -180,13 +180,6 @@
 #define IA32_PDE_FLAG_P			(1 << 0)
 
 /*
- * the following flags are not arch-managed. they are "available" bits of the
- * entry descriptor.
- */
-
-#define IA32_PDE_FLAG_USED		(1 << 9)
-
-/*
  * page table entry flags
  */
 
@@ -200,13 +193,6 @@
 #define IA32_PTE_FLAG_RO		(0 << 1)
 #define IA32_PTE_FLAG_RW		(1 << 1)
 #define IA32_PTE_FLAG_P			(1 << 0)
-
-/*
- * the following flags are not arch-managed. they are "available" bits of the
- * entry descriptor.
- */
-
-#define IA32_PTE_FLAG_USED		(1 << 9)
 
 /*
  * ---------- macro functions -------------------------------------------------

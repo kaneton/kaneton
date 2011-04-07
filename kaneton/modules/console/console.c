@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/console/console.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [thu dec 16 11:19:22 2010]
+ * updated       julien quintard   [thu apr  7 15:13:01 2011]
  */
 
 /*

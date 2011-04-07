@@ -40,6 +40,15 @@ t_init*			init;
 static t_paddr		relocate;
 
 /*
+ * the set of page table which have been allocated by the kernel.
+ *
+ * these page tables must be protected by registering them.
+ */
+
+extern t_paddr		pts[PAGING_PTS];
+extern t_uint32		npts;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -164,21 +173,24 @@ void			bootloader_init_dump(void)
  * 11) add the page directory segment.
  * 12) add the inputs segment.
  * 13) add the system service code segment.
+ * 14) add the page tables.
  */
 
 void			bootloader_init_segments(void)
 {
+  t_uint32		i;
+
   /*
    * 1)
    */
 
   init->segments[0].address = INIT_ISA_ADDR;
-  init->segments[0].size = 0x1000;
+  init->segments[0].size = PAGESZ;
   init->segments[0].perms = PERM_READ;
   init->segments[0].options = SEGMENT_OPTION_SYSTEM;
 
-  init->segments[1].address = INIT_ISA_ADDR + 0x1000;
-  init->segments[1].size = INIT_ISA_SIZE - 0x1000;
+  init->segments[1].address = INIT_ISA_ADDR + PAGESZ;
+  init->segments[1].size = INIT_ISA_SIZE - PAGESZ;
   init->segments[1].perms = PERM_READ | PERM_WRITE;
   init->segments[1].options = SEGMENT_OPTION_SYSTEM;
 
@@ -278,33 +290,33 @@ void			bootloader_init_segments(void)
    * 12)
    */
 
-  if (init->inputssz != 0)
-    {
-      init->segments[12].address = (t_paddr)init->inputs;
-      init->segments[12].size = init->inputssz;
-      init->segments[12].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
-      init->segments[12].options = SEGMENT_OPTION_NONE;
-    }
-  else
-    {
-      init->nsegments--;
-    }
+  init->segments[12].address = (t_paddr)init->inputs;
+  init->segments[12].size = init->inputssz;
+  init->segments[12].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+  init->segments[12].options = SEGMENT_OPTION_NONE;
 
   /*
    * 13)
    */
 
-  if (init->scodesz != 0)
+  init->segments[13].address = init->scode;
+  init->segments[13].size = init->scodesz;
+  init->segments[13].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+  init->segments[13].options = SEGMENT_OPTION_NONE;
+
+  /*
+   * 14)
+   */
+
+  for (i = 0; i < npts; i++)
     {
-      init->segments[13].address = init->scode;
-      init->segments[13].size = init->scodesz;
-      init->segments[13].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
-      init->segments[13].options = SEGMENT_OPTION_NONE;
+      init->segments[14 + i].address = pts[i];
+      init->segments[14 + i].size = PAGESZ;
+      init->segments[14 + i].perms = PERM_READ | PERM_WRITE;
+      init->segments[14 + i].options = SEGMENT_OPTION_SYSTEM;
     }
-  else
-    {
-      init->nsegments--;
-    }
+
+  init->nsegments -= PAGING_PTS - npts;
 }
 
 /*
@@ -328,10 +340,13 @@ void			bootloader_init_segments(void)
  * 9) add the alloc region.
  * 10) add the global offset table region.
  * 11) add the page directory region.
+ * 12) add the page table regions.
  */
 
 void			bootloader_init_regions(void)
 {
+  t_uint32		i;
+
   /*
    * 1)
    */
@@ -441,6 +456,21 @@ void			bootloader_init_regions(void)
   init->regions[10].size = init->segments[11].size;
   init->regions[10].offset = 0;
   init->regions[10].opts = REGION_OPT_FORCE;
+
+  /*
+   * 12)
+   */
+
+  for (i = 0; i < npts; i++)
+    {
+      init->regions[11 + i].segment = 14 + i;
+      init->regions[11 + i].address = init->segments[14 + i].address;
+      init->regions[11 + i].size = PAGESZ;
+      init->regions[11 + i].offset = 0;
+      init->regions[11 + i].opts = REGION_OPT_FORCE;
+    }
+
+  init->nregions -= PAGING_PTS - npts;
 }
 
 /*
@@ -505,9 +535,10 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   Elf32_Ehdr*		khdr;
   Elf32_Phdr*		phdr;
   t_paddr		init_relocate;
-  t_uint32		ninputs = mbi->mods_count;
-  t_uint32		nsegments = INIT_SEGMENTS;
-  t_uint32		nregions = INIT_REGIONS;
+  t_uint32		nmods = mbi->mods_count;
+  t_uint32		ninputs;
+  t_uint32		nsegments = INIT_SEGMENTS + PAGING_PTS;
+  t_uint32		nregions = INIT_REGIONS + PAGING_PTS;
   t_psize		inputssz;
   t_psize		segmentssz;
   t_psize		regionssz;
@@ -552,9 +583,17 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 3)
    */
 
-  for (inputssz = 0, i = 2; i < ninputs; i++)
-    inputssz += mod[i].mod_end - mod[i].mod_start +
-      strlen((char*)mod[i].string) + 1;
+  if (nmods == 0)
+    {
+      bootloader_cons_msg('!', "error: no kernel has been provided\n");
+      bootloader_error();
+    }
+
+  ninputs = nmods - 1;
+
+  for (inputssz = 0, i = 0; i < ninputs; i++)
+    inputssz += mod[1 + i].mod_end - mod[1 + i].mod_start +
+      strlen((char*)mod[1 + i].string) + 1;
 
   /*
    * 4)
@@ -577,23 +616,23 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 
   init->inputs =
     (t_inputs*)bootloader_init_alloc(sizeof(t_inputs) +
-				     (ninputs - 2) * sizeof(t_input) +
+				     ninputs * sizeof(t_input) +
 				     inputssz,
 				     &inputssz);
   memset(init->inputs, 0x0, inputssz);
   init->inputssz = inputssz;
-  init->inputs->ninputs = ninputs - 2;
+  init->inputs->ninputs = ninputs;
 
   init->segments =
     (s_segment*)bootloader_init_alloc(nsegments * sizeof(s_segment),
-				       &segmentssz);
+				      &segmentssz);
   memset(init->segments, 0x0, segmentssz);
   init->nsegments = nsegments;
   init->segmentssz = segmentssz;
 
   init->regions =
     (s_region*)bootloader_init_alloc(nregions * sizeof(s_region),
-				      &regionssz);
+				     &regionssz);
   memset(init->regions, 0x0, regionssz);
   init->nregions = nregions;
   init->regionssz = regionssz;
@@ -627,32 +666,29 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 7)
    */
 
-  if ((ninputs - 2) > 0)
+  for (i = 0,
+	 input = (t_input*)((t_uint32)init->inputs + sizeof(t_inputs));
+       i < ninputs;
+       i++)
     {
-      for (i = 2,
-	     input = (t_input*)((t_uint32)init->inputs + sizeof(t_inputs));
-	   i < ninputs;
-	   i++)
-	{
-	  modsz = mod[i].mod_end - mod[i].mod_start;
+      modsz = mod[1 + i].mod_end - mod[1 + i].mod_start;
 
-	  input->name = (char*)((t_uint32)input + sizeof(t_input) + modsz);
-	  strcpy(input->name, (char*)mod[i].string);
+      input->name = (char*)((t_uint32)input + sizeof(t_input) + modsz);
+      strcpy(input->name, (char*)mod[1 + i].string);
 
-	  memcpy((void*)((t_uint32)input + sizeof(t_input)),
-		 (const void*)mod[i].mod_start, modsz);
+      memcpy((void*)((t_uint32)input + sizeof(t_input)),
+	     (const void*)mod[1 + i].mod_start, modsz);
 
-	  input->size = modsz;
+      input->size = modsz;
 
-	  bootloader_cons_msg('+', " input '%s' relocated from 0x%x to 0x%x (0x%x)\n",
-			      input->name,
-			      mod[i].mod_start,
-			      input,
-			      input->size);
+      bootloader_cons_msg('+', " input '%s' relocated from 0x%x to 0x%x (0x%x)\n",
+			  input->name,
+			  mod[1 + i].mod_start,
+			  input,
+			  input->size);
 
-	  input = (t_input*)((t_uint32)input + sizeof(t_input) +
-			     input->size + strlen(input->name) + 1);
-	}
+      input = (t_input*)((t_uint32)input + sizeof(t_input) +
+			 input->size + strlen(input->name) + 1);
     }
 
   /*
@@ -666,7 +702,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 9)
    */
 
-  if (ninputs >= 1)
+  if (ninputs > 0)
     {
       khdr = (Elf32_Ehdr*)mod[1].mod_start;
       phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);

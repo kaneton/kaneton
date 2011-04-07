@@ -8,7 +8,7 @@
 # file          /home/mycure/KANETON-TEST-SYSTEM/packages/ktp/log.py
 #
 # created       julien quintard   [mon oct 25 19:58:10 2010]
-# updated       julien quintard   [wed feb  2 20:31:59 2011]
+# updated       julien quintard   [tue mar  8 11:49:26 2011]
 #
 
 #
@@ -17,6 +17,7 @@
 
 import os
 import time
+import fcntl
 
 #
 # ---------- definitions ------------------------------------------------------
@@ -41,6 +42,8 @@ def                     Record(directory, message):
   header = time.strftime("[%Y/%m/%d %H:%M:%S] ")
 
   handle = open(path, "a")
+
+  fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
 
   handle.write(header + message + "\n")
 

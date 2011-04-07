@@ -37,6 +37,9 @@ t_ia32_directory	pd;
 t_ia32_table		pt0;
 t_ia32_table		pt;
 
+t_paddr			pts[PAGING_PTS];
+t_uint32		npts = 0;
+
 /*
  * ---------- functions -------------------------------------------------------
  */
@@ -110,6 +113,8 @@ void			bootloader_paging_init(void)
       pt_add_page(&pt0, IA32_PTE_ENTRY(addr), pg);
     }
 
+  pts[npts++] = pt0.entries;
+
   /*
    * 4)
    */
@@ -121,8 +126,8 @@ void			bootloader_paging_init(void)
       if (pd_get_table(&pd, IA32_PDE_ENTRY(addr), &pt) != ERROR_NONE)
 	{
 	  if (pt_build(bootloader_init_alloc(IA32_PT_MAX_ENTRIES *
-						  sizeof(t_ia32_pte),
-						  NULL), &pt, 1) != ERROR_NONE)
+					     sizeof(t_ia32_pte),
+					     NULL), &pt, 1) != ERROR_NONE)
 	    {
 	      printf("cannot build a page-table\n");
 	      bootloader_error();
@@ -135,10 +140,21 @@ void			bootloader_paging_init(void)
 	  pt.writeback = IA32_PT_WRITEBACK;
 
 	  pd_add_table(&pd, IA32_PDE_ENTRY(addr), pt);
+
+	  pts[npts++] = pt.entries;
+
 	  limit += PAGESZ;
 	}
+
       pg.addr = addr;
       pt_add_page(&pt, IA32_PTE_ENTRY(addr), pg);
+    }
+
+  if (npts > PAGING_PTS)
+    {
+      printf("too many (%u) page tables have been allocated, please "
+	     "adjust the PAGING_PTS macro\n", npts);
+      bootloader_error();
     }
 
   /*

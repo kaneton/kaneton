@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [mon jan 31 13:58:00 2011]
+ * updated       julien quintard   [thu apr  7 15:45:08 2011]
  */
 
 /*
@@ -2137,10 +2137,11 @@ t_error			task_get(i_task				id,
  * 8) reserve the kernel address space.
  * 9) start the kernel task.
  * 10) go through the pre-reserved segments.
- *   a) allocate a segment object.
- *   b) fill the segment object's attributes.
- *   c) inject the segment in the kernel's address space.
- *   d) if the current segment corresponds to the one hosting the 'system'
+ *   a) ignore zero-sized segments.
+ *   b) allocate a segment object.
+ *   c) fill the segment object's attributes.
+ *   d) inject the segment in the kernel's address space.
+ *   e) if the current segment corresponds to the one hosting the 'system'
  *      server's code, save the segment identifier in the '_system' variable.
  * 11) go through the pre-reserved regions.
  *   a) allocate a region object.
@@ -2238,11 +2239,18 @@ t_error			task_initialize(void)
        * a)
        */
 
+      if (_init->segments[i].size == 0)
+	continue;
+
+      /*
+       * b)
+       */
+
       if ((segment = malloc(sizeof (o_segment))) == NULL)
 	CORE_ESCAPE("unable to allocate memory for the segment object");
 
       /*
-       * b)
+       * c)
        */
 
       segment->address = _init->segments[i].address;
@@ -2251,7 +2259,7 @@ t_error			task_initialize(void)
       segment->options = _init->segments[i].options;
 
       /*
-       * c)
+       * d)
        */
 
       if (segment_inject(_kernel.as, segment, &segments[i]) != ERROR_OK)
@@ -2259,7 +2267,7 @@ t_error			task_initialize(void)
 		    "by the boot loader");
 
       /*
-       * d)
+       * e)
        */
 
       if (_init->scode == _init->segments[i].address)

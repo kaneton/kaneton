@@ -55,6 +55,8 @@
 #define REGION_OPT_NONE			0
 #define REGION_OPT_FORCE		(1 << 0)
 
+#define PAGING_PTS			8
+
 /*
  * ---------- prototypes ------------------------------------------------------
  *

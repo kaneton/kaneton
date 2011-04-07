@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/stages/k2.stg
+# file          /home/mycure/kaneton/test/stages/k2.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [sat feb  5 10:23:14 2011]
+# updated       julien quintard   [tue mar 22 13:19:36 2011]
 #
 
 name: k2
@@ -30,5 +30,5 @@ configurations:
       stress: xen
     suite: k2
     weight: 0.8
-deadline: XXX
+deadline: "2011/04/08 23:42:00"
 history: "%school%/%year%/%group%/sources/k2.tar.bz2"

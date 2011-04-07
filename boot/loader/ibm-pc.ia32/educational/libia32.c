@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...loader/ibm-pc.ia32/educational/libia32.c
  *
  * created       matthieu bucchianeri   [mon jun 25 22:52:22 2007]
- * updated       julien quintard   [tue nov 23 21:50:33 2010]
+ * updated       julien quintard   [thu apr  7 15:37:37 2011]
  */
 
 /*
@@ -380,8 +380,6 @@ t_error			pd_add_table(t_ia32_directory*	dir,
 
   opts |= (table.user == IA32_PT_USER ? IA32_PDE_FLAG_USER : IA32_PDE_FLAG_SUPERVISOR);
 
-  opts |= IA32_PDE_FLAG_USED;
-
   /*
    * 3)
    */
@@ -420,7 +418,7 @@ t_error			pd_get_table(t_ia32_directory*	dir,
    * 2)
    */
 
-  if (!(d[entry] & IA32_PDE_FLAG_USED))
+  if (!(d[entry] & IA32_PDE_FLAG_P))
     return ERROR_UNKNOWN;
 
   /*
@@ -530,8 +528,6 @@ t_error			pt_add_page(t_ia32_table*	tab,
 	   IA32_PTE_FLAG_USER : IA32_PTE_FLAG_SUPERVISOR);
 
   opts |= (page.global == IA32_PG_GLOBAL ? IA32_PTE_FLAG_G : 0);
-
-  opts |= IA32_PTE_FLAG_USED;
 
   t[entry] = IA32_MK_BASE(page.addr) | opts;
 

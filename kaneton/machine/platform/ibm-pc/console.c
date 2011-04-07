@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/machine/platform/ibm-pc/console.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       julien quintard   [fri jan 14 20:12:43 2011]
+ * updated       julien quintard   [thu apr  7 15:13:32 2011]
  */
 
 /*

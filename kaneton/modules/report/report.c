@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/report/report.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri dec 10 14:12:58 2010]
+ * updated       julien quintard   [thu apr  7 15:13:06 2011]
  */
 
 /*

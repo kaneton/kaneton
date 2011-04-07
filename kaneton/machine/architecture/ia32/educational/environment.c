@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [sun jan 30 20:43:53 2011]
+ * updated       julien quintard   [thu apr  7 15:44:25 2011]
  */
 
 /*
@@ -133,30 +133,8 @@ extern am		_architecture;
  *   c) if the treated region is not the extra one, compute the next
  *      page directory and table start indexes as starting right after
  *      the end of the region i.e address + size.
- * 9) the page directory imported by the kernel has been set up by the
- *    boot loader. besides, the boot loader has passed to the kernel a list
- *    of pre-reserved system segments and regions. the segments are or will
- *    be injected in the segment manager and likewise for the regions, in the
- *    region manager. however, the page directory provided by the boot loader
- *    makes use of several page tables which have not been passed to the
- *    kernel as pre-reserved segments. the physical memory pages containing
- *    these page tables must be protected so they never get reserved and
- *    overwritten by a task or the kernel itself. this step therefore goes
- *    through the page directory and inject a segment in the segment manager
- *    for every unprotected page table.
- *    go through the regions as these are the only elements being currently
- *    mapped.
- *   a) compute the start and end indexes of the region's memory area.
- *   b) go through the involved page directory entries.
- *     i) if there is a referenced page table...
- *       #1) if there is no segment associated with the page table's physical
- *           address...
- *         #a) create a segment object which describes the page table's
- *             memory area.
- *         #b) inject the segment, hence preventing this system memory
- *             area from being reserved by anyone.
- * 10) flush the whole TLB, resetting all the address translations.
- * 11) register the kernel PDBR as being the PDBR on which to switch whenever
+ * 9) flush the whole TLB, resetting all the address translations.
+ * 10) register the kernel PDBR as being the PDBR on which to switch whenever
  *     an interrupt occurs.
  */
 
@@ -334,72 +312,11 @@ t_error			architecture_environment_kernel(i_as	id)
    * 9)
    */
 
-  for (i = 0; i < _init->nregions; i++)
-    {
-      /*
-       * a)
-       */
-
-      pde.start = ARCHITECTURE_PD_INDEX(_init->regions[i].address);
-      pde.end = ARCHITECTURE_PD_INDEX(_init->regions[i].address +
-				      _init->regions[i].size);
-
-      /*
-       * b)
-       */
-
-      for (pde.index = pde.start;
-	   pde.index <= pde.end;
-	   pde.index++)
-	{
-	  /*
-	   * i)
-	   */
-
-	  if (pd[pde.index] & ARCHITECTURE_PDE_PRESENT)
-	    {
-	      i_segment		segment;
-	      o_segment*	s;
-
-	      /*
-	       * #1)
-	       */
-
-	      if (segment_locate(ARCHITECTURE_PDE_ADDRESS(pd[pde.index]),
-				 &segment) == ERROR_FALSE)
-		{
-		  /*
-		   * #a)
-		   */
-
-		  if ((s = malloc(sizeof (o_segment))) == NULL)
-		    MACHINE_ESCAPE("unable to allocate memory");
-
-		  s->address = ARCHITECTURE_PDE_ADDRESS(pd[pde.index]);
-		  s->size = ___kaneton$pagesz;
-		  s->permissions = PERMISSION_READ | PERMISSION_WRITE;
-		  s->options = SEGMENT_OPTION_SYSTEM;
-
-		  /*
-		   * #b)
-		   */
-
-		  if (segment_inject(as->id, s, &segment) != ERROR_OK)
-		    MACHINE_ESCAPE("unable to inject the segment object");
-		}
-	    }
-	}
-    }
-
-  /*
-   * 10)
-   */
-
   if (architecture_tlb_flush() != ERROR_OK)
     MACHINE_ESCAPE("unable to flush the TLB");
 
   /*
-   * 11)
+   * 10)
    */
 
   _architecture.kernel.pdbr = pdbr;

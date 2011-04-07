@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ot/loader/ibm-pc.ia32/educational/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       julien quintard   [fri jan 14 22:46:30 2011]
+ * updated       julien quintard   [thu apr  7 14:55:29 2011]
  */
 
 #ifndef BOOTLOADER_INIT_H

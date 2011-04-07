@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/as/mapping/mapping.c
  *
  * created       julien quintard   [sun oct 17 14:37:04 2010]
- * updated       julien quintard   [sun jan 30 21:20:04 2011]
+ * updated       julien quintard   [fri mar 25 16:59:40 2011]
  */
 
 /*
@@ -79,7 +79,7 @@ void			test_architecture_as_mapping(void)
           if (segment_get(oreg->segment, &oseg) != ERROR_OK)
 	    TEST_ERROR("[segment_get] error");
 
-	  phys = oseg->address;
+	  phys = oseg->address; // XXX[needs to add the region->offset!]
 	  paddr = phys;
 
 	  pde_start = ARCHITECTURE_PD_INDEX(start);
@@ -95,6 +95,8 @@ void			test_architecture_as_mapping(void)
 			   "mapped i.e no page table",
 			   start);
 
+	      // XXX[needs improvement: the page table should be mapped if
+	      //     the address space is the the kernel's]
 	      pt = (at_pt)ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR,
 						      pde);
 
