@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/segment/segment-fit.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun jan 30 20:34:16 2011]
+ * updated       julien quintard   [fri apr  8 09:54:03 2011]
  */
 
 /*
@@ -49,7 +49,7 @@
  *                   scan all the regions and update them or refuse the
  *                   segment resizing; or keep a set of the regions mapping
  *                   a segment in order to perform this operation more
- *                   efficiently
+ *                   efficiently.
  */
 
 /*
@@ -213,6 +213,7 @@ t_error			segment_dump(void)
   t_setsz		size;
   s_iterator		i;
   t_state		s;
+  t_uint32		j;
 
   /*
    * 1)
@@ -257,10 +258,195 @@ t_error			segment_dump(void)
    * 4)
    */
 
+  module_call(console, message,
+	      '#', "    vault: size(%u)\n",
+	      SEGMENT_VAULT_SIZE);
+
+  for (j = 0; j < SEGMENT_VAULT_SIZE; j++)
+    {
+      if (_segment.vault[j].state == SEGMENT_VAULT_STATE_AVAILABLE)
+	continue;
+
+      module_call(console, message,
+		  '#', "      core: address(0x%08x) size(0x%x)\n",
+		  _segment.vault[j].address,
+		  _segment.vault[j].size);
+    }
+
+  /*
+   * 5)
+   */
+
   if (machine_call(segment, dump) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
+}
+
+/*
+ * this function marks an area of physical memory as being temporarily
+ * unreservable.
+ *
+ * this functionality has been introduced in order to counter the following
+ * scenario.
+ *
+ * let us recall that the function segment_inject() calls set_add(). should
+ * set_add() need to expand the array, malloc() would be called which, may
+ * it need extra memory, would call map_reserve() and, in turn,
+ * segment_reserve() and segment_space(). segment_space() could then return
+ * the address of the memory area that the caller was trying to inject in
+ * order to secure it.
+ *
+ * the following function can therefore be used to mark a segment in order
+ * to render it unreservable until enough memory is allocated to the set
+ * manager to handle an additional element.
+ *
+ * steps:
+ *
+ * 1) go through the vault entries.
+ *   a) if the entry is available, stop looking for one.
+ * 2) if no available entry has been found, return a fatal error.
+ * 3) register the given zone and mark the entry as being used.
+ * 4) call the machine.
+ */
+
+t_error			segment_protect(t_paddr			address,
+					t_psize			size)
+{
+  t_uint32		i;
+
+  /*
+   * 1)
+   */
+
+  for (i = 0; i < SEGMENT_VAULT_SIZE; i++)
+    {
+      /*
+       * a)
+       */
+
+      if (_segment.vault[i].state == SEGMENT_VAULT_STATE_AVAILABLE)
+	break;
+    }
+
+  /*
+   * 2)
+   */
+
+  if (i == SEGMENT_VAULT_SIZE)
+    CORE_ESCAPE("unable to protect this zone as the vault is already full");
+
+  /*
+   * 3)
+   */
+
+  _segment.vault[i].state = SEGMENT_VAULT_STATE_USED;
+  _segment.vault[i].address = address;
+  _segment.vault[i].size = size;
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(segment, protect, address, size) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function performs the opposite action of segment_protect() i.e
+ * it unmarks a memory area.
+ *
+ * this function is usally called after the segment has been successfully
+ * registered in the manager so that it no longer needs to be protected
+ * against reservation.
+ *
+ * steps:
+ *
+ * 1) go through the vault entries.
+ *   a) if the zone to unprotect is found, stop.
+ * 2) if the zone has not been located, return an error.
+ * 3) mark the entry as available.
+ * 4) call the machine.
+ */
+
+t_error			segment_unprotect(t_paddr		address,
+					  t_psize		size)
+{
+  t_uint32		i;
+
+  /*
+   * 1)
+   */
+
+  for (i = 0; i < SEGMENT_VAULT_SIZE; i++)
+    {
+      /*
+       * a)
+       */
+
+      if ((_segment.vault[i].state == SEGMENT_VAULT_STATE_USED) &&
+	  (_segment.vault[i].address == address) &&
+	  (_segment.vault[i].size == size))
+	break;
+    }
+
+  /*
+   * 2)
+   */
+
+  if (i == SEGMENT_VAULT_SIZE)
+    CORE_ESCAPE("unable to locate the zone to unprotect");
+
+  /*
+   * 3)
+   */
+
+  memset(&_segment.vault[i], 0x0, sizeof (s_segment_zone));
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(segment, unprotect, address, size) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the given address lies in a protected
+ * zone, false otherwise.
+ *
+ * steps:
+ *
+ * 1) go through the vault entries.
+ *   a) if the given address lies in the entry's zone and matches the
+ *      address space, return true.
+ */
+
+t_error			segment_protected(t_paddr		address)
+{
+  t_uint32		i;
+
+  /*
+   * 1)
+   */
+
+  for (i = 0; i < SEGMENT_VAULT_SIZE; i++)
+    {
+      /*
+       * a)
+       */
+
+      if ((_segment.vault[i].state == SEGMENT_VAULT_STATE_USED) &&
+	  (_segment.vault[i].address <= address) &&
+	  (address < (_segment.vault[i].address + _segment.vault[i].size)))
+	CORE_TRUE();
+    }
+
+  CORE_FALSE();
 }
 
 /*
@@ -342,9 +528,23 @@ t_error			segment_fit_first(i_as			asid,
        * b)
        */
 
-      *address = _segment.base;
+      for (*address = _segment.base;
+	   *address < (_segment.base + _segment.size);
+	   *address = *address + ___kaneton$framesz)
+	{
+	  /*
+	   * i)
+	   */
 
-      CORE_LEAVE();
+	  if (segment_protected(*address) == ERROR_FALSE)
+	    CORE_LEAVE();
+	}
+
+      /*
+       * c)
+       */
+
+      CORE_ESCAPE("unable to find available memory");
     }
 
   /*
@@ -358,11 +558,12 @@ t_error			segment_fit_first(i_as			asid,
    * 4)
    */
 
-  if ((head->address - _segment.base) >= size)
+  for (*address = _segment.base;
+       (*address + size) <= head->address;
+       *address = *address + ___kaneton$framesz)
     {
-      *address = _segment.base;
-
-      CORE_LEAVE();
+      if (segment_protected(*address) == ERROR_FALSE)
+	CORE_LEAVE();
     }
 
   /*
@@ -402,11 +603,12 @@ t_error			segment_fit_first(i_as			asid,
        * d)
        */
 
-      if ((next->address - (current->address + current->size)) >= size)
+      for (*address = current->address + current->size;
+	   (*address + size) <= next->address;
+	   *address = *address + ___kaneton$framesz)
 	{
-	  *address = current->address + current->size;
-
-	  CORE_LEAVE();
+	  if (segment_protected(*address) == ERROR_FALSE)
+	    CORE_LEAVE();
 	}
     }
 
@@ -424,12 +626,12 @@ t_error			segment_fit_first(i_as			asid,
    * 7)
    */
 
-  if (((_segment.base + _segment.size) -
-       (tail->address + tail->size)) >= size)
+  for (*address = tail->address + tail->size;
+       (*address + size) <= (_segment.base + _segment.size);
+       *address = *address + ___kaneton$framesz)
     {
-      *address = tail->address + tail->size;
-
-      CORE_LEAVE();
+      if (segment_protected(*address) == ERROR_FALSE)
+	CORE_LEAVE();
     }
 
   /*
@@ -635,9 +837,12 @@ t_error			segment_clone(i_as			asid,
  * 1) fill the remaining object's attributes, especially the segment
  *    identifier.
  * 2) set the segment identifier to return to the caller.
- * 3) add the segment object to the set of segments but also the segment
+ * 3) protect the zone so that nobody can reserve it until it is added
+ *    to the sets.
+ * 4) add the segment object to the set of segments but also the segment
  *    identifier to the address space's set of segments.
- * 4) call the machine.
+ * 5) unprotect the zone.
+ * 6) call the machine.
  */
 
 t_error			segment_inject(i_as			asid,
@@ -690,6 +895,13 @@ t_error			segment_inject(i_as			asid,
    * 4)
    */
 
+  if (segment_protect(object->address, object->size) != ERROR_OK)
+    CORE_ESCAPE("unable to protect the zone");
+
+  /*
+   * 5)
+   */
+
   if (set_add(_segment.segments, object) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the set of segments");
 
@@ -697,7 +909,14 @@ t_error			segment_inject(i_as			asid,
     CORE_ESCAPE("unable to add the segment identifier to the address space");
 
   /*
-   * 5)
+   * 6)
+   */
+
+  if (segment_unprotect(object->address, object->size) != ERROR_OK)
+    CORE_ESCAPE("unable to unprotect the zone");
+
+  /*
+   * 7)
    */
 
   if (machine_call(segment, inject, asid, object, id) != ERROR_OK)
@@ -1413,11 +1632,13 @@ t_error			segment_copy(i_segment			dst,
  * 2) allocate memory for the segment object.
  * 3) try to locate available space for the segment according to the
  *    requested size.
- * 4) fill the object's attributes.
- * 5) set the identifier to return.
- * 6) add the object to the set of segments and the identifier to the
+ * 4) protect the located space from being reserved.
+ * 5) fill the object's attributes.
+ * 6) set the identifier to return.
+ * 7) add the object to the set of segments and the identifier to the
  *    address space's set of segments.
- * 7) call the machine.
+ * 8) unprotect the zone.
+ * 9) call the machine.
  */
 
 t_error			segment_reserve(i_as			asid,
@@ -1460,6 +1681,7 @@ t_error			segment_reserve(i_as			asid,
   if ((o = malloc(sizeof (o_segment))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the segment object");
 
+
   /*
    * 3)
    */
@@ -1471,6 +1693,13 @@ t_error			segment_reserve(i_as			asid,
    * 4)
    */
 
+  if (segment_protect(o->address, size) != ERROR_OK)
+    CORE_ESCAPE("unable to protect the zone");
+
+  /*
+   * 5)
+   */
+
   o->as = as->id;
   o->size = size;
   o->permissions = perms;
@@ -1478,13 +1707,13 @@ t_error			segment_reserve(i_as			asid,
   o->id = SEGMENT_IDENTIFIER(o);
 
   /*
-   * 5)
+   * 6)
    */
 
   *id = o->id;
 
   /*
-   * 6)
+   * 7)
    */
 
   if (set_add(_segment.segments, o) != ERROR_OK)
@@ -1494,7 +1723,14 @@ t_error			segment_reserve(i_as			asid,
     CORE_ESCAPE("unable to add the segment identifier to the addresss space");
 
   /*
-   * 7)
+   * 8)
+   */
+
+  if (segment_unprotect(o->address, size) != ERROR_OK)
+    CORE_ESCAPE("unable to unprotect the zone");
+
+  /*
+   * 9)
    */
 
   if (machine_call(segment, reserve,

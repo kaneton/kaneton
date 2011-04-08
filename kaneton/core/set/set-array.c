@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set-array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri mar 25 17:33:30 2011]
+ * updated       julien quintard   [fri apr  8 09:54:31 2011]
  */
 
 /*
@@ -1104,7 +1104,6 @@ t_error			set_add_array(i_set			setid,
     }
   else
     {
-
       /*
        * B)
        */

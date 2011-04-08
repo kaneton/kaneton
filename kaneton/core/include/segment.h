@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [sat jan 15 00:19:12 2011]
+ * updated       julien quintard   [fri apr  8 09:04:47 2011]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -59,6 +59,20 @@
 #define SEGMENT_BPT_NODESZ		4096
 
 /*
+ * this macro defines the size of the vault i.e the set of segments
+ * which must be temporarily prevented from being reserved.
+ */
+
+#define SEGMENT_VAULT_SIZE		8
+
+/*
+ * these macros indicate the state of a vault entry.
+ */
+
+#define SEGMENT_VAULT_STATE_AVAILABLE	0
+#define SEGMENT_VAULT_STATE_USED	1
+
+/*
  * ---------- macro-functions -------------------------------------------------
  */
 
@@ -72,6 +86,18 @@
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * this structure represents a memory area which needs to be prevented
+ * from being reserved.
+ */
+
+typedef struct
+{
+  t_state			state;
+  t_paddr			address;
+  t_psize			size;
+}				s_segment_zone;
 
 /*
  * the segment object is identified by a unique identifier 'id' and
@@ -111,6 +137,8 @@ typedef struct
 
   i_set				segments;
 
+  s_segment_zone		vault[SEGMENT_VAULT_SIZE];
+
   machine_data(m_segment);
 }				m_segment;
 
@@ -123,6 +151,10 @@ typedef struct
   t_error			(*segment_show)(i_segment,
 						mt_margin);
   t_error			(*segment_dump)(void);
+  t_error			(*segment_protect)(t_paddr,
+						   t_psize);
+  t_error			(*segment_unprotect)(t_paddr,
+						     t_psize);
   t_error			(*segment_clone)(i_as,
 						 i_segment,
 						 i_segment*);
@@ -180,6 +212,14 @@ t_error			segment_show(i_segment			segid,
 				     mt_margin			margin);
 
 t_error			segment_dump(void);
+
+t_error			segment_protect(t_paddr			address,
+					t_psize			size);
+
+t_error			segment_unprotect(t_paddr		address,
+					  t_psize		size);
+
+t_error			segment_protected(t_paddr		address);
 
 t_error			segment_fit_first(i_as			asid,
 					  t_psize		size,

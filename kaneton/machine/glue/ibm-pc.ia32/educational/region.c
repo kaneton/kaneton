@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [sat feb  5 10:39:54 2011]
+ * updated       julien quintard   [fri apr  8 08:12:26 2011]
  */
 
 /*
@@ -35,6 +35,8 @@
 
 d_region		glue_region_dispatch =
   {
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL,

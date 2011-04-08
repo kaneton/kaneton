@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       julien quintard   [sun jan 30 21:01:10 2011]
+ * updated       julien quintard   [fri apr  8 09:37:24 2011]
  */
 
 /*

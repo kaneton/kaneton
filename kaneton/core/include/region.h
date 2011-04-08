@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [sat jan 15 00:18:11 2011]
+ * updated       julien quintard   [fri apr  8 09:04:13 2011]
  */
 
 #ifndef CORE_REGION_H
@@ -55,6 +55,20 @@
 #define REGION_OPTION_INVALID		(~(REGION_OPTION_FORCE))
 
 /*
+ * this macro defines the size of the vault i.e the set of regions
+ * which must be temporarily prevented from being reserved.
+ */
+
+#define REGION_VAULT_SIZE		16
+
+/*
+ * these macros indicate the state of a vault entry.
+ */
+
+#define REGION_VAULT_STATE_AVAILABLE	0
+#define REGION_VAULT_STATE_USED		1
+
+/*
  * ---------- macro-functions -------------------------------------------------
  */
 
@@ -68,6 +82,19 @@
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * this structure represents a memory area which needs to be prevented
+ * from being reserved.
+ */
+
+typedef struct
+{
+  t_state			state;
+  i_as				as;
+  t_vaddr			address;
+  t_vsize			size;
+}				s_region_zone;
 
 /*
  * the region object structure.
@@ -104,12 +131,17 @@ typedef struct
  * the _base_ attribute represents the lower bound virtual address while
  * the _size_ represents the number of bytes the virtual memory is composed
  * of.
+ *
+ * the _vault_ set identifier references a set of regions which need
+ * to be prevented from being reserved until the current operation finishes.
  */
 
 typedef struct
 {
   t_vaddr			base;
   t_vsize			size;
+
+  s_region_zone			vault[REGION_VAULT_SIZE];
 
   machine_data(m_region);
 }				m_region;
@@ -124,6 +156,12 @@ typedef struct
 					       i_region,
 					       mt_margin);
   t_error			(*region_dump)(void);
+  t_error			(*region_protect)(i_as,
+						  t_vaddr,
+						  t_vsize);
+  t_error			(*region_unprotect)(i_as,
+						    t_vaddr,
+						    t_vsize);
   t_error			(*region_inject)(i_as,
 						 o_region*,
 						 i_region*);
@@ -170,6 +208,17 @@ t_error			region_show(i_as			asid,
 				    mt_margin			margin);
 
 t_error			region_dump(void);
+
+t_error			region_protect(i_as			as,
+				       t_vaddr			address,
+				       t_vsize			size);
+
+t_error			region_unprotect(i_as			as,
+					 t_vaddr		address,
+					 t_vsize		size);
+
+t_error			region_protected(i_as			as,
+					 t_vaddr		address);
 
 t_error			region_fit_first(i_as			asid,
 					 t_vsize		size,

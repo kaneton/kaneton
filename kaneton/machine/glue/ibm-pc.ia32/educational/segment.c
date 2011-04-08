@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun jan 30 20:42:19 2011]
+ * updated       julien quintard   [fri apr  8 09:04:59 2011]
  */
 
 /*
@@ -54,6 +54,8 @@ d_segment		glue_segment_dispatch =
   {
     NULL,
     glue_segment_dump,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL,

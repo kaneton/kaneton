@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/region/region-fit.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [fri mar 25 17:45:28 2011]
+ * updated       julien quintard   [fri apr  8 09:28:15 2011]
  */
 
 /*
@@ -22,19 +22,6 @@
  * itself is meanginless outside its address space. besides, there is no
  * global set of regions as there is for segments. instead, the address
  * space maintains a set containing its region objects.
- *
- * [XXX:improvement] the function region_inject() calls set_add(). should
- *                   set_add() need to expand the array, malloc() would be
- *                   called which, may it need extra memory, would call
- *                   map_reserve() and, in turn, region_reserve() and
- *                   region_space(). region_space() could then return
- *                   the address of the memory area that the caller was
- *                   trying to inject in order to secure it.
- *                   a solution could consist in temporarily protecting
- *                   areas of memory through a region_protect() function
- *                   which would rely on a small and static array to store
- *                   the addresses and sizes the region_space() should not
- *                   return, making them exceptions.
  */
 
 /*
@@ -161,11 +148,14 @@ t_error			region_show(i_as			asid,
  * steps:
  *
  * 1) display general information.
- * 2) call the machine.
+ * 2) display the content of the vault.
+ * 3) call the machine.
  */
 
 t_error			region_dump(void)
 {
+  t_uint32		i;
+
   /*
    * 1)
    */
@@ -182,10 +172,202 @@ t_error			region_dump(void)
    * 2)
    */
 
+  module_call(console, message,
+	      '#', "    vault: size(%u)\n",
+	      REGION_VAULT_SIZE);
+
+  for (i = 0; i < REGION_VAULT_SIZE; i++)
+    {
+      if (_region.vault[i].state == REGION_VAULT_STATE_AVAILABLE)
+	continue;
+
+      module_call(console, message,
+		  '#', "      core: as(%qd) address(0x%08x) size(0x%x)\n",
+		  _region.vault[i].as,
+		  _region.vault[i].address,
+		  _region.vault[i].size);
+    }
+
+  /*
+   * 3)
+   */
+
   if (machine_call(region, dump) != ERROR_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
+}
+
+/*
+ * this function marks an area of virtual memory as being temporarily
+ * unreservable.
+ *
+ * this functionality has been introduced in order to counter the following
+ * scenario.
+ *
+ * let us recall that the function region_inject() calls set_add(). should
+ * set_add() need to expand the array, malloc() would be called which, may
+ * it need extra memory, would call map_reserve() and, in turn,
+ * region_reserve() and region_space(). region_space() could then return
+ * the address of the memory area that the caller was trying to inject in
+ * order to secure it.
+ *
+ * the following function can therefore be used to mark a region in order
+ * to render it unreservable until enough memory is allocated to the set
+ * manager to handle an additional element.
+ *
+ * steps:
+ *
+ * 1) go through the vault entries.
+ *   a) if the entry is available, stop looking for one.
+ * 2) if no available entry has been found, return a fatal error.
+ * 3) register the given zone and mark the entry as being used.
+ * 4) call the machine.
+ */
+
+t_error			region_protect(i_as			as,
+				       t_vaddr			address,
+				       t_vsize			size)
+{
+  t_uint32		i;
+
+  /*
+   * 1)
+   */
+
+  for (i = 0; i < REGION_VAULT_SIZE; i++)
+    {
+      /*
+       * a)
+       */
+
+      if (_region.vault[i].state == REGION_VAULT_STATE_AVAILABLE)
+	break;
+    }
+
+  /*
+   * 2)
+   */
+
+  if (i == REGION_VAULT_SIZE)
+    CORE_ESCAPE("unable to protect this zone as the vault is already full");
+
+  /*
+   * 3)
+   */
+
+  _region.vault[i].state = REGION_VAULT_STATE_USED;
+  _region.vault[i].as = as;
+  _region.vault[i].address = address;
+  _region.vault[i].size = size;
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(region, protect, as, address, size) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function performs the opposite action of region_protect() i.e
+ * it unmarks a memory area.
+ *
+ * this function is usally called after the region has been successfully
+ * registered in the manager so that it no longer needs to be protected
+ * against reservation.
+ *
+ * steps:
+ *
+ * 1) go through the vault entries.
+ *   a) if the zone to unprotect is found, stop.
+ * 2) if the zone has not been located, return an error.
+ * 3) mark the entry as available.
+ * 4) call the machine.
+ */
+
+t_error			region_unprotect(i_as			as,
+					 t_vaddr		address,
+					 t_vsize		size)
+{
+  t_uint32		i;
+
+  /*
+   * 1)
+   */
+
+  for (i = 0; i < REGION_VAULT_SIZE; i++)
+    {
+      /*
+       * a)
+       */
+
+      if ((_region.vault[i].state == REGION_VAULT_STATE_USED) &&
+	  (_region.vault[i].as == as) &&
+	  (_region.vault[i].address == address) &&
+	  (_region.vault[i].size == size))
+	break;
+    }
+
+  /*
+   * 2)
+   */
+
+  if (i == REGION_VAULT_SIZE)
+    CORE_ESCAPE("unable to locate the zone to unprotect");
+
+  /*
+   * 3)
+   */
+
+  memset(&_region.vault[i], 0x0, sizeof (s_region_zone));
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(region, unprotect, as, address, size) != ERROR_OK)
+    CORE_ESCAPE("an error occured in the machine");
+
+  CORE_LEAVE();
+}
+
+/*
+ * this function returns true if the given address lies in a protected
+ * zone, false otherwise.
+ *
+ * steps:
+ *
+ * 1) go through the vault entries.
+ *   a) if the given address lies in the entry's zone and matches the
+ *      address space, return true.
+ */
+
+t_error			region_protected(i_as			as,
+					 t_vaddr		address)
+{
+  t_uint32		i;
+
+  /*
+   * 1)
+   */
+
+  for (i = 0; i < REGION_VAULT_SIZE; i++)
+    {
+      /*
+       * a)
+       */
+
+      if ((_region.vault[i].state == REGION_VAULT_STATE_USED) &&
+	  (_region.vault[i].as == as) &&
+	  (_region.vault[i].address <= address) &&
+	  (address < (_region.vault[i].address + _region.vault[i].size)))
+	CORE_TRUE();
+    }
+
+  CORE_FALSE();
 }
 
 /*
@@ -196,8 +378,11 @@ t_error			region_dump(void)
  *
  * 0) verify the arguments.
  * 1) retrieve the address space object.
- * 2) if there is no region yet, verify that the whole region space is
- *    large enough to satisfy the request.
+ * 2) if there is no region yet...
+ *   a) verify that the whole region space is large enough to satisfy the
+ *      request.
+ *   b) try every address to make sure it is not protected.
+ *   c) if no address has been found, return an error.
  * 3) otherwise, retrieve the very first region object.
  * 4) perhaps there is enough space between the beginning of the virtual
  *    space and the first region's address.
@@ -248,13 +433,35 @@ t_error			region_fit_first(i_as			asid,
 
   if (set_head(as->regions, &i) != ERROR_TRUE)
     {
+      /*
+       * a)
+       */
+
       if ((_region.size - _region.base) < size)
 	CORE_ESCAPE("there is not enough memory to satisfy the reservation "
 		    "request");
 
-      *address = _region.base;
+      /*
+       * b)
+       */
 
-      CORE_LEAVE();
+      for (*address = _region.base;
+	   *address < (_region.base + _region.size);
+	   *address = *address + ___kaneton$pagesz)
+	{
+	  /*
+	   * i)
+	   */
+
+	  if (region_protected(as->id, *address) == ERROR_FALSE)
+	    CORE_LEAVE();
+	}
+
+      /*
+       * c)
+       */
+
+      CORE_ESCAPE("unable to find available memory");
     }
 
   /*
@@ -268,11 +475,12 @@ t_error			region_fit_first(i_as			asid,
    * 4)
    */
 
-  if ((head->address - _region.base) >= size)
+  for (*address = _region.base;
+       (*address + size) <= head->address;
+       *address = *address + ___kaneton$pagesz)
     {
-      *address = _region.base;
-
-      CORE_LEAVE();
+      if (region_protected(as->id, *address) == ERROR_FALSE)
+	CORE_LEAVE();
     }
 
   /*
@@ -305,11 +513,12 @@ t_error			region_fit_first(i_as			asid,
        * c)
        */
 
-      if ((next->address - (current->address + current->size)) >= size)
+      for (*address = current->address + current->size;
+	   (*address + size) <= next->address;
+	   *address = *address + ___kaneton$pagesz)
 	{
-	  *address = current->address + current->size;
-
-	  CORE_LEAVE();
+	  if (region_protected(as->id, *address) == ERROR_FALSE)
+	    CORE_LEAVE();
 	}
     }
 
@@ -327,12 +536,12 @@ t_error			region_fit_first(i_as			asid,
    * 7)
    */
 
-  if (((_region.base + _region.size) -
-       (tail->address + tail->size)) >= size)
+  for (*address = tail->address + tail->size;
+       (*address + size) <= (_region.base + _region.size);
+       *address = *address + ___kaneton$pagesz)
     {
-      *address = tail->address + tail->size;
-
-      CORE_LEAVE();
+      if (region_protected(as->id, *address) == ERROR_FALSE)
+	CORE_LEAVE();
     }
 
   CORE_ESCAPE("unable to locate enough space between the existing regions "
@@ -403,8 +612,11 @@ t_error			region_space(i_as			asid,
  * 0) verify the arguments.
  * 1) retrieve the address space object.
  * 2) fill the remaining region attributes, especially the identifier.
- * 3) add the object to the address space's set of regions.
- * 4) call the machine.
+ * 3) protect the zone so that it cannot get reserved until it has been
+ *    properly added to the set.
+ * 4) add the object to the address space's set of regions.
+ * 5) unprotect the zone.
+ * 6) call the machine.
  */
 
 t_error			region_inject(i_as			as,
@@ -453,12 +665,26 @@ t_error			region_inject(i_as			as,
    * 3)
    */
 
+  if (region_protect(o->id, object->address, object->size) != ERROR_OK)
+    CORE_ESCAPE("unable to protect the zone");
+
+  /*
+   * 4)
+   */
+
   if (set_add(o->regions, object) != ERROR_OK)
     CORE_ESCAPE("unable to add the object to the address space's set of "
 		"regions");
 
   /*
-   * 4)
+   * 5)
+   */
+
+  if (region_unprotect(o->id, object->address, object->size) != ERROR_OK)
+    CORE_ESCAPE("unable to unprotect the zone");
+
+  /*
+   * 6)
    */
 
   if (machine_call(region, inject, as, object, id) != ERROR_OK)
@@ -605,11 +831,9 @@ t_error			region_split(i_as			asid,
  *     b) retrieve the segment object mapped by the region.
  *     c) verify that the region's future size will not be larger than the
  *        segment's.
- *     d) build a temporary region so that the machine does not reserve the
- *        expanded part of the future region for its internal use.
- *     e) inject this temporary region in the address space's set of regions.
- *     f) call the machine.
- *     g) remove the temporary region now that it is safe.
+ *     d) protect the expanded part of the future region.
+ *     e) call the machine.
+ *     f) unprotect the zone.
  *   C) if the future size is identical to the current one...
  *     a) nothing to do in this case.
  * 5) update the region's size with the resized size.
@@ -690,11 +914,8 @@ t_error			region_resize(i_as			as,
   else if (size > reg->size)
     {
       /*
-       * C)
+       * B)
        */
-
-      o_region*		temporary;
-      i_region		id;
 
       /*
        * a)
@@ -755,25 +976,13 @@ t_error			region_resize(i_as			as,
        * d)
        */
 
-      if ((temporary = malloc(sizeof (o_region))) == NULL)
-	CORE_ESCAPE("unable to allocate memory for the region");
-
-      temporary->segment = reg->segment;
-      temporary->address = reg->address + reg->size;
-      temporary->offset = reg->offset + reg->size;
-      temporary->size = size - reg->size;
-      temporary->options = reg->options;
+      if (region_protect(as,
+			 reg->address + reg->size,
+			 size - reg->size) != ERROR_OK)
+	CORE_ESCAPE("unable to protect the zone");
 
       /*
        * e)
-       */
-
-      if (region_inject(as, temporary, &id) != ERROR_OK)
-	CORE_ESCAPE("unable to inject the temporary region in the "
-		    "address space's set of regions");
-
-      /*
-       * f)
        */
 
       if (machine_call(region, resize,
@@ -784,12 +993,13 @@ t_error			region_resize(i_as			as,
 	CORE_ESCAPE("an error occured in the machine");
 
       /*
-       * g)
+       * f)
        */
 
-      if (set_remove(oas->regions, id) != ERROR_OK)
-	CORE_ESCAPE("unable to remove the temporary region fro the address "
-		    "space's set of regions");
+      if (region_unprotect(as,
+			   reg->address + reg->size,
+			   size - reg->size) != ERROR_OK)
+	CORE_ESCAPE("unable to unprotect the zone");
     }
   else
     {
@@ -923,11 +1133,13 @@ t_error			region_coalesce(i_as			asid,
  *        not already in use.
  *   B) if the region can be reserved anywhere...
  *     a) look for available space in the address space's set of regions.
- * 5) allocate the object.
- * 6) fill the object's attributes.
- * 7) add the object to the address space's set of regions.
- * 8) call the machine.
- * 9) return the region's identifier.
+ * 5) protect the located zone.
+ * 6) allocate the object.
+ * 7) fill the object's attributes.
+ * 8) add the object to the address space's set of regions.
+ * 9) unprotect the zone.
+ * 10) call the machine.
+ * 11) return the region's identifier.
  */
 
 t_error			region_reserve(i_as			asid,
@@ -1035,11 +1247,18 @@ t_error			region_reserve(i_as			asid,
    * 5)
    */
 
+  if (region_protect(asid, address, size) != ERROR_OK)
+    CORE_ESCAPE("unable to protect the zone");
+
+  /*
+   * 6)
+   */
+
   if ((o = malloc(sizeof (o_region))) == NULL)
     CORE_ESCAPE("unable to allocate memory for the region object");
 
   /*
-   * 6)
+   * 7)
    */
 
   o->address = address;
@@ -1050,7 +1269,7 @@ t_error			region_reserve(i_as			asid,
   o->options = options;
 
   /*
-   * 7)
+   * 8)
    */
 
   if (set_add(as->regions, o) != ERROR_OK)
@@ -1058,7 +1277,14 @@ t_error			region_reserve(i_as			asid,
 		"regions");
 
   /*
-   * 8)
+   * 9)
+   */
+
+  if (region_unprotect(asid, address, size) != ERROR_OK)
+    CORE_ESCAPE("unable to unprotect the zone");
+
+  /*
+   * 10)
    */
 
   if (machine_call(region, reserve,
@@ -1067,7 +1293,7 @@ t_error			region_reserve(i_as			asid,
     CORE_ESCAPE("an error occured in the machine");
 
   /*
-   * 9)
+   * 11)
    */
 
   *region = o->id;

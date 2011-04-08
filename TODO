@@ -67,38 +67,6 @@
 
         assert(as_reserve(t, &a) == ERROR_OK);
       }
-- probleme de design pour malloc() recusrifs.
-  When a segment is reserved for instance, it is added to a set. This set
-  may need to allocate memory to extend the data structure, hence calling
-  malloc(). Unfortunately, malloc() might need to allocate more memory as
-  well, and to map it, calling segment_reserve() indirectly through
-  map_reserve(), creating a loop.
-  This loop can lead to inconsistencies since a segment could have been
-  found available in the first segment_reserve(), but after malloc() and
-  segment_reserve() is re-called, the same segment could be picked.
-  Allocating the object in the segment manager before calling set_add()
-  without internal allocation is not enough to prevent this problem.
-  Indeed, although the set can be created without the SET_OPT_ALLOC
-  option, the set might need more memory to handle a set_add() operation.
-  For instance, a linked-list set needs to allocate a container, this
-  container including previous and next pointers. Therefore, by
-  allocating this container, the malloc() function may require more memory,
-  hence calling segment_reserve() through map_reserve(), leading to the same
-  problem: a segment might be picked twice leading to inconsistencies.
-  A solution might be to use a specific set implementation that would always
-  make sure that, following a set_add(), it will always be able to handle
-  the next request without any more allocation.
-  Unfortunately, this solution would not be flexible enough because the
-  segment and region managers would be forced to use this set implementation.
-  I believe the ultimate solution is to add a set functionality: set_vouch().
-  This function, when called, makes sure that it can handle a next operation
-  without any more allocation. This function will therefore computes the worst
-  case scenario in terms of memory requirement and call memvouch() which will
-  make sure it has the given required amount of memory ready for use.
-  With this solution, only the segment and region fundamental memory managers
-  will use set_vouch() so that only these managers suffer the extra penalty
-  time while keeping the system flexible; indeed, those managers can be easily
-  changed to use another set implementation: ll, array, bpt etc.
 
 - pour les capabilities: (i) soit un autorise l'attenuation hierarchique,
   auquel cas, c'est tres flexible mais pas super secure car en donnant une

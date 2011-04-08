@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       julien quintard   [sat feb  5 10:36:05 2011]
+ * updated       julien quintard   [fri apr  8 09:54:07 2011]
  */
 
 /*
