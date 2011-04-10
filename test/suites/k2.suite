@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/suites/k2.suite
 #
 # created       julien quintard   [tue nov  2 07:33:43 2010]
-# updated       julien quintard   [sat feb  5 22:06:34 2011]
+# updated       julien quintard   [sat apr  9 12:31:08 2011]
 #
 
 name: k2
@@ -20,4 +20,4 @@ components:
 
   as:
     - kaneton/core/as/
-    - kaneton/machine/architecture/ia32/as/
+    - kaneton/machine/architecture/ia32/as/switch/

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/test/stages/k2.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [tue mar 22 13:19:36 2011]
+# updated       julien quintard   [sat apr  9 12:31:37 2011]
 #
 
 name: k2
@@ -30,5 +30,5 @@ configurations:
       stress: xen
     suite: k2
     weight: 0.8
-deadline: "2011/04/08 23:42:00"
+deadline: "2011/04/10 12:00:00"
 history: "%school%/%year%/%group%/sources/k2.tar.bz2"
