@@ -5,23 +5,15 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/stages/k1.stg
+# file          /home/mycure/KANETON-TEST-SYSTEM/stages/k1.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [tue mar 22 13:19:24 2011]
+# updated       julien quintard   [sun mar  6 18:27:39 2011]
 #
 
 name: k1
 description: This stage evaluates the kaneton's event procesing capabilities.
 configurations:
-  - name: QEMU
-    platform: ibm-pc
-    architecture: ia32/educational
-    environments:
-      construct: xen
-      stress: qemu
-    suite: k1
-    weight: 0.2
   - name: Xen
     platform: ibm-pc
     architecture: ia32/educational
@@ -29,6 +21,6 @@ configurations:
       construct: xen
       stress: xen
     suite: k1
-    weight: 0.8
+    weight: 1.0
 deadline: "2011/03/05 23:42:00"
 history: "%school%/%year%/%group%/sources/k1.tar.bz2"

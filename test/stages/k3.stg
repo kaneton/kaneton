@@ -5,23 +5,15 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/stages/k3.stg
+# file          /home/mycure/devices/test.opaak.org/stages/k3.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [sat feb  5 10:23:25 2011]
+# updated       julien quintard   [sun apr 10 18:52:54 2011]
 #
 
 name: k3
 description: This stage evaluates the kaneton's execution functionalities.
 configurations:
-  - name: QEMU
-    platform: ibm-pc
-    architecture: ia32/educational
-    environments:
-      construct: xen
-      stress: qemu
-    suite: k3
-    weight: 0.2
   - name: Xen
     platform: ibm-pc
     architecture: ia32/educational
@@ -29,6 +21,6 @@ configurations:
       construct: xen
       stress: xen
     suite: k3
-    weight: 0.8
+    weight: 1.0
 deadline: XXX
 history: "%school%/%year%/%group%/sources/k3.tar.bz2"

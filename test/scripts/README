@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/KANETON-TEST-SYSTEM/scripts/README
+# file          /home/mycure/devices/test.opaak.org/scripts/README
 #
 # created       julien quintard   [mon nov  1 21:45:10 2010]
-# updated       julien quintard   [sat feb 19 23:38:31 2011]
+# updated       julien quintard   [mon apr 11 10:10:34 2011]
 #
 
 This directory contains standalone scripts for performing various
@@ -88,10 +88,6 @@ according to the student's school, year and group/student name.
 # ---------- evaluate ---------------------------------------------------------
 #
 
-XXX rajouter du log
-XXX virer history
-XXX recuperer les snapshots a partir de history
-
 The evaluate script takes the student capabilities, retrieve the snapshots
 from their databases according to the given stage.
 
@@ -102,4 +98,4 @@ The script then issues a statement containing the students' grades.
 
 Example:
 
-  $> ./evaluate --stage k1 --pattern "^epita::.*$"
+  $> ./evaluate --pattern "^epita::.*$" --stage k1

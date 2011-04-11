@@ -5,23 +5,15 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/test/stages/k2.stg
+# file          /home/mycure/devices/test.opaak.org/stages/k2.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [sat apr  9 12:31:37 2011]
+# updated       julien quintard   [sun apr 10 18:52:11 2011]
 #
 
 name: k2
 description: This stage evaluates the kaneton's memory management.
 configurations:
-  - name: QEMU
-    platform: ibm-pc
-    architecture: ia32/educational
-    environments:
-      construct: xen
-      stress: qemu
-    suite: k2
-    weight: 0.2
   - name: Xen
     platform: ibm-pc
     architecture: ia32/educational
@@ -29,6 +21,6 @@ configurations:
       construct: xen
       stress: xen
     suite: k2
-    weight: 0.8
+    weight: 1.0
 deadline: "2011/04/10 12:00:00"
 history: "%school%/%year%/%group%/sources/k2.tar.bz2"
