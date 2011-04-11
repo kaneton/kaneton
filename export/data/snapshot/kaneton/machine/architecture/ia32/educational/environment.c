@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [mon apr 11 13:50:28 2011]
+ * updated       julien quintard   [mon apr 11 14:45:07 2011]
  */
 
 /*
@@ -206,7 +206,7 @@ t_error			architecture_environment_kernel(i_as	id)
 
   /* FIXME[go through the registered regions and remove the
            page table entries which do not correspond to these
-	   regions. this is necessary because the boot loader
+           regions. this is necessary because the boot loader
            mapped an awful lot of pages which must not be cleaned] */
 
   /*

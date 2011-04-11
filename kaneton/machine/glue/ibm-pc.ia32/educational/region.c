@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [fri apr  8 08:12:26 2011]
+ * updated       julien quintard   [mon apr 11 14:56:40 2011]
  */
 
 /*
@@ -67,8 +67,10 @@ d_region		glue_region_dispatch =
  * steps:
  *
  * 1) retrieve the region object.
- * 2) destroy the old mapping.
- * 3) map the new region.
+ * 2) depending on the new size...
+ *   A) map the new part of the extended region.
+ *   B) unmap the last part of the shrinked region.
+ *   C) nothing to do since the size has not changed.
  */
 
 t_error			glue_region_resize(i_as			as,
@@ -89,24 +91,37 @@ t_error			glue_region_resize(i_as			as,
    * 2)
    */
 
-  if (architecture_paging_unmap(as,
-				o->address,
-				o->size) != ERROR_OK)
-    MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to the "
-		   "original region");
+  if (size > region->size)
+    {
+      /*
+       * A)
+       */
 
-  /*
-   * 3)
-   */
+      if (architecture_paging_map(as,
+				  region->segment,
+				  region->offset + region->size,
+				  region->options,
+				  region->address + region->size,
+				  size - region->size) != ERROR_OK)
+	MACHINE_ESCAPE("unable to map part of the region");
+    }
+  else if (size < region->size)
+    {
+      /*
+       * B)
+       */
 
-  if (architecture_paging_map(as,
-			      o->segment,
-			      o->offset,
-			      o->options,
-			      o->address,
-			      size) != ERROR_OK)
-    MACHINE_ESCAPE("unable to map the virtual memory corresponding to the "
-		   "future resized region");
+      if (architecture_paging_unmap(as,
+				    region->address + size,
+				    region->size - size) != ERROR_OK)
+	MACHINE_ESCAPE("unable to unmap part of the region");
+    }
+  else
+    {
+      /*
+       * C)
+       */
+    }
 
   MACHINE_LEAVE();
 }
