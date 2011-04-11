@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hine/architecture/ia32/educational/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       julien quintard   [sun feb  6 14:58:44 2011]
+ * updated       julien quintard   [mon apr 11 13:44:56 2011]
  */
 
 /*
@@ -31,4 +31,4 @@
  * ---------- functions -------------------------------------------------------
  */
 
-/* FIXME[everything to do] */
+/* FIXME[complete if necessary] */

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...e/architecture/ia32/educational/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       julien quintard   [mon feb  7 11:03:29 2011]
+ * updated       julien quintard   [mon apr 11 13:39:32 2011]
  */
 
 /*
@@ -60,8 +60,8 @@
  *   pde 1023 references 0x011e2000 (the page directory itself)
  *     pt @ 0x011e2000 (the page directory acts as a page table)
  *       pte 0 references 0x011e3000 (the first page table: pde 0)
- *       pte 4 references 0x011e3000 (the second page table: pde1)
- *       pte 1023 references 0x011e3000 (the page directory: pde 1023)
+ *       pte 4 references 0x011e4000 (the second page table: pde 1)
+ *       pte 1023 references 0x011e2000 (the page directory: pde 1023)
  *
  * this technique---assuming the kernel page directory is mapped, but this is
  * quite obvious---enables the kernel to modify any kernel page table without

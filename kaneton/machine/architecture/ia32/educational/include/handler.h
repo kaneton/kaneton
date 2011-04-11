@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...cture/ia32/educational/include/handler.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       julien quintard   [mon jan 17 13:52:54 2011]
+ * updated       julien quintard   [mon apr 11 13:46:05 2011]
  */
 
 #ifndef ARCHITECTURE_HANDLER_H
@@ -20,7 +20,7 @@
 
 /*
  * this macro represents the number of handlers the system must set up,
- * for the exceptions, IRQs and syscalls.
+ * for the exceptions, IRQs, IPIs and syscalls.
  */
 
 #define ARCHITECTURE_HANDLER_SIZE	ARCHITECTURE_IDT_EXCEPTION_SIZE + \

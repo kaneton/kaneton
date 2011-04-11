@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...t/kaneton/core/scheduler/scheduler-mfq.c
+ * file          /home/mycure/Down...n/kaneton/core/scheduler/scheduler-mfq.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [tue feb  8 12:44:40 2011]
+ * updated       julien quintard   [mon apr 11 13:23:09 2011]
  */
 
 /*
@@ -338,7 +338,6 @@ t_error			scheduler_initialize(void)
   s_iterator		it;
   t_state		st;
   o_cpu*		o;
-  t_uint32		i;
 
   /*
    * 1)
@@ -444,12 +443,6 @@ t_error			scheduler_initialize(void)
 
 t_error			scheduler_clean(void)
 {
-  o_scheduler*		scheduler;
-  t_state		s;
-  s_iterator		i;
-  t_state		t;
-  s_iterator		j;
-
   /*
    * 1)
    */

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [mon feb  7 12:21:07 2011]
+ * updated       julien quintard   [mon apr 11 13:50:28 2011]
  */
 
 /*
@@ -127,54 +127,17 @@ extern am		_architecture;
  *   c) if the treated region is not the extra one, compute the next
  *      page directory and table start indexes as starting right after
  *      the end of the region i.e address + size.
- * 9) the page directory imported by the kernel has been set up by the
- *    boot loader. besides, the boot loader has passed to the kernel a list
- *    of pre-reserved system segments and regions. the segments are or will
- *    be injected in the segment manager and likewise for the regions, in the
- *    region manager. however, the page directory provided by the boot loader
- *    makes use of several page tables which have not been passed to the
- *    kernel as pre-reserved segments. the physical memory pages containing
- *    these page tables must be protected so they never get reserved and
- *    overwritten by a task or the kernel itself. this step therefore goes
- *    through the page directory and inject a segment in the segment manager
- *    for every unprotected page table.
- *    go through the regions as these are the only elements being currently
- *    mapped.
- *   a) compute the start and end indexes of the region's memory area.
- *   b) go through the involved page directory entries.
- *     i) if there is a referenced page table...
- *       #1) if there is no segment associated with the page table's physical
- *           address...
- *         #a) create a segment object which describes the page table's
- *             memory area.
- *         #b) inject the segment, hence preventing this system memory
- *             area from being reserved by anyone.
- * 10) flush the whole TLB, resetting all the address translations.
- * 11) register the kernel PDBR as being the PDBR on which to switch whenever
+ * 9) flush the whole TLB, resetting all the address translations.
+ * 10) register the kernel PDBR as being the PDBR on which to switch whenever
  *     an interrupt occurs.
  */
 
 t_error			architecture_environment_kernel(i_as	id)
 {
-  struct
-  {
-    at_pdei		start;
-    at_pdei		end;
-    at_pdei		index;
-  }			pde;
-  struct
-  {
-    at_ptei		start;
-    at_ptei		end;
-    at_ptei		index;
-  }			pte;
   i_region		useless;
   at_cr3		pdbr;
   o_as*			as;
-  at_pd			pd;
-  at_pt			pt;
   o_region*		r;
-  t_uint32		i;
 
   /*
    * 1)
@@ -203,7 +166,8 @@ t_error			architecture_environment_kernel(i_as	id)
    * 4)
    */
 
-  pd = (at_pd)as->machine.pd;
+  /* FIXME[retrieve the current page directory from the address
+           space object's structure] */
 
   /*
    * 5)
@@ -211,7 +175,7 @@ t_error			architecture_environment_kernel(i_as	id)
 
   /* FIXME[make 'pd' the system's current page directory by updating the
            necessary IA32 hardware structure and possibly storing the
-           value in a globally accessible variable such as a manager]
+           value in a globally accessible variable such as a manager] */
 
   /*
    * 6)
@@ -240,153 +204,20 @@ t_error			architecture_environment_kernel(i_as	id)
    * 8)
    */
 
-  pde.start = 0;
-  pte.start = 0;
-
-  for (i = 0; i < (_init->nregions + 1); i++)
-    {
-      /*
-       * a)
-       */
-
-      if (i != _init->nregions)
-	{
-	  pde.end = ARCHITECTURE_PD_INDEX(_init->regions[i].address);
-	  pte.end = ARCHITECTURE_PT_INDEX(_init->regions[i].address);
-	}
-      else
-	{
-	  pde.end = ARCHITECTURE_PD_SIZE - 1;
-	  pte.end = ARCHITECTURE_PT_SIZE;
-	}
-
-      /*
-       * b)
-       */
-
-      for (pde.index = pde.start;
-	   pde.index <= pde.end;
-	   pde.index++)
-	{
-	  /*
-	   * i)
-	   */
-
-	  if ((pde.index != ARCHITECTURE_PD_MIRROR) &&
-	      (pd[pde.index] & ARCHITECTURE_PDE_PRESENT))
-	    {
-	      /*
-	       * #1)
-	       */
-
-	      pt = (at_pt)ARCHITECTURE_PDE_ADDRESS(pd[pde.index]);
-
-	      /*
-	       * #2)
-	       */
-
-	      for (pte.index = (pde.index == pde.start ? pte.start : 0);
-		   pte.index < (pde.index == pde.end ?
-				pte.end : ARCHITECTURE_PT_SIZE);
-		   pte.index++)
-		{
-		  /*
-		   * #a)
-		   */
-
-		  if (pt[pte.index] & ARCHITECTURE_PTE_PRESENT)
-		    {
-		      if (architecture_pt_delete(pt, pte.index) != ERROR_OK)
-			MACHINE_ESCAPE("unable to delete the page "
-				       "table entry");
-		    }
-		}
-	    }
-	}
-
-      /*
-       * c)
-       */
-
-      if (i != _init->nregions)
-	{
-	  pde.start = ARCHITECTURE_PD_INDEX(_init->regions[i].address +
-					    _init->regions[i].size);
-	  pte.start = ARCHITECTURE_PT_INDEX(_init->regions[i].address +
-					    _init->regions[i].size);
-	}
-    }
+  /* FIXME[go through the registered regions and remove the
+           page table entries which do not correspond to these
+	   regions. this is necessary because the boot loader
+           mapped an awful lot of pages which must not be cleaned] */
 
   /*
    * 9)
-   */
-
-  for (i = 0; i < _init->nregions; i++)
-    {
-      /*
-       * a)
-       */
-
-      pde.start = ARCHITECTURE_PD_INDEX(_init->regions[i].address);
-      pde.end = ARCHITECTURE_PD_INDEX(_init->regions[i].address +
-				      _init->regions[i].size);
-
-      /*
-       * b)
-       */
-
-      for (pde.index = pde.start;
-	   pde.index <= pde.end;
-	   pde.index++)
-	{
-	  /*
-	   * i)
-	   */
-
-	  if (pd[pde.index] & ARCHITECTURE_PDE_PRESENT)
-	    {
-	      i_segment		segment;
-	      o_segment*	s;
-
-	      /*
-	       * #1)
-	       */
-
-	      if (segment_locate(ARCHITECTURE_PDE_ADDRESS(pd[pde.index]),
-				 &segment) == ERROR_FALSE)
-		{
-		  /*
-		   * #a)
-		   */
-
-		  if ((s = malloc(sizeof (o_segment))) == NULL)
-		    MACHINE_ESCAPE("unable to allocate memory");
-
-		  s->address = ARCHITECTURE_PDE_ADDRESS(pd[pde.index]);
-		  s->size = ___kaneton$pagesz;
-		  s->permissions = PERMISSION_READ | PERMISSION_WRITE;
-		  s->options = SEGMENT_OPTION_SYSTEM;
-
-		  /*
-		   * #b)
-		   */
-
-		  if (segment_inject(as->id, s, &segment) != ERROR_OK)
-		    MACHINE_ESCAPE("unable to inject the segment object");
-		}
-	    }
-	}
-    }
-
-  /*
-   * 10)
    */
 
   if (architecture_tlb_flush() != ERROR_OK)
     MACHINE_ESCAPE("unable to flush the TLB");
 
   /*
-   * 11)
+   * 10)
    */
 
   _architecture.kernel.pdbr = pdbr;
@@ -422,7 +253,6 @@ t_error			architecture_environment_server(i_as	id)
   i_segment	        segment;
   i_region		region;
   o_as*			as;
-  at_pd			pd;
   o_region*		r;
   o_segment*		s;
 
@@ -457,14 +287,8 @@ t_error			architecture_environment_server(i_as	id)
    * 4)
    */
 
-  if (architecture_pd_map(as->machine.pd, &pd) != ERROR_OK)
-    MACHINE_ESCAPE("unable to map the page directory");
-
-  if (architecture_pd_build(pd) != ERROR_OK)
-    MACHINE_ESCAPE("unable to build the page directory");
-
-  if (architecture_pd_unmap(pd) != ERROR_OK)
-    MACHINE_ESCAPE("unable to unmap the page directory");
+  /* FIXME[map the server's page directory, initialize it and
+           unmap it] */
 
   /*
    * 5)
