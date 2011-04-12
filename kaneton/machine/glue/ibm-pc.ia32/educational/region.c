@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [mon apr 11 14:56:40 2011]
+ * updated       julien quintard   [tue apr 12 09:33:12 2011]
  */
 
 /*
@@ -91,29 +91,29 @@ t_error			glue_region_resize(i_as			as,
    * 2)
    */
 
-  if (size > region->size)
+  if (size > o->size)
     {
       /*
        * A)
        */
 
       if (architecture_paging_map(as,
-				  region->segment,
-				  region->offset + region->size,
-				  region->options,
-				  region->address + region->size,
-				  size - region->size) != ERROR_OK)
+				  o->segment,
+				  o->offset + o->size,
+				  o->options,
+				  o->address + o->size,
+				  size - o->size) != ERROR_OK)
 	MACHINE_ESCAPE("unable to map part of the region");
     }
-  else if (size < region->size)
+  else if (size < o->size)
     {
       /*
        * B)
        */
 
       if (architecture_paging_unmap(as,
-				    region->address + size,
-				    region->size - size) != ERROR_OK)
+				    o->address + size,
+				    o->size - size) != ERROR_OK)
 	MACHINE_ESCAPE("unable to unmap part of the region");
     }
   else
