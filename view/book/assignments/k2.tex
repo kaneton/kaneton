@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/k2.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [mon apr 11 11:08:39 2011]
+% updated       julien quintard   [tue apr 12 07:41:20 2011]
 %
 
 %
@@ -143,7 +143,7 @@ and a set of regions. In other words, an address space object references all
 the physical memory owned by the address space along with the areas of
 virtual memory mapping the segments, making these segments accessible directly.
 
-Although the as manager's core is complete, students should definitely look at
+Although the as manager's core is complete, students should have a look at
 it.
 
 % region
@@ -160,7 +160,7 @@ The region manager provides a collection of functions for managing regions
 \ie{} areas of virtual memory.
 
 As for the as manager, this manager is already complete but students
-should browse its source code to fully understand its purpose.
+should browse through its source code to fully understand its purpose.
 
 % glue
 \subsection{Glue}
@@ -220,7 +220,7 @@ the virtual memory management. Students are however welcome to change
 everything as long as the name and prototype of the functions
 \code{architecture\_paging\_pdbr()}, \code{architecture\_paging\_map()} and
 \code{architecture\_paging\_unmap()} remain as these functions are directly
-used by the tests.
+reference within the tests.
 
 % pd
 \subsubsection*{pd}
@@ -232,21 +232,18 @@ used by the tests.
     \location{kaneton/machine/architecture/ia32/educational/include/pd.h}
 \end{itemize}
 
-Unlike the previous stage, students will notice that the \location{pd.c} file
-contains empty functions. Note however that students are welcome to modify
-the names/prototypes and re-implement everything their way though this may
-require updating other files.
-
 This file should contain functions for manipulating \name{PD - Page
 Directories} including building a page directory inside a given memory
 location, inserting a page directory entry, deleting a page directory
 entry, mapping and unmapping a page directory \etc{}
 
-Note that the \code{architecture\_pd\_map()} does not take the virtual address
-where the page directory should be mapped. Thus, it is the function's
-responsability to find an available address. Students should take care
-to avoid infinite loops by choosing the right functions to use for that
-purpose.
+Students should be careful when implementing such functions especially when
+it comes to mapping and unmapping a page directory. The student must keep
+in mind that the memory management functionalities provided by the core
+cannot be used for setting up a data structure in main memory because such
+functions will probably end up using the page-directory-specific functions
+located in this file. Students must therefore carefully choose the core
+functions to use when memory is needed in order to avoid infinit loops.
 
 % pt
 \subsubsection*{pt}
@@ -278,8 +275,9 @@ Besides, the student will have to complete the two most important paging
 functions: \code{architecture\_paging\_map()} takes a segment to map and
 updates the necessary page directory and tables accordingly while
 \code{architecture\_paging\_unmap()} does the opposite. Note that both
-functions should rely on the functions provided in \location{pd.c} and
-\location{pt.c}.
+functionalities should rely on the functions provided in \location{pd.c} and
+\location{pt.c} especially in order to temporarily map the necessary page
+tables and update them.
 
 % environment
 \subsubsection*{environment}
@@ -292,7 +290,7 @@ functions should rely on the functions provided in \location{pd.c} and
 \end{itemize}
 
 Finally, the \location{environment.c} file should be updated. Indeed,
-three \code{FIXME} can be found in the source code, all related to memory
+five \code{FIXME} can be found in the source code, all related to memory
 management.
 
 Note that the page directory set up by the boot loader can be retrieved
@@ -300,7 +298,7 @@ in \code{\_init->machine.pd}. Indeed, it is interesting to discover that the
 kernel, when launched, already evolves in a virtual environment.
 
 The student can actually notice that the boot loader's page directory is
-imported in \code{architecture\_environment\_kernel()} and is later
+imported in \code{architecture\_environment\_kernel()} and must then be
 cleaned from all the needless page table entries.
 
 %

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...hitecture/ia32/educational/environment.c
  *
  * created       julien quintard   [thu jan 13 23:13:50 2011]
- * updated       julien quintard   [mon apr 11 14:45:07 2011]
+ * updated       julien quintard   [tue apr 12 07:40:26 2011]
  */
 
 /*
@@ -163,19 +163,13 @@ t_error			architecture_environment_kernel(i_as	id)
     MACHINE_ESCAPE("unable to build the CR3 register's content");
 
   /*
-   * 4)
-   */
-
-  /* FIXME[retrieve the current page directory from the address
-           space object's structure] */
-
-  /*
    * 5)
    */
 
-  /* FIXME[make 'pd' the system's current page directory by updating the
-           necessary IA32 hardware structure and possibly storing the
-           value in a globally accessible variable such as a manager] */
+  /* FIXME[make the page directory provided by the boot loader the system's
+           current page directory by updating the necessary IA32 hardware
+           structure and possibly storing the value in a globally accessible
+           variable such as a manager] */
 
   /*
    * 6)
@@ -207,7 +201,7 @@ t_error			architecture_environment_kernel(i_as	id)
   /* FIXME[go through the registered regions and remove the
            page table entries which do not correspond to these
            regions. this is necessary because the boot loader
-           mapped an awful lot of pages which must not be cleaned] */
+           mapped an awful lot of pages which must now be cleaned] */
 
   /*
    * 9)
