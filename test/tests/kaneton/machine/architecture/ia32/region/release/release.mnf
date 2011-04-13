@@ -1,0 +1,9 @@
+name: machine/architecture/region/release
+description: This test reserves a segment which is mapped by a region which is then accessed. Finally, the region is released and another access is performed in order to make sure it triggers an error.
+symbol: test_architecture_region_release
+signature: r2309ifsif203j2jigg3
+output:
+points: 3
+timeout:
+  qemu: 3
+  xen: 3

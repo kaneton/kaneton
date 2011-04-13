@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /data/mycure/repo...achine/architecture/ia32/region/Makefile
+# file          /home/mycure/kane...achine/architecture/ia32/region/Makefile
 #
 # created       julien quintard   [wed apr 15 04:29:58 2009]
-# updated       julien quintard   [wed dec  1 05:51:20 2010]
+# updated       julien quintard   [tue apr 12 20:47:38 2011]
 #
 
 #
@@ -33,7 +33,8 @@ include			../../../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		inject				
+SUBDIRS			:=		inject				\
+					release				
 
 MODULES			:=		$(foreach s,$(SUBDIRS),${s}/${s}.lo)
 
