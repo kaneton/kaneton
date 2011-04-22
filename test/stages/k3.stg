@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/devices/test.opaak.org/stages/k3.stg
+# file          /home/mycure/kaneton/test/stages/k3.stg
 #
 # created       julien quintard   [tue nov  2 06:01:29 2010]
-# updated       julien quintard   [sun apr 10 18:52:54 2011]
+# updated       julien quintard   [tue apr 19 14:26:18 2011]
 #
 
 name: k3
@@ -22,5 +22,5 @@ configurations:
       stress: xen
     suite: k3
     weight: 1.0
-deadline: XXX
+deadline: "2011/05/08 23:42:00"
 history: "%school%/%year%/%group%/sources/k3.tar.bz2"

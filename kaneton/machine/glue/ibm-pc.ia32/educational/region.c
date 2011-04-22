@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [tue apr 12 09:33:12 2011]
+ * updated       julien quintard   [fri apr 22 11:06:11 2011]
  */
 
 /*
