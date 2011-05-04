@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [tue apr 12 21:41:41 2011]
+ * updated       julien quintard   [sat apr 23 12:34:20 2011]
  */
 
 /*

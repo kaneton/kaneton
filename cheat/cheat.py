@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [mon mar  7 17:12:04 2011]
+# updated       julien quintard   [wed may  4 12:55:00 2011]
 #
 
 #
@@ -51,6 +51,8 @@ g_history = []
 
 g_output = None
 g_descriptor = None
+
+g_targets = None
 
 #
 # ---------- constants --------------------------------------------------------
@@ -438,8 +440,7 @@ def                     prepare():
               env.OPTION_NONE)
 
   # create a temporary directory for holding unpacked snapshots.
-# xxx  g_directory = env.temporary(env.OPTION_DIRECTORY)
-  g_directory = "/tmp/tmpSvsWOQ"
+  g_directory = env.temporary(env.OPTION_DIRECTORY)
 
   # set the output file path.
   g_output = env._HISTORY_DIR_ + "/" + g_school + "/" + g_year + "/" +  \
@@ -682,6 +683,7 @@ def                     generate():
 #
 def                     compare():
   student = None
+  target = None
 
   # display a message.
   env.display(env.HEADER_OK,
@@ -690,19 +692,51 @@ def                     compare():
 
   # for every snapshot to test, generate the trace of comparisons against
   # other snapshots.
-  for student in g_history:
-    if (student["year"] == g_year) and                       \
-       (student["stage"] == g_stage):
-      # message.
-      env.display(env.HEADER_OK,
-                  "  " + student["name"],
-                  env.OPTION_NONE)
+  if g_targets: 
+    for target in g_targets:
+      print target
 
-      # launch the program.
-      env.launch(env._CTC_COMPARE_TOOL_,
-                 student["trace"] + " " + student["database"] + " -r " +
-                 student["fingerprint"],
-                 env.OPTION_QUIET)
+      student = None
+
+      # retrieve the student structure.
+      for student in g_history:
+        if target == student["student"]:
+          break
+
+      if not student:
+        env.display(env.HEADER_ERROR,
+                    "the student '" + target + "' does not seem to exist",
+                    env.OPTION_NONE)
+        sys.exit(42)
+
+      print student
+
+      if (student["year"] == g_year) and                     \
+         (student["stage"] == g_stage):
+        # message.
+        env.display(env.HEADER_OK,
+                    "  " + student["name"],
+                    env.OPTION_NONE)
+
+        # launch the program.
+        env.launch(env._CTC_COMPARE_TOOL_,
+                   student["trace"] + " " + student["database"] + " -r " +
+                   student["fingerprint"],
+                   env.OPTION_QUIET)
+  else:
+    for student in g_history:
+      if (student["year"] == g_year) and                     \
+         (student["stage"] == g_stage):
+        # message.
+        env.display(env.HEADER_OK,
+                    "  " + student["name"],
+                    env.OPTION_NONE)
+
+        # launch the program.
+        env.launch(env._CTC_COMPARE_TOOL_,
+                   student["trace"] + " " + student["database"] + " -r " +
+                   student["fingerprint"],
+                   env.OPTION_QUIET)
 
 #
 # highlight()

@@ -1,6 +1,14 @@
-monitor:
+monitor/k3:
   path: monitor/monitor.py
-  options: "--pattern='^epita.*$' --suite=k1"
-examiner:
+  options: "--pattern='^epita.*$' --suite=k3"
+
+examiner/k3:
   path: examiner/examiner.py
-  options: "--pattern='^epita.*$' --stage=k1"
+  options: "--pattern='^epita.*$' --stage=k3"
+examiner/kr:
+  path: examiner/examiner.py
+  options: "--pattern='^epita.*$' --stage=kr"
+
+keeper:
+  path: keeper/keeper.py
+  options: ""
