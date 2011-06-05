@@ -153,12 +153,43 @@ XXX
 \section{P\'eriph\'eriques et Noyau Windows NT
          \normalfont{{\hfill{} \scriptsize{4 points}}}}
 
-XXX
+\begin{itemize}
+\item
+  Citez les grands axes de conception du noyau Windows NT. (1.5 point)
+\item
+  Les p\'eriph\'eriques exportent leur interface de programmation comme un ensemble
+  de registres. Citez les deux mod\`eles de programmation typiques pour acc\'eder
+  \`a ces registres. (1 point)
+\item
+  Enum\'erez les propri\'et\'es (physiques, protocolaires) du r\'eseau de communication
+  CAN. A la vue de ces propri\'et\'es, dans quel contexte l'utiliseriez vous? (1.5 point)
+\end{itemize}
 
 \begin{correction}
-
-XXX
-
+\begin{itemize}
+  \item Question 1:
+    \begin{itemize}
+    \item Hybride: message passing mais single address space
+    \item stackable IO model
+    \item multithreade
+    \item oriente objet, object manager
+    \item strong security model
+    \end{itemize}
+  \item Question 2:
+    \begin{itemize}
+    \item memory mapped
+    \item IO instructions
+    \end{itemize}
+  \item Question 3:
+    \begin{itemize}
+    \item temps reel, determinisme
+    \item arbitrage bit a bit (recessif / dominant)
+    \item differentiel
+    \item resistance aux bruits electro magnetique
+    \item bus de terrain
+    \item utilisation typique: vehicule, environement parasite par de fort courants (usine...)
+    \end{itemize}
+\end{itemize}
 \end{correction}
 
 \end{document}
