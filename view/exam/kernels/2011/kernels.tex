@@ -114,11 +114,54 @@ XXX
 \section{Noyaux Avanc\'es et virtualisation
          \normalfont{{\hfill{} \scriptsize{4 points}}}}
 
-XXX
+
+\begin{itemize}
+    \item
+        Veuillez expliquer le principe des "Shadow Page Tables". (2 points)
+    \item
+        Expliquez et d\'etailez les principes introduits dans le kernel "Singularity". (2 points)
+\end{itemize}
+
+
 
 \begin{correction}
 
-XXX
+\begin{itemize}
+    \item
+        Veuillez expliquer le principe des "Shadow Page Tables"? (2 points)
+
+        Les shadow page tables sont utilis\'es sur la MMU et serve \`a la traduction
+        d'addresse. Le meilleur moyen de d\'ecrire les shadow page tables est de d\'etailer
+        le flow d'execution:
+        \begin{itemize}
+            \item Le kernel de l'invit\'e charge une nouvelle tache
+            \item Chargement du CR3
+                \begin{itemize}
+                    \item VMEXIT au niveau de l'hyperviseur
+                    \item Chargement du vrai CR3 avec un page table vide (cette page table est appel\'e
+                  shadow page table).
+                \end{itemize}
+            \item La tache s'execute et acc\`ede \`a de la m\'emoire.
+            \begin{itemize}
+                \item Le processeur g\'en\`ere une page fault vu que les shadow page table sont vide
+                \item L'hyperviseur copie le chemin qui a g\'en\'er\'e la faute (addresse virtuelle).
+                \item L'hyperviseur utilise une diff\'erent addresse physique vu que l'invit\'e utilise
+                  une address visible que par lui meme, pas par l'hote (addresse invit\'e != addresse physique).
+            \end{itemize}
+        \end{itemize}
+    \item
+        Expliquez et d\'etailez les principes introduits dans le kernel "Singularity" (2 points)
+
+        Singularity:
+        \begin{itemize}
+            \item Redesign complet sans contrainte de compatibilit\'e ant\'erieur
+            \item Tout les programmes et drivers tournent dans le meme espace d'addressage
+            \item Utilisation de language de haut niveau sans acces direct \`a la m\'emoire (C\#).
+            \item Interface et int\'eraction entre les differents composants decritent dans un
+            manifest.
+        \end{itemize}
+            
+\end{itemize}
 
 \end{correction}
 
