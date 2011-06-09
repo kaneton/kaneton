@@ -84,11 +84,27 @@
 \section{Boot \& M\'emoire
          {\hfill{} \normalfont{\scriptsize{5 points}}}}
 
-XXX
+\begin{itemize}
+    \item
+        D\'ecrivez les \'etapes du boot sur une machine IBM-PC, de la mise sous tension au lancement du noyau. (2 points)
+    \item
+        On souhaite impl\'ementer la gestion du SWAP dans Kaneton sur IBM-PC. On suppose qu'on dispose d'un driver pour le disque dur qui fournit un moyen de lire et d'\'ecrire sur une partition d\'edi\'ee en fournissant simplement un offset. D\'ecrivez les \'el\'ements principaux qu'il faudrait rajouter au kaneton actuel (tel que vous l'avez impl\'ement\'e) pour g\'erer le swap. (3 points)
+\end{itemize}
+
 
 \begin{correction}
 
-XXX
+\begin{itemize}
+    \item
+        D\'ecrivez les \'etapes du boot sur une machine IBM-PC, de la mise sous tension au lancement du noyau. (2 points)
+
+        Le CPU s'initialise materiellement (certains registres sont initialis\'es avec une valeur connue, notamment le registre qui contient le PC), puis commence a ex\'ecuter le code qui se trouve en m\'emoire \`a l'adresse \`a laquelle le PC \`a \'et\'e initialis\'ee. A cette adresse est mapp\'ee une ROM qui contient un firmware (le BIOS). Le firmware se charge d'initialiser les periph\'eriques de base, requis pour d\'emarrer la machine (\'ecran, clavier, disque dur, disquette, controlleur USB, carte r\'eseau parfois). Il va ensuite choisir un p\'eriph\'erique qui contient un bootloader. Sur IBM-PC, un p\'eriph\'erique bootable contient un bootsector sur le premier secteur (les 512 premiers octets). Pour savoir si un p\'eriph\'erique contient un bootsector valide, celui-ci est identifiable par un magic number dans ses deux derniers octets. Lorsque le BIOS a trouv\'e un p\'eriph\'erique bootable, il va charger le bootsector en m\'emoire \`a une adresse pr\'ecise (0x7c00) puis jumper dessus. Le bootsector contient g\'en\'eralement un bootloader, ou le 1er stage du bootloader lorsque celui-ci est complexe. Ce bootsector va donc soit charger un noyau directement, soit charger un autre stage du bootloader, qui chargera \`a son tour un noyau.
+    \item
+        On souhaite impl\'ementer la gestion du SWAP dans Kaneton sur IBM-PC. On suppose qu'on dispose d'un driver pour le disque dur qui fournit un moyen de lire et d'\'ecrire sur une partition d\'edi\'ee en fournissant simplement un offset. D\'ecrivez les \'el\'ements principaux qu'il faudrait rajouter au kaneton actuel (tel que vous l'avez impl\'ement\'e) pour g\'erer le swap. (3 points)
+
+        Il faut un manager qui se charge du SWAP. Il va g\'erer les emplacements disponibles et utilis\'es dans l'espace de swap. Ensuite, il faut modifier les objets r\'egion, qui vont devoir soit mapper un segment, soit un ``chunk'' dans l'espace de swap. L'\'etape suivante consiste \`a rajouter du code dans l'allocateur, pour que s'il ne trouve plus de place en m\'emoire physique, il commence d'abord par faire du m\'enage en swappant des pages. Pour ce faire, une impl\'ementation basique pourrait consister en un simple random. On va donc \'elire au hasard un segment que l'on veut lib\'erer, trouver de la place dans l'espace de swap pour l'y recopier et effectuer la copie sur le disque, puis trouver toutes les r\'egions qui y font r\'ef\'erence et y marquer que la page en question n'est plus associ\'ee a un segment, mais a un chunk en swap. On modifie \'egalement les PD et PT pour supprimer le ou les mappings correspondants. On invalide \'eventuellement les entr\'ees de TLB correspondant, si besoin. Ensuite, on supprime le segment, ce qui lib\`ere de la place en m\'emoire physique. On r\'eit\`ere l'op\'eration jusqu'\`a pouvoir faire l'allocation qui \`a \'et\'e demand\'ee. Lorsque c'est le cas, on r\'ealise l'allocation, qui peut alors se faire. La derniere \'etape consiste \`a g\'erer l'acc\`es \`a une page qui a \'et\'e plac\'ee en swap. Pour cela, on va modifier le handler de page fault. Dans l'\'etat actuel, il indique obligatoirement une erreur fatale, on va donc le modifier. On regarde l'adresse qui a d\'eclench\'e la page fault, et on trouve la r\'egion correspondante. Si cette r\'egion n'existe pas, alors c'est comme avant, une erreur fatale, si en revanche c'est une r\'egion qui existe, elle doit certainement indiquer qu'elle ne correspond plus \`a un segment, mais \`a un chunk en swap. Dans ce cas, on alloue un nouveau segment afin de recopier le chunk en swap vers la m\'emoire physique. Lorsque la recopie est faite, on lib\`ere la zone de swap utilis\'ee. On refait ensuite le tour des r\'egions qui pointaient vers ce chunk en swap et on indique que les r\'egions pointent maintenant sur le segment qui vient d'\^etre allou\'e. On remet le mapping dans les PD et PT et on invalide les TLB correspondantes. On resume ensuite de l'exception. Le CPU va retenter un acc\`es a la m\'emoire, qui devrait ainsi, cette fois, r\'eussir. 
+
+\end{itemize}
 
 \end{correction}
 
