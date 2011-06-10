@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/exam/kernels/2011/kernels.tex
 %
 % created       julien quintard   [mon may 14 21:56:41 2007]
-% updated       julien quintard   [wed may 25 09:35:39 2011]
+% updated       julien quintard   [fri jun 10 11:20:51 2011]
 %
 
 %
@@ -85,12 +85,17 @@
          {\hfill{} \normalfont{\scriptsize{5 points}}}}
 
 \begin{itemize}
-    \item
-        D\'ecrivez les \'etapes du boot sur une machine IBM-PC, de la mise sous tension au lancement du noyau. (2 points)
-    \item
-        On souhaite impl\'ementer la gestion du SWAP dans Kaneton sur IBM-PC. On suppose qu'on dispose d'un driver pour le disque dur qui fournit un moyen de lire et d'\'ecrire sur une partition d\'edi\'ee en fournissant simplement un offset. D\'ecrivez les \'el\'ements principaux qu'il faudrait rajouter au kaneton actuel (tel que vous l'avez impl\'ement\'e) pour g\'erer le swap. (3 points)
+  \item
+    D\'ecrivez les \'etapes du boot sur une machine IBM-PC, de la mise
+    sous tension au lancement du noyau. (2 points)
+  \item
+    On souhaite impl\'ementer la gestion du Swap dans kaneton sur IBM-PC.
+    On suppose qu'on dispose d'un driver pour le disque dur qui fournit un
+    moyen de lire et d'\'ecrire sur une partition d\'edi\'ee en fournissant
+    simplement un offset. D\'ecrivez les \'el\'ements principaux qu'il
+    faudrait rajouter au kaneton actuel (tel que vous l'avez impl\'ement\'e)
+    pour g\'erer le Swap. (3 points)
 \end{itemize}
-
 
 \begin{correction}
 
@@ -115,7 +120,28 @@
 \section{Ex\'ecution
          {\hfill{} \normalfont{\scriptsize{5 points}}}}
 
-XXX
+\begin{enumerate}
+  \item
+    Sur x86, lors d'une interruption, le handler associ\'e au vecteur
+    d'interruption correspondant est automatiquement ex\'ecut\'e par le
+    processeur. Qu'en est-il sur d'autres architectures que vous pouvez
+    conna\^itre (MIPS, Sparc, PIC, ARM, ...) ? (1 point)
+  \item
+    Dans un tableau \`a double-entr\'ee, vous donnerez les avantages et les
+    d\'esavantages des user-level threads et des kernel-level threads.
+    (1.5 points, laisser la place pour un tableau)
+  \item
+    Apr\`es avoir rappel\'e les objectifs d'un bon ordonnanceur, vous
+    d\'ecrirez dans les grandes lignes le fonctionnement d'un des
+    ordonnanceurs du noyau Linux 2.6: O(1) ou CFS. (1.5 points, laisser
+    de la place pour un sch\'ema)
+  \item
+    Le noyau Linux utilisait (jusqu'\`a la 2.6), un Big Kernel Lock pour
+    acc\'eder \`a la structure d'ordonnancement. Justifiez en un mot son
+    utilisation et donnez dans les grandes lignes les limitations de ce
+    m\'ecanisme qui ont impos\'e son remplacement avec l'arriv\'e de
+    processeur \`a 4, 8, 32 coeurs. (1 point)
+\end{enumerate}
 
 \begin{correction}
 
@@ -132,13 +158,12 @@ XXX
 
 
 \begin{itemize}
-    \item
-        Veuillez expliquer le principe des "Shadow Page Tables". (2 points)
-    \item
-        Expliquez et d\'etailez les principes introduits dans le kernel "Singularity". (2 points)
+  \item
+    Veuillez expliquer le principe des "Shadow Page Tables". (2 points)
+  \item
+    Expliquez et d\'etaillez les principes introduits dans le kernel
+    "Singularity". (2 points)
 \end{itemize}
-
-
 
 \begin{correction}
 
@@ -191,12 +216,13 @@ XXX
 
 \begin{itemize}
   \item
-    Veuillez expliquer le principe de moindre privilege.
+    Veuillez expliquer le principe de moindre privil\`ege (0.5 point).
   \item
     Est-ce que ce principe est respect\'e dans les kernels monolithiques
-    modernes?
+    modernes? Justifiez! (0.5 point)
   \item
-    Quel mecanisme pourrait-\^etre utilis\'e pour garantir un tel principe?
+    Quel m\'ecanisme pourrait-\^etre utilis\'e pour garantir un tel principe?
+    Detaillez son fonctionnement. (1 point)
 \end{itemize}
 
 \begin{correction}
@@ -213,15 +239,16 @@ XXX
          \normalfont{{\hfill{} \scriptsize{4 points}}}}
 
 \begin{itemize}
-\item
-  Citez les grands axes de conception du noyau Windows NT. (1.5 point)
-\item
-  Les p\'eriph\'eriques exportent leur interface de programmation comme un ensemble
-  de registres. Citez les deux mod\`eles de programmation typiques pour acc\'eder
-  \`a ces registres. (1 point)
-\item
-  Enum\'erez les propri\'et\'es (physiques, protocolaires) du r\'eseau de communication
-  CAN. A la vue de ces propri\'et\'es, dans quel contexte l'utiliseriez vous? (1.5 point)
+  \item
+    Citez les grands axes de conception du noyau Windows NT. (1.5 point)
+  \item
+    Les p\'eriph\'eriques exportent leur interface de programmation comme
+    un ensemble de registres. Citez les deux mod\`eles de programmation
+    typiques pour acc\'eder \`a ces registres. (1 point)
+  \item
+    Enum\'erez les propri\'et\'es (physiques, protocolaires) du r\'eseau de
+    communication CAN. A la vue de ces propri\'et\'es, dans quel contexte
+    l'utiliseriez vous? (1.5 point)
 \end{itemize}
 
 \begin{correction}

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/modules/test/test.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [sat mar  5 11:54:45 2011]
+ * updated       julien quintard   [sun may  8 12:21:12 2011]
  */
 
 /*

@@ -117,6 +117,11 @@
   required to retrieve the message definitions, generate the stubs for
   marshalling the messages and generate and pretty binary, ready to be
   launched :)
+  An example of this problem is for FUSE. In FUSE's source code, there are
+  several includes but a single one is exported (fuse.h). Should they have
+  decided to export a C++ or Python interface, an equivalent header/module/etc.
+  would have had to be manually implemented though such a file could be
+  automatically generated.
 
 - When the loader starts, it pre-reserved some regions like the DMA zone,
   the VGA area etc. because these memory areas cannot be used.
