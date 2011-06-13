@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/kernels/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [wed apr 22 11:11:19 2009]
+# updated       julien quintard   [mon jun 13 23:39:08 2011]
 #
 
 #
@@ -36,7 +36,8 @@ SUBDIRS			:=		boot				\
 					devices				\
 					security			\
 					file-systems			\
-					windows-nt			
+					windows-nt			\
+					os-research			
 
 #
 # ---------- rules ------------------------------------------------------------

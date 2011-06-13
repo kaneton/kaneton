@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [sat feb  5 10:59:02 2011]
+# updated       julien quintard   [sat jun 11 14:39:52 2011]
 #
 
 #
@@ -62,8 +62,14 @@ else
   cheat cheat-								\
   play play-								\
   record record-							\
-  clean									\
-  view-% export-% cheat-% play-% record-%:	initialize
+  clean:		initialize
+	$(_MAKE_) -f Makefile $@
+
+  view-%								\
+  export-%								\
+  cheat-%								\
+  play-%								\
+  record-%:		initialize
 	$(_MAKE_) -f Makefile $@
 
 endif
