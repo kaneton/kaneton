@@ -3,6 +3,7 @@ description: This test creates a thread which spawns another thread. This last t
 symbol: test_architecture_scheduler_context_03
 signature: nsvdiojw0e9w32qfr32dsnvoweif039g
 output:
+points: 5
 timeout:
   qemu: 14
   xen: 9
