@@ -201,7 +201,57 @@ t_error			architecture_environment_kernel(i_as	id)
   /* FIXME[go through the registered regions and remove the
            page table entries which do not correspond to these
            regions. this is necessary because the boot loader
-           mapped an awful lot of pages which must now be cleaned] */
+           mapped an awful lot of pages which must now be cleaned]
+
+  pde.start = 0;
+  pte.start = 0;
+
+  for (i = 0; i < (_init->nregions + 1); i++)
+    {
+      if (i != _init->nregions)
+	{
+	  pde.end = ARCHITECTURE_PD_INDEX(_init->regions[i].address);
+	  pte.end = ARCHITECTURE_PT_INDEX(_init->regions[i].address);
+	}
+      else
+	{
+	  pde.end = ARCHITECTURE_PD_SIZE - 1;
+	  pte.end = ARCHITECTURE_PT_SIZE;
+	}
+
+      for (pde.index = pde.start;
+	   pde.index <= pde.end;
+	   pde.index++)
+	{
+	  if ((pde.index != ARCHITECTURE_PD_MIRROR) &&
+	      (pd[pde.index] & ARCHITECTURE_PDE_PRESENT))
+	    {
+	      pt = (at_pt)ARCHITECTURE_PDE_ADDRESS(pd[pde.index]);
+
+	      for (pte.index = (pde.index == pde.start ? pte.start : 0);
+		   pte.index < (pde.index == pde.end ?
+				pte.end : ARCHITECTURE_PT_SIZE);
+		   pte.index++)
+		{
+		  if (pt[pte.index] & ARCHITECTURE_PTE_PRESENT)
+		    {
+		      if (architecture_pt_delete(pt, pte.index) != ERROR_OK)
+			MACHINE_ESCAPE("unable to delete the page "
+				       "table entry");
+		    }
+		}
+	    }
+	}
+
+      if (i != _init->nregions)
+	{
+	  pde.start = ARCHITECTURE_PD_INDEX(_init->regions[i].address +
+					    _init->regions[i].size);
+	  pte.start = ARCHITECTURE_PT_INDEX(_init->regions[i].address +
+					    _init->regions[i].size);
+	}
+    }
+  */
 
   /*
    * 9)
