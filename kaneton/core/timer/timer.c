@@ -109,13 +109,13 @@ void			timer_handler(i_event			event,
    * 1)
    */
 
-  assert(clock_update(TIMER_DELAY));
+  assert(clock_update(TIMER_DELAY) == ERROR_OK);
 
   /*
    * 2)
    */
 
-  assert(timer_check());
+  assert(timer_check() == ERROR_OK);
 }
 
 /*

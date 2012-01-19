@@ -129,7 +129,7 @@ t_error			message_register(i_task			task,
    * 2)
    */
 
-  if (set_exist(o->messages, typeid) == ERROR_OK)
+  if (set_exist(o->messages, typeid) == ERROR_TRUE)
     CORE_ESCAPE("XXX");
 
   /*
