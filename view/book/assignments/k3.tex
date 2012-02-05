@@ -202,6 +202,8 @@ been left to the student to implement.
 
            In order to ensure that the \name{CPU} is always executing
            something, this function must make sure to always elect a thread.
+           How to execute code when there is no thread left to execute
+           is for students to figure out.
 
            \-
 
@@ -249,6 +251,14 @@ been left to the student to implement.
            timeslice may also need to be re-computed.
          }
 
+Students should thoroughly test the scheduler implementation, making
+sure that threads are properly elected before moving to the hardware
+context switch.
+
+Note that macro-functions are provided in
+\location{kaneton/core/include/scheduler.h} for computing the
+XXX
+
 %
 % glue
 %
@@ -283,7 +293,7 @@ will notice that the scheduler's state has changed to \code{SCHEDULER\_STOP}
 and the execution will be handed to the kernel thread, as expected.
 
 The \code{glue\_scheduler\_switch()} is at the heart of this glue. This
-handler is triggered after quantum milliseconds at takes care to elect
+handler is triggered after quantum milliseconds and takes care to elect
 a new thread and call the \code{architecture\_context\_switch()} function
 in order to prepare the hardware context switch. Indeed, as discussed
 next, the \code{architecture\_context\_switch()} function does not perform
@@ -305,21 +315,29 @@ complete the scheduler's functionalities on this machine.
 The \name{ia32/educational} architecture relies on the interrupts in order
 to provide a context switch mechanism. This concept is based on the fact
 that whenever a thread is interrupted, its context is saved on a stack
-and when returning from the interrupt---through the \code{iret} assembly
-instruction---the context is retrieved from the stack, hence resuming the
-thread's execution. The context switch mechanism basically consists in
-\textit{``replacing''} the context to be resumed in order for the processor to
-retrieve the context of another thread, hence switching the execution from the
-interrupted thread to another.
+so that, when returning from the interrupt through the \code{iret} assembly
+instruction, the \name{CPU} retrieves the context from the stack, hence
+resuming the thread's execution. The context switch mechanism basically
+consists in \textit{``replacing''} the context to be resumed in order for
+the processor to retrieve the context of another thread, hence switching
+the execution from the interrupted thread to another.
 
 Note that the particularity of the \name{ia32/educational} architecture lies
 in the fact that a special stack, known as the \name{KIS - Kernel Interrupt
 Stack}, is used for handling interrupts. Indeed, while in the stage \name{k1}
 students were free to handle the interrupts their way, it is mandatory in
-\name{k3} to comply with this design. Therefore, whenever an interrupt is
-triggered, the assembly part of the interrupt handler must save the necessary
-information regarding the interrupted thread but also load the kernel address
-space and switch on the \name{KIS}.
+\name{k3} to comply with this design.
+
+Therefore, whenever an interrupt is triggered, the assembly part of the
+interrupt handler must save the necessary information regarding the interrupted
+thread. Then, the address space of the kernel must be loaded so as to
+set up the special interrupt-specific stack known as the \name{KIS}.
+Thus, the high-level interrupt handler is called and operates in the
+kernel address space, on a specific stack. Finally, once the interrupt
+handled, the kernel does the opposite actions by coming back from
+the \name{KIS} to the stack on which the interrupted thread's context
+has been saved, of another thread to resume. Then, the thread's context
+is restored so as for the \name{CPU} to resume its execution.
 
 % context
 \subsubsection*{context}
@@ -341,15 +359,13 @@ let us recall that while the context of an interrupted thread evolving in
 with lower privileges. Indeed, such threads possess an additional
 stack---known as the \name{pile} in kaneton and the \name{kernel stack} in
 many other kernels---on which their context is stored when interrupted.
-The function \code{architecture\_context\_destory()} does the opposite by
+The function \code{architecture\_context\_destroy()} does the opposite by
 releasing the resources related to the thread's low-level context.
 
 In addition, the functions \code{architecture\_context\_set()} and
 \code{architecture\_context\_get()} manipulate the given thread's context.
 Note that the context which these functions assumed to find on the thread's
-stack or pile is given by the structure \code{as\_context}. Once again,
-students could decide to adapt this structure to their needs as this is
-not a hardware structure.
+stack or pile is given by the structure \code{as\_context}.
 
 Finally, the \code{architecture\_context\_setup()} function initializes the
 context switch mechanism by reserving the \name{KIS - Kernel Interrupt Stack}
@@ -377,7 +393,10 @@ The \code{architecture\_context\_switch()} function, which is called by
 \code{glue\_scheduler\_switch()}, should prepare the context switch by
 recording, in a structure such as \code{\_architecture}, the information
 required for \code{ARCHITECTURE\_CONTEXT\_RESTORE()} to restore the context
-of the thread to resume before returning from the interrupt.
+of the thread to resume. Then, when returning from the interrupt handler,
+the \code{ARCHITECTURE\_CONTEXT\_RESTORE()} macro-function will finally be
+called whose role will be to set up the information related to the thread
+to resume so that the \name{CPU} restore its registers.
 
 % architecture
 \subsubsection*{architecture}
@@ -410,10 +429,10 @@ immediately followed by \code{event\_disable()}. However, one must understand
 that once the scheduler has been started and the events enabled, the
 thread will start being scheduled until one of those threads calls
 \code{scheduler\_stop()}. Indeed, remember that the \code{scheduler\_elect()}
-function, noticing this change, will elect the kernel thread for execution
-which happens to be the very first thread, the one which enabled the events.
-Therefore, resuming its execution, the kernel thread continues and
-disables the events right away.
+function, noticing the change of state to \code{SCHEDULER\_STATE\_STOP}, will
+elect the kernel thread for execution which happens to be the very first
+thread, the one which enabled the events. Therefore, resuming its execution,
+the kernel thread continues and disables the events right away.
 
 \begin{verbatim}
   extern m_kernel       _kernel;
@@ -494,4 +513,9 @@ This section contains advices that students are welcome to consider:
     Students should remember to update the registers whenever switching
     from an environment to another such as from the thread's to the kernel's
     or the other way around.
+  \item
+    For the purpose of the \code{scheduler\_yield()} and
+    \code{scheduler\_elect()} which must ensure that a thread is
+    elected, even though there may be no thread left, students could
+    very well introduce a special thread.
 \end{itemize}

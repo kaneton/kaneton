@@ -175,9 +175,12 @@ t_error			glue_event_dump(void)
 /*
  * this function enables the interrupts, hence the event processing.
  *
+ * note that this function must triggers an event right away.
+ *
  * steps:
  *
  * 1) call the STI instruction.
+ * 2) manually trigger an event.
  */
 
 t_error			glue_event_enable(void)
@@ -187,6 +190,12 @@ t_error			glue_event_enable(void)
    */
 
   ARCHITECTURE_STI();
+
+  /*
+   * 2)
+   */
+
+  asm volatile ("int $32");
 
   MACHINE_LEAVE();
 }

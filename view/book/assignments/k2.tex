@@ -31,7 +31,7 @@ differently, most architectures now provide a paging system, hence easing
 the task consisting in porting a kernel on several microprocessor
 architectures.
 
-Through this stage, students will learn the notions listed below:
+Throughout this stage, students will learn the notions listed below:
 
 \begin{itemize}
   \item
@@ -215,12 +215,12 @@ the necessary functions in order to provide the virtual memory mechanism.
 % architecture
 \subsection{Architecture}
 
-The \name{ia32/educational} implementation provides skeleton functions for
-the virtual memory management. Students are however welcome to change
-everything as long as the name and prototype of the functions
-\code{architecture\_paging\_pdbr()}, \code{architecture\_paging\_map()} and
-\code{architecture\_paging\_unmap()} remain as these functions are directly
-reference within the tests.
+The \name{ia32/educational} implementation provides mostly empty files
+with the exception of some skeleton functions in \location{paging.c}.
+Students are welcome to change everything as long as the name and prototype
+of the functions \code{architecture\_paging\_pdbr()},
+\code{architecture\_paging\_map()} and \code{architecture\_paging\_unmap()}
+remain unchanged as these functions are directly referenced by the tests.
 
 % pd
 \subsubsection*{pd}
@@ -238,12 +238,12 @@ location, inserting a page directory entry, deleting a page directory
 entry, mapping and unmapping a page directory \etc{}
 
 Students should be careful when implementing such functions especially when
-it comes to mapping and unmapping a page directory. The student must keep
+it comes to mapping and unmapping a page directory. Students must keep
 in mind that the memory management functionalities provided by the core
 cannot be used for setting up a data structure in main memory because such
 functions will probably end up using the page-directory-specific functions
 located in this file. Students must therefore carefully choose the core
-functions to use when memory is needed in order to avoid infinit loops.
+functions to use when memory is needed in order to avoid infinite loops.
 
 % pt
 \subsubsection*{pt}
@@ -403,6 +403,10 @@ This section contains advices that students are welcome to consider:
     simpler. Indeed, via these functions students could make sure the mappings
     are correct but also that some flags are not responsible for an
     unexpected behaviour.
+  \item
+    Note that permissions, supervisor or user, can be assigned to page
+    directory/table entries. These permissions can actually be the cause
+    of errors and should therefore be considered carefully.
   \item
     Finally, remember that any change to the current page directory/table
     hierarchy must be followed by cache invalidations in order to maintain

@@ -35,7 +35,7 @@ the kernel's activity for the interrupt to be handled.
 
 Such events are extremely important as they are also used to simulate
 multitasking \ie{} the ability to execute multiple threads of execution
-in parallel. Note that the mechanism underlying this concept will be
+in ``parallel''. Note that the mechanism underlying this concept will be
 discussed in \name{k3}.
 
 In this stage, students will therefore address the following concepts:
@@ -182,6 +182,22 @@ event manager. Indeed, it is the student's responsability to complete the
 glue in order to equip some of the event manager's functionalities with a
 machine-specific behaviour.
 
+One can notice an empty array referred to as \code{glue\_event\_dispatcher}.
+The role of such so called dispatchers is to receive the requests from
+the core, \ie{} whenever the core calls \code{machine\_call()}, and
+handles them by taking into account both the platform and the microprocessor
+architecture, \name{IBM PC} and \name{IA-32} for instance.
+
+The dispatcher must be filled with the symbols of the functions the
+glue wishes to support. The dispatcher composition is located in the
+core header of the manager. For instance, considering the event manager,
+one can retrieve the event dispatcher composition \code{d\_event} in
+the header file \location{kaneton/core/include/event.h}. For instance,
+should one want to catch the calls to \code{event\_reserve()} in
+the glue, a function would have to be written, say
+\code{glue\_event\_reserve()}, and registered in the
+\code{glue\_event\_dispatcher} array at the sixth position.
+
 % architecture
 \subsection{Architecture}
 
@@ -231,7 +247,7 @@ educational implementation only supports mono-processor architectures.
 The objective is for students to implement the low-level interrupt handlers
 which are triggered whenever the associated interrupt is received. Such a
 handler, sometimes referred to as \name{lower half}, performs two basic
-operations. First, the environment is secure for the execution of the
+operations. First, the environment is secured for the execution of the
 interrupted thread to be resumed properly, once the interrupt treated.
 Second, the high-level event handler function registered through
 \code{event\_reserve()} is triggered; this function is sometimes referred
@@ -284,7 +300,7 @@ Controller} which may prove useful in this stage.
 
 This section presents an example which students can use to better understand
 the use of the event manager. This example illustrates a breakpoint exception
-being generating manually through the \code{int} assembly instruction.
+being generated manually through the \code{int} assembly instruction.
 The exception is then caught by the kernel which notices that an event handler
 has been registered and thus triggers it.
 
@@ -337,6 +353,12 @@ This section contains advices that students are welcome to consider:
 
     \-
 
+    One can take the example of \name{GDT}-specific macro-functions
+    which are located in \\
+    \location{kaneton/machine/architecture/ia32/educational/include/gdt.h}
+
+    \-
+
     In addition, the opposite should also be set up in order to easily
     retrieve a field from an \name{IDT} entry.
   \item
@@ -377,4 +399,25 @@ This section contains advices that students are welcome to consider:
 
     This way, the developer will easily notice exceptions occuring as well
     as unhandled IRQs.
+  \item
+    The \code{event\_enable()} function must behave in a particular way
+    for the test system to work properly. In addition to activating the
+    interrupt mechanism, this function must also trigger an event
+    right away.
+
+    \-
+
+    Indeed, most tests call \code{event\_enable()} and, right after that,
+    call \code{event\_disable()}, assuming that at least one timer interrupt
+    will have triggered the expected behaviour.
+  \item
+    Students must understand the differences between exceptions and
+    interrupts, especially in the context of kaneton.
+
+    \-
+
+    For instance, although exceptions can be triggered at any time,
+    interrupts require the event mechanism to be enabled, through
+    \code{event\_enable()}, not to mention that interrupts must
+    not be masked through the \name{PIC}.
 \end{itemize}
