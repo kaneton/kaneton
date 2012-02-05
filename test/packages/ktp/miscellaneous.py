@@ -240,6 +240,7 @@ set use_from = yes\
                               a +
                               [ "-F", configuration,
                                 "-s", subject,
+                                "--",
                                 " ".join(destination),
                                 "<" + message ])
 
