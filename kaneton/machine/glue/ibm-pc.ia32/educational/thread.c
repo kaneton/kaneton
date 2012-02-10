@@ -44,7 +44,7 @@ extern m_thread		_thread;
 d_thread		glue_thread_dispatch =
   {
     glue_thread_show,
-    NULL,
+    glue_thread_dump,
     glue_thread_reserve,
     glue_thread_release,
     NULL,
