@@ -1,0 +1,365 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/assignments/assignments - Practicals.tex
+%
+% created       julien quintard   [mon may 14 19:56:45 2007]
+% updated       julien quintard   [thu feb 17 21:25:38 2011]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../..}
+
+%
+% template
+%
+
+\input{\path/template/book.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{The kaneton microkernel :: Debug assignments}}
+
+%
+% title
+%
+
+\title{The kaneton microkernel :: Debug assignments \\
+       \version
+       \logo}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+This document contains everything necessary for students to undertake the
+kaneton educational project.
+
+\-
+
+All the kaneton documents are available on
+  the official website\footnote{\location{http://kaneton.opaak.org}}.
+
+%
+% table of contents
+%
+
+\tableofcontents
+
+%
+% indentation
+%
+
+\indentation{}
+
+%
+% chapters
+%
+
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/assignments/k0.tex
+%
+% created       julien quintard   [fri nov 28 05:25:37 2008]
+% updated       julien quintard   [sun mar  6 18:58:11 2011]
+%
+
+
+\chapter{Introduction}
+\label{chapter:Introduction}
+
+This practical session has two main goals.
+
+First, the students should, by the end of the session, be able to manipulate their kernel with GDB.
+
+The second advantage of this session is that students have an opportunity to start working on their own tests suite.
+
+Everyone has to know that this session is the first of its kind since kaneton has been taught at EPITA. Thus, students must take the benefit of it. Moreover, they all are invited to report their comments on the subject in order to improve it for the next years.
+
+\chapter{kaneton, Qemu and GDB}
+\label{chapter:kaneton, Qemu and GDB}
+
+So as to test their kaneton, students mostly use Qemu.
+
+\section{Qemu}
+The best way to understand what Qemu is capable of is to comment what is displayed on Qemu website :
+
+QEMU is a generic and open source machine emulator and virtualizer.
+
+\textit{When used as a machine emulator, Qemu can run OSes and programs made for one machine (e.g. an ARM board) on a different machine (e.g. your own PC). By using dynamic translation, it achieves very good performance.}
+
+In our case, students use this function of Qemu. As an emulator, Qemu emulates hardware by including main of the hardware devices in a virtual environment. Then when the code is being executed, Qemu checks that opcode is compatible with the host's CPU. If not, Qemu converts it. That technique allow the execution on the host of binaries compiled for different architectures than the current one.
+
+Obviously, the main default of emulation is that it is slow. For each instruction, the emulator has to check the compatibility and take the time to translate the incompatible instructions. On the other hand, the emulation is purely software. As a consequence, it is much more easy to use and much more flexible. The absence of hardware assistance is the main difference between emulation and virtualization.
+
+
+\textit{When used as a virtualizer, QEMU achieves near native performances by executing the guest code directly on the host CPU. QEMU supports virtualization when executing under the Xen hypervisor or using the KVM kernel module in Linux. When using KVM, QEMU can virtualize x86, server and embedded PowerPC, and S390 guests.}
+
+Contrary to emulation, virtualization consists in hardware ressources sharing with an hypervisor. KVM is a module for linux kernel that allows ressources sharing (hardware virtualization). This module is mandatory if one wants to use Qemu as a virtualizer. In addition to allow the execution of several OS in the same time, the couple KVM/Qemu improve the execution speed. The execution is here only twice slower than native solution, compared to emulation which is ten times slower.
+
+\section{GDB}
+GDB is a debugger. As so, the one who use it can define breakpoint, execute instructions step by step or modify on the fly some values like variables.
+
+Naturally, a few flags must be added to gcc for the compilation. Those flags are -g -ggdb. The flag -g produces general debugging information (symbol for example) while -ggdb produces specific debugging information. Cf chapter "Options for Debugging Your Program or GCC" of GCC manual.
+
+I won't develop the description of GDB more deeper. I consider that the reader has at least met this tool once. Nevertheless, it might be helpful to have a summary of the main commands :
+
+\begin{verbatim}
+(gdb) list : List the next lines of code.
+(gdb) b main : Put a breakpoint on the beginning of the function main.
+(gdb) c : Continue the execution to the next breakpoint.
+(gdb) s : Next step, follow the function calls
+(gdb) n : Next instruction, doesn't follow the function calls
+(gdb) disass : Disassemble the code from $eip. An address can be given as an argument.
+(gdb) p $eip : print the value of the instruction pointer register.
+		The command print can also be used to print variables.
+(gdb) set i=42 : Set the variable value to 42.
+(gdb) symbole-file kernel : Load the binary which contains the symbol table.
+(gdb) info locals : Print data about the local variables.
+(gdb) info registers : Print data about the registers
+(gdb) backtrace : Print the functions calls to the current point.
+\end{verbatim}
+
+\section{Use of both tools}
+
+First of all, to be able to take the advantage of GDB with kaneton, flags must be added to the compilation. In the file environment/env.mk, students are invited to add -g -ggdb to \_CC\_FLAGS\_.
+
+Once it is done, students have to recompile their project and launch it with Qemu and a few more options :
+\begin{verbatim}
+louis@louis-VirtualBox:/tmp/kaneton$ make clear && make && make build && make install
+louis@louis-VirtualBox:/tmp/kaneton$ qemu -s -S -fda kaneton.img
+\end{verbatim}
+
+The option -S block the CPU execution. As a consequence, Qemu waits for an order to start the program execution. Moreover, the option -s is an alias for the option -gdb tcp:1234 which creates a socket and wait for a connection from GDB. The communication, once establish between the two program, is made via a pipe (man Qemu, man pipe).
+
+In another terminal, students can launch GDB and attach themself to Qemu which is waiting for a connection :
+\begin{verbatim}
+louis@louis-VirtualBox:~$ gdb
+GNU gdb (Ubuntu/Linaro 7.3-0ubuntu2) 7.3-2011.08
+Copyright (C) 2011 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "i686-linux-gnu".
+For bug reporting instructions, please see:
+<http://bugs.launchpad.net/gdb-linaro/>.
+(gdb) target remote localhost:1234
+Remote debugging using localhost:1234
+0x0000fff0 in ?? ()
+(gdb) symbol-file /tmp/kaneton/kaneton/kaneton
+Reading symbols from /tmp/kaneton/kaneton/kaneton...done.
+\end{verbatim}
+
+The line target remote localhost:1234 establishes the connection with Qemu which is in stand by. More generally, the command target is useful to attach GDB to a program in execution.
+
+When the kernel is installed on the floppy, all symbols are lost. Reloading those symbol is useful to be efficient in debuging. Thus, the command line symbol-file read the ELF File produced by the compilation first step and load all found symbols.
+
+\begin{verbatim}
+(gdb) disassemble kaneton
+Dump of assembler code for function kaneton:
+   0x01000080 <+0>:	add    %al,(%eax)
+   0x01000082 <+2>:	add    %al,(%eax)
+   0x01000084 <+4>:	add    %al,(%eax)
+   0x01000086 <+6>:	add    %al,(%eax)
+   0x01000088 <+8>:	add    %al,(%eax)
+   0x0100008a <+10>:	add    %al,(%eax)
+   0x0100008c <+12>:	add    %al,(%eax)
+   0x0100008e <+14>:	add    %al,(%eax)
+   0x01000090 <+16>:	add    %al,(%eax)
+   ...
+\end{verbatim}
+Here, the CPU hasn't load the kernel yet due to the -s and -S options. As a consequences, if one get the address of kaneton function, no instruction can yet be interpreted. Thus, by putting a break at the beginning of the function and launching the execution, an interruption is catched and the execution stop at the address 0x01000080.
+
+\begin{verbatim}
+(gdb) b *0x01000080
+Breakpoint 1 at 0x1000080: file core.c, line 270.
+(gdb) c
+Continuing.
+
+Breakpoint 1, kaneton (init=0x10b9000) at core.c:270
+270	{
+\end{verbatim}
+
+Now, the dissamebling can interpret all the symbols and one can get information relatives to the registers.
+
+\begin{verbatim}
+(gdb) disass
+Dump of assembler code for function kaneton:
+=> 0x01000080 <+0>:	push   %ebp
+   0x01000081 <+1>:	mov    %esp,%ebp
+   0x01000083 <+3>:	sub    $0x38,%esp
+   0x01000086 <+6>:	mov    0x8(%ebp),%eax
+   0x01000089 <+9>:	mov    %eax,0x105d200
+   0x0100008e <+14>:	call   0x1045b90 <module_console_load>
+   0x01000093 <+19>:	call   0x1045daf <module_report_load>
+   ...
+(gdb) info registers
+eax            0x10b9000	17534976
+ecx            0x205000	2117632
+edx            0x1000080	16777344
+ebx            0x2c660	181856
+esp            0x10c0f78	0x10c0f78
+ebp            0x10c0f80	0x10c0f80
+esi            0x2cb0e	183054
+edi            0x2cb0f	183055
+eip            0x1000080	0x1000080 <kaneton>
+eflags         0x2	[ ]
+cs             0x8	8
+ss             0x10	16
+ds             0x10	16
+es             0x10	16
+fs             0x10	16
+gs             0x10	16
+\end{verbatim}
+\chapter{Tests suite}
+\label{chapter:Tests suite}
+
+This chapter aims to help students to develop their own tests suite. If some students have another idea of tests suite architecture, they must feel free to implement their own.
+
+The script language used to make this tests suite is Bash. Nevertheless, if students rather use a different one, they may change without a doubt.
+
+\section{First step}
+To begin, students have to create the following tree :
+\begin{verbatim}
+louis@louis-VirtualBox:~$ find testsuite
+testsuite
+testsuite/utils/
+testsuite/tests/
+testsuite/tests/k1
+testsuite/tests/k2
+testsuite/tests/k3
+\end{verbatim}
+
+In \textit{utils} directory, students have to copy the core.c of their kaneton. With such an action, they keep the possibility to restore this file as they will have to modify it to launch their tests. Moreover, they have to make a second copy in which they will insert symbols to locate the code insertion in the file.
+
+\begin{verbatim}
+louis@louis-VirtualBox:~$ cp kaneton/kaneton/core/core.c testsuite/utils/coreSave.c
+louis@louis-VirtualBox:~$ cp kaneton/kaneton/core/core.c testsuite/utils/coreTest.c
+\end{verbatim}
+
+Finally, students may insert the symbol '@@@@@' just above the \textit{void kaneton (s\_init* init)} function and '\%\%\%\%\%'  just above the call to \textit{module\_call(test, run)} in 'coreTest.c' file.
+
+\section{Tests suite - 1}
+% global structure
+\subsection{Global structure}
+The goal of this section is to have a tests suite which can execute all tests and produce the results in a text file. The next one will focus on the exploitation of those results.
+
+The idea of this tests suite is to inject some test functions in the core.c and to call them in order to check the kaneton behaviour. Even if a test module exist to allow contributors to check students work, the presented test suite offers the great advantage to the students to masterize their own test environment.
+
+% some test file
+\subsection{Test files}
+First of all, students must create test files. In this architecture, students only have to code a function (or several if needed, with a main one) in a C file (*.c) without carring about includes.
+
+\begin{verbatim}
+louis@louis-VirtualBox:~$ cat testsuite/tests/k1/test1.c
+
+void k1_test1(void)
+{
+  asm volatile ("int $2\r\n");
+}
+\end{verbatim}
+
+% Algorithm
+\subsection{Algorithm}
+If they want, students may create folders in order to be even more explicit in their tests definition. Moreover, as the example proves it, the name of the file can differ from the name of the function. The only constraint is to have no argument for the called function.
+
+Now they have their test files, students can :
+\begin{itemize}
+\item use find command to create a loop and execute all test files. (-name '*.c')
+\item with \textit{grep} and \textit{sed} extract the function name
+\item read line by line the coreTest.c file, produce a copy (~/testsuite/coreInjected.c) by replacing the symbole '@@@@@' by the all current test file content and the symbole '\%\%\%\%\%' by a call to the principle function.
+\item Replace the kaneton/kaneton/core/core.c file with the coreInjected one.
+\end{itemize}
+
+Here follows a fex bash syntax reminder :
+\begin{verbatim}
+if [ "$?" -eq "0" ];
+then
+	# Do something
+fi
+
+sed 's/.*\(plop\).*/\1/g' # Extract plop from a line
+\end{verbatim}
+
+\subsection{Compilation}
+% Env modification and compilation
+Now, students should be ready to compile their work. Nevertheless, once step must be realised before they do so.
+
+In fact, they could compile but they wouldn't be able to execute their tests suite in nographic mode and being able to recover the output elsewhere. In order to do that, students should activate forward module by modifying \_MODULES\_ line in the environment/env.mk file.
+
+\begin{verbatim}
+_MODULES_ := console forward
+\end{verbatim}
+
+The forward module is used to redirect the SDL output over a serial port. Then, students will be able redirect that flow to the standard unix output by adding options to qemu command line.
+
+\textbf{N.B. : Students may activate it automatically using sed program.}
+
+Now students may use cd to go to the kaneton directory and compile it with the usual compilation line.
+
+\subsection{Qemu}
+To launch their kaneton and being able to redirect the flow to the standard output or in a file, students have to add options to their call to Qemu.
+
+In addition to  the option
+\begin{verbatim} -fda kaneton.img \end{verbatim}
+, students need to add the option :
+\begin{verbatim} -nographic \end{verbatim}
+The option nographic include a redirection of the serial port to the standard unix output (-serial stdio) and disable all graphic output (such as SDL).
+
+As a conclusion, students may want to use the following command line :
+\begin{verbatim}
+qemu -nographic -fda kaneton.img >> /desired/path/outputFile.txt
+\end{verbatim}
+
+
+Those are the objective of the next section.
+
+\section{Tests suite - 2}
+In the previous section, students where guided to have a program which can execute kaneton with the desired test function and redirect the output to a file. In that section, students won't be as guided as before. Here, they will just have a guideline to compelete their tests suite.
+
+
+Everybody will notice at this point that two things are missing. Firstly, kaneton finishes with an infinit loop. Thus, it will be mandatory to managed that end. Two cases are possible : the kernel has finished its execution and doesn't launch any server or the test creates a timetimout. To manage that difficulty, students may think about what is printed at the end of the kaneton execution and how can they simulate a fork.
+
+Secondly, the produced output have to be exloited to check if the test can be validated or not. To reach that goal, students are invited to create a fileTest.res, next to their fileTest.c, and to compare the expected results (written in fileTest.res) with the actual results (/desired/path/outputFile.txt). That comparison is heart of the test validation.
+
+\chapter{Conclusion}
+Students are supposed to find everything they need in those assignments to feel comfortable to debug their kaneton.
+
+However, as it as been said in introduction, comments are welcome to improve that suject which is a few days old.
+
+Good luck with the end of k1 ;).
+
+\input{licenses.tex}
+
+\end{document}
