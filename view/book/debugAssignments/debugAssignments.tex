@@ -152,7 +152,11 @@ I won't develop the description of GDB more deeper. I consider that the reader h
 
 \section{Use of both tools}
 
-First of all, to be able to take the advantage of GDB with kaneton, flags must be added to the compilation. In the file environment/env.mk, students are invited to add -g -ggdb to \_CC\_FLAGS\_.
+
+First of all, to be able to take the advantage of GDB with kaneton, flags must be added to the compilation. In the file environment/env.mk, students are invited to add -g -ggdb to \_CC\_FLAGS\_. In order to do so, they have to create a debug profile, or add a line in their own profile, with :
+\begin{verbatim}
+_CC_FLAGS_            +=       -g -ggdb
+\end{verbatim}
 
 Once it is done, students have to recompile their project and launch it with Qemu and a few more options :
 \begin{verbatim}
@@ -316,7 +320,7 @@ sed 's/.*\(plop\).*/\1/g' # Extract plop from a line
 % Env modification and compilation
 Now, students should be ready to compile their work. Nevertheless, once step must be realised before they do so.
 
-In fact, they could compile but they wouldn't be able to execute their tests suite in nographic mode and being able to recover the output elsewhere. In order to do that, students should activate forward module by modifying \_MODULES\_ line in the environment/env.mk file.
+In fact, they could compile but they wouldn't be able to execute their tests suite in nographic mode and being able to recover the output elsewhere. In order to do that, students should activate forward module. To do so, students may create a new profile with another configuration or simply add a line to their current one. The important thing is to have the variable \$KANETON\_USER containing the name of a profile which has in its configuration file the following line :
 
 \begin{verbatim}
 _MODULES_ := console forward
