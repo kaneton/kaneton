@@ -191,7 +191,7 @@ def			cwd(options):
 # this function waits for an input.
 #
 def			input(options):
-  return input()
+  return raw_input()
 
 
 

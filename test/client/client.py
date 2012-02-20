@@ -261,6 +261,16 @@ def                     Submit(server, capability, arguments):
     # read the snapshot.
     snapshot = env.pull(env._TEST_CLIENT_DIR_ + "/snapshot.tar.bz2",
                         env.OPTION_NONE)
+
+    # warn the user.
+    env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+    env.display(env.HEADER_INTERACTIVE,
+                "are you sure you want the local snapshot to be submitted?",
+                env.OPTION_NONE)
+    env.display(env.HEADER_INTERACTIVE,
+                "press CTRL^C to stop the script, ENTER to continue...",
+                env.OPTION_NONE)
+    env.input(env.OPTION_NONE)
   else:
     # display a message.
     env.display(env.HEADER_OK,
