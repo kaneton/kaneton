@@ -33,7 +33,7 @@ void			test_architecture_event_idt_01(void)
 
   ARCHITECTURE_SIDT(idtr);
 
-  if (idtr.size != 2048)
+  if (idtr.size != ((256 * 8) - 1))
     TEST_ERROR("the IDT is not 256 entries wide");
 
   if ((idtr.address % 8) != 0)
