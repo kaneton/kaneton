@@ -1174,6 +1174,14 @@ t_error			region_reserve(i_as			asid,
     CORE_ESCAPE("the size is not aligned on the machine's page size: '%u'",
 		___kaneton$pagesz);
 
+  if (options & REGION_OPTION_FORCE)
+    {
+      if ((address % ___kaneton$pagesz) != 0)
+        CORE_ESCAPE("the forced address is not aligned on the machine's "
+                    "page size: '%u'",
+                    ___kaneton$pagesz);
+    }
+
   /*
    * 1)
    */
