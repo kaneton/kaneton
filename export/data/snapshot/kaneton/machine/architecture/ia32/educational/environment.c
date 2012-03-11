@@ -389,7 +389,7 @@ t_error			architecture_environment_server(i_as	id)
    * 8)
    */
 
-  /* XXX
+  /* XXX[do not uncomment this]
      if (region_reserve(asid,
      _init->kcode,
      LINKER_SYMBOL(_handler_begin) - _init->kcode,
