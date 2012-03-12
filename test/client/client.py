@@ -160,25 +160,48 @@ def                     Test(server, capability, arguments):
   environment = arguments[0]
   suite = arguments[1]
 
-  # display a message.
-  env.display(env.HEADER_OK,
-              "generating the kaneton snapshot",
-              env.OPTION_NONE)
+  # check if there is a 'snapshot.tar.bz2' in the client/ directory.
+  if env.path(env._TEST_CLIENT_DIR_ + "/snapshot.tar.bz2",
+              env.OPTION_EXIST):
+    # display a message.
+    env.display(env.HEADER_OK,
+                "loading the snapshot '" +                              \
+                  env._TEST_CLIENT_DIR_ + "/snapshot.tar.bz2'",
+                env.OPTION_NONE)
 
-  # export the current kaneton implementation.
-  env.launch(env._EXPORT_SCRIPT_,
-             "test:" + capability["type"],
-             env.OPTION_QUIET)
+    # read the snapshot.
+    snapshot = env.pull(env._TEST_CLIENT_DIR_ + "/snapshot.tar.bz2",
+                        env.OPTION_NONE)
 
-  # display a message.
-  env.display(env.HEADER_OK,
-              "loading the kaneton snapshot",
-              env.OPTION_NONE)
+    # warn the user.
+    env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+    env.display(env.HEADER_INTERACTIVE,
+                "are you sure you want the local snapshot to be submitted?",
+                env.OPTION_NONE)
+    env.display(env.HEADER_INTERACTIVE,
+                "press CTRL^C to stop the script, ENTER to continue...",
+                env.OPTION_NONE)
+    env.input(env.OPTION_NONE)
+  else:
+    # display a message.
+    env.display(env.HEADER_OK,
+                "generating the kaneton snapshot",
+                env.OPTION_NONE)
 
-  # read the snapshot.
-  snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                   \
-                        "test:" + capability["type"] + ".tar.bz2",
-                      env.OPTION_NONE)
+    # export the current kaneton implementation.
+    env.launch(env._EXPORT_SCRIPT_,
+               "test:" + capability["type"],
+               env.OPTION_QUIET)
+
+    # display a message.
+    env.display(env.HEADER_OK,
+                "loading the kaneton snapshot",
+                env.OPTION_NONE)
+
+    # read the snapshot.
+    snapshot = env.pull(env._EXPORT_DIR_ + "/output/" +                 \
+                          "test:" + capability["type"] + ".tar.bz2",
+                        env.OPTION_NONE)
 
   # display a message.
   env.display(env.HEADER_OK,
