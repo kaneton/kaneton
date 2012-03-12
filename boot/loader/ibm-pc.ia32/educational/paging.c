@@ -56,6 +56,7 @@ t_uint32		npts = 0;
  *    the kernel stack, the global offset table, the modules etc.
  * 5) load the new page directory.
  * 6) enable the paging mode.
+ * 7) enable the page protection i.e access to read-only pages.
  */
 
 void			bootloader_paging_init(void)
@@ -169,6 +170,17 @@ void			bootloader_paging_init(void)
 
   asm volatile("movl %%cr0, %%eax\n\t"
 	       "orl $0x80000000, %%eax\n\t"
+	       "movl %%eax, %%cr0\n\t"
+	       :
+	       :
+	       : "%eax", "memory");
+
+  /*
+   * 7)
+   */
+
+  asm volatile("movl %%cr0, %%eax\n\t"
+	       "orl $0x10000, %%eax\n\t"
 	       "movl %%eax, %%cr0\n\t"
 	       :
 	       :

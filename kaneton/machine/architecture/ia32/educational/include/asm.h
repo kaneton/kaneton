@@ -55,6 +55,30 @@
 	       : "=m" (_var_)						\
 	       :)
 
+#define		ARCHITECTURE_LCR0(_var_)				\
+  asm volatile ("movl %0, %%eax\n"					\
+		"movl %%eax, %%cr0"					\
+	       :							\
+	       : "m" (_var_))
+
+#define		ARCHITECTURE_SCR0(_var_)				\
+  asm volatile ("movl %%cr0, %%eax\n"					\
+		"movl %%eax, %0"					\
+	       : "=m" (_var_)						\
+	       :)
+
+#define		ARCHITECTURE_LCR1(_var_)				\
+  asm volatile ("movl %0, %%eax\n"					\
+		"movl %%eax, %%cr1"					\
+	       :							\
+	       : "m" (_var_))
+
+#define		ARCHITECTURE_SCR1(_var_)				\
+  asm volatile ("movl %%cr1, %%eax\n"					\
+		"movl %%eax, %0"					\
+	       : "=m" (_var_)						\
+	       :)
+
 #define		ARCHITECTURE_LCR2(_var_)				\
   asm volatile ("movl %0, %%eax\n"					\
 		"movl %%eax, %%cr2"					\
