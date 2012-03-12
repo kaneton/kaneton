@@ -1,0 +1,55 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       
+#
+# file          /home/mycure/kaneton/test/suites/k1.suite
+#
+# created       julien quintard   [tue nov  2 07:33:52 2010]
+# updated       julien quintard   [sun feb  6 11:35:30 2011]
+#
+
+name: k123
+description: This test suite tests the k1, k2 and k3 test suites.
+components:
+  event:
+    - kaneton/machine/architecture/ia32/event/context/
+    - kaneton/machine/architecture/ia32/event/data/
+    - kaneton/machine/architecture/ia32/event/exception/01/
+    - kaneton/machine/architecture/ia32/event/exception/02/
+    - kaneton/machine/architecture/ia32/event/exception/03/
+    - kaneton/machine/architecture/ia32/event/exception/04/
+    - kaneton/machine/architecture/ia32/event/exception/05/
+    - kaneton/machine/architecture/ia32/event/idt/
+    - kaneton/machine/architecture/ia32/event/interrupt/
+    - kaneton/machine/architecture/ia32/event/irq/
+    - kaneton/machine/architecture/ia32/event/pic/
+
+  timer:
+    - kaneton/core/timer/
+
+  region:
+    - kaneton/core/region/
+    - kaneton/machine/architecture/ia32/region/
+
+  as:
+    - kaneton/core/as/
+    - kaneton/machine/architecture/ia32/as/switch/
+
+  task:
+    - kaneton/core/task/
+
+  thread:
+    - kaneton/core/thread/
+
+  scheduler:
+    - kaneton/core/scheduler/
+    - kaneton/machine/architecture/ia32/scheduler/
+
+  event:
+    - kaneton/machine/architecture/ia32/event/exception/06/
+    - kaneton/machine/architecture/ia32/event/exception/07/
+    - kaneton/machine/architecture/ia32/event/flags/
+    - kaneton/machine/architecture/ia32/event/map/

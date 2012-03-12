@@ -129,4 +129,3 @@ void			faultcatcher_init(void)
 
   asm ("lidt %0" : : "m"(sysdesc));
 }
-
