@@ -85,22 +85,22 @@
          {\hfill{} \normalfont{\scriptsize{3 points}}}}
 
 \begin{itemize}
-  \item Qu'est ce qu'une machine de Turing ? Illustrez par un schéma. (1 point)
-  \item Décrire BRIÈVEMENT les différentes étapes du bootstrap. (2 points)
+  \item Qu'est ce qu'une machine de Turing ? Illustrez par un sch\'ema. (1 point)
+  \item D\'ecrire BRI\`EVEMENT les diff\'erentes \'etapes du bootstrap. (2 points)
 \end{itemize}
 
 \begin{correction}
 \begin{itemize}
-  \item Qu'est ce qu'une machine de Turing ? Illustrez par un schéma. (1 point)
+  \item Qu'est ce qu'une machine de Turing ? Illustrez par un sch\'ema. (1 point)
   \begin{itemize}
-        \item Architecture minimale pour résoudre un problème algorithmique, ie architecture minimale d'un ordinateur.
-        \item Schema = CPU + memoire + bus adresse + bus données
+        \item Architecture minimale pour r\'esoudre un probl\`eme algorithmique, ie architecture minimale d'un ordinateur.
+        \item Schema = CPU + memoire + bus adresse + bus donn\'ees
   \end{itemize}
 
-  \item Décrire BRIÈVEMENT les différentes étapes du bootstrap. (2 points pour les 3 étapes, 1 point pour 2, 0 si une ou moins)
+  \item D\'ecrire BRI\`EVEMENT les diff\'erentes \'etapes du bootstrap. (2 points pour les 3 \'etapes, 1 point pour 2, 0 si une ou moins)
   \begin{itemize}
-     \item 1) \'Etape matérielle.  Matériel mis dans un état cohérent, à l'instar de l'initialisation de certains registres.
-     \item 2) Firmware. Initialisation de certains périphériques, mise en place de certains services.
+     \item 1) \'Etape mat\'erielle.  Mat\'eriel mis dans un \'etat coh\'erent, à l'instar de l'initialisation de certains registres.
+     \item 2) Firmware. Initialisation de certains p\'eriph\'eriques, mise en place de certains services.
      \item 3) Bootloader. Trouver et charger le noyau
   \end{itemize}
 \end{itemize}
@@ -115,34 +115,34 @@
          {\hfill{} \normalfont{\scriptsize{6 points}}}}
 
 
-\subsection{Mémoire réelle vs Mémoire protégée - 1 points}
+\subsection{Mode r\'eelle vs Mode prot\'eg\'e - 1 points}
 \begin{itemize}
-   \item Dresser un tableau listant les propriétés de la mémoire réelle (col 1) et de la mémoire protégée (col 2).
+   \item Dresser un tableau listant les propri\'et\'es de la m\'emoire en mode r\'eel (col 1) et de la m\'emoire en mode prot\'eg\'e (col 2).
 \end{itemize}
 
 \subsection{TLB - 2 points}
 \begin{itemize}
    \item Qu'est que le TLB ? (1 point)
-   \item Que faut-il faire si un mapping existant est modifié ? (1 point)
+   \item Que faut-il faire si un mapping existant est modifi\'e ? Pourquoi ? (1 point)
 \end{itemize}
 
 
 \subsection{Remplacement de pages - 3 points}
 \begin{itemize}
-   \item Décrire, brièvement ce que font les algorithmes de remplacement de page suivants. Pour chacun d'entre eux, donner les avantages et inconvénients. (2 points, 0.5 point par algorithme)
+   \item D\'ecrire, bri\`evement ce que font les algorithmes de remplacement de page suivants. Pour chacun d'entre eux, donner les avantages et inconv\'enients. (2 points, 0.5 point par algorithme)
          \begin{itemize}
             \item FIFO
             \item Algorithme de l'horloge
             \item NRU
             \item Aging
          \end{itemize}
-   \item Pourquoi est-il préférable de supprimer une page non modifiée qu'une page modifiée ? (1 point)
+   \item Pourquoi est-il pr\'ef\'erable de supprimer une page non modifi\'ee qu'une page modifi\'ee ? Pourquoi ? (1 point)
 \end{itemize}
 
 \begin{correction}
-\subsection{Mémoire réelle vs Mémoire protégée - 1 points}
+\subsection{Mode r\'eel vs Mode prot\'eg\'e - 1 points}
 \begin{itemize}
-   \item Dresser un tableau listant les propriétés de la mémoire réelle (col 1) et de la mémoire protégée (col 2).
+   \item Dresser un tableau listant les propri\'et\'es de la m\'emoire en mode r\'eel (col 1) et de la m\'emoire en mode prot\'eg\'e (col 2).
     \begin{itemize}
       \begin{tabular}{|c|c|c|}
           \hline
@@ -166,25 +166,25 @@
 \begin{itemize}
    \item Qu'est que le TLB ? (1 point)
    \begin{itemize}
-       \item Translation Lookaside Buffers, cache permettant d'accélerer la traduction d'adresse virtuelle en adresse physique.
+       \item Translation Lookaside Buffers, cache permettant d'acc\'elerer la traduction d'adresse virtuelle en adresse physique.
    \end{itemize}
 
-   \item Que faut-il faire si un mapping existant est modifié ? (1 point)
+   \item Que faut-il faire si un mapping existant est modifi\'e ? (1 point)
    \begin{itemize}
-        \item Il faut invalider l'entrée pour éviter une traduction n'ayant plus lieu d'être, le TLB étant prioritaire sur les calculs de traduction (Segmentation + Pagination)
+        \item Il faut invalider l'entr\'ee pour \'eviter une traduction n'ayant plus lieu d'être, le TLB \'etant prioritaire sur les calculs de traduction (Segmentation + Pagination)
    \end{itemize}
 \end{itemize}
 
-   \item Décrire, brièvement ce que font les algorithmes de remplacement de page suivants. Pour chacun d'entre eux, donner les avantages et inconvénients. (2 points, 0.5 point par algorithme)
+   \item D\'ecrire, bri\`evement ce que font les algorithmes de remplacement de page suivants. Pour chacun d'entre eux, donner les avantages et inconv\'enients. (2 points, 0.5 point par algorithme)
          \begin{itemize}
-            \item FIFO : Liste des pages, la plus ancienne en tête et la plus récente en queue. On supprime les pages en tête si l'on a besoin d'espace. Avantage : simplissime à implémenter. Inconvénient : Pas efficace du tout.
-            \item Algorithme de l'horloge : FIFO avec 2nde chance implémenté sous forme de liste circulaire. 2nde chance => si la page a été utilisé dans un intervalle de temps défini, elle n'est pas supprimée et est remise en queue. Avantage : Suffisament efficace pour être considéré comme déployable dans certains cas. Inconvénient : manque de finesse.
-            \item NRU : Utilisation des flags ``Accédé'' et ``Modifié'' pour répartir les pages en quatre catégories (0/0 = à mettre en cache en priorité, 1/0, 0/1, 1/1 = à conserver en priorité). Avantage : Simple. Inconvénient : Trop grossier pour être réellement utilisable.
-            \item Aging : Implémentation logicielle du LRU, ie moins récemment utilisé, avec gestion de la mémoire (capacité d'oubli). Avantage : Efficace avec un bon rendement temps de traitement, pertinence des pages à supprimer. Inconvénient : Moins efficace que le LRU car logiciel et pas matériel (bien que plus facilement déployable et moins cher).
+            \item FIFO : Liste des pages, la plus ancienne en tête et la plus r\'ecente en queue. On supprime les pages en tête si l'on a besoin d'espace. Avantage : simplissime à impl\'ementer. Inconv\'enient : Pas efficace du tout.
+            \item Algorithme de l'horloge : FIFO avec 2nde chance impl\'ement\'e sous forme de liste circulaire. 2nde chance => si la page a \'et\'e utilis\'e dans un intervalle de temps d\'efini, elle n'est pas supprim\'ee et est remise en queue. Avantage : Suffisament efficace pour être consid\'er\'e comme d\'eployable dans certains cas. Inconv\'enient : manque de finesse.
+            \item NRU : Utilisation des flags ``Acc\'ed\'e'' et ``Modifi\'e'' pour r\'epartir les pages en quatre cat\'egories (0/0 = à mettre en cache en priorit\'e, 1/0, 0/1, 1/1 = à conserver en priorit\'e). Avantage : Simple. Inconv\'enient : Trop grossier pour être r\'eellement utilisable.
+            \item Aging : Impl\'ementation logicielle du LRU, ie moins r\'ecemment utilis\'e, avec gestion de la m\'emoire (capacit\'e d'oubli). Avantage : Efficace avec un bon rendement temps de traitement, pertinence des pages à supprimer. Inconv\'enient : Moins efficace que le LRU car logiciel et pas mat\'eriel (bien que plus facilement d\'eployable et moins cher).
          \end{itemize}
-   \item Pourquoi est-il préférable de supprimer une page non modifiée qu'une page modifiée ? (1 point)
+   \item Pourquoi est-il pr\'ef\'erable de supprimer une page non modifi\'ee qu'une page modifi\'ee ? (1 point)
    \begin{itemize}
-        \item Si une page est non modifiée et déjà dans le cache, il suffit de supprimer le mapping si l'on souhaite libérer de l'espace en mémoire physique. Dans le cas contraire, l'opération prendrait plus de temps à cause de l'accès aux disques en écriture.
+        \item Si une page est non modifi\'ee et d\'ejà dans le cache, il suffit de supprimer le mapping si l'on souhaite lib\'erer de l'espace en m\'emoire physique. Dans le cas contraire, l'op\'eration prendrait plus de temps à cause de l'acc\`es aux disques en \'ecriture.
    \end{itemize}
 \end{itemize}
 
