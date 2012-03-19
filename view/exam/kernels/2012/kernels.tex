@@ -81,19 +81,28 @@
 % boot
 %
 
-\section{Boot}
+\section{{Boot}
          {\hfill{} \normalfont{\scriptsize{3 points}}}}
 
 \begin{itemize}
-  \item
-    XXX
+  \item Qu'est ce qu'une machine de Turing ? Illustrez par un schéma. (1 point)
+  \item Décrire BRIÈVEMENT les différentes étapes du bootstrap. (2 points)
 \end{itemize}
 
 \begin{correction}
-
 \begin{itemize}
-  \item
-    XXX
+  \item Qu'est ce qu'une machine de Turing ? Illustrez par un schéma. (1 point)
+  \begin{itemize}
+        \item Architecture minimale pour résoudre un problème algorithmique, ie architecture minimale d'un ordinateur.
+        \item Schema = CPU + memoire + bus adresse + bus données
+  \end{itemize}
+
+  \item Décrire BRIÈVEMENT les différentes étapes du bootstrap. (2 points pour les 3 étapes, 1 point pour 2, 0 si une ou moins)
+  \begin{itemize}
+     \item 1) \'Etape matérielle.  Matériel mis dans un état cohérent, à l'instar de l'initialisation de certains registres.
+     \item 2) Firmware. Initialisation de certains périphériques, mise en place de certains services.
+     \item 3) Bootloader. Trouver et charger le noyau
+  \end{itemize}
 \end{itemize}
 
 \end{correction}
@@ -105,17 +114,80 @@
 \section{Memory
          {\hfill{} \normalfont{\scriptsize{6 points}}}}
 
+
+\subsection{Mémoire réelle vs Mémoire protégée - 1 points}
 \begin{itemize}
-  \item
-    XXX
+   \item Dresser un tableau listant les propriétés de la mémoire réelle (col 1) et de la mémoire protégée (col 2).
+\end{itemize}
+
+\subsection{TLB - 2 points}
+\begin{itemize}
+   \item Qu'est que le TLB ? (1 point)
+   \item Que faut-il faire si un mapping existant est modifié ? (1 point)
+\end{itemize}
+
+
+\subsection{Remplacement de pages - 3 points}
+\begin{itemize}
+   \item Décrire, brièvement ce que font les algorithmes de remplacement de page suivants. Pour chacun d'entre eux, donner les avantages et inconvénients. (2 points, 0.5 point par algorithme)
+         \begin{itemize}
+            \item FIFO
+            \item Algorithme de l'horloge
+            \item NRU
+            \item Aging
+         \end{itemize}
+   \item Pourquoi est-il préférable de supprimer une page non modifiée qu'une page modifiée ? (1 point)
 \end{itemize}
 
 \begin{correction}
-
+\subsection{Mémoire réelle vs Mémoire protégée - 1 points}
 \begin{itemize}
-  \item
-    XXX
+   \item Dresser un tableau listant les propriétés de la mémoire réelle (col 1) et de la mémoire protégée (col 2).
+    \begin{itemize}
+      \begin{tabular}{|c|c|c|}
+          \hline
+   	  & Real Mode & Protected Mode\\
+	  \hline
+	  Address Size & 16 bits & 32 bits\\
+	  \hline
+          Type of memory & Physical & Virtual (Several AS)\\
+	  \hline
+	  Access memory syntax & 0xWXYZ:0xABCD & Segment Selector:Offset\\
+	  & = 0xWXYZ * 0x16 + 0xABCD & = GDT[SS].Base + Offset\\
+	  \hline
+	  Segment size & 64 bytes & Up to 1Mb or 4Gb \\
+	  \hline
+	  Segment protection & No & Yes\\
+ 	  \hline
+       \end{tabular}
+    \end{itemize}
+
+\subsection{TLB - 2 points}
+\begin{itemize}
+   \item Qu'est que le TLB ? (1 point)
+   \begin{itemize}
+       \item Translation Lookaside Buffers, cache permettant d'accélerer la traduction d'adresse virtuelle en adresse physique.
+   \end{itemize}
+
+   \item Que faut-il faire si un mapping existant est modifié ? (1 point)
+   \begin{itemize}
+        \item Il faut invalider l'entrée pour éviter une traduction n'ayant plus lieu d'être, le TLB étant prioritaire sur les calculs de traduction (Segmentation + Pagination)
+   \end{itemize}
 \end{itemize}
+
+   \item Décrire, brièvement ce que font les algorithmes de remplacement de page suivants. Pour chacun d'entre eux, donner les avantages et inconvénients. (2 points, 0.5 point par algorithme)
+         \begin{itemize}
+            \item FIFO : Liste des pages, la plus ancienne en tête et la plus récente en queue. On supprime les pages en tête si l'on a besoin d'espace. Avantage : simplissime à implémenter. Inconvénient : Pas efficace du tout.
+            \item Algorithme de l'horloge : FIFO avec 2nde chance implémenté sous forme de liste circulaire. 2nde chance => si la page a été utilisé dans un intervalle de temps défini, elle n'est pas supprimée et est remise en queue. Avantage : Suffisament efficace pour être considéré comme déployable dans certains cas. Inconvénient : manque de finesse.
+            \item NRU : Utilisation des flags ``Accédé'' et ``Modifié'' pour répartir les pages en quatre catégories (0/0 = à mettre en cache en priorité, 1/0, 0/1, 1/1 = à conserver en priorité). Avantage : Simple. Inconvénient : Trop grossier pour être réellement utilisable.
+            \item Aging : Implémentation logicielle du LRU, ie moins récemment utilisé, avec gestion de la mémoire (capacité d'oubli). Avantage : Efficace avec un bon rendement temps de traitement, pertinence des pages à supprimer. Inconvénient : Moins efficace que le LRU car logiciel et pas matériel (bien que plus facilement déployable et moins cher).
+         \end{itemize}
+   \item Pourquoi est-il préférable de supprimer une page non modifiée qu'une page modifiée ? (1 point)
+   \begin{itemize}
+        \item Si une page est non modifiée et déjà dans le cache, il suffit de supprimer le mapping si l'on souhaite libérer de l'espace en mémoire physique. Dans le cas contraire, l'opération prendrait plus de temps à cause de l'accès aux disques en écriture.
+   \end{itemize}
+\end{itemize}
+
 
 \end{correction}
 
@@ -160,3 +232,5 @@
 \end{itemize}
 
 \end{correction}
+
+\end{document}
