@@ -1,0 +1,666 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...ernels/virtualization/virtualization.tex
+%
+% created       julien quintard   [wed may 16 19:28:59 2007]
+% updated       julien quintard   [tue may  5 10:49:43 2009]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../..}
+\def\figurepath{.}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Advanced x86}
+
+%
+% table of contents at the beginning of each section
+%
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+
+    \begin{multicols}{2}
+      \tableofcontents[current,hidesubsections]
+    \end{multicols}
+  \end{frame}
+}
+
+%
+% table of contents at the beginning of each subsection
+%
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+
+    \begin{multicols}{2}
+      \tableofcontents[current,hidesubsections]
+    \end{multicols}
+  \end{frame}
+}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \begin{multicols}{2}
+    \tableofcontents
+  \end{multicols}
+\end{frame}
+
+  % -)
+
+
+\section{CPU}
+
+\subsection{Execution and privilege levels}
+\subsubsection{x86 architecture overview}
+\subsubsection{Execution modes}
+\begin{frame}
+        \frametitle{Execution modes}
+        \begin{itemize}
+        \item Protected Mode
+                \begin{itemize}
+                \item 32 bits
+                \item 4 privelege levels (from 0 to 3)
+                \item Nominal mode for the CPU
+                \item Gives access to special functionalities: MMU,
+                      syscalls, task management, interupt management, ...
+                \end{itemize}
+        \item Long Mode
+                \begin{itemize}
+                \item 64 bits
+                \item Similar to the protected mode
+                \item Execution bit
+                \end{itemize}
+        \item Real Mode
+                \begin{itemize}
+                \item Mode in which the CPU is in when powered on
+                \item The BIOS and the bootloader runs in Real mode
+                \item no privilege separation (1 level)
+                \end{itemize}
+        \item SMM Mode
+                \begin{itemize}
+                \item System Management Mode
+                \item "Maintenance" mode
+                \item TOTAL control of the platform
+                \item no privilege separation (1 level)
+                \item Access to advance platform functionaly such as
+                      power management, brightness control, custom OEM
+                      keys, ...
+                \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\subsubsection{Privilege levels}
+        \begin{frame}
+        \frametitle{Privilege levels (intro)}
+        \begin{itemize}
+                \item Started with 80286 (80s)
+                \item 4 rings 0, 1, 2 and 3. 0 is the most privileged.
+                \item Separation between Kernel, Drivers, Services and
+                      Applications but most OSes use only 2 (0 and 3).
+                \item Some feature of the CPU are only accessible
+                within the highest privileged mode such as the MMU, I/O,
+                ...
+                \item CPL (Current Privileged Level) indicate the mode
+                      in which the cpu is currently running.
+                \item In comparason the ARM CPU only have two privileged
+                      level.
+        \end{itemize}
+        \end{frame}
+
+        \begin{frame}
+        \frametitle{Changing privilege level}
+        \begin{itemize}
+                \item Privileged Level is defined in a flag on the Code
+                Segment Selector
+                \item A system even cause the privelege level to change
+                      like a interruption or an exception
+                \item Each interruption or exception handling code is
+                      associated with a "to-be-run-in" flag that
+                      indicate in which mode the CPU must switch to
+                      handle the event.
+                \item The "to-be-run-in" flags lives in the IDT
+                (Interupt Description Table)
+                \item A syscal is software exception raised by a less
+                      privileged level to request an action.
+                \item Starting with the Pentium II we access to a
+                      delicated instructions to make a syscal
+                      (SYSENTER/SYSEXIT SYSCALL/SYSRET)
+        \end{itemize}
+        \end{frame}
+\subsubsection{Device access control}
+        \begin{frame}
+        \frametitle{Device access control}
+        \begin{itemize}
+                \item I/O instructions like in/out only works in ring0
+                \item However the CPU expose a bitmap to let the OS
+                control which port will be accessible from different
+                priveleged level.
+                \item The bitmap is configurable throught the iopl
+                instruction.
+                \item On linux the syscal iopl(2) expose this
+                functionality to userspace (only to root)
+        \end{itemize}
+        \end{frame}
+
+\subsection{Memory Management}
+        \begin{frame}
+        \frametitle{Memoy Management Unit}
+        \begin{itemize}
+                \item The MMU is a componant of the system that can
+                translate system addresse (address in your code) into
+                bus address (address on the bus address of the CPU)
+                \item The MMU can be programmed only from ring 0
+                \item Isolate the different address spaces running on
+                the same system
+                \item A virtual address is the address that the process will see.
+                \item A physical address is the address that the comes
+                out of the MMU. The CPU use the physical address on its
+                bus address.
+
+        \end{itemize}
+        \end{frame}
+\subsubsection{Segmentation}
+        \begin{frame}
+        \frametitle{Segmentation}
+        \begin{itemize}
+                \item Started with 80286
+                \item Segments are used to split memory into contigus
+                chunks.
+                \item A segment is composed of:
+                        \begin{itemize}
+                        \item Type (code, data or special)
+                        \item And offset (in RAM) and a size
+                        \item Privilege (RPL: Requested privilege level)
+                        \item Access Control (read or/and write)
+                        \end{itemize}
+                \item ring0 can change the segment with registers like
+                cs, ds, ss
+                \item Each process will only see inside their segment
+                \item The address inside a segment will be translated be
+                the MMU before it hits the bus address
+                \item The transaltion is such as bus@ = @ + seg.offset
+        \end{itemize}
+        \end{frame}
+\subsubsection{Paging}
+        \begin{frame}
+        \frametitle{Paging}
+        \begin{itemize}
+                \item Started with 80386
+                \item Fixe fragmentation caused by segmentation
+                \item Split memory into pages (4K, 2M, 1G)
+                \item Each address space is defined by a set of
+                tables that maps to virtual pages to physical pages
+                \item Different mode (32b, PAE, 64b).
+        \end{itemize}
+        \end{frame}
+
+        \begin{frame}
+        \frametitle{Paging fact and sizes}
+        \begin{itemize}
+                \item 32 bits
+                        \begin{itemize}
+                        \item Virtual address: 32 bits
+                        \item Physical address: 32 bits -> Max 4G
+                        \item 2 levels of page table
+                        \end{itemize}
+                \item PAE (Physical Address Extension)
+                        \begin{itemize}
+                        \item Virtual address: 32 bits
+                        \item Physical address: 36 bits -> Max 64G
+                        \item 3 levels of page table
+                        \end{itemize}
+                \item 64 bits
+                        \begin{itemize}
+                        \item Virtual address: 48 bits
+                        \item Physical address: 36-48 bits (Depends on
+                        the CPU)
+                        \item 4 levels of page table
+                        \end{itemize}
+        \end{itemize}
+        \end{frame}
+\subsubsection{e820}
+        \begin{frame}
+        \frametitle{e820}
+        \begin{itemize}
+                \item Table that descibe the physical layout of the RAM.
+                \item e820 is setup by the BIOS
+                \item e820 could change is you: select some BIOS options,
+                add some RAM, add a device, ...
+                \item All the memory regions are not necessary RAM
+                \item On x86 the first 1M is reserved for the system.
+                0-0xfffff
+                        \begin{itemize}
+                        \item BIOS (usually 0xf0000)
+                        \item BIOS extensions (PXE ROM, RAID, ...) 0xe0000
+                        \item VGA buffers (graphic:0xa0000 text:0xb7000)
+                        \item VGA BIOS 0xc0000
+                        \end{itemize} 
+                \item Some devices are programme through mmio so they
+                need a memory region: LAPIC,IOAPIC,HPET,...
+                \item PCI bus (usually 0xf0000000, below 4G)
+        \end{itemize}
+        \end{frame}
+
+        \begin{frame}[fragile]
+        \frametitle{e820 exemple (Lenovo x220 8Go of RAM)}
+\begin{verbatim}
+00000000-0000ffff : reserved
+00010000-0009d7ff : System RAM
+0009d800-0009ffff : reserved
+000a0000-000bffff : PCI Bus 0000:00
+000c0000-000c7fff : Video ROM
+000c8000-000cbfff : pnp 00:00
+000cc000-000cffff : pnp 00:00
+000d0000-000d3fff : pnp 00:00
+000d4000-000d7fff : pnp 00:00
+000d8000-000dbfff : pnp 00:00
+000dc000-000dffff : pnp 00:00
+000e0000-000fffff : reserved
+00100000-1fffffff : System RAM
+[...]
+dae9f000-daf9efff : ACPI Non-volatile Storage
+daf9f000-daffefff : ACPI Tables
+dafff000-daffffff : System RAM
+db000000-df9fffff : reserved
+dfa00000-febfffff : PCI Bus 0000:00
+fec00000-fec00fff : reserved
+fed00000-fed003ff : HPET 0
+fed08000-fed08fff : reserved
+fed10000-fed19fff : reserved
+fed1c000-fed1ffff : reserved
+fed40000-fed4bfff : PCI Bus 0000:00
+fee00000-fee00fff : Local APIC
+ffd20000-ffffffff : reserved
+100000000-21e5fffff : System RAM
+21e600000-21e7fffff : reserved
+21e800000-21fffffff : RAM buffer
+\end{verbatim}
+\end{frame}
+
+\subsection{Long mode (64 bits)}
+        \begin{frame}
+        \frametitle{Long mode (64 bits)}
+        \begin{itemize}
+                \item NX (No eXecution) or XD (eXecution Disabled)
+                \item 64 bits physical address
+                \item Twice as much register compared with 32 bit mode
+                \item ASLR (Address Space Layout Randomization)
+                \item New relatif addressing mode usefull for PIE
+                (Position Independant Executable)
+                \item However segmentation support is reduced
+                \item Segment are useful to isolate ring 0, 1 and 2.
+                Paging only support to protection level.
+                \item SMEP (Supervisor Mode Execution Protection) to
+                protect the kernel from running malisious userspace code
+        \end{itemize}
+        \end{frame}
+
+\subsection{Virtualization extensions}
+        \begin{frame}
+        \frametitle{Virtualization extensions}
+        \begin{itemize}
+                \item Started with Pentium 4 and AMD athlon (2000,
+                1998?) %FIXME
+                \item VMX,vt-x (Intel) / SVM, Pacifica (AMD)
+                \item Two mode when running in ring0 vmx and vmx-root
+                \item vmx-root is the hypervisor mode (Virtual Machine
+                Monitor)
+                \item vmx is the "virtualized" mode. It' the mode in
+                which the guests are running
+                \item vmx has a control block assosiated with the guest
+                environement (VMCB, VM control Block). It contains
+                things like:
+                        \begin{itemize}
+                        \item Guest's config registers: CR3, GDTR, IDTR
+                        \item Guest's EAX-EDX, EIP, EBP, ESP
+                        \item Guest's exit code
+                        \end{itemize}
+               \item HAP: Hardware Assisted Paging to virtualize the
+               memory (EPT, Nested Paging)
+               \item IOMMU to virtualize the DMA access
+        \end{itemize}
+        \end{frame}
+
+\subsection{TXT}
+        \begin{frame}
+        \frametitle{TXT (Trusted eXecution Technology}
+        \begin{itemize}
+                \item Based the the MLE (Measured Launch Environement)
+                \item Protected Execution, SMX mode (Safer Mode
+                eXtensions)
+                \item Data scealing %FIXME
+                \item Secure handling of Input/Output
+                \item Attestion of the platform. Is it the computer I
+                think it is?
+                \item Hash of the firmwares: PXE ROM, BIOS, ACPI tables, BIOS options)
+                \item Integrity check of the system before launch.
+                \item Can take advantage of the TPM (Trusted Paltform
+                Module)
+        \end{itemize}
+        \end{frame}
+
+\subsection{SMM}
+        \begin{frame}
+        \frametitle{SMM (System Management Mode)}
+        \begin{itemize}
+                \item Exists since 386 (1985)
+                \item A SMI (System Management Interupt) will cause the
+                system to switch to SMM mode
+                \item But what is a SMI? It could be:
+                        \begin{itemize}
+                        \item Hardware Event: timer fire, termal sensor
+                        reach a given temperature, ...
+                        \item Software Event: I/O port, MMIO write to a
+                        give address
+                        \end{itemize}
+                \item SMM code is embedded in the BIOS by the motherboad manufacturer
+                \item The SMM RAM (SRAM) leaves in memory
+                \item SMM as access to all the RAM (above 4Go)
+                \item SMM can have unexpected side effect
+        \end{itemize}
+        \end{frame}
+
+%       {SMI handling flow}
+        \begin{frame}
+                \frametitle{SMI handling flow}
+                \begin{itemize}
+                        \item A SMI is generated
+                        \item The CPU switch to SMM
+                        \item The CPU save the registers in SMM RAM
+                        (SRAM)
+                        \item The base on the SRAM can be found on the
+                        CPU in the special register SMBASE
+                        \item The CPU jumps at SMBASE + 0x8000 and
+                        starts executing
+                        \item Do stuff. Can modify the state
+                        \item Restore the state
+                        \item Return from SMI
+                \end{itemize}
+        \end{frame}
+
+        \begin{frame}
+                \frametitle{SMRAM protection}
+                \begin{itemize}
+                        \item SMRAMC (SMRAM control) and ESMRAMC (Extened SRAM
+                        Control)
+                        \begin{itemize}
+                                \item D\_OPEN, set to 1 allow access of
+                                the SMRAM from ring0
+                                \item D\_LCK, once set to 1 it can't
+                                be changed until next reboot
+                                \item D\_LCK is set in the BIOS
+                        \end{itemize}
+                        \item SMM is a very atractive place to put a
+                        rootkit because it runs outside of the OS
+                        environement
+                        \item Once in SMM the OS execution is frozen
+                        \item Even with these protections in place we
+                        can note some successful atack
+                        \begin{itemize}
+                                \item Modification of the SMRAM through
+                                the GART (graphic IOMMU). Laurent Absil
+                                - Loic Duflot, 2007
+                                \item Bug in the Q35 BIOS. Rafal
+                                Wojtczuk - Joanna Rutkowska, 2008
+                                \item SMRAM modification via defered %FIXME
+                                cache flush. ANSSI, 2009
+                        \end{itemize}
+                \end{itemize}
+        \end{frame}
+
+\section{Chipset}
+        \begin{frame}
+                \frametitle{PC chipset}
+                \begin{itemize}
+                        \item Split between two componant northbridge and southbridge
+                        \item A CPU only have two buses (address and
+                        data), the chipset to the multiplexing
+                        \item The chipset implement buses protocol like
+                        PCI, PCIe, AGP
+                        \item Have some integrated functionality
+                        (network card, sound, gpu, ...)
+                \end{itemize}
+        \end{frame}
+
+        %{NorthBridge}
+        \begin{frame}
+                \frametitle{NorthBridge}
+                \begin{itemize}
+                        \item Historical concept
+                        \item Include the memory controller
+                        \item AGP was plugged into the NorthBridge to
+                        gain bandwidth.
+                        \item Previous generation include Intel GPU (with GTT)
+                        \item On the Intel platform the Northbridge is
+                        dead now. It's been integrated fully in the CPU
+                        (including the GPU !!!)
+                \end{itemize}
+        \end{frame}
+
+
+        \begin{frame}
+                \frametitle{SouthBridge}
+                \begin{itemize}
+                        \item Buses controler
+                        \item Integrated devices
+                        \item (Intel) On today's platform it's called
+                        the PCH (Platform Control Hub).
+                \end{itemize}
+        \end{frame}
+
+\subsection{I/O on x86}
+\subsubsection{Types of I/O}
+        \begin{frame}
+                \frametitle{Types of I/O}
+                \begin{itemize}
+                        \item PIO: Port-Mapped I/O (instruction in/out)
+                        \item MMIO: Memory Mapped I/O (read/write on
+                              the address)
+                        \item DMA: Direct Memory Access. Asynchronous
+                              transfert mecanism.
+                        \item Interruption: Event. can't carry extra
+                        data. Limited number.
+                        \item MSI: Message signaled interrupt. PCI
+                        interrupt. Calls an interrupt vector.
+                \end{itemize}
+        \end{frame}
+
+\subsubsection{Buses}
+        \begin{frame}
+                \frametitle{Buses}
+                \begin{itemize}
+                        \item ISA, AGP, PCI, PCIe, PCI/PCIe bridge
+                        \item SMBus: System Management Bus
+                        \item LPCBus (Low Pin Count): Keyboard/Mouse (PS2), TPM, BIOS
+                        (EPROM)
+                \end{itemize}
+        \end{frame}
+
+%\subsection{Security concerns}
+%\subsubsection{DMA attacks}
+%\subsubsection{Firewire}
+%\subsubsection{Interupt}
+%\subsubsection{Devices}
+%
+%\subsection{Security improvement}
+%\subsubsection{IOMMU}
+%\subsubsection{ACS}
+%\subsubsection{MSI}
+
+\subsection{ACPI}
+        \begin{frame}
+                \frametitle{ACPI}
+                \begin{itemize}
+                        \item Partnership betwen HP, Intel, Microsoft
+                        and Phoenix (1996)
+                        \item Set of table to describe and configure the
+                        platform.
+                        \item Use of a specific language, ASL
+                        \item The "complied" ASL code is storage on
+                        tables
+
+                        \item Mainly used to describe what need to be
+                        done for a state transition.
+                                \begin{itemize}
+                                        \item What needs to be done to
+                                        this device on sleep?
+                                        \item What needs to be done to
+                                        this device on wakeup?
+                                \end{itemize}
+                \end{itemize}
+        \end{frame}
+
+\subsubsection{ASL}
+        \begin{frame}
+                \frametitle{ASL}
+                \begin{itemize}
+                        \item OO language (Package, Object,
+                        Method/Field).
+                        \item Let's you describe registry and action on
+                        a device
+                        \item Control flow like condition and loops
+                        \item To support ACPI the kernel needs to
+                        embedded an ASL interpretor.
+                \end{itemize}
+        \end{frame}
+
+        \begin{frame}[fragile]
+        \frametitle{ASL example}
+        \begin{block}{Device TEST}
+        The device has one register CNT (1 byte) and two methods to
+        respectively set to zero and increment this register.
+        We use the Instruction OperationRegion to create the register.
+        \end{block}
+\begin{verbatim}
+Device(TEST){
+        OperationRegion(REG, SystemMemory, 0x0000400, 0x1)
+        Field (REG, ByteAcc, Nolock, Preserve) { CNT, 0 }
+
+        Method (_SAT, 1, NotSerialized)
+        {
+          Store (0x0, \\_SB.PCI0.TEST.CNT)
+        }
+
+        Method (_PSR, 1, NotSerialized)
+        {
+          Increment (\\_SB.PCI0.TEST.CNT)
+        }
+}
+\end{verbatim}
+\end{frame}
+
+\subsubsection{ACPI tables}
+        \begin{frame}
+                \frametitle{ACPI tables}
+                \begin{itemize}
+                        \item RSDT: Root System Describtion Table
+                        \item DSDT: Differentiated System Description
+                        Talbe
+                        \item SSDT: Secondary System Description Table
+                \end{itemize}
+        \end{frame}
+\subsubsection{Interupts}
+
+\subsection{TPM}
+\subsubsection{Use case}
+        \begin{frame}
+                \frametitle{Use case}
+                \begin{itemize}
+                        \item Safe storage. Internaly use RSA key to safely store
+                        data.
+                        \item Integrity. Check if the platform was in
+                        the same state when the data was sealed
+                        \item Sealing. Seal a secret with the current
+                        state of the platform.
+                        \item Attestation. Expose the state of the
+                        platform so a remote entity can validate the
+                        state (Total or partial attestation).
+                \end{itemize}
+        \end{frame}
+
+\subsubsection{Architecture}
+        \begin{frame}
+                \frametitle{Keys}
+                \begin{itemize}
+                        \item SRK: Storage Root Key. Key Pair. The
+                        public key is used to encrypt other key. The
+                        private key never leave the TPM.
+                        \item AIK: Attestation Identity Keys. Used to
+                        signed the PCRs in case of attestation.
+                        \item EK: Endorsement Key. Comes with the TPM.
+                \end{itemize}
+        \end{frame}
+
+        \begin{frame}[fragile]
+                \frametitle{PCRs: Platform Configuration Registers}
+                \begin{itemize}
+                        \item 0-3: Describe the state of the BIOS
+                        \item 4: Used by the bootloader
+                        \item 14: Multiboot modules
+                        \item The rest are general purpose register.
+                \end{itemize}
+                
+                \begin{block}{Operation on a register}
+                The only operation available on a PCR is the extend
+                operation defined as such:
+                \begin{center}
+                \begin{verbatim}
+                PCR[i] = SHA1( PCR[i] | SHA1(data) )
+                \end{verbatim}
+                \end{center}
+                \end{block}
+\end{frame}
+
+\subsubsection{Root of Trust}
+%\subsubsection{SRTM}
+%\subsubsection{DRTM}
+\subsubsection{Attack}
+
+\end{document}
+
+
