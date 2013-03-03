@@ -32,7 +32,7 @@
 % title
 %
 
-\title{Virtualisation}
+\title{Virtualization}
 
 %
 % table of contents at the beginning of each section
@@ -97,10 +97,10 @@
 \begin{frame}
 \frametitle{Introduction}
 \begin{itemize}
-\item The Virtualisation platform create a abstraction in order to run multiple OS or system on the same physical machine.
-\item Virtualisation exists since a long time, 1960s with IBM.
-\item There is multiple level of virtualisation.
-\item Nowadays the success of the virtualisation software made the hardware vendor to do some research to add hardware assistance.
+\item The Virtualization platform create a abstraction in order to run multiple OS or system on the same physical machine.
+\item Virtualization exists since a long time, 1960s with IBM.
+\item There is multiple level of virtualization.
+\item Nowadays the success of the virtualization software made the hardware vendor to do some research to add hardware assistance.
 \end{itemize}
 \end{frame}
 
@@ -135,31 +135,31 @@
 \begin{itemize}
 \item The two previous techniques can be consider as emulation.
 \item We usually talk about emulation for hardware emulation, not for the code being executed.
-\item In a virtualised environment most of the hardware is emulated because it's an abstraction.
+\item In a virtualized environment most of the hardware is emulated because it's an abstraction.
 \item Example: QEMU is a hardware emulation software
 \end{itemize}
 \end{frame}
 
-\subsection{Virtualisation}
+\subsection{Virtualization}
 \begin{frame}
-\frametitle{Virtualisation}
+\frametitle{Virtualization}
 \begin{itemize}
-\item We often talk about virtualisation when there is hardware assistance, or the techniques in place don't have that much overhead.
+\item We often talk about virtualization when there is hardware assistance, or the techniques in place don't have that much overhead.
 \item It's usually a mix of all the previous techniques.
 \item Example: Xen, VMWare ESX
 \end{itemize}
 \end{frame}
 
-\section{Different kind of virtualisation}
-\subsection{Paravirtualisation}
+\section{Different kind of virtualization}
+\subsection{Paravirtualization}
 \begin{frame}
-\frametitle{Paravirtualisation}
+\frametitle{Paravirtualization}
 \begin{itemize}
-\item The kernel is modified in order to run inside a virtualised environment.
+\item The kernel is modified in order to run inside a virtualized environment.
 \item So far it's mainly for Linux running under Xen.
 \item You replace all hardware calls with syscalls (hypercall in this case), like (ldtr, gtdr, cr3, \ldots ).
 \item The overhead compared with native is less then 5\%.
-\item Linux have a paravirtualisation interface since 2.6.22 (called pvops).
+\item Linux have a paravirtualization interface since 2.6.22 (called pvops).
 \item Xen paravirtualized guest work since 2.6.24.
 \item This technique doesn’t required any special hardware.
 \end{itemize}
@@ -224,17 +224,17 @@ struct pv_mmu_ops {
 \end{verbatim}
 \end{frame}
 
-\subsection{Hardware assisted virtualisation (HVM)}
+\subsection{Hardware assisted virtualization (HVM)}
 \begin{frame}
-\frametitle{Hardware assisted virtualisation (HVM)}
+\frametitle{Hardware assisted virtualization (HVM)}
 \begin{itemize}
-\item A new set of instruction and table in order to do virtualisation in a more efficient way.
-\item Most of virtualisation solution required those processor feature like KVM.
+\item A new set of instruction and table in order to do virtualization in a more efficient way.
+\item Most of virtualization solution required those processor feature like KVM.
 \item Xen needs that in order to run unmodified kernel like windows.
 \end{itemize}
 \end{frame}
 
-\section{Technology (hardware virtualisation)}
+\section{Technology (hardware virtualization)}
 \subsection{VMX}
 \begin{frame}
 \frametitle{Intel VMX}
@@ -323,11 +323,11 @@ machine.
 \frametitle{PV driver}
 \begin{itemize}
 \item It's called VMWare tools, xenTools or virtual box Tools.
-\item Instead of using the emulated device path, the tools load some driver that talks directly with the virtualisation layer.
+\item Instead of using the emulated device path, the tools load some driver that talks directly with the virtualization layer.
 \item That technique completely by-pass the emulation layer.
 \item It's very useful for high speed device, like hard drive or network
 card.
-\item You have to write a driver of each kind of OS you want to virtualise so it's not generic.
+\item You have to write a driver of each kind of OS you want to virtualize so it's not generic.
 \end{itemize}
 \end{frame}
 
