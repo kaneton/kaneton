@@ -118,13 +118,13 @@
 
 \subsection{Binary patching}
 \begin{frame}
-\frametitle{Binary Translation}
+\frametitle{Binary patching}
 \begin{itemize}
   \item Load the binaries into memory and modify the code directly.
   \item Replace the special instructions with specific calls, (for instance ldtr).
   \item It's quite slow and force to parse all the code before executing
   it.
-  \item Like the binary translation this techniques doesn’t require any hardware support.
+  \item Like the binary translation this techniques doesn't require any hardware support.
   \item Example: VMWare workstation
 \end{itemize}
 \end{frame}
@@ -161,7 +161,7 @@
 \item The overhead compared with native is less then 5\%.
 \item Linux have a paravirtualization interface since 2.6.22 (called pvops).
 \item Xen paravirtualized guest work since 2.6.24.
-\item This technique doesn’t required any special hardware.
+\item This technique doesn't required any special hardware.
 \end{itemize}
 \end{frame}
 
@@ -294,7 +294,7 @@ machine.
 \item This is generally a kernel module.
 \item The VMM can be compromised through the OS.
 \item Much easier to install.
-\item Software: KVM, VMWare Fusion, Paralleles, virtual box, \ldots
+\item Software: KVM, VMWare Fusion, Paralleles, VirtualBox, \ldots
 \end{itemize}
 \end{frame}
 
@@ -308,11 +308,11 @@ machine.
 \section{Device management}
 \subsection{Emulation}
 \begin{frame}
-\frametitle{Device emualtion}
+\frametitle{Device emulation}
 \begin{itemize}
 \item When a virtual machine runs we need to emulate all the hardware.
 \item KVM and Xen use qemu for that.
-\item VMWare and virtual box got there own device emulator.
+\item VMWare and VirtualBox got there own device emulator.
 \item This layer is reponsible for all the hardware abstraction.
 \item This is usally very slow and the bottleneck of the hole system.
 \end{itemize}
@@ -322,7 +322,7 @@ machine.
 \begin{frame}
 \frametitle{PV driver}
 \begin{itemize}
-\item It's called VMWare tools, xenTools or virtual box Tools.
+\item It's called VMWare tools, Xen tools or VirtualBox Tools.
 \item Instead of using the emulated device path, the tools load some driver that talks directly with the virtualization layer.
 \item That technique completely by-pass the emulation layer.
 \item It's very useful for high speed device, like hard drive or network
