@@ -94,7 +94,7 @@ security breach.
 \item Thread A
 \begin{enumerate}
 \item load ID of B
-\item set msg lenght to 0
+\item set msg length to 0
 \item call kernel
 \end{enumerate}
 \item Kernel
@@ -102,7 +102,7 @@ security breach.
 \item access Thread B
 \item Switch stack pointer
 \item Switch address space
-\item load if of A
+\item load ID of A
 \item return to user
 \end{enumerate}
 \item Thread B
@@ -159,19 +159,19 @@ systems.
 \end{itemize}
 \end{frame}
 
-\subsection{Shared memory}
+\section{Shared memory}
 \begin{frame}
 \begin{itemize}
 \item The kernel allocate a physical page.
 \item The same physical page is mapped in both address spaces.
 \item Semaphore can be used inside the region.
-\item This is a fastest way to exanche data from one process to another.
+\item This is a fastest way to exchange data from one process to another.
 \item This is a 0 copy paradigm.
 \item This mecanism is a bit intrusive and can lead to security issues.
 \end{itemize}
 \end{frame}
 
-\subsection{Message queue}
+\section{Message queue}
 \begin{frame}
 \frametitle{Message queue}
 Message queues are basically a ring buffer over shared mem.
@@ -194,7 +194,7 @@ Message queues are basically a ring buffer over shared mem.
 \begin{itemize}
 \item message\_transmit send a synchronous message, wait until the
 received thread comes.
-\item message\_received block is there is no pending message, otherwise
+\item message\_received block if there is no pending message, otherwise
 give the message.
 \end{itemize}
 \end{frame}
@@ -208,7 +208,7 @@ give the message.
 copied directly. to garanty than the caller need to use the request
 argument to make the copy has been performed. On non smp system this
 function perform like message\_send.
-\item message\_poll non blocking function, works also for syncronous
+\item message\_poll non blocking function, works also for synchronous
 message.
 \end{itemize}
 \end{frame}
