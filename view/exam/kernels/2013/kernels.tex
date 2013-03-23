@@ -1,0 +1,440 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% created       patrick samy   [mon may 14 21:56:41 2007]
+% updated       patrick samy   [fri jun 10 11:20:51 2012]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../..}
+
+%
+% template
+%
+
+\input{\path/template/exam.tex}
+
+%
+% title
+%
+
+\title{Noyaux et Syst\`emes d'Exploitation}
+
+%
+% header
+%
+
+\lhead{\scriptsize{EPITA\_ING2 - 2013\_S4 - NSE}}
+\rhead{}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% indentation
+%
+
+\indentation{}
+
+%
+% --------- information -------------------------------------------------------
+%
+
+\begin{center}
+
+\textbf{Documents et calculatrice interdits}
+
+\textbf{Dur\'ee 3 heures}
+
+\scriptsize{Les r\'esultats des calculs sous forme autre que d\'ecimale (a/b, etc.) sont admis.}
+
+\scriptsize{Une copie bien pr\'esent\'ee sera toujours mieux not\'ee qu'une autre.}
+
+\end{center}
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+%
+% boot
+%
+
+\section{{Bootloader}
+         {\hfill{} \normalfont{\scriptsize{7 points}}}}
+
+\begin{itemize}
+  \item Quelle est la taille des registres adressable en mode r\'eel ? (0,5 point)
+  \item Quel est l'espace adressable en mode r\'eel ? (0,5 point)
+  \item Donner la syntaxe pour l'acc\`es \`a la m\'emoire en mode r\'eel et formule associ\'ee. (1 point)
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item 16 bits
+  \item 1 Mo
+  \item Segment:Offset (0,5 point)
+  \newline Segment * 0x10 + Offset (0,5 point)
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item En mode r\'eel, donner 4 fa\,cons d'acc\'eder \`a l'adresse 0x2345. (1 point)
+  \newline N.B.: Attention \`a la syntaxe...
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item 0x0234:0x0005 (0,25 point)
+  \newline 0x0230:0x0045 (0,25 point)
+  \newline 0x0200:0x0345 (0,25 point)
+  \newline 0x0000:0x2345 (0,25 point)
+  \newline 0x0030:0x2045 (0,25 point)
+  \newline 0x0034:0x2005 (0,25 point)
+  \newline (1 point au max, div 2 si pas de '0x')
+
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Comment sait-on si un secteur de disquette est bootable ? (1 point)
+  \newline N.B.: Attention \`a l'endianness, soyez clair !
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item Offset 511 / 512 = 0x55
+  \newline Offset 512 / 512 = 0xAA
+  \newline (1 point si tout OK ; 0,5 si invers\'e ; 0 autrement)
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Synth\'etiquement, donner les \'etapes du bootstrap (2 points)
+  \newline N.B : Faire attention aux mots du sujet !
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item - Mat\'eriel : mise dans un \'etat coh\'erent
+  \newline - Firmware : Initialisation de certains p\'eriph\'eriques et mise en place de certains services
+  \newline - Bootloader : charge le noyau
+  \newline (2 points si les 3 \'etapes, 1 point si 2, 0 autrement)
+  \newline ATTENTION : les \'etudiants confondent r\'eguli\`erement bootstrap et bootloader
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item A quelle adresse est charg\'ee le premier secteur sous une architecture Intel? (1 point)
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item 0x7C00 (1 point; 0,5 si pas '0x'; 0 autrement)
+\end{itemize}
+
+\end{correction}
+
+% Interruptions %
+\section{{Exceptions et interruptions}
+         {\hfill{} \normalfont{\scriptsize{1,5 points}}}}
+\begin{itemize}
+  \item Donner la diff\'erence entre une exception et une interruption. (0.5 point)
+  \item Expliquer succintement les diff\'erentes actions r\'ealis\'ees par le noyau lors d'une interruption ? (1 point)
+  \item Sur architecture x86, donner au moins une raison expliquant le changement de pile automatique r\'ealis\'e par le processeur lors d'une interruption du Ring 3. (0.5 point)
+  \item Sur architecture x86, expliquer pourquoi CS, EIP, et EFLAGS, sont replac\'es automatiquement depuis la pile dans leurs registres respectifs lors de l'ex\'ecution de l'instruction IRET. (0.5 point)
+  \item Quelle utilisation, en rapport avec les interruptions, est-il possible de faire a partir d'une prise de r\'eseau \'electrique ? (0.5 point)
+  \item R\'ealiser le schema de deux contr\^oleurs d'interruptions externes reli\'es au processeur (CPU x86, avec PIC ou APIC). (0.5 point)
+\end{itemize}
+
+% Memoire %
+\section{{M\'emoire}
+         {\hfill{} \normalfont{\scriptsize{X points}}}}
+
+\begin{itemize}
+  \item D\'ecrivez succinctement en quoi consiste la notion de m\'emoire virtuelle, et quels sont les avantages de ce m\'ecanisme. (3 points)
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item La m\'emoire virtuelle consiste \`a s\'eparer les adresses manipul\'ees par les programmes des adresses physiques. Cela permet entre autres :
+  \begin{itemize}
+    \item D'ex\'ecuter plusieurs taches  sur une même machine sans que les taches ne doivent être compil\'ee sp\'ecifiquement, en fonction des autres taches. (1 point)
+    \item De prot\'eger les taches s'ex\'ecutant au sein de la machine, chaque tache ayant son propre espace d'adressage, et ne pouvant donc en aucun cas acc\'eder aux emplacements m\'emoire des autres taches. (1 point)
+    \item D'\'etendre virtuellement la m\'emoire physique gr\^ace aux p\'eriph\'eriques de stockage, gr\^ace au m\'ecanisme de swap. (1 point)
+  \end{itemize}
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Un ordinateur ayant des adresses virtuelles de 32 bits utilise une table des pages (page table) \`a deux niveaux. Les adresses virtuelles se composent d'un champ de 9 bits pour la table des pages du premier niveau, d'un champ de 11 bits pour la table des pages du deuxi\`eme niveau et d'un d\'eplacement (offset). Une entr\'ee d'une table des pages a une taille de 4 octets.
+  \begin{itemize}
+  \item Quelle est la taille et le nombre des pages de l'espace d'adressage virtuel ? (1 point)
+  \item Commentez cette architecture (2 points).
+  \item Proposez une architecture optimale de table des pages (une entr\'ee de taille 4 octets) \`a plusieurs niveaux pour un ordinateur ayant des adresses virtuelles de 64 bits (2 points). Commentez cette architecture en cas de TLB miss (2 points).
+  \end{itemize}
+\end{itemize}
+
+\begin{correction}
+
+Remarque : l'ordre des champs peut etre quelconque (offset au milieu, PTEs a la fin, etc.).
+\begin{itemize}
+  \item     --------------------------------------
+  \newline |    9    |    11   | 32 - 9 - 11 = 12 |
+  \newline  --------------------------------------
+  \newline Taille = 2\^12 = 4 ko
+  \newline Nombre de pages = 2\^9 * 2\^11 = 2\^20
+
+  \item Taille PD = 2\^9 * 4 = 2\^9 * 2\^2 = 2\^11 = 2\^12 / 2 = Une demi page
+  \newline Taille PT = 2\^11 * 4 = 2\^11 * 2\^2 = 2\^13 = 2\^12 * 2 = Deux pages
+  \newline Donc pour maper une page, il faut 3 pages... On perd en plus une demi page pour chaque PDE cr\'e\'ee (on pourrait la rendre accessible pour l'utiliser mais mauvais pour la s\'ecu puisque ca impliquerait la possibilit\'e de modifier la PD juste en changeant l'offset de l'adresse).
+
+  \item Optimal
+  \newline => utilise le moins de page que possible pour le mapping (revient \`a dire aussi : qui utilise le moins de place que possible en RAM, et comme l'unit\'e de la RAM est la page, c'est la meme chose que dire qu'on utilsie le moins de page possible)
+  \newline => taille des page tables = la taille d'une page = 4ko
+  \newline => 2\^10 entr\'ees (2\^12 octets / 4 octets par entr\'ee = 2\^10 entr\'ees).
+  \newline => champs PTE de 10 bits.
+  \newline Or 64 - 10 - 10 - 10 … - 12 = 2, il reste 2 bits libres, non utilis\'es par notre MMU.
+  \newline  ------------------------------------------------------------------
+  \newline | 2 libre | 10 PTE | 10 PTE | 10 PTE | 10 PTE | 10 PTE | 12 offset |
+  \newline  ------------------------------------------------------------------
+  \newline Commentaire sur l'archi : 5 pages tables ! ca fait tres mal en cas de TLB miss : en pire cas (rien du tout en cache), on a 6 acces RAM (PT1, PT2, PT3, PT4, PT5, Page) pour arriver \`a la donn\'ee finale ! Compar\'e \`a un TLB hit, on a tout int\'erêt \`a pr\'eserver la TLB !
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item L'un des avantage des processus l\'egers (threads) est qu'ils \'evitent de vider la TLB lors d'un changement de contexte entre des processus l\'egers d'un même processus.
+  \begin{itemize}
+    \item Comment est index\'ee une telle TLB (se vidant lors d'un changement de contexte de processus) ? (2 points)
+    \item Proposez une modification simple \`a cet indexation afin d'\'eviter la vidange de la TLB en cas de changement de contexte entre processus. (2 points)
+  \end{itemize}
+\end{itemize}
+             
+\begin{correction}
+
+\begin{itemize}
+\item
+  \begin{itemize}
+    \item Avec l'adresse virtuelle sans l'offset.
+    \item Ajout d'un identifiant d'espace d'adressage.
+  \end{itemize}
+\end{itemize}
+
+\end{correction}
+                                                                                                    \begin{itemize}
+  \item Quel est l'avantage de la technique du mirroring ? (2 points)
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item Technique g\'en\'eralisable \`a toute architecture puisqu'elle ne requiert aucun support HW (ne requiert pas de MMU d\'esactivable, de mode r\'eel, ou autre...), on ne d\'epend que de la virtualisation de la m\'emoire.
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Soit l'\'etat des pages suivantes comportant la date \`a laquelle la page a \'et\'e cr\'e\'ee, le compteur d'acc\`es, et les bits R (r\'ef\'erenc\'e) et M (modifi\'e). Quelle est la page qui sera remplac\'ee par l'algorithme :
+  \begin{itemize}
+    \item NRU ? (1 point)
+    \item FIFO ? (1 point)
+    \item NFU ? (1 point)
+    \item De la seconde chance ? (1 point)
+    \newline N.B. : On consid\`ere que c'est la premi\`ere fois que l'algorithme est appliqu\'e
+  \end{itemize}
+\end{itemize}
+Justifier en UNE SEULE phrase (courte)
+    
+\begin{correction}
+
+\begin{itemize}
+    \item NRU : 0 (R = 0, M = 0)
+    \item FIFO  : 2 (Page la plus ancienne)
+    \item NFU : 1 (Compteur minimal)
+    \item De la seconde chance : 0 (La page 2 a son bit R \`a 1 => sa date de chargement devient temps courant et R mis \`a 0)
+\end{itemize}
+
+\end{correction}
+
+% Multi-tache / Ordonnancement %
+\section{{Multi-t\^ache et Ordonnancement}
+         {\hfill{} \normalfont{\scriptsize{X points}}}}
+
+\begin{itemize}
+  \item Expliquez pourquoi l'impl\'ementation du changement de contexte de kaneton induit une perte de performance certaine. Comment rem\'edier \`a ce probl\`eme ? Vous pourrez exposer des exemples d'impl\'ementation dans d'autres noyaux.
+\end{itemize}
+
+\begin{itemize}
+  \item Comment sont cat\'egoris\'ees les t\^aches que l'on retrouve dans les syst\`emes g\'en\'eraux ? Quelles sont leur caract\'eristique ? (2 points)
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item Interactif : beaucoup d'E/S => ex\'ecution courte (r\'eveil, traitement, nouvelle E/S) => rend la main vite.  1 point
+  \item Traitement | Batch | Traitement par lot : utilisation du CPU intensive (e.g. calcul math\'ematique, etc.). 1 point
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Quels sont leur objectif ? (2 points)
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item Int\'eractif : temps de r\'eponse le plus faible possible. (1 point)
+  \item Batch : temps d'ex\'ecution (jusqu'\`a compl\'etude) le plus faible possible - ex\'ecution la plus rapide que possible - ex\'ecution la moins interrompue que possible. (1 point)
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Proposer une heuristique simple permettant de d\'eterminer \`a quelle cat\'egorie appartient un processus. (2 points)
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+\item M\'emorisation des temps d'ex\'ecution => une t\^ache avec un temps d'ex\'ecution faible est interactive, une t\^ache avec un temps d'ex\'ecution grand est “batch”.
+ou
+\item M\'emorisation des nombre de blocage avant la fin du quantum => une t\^ache avec beaucoup de blocage est interactive, une t\^ache avec peu de blocage est batch.
+ou
+\item n'importe quoi de correct :)
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Les ordonnanceurs circulaires m\'emorisent la liste des processus prêts et chaque processus n'apparaît qu'une seule fois dans cette liste. Que se passerait-il si un processus y apparaissait deux fois (1 point) ? Pourquoi permettrait-on l'insertion multiple d'un processus dans cette liste (1 point) ?
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+\item Il serait \'elu deux fois plutôt qu'une \`a chaque tour complet de la liste des processus. Int\'eressant pour favoriser des processus pour impl\'ementer un syst\`eme primitif \`a priorit\'e.
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item La plupart des ordonnanceurs circulaires utilisent un quantum fixe. Donnez un argument en faveur d'un petit quantum et un autre en faveur d'un grand quantum, ainsi que la cat\'egorie de processus favoris\'e. (2 points)
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item Petit quantum => temps de r\'eponse \'elev\'e. Favorise les processus interactifs.  (1 point)
+  \item Grand quantum => temps CPU utile \'elev\'e. Favorise les processus batch. (1 point)
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Cinq travaux, A \`a E, arrivent pratiquement en même temps dans un centre de calcul. Leur temps d'ex\'ecution respectif est estim\'e \`a 10, 6, 2, 4, 8 minutes. Leurs priorit\'es (d\'etermin\'ees de mani\`ere externe) sont 3, 5, 2, 1 et 4, la valeur 5 correspondant \`a la priorit\'e la plus \'elev\'ee. D\'eterminez le temps moyen d'attente pour chacun des algorithmes d'ordonnancement suivants. Ne tenez pas compte du temps perdu lors de la commutation des processus.
+  \begin{itemize}
+    \item Tourniquet (1 point)
+    \item Ordonnancement avec priorit\'e (1 point)
+    \item Premier arriv\'e, premier servi (ordre d'arriv\'ee : ordre alphab\'etique). (1 point)
+    \item Plus court d'abord. (1 point)
+  \end{itemize}
+\end{itemize}
+Dans le cas (1) on fait l'hypoth\`ese que le temps processeur est \'equitablement r\'eparti entre les diff\'erents travaux. Dans les cas (2) \`a (4), on suppose que chaque travail est ex\'ecut\'e jusqu'\`a ce qu'il se termine. Les travaux n'effectuent pas d'E/S. D\'etaillez vos calculs (dessins/tableaux \& moyenne sous forme de quotient admis).
+
+\begin{correction}
+
+P: Processus courant
+T: Tour/Temps d'ex\'ecution depuis un 0 absolu.
+E : temps d'ex\'ecution restant
+\begin{itemize}
+  \item Round Robin : la remarque sous-entend la pr\'eemption
+  \newline Timeline de l'execution : * = ex\'ecution termin\'ee
+  \item Priorit\'e
+  \item Premier arriv\'e premier servi
+  \item Plus court d'abord
+\end{itemize}
+
+\end{correction}
+
+% Concurrence %
+\section{{Concurrence}
+         {\hfill{} \normalfont{\scriptsize{X points}}}}
+
+\begin{itemize}
+  \item Supposez que vous ayez \`a concevoir l'architecture d'un ordinateur \'evolu\'e où la commutation entre les processus serait faite par le mat\'eriel, et non par logiciel via le m\'ecanisme d'interruption. Quelles seraient les informations n\'ecessaires au processeur ? D\'ecrivez le fonctionnement de la commutation effectu\'ee par le mat\'eriel (2 points).
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+  \item Pour faire un contexte switch, le CPU a besoin des infomartions suivantes du processus \`a ex\'ecuter :
+  \begin{itemize}
+    \item Registres G\'en\'eraux (1 point)
+    \item Pointeurs sur pile et sur code (program counter, next instruction pointer...), stack pointer (1 point)
+    \item Control Registers (1 point)
+  \end{itemize}
+  Fonctionnement du context switch HW moins souple qu'un SW: il ne sait pas ce qu'il execute, il sauvegarde donc tous les registres du processeurs, il doit aussi chercher les nouvelles donn\'ees dans des structures bien d\'efinies.
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+  \item Quelle est la diff\'erence entre un thread kernel et un thread user-land ?
+\end{itemize}
+
+% Virtualisation et IPC %
+\section{{Virtualisation et IPC}
+         {\hfill{} \normalfont{\scriptsize{X points}}}}
+
+\begin{itemize}
+  \item Apr\`es avoir d\'efini ce qu'est une IPC, donner un exemple pertinent d'utilisation.
+  \item Expliquer les diff\'erentes m\'ethodes de virtualisation.
+\end{itemize}
+
+\begin{correction}
+
+\begin{itemize}
+\item PV : Paravirtualiser. Le syst\`eme d'exploitation est au courant qu'il s'ex\'ecute dans une machine virtuelle et est modif\'e en cons\'equence pour coop\'erer avec l'hyperviseur.
+\item HVM : Hardware Virtualized Machine. Le syst\`eme d'exploitation peut s'\'ex\'ecuter sans modification \`a l'int\'erieur d'une machine virtuelle.
+\end{itemize}
+
+\end{correction}
+
+\begin{itemize}
+\item Expliquer les termes suivant: VT-x, VT-d, E820, EPT, NPT
+\end{itemize}
+
+\end{document}
