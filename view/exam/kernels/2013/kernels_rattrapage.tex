@@ -1,0 +1,290 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% created       patrick samy   [mon mar 20 21:56:41 2013]
+% updated       patrick samy   [sat mar 23 11:20:51 2013]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../..}
+
+%
+% template
+%
+
+\input{\path/template/exam.tex}
+
+%
+% title
+%
+\date{}
+\title{Noyaux et Syst\`emes d'Exploitation \\ Rattrapage}
+
+%
+% header
+%
+
+\lhead{\scriptsize{EPITA\_ING2 - 2013\_S4 - NSE - Rattrapage}}
+\rhead{}
+
+%
+% document
+%
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% indentation
+%
+
+\indentation{}
+
+%
+% --------- information -------------------------------------------------------
+%
+
+\begin{center}
+
+\textbf{Documents et calculatrice interdits}
+
+\textbf{Durée 3 heures}
+
+\scriptsize{Les résultats des calculs sous forme autre que décimale sont admis.}
+
+\scriptsize{Une copie bien présentée sera toujours mieux notée qu'une autre.}
+
+\end{center}
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+%
+% boot
+%
+
+\section{{Bootloader}
+         {\hfill{} \normalfont{\scriptsize{4 points}}}}
+
+\begin{enumerate}
+
+% Q
+\item Quelle est la taille des registres adressable en mode réel? (1 point)
+
+% R
+\begin{correction}
+16 bits
+\end{correction}
+
+
+
+% Q
+\item Donner la syntaxe pour l'accès à la mémoire en mode réel et formule associée. (1 point)
+
+% R
+\begin{correction}\\
+Segment:Offset (0,5 point) \\
+Segment * 0x10 + Offset (0,5 point)\\
+\end{correction}
+
+% Q
+\item En mode réel, donner 4 façons d'accéder à l'adresse 0x2345. (1 point) \\
+N.B.: Attention à la syntaxe...
+
+\begin{correction}
+\begin{enumerate}
+\item 0x0234:0x0005 (0,25 point)
+\item 0x0230:0x0045 (0,25 point)
+\item 0x0200:0x0345 (0,25 point)
+\item 0x0000:0x2345 (0,25 point)
+\item 0x0030:0x2045 (0,25 point)
+\item 0x0034:0x2005 (0,25 point)
+\end{enumerate}
+(1 point au max, div 2 si pas de '0x')\\
+\end{correction}
+
+
+% Q
+\item A quelle adresse est chargée le premier secteur sous une architecture Intel? (1 point)
+
+% R
+\begin{correction}
+ 0x7C00 (1 point; 0,5 si pas '0x'; 0 autrement)
+\end{correction}
+
+% fin de bootloader
+\end{enumerate}
+
+% Interruptions %
+\section{{Exceptions et interruptions}
+         {\hfill{} \normalfont{\scriptsize{3 points}}}}
+\begin{enumerate}
+  \item Expliquer succintement les différentes actions réalisées par le noyau lors d'une interruption ? (1 point)
+  \item Sur architecture x86, donner au moins une raison expliquant le changement de pile automatique réalisé par le processeur lors d'une interruption du Ring 3. (1 point)
+  \item Réaliser le schema de deux contrôleurs d'interruptions externes reliés au processeur (CPU x86, avec PIC ou APIC). (1 point)
+\end{enumerate}
+
+% Memoire %
+\section{{Mémoire}
+         {\hfill{} \normalfont{\scriptsize{8 points}}}}
+
+\begin{enumerate}
+
+% Q
+\item Décrivez succinctement en quoi consiste la notion de mémoire virtuelle, et quels sont les avantages de ce mécanisme. (3 points)
+
+% R
+\begin{correction}\\
+La mémoire virtuelle consiste à séparer les adresses manipulées par les programmes des adresses physiques. Cela permet entre autres :
+\begin{itemize}
+  \item D'exécuter plusieurs taches  sur une même machine sans que les taches ne doivent être compilée spécifiquement, en fonction des autres taches. (1 point)
+  \item De protéger les taches s'exécutant au sein de la machine, chaque tache ayant son propre espace d'adressage, et ne pouvant donc en aucun cas accéder aux emplacements mémoire des autres taches. (1 point)
+  \item D'étendre virtuellement la mémoire physique grâce aux périphériques de stockage, grâce au mécanisme de swap. (1 point)
+\end{itemize}
+\end{correction}
+
+
+% Q
+\item L'un des avantages des processus légers (threads) est qu'ils évitent de vider la TLB lors d'un changement de contexte entre des processus légers d'un même processus.
+\begin{enumerate}
+  \item Comment est indexée une telle TLB (se vidant lors d'un changement de contexte de processus) ? (1 point)
+  \item Proposez une modification simple à cette indexation afin d'éviter la vidange de la TLB en cas de changement de contexte entre processus. (2 points)
+\end{enumerate}
+
+% R
+\begin{correction}
+\begin{enumerate}[label=(\alph*)]
+\item Avec l'adresse virtuelle sans l'offset.
+\item Ajout d'un identifiant d'espace d'adressage.
+\end{enumerate}
+\end{correction}
+
+% Q
+\item Quel est l'avantage de la technique du mirroring ? (2 points)
+
+% R
+\begin{correction}
+Technique généralisable à toute architecture puisqu'elle ne requiert aucun support HW (ne requiert pas de MMU désactivable, de mode réel, ou autre...), on ne dépend que de la virtualisation de la mémoire.
+\end{correction}
+
+
+% fin de la partie Mémoire
+\end{enumerate}
+
+
+% Multi-tache / Ordonnancement %
+\section{{Multi-tâche \& Ordonnancement}
+         {\hfill{} \normalfont{\scriptsize{9 points}}}}
+
+\begin{enumerate}
+
+% Q
+\item Comment sont catégorisées les tâches que l'on retrouve dans les systèmes généraux? Quelles sont leur caractéristique? (2 points)
+
+% R
+\begin{correction}
+\begin{itemize}
+  \item Interactif: beaucoup d'E/S => exécution courte (réveil, traitement, nouvelle E/S) => rend la main vite.  1 point
+  \item Traitement | Batch | Traitement par lot: utilisation du CPU intensive (e.g. calcul mathématique, etc.). 1 point
+\end{itemize}
+\end{correction}
+
+
+% Q
+\item Quels sont les objectifs des types de tâches définis dans la question précédente? (2 points)
+
+% R
+\begin{correction}
+\begin{itemize}
+  \item Intéractif: temps de réponse le plus faible possible. (1 point)
+  \item Batch: temps d'exécution (jusqu'à complétude) le plus faible possible - exécution la plus rapide que possible - exécution la moins interrompue que possible. (1 point)
+\end{itemize}
+\end{correction}
+
+
+% Q
+\item Proposez une heuristique simple permettant de déterminer à quelle catégorie appartient un processus. (1 point)
+
+% R
+\begin{correction}
+Plusieurs réponses possibles:
+\begin{itemize}
+  \item Mémorisation des temps d'exécution => une tâche avec un temps d'exécution faible est interactive, une tâche avec un temps d'exécution grand est “batch”.
+  \item Mémorisation des nombre de blocage avant la fin du quantum => une tâche avec beaucoup de blocage est interactive, une tâche avec peu de blocage est batch.
+  \item n'importe quoi de correct :)
+\end{itemize}
+\end{correction}
+
+
+% Q
+\item Les ordonnanceurs circulaires mémorisent la liste des processus prêts et chaque processus n'apparaît qu'une seule fois dans cette liste. Que se passerait-il si un processus y apparaissait deux fois (1 point)? \\
+      Pourquoi permettrait-on l'insertion multiple d'un processus dans cette liste (1 point)?
+
+% R
+\begin{correction}
+Il serait élu deux fois plutôt qu'une à chaque tour complet de la liste des processus. Intéressant pour favoriser des processus pour implémenter un système primitif à priorité.
+\end{correction}
+
+
+% Q
+\item La plupart des ordonnanceurs circulaires utilisent un quantum fixe. Donnez un argument en faveur d'un petit quantum et un autre en faveur d'un grand quantum, ainsi que la catégorie de processus favorisé. (2 points)
+
+% R
+\begin{correction}
+\begin{itemize}
+  \item Petit quantum => temps de réponse élevé. Favorise les processus interactifs.  (1 point)
+  \item Grand quantum => temps CPU utile élevé. Favorise les processus batch. (1 point)
+\end{itemize}
+\end{correction}
+
+% fin de multi-tache & ordonnancement
+\end{enumerate}
+
+
+
+
+
+% Virtualisation et IPC %
+\section{{Virtualisation et IPC}
+         {\hfill{} \normalfont{\scriptsize{6 points}}}}
+
+\begin{enumerate}
+
+% Q
+\item Après avoir défini ce qu'est une IPC, donner un exemple pertinent d'utilisation. (1.5 points)
+
+% Q
+\item Expliquer les différentes méthodes de virtualisation. (2 points)
+
+% R
+\begin{correction}
+\begin{itemize}
+\item PV : Paravirtualiser. Le système d'exploitation est au courant qu'il s'exécute dans une machine virtuelle et est modifé en conséquence pour coopérer avec l'hyperviseur.
+\item HVM : Hardware Virtualized Machine. Le système d'exploitation peut s'éxécuter sans modification à l'intérieur d'une machine virtuelle.
+\end{itemize}
+\end{correction}
+
+% Q
+\item Expliquer les termes suivant: VT-x, VT-d, E820, EPT, NPT (2.5 points)
+
+\end{enumerate}
+
+\end{document}

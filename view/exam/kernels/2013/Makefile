@@ -28,8 +28,9 @@ include			../../../../environment/env.mk
 #
 
 PAPER			:=		kernels
-
-SOURCES			:=		kernels.tex			
+PAPER_RATTRAPAGE	:=		kernels_rattrapage
+SOURCES			:=		kernels.tex
+SOURCES_RATTRAPAGE	:=		kernels_rattrapage.tex
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -39,14 +40,17 @@ main:			build
 
 view:			build
 	$(call env_view,$(PAPER),)
+	$(call env_view,$(PAPER_RATTRAPAGE),)
 
 build:			correction
 
 subject:
 	$(call env_document,$(PAPER),)
+	$(call env_document,$(PAPER_RATTRAPAGE),)
 
 correction:
 	$(call env_document,$(PAPER),$(ENV_OPTION_PRIVATE))
+	$(call env_document,$(PAPER_RATTRAPAGE),$(ENV_OPTION_PRIVATE))
 
 clear:
 	$(call env_remove,$(_DEPENDENCY_TEX_),)
