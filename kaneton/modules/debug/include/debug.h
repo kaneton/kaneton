@@ -1,0 +1,65 @@
+/*
+ * ---------- header ----------------------------------------------------------
+ *
+ * project       kaneton
+ *
+ * license       kaneton
+ *
+ * file          kaneton/kaneton/modules/debug/include/debug.h
+ *
+ * created       julio guerra   [sun sept  8 13:49:44 2013]
+ * updated       julio guerra   [sun sept  8 13:49:44 2013]
+ */
+
+#ifndef MODULES_DEBUG_DEBUG_H
+#define MODULES_DEBUG_DEBUG_H	1
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * IO communication driver interface
+ */
+typedef struct
+{
+    void (*read)(t_uint8*, t_uint32);
+    void (*write)(t_uint8*, t_uint32);
+}        s_dbg_io_interface;
+
+/*
+ * Module internal errors
+ */
+typedef enum
+{
+  E_NONE = 0,
+  E_PARSE
+} e_dbg_error;
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../debug.c
+ */
+
+/*
+ * ../debug.c
+ */
+
+t_error	module_debug_load(void);
+
+t_error	module_debug_unload(void);
+
+t_error module_debug_start(void);
+
+void    module_debug_set_io_cfg(const s_dbg_io_interface* cfg);
+
+/*
+ * eop
+ */
+
+#endif

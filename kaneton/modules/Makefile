@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/modules/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       julien quintard   [fri dec 10 14:25:46 2010]
+# updated       julio guerra   [wed sep 18 21:14:46 2013]
 #
 
 #
@@ -37,7 +37,8 @@ SUBDIRS			:=		bundle				\
 					console				\
 					forward				\
 					report				\
-					test				
+					debug				\
+					test
 
 MODULES_C		:=		modules.c
 MODULES_O		:=		modules.o

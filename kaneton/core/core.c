@@ -99,6 +99,7 @@ void			kaneton(s_init*				init)
   module_load(report);
   module_load(forward);
   module_load(test);
+  module_load(debug);
 
   /*
    * 3)
@@ -124,6 +125,11 @@ void			kaneton(s_init*				init)
 	      '+', "starting the kernel\n");
 
   assert(kernel_initialize() == ERROR_OK);
+
+  /*
+   *
+   */
+  module_call(debug, start);
 
   /*
    * 6)
@@ -168,6 +174,7 @@ void			kaneton(s_init*				init)
    * 11)
    */
 
+  module_unload(debug);
   module_unload(test);
   module_unload(forward);
   module_unload(report);

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton.STABLE/kaneton/modules/modules.h
+ * file          kaneton/kaneton/modules/modules.h
  *
  * created       julien quintard   [fri may  1 12:58:24 2009]
- * updated       julien quintard   [sun dec  5 00:08:39 2010]
+ * updated       julio guerra   [sun sep  8 13:59:39 2013]
  */
 
 #ifndef MODULES_MODULES_H
@@ -28,6 +28,7 @@
 #include <modules/report/include/report.h>
 #include <modules/forward/include/forward.h>
 #include <modules/test/include/test.h>
+#include <modules/debug/include/debug.h>
 
 /*
  * ---------- macro-functions -------------------------------------------------
@@ -84,6 +85,16 @@
   module_test_ ## _function_ (_arguments_)
 #else
 # define module_call_test(_function_, _arguments_...)
+#endif
+
+/*
+ * debug
+ */
+#ifdef MODULE_debug
+# define module_call_debug(_function_, _arguments_...)			\
+  module_debug_ ## _function_ (_arguments_)
+#else
+# define module_call_debug(_function_, _arguments_...)
 #endif
 
 /*

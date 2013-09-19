@@ -265,7 +265,7 @@ define env_assemble-S
   assemble_S_options=""							&& \
   $(call env_display,green,ASSEMBLE-S,$(2),		,)		&& \
   $(call env_perform,							\
-    $(_CPP_) $(2) | $(_AS_) $(_ASM_FLAGS_) $${assemble_S_options} -o $(1))
+    $(_AS_) $(_ASM_FLAGS_) $${assemble_S_options} -c $(2) -o $(1))
 endef
 
 #
