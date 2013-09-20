@@ -141,4 +141,9 @@
 	       : "=a" (_data_)						\
 	       : "d" ((t_uint16)(_port_)))
 
+#define		ARCHITECTURE_INT(_int_)					\
+  asm volatile ("int %0"						\
+	       :							\
+	       : "i" (_int_))
+
 #endif

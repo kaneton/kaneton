@@ -25,9 +25,14 @@
  */
 
 /*
- * Maximum packet size (supported)
+ * Maximum request packet size (supported)
  */
-# define DBG_PACKET_MAX_SZ      255
+# define DBG_RX_MAX_SZ          4096
+
+/*
+ * Maximum response packet size (supported)
+ */
+# define DBG_TX_MAX_SZ          1024
 
 /*
  * GDB packet tokens
@@ -40,13 +45,48 @@
  */
 
 /*
+ * Stop reason numeric values
+ */
+enum e_dbg_stop_reason
+{
+  DBG_STOP_TRAP = 5 /* Breakpoints */
+};
+
+/*
+ * IO Buffers
+ */
+typedef struct
+{
+    struct
+    {
+        t_uint8  buffer[DBG_RX_MAX_SZ];
+        t_uint32 length;
+    }                                   rx;
+    struct
+    {
+        t_uint8  buffer[DBG_TX_MAX_SZ];
+        t_uint32 length;
+    }                                   tx;
+}                                       s_dbg_com;
+
+/*
+ * Debug Server Manager Structure
+ */
+typedef struct
+{
+    enum e_dbg_stop_reason      stop_reason;
+    s_dbg_com                   io;
+}                               s_dbg_manager;
+
+
+/*
  * Parser helper :
  *   - the read packet
  *   - pointer to the packet, incremented as it is parsed
  */
 typedef struct
 {
-    t_uint8     packet[DBG_PACKET_MAX_SZ];
+    t_uint8     packet[DBG_RX_MAX_SZ];
     t_uint8*    current;
 }               s_dbg_parser;
 
@@ -76,17 +116,25 @@ typedef struct
  * gdbstubs.c
  */
 
-e_dbg_error dbg_parse(void);
+e_dbg_error dbg_server(void);
 
 e_dbg_error dbg_ack(t_boolean flag);
 
-e_dbg_error dbg_packet_send(const t_uint8* response);
+e_dbg_error dbg_packet_send(void);
+
+t_dbg_checksum dbg_packet_checksum(const t_uint8* data);
 
 /*
- * gdbcommands.c
+ * write.c
  */
 
-e_dbg_error dbg_handler_H(void);
+e_dbg_error dbg_write_uint32(t_uint32   x);
+
+e_dbg_error dbg_write_start(void);
+
+e_dbg_error dbg_write_terminate(void);
+
+e_dbg_error dbg_write_str(t_uint8*      str);
 
 /*
  * eop

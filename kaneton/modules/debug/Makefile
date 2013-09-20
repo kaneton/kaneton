@@ -35,7 +35,12 @@ include			../../../environment/env.mk
 
 DEBUG_LO		:=		debug.lo
 
-DEBUG_C			:=		debug.c serial.c gdbstubs.c gdbcommands.c misc.c
+DEBUG_C			:=		debug.c       \
+					serial.c      \
+					gdbstubs.c    \
+					misc.c        \
+					write.c       \
+					gdbcommands.c
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 

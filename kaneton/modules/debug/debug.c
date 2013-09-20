@@ -32,6 +32,11 @@
  */
 
 /*
+ * Debug Server Manager Structure
+ */
+s_dbg_manager _dbg;
+
+/*
  * Default IO communication functions
  */
 s_dbg_io_interface _dbg_io =
@@ -52,6 +57,8 @@ t_error                 module_debug_load(void)
   module_call(console, message,
               '+', "loading the 'debug' module\n");
 
+  memset(&_dbg, 0, sizeof (_dbg));
+
   MODULE_LEAVE();
 }
 
@@ -68,7 +75,9 @@ t_error                 module_debug_unload(void)
 
 static void debug_exception_bp(i_event n, t_data d)
 {
-  module_call(console, message, '+', "bp exception :)\n");
+  _dbg.stop_reason = DBG_STOP_TRAP;
+
+  dbg_server();
 }
 
 static void debug_exception_db(i_event n, t_data d)
@@ -91,6 +100,8 @@ t_error                 module_debug_start(void)
                 EVENT_ROUTINE(debug_exception_db),
                 0);
 
+  ARCHITECTURE_INT(3);
+
   /* asm volatile ("movl %0, %%eax;"					\ */
   /*       	"movl %%eax, %%dr0"					\ */
   /*               :							\ */
@@ -100,9 +111,6 @@ t_error                 module_debug_start(void)
   /*       	"movl %%eax, %%dr7"					\ */
   /*               :							\ */
   /*               : "i" (0x00000401)); */
-
-  for (;;)
-    dbg_parse();
 
   MODULE_LEAVE();
 }
