@@ -1,0 +1,198 @@
+/*
+ * ---------- header ----------------------------------------------------------
+ *
+ * project       kaneton
+ *
+ * license       kaneton
+ *
+ * file          kaneton/kaneton/modules/debug/stubs.c
+ *
+ * created       julio guerra   [mon sept  15 13:55:27 2013]
+ * updated       julio guerra   [web sept  18 22:37:57 2013]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file implements the gdb stubs building-block functions to run a gdb
+ * server.
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
+ */
+
+#include "gdbstubs.h"
+#include "misc.h"
+
+/*
+ * ---------- extern ----------------------------------------------------------
+ */
+
+extern s_dbg_manager    _dbg;
+
+
+/*
+ * thread manager.
+ */
+
+extern m_thread		_thread;
+
+/*
+ * ---------- forward declarations --------------------------------------------
+ */
+
+static e_dbg_error dbg_handler_whystop(void);
+static e_dbg_error dbg_handler_getregisters(void);
+static e_dbg_error dbg_handler_memread(void);
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+/*
+ * Associative array of command strings and their handlers
+ */
+const s_dbg_command _dbg_handler[] =
+{
+  { (t_uint8*) "?", dbg_handler_whystop },
+  { (t_uint8*) "g", dbg_handler_getregisters },
+  { (t_uint8*) "m", dbg_handler_memread }
+};
+
+/*
+ * Debug handler associative array length
+ */
+const t_uint32 _dbg_handler_len =
+  sizeof (_dbg_handler) / sizeof (*_dbg_handler);
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+static e_dbg_error      dbg_handler_getregisters(void)
+{
+  as_context*           ctx;
+  as_tss*               tss;
+
+  dbg_ack(1);
+
+
+  ctx = (as_context*) _dbg.thread->machine.context;
+  tss = (as_tss*) _thread.machine.tss;
+
+  dbg_write_start();
+
+  /* gdb/gdb/regformats/i386/i386.dat */
+
+  /* target byte order required (little endian) */
+
+  dbg_write_data((t_uint8*) &ctx->eax, 4);
+  dbg_write_data((t_uint8*) &ctx->ecx, 4);
+  dbg_write_data((t_uint8*) &ctx->edx, 4);
+  dbg_write_data((t_uint8*) &ctx->ebx, 4);
+  dbg_write_data((t_uint8*) &ctx->_esp, 4);
+  dbg_write_data((t_uint8*) &ctx->ebp, 4);
+  dbg_write_data((t_uint8*) &ctx->esi, 4);
+  dbg_write_data((t_uint8*) &ctx->edi, 4);
+  dbg_write_data((t_uint8*) &ctx->eip, 4);
+  dbg_write_data((t_uint8*) &ctx->eflags, 4);
+  dbg_write_data((t_uint8*) &ctx->cs, 4);
+  dbg_write_data((t_uint8*) &ctx->ss, 4);
+  dbg_write_data((t_uint8*) &tss->ds, 4);
+  dbg_write_data((t_uint8*) &tss->es, 4);
+  dbg_write_data((t_uint8*) &tss->fs, 4);
+  dbg_write_data((t_uint8*) &tss->gs, 4);
+
+  /* st0 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxx");
+  /* st1 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxx");
+  /* st2 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxx");
+  /* st3 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxx");
+  /* st4 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxx");
+  /* st5 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxx");
+  /* st6 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxx");
+  /* st7 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxx");
+  /* fctrl */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+  /* fstat */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+  /* ftag */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+  /* fiseg */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+  /* fioff */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+  /* foseg */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+  /* fooff */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+  /* fop */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+  /* xmm0 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  /* xmm1 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  /* xmm2 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  /* xmm3 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  /* xmm4 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  /* xmm5 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  /* xmm6 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  /* xmm7 */
+  dbg_write_str((t_uint8*) "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+  /* mxcsr */
+  dbg_write_str((t_uint8*) "xxxxxxxx");
+
+  dbg_write_terminate();
+
+  dbg_packet_send();
+
+  return E_NONE;
+}
+
+static e_dbg_error dbg_handler_whystop(void)
+{
+  dbg_ack(1);
+  dbg_write_start();
+  dbg_write_str((t_uint8*) "S05");
+  dbg_write_terminate();
+  dbg_packet_send();
+  return E_NONE;
+}
+
+static e_dbg_error dbg_handler_memread(void)
+{
+  t_uint32 address;
+  t_uint32 size;
+
+  dbg_ack(1);
+
+  if (dbg_parse_uint32_hstr(&address) != E_NONE
+      || dbg_parse_comma() != E_NONE
+      || dbg_parse_uint32(&size) != E_NONE)
+    return E_PARSE;
+
+  dbg_write_start();
+
+  // TODO : check access rights
+
+  dbg_write_data((t_uint8*) address, size);
+
+  dbg_write_terminate();
+
+  dbg_packet_send();
+
+  return E_NONE;
+}

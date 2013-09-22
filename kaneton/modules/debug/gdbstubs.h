@@ -39,6 +39,9 @@
  */
 # define DBG_TK_START           ((t_uint8) '$')
 # define DBG_TK_TERMINATE       ((t_uint8) '#')
+# define DBG_TK_COMMA           ((t_uint8) ',')
+# define DBG_TK_SEMICOLON       ((t_uint8) ';')
+# define DBG_TK_COLON           ((t_uint8) ':')
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -57,10 +60,13 @@ enum e_dbg_stop_reason
  */
 typedef struct
 {
+    f_dbg_io                            read;
+    f_dbg_io                            write;
     struct
     {
         t_uint8  buffer[DBG_RX_MAX_SZ];
         t_uint32 length;
+        t_uint32 cursor;
     }                                   rx;
     struct
     {
@@ -76,19 +82,9 @@ typedef struct
 {
     enum e_dbg_stop_reason      stop_reason;
     s_dbg_com                   io;
+    o_thread*                   thread;
 }                               s_dbg_manager;
 
-
-/*
- * Parser helper :
- *   - the read packet
- *   - pointer to the packet, incremented as it is parsed
- */
-typedef struct
-{
-    t_uint8     packet[DBG_RX_MAX_SZ];
-    t_uint8*    current;
-}               s_dbg_parser;
 
 /*
  * GDB packet checksum
@@ -113,7 +109,7 @@ typedef struct
  */
 
 /*
- * gdbstubs.c
+ * server.c
  */
 
 e_dbg_error dbg_server(void);
@@ -130,11 +126,33 @@ t_dbg_checksum dbg_packet_checksum(const t_uint8* data);
 
 e_dbg_error dbg_write_uint32(t_uint32   x);
 
+e_dbg_error dbg_write_data(t_uint8* b, t_uint32 len);
+
 e_dbg_error dbg_write_start(void);
 
 e_dbg_error dbg_write_terminate(void);
 
 e_dbg_error dbg_write_str(t_uint8*      str);
+
+/*
+ * read.c
+ */
+
+e_dbg_error dbg_read_checksum(void);
+
+e_dbg_error dbg_read_start(void);
+
+e_dbg_error dbg_read_char(t_uint8* c);
+
+/*
+ * parse.c
+ */
+
+e_dbg_error dbg_parse_uint32_hstr(t_uint32* x);
+
+e_dbg_error dbg_parse_comma(void);
+
+e_dbg_error dbg_parse_uint32(t_uint32* x);
 
 /*
  * eop

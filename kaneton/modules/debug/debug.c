@@ -37,15 +37,6 @@
 s_dbg_manager _dbg;
 
 /*
- * Default IO communication functions
- */
-s_dbg_io_interface _dbg_io =
-{
-  .read  = dbg_serial_read,
-  .write = dbg_serial_write
-};
-
-/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -58,6 +49,9 @@ t_error                 module_debug_load(void)
               '+', "loading the 'debug' module\n");
 
   memset(&_dbg, 0, sizeof (_dbg));
+
+  _dbg.io.read = dbg_serial_read;
+  _dbg.io.write = dbg_serial_write;
 
   MODULE_LEAVE();
 }
@@ -75,7 +69,14 @@ t_error                 module_debug_unload(void)
 
 static void debug_exception_bp(i_event n, t_data d)
 {
+  i_thread		current;
+
   _dbg.stop_reason = DBG_STOP_TRAP;
+
+  // TODO : use a debugger's trap ISR and save the context in a debugger's
+  // object
+  thread_current(&current);
+  thread_get(current, &_dbg.thread);
 
   dbg_server();
 }
@@ -124,6 +125,6 @@ void module_debug_set_io_cfg(const s_dbg_io_interface* cfg)
 {
   assert(cfg);
 
-  _dbg_io.read = cfg->read;
-  _dbg_io.write = cfg->write;
+  _dbg.io.read = cfg->read;
+  _dbg.io.write = cfg->write;
 }

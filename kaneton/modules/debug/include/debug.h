@@ -19,13 +19,19 @@
  */
 
 /*
+ * IO function
+ * f(t_uint8* buffer*, t_uint32 size)
+ */
+typedef void (*f_dbg_io)(t_uint8*, t_uint32);
+
+/*
  * IO communication driver interface
  */
 typedef struct
 {
-    void (*read)(t_uint8*, t_uint32);
-    void (*write)(t_uint8*, t_uint32);
-}        s_dbg_io_interface;
+    f_dbg_io    read;
+    f_dbg_io    write;
+}               s_dbg_io_interface;
 
 /*
  * Module internal errors
@@ -33,7 +39,8 @@ typedef struct
 typedef enum
 {
   E_NONE = 0,
-  E_PARSE
+  E_PARSE,
+  E_DENY        /* Bad checksum */
 } e_dbg_error;
 
 /*

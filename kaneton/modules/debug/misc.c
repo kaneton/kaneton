@@ -73,6 +73,7 @@ t_uint8 hchar_to_uint8(t_uint8 c)
 
   return (c - base);
 }
+
 /*
  * Unsigned byte (0..255) to hexadecimal string character (00..ff)
  */
@@ -103,13 +104,43 @@ t_uint8* uint32_to_hstr(t_uint32 x, t_uint8* to)
  */
 t_uint32 hstr_to_uint32(t_uint8* str)
 {
-  unsigned long x = 0;
+  t_uint32 x = 0;
 
   assert(str);
 
   while (*str)
   {
     x = 16 * x + hchar_to_uint8(*str);
+    ++str;
+  }
+
+  return (x);
+}
+
+/*
+ * String character (0..9) to unsigned byte
+ */
+static t_uint8 char_to_uint8(t_uint8 c)
+{
+  t_uint8 base;
+
+  assert('0' <= c && c <= '9');
+
+  return (c - '0');
+}
+
+/*
+ * String to unsigned word
+ */
+t_uint32 str_to_uint32(t_uint8* str)
+{
+  t_uint32 x = 0;
+
+  assert(str);
+
+  while (*str)
+  {
+    x = 10 * x + char_to_uint8(*str);
     ++str;
   }
 

@@ -38,4 +38,6 @@ t_uint8* uint32_to_hstr(t_uint32 x, t_uint8* to);
 
 t_uint32 hstr_to_uint32(t_uint8* str);
 
+t_uint32 str_to_uint32(t_uint8* str);
+
 #endif /* !MODULES_DEBUG_MISC_H */

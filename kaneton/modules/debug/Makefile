@@ -37,10 +37,12 @@ DEBUG_LO		:=		debug.lo
 
 DEBUG_C			:=		debug.c       \
 					serial.c      \
-					gdbstubs.c    \
+					stubs.c       \
 					misc.c        \
+					read.c        \
 					write.c       \
-					gdbcommands.c
+					parse.c       \
+					server.c
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 

@@ -78,3 +78,19 @@ e_dbg_error dbg_write_terminate(void)
 
   return E_NONE;
 }
+
+e_dbg_error dbg_write_data(t_uint8* b, t_uint32 len)
+{
+  unsigned int i;
+  assert(_dbg.io.tx.length + len <= DBG_TX_MAX_SZ);
+
+  for (i = 0; i < len; ++i)
+  {
+    uint8_to_hstr(b[i], &_dbg.io.tx.buffer[_dbg.io.tx.length]);
+    _dbg.io.tx.length += 2;
+  }
+
+  _dbg.io.tx.buffer[_dbg.io.tx.length] = 0;
+
+  return E_NONE;
+}
