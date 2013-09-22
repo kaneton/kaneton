@@ -42,6 +42,13 @@
 # define DBG_TK_COMMA           ((t_uint8) ',')
 # define DBG_TK_SEMICOLON       ((t_uint8) ';')
 # define DBG_TK_COLON           ((t_uint8) ':')
+# define DBG_TK_ESCAPE           ((unsigned char) '}')
+
+/*
+ * Escaped Character xor operand
+ */
+# define DBG_ESCAPE_XOR          0x20
+
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -83,6 +90,7 @@ typedef struct
     enum e_dbg_stop_reason      stop_reason;
     s_dbg_com                   io;
     o_thread*                   thread;
+    t_boolean                   release;
 }                               s_dbg_manager;
 
 
@@ -153,6 +161,10 @@ e_dbg_error dbg_parse_uint32_hstr(t_uint32* x);
 e_dbg_error dbg_parse_comma(void);
 
 e_dbg_error dbg_parse_uint32(t_uint32* x);
+
+e_dbg_error dbg_parse_colon(void);
+
+e_dbg_error dbg_parse_uint8_bin(t_uint8* byte);
 
 /*
  * eop

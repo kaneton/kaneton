@@ -101,3 +101,44 @@ e_dbg_error dbg_parse_comma(void)
 
   return E_NONE;
 }
+
+/*
+ * Parse a colon
+ */
+e_dbg_error dbg_parse_colon(void)
+{
+  if (_dbg.io.rx.buffer[_dbg.io.rx.cursor] != DBG_TK_COLON)
+    return E_PARSE;
+
+  ++_dbg.io.rx.cursor;
+
+  return E_NONE;
+}
+
+/*
+ * Parse binary byte
+ * May be escaped.
+ */
+e_dbg_error dbg_parse_uint8_bin(t_uint8* byte)
+{
+  assert(byte);
+
+  *byte = _dbg.io.rx.buffer[_dbg.io.rx.cursor];
+
+  if (!*byte)
+    return E_PARSE;
+
+  assert(_dbg.io.rx.cursor < _dbg.io.rx.length);
+
+  if (*byte == DBG_TK_ESCAPE)
+  {
+    ++_dbg.io.rx.cursor;
+    *byte = _dbg.io.rx.buffer[_dbg.io.rx.cursor] ^ DBG_ESCAPE_XOR;
+
+    assert(_dbg.io.rx.cursor < _dbg.io.rx.length);
+  }
+
+  ++_dbg.io.rx.cursor;
+
+  return E_NONE;
+}

@@ -45,6 +45,8 @@ extern m_thread		_thread;
 static e_dbg_error dbg_handler_whystop(void);
 static e_dbg_error dbg_handler_getregisters(void);
 static e_dbg_error dbg_handler_memread(void);
+static e_dbg_error dbg_handler_binwrite(void);
+static e_dbg_error dbg_handler_continue(void);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -57,7 +59,9 @@ const s_dbg_command _dbg_handler[] =
 {
   { (t_uint8*) "?", dbg_handler_whystop },
   { (t_uint8*) "g", dbg_handler_getregisters },
-  { (t_uint8*) "m", dbg_handler_memread }
+  { (t_uint8*) "m", dbg_handler_memread },
+  { (t_uint8*) "X", dbg_handler_binwrite },
+  { (t_uint8*) "c", dbg_handler_continue }
 };
 
 /*
@@ -181,7 +185,7 @@ static e_dbg_error dbg_handler_memread(void)
 
   if (dbg_parse_uint32_hstr(&address) != E_NONE
       || dbg_parse_comma() != E_NONE
-      || dbg_parse_uint32(&size) != E_NONE)
+      || dbg_parse_uint32_hstr(&size) != E_NONE)
     return E_PARSE;
 
   dbg_write_start();
@@ -193,6 +197,55 @@ static e_dbg_error dbg_handler_memread(void)
   dbg_write_terminate();
 
   dbg_packet_send();
+
+  return E_NONE;
+}
+
+static e_dbg_error dbg_handler_binwrite(void)
+{
+  t_uint8*      address;
+  t_uint8       data;
+  t_uint32      size;
+  e_dbg_error   e = E_NONE;
+
+  dbg_ack(1);
+
+  if (dbg_parse_uint32_hstr((t_uint32*) &address) != E_NONE
+      || dbg_parse_comma() != E_NONE
+      || dbg_parse_uint32_hstr(&size) != E_NONE
+      || dbg_parse_colon() != E_NONE)
+    return E_PARSE;
+
+  // TODO : check access rights
+
+  while (size--)
+  {
+    e = dbg_parse_uint8_bin(&data);
+    if (e != E_NONE)
+      break;
+    *(address++) = data;
+  }
+
+  dbg_write_start();
+
+  if (e != E_NONE)
+    dbg_write_str((t_uint8*) "E01");
+  else
+    dbg_write_str((t_uint8*) "OK");
+
+  dbg_write_terminate();
+
+  dbg_packet_send();
+
+  return e;
+}
+
+/*
+ * Continue execution
+ */
+static e_dbg_error dbg_handler_continue(void)
+{
+  _dbg.release = 1;
 
   return E_NONE;
 }

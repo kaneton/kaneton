@@ -102,19 +102,19 @@ e_dbg_error dbg_server(void)
       dbg_write_terminate();
       dbg_packet_send();
     }
-  } while (1);
+  } while (!_dbg.release);
 
   return E_NONE;
 }
 
 t_dbg_checksum dbg_packet_checksum(const t_uint8* data)
 {
-  t_dbg_checksum crc = 0;
+  t_dbg_checksum checksum = 0;
   unsigned int i;
 
   /* unsigned overflow is a well defined behavior */
   for (i = 0; data[i]; ++i)
-    crc += data[i];
+    checksum += data[i];
 
-  return crc;
+  return checksum;
 }

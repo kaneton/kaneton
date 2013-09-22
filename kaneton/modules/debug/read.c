@@ -73,7 +73,7 @@ e_dbg_error dbg_read_checksum(void)
 
   _dbg.io.read(checksum, 2);
 
-  if (dbg_packet_checksum(&_dbg.io.rx.buffer) != hstr_to_uint8(checksum))
+  if (dbg_packet_checksum(_dbg.io.rx.buffer) != hstr_to_uint8(checksum))
     return E_DENY;
 
   return E_NONE;
