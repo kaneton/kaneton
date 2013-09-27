@@ -42,7 +42,8 @@
 # define DBG_TK_COMMA           ((t_uint8) ',')
 # define DBG_TK_SEMICOLON       ((t_uint8) ';')
 # define DBG_TK_COLON           ((t_uint8) ':')
-# define DBG_TK_ESCAPE           ((unsigned char) '}')
+# define DBG_TK_ESCAPE          ((t_uint8) '}')
+# define DBG_TK_EQUAL           ((t_uint8) '=')
 
 /*
  * Escaped Character xor operand
@@ -126,7 +127,7 @@ e_dbg_error dbg_ack(t_boolean flag);
 
 e_dbg_error dbg_packet_send(void);
 
-t_dbg_checksum dbg_packet_checksum(const t_uint8* data);
+t_dbg_checksum dbg_packet_checksum(const t_uint8* data, t_uint32 len);
 
 /*
  * write.c
@@ -164,7 +165,11 @@ e_dbg_error dbg_parse_uint32(t_uint32* x);
 
 e_dbg_error dbg_parse_colon(void);
 
+e_dbg_error dbg_parse_equal(void);
+
 e_dbg_error dbg_parse_uint8_bin(t_uint8* byte);
+
+e_dbg_error dbg_parse_data_hstr(t_uint8* val, t_uint32 len);
 
 /*
  * eop

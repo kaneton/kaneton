@@ -66,7 +66,8 @@ e_dbg_error dbg_write_start(void)
 
 e_dbg_error dbg_write_terminate(void)
 {
-  t_dbg_checksum checksum = dbg_packet_checksum(&_dbg.io.tx.buffer[1]);
+  t_dbg_checksum checksum = dbg_packet_checksum(&_dbg.io.tx.buffer[1],
+                                                _dbg.io.tx.length);
 
   _dbg.io.tx.buffer[_dbg.io.tx.length++] = DBG_TK_TERMINATE;
 

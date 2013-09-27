@@ -1,3 +1,4 @@
+
 /*
  * ---------- header ----------------------------------------------------------
  *
@@ -74,6 +75,16 @@ e_dbg_error dbg_server(void)
   unsigned int  i;
   size_t        len;
 
+  if (_dbg.release)
+  {
+    _dbg.release = 0;
+    dbg_ack(1);
+    dbg_write_start();
+    dbg_write_str((t_uint8*) "S05");
+    dbg_write_terminate();
+    dbg_packet_send();
+  }
+
   do
   {
     if (dbg_packet_read() == E_DENY)
@@ -107,14 +118,14 @@ e_dbg_error dbg_server(void)
   return E_NONE;
 }
 
-t_dbg_checksum dbg_packet_checksum(const t_uint8* data)
+t_dbg_checksum dbg_packet_checksum(const t_uint8* data, t_uint32 len)
 {
   t_dbg_checksum checksum = 0;
   unsigned int i;
 
   /* unsigned overflow is a well defined behavior */
-  for (i = 0; data[i]; ++i)
+  for (i = 0; i < len; ++i)
     checksum += data[i];
 
-  return checksum;
+  return (checksum);
 }

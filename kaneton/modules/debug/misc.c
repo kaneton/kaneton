@@ -28,19 +28,14 @@
  */
 
 /*
- * Conversion to an unsigned byte from a lower case hexadecimal string
+ * Conversion to an unsigned byte from a lower case hexadecimal string (XX)
  */
 t_uint8 hstr_to_uint8(t_uint8* str)
 {
-  t_uint8 r = 0;
-  t_uint8 c;
+  t_uint8 r;
 
-  while (*str)
-  {
-    c = (*str > '9') ? *str - 'a' + 10 : *str - '0';
-    r = 16 * r + c;
-    ++str;
-  }
+  r = hchar_to_uint8(str[0]) * 16;
+  r += hchar_to_uint8(str[1]);
 
   return (r);
 }
@@ -145,4 +140,14 @@ t_uint32 str_to_uint32(t_uint8* str)
   }
 
   return (x);
+}
+
+/*
+ * Return true if argument c is a valid hexadecimal character
+ */
+t_boolean is_hchar(t_uint8 c)
+{
+  return (('0' <= c && c <= '9')
+          || ('a' <= c && c <= 'f')
+          || ('A' <= c && c <= 'F'));
 }

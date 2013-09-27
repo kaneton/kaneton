@@ -28,9 +28,9 @@
  * misc.c
  */
 
-t_uint8 hchar_to_uint8(t_uint8 c);
+t_uint8  hchar_to_uint8(t_uint8 c);
 
-t_uint8 hstr_to_uint8(t_uint8* str);
+t_uint8  hstr_to_uint8(t_uint8* str);
 
 t_uint8* uint8_to_hstr(t_uint8 n, t_uint8* to);
 
@@ -39,5 +39,7 @@ t_uint8* uint32_to_hstr(t_uint32 x, t_uint8* to);
 t_uint32 hstr_to_uint32(t_uint8* str);
 
 t_uint32 str_to_uint32(t_uint8* str);
+
+t_boolean is_hchar(t_uint8 c);
 
 #endif /* !MODULES_DEBUG_MISC_H */

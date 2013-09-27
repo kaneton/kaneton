@@ -36,11 +36,12 @@ extern s_dbg_manager    _dbg;
 
 static t_boolean dbg_parse_is_separator(t_uint8 c)
 {
-  return (c == DBG_TK_COMMA || c == DBG_TK_SEMICOLON || c == DBG_TK_COLON);
+  return (c == DBG_TK_COMMA || c == DBG_TK_SEMICOLON || c == DBG_TK_COLON
+          || c == DBG_TK_EQUAL);
 }
 
 /*
- * Parse an hexadecimal string (XXXXXXXX) of an uint32
+ * Parse an hexadecimal string of an uint32
  */
 e_dbg_error dbg_parse_uint32_hstr(t_uint32* x)
 {
@@ -116,6 +117,19 @@ e_dbg_error dbg_parse_colon(void)
 }
 
 /*
+ * Parse an equal token
+ */
+e_dbg_error dbg_parse_equal(void)
+{
+  if (_dbg.io.rx.buffer[_dbg.io.rx.cursor] != DBG_TK_EQUAL)
+    return E_PARSE;
+
+  ++_dbg.io.rx.cursor;
+
+  return E_NONE;
+}
+
+/*
  * Parse binary byte
  * May be escaped.
  */
@@ -124,9 +138,6 @@ e_dbg_error dbg_parse_uint8_bin(t_uint8* byte)
   assert(byte);
 
   *byte = _dbg.io.rx.buffer[_dbg.io.rx.cursor];
-
-  if (!*byte)
-    return E_PARSE;
 
   assert(_dbg.io.rx.cursor < _dbg.io.rx.length);
 
@@ -139,6 +150,25 @@ e_dbg_error dbg_parse_uint8_bin(t_uint8* byte)
   }
 
   ++_dbg.io.rx.cursor;
+
+  return E_NONE;
+}
+
+/*
+ * Parse hexadecimal data (XXXXXXXX) into the value in byte order
+ */
+e_dbg_error dbg_parse_data_hstr(t_uint8* val, t_uint32 len)
+{
+  unsigned int i;
+
+  assert(val);
+  assert(_dbg.io.rx.cursor + len <= _dbg.io.rx.length);
+
+  for (i = 0; i < len; ++i)
+  {
+    val[i] = hstr_to_uint8(&_dbg.io.rx.buffer[_dbg.io.rx.cursor]);
+    _dbg.io.rx.cursor += 2;
+  }
 
   return E_NONE;
 }
