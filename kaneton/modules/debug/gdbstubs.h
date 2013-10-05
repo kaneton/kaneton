@@ -83,6 +83,51 @@ typedef struct
     }                                   tx;
 }                                       s_dbg_com;
 
+enum e_dbg_register
+{
+  REG_EAX,
+  REG_ECX,
+  REG_EDX,
+  REG_EBX,
+  REG_ESP,
+  REG_EBP,
+  REG_ESI,
+  REG_EDI,
+  REG_EIP,
+  REG_EFLAGS,
+  REG_CS,
+  REG_SS,
+  REG_DS,
+  REG_ES,
+  REG_FS,
+  REG_GS,
+  REG_ST0,
+  REG_ST1,
+  REG_ST2,
+  REG_ST3,
+  REG_ST4,
+  REG_ST5,
+  REG_ST6,
+  REG_ST7,
+  REG_FCTRL,
+  REG_FSTAT,
+  REG_FTAG,
+  REG_FISEG,
+  REG_FIOFF,
+  REG_FOSEG,
+  REG_FOOFF,
+  REG_FOP,
+  REG_XMM0,
+  REG_XMM1,
+  REG_XMM2,
+  REG_XMM3,
+  REG_XMM4,
+  REG_XMM5,
+  REG_XMM6,
+  REG_XMM7,
+  REG_MXCSR
+};
+
 /*
  * Debug Server Manager Structure
  */
@@ -142,6 +187,8 @@ e_dbg_error dbg_write_start(void);
 e_dbg_error dbg_write_terminate(void);
 
 e_dbg_error dbg_write_str(t_uint8*      str);
+
+e_dbg_error dbg_write_uint8(t_uint8   x);
 
 /*
  * read.c

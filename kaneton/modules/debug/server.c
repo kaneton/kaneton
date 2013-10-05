@@ -70,20 +70,32 @@ e_dbg_error dbg_ack(t_boolean flag)
   return E_NONE;
 }
 
+
+/*
+ * Releasing execution means continuing the execution. The client is thus
+ * waiting for the Ack answer and the stop reason
+ */
+static void dbg_server_resume(void)
+{
+  _dbg.release = 0;
+
+  dbg_ack(1);
+
+  dbg_write_start();
+  dbg_write_str((t_uint8*) "S");
+  dbg_write_uint8(_dbg.stop_reason);
+  dbg_write_terminate();
+
+  dbg_packet_send();
+}
+
 e_dbg_error dbg_server(void)
 {
   unsigned int  i;
   size_t        len;
 
   if (_dbg.release)
-  {
-    _dbg.release = 0;
-    dbg_ack(1);
-    dbg_write_start();
-    dbg_write_str((t_uint8*) "S05");
-    dbg_write_terminate();
-    dbg_packet_send();
-  }
+    dbg_server_resume();
 
   do
   {

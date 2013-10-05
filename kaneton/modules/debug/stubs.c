@@ -48,6 +48,7 @@ static e_dbg_error dbg_handler_setregister(void);
 static e_dbg_error dbg_handler_memread(void);
 static e_dbg_error dbg_handler_binwrite(void);
 static e_dbg_error dbg_handler_continue(void);
+static e_dbg_error dbg_handler_singlestep(void);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -63,6 +64,7 @@ const s_dbg_command _dbg_handler[] =
   { (t_uint8*) "m", dbg_handler_memread },
   { (t_uint8*) "X", dbg_handler_binwrite },
   { (t_uint8*) "c", dbg_handler_continue },
+  { (t_uint8*) "s", dbg_handler_singlestep },
   { (t_uint8*) "P", dbg_handler_setregister }
 };
 
@@ -248,6 +250,21 @@ static e_dbg_error dbg_handler_binwrite(void)
  */
 static e_dbg_error dbg_handler_continue(void)
 {
+  _dbg.release = 1;
+
+  return E_NONE;
+}
+
+/*
+ * Continue execution by a single step
+ */
+static e_dbg_error dbg_handler_singlestep(void)
+{
+  as_context* ctx = (as_context*) _dbg.thread->machine.context;
+
+  ctx->eflags |= 1 << 8; /*TF*/
+  ctx->eflags |= 1 << 16; /*RF*/
+
   _dbg.release = 1;
 
   return E_NONE;

@@ -83,7 +83,16 @@ static void debug_exception_bp(i_event n, t_data d)
 
 static void debug_exception_db(i_event n, t_data d)
 {
-  module_call(console, message, '+', "DB exception\n");
+  i_thread		current;
+
+  _dbg.stop_reason = DBG_STOP_TRAP;
+
+  // TODO : use a debugger's trap ISR and save the context in a debugger's
+  // object
+  thread_current(&current);
+  thread_get(current, &_dbg.thread);
+
+  dbg_server();
 }
 
 /*

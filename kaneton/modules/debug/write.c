@@ -46,6 +46,18 @@ e_dbg_error dbg_write_uint32(t_uint32   x)
   return E_NONE;
 }
 
+e_dbg_error dbg_write_uint8(t_uint8   x)
+{
+  assert(_dbg.io.tx.length + 2 <= DBG_TX_MAX_SZ);
+
+  uint8_to_hstr(x, &_dbg.io.tx.buffer[_dbg.io.tx.length]);
+  _dbg.io.tx.length += 2;
+
+  _dbg.io.tx.buffer[_dbg.io.tx.length] = 0;
+
+  return E_NONE;
+}
+
 e_dbg_error dbg_write_str(t_uint8*      str)
 {
   while (*str)
