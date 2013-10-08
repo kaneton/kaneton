@@ -94,6 +94,8 @@ t_error			architecture_paging_copy(i_region	dst,
 						 t_paddr	from,
 						 t_psize	size);
 
+t_error			architecture_paging_test(t_vaddr	vaddr,
+						 t_boolean*	result);
 
 /*
  * eop

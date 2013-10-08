@@ -182,8 +182,9 @@ static e_dbg_error dbg_handler_whystop(void)
 
 static e_dbg_error dbg_handler_memread(void)
 {
-  t_uint32 address;
-  t_uint32 size;
+  t_uint32  address;
+  t_uint32  size;
+  t_boolean is_mapped;
 
   dbg_ack(1);
 
@@ -195,8 +196,11 @@ static e_dbg_error dbg_handler_memread(void)
   dbg_write_start();
 
   // TODO : check access rights
-
-  dbg_write_data((t_uint8*) address, size);
+  architecture_paging_test(address, &is_mapped);
+  if (!is_mapped)
+    dbg_write_str((t_uint8*) "E03");
+  else
+    dbg_write_data((t_uint8*) address, size);
 
   dbg_write_terminate();
 

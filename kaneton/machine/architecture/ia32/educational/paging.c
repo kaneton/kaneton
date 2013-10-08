@@ -1157,3 +1157,28 @@ t_error			architecture_paging_copy(i_region	dst,
 
   MACHINE_LEAVE();
 }
+
+/*
+ * this function tests the virtual address is mapped in current address space
+ */
+
+t_error			architecture_paging_test(t_vaddr	vaddr,
+                                                 t_boolean*	result)
+{
+  at_pde* pde;
+  at_pte* pte;
+
+  pde = (at_pde*) ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR,
+                                              ARCHITECTURE_PT_MIRROR)
+    + ARCHITECTURE_PD_INDEX(vaddr);
+
+  pte = (at_pte*) ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR,
+                                              ARCHITECTURE_PD_INDEX(vaddr))
+    + ARCHITECTURE_PT_INDEX(vaddr);
+
+
+  *result = (*pde & ARCHITECTURE_PDE_PRESENT)
+    && (*pte & ARCHITECTURE_PTE_PRESENT);
+
+  MACHINE_LEAVE();
+}
