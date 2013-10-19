@@ -70,6 +70,7 @@ t_error                 module_debug_unload(void)
 static void debug_exception_bp(i_event n, t_data d)
 {
   i_thread		current;
+  as_context*           ctx;
 
   _dbg.stop_reason = DBG_STOP_TRAP;
 
@@ -77,6 +78,9 @@ static void debug_exception_bp(i_event n, t_data d)
   // object
   thread_current(&current);
   thread_get(current, &_dbg.thread);
+
+  ctx = (as_context*) _dbg.thread->machine.context;
+  ctx->eflags &= ~ARCHITECTURE_REGISTER_EFLAGS_TF;
 
   dbg_server();
 }
@@ -84,6 +88,7 @@ static void debug_exception_bp(i_event n, t_data d)
 static void debug_exception_db(i_event n, t_data d)
 {
   i_thread		current;
+  as_context*           ctx;
 
   _dbg.stop_reason = DBG_STOP_TRAP;
 
@@ -91,6 +96,9 @@ static void debug_exception_db(i_event n, t_data d)
   // object
   thread_current(&current);
   thread_get(current, &_dbg.thread);
+
+  ctx = (as_context*) _dbg.thread->machine.context;
+  ctx->eflags &= ~ARCHITECTURE_REGISTER_EFLAGS_TF;
 
   dbg_server();
 }
@@ -110,7 +118,10 @@ t_error                 module_debug_start(void)
                 EVENT_ROUTINE(debug_exception_db),
                 0);
 
-  ARCHITECTURE_INT(3);
+  module_call(console, message,
+	      '+', "starting GDB server\n");
+
+  ARCHITECTURE_INT3();
 
   /* asm volatile ("movl %0, %%eax;"					\ */
   /*       	"movl %%eax, %%dr0"					\ */

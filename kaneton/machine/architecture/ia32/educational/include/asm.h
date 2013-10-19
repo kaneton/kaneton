@@ -146,4 +146,7 @@
 	       :							\
 	       : "i" (_int_))
 
+#define		ARCHITECTURE_INT3()					\
+  asm volatile ("int3")
+
 #endif

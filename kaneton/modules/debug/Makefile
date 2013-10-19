@@ -42,6 +42,7 @@ DEBUG_C			:=		debug.c       \
 					read.c        \
 					write.c       \
 					parse.c       \
+					handler.c     \
 					server.c
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)

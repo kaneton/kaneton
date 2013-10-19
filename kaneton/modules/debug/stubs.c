@@ -266,8 +266,8 @@ static e_dbg_error dbg_handler_singlestep(void)
 {
   as_context* ctx = (as_context*) _dbg.thread->machine.context;
 
-  ctx->eflags |= 1 << 8; /*TF*/
-  ctx->eflags |= 1 << 16; /*RF*/
+  ctx->eflags |= ARCHITECTURE_REGISTER_EFLAGS_TF;
+  ctx->eflags |= ARCHITECTURE_REGISTER_EFLAGS_RF;
 
   _dbg.release = 1;
 

@@ -41,6 +41,18 @@
 #define ARCHITECTURE_REGISTER_EFLAGS_IF		(1 << 9)
 
 /*
+ * this flag enables CPU's single step mode.
+ */
+
+#define ARCHITECTURE_REGISTER_EFLAGS_TF		(1 << 8)
+
+/*
+ * this flag enables resuming from a single step trap.
+ */
+
+#define ARCHITECTURE_REGISTER_EFLAGS_RF		(1 << 16)
+
+/*
  * the bit 1 of the eflags must always be set.
  */
 
