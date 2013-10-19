@@ -144,9 +144,11 @@
 
 #define ARCHITECTURE_HANDLER_SHELL_PROTOTYPES()				\
   void	architecture_handler_shell_exception0(void);			\
-  void	architecture_handler_shell_exception1(void);			\
+  void	architecture_handler_shell_exception1(void)                     \
+    __attribute__ ((weak));                                             \
   void	architecture_handler_shell_exception2(void);			\
-  void	architecture_handler_shell_exception3(void);			\
+  void	architecture_handler_shell_exception3(void)			\
+    __attribute__ ((weak));                                             \
   void	architecture_handler_shell_exception4(void);			\
   void	architecture_handler_shell_exception5(void);			\
   void	architecture_handler_shell_exception6(void);			\
