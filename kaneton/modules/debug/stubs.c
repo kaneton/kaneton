@@ -49,6 +49,8 @@ static e_dbg_error dbg_handler_memread(void);
 static e_dbg_error dbg_handler_binwrite(void);
 static e_dbg_error dbg_handler_continue(void);
 static e_dbg_error dbg_handler_singlestep(void);
+static e_dbg_error dbg_handler_setbreakpoint(void);
+static e_dbg_error dbg_handler_delbreakpoint(void);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -65,7 +67,9 @@ const s_dbg_command _dbg_handler[] =
   { (t_uint8*) "X", dbg_handler_binwrite },
   { (t_uint8*) "c", dbg_handler_continue },
   { (t_uint8*) "s", dbg_handler_singlestep },
-  { (t_uint8*) "P", dbg_handler_setregister }
+  { (t_uint8*) "P", dbg_handler_setregister },
+  { (t_uint8*) "Z0", dbg_handler_setbreakpoint },
+  { (t_uint8*) "z0", dbg_handler_delbreakpoint }
 };
 
 /*
@@ -301,4 +305,73 @@ static e_dbg_error dbg_handler_setregister(void)
   dbg_packet_send();
 
   return E_NONE;
+}
+
+static e_dbg_error dbg_handler_setbreakpoint(void)
+{
+  e_dbg_error  e = E_NONE;
+  unsigned int i;
+
+  dbg_ack(1);
+
+  if (dbg_parse_comma() != E_NONE
+      || dbg_parse_uint32_hstr((t_uint32*) &bp.address) != E_NONE)
+    return E_PARSE;
+
+  // TODO : check access rights
+
+  bp.opcode = *bp.address;
+
+  for (i = 0; i < DBG_BREAKPOINTS_NB && _dbg.bp[i].address != 0; ++i)
+    ;
+
+  *bp.address = 0xCC;
+
+  // TODO : invalidate icache address
+
+  dbg_write_start();
+
+  if (e != E_NONE)
+    dbg_write_str((t_uint8*) "E01");
+  else
+    dbg_write_str((t_uint8*) "OK");
+
+  dbg_write_terminate();
+
+  dbg_packet_send();
+
+  return e;
+}
+
+static e_dbg_error dbg_handler_delbreakpoint(void)
+{
+  t_uint8*      address;
+  t_uint8       data;
+  t_uint32      size;
+  e_dbg_error   e = E_NONE;
+
+  dbg_ack(1);
+
+  if (dbg_parse_comma() != E_NONE
+      || dbg_parse_uint32_hstr((t_uint32*) &address) != E_NONE)
+    return E_PARSE;
+
+  // TODO : check access rights
+
+  // *address = 0xcc;
+
+  // TODO : invalidate icache address
+
+  dbg_write_start();
+
+  if (e != E_NONE)
+    dbg_write_str((t_uint8*) "E01");
+  else
+    dbg_write_str((t_uint8*) "OK");
+
+  dbg_write_terminate();
+
+  dbg_packet_send();
+
+  return e;
 }

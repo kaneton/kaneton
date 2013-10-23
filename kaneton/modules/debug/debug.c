@@ -108,6 +108,14 @@ static void debug_exception_db(i_event n, t_data d)
  */
 t_error                 module_debug_start(void)
 {
+  if (set_reserve(bpt,
+                  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
+                  sizeof (s_dbg_breakpoint),
+                  1024,
+                  &_dbg.bp) != ERROR_OK)
+    MODULE_ESCAPE("unable to reserve the segments set");
+
+
   event_reserve(ARCHITECTURE_IDT_EXCEPTION_BP,
                 EVENT_TYPE_FUNCTION,
                 EVENT_ROUTINE(debug_exception_bp),

@@ -25,6 +25,11 @@
  */
 
 /*
+ * Maximum Number of SW Breakpoints
+ */
+# define DBG_BREAKPOINTS_NB     255
+
+/*
  * Maximum request packet size (supported)
  */
 # define DBG_RX_MAX_SZ          4096
@@ -49,7 +54,6 @@
  * Escaped Character xor operand
  */
 # define DBG_ESCAPE_XOR          0x20
-
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -129,6 +133,17 @@ enum e_dbg_register
 };
 
 /*
+ * SW Breakpoint
+ * Save instruction opcode before replacing them by the SW breakpoint
+ * opcode int3
+ */
+typedef struct
+{
+    t_uint8* address;
+    t_uint8  opcode;
+} s_dbg_breakpoint;
+
+/*
  * Debug Server Manager Structure
  */
 typedef struct
@@ -137,8 +152,8 @@ typedef struct
     s_dbg_com                   io;
     o_thread*                   thread;
     t_boolean                   release;
+    s_dbg_breakpoint            bp[DBG_BREAKPOINTS_NB];
 }                               s_dbg_manager;
-
 
 /*
  * GDB packet checksum
