@@ -1,0 +1,10 @@
+__pycache__
+.current
+kaneton/core/version.c
+kaneton/kaneton
+environment/env.mk
+environment/env.py
+boot/loader/ibm-pc.ia32/educational/loader
+*.o
+*.lo
+*.map

@@ -40,7 +40,10 @@ typedef enum
 {
   E_NONE = 0,
   E_PARSE,
-  E_DENY        /* Bad checksum */
+  E_DENY,       /* Bad checksum */
+  E_NOACCESS,
+  E_BPFULL,
+  E_NOBP
 } e_dbg_error;
 
 /*

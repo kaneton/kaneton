@@ -311,21 +311,27 @@ static e_dbg_error dbg_handler_setbreakpoint(void)
 {
   e_dbg_error  e = E_NONE;
   unsigned int i;
+  t_uint8*     address = 0;
 
   dbg_ack(1);
 
   if (dbg_parse_comma() != E_NONE
-      || dbg_parse_uint32_hstr((t_uint32*) &bp.address) != E_NONE)
+      || dbg_parse_uint32_hstr((t_uint32*) &address) != E_NONE)
     return E_PARSE;
 
   // TODO : check access rights
 
-  bp.opcode = *bp.address;
-
   for (i = 0; i < DBG_BREAKPOINTS_NB && _dbg.bp[i].address != 0; ++i)
     ;
 
-  *bp.address = 0xCC;
+  if (i == DBG_BREAKPOINTS_NB)
+    e = E_BPFULL;
+  else
+  {
+    _dbg.bp[i].opcode = *address;
+    _dbg.bp[i].address = address;
+    *address = 0xCC;
+  }
 
   // TODO : invalidate icache address
 
@@ -346,9 +352,9 @@ static e_dbg_error dbg_handler_setbreakpoint(void)
 static e_dbg_error dbg_handler_delbreakpoint(void)
 {
   t_uint8*      address;
-  t_uint8       data;
-  t_uint32      size;
   e_dbg_error   e = E_NONE;
+  unsigned int  i;
+  unsigned int  j;
 
   dbg_ack(1);
 
@@ -358,7 +364,16 @@ static e_dbg_error dbg_handler_delbreakpoint(void)
 
   // TODO : check access rights
 
-  // *address = 0xcc;
+  for (i = 0; i < DBG_BREAKPOINTS_NB && _dbg.bp[i].address != address; ++i)
+    ;
+
+  if (i == DBG_BREAKPOINTS_NB)
+    e = E_NOBP;
+  else
+  {
+    *address = _dbg.bp[i].opcode;
+    _dbg.bp[i].address = 0;
+  }
 
   // TODO : invalidate icache address
 
