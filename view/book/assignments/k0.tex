@@ -61,7 +61,7 @@ Through this stage, the student will manipulate several concepts including:
   \item
     \term{\name{ELF - Executable and Linking Format}}
 
-    The boot loader, written in assembly, is packed in a raw format so that
+    The boot loader, written in assembly, is packed in a raw format
     to be detected as a valid boot loader by the computer's \name{BIOS}.
 
     \-
@@ -92,17 +92,17 @@ The following example illustrates this two-step process:
 
 \begin{verbatim}
   $> gcc -c bootsect.S -o bootsect.o
-  $> ld bootsect.o -o bootsect ---oformat binary ---Ttext 0x7c00
+  $> ld bootsect.o -o bootsect --oformat binary -Ttext 0x7c00
 \end{verbatim}
 
 In order to execute your code, students should use the \name{QEMU} emulator,
 as follows:
 
 \begin{verbatim}
-  $> qemu -fda bootsect
+  $> qemu-system-i386 -fda bootsect
 \end{verbatim}
 
-Let us recall that \name{x86} microprocessors start exeucting in 16-bit. A
+Let us recall that \name{x86} microprocessors start executing in 16-bit. A
 directive must therefore be used to specify the assembler that the code
 must be generated in 16-bit. Note that students will later be asked to
 switch to a 32-bit mode referred to as the \name{Protected Mode}. As such,
@@ -116,7 +116,7 @@ code.
 \section{Resources}
 
 Students will find additional resources related to the \name{k0} stage
-on the \name{Wiki} at \location{http://wiki.opaak.org}.
+on the \name{Wiki} at \location{http://kaneton.opaak.org/wiki}.
 
 %
 % test
@@ -178,7 +178,7 @@ The submitted snapshot should therefore contain nothing more than these
 six directories and files. Please be careful with the extension of the source
 files; the 'S' is uppercase!
 
-The \name{k0} stage is composed of several exercises. For ever exercise,
+The \name{k0} stage is composed of several exercises. For each exercise,
 the student is asked to write functions in assembly language taking arguments
 in some registers and providing output in others. Note that these functions
 should take care not to modify any register unless explicitly stated.
@@ -281,7 +281,7 @@ The student's code will be evaluated by testing every function automatically.
 The evaluation process will therefore go as follows. First, the student
 exercise file will be linked with an evaluation file containing the entry
 point. This main function will then trigger some function calls and verify
-that these functions behave according to the specifications define in this
+that these functions behave according to the specifications defined in this
 document.
 
 Let us recall that the whole binary---composed of the student exercise file
@@ -402,7 +402,7 @@ used to provide a function used to dump the state of the $16$-bit registers.
 
   \-
 
-  First, the base address of the head should be statically declare. Then,
+  First, the base address of the head should be statically declared. Then,
   whenever the function is called, the next available address is used and
   incremented.
 }
@@ -434,7 +434,7 @@ used to provide a function used to dump the state of the $16$-bit registers.
 
   This function must start displaying at the current cursor's position.
   Besides, the evaluation system expects the function to come back to the
-  first line should the end of the screen be reached.
+  first line when the end of the screen is reached.
 
   \-
 
@@ -500,9 +500,9 @@ relying on the \name{BIOS} services.
 % floppy
 \subsection{Floppy}
 
-This interrupts introduced other \name{BIOS} interrupts enabling the $16-bit$
-programmer to control the floopy drive. The objective of this exercise is
-to read the second sector from the floppy drive in order to checker
+Further \name{BIOS} interrupts  are introduced here to make the $16-bit$
+programmer able to control the floopy drive. The objective of this exercise is
+to read the second sector from the floppy drive in order to check
 whether it is a valid bootsector.
 
 Note that the second sector is considered because the first has already
@@ -560,10 +560,10 @@ been loaded into memory. This technique is used by boot loaders, such as
 % mode
 \subsection{Mode}
 
-Until know, the code students have been developing were written in $16$-bit,
+Until now, the code students have been developing were written in $16$-bit,
 hence evolving in \name{Real Mode}. This mode is a relique of the past. As
 most kernels are written in $32$-bit, the boot loader must prepare the
-environment so as to fit the needs of the kernel.
+environment to fit the needs of the kernel.
 
 Through this exercise, the students are going to switch from the \name{Real
 Mode} to the \name{Protected Mode}. This process requires the developer to
@@ -592,7 +592,7 @@ Descriptor Table}.
 Students should read the necessary material, especially the \name{Intel}
 manual \name{Volume 3A} which contains a chapter on the \name{Protected Mode}.
 
-The following describes the steps to follow for performing a switch to the
+The following describes the steps to follow to perform a switch to the
 \name{Protected Mode}:
 
 \begin{enumerate}
@@ -652,20 +652,20 @@ without the support of the \name{BIOS} services.
 
   Finally, the student should ignore the end of line as this will not be
   tested. Besides, colors can be changed but will not be considered by
-  the evaluation system. Moreover, the special characters such as \code{'\r'},
-  \code{'\t'} \etc{} will not be tested either.
+  the evaluation system. Moreover, the special characters such as \code{'\textbackslash r'},
+  \code{'\textbackslash t'} \etc{} will not be tested either.
 }
 
 % elf
 \subsection{ELF}
 
-The finally exercise of the \name{k0} stage consists in writing the core
+The final exercise of the \name{k0} stage consists in writing the core
 functionality of any boot loader: loading the kernel binary from a device
 into memory and executing it.
 
 Since most kernels are written in high-level languages such as \name{C} or
-\name{C++}, such binary are actually packaged according to a flexible format,
-the most common one of \name{UNIX} systems being the \name{ELF - Executable
+\name{C++}, such binaries are actually packaged according to a flexible format,
+the most common one on \name{UNIX} systems being the \name{ELF - Executable
 and Linking Format}.
 
 \begin{center}
@@ -731,7 +731,8 @@ may want to read a more detailed documentation.
 
 \command{elf\_load}
 {
-  This function executes the \name{ELF} located at the address given in
-  \argument{\%esi}, assuming that the \name{kernel\_preload()} function has
-  been called prior to this function.
+  This function parses the \name{ELF} file located at the address given in
+  \argument{\%esi}, loads its segments into memory, and executes its
+  entry point, assuming that the \name{kernel\_preload()} function has been
+  called prior to this function.
 }

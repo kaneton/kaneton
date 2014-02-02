@@ -30,8 +30,8 @@ zero, page faults \etc{} but also to communicate with external devices.
 Indeed, although the easiest way to communicate with devices consists in
 probing \name{I/O} ports until the device's state changes to something
 expected, \name{interrupt}s provide a mechanism consisting for devices
-to generate asynchronously an event which will, as its name suggests, suspends
-the kernel's activity for the interrupt to be handled.
+to generate asynchronously an event which will, as its name suggests, suspend
+the kernel's activity to handle the interrupt.
 
 Such events are extremely important as they are also used to simulate
 multitasking \ie{} the ability to execute multiple threads of execution
@@ -57,7 +57,7 @@ In this stage, students will therefore address the following concepts:
     the \name{CPU} how to handle the interrupts being exceptions,
     \name{IRQ - Interrupt Request}s \etc{}
   \item
-    \term{ISR - Interrupt Service Routing}
+    \term{ISR - Interrupt Service Routine}
 
     \-
 
@@ -127,7 +127,7 @@ highly machine-dependent, related code can also be found in the \name{glue},
 component whose main task is to redirect calls to the functionalities provided
 by the \name{platform} and \name{architecture}.
 
-Although, as students will soon notice, the distributed snapshot includes a
+Although, as students will soon notice, the provided snapshot includes a
 complete event manager's core, the glue is completely empty while the
 architecture does not provide any functionality related to the event
 processing mechanism.
@@ -136,9 +136,9 @@ Therefore, the \name{k1} assignments consist for the student to equip the
 kaneton educational implementation with the necessary functionalities making
 the event manager fully operational.
 
-Though the stage tries to give the most freedom to students regarding their
-implementation, skeleton source files have been provided, hence acting
-as entry point for students to start experimenting.
+Though this stage tries to give as much freedom as possible to students
+regarding their implementation, skeleton source files have been provided, hence
+acting as entry point for students to start experimenting.
 
 % core
 \subsection{Core}
@@ -403,7 +403,7 @@ This section contains advices that students are welcome to consider:
     \-
 
     Therefore, instead of writing all these assembly functions manually,
-    one could really on a macro-function for generating the assembly
+    one could rely on a macro-function for generating the assembly
     code automatically.
   \item
     In order to ease the debugging process, students should get used to
