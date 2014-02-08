@@ -265,7 +265,7 @@ define env_assemble-S
   assemble_S_options=""							&& \
   $(call env_display,green,ASSEMBLE-S,$(2),		,)		&& \
   $(call env_perform,							\
-    $(_CPP_) $(2) | $(_AS_) $(_ASM_FLAGS_) $${assemble_S_options} -o $(1))
+    $(_AS_) $(_ASM_FLAGS_) $${assemble_S_options} -c $(2) -o $(1))
 endef
 
 #
@@ -323,7 +323,7 @@ define env_executable
   fi									&& \
   $(call env_display,magenta,EXECUTABLE,$(1),		,)		&& \
   $(call env_perform,							\
-    $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options} -o $(1)	\
+    $(_LD_) $(_LD_FLAGS_) $${executable_options} -Map=$(1).map -o $(1)	\
 	    $(2) ${_CC_LIB_})
 endef
 
