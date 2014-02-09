@@ -231,7 +231,7 @@ t_error			architecture_idt_import(as_idt*		idt)
    */
 
   idtr.address = (t_paddr)idt->table;
-  idtr.size = idt->size * sizeof (at_idte);
+  idtr.size = idt->size * sizeof (at_idte) - 1;
 
   /*
    * 2)
