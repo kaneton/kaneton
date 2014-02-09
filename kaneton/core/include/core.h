@@ -62,14 +62,14 @@
  */
 
 #define CORE_TRUE()							\
-  return (ERROR_TRUE)
+  return (TRUE)
 
 /*
  * false
  */
 
 #define CORE_FALSE()							\
-  return (ERROR_FALSE)
+  return (FALSE)
 
 /*
  * leave
@@ -77,7 +77,7 @@
 
 #define CORE_LEAVE()							\
   {									\
-    return (ERROR_OK);							\
+    return (STATUS_OK);							\
   }
 
 /*
@@ -89,8 +89,8 @@
     module_call(report, record,						\
 		_format_ " (%s:%u)",					\
 		##_arguments_, __FUNCTION__, __LINE__);			\
-    									\
-    return (ERROR_KO);							\
+									\
+    return (STATUS_ERROR);						\
   }
 
 /*
@@ -136,7 +136,7 @@
 
 void			kaneton(s_init*				init);
 
-t_error			kaneton_spawn(void);
+t_status		kaneton_spawn(void);
 
 
 /*

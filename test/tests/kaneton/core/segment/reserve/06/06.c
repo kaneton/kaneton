@@ -36,10 +36,10 @@ void			test_core_segment_reserve_06(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task) != ERROR_OK)
+		   &task) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task, &as) != ERROR_OK)
+  if (as_reserve(task, &as) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
   for (i = 0; i < 64; i++)
@@ -58,10 +58,10 @@ void			test_core_segment_reserve_06(void)
   TEST_ALLOCATE(as, 7, seg);
   TEST_ALLOCATE(as, 4, seg + 3);
 
-  if (as_release(as) != ERROR_OK)
+  if (as_release(as) != STATUS_OK)
     TEST_ERROR("[as_release] error");
 
-  if (task_release(task) != ERROR_OK)
+  if (task_release(task) != STATUS_OK)
     TEST_ERROR("[task_release] error");
 
   TEST_SIGNATURE(230i0f9i32qgi3g34);

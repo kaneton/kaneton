@@ -30,19 +30,19 @@ void			test_core_id_reserve_01(void)
 
   TEST_ENTER();
 
-  if (id_build(&id) != ERROR_OK)
+  if (id_build(&id) != STATUS_OK)
     TEST_ERROR("[id_build] error");
 
-  if (id_reserve(&id, &i) != ERROR_OK)
+  if (id_reserve(&id, &i) != STATUS_OK)
     TEST_ERROR("[id_reserve] error");
 
   if (!(i >= 0 && i <= (t_id)-1))
     TEST_ERROR("invalid id");
 
-  if (id_release(&id, i) != ERROR_OK)
+  if (id_release(&id, i) != STATUS_OK)
     TEST_ERROR("[id_release] error");
 
-  if (id_destroy(&id) != ERROR_OK)
+  if (id_destroy(&id) != STATUS_OK)
     TEST_ERROR("[id_destroy] error");
 
   TEST_SIGNATURE(9i43sdkfwaoir23wt);

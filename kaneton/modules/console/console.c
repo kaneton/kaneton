@@ -170,7 +170,7 @@ void			module_console_print(char*		fmt,
  * this function sets the console configuration pointers.
  */
 
-t_error			module_console_set(mf_console_character	character,
+t_status		module_console_set(mf_console_character	character,
 					   mf_console_attribute	attribute)
 {
   _module_console.character = character;
@@ -183,7 +183,7 @@ t_error			module_console_set(mf_console_character	character,
  * this function returns the console configuration pointers.
  */
 
-t_error			module_console_get(mf_console_character* character,
+t_status		module_console_get(mf_console_character* character,
 					   mf_console_attribute* attribute)
 {
   *character = _module_console.character;
@@ -205,7 +205,7 @@ t_error			module_console_get(mf_console_character* character,
  * 5) display a message.
  */
 
-t_error			module_console_load(void)
+t_status		module_console_load(void)
 {
   /*
    * 1)
@@ -217,7 +217,7 @@ t_error			module_console_load(void)
    * 2)
    */
 
-  if (platform_console_initialize() != ERROR_OK)
+  if (platform_console_initialize() != STATUS_OK)
     MODULE_ESCAPE("unable to initialize the platform's console");
 
   /*
@@ -254,7 +254,7 @@ t_error			module_console_load(void)
  * 2) clean the underlying platform console.
  */
 
-t_error			module_console_unload(void)
+t_status		module_console_unload(void)
 {
   /*
    * 1)
@@ -267,7 +267,7 @@ t_error			module_console_unload(void)
    * 2)
    */
 
-  if (platform_console_clean() != ERROR_OK)
+  if (platform_console_clean() != STATUS_OK)
     MODULE_ESCAPE("unable to clean the platform's console");
 
   MODULE_LEAVE();

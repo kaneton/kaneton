@@ -86,27 +86,27 @@ typedef struct
  * ../context.c
  */
 
-t_error			architecture_context_dump(as_context	context);
+t_status			architecture_context_dump(as_context	context);
 
-t_error			architecture_context_build(i_thread	id);
+t_status			architecture_context_build(i_thread	id);
 
-t_error			architecture_context_destroy(i_thread	id);
+t_status			architecture_context_destroy(i_thread	id);
 
-t_error			architecture_context_setup(void);
+t_status			architecture_context_setup(void);
 
-t_error			architecture_context_locate(void);
+t_status			architecture_context_locate(void);
 
-t_error			architecture_context_switch(i_thread	current,
+t_status			architecture_context_switch(i_thread	current,
 						    i_thread	future);
 
-t_error			architecture_context_arguments(i_thread	id,
+t_status			architecture_context_arguments(i_thread	id,
 						       void*	arguments,
 						       t_vsize	size);
 
-t_error			architecture_context_get(i_thread	id,
+t_status			architecture_context_get(i_thread	id,
 						 as_context*	context);
 
-t_error			architecture_context_set(i_thread	id,
+t_status			architecture_context_set(i_thread	id,
 						 as_context*	context);
 
 

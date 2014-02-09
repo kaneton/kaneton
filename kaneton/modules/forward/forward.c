@@ -63,7 +63,7 @@ mm_forward		_module_forward;
  * 2) send the given message to the serial line.
  */
 
-t_error			module_forward_send(char*		message,
+t_status		module_forward_send(char*		message,
 					    t_uint32		length)
 {
   /*
@@ -96,7 +96,7 @@ t_error			module_forward_send(char*		message,
  * 3) reset the buffer.
  */
 
-t_error			module_forward_flush(void)
+t_status		module_forward_flush(void)
 {
   t_uint32		size;
 
@@ -116,7 +116,7 @@ t_error			module_forward_flush(void)
   _module_forward.size = 0;
 
   if (module_forward_send(_module_forward.buffer,
-			  size) != ERROR_OK)
+			  size) != STATUS_OK)
     MODULE_ESCAPE("unable to send the buffer to the serial line");
 
   /*
@@ -168,7 +168,7 @@ void			module_forward_character(char		c)
  * 4) initialize the console module in order to receive everything.
  */
 
-t_error			module_forward_load(void)
+t_status		module_forward_load(void)
 {
   /*
    * 1)
@@ -206,7 +206,7 @@ t_error			module_forward_load(void)
  * this function unloads the module.
  */
 
-t_error			module_forward_unload(void)
+t_status		module_forward_unload(void)
 {
   module_call(console, message,
 	      '+', "unloading the 'forward' module\n");

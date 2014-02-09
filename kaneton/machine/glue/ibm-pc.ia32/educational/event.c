@@ -89,13 +89,13 @@ void			glue_event_pagefault(t_id		id,
    * 1)
    */
 
-  assert(thread_current(&thread) == ERROR_OK);
+  assert(thread_current(&thread) == STATUS_OK);
 
   /*
    * 2)
    */
 
-  assert(architecture_context_get(thread, &ctx) == ERROR_OK);
+  assert(architecture_context_get(thread, &ctx) == STATUS_OK);
 
   /*
    * 3)
@@ -153,7 +153,7 @@ void			glue_event_pagefault(t_id		id,
  * 1) display the machine-specific attributes.
  */
 
-t_error			glue_event_dump(void)
+t_status		glue_event_dump(void)
 {
   /*
    * 1)
@@ -183,7 +183,7 @@ t_error			glue_event_dump(void)
  * 2) manually trigger an event.
  */
 
-t_error			glue_event_enable(void)
+t_status		glue_event_enable(void)
 {
   /*
    * 1)
@@ -208,7 +208,7 @@ t_error			glue_event_enable(void)
  * 1) call the CLI instruction.
  */
 
-t_error			glue_event_disable(void)
+t_status		glue_event_disable(void)
 {
   /*
    * 1)
@@ -229,7 +229,7 @@ t_error			glue_event_disable(void)
  *    via the PIC - Programmable Interrupt Controller.
  */
 
-t_error			glue_event_reserve(i_event		id,
+t_status		glue_event_reserve(i_event		id,
 					   t_type		type,
 					   u_event_handler	handler,
 					   t_data		data)
@@ -257,7 +257,7 @@ t_error			glue_event_reserve(i_event		id,
   if ((id >= ARCHITECTURE_IDT_IRQ_BASE) &&
       (id < ARCHITECTURE_IDT_IRQ_BASE + ARCHITECTURE_IDT_IRQ_SIZE))
     {
-      if (platform_pic_enable(id - ARCHITECTURE_IDT_IRQ_BASE) != ERROR_OK)
+      if (platform_pic_enable(id - ARCHITECTURE_IDT_IRQ_BASE) != STATUS_OK)
 	MACHINE_ESCAPE("unable to enable the IRQ");
     }
 
@@ -272,7 +272,7 @@ t_error			glue_event_reserve(i_event		id,
  * 1) should the event be an IRQ, deactivate it.
  */
 
-t_error			glue_event_release(i_event		id)
+t_status		glue_event_release(i_event		id)
 {
   /*
    * 1)
@@ -281,7 +281,7 @@ t_error			glue_event_release(i_event		id)
   if ((id >= ARCHITECTURE_IDT_IRQ_BASE) &&
       (id < ARCHITECTURE_IDT_IRQ_BASE + ARCHITECTURE_IDT_IRQ_SIZE))
     {
-      if (platform_pic_disable(id - ARCHITECTURE_IDT_IRQ_BASE) != ERROR_OK)
+      if (platform_pic_disable(id - ARCHITECTURE_IDT_IRQ_BASE) != STATUS_OK)
 	MACHINE_ESCAPE("unable to disable the IRQ");
     }
 
@@ -298,20 +298,20 @@ t_error			glue_event_release(i_event		id)
  * 3) reserve the page fault event and register its handler.
  */
 
-t_error			glue_event_initialize(void)
+t_status		glue_event_initialize(void)
 {
   /*
    * 1)
    */
 
-  if (architecture_handler_setup() != ERROR_OK)
+  if (architecture_handler_setup() != STATUS_OK)
     MACHINE_ESCAPE("unable to initialize the interrupt table");
 
   /*
    * 2)
    */
 
-  if (platform_pic_initialize() != ERROR_OK)
+  if (platform_pic_initialize() != STATUS_OK)
     MACHINE_ESCAPE("unable to initialize the PIC");
 
   /*
@@ -321,7 +321,7 @@ t_error			glue_event_initialize(void)
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_PF,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(glue_event_pagefault),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve the event associated with the "
 		   "page fault exception");
 
@@ -336,13 +336,13 @@ t_error			glue_event_initialize(void)
  * 1) clean the PIC.
  */
 
-t_error			glue_event_clean(void)
+t_status		glue_event_clean(void)
 {
   /*
    * 1)
    */
 
-  if (platform_pic_clean() != ERROR_KO)
+  if (platform_pic_clean() != STATUS_ERROR)
     MACHINE_ESCAPE("unable to clean the PIC");
 
   MACHINE_LEAVE();

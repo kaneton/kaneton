@@ -32,7 +32,7 @@
 #define		machine_call_segment(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_segment_dispatch.segment_ ## _function_ != NULL)		\
         _r_ = glue_segment_dispatch.segment_ ## _function_(_args_);	\
@@ -67,25 +67,25 @@
  * ../segment.c
  */
 
-t_error			glue_segment_dump(void);
+t_status		glue_segment_dump(void);
 
-t_error			glue_segment_read(i_segment		segid,
+t_status		glue_segment_read(i_segment		segid,
 					  t_paddr		offs,
 					  void*			buff,
 					  t_psize		sz);
 
-t_error			glue_segment_write(i_segment		segid,
+t_status		glue_segment_write(i_segment		segid,
 					   t_paddr		offs,
 					   const void*		buff,
 					   t_psize		sz);
 
-t_error			glue_segment_copy(i_segment		dst,
+t_status		glue_segment_copy(i_segment		dst,
 					  t_paddr		offsd,
 					  i_segment		src,
 					  t_paddr		offss,
 					  t_psize		sz);
 
-t_error			glue_segment_initialize(void);
+t_status		glue_segment_initialize(void);
 
 
 /*

@@ -29,18 +29,18 @@ void			test_core_set_pipe_01(void)
 
   TEST_ENTER();
 
-  if (set_reserve(pipe, SET_OPTION_NONE, sizeof (t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_NONE, sizeof (t_id), &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   if (set_reserve(pipe, SET_OPTION_ALLOCATE | SET_OPTION_FREE,
-                  sizeof (t_id), &id) == ERROR_OK)
+                  sizeof (t_id), &id) == STATUS_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments");
 
   if (set_reserve(pipe, SET_OPTION_ORGANISE,
-                  sizeof (t_id), &id) == ERROR_OK)
+                  sizeof (t_id), &id) == STATUS_OK)
     TEST_ERROR("[set_reserve] error: invalid arguments");
 
   TEST_SIGNATURE(f09ig390390iqawf);

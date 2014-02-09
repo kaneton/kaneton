@@ -58,7 +58,7 @@ extern m_segment	_segment;
  *   e) display the segment.
  */
 
-t_error			architecture_gdt_dump(void)
+t_status		architecture_gdt_dump(void)
 {
   t_uint16		i;
 
@@ -220,7 +220,7 @@ t_error			architecture_gdt_dump(void)
  * 3) initialize the table's memory.
  */
 
-t_error			architecture_gdt_build(t_paddr		base,
+t_status		architecture_gdt_build(t_paddr		base,
 					       t_psize		size,
 					       as_gdt*		gdt)
 {
@@ -270,7 +270,7 @@ t_error			architecture_gdt_build(t_paddr		base,
  *    in the current system GDT's structure.
  */
 
-t_error			architecture_gdt_import(as_gdt*		gdt)
+t_status		architecture_gdt_import(as_gdt*		gdt)
 {
   as_gdtr		gdtr;
 
@@ -315,7 +315,7 @@ t_error			architecture_gdt_import(as_gdt*		gdt)
  * 3) updates the given GDT's size.
  */
 
-t_error			architecture_gdt_export(as_gdt*		gdt)
+t_status		architecture_gdt_export(as_gdt*		gdt)
 {
   as_gdtr		gdtr;
   at_gdte*		source;
@@ -363,7 +363,7 @@ t_error			architecture_gdt_export(as_gdt*		gdt)
  * 2) set the limit and granularity according to its value.
  */
 
-t_error			architecture_gdt_insert(t_uint16	index,
+t_status		architecture_gdt_insert(t_uint16	index,
 						t_paddr		base,
 						t_paddr		limit,
 						t_flags		flags)
@@ -419,7 +419,7 @@ t_error			architecture_gdt_insert(t_uint16	index,
  * 2) insert the segment in the GDT.
  */
 
-t_error			architecture_gdt_reserve(t_paddr	base,
+t_status		architecture_gdt_reserve(t_paddr	base,
 						 t_paddr	limit,
 						 t_flags	flags,
 						 t_uint16*	index)
@@ -455,7 +455,7 @@ t_error			architecture_gdt_reserve(t_paddr	base,
    */
 
   if (architecture_gdt_insert(*index,
-			      base, limit, flags) != ERROR_OK)
+			      base, limit, flags) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the segment in the GDT");
 
   MACHINE_LEAVE();
@@ -470,7 +470,7 @@ t_error			architecture_gdt_reserve(t_paddr	base,
  * 1) re-initialize the GDT entry's memory.
  */
 
-t_error			architecture_gdt_delete(t_uint16	index)
+t_status		architecture_gdt_delete(t_uint16	index)
 {
   /*
    * 0)
@@ -504,7 +504,7 @@ t_error			architecture_gdt_delete(t_uint16	index)
  * 1) compute the selector according to the given parameters.
  */
 
-t_error			architecture_gdt_selector(t_uint16	index,
+t_status		architecture_gdt_selector(t_uint16	index,
 						  t_privilege	privilege,
 						  t_uint16*	selector)
 {

@@ -40,10 +40,10 @@ void			test_core_segment_reserve_03(void)
 		      42 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_get(seg, &o) != ERROR_OK)
+  if (segment_get(seg, &o) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
   if (o->id != seg)
@@ -58,7 +58,7 @@ void			test_core_segment_reserve_03(void)
   if (o->permissions != PERMISSION_READ)
     TEST_ERROR("invalid segment's permissions");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(fg90i3i2fwoai43hg);

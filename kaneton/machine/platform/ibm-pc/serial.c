@@ -128,7 +128,7 @@ void			platform_serial_write(t_uint32		port,
  * 6) re-enable IRQs.
  */
 
-t_error			platform_serial_setup(t_uint32		port,
+t_status		platform_serial_setup(t_uint32		port,
 					      t_uint8		rate,
 					      t_uint8		type)
 {
@@ -184,7 +184,7 @@ t_error			platform_serial_setup(t_uint32		port,
  * this function initializes the serial manager.
  */
 
-t_error			platform_serial_initialize(void)
+t_status		platform_serial_initialize(void)
 {
   MACHINE_LEAVE();
 }
@@ -193,7 +193,7 @@ t_error			platform_serial_initialize(void)
  * this function cleans the serial manager.
  */
 
-t_error			platform_serial_clean(void)
+t_status		platform_serial_clean(void)
 {
   MACHINE_LEAVE();
 }

@@ -55,7 +55,7 @@ extern i_as		kasid;
  * 2) detect MMX and SSE processor capabilities.
  */
 
-t_error			ia32_extended_context_init(void)
+t_status		ia32_extended_context_init(void)
 {
   /*
    * 1)
@@ -78,41 +78,41 @@ t_error			ia32_extended_context_init(void)
       ia32_cpucaps |= IA32_CAPS_SSE;
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this functions clears the io permission bitmap of a task.
  */
 
-t_error			ia32_clear_io_bitmap(i_task		tskid)
+t_status		ia32_clear_io_bitmap(i_task		tskid)
 {
   o_task*		o;
 
-  if (task_get(tskid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(tskid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   memset(&o->machine.iomap, 0xFF, 8192);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function duplicate the io permission bitmap of a task to another.
  */
 
-t_error			ia32_duplicate_io_bitmap(i_task		old,
+t_status		ia32_duplicate_io_bitmap(i_task		old,
 						 i_task		new)
 {
   o_task*		from;
   o_task*		to;
 
-  if (task_get(old, &from) != ERROR_NONE || task_get(new, &to) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(old, &from) != STATUS_OK || task_get(new, &to) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   memcpy(to->machine.iomap, from->machine.iomap, 8192);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -156,7 +156,7 @@ static t_uint8		io_bitmap_isset(t_uint8*	bitmap,
  * 3) change permission bitmap.
  */
 
-t_error			ia32_set_io_bitmap(i_task		tskid,
+t_status		ia32_set_io_bitmap(i_task		tskid,
 					   i_port		id,
 					   t_uint8		width,
 					   t_uint8		allow)
@@ -169,14 +169,14 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
    */
 
   if (id + width >= 65536)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
    */
 
-  if (task_get(tskid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(tskid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -194,20 +194,20 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
 	 8192);
 #endif
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * setup current I/O PL to 0.
  */
 
-t_error			ia32_reset_iopl(void)
+t_status		ia32_reset_iopl(void)
 {
   asm volatile("pushf\n\t"
 	       "andl $0xFFFFCFFF, %ss:(%esp)\n\t"
 	       "popf");
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -222,7 +222,7 @@ t_error			ia32_reset_iopl(void)
  * 5) reset advanced context (FPU or SSE).
  */
 
-t_error			ia32_init_context(i_task		taskid,
+t_status		ia32_init_context(i_task		taskid,
 					  i_thread		threadid)
 {
   o_thread*		o;
@@ -234,15 +234,15 @@ t_error			ia32_init_context(i_task		taskid,
    * 1)
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(threadid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
    */
 
-  if (task_get(taskid, &task) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(taskid, &task) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -250,8 +250,8 @@ t_error			ia32_init_context(i_task		taskid,
 
   /* XXX can be deleted after first cs when task->class == TASK_CLASS_KERNEL*/
   if (map_reserve(task->asid, MAP_OPT_NONE, PAGESZ, PERM_READ | PERM_WRITE,
-		  &o->machine.interrupt_stack) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		  &o->machine.interrupt_stack) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   o->machine.interrupt_stack += (PAGESZ - 16);
 
@@ -284,8 +284,8 @@ t_error			ia32_init_context(i_task		taskid,
 	break;
     }
 
-  if (ia32_set_context(threadid, &ctx, IA32_CONTEXT_FULL) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_set_context(threadid, &ctx, IA32_CONTEXT_FULL) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 5)
@@ -306,7 +306,7 @@ t_error			ia32_init_context(i_task		taskid,
       o->machine.u.x87.ftw = 0xffff;
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 
@@ -314,27 +314,27 @@ t_error			ia32_init_context(i_task		taskid,
  * this function duplicate the whole context of a thread.
  */
 
-t_error			ia32_duplicate_context(i_thread		old,
+t_status		ia32_duplicate_context(i_thread		old,
 					       i_thread		new)
 {
   o_thread*		from;
   o_thread*		to;
   t_ia32_context	ctx;
 
-  if (thread_get(old, &from) != ERROR_NONE ||
-      thread_get(new, &to) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(old, &from) != STATUS_OK ||
+      thread_get(new, &to) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (ia32_get_context(old, &ctx) != ERROR_NONE ||
-      ia32_set_context(new, &ctx, IA32_CONTEXT_FULL) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_get_context(old, &ctx) != STATUS_OK ||
+      ia32_set_context(new, &ctx, IA32_CONTEXT_FULL) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
     memcpy(&to->machine.u.sse, &from->machine.u.sse, sizeof (t_sse_state));
   else
     memcpy(&to->machine.u.x87, &from->machine.u.x87, sizeof (t_x87_state));
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -342,7 +342,7 @@ t_error			ia32_duplicate_context(i_thread		old,
  * instruction pointers.
  */
 
-t_error			ia32_setup_context(i_thread		threadid,
+t_status		ia32_setup_context(i_thread		threadid,
 					   t_vaddr		pc,
 					   t_vaddr		sp)
 {
@@ -360,7 +360,7 @@ t_error			ia32_setup_context(i_thread		threadid,
  * pointers.
  */
 
-t_error			ia32_status_context(i_thread		threadid,
+t_status		ia32_status_context(i_thread		threadid,
 					    t_vaddr*		pc,
 					    t_vaddr*		sp)
 {
@@ -369,13 +369,13 @@ t_error			ia32_status_context(i_thread		threadid,
   assert(pc != NULL);
   assert(sp != NULL);
 
-  if (ia32_get_context(threadid, &ctx) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_get_context(threadid, &ctx) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   *pc = ctx.eip;
   *sp = ctx.esp;
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -391,7 +391,7 @@ t_error			ia32_status_context(i_thread		threadid,
  * 5) activate the TSS.
  */
 
-t_error			ia32_init_switcher(void)
+t_status		ia32_init_switcher(void)
 {
   o_as*			as;
   i_segment		seg;
@@ -402,23 +402,23 @@ t_error			ia32_init_switcher(void)
    * 1)
    */
 
-  if (as_get(kasid, &as) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_get(kasid, &as) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
    */
 
   if (segment_reserve(kasid, 3 * PAGESZ, PERM_READ | PERM_WRITE,
-		      &seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		      &seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (region_reserve(kasid, seg, 0, REGION_OPT_GLOBAL | REGION_OPT_PRIVILEGED,
-		     0, 3 * PAGESZ, &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     0, 3 * PAGESZ, &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   thread->machine.tss = (t_ia32_tss*)(t_vaddr)reg;
 
@@ -431,15 +431,15 @@ t_error			ia32_init_switcher(void)
    */
 
   if (segment_reserve(kasid, 2 * PAGESZ, PERM_READ | PERM_WRITE,
-		      &seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		      &seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (region_reserve(kasid, seg, 0, REGION_OPT_GLOBAL | REGION_OPT_PRIVILEGED,
-		     0, 2 * PAGESZ, &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     0, 2 * PAGESZ, &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   int_stack = (t_vaddr)reg;
 
@@ -452,8 +452,8 @@ t_error			ia32_init_switcher(void)
   if (ia32_tss_load(thread->machine.tss,
 		    IA32_SEGSEL(IA32_PMODE_GDT_CORE_DS, IA32_PRIV_RING0),
 		    int_stack + 2 * PAGESZ - 16,
-		    0x68) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    0x68) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   ia32_cpu_local_set(&ia32_local_interrupt_stack, int_stack + 2 * PAGESZ - 16);
 
@@ -461,8 +461,8 @@ t_error			ia32_init_switcher(void)
    * 5)
    */
 
-  if (ia32_tss_init(thread->machine.tss) != ERROR_NONE)	/* XXX per CPU */
-    return (ERROR_UNKNOWN);
+  if (ia32_tss_init(thread->machine.tss) != STATUS_OK)	/* XXX per CPU */
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    *
@@ -485,27 +485,27 @@ t_error			ia32_init_switcher(void)
   ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_DS, ia32_prvl_user,
 			  &thread->machine.program_ds);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function store back a core thread stack pointer into the thread object.
  */
 
-t_error			ia32_context_ring0_stack(void)
+t_status		ia32_context_ring0_stack(void)
 {
   i_thread		current;
   o_thread*		o;
   o_task*		otask;
 
-  if (scheduler_current(&current) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (scheduler_current(&current) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (thread_get(current, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(current, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (task_get(o->taskid, &otask) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(o->taskid, &otask) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (otask->class == TASK_CLASS_KERNEL)
     {
@@ -513,7 +513,7 @@ t_error			ia32_context_ring0_stack(void)
       o->machine.interrupt_stack += sizeof (t_ia32_context);
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -529,7 +529,7 @@ t_error			ia32_context_ring0_stack(void)
  *    generate an exception.
  */
 
-t_error			ia32_context_switch(i_thread		current,
+t_status		ia32_context_switch(i_thread		current,
 					    i_thread		elected)
 {
   o_thread*		from;
@@ -543,23 +543,23 @@ t_error			ia32_context_switch(i_thread		current,
    */
 
   if (current == elected)
-      return (ERROR_NONE);
+      return (STATUS_OK);
 
   /*
    * 2)
    */
 
-  if (thread_get(current, &from) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(current, &from) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (thread_get(elected, &to) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(elected, &to) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (task_get(to->taskid, &task) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(to->taskid, &task) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (as_get(task->asid, &as) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_get(task->asid, &as) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -568,8 +568,8 @@ t_error			ia32_context_switch(i_thread		current,
   if (ia32_pd_get_cr3(&cr3,
 		      as->machine.pd,
 		      IA32_PD_CACHED,
-		      IA32_PD_WRITEBACK) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		      IA32_PD_WRITEBACK) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   ia32_cpu_local_set(&ia32_local_jump_pdbr, cr3);
 
@@ -579,8 +579,8 @@ t_error			ia32_context_switch(i_thread		current,
   if (ia32_tss_load(thread->machine.tss,	/* XXX per CPU */
 		    IA32_SEGSEL(IA32_PMODE_GDT_CORE_DS, IA32_PRIV_RING0),
 		    to->machine.interrupt_stack,
-		    0x68) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    0x68) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 4)
@@ -603,7 +603,7 @@ t_error			ia32_context_switch(i_thread		current,
 
   STS();
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -621,7 +621,7 @@ t_error			ia32_context_switch(i_thread		current,
  *  b) restore the FPU/MMX context of the executing thread.
  */
 
-t_error			ia32_extended_context_switch(i_thread	current,
+t_status		ia32_extended_context_switch(i_thread	current,
 						     i_thread	elected)
 {
   o_thread*		o;
@@ -634,17 +634,17 @@ t_error			ia32_extended_context_switch(i_thread	current,
   CLTS();
 
   if (current == elected)
-    return (ERROR_NONE);
+    return (STATUS_OK);
 
   /*
    * 2)
    */
 
-  if (thread_get(elected, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(elected, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (thread_get(current, &old) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(current, &old) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
     {
@@ -683,7 +683,7 @@ t_error			ia32_extended_context_switch(i_thread	current,
       FRSTOR(o->machine.u.x87);
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -697,7 +697,7 @@ t_error			ia32_extended_context_switch(i_thread	current,
  * 4) update the thread context.
  */
 
-t_error			ia32_push_args(i_thread			threadid,
+t_status		ia32_push_args(i_thread			threadid,
 				       const void*		args,
 				       t_vsize			size)
 {
@@ -709,18 +709,18 @@ t_error			ia32_push_args(i_thread			threadid,
    * 1)
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(threadid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (task_get(o->taskid, &otask) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(o->taskid, &otask) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
    */
 
-  if (thread_store(threadid, &context) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_store(threadid, &context) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   context.sp -= size;
 
@@ -728,17 +728,17 @@ t_error			ia32_push_args(i_thread			threadid,
    * 3)
    */
 
-  if (as_write(otask->asid, args, size, context.sp) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_write(otask->asid, args, size, context.sp) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 4)
    */
 
-  if (thread_load(threadid, context) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_load(threadid, context) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -750,7 +750,7 @@ t_error			ia32_push_args(i_thread			threadid,
  * 2) read the context.
  */
 
-t_error			ia32_get_context(i_thread		thread,
+t_status		ia32_get_context(i_thread		thread,
 					 t_ia32_context*	context)
 {
   o_thread*		o;
@@ -760,11 +760,11 @@ t_error			ia32_get_context(i_thread		thread,
    * 1)
    */
 
-  if (thread_get(thread, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(thread, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (task_get(o->taskid, &otask) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(o->taskid, &otask) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -773,10 +773,10 @@ t_error			ia32_get_context(i_thread		thread,
   if (as_read(otask->asid,
 	      o->machine.interrupt_stack - sizeof (t_ia32_context),
 	      sizeof (t_ia32_context),
-	      context) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+	      context) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -791,7 +791,7 @@ t_error			ia32_get_context(i_thread		thread,
  * 4) store back the context to the thread's stack.
  */
 
-t_error			ia32_set_context(i_thread		thread,
+t_status		ia32_set_context(i_thread		thread,
 					 t_ia32_context*	context,
 					 t_uint32		mask)
 {
@@ -803,11 +803,11 @@ t_error			ia32_set_context(i_thread		thread,
    * 1)
    */
 
-  if (thread_get(thread, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(thread, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (task_get(o->taskid, &otask) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task_get(o->taskid, &otask) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -816,8 +816,8 @@ t_error			ia32_set_context(i_thread		thread,
   if (as_read(otask->asid,
 	      o->machine.interrupt_stack - sizeof (t_ia32_context),
 	      sizeof (t_ia32_context),
-	      &temp) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+	      &temp) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -857,8 +857,8 @@ t_error			ia32_set_context(i_thread		thread,
   if (as_write(otask->asid,
 	       &temp, sizeof
 	       (t_ia32_context),
-	       o->machine.interrupt_stack - sizeof (t_ia32_context)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+	       o->machine.interrupt_stack - sizeof (t_ia32_context)) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }

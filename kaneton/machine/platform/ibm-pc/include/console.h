@@ -96,9 +96,9 @@ void			platform_console_character(char			c);
 
 void			platform_console_string(char*		string);
 
-t_error			platform_console_initialize(void);
+t_status		platform_console_initialize(void);
 
-t_error			platform_console_clean(void);
+t_status		platform_console_clean(void);
 
 
 /*

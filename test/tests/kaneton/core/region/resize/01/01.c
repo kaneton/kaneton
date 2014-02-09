@@ -42,7 +42,7 @@ void			test_core_region_resize_01(void)
 		      10 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -51,13 +51,13 @@ void			test_core_region_resize_01(void)
 		     REGION_OPTION_NONE,
 		     0,
 		     2 * ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_resize(_kernel.as, reg, ___kaneton$pagesz, &reg) != ERROR_OK)
+  if (region_resize(_kernel.as, reg, ___kaneton$pagesz, &reg) != STATUS_OK)
     TEST_ERROR("[region_resize] error");
 
-  if (region_get(_kernel.as, reg, &o) != ERROR_OK)
+  if (region_get(_kernel.as, reg, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   if (o->id != reg)

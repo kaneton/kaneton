@@ -42,9 +42,9 @@ void			module_call(console, console_message, char				indicator,
 				 char*				fmt,
 				 ...);
 
-t_error			cons_init(void);
+t_status		cons_init(void);
 
-t_error			cons_clean(void);
+t_status		cons_clean(void);
 
 
 /*

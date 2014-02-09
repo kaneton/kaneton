@@ -49,45 +49,45 @@ void			test_core_as_copy_01(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task1) != ERROR_OK)
+		   &task1) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task1, &as1) != ERROR_OK)
+  if (as_reserve(task1, &as1) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as1,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg1) != ERROR_OK)
+		      &seg1) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &useless) != ERROR_OK)
+		      &useless) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      4 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg2) != ERROR_OK)
+		      &seg2) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &useless) != ERROR_OK)
+		      &useless) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as1,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg3) != ERROR_OK)
+		      &seg3) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as1,
@@ -96,7 +96,7 @@ void			test_core_as_copy_01(void)
 		     REGION_OPTION_FORCE,
 		     0x20000000,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as1,
@@ -105,7 +105,7 @@ void			test_core_as_copy_01(void)
 		     REGION_OPTION_FORCE,
 		     0x20001000,
 		     2 * ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as1,
@@ -114,7 +114,7 @@ void			test_core_as_copy_01(void)
 		     REGION_OPTION_FORCE,
 		     0x20003000,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   /*
@@ -124,45 +124,45 @@ void			test_core_as_copy_01(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task2) != ERROR_OK)
+		   &task2) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task2, &as2) != ERROR_OK)
+  if (as_reserve(task2, &as2) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as2,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg4) != ERROR_OK)
+		      &seg4) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &useless) != ERROR_OK)
+		      &useless) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      4 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg5) != ERROR_OK)
+		      &seg5) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &useless) != ERROR_OK)
+		      &useless) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(as2,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg6) != ERROR_OK)
+		      &seg6) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as2,
@@ -171,7 +171,7 @@ void			test_core_as_copy_01(void)
 		     REGION_OPTION_FORCE,
 		     0x40000000,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as2,
@@ -180,7 +180,7 @@ void			test_core_as_copy_01(void)
 		     REGION_OPTION_FORCE,
 		     0x40001000,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(as2,
@@ -189,7 +189,7 @@ void			test_core_as_copy_01(void)
 		     REGION_OPTION_FORCE,
 		     0x40002000,
 		     2 * ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   /*
@@ -199,16 +199,16 @@ void			test_core_as_copy_01(void)
   for (i = 0; i < 4 * ___kaneton$pagesz; i++)
     buff[i] = (i * 2 + 4) % 256;
 
-  if (as_write(as1, buff, 4 * ___kaneton$pagesz, 0x20000000) != ERROR_OK)
+  if (as_write(as1, buff, 4 * ___kaneton$pagesz, 0x20000000) != STATUS_OK)
     TEST_ERROR("[as_write] error");
 
   for (i = 0; i < 4 * ___kaneton$pagesz; i++)
     buff[i] = 0;
 
-  if (as_copy(as1, 0x20000000, as2, 0x40000000, 4 * ___kaneton$pagesz) != ERROR_OK)
+  if (as_copy(as1, 0x20000000, as2, 0x40000000, 4 * ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[as_copy] error");
 
-  if (as_read(as2, 0x40000000, 4 * ___kaneton$pagesz, buff) != ERROR_OK)
+  if (as_read(as2, 0x40000000, 4 * ___kaneton$pagesz, buff) != STATUS_OK)
     TEST_ERROR("[as_read] error");
 
   for (i = 0; i < 4 * ___kaneton$pagesz; i++)

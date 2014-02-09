@@ -59,7 +59,7 @@
 
 typedef struct
 {
-  t_status		completed;
+  t_uint32		completed;
 }			s_message_request;
 
 /*
@@ -112,54 +112,54 @@ typedef struct
 
 typedef struct
 {
-  t_error		(*message_register)(i_task,
+  t_status	(*message_register)(i_task,
 					    t_type,
 					    t_vsize);
-  t_error		(*message_flush)(i_task);
-  t_error		(*message_send)(i_task,
+  t_status	(*message_flush)(i_task);
+  t_status	(*message_send)(i_task,
 					i_node,
 					t_type,
 					t_vaddr,
 					t_vsize);
-  t_error		(*message_transmit)(i_task,
+  t_status	(*message_transmit)(i_task,
 					    i_node,
 					    t_type,
 					    t_vaddr,
 					    t_vsize);
-  t_error		(*message_throw)(i_task,
+  t_status	(*message_throw)(i_task,
 					 i_node,
 					 t_type,
 					 t_vaddr,
 					 t_vsize,
 					 s_message_request*);
-  t_error		(*message_receive)(i_task,
+  t_status	(*message_receive)(i_task,
 					   t_type,
 					   t_vaddr,
 					   t_vsize*,
 					   i_node*);
-  t_error		(*message_grab)(i_task,
+  t_status	(*message_grab)(i_task,
 					t_type,
 				       t_vaddr,
 				       s_message_request*);
-  t_error		(*message_poll)(i_task,
+  t_status	(*message_poll)(i_task,
 					t_type,
 					t_vaddr,
 					t_vsize*,
 					i_node*);
-  t_error		(*message_state)(i_task,
+  t_status	(*message_state)(i_task,
 					 s_message_request);
-  t_error		(*message_wait)(i_task,
+  t_status	(*message_wait)(i_task,
 					s_message_request,
 					t_vsize*,
 					i_node*);
-  t_error		(*message_return)(i_thread,
-					  t_error);
-  t_error		(*message_return_info)(i_thread,
-					       t_error,
+  t_status	(*message_return)(i_thread,
+					  t_status);
+  t_status	(*message_return_info)(i_thread,
+					       t_status,
 					       t_vsize,
 					       i_node);
-  t_error		(*message_initialize)(void);
-  t_error		(*message_clean)(void);
+  t_status	(*message_initialize)(void);
+  t_status	(*message_clean)(void);
 }			d_message;
 
 /*
@@ -172,71 +172,71 @@ typedef struct
  * ../../core/message/message.c
  */
 
-t_error			message_register(i_task			task,
+t_status		message_register(i_task			task,
 					 t_type			type,
 					 t_vsize		size);
 
-t_error			message_size(i_task			task,
+t_status		message_size(i_task			task,
 				     t_type			type,
 				     t_vsize*			size);
 
-t_error			message_flush(i_task			task);
+t_status		message_flush(i_task			task);
 
-t_error			message_send(i_task			task,
+t_status		message_send(i_task			task,
 				     i_node			destination,
 				     t_type			type,
 				     t_vaddr			data,
 				     t_vsize			size);
 
-t_error			message_transmit(i_task			task,
+t_status		message_transmit(i_task			task,
 					 i_node			destination,
 					 t_type			type,
 					 t_vaddr		data,
 					 t_vsize		size);
 
-t_error			message_throw(i_task			task,
+t_status		message_throw(i_task			task,
 				      i_node			destination,
 				      t_type			type,
 				      t_vaddr			data,
 				      t_vsize			size,
 				      s_message_request*	request);
 
-t_error			message_receive(i_task			task,
+t_status		message_receive(i_task			task,
 					t_type			type,
 					t_vaddr			data,
 					t_vsize*		size,
 					i_node*			sender);
 
-t_error			message_grab(i_task			task,
+t_status		message_grab(i_task			task,
 				     t_type			type,
 				     t_vaddr			data,
 				     s_message_request*		request);
 
-t_error			message_poll(i_task			task,
+t_status		message_poll(i_task			task,
 				     t_type			type,
 				     t_vaddr			data,
 				     t_vsize*			size,
 				     i_node*			sender);
 
-t_error			message_state(i_task			task,
+t_status		message_state(i_task			task,
 				      s_message_request		request);
 
-t_error			message_wait(i_task			task,
+t_status		message_wait(i_task			task,
 				     s_message_request		request,
 				     t_vsize*			size,
 				     i_node*			sender);
 
-t_error			message_return(i_thread			thread,
-				       t_error			code);
+t_status		message_return(i_thread			thread,
+				       t_status		code);
 
-t_error			message_return_info(i_thread		thread,
-					    t_error		code,
+t_status		message_return_info(i_thread		thread,
+					    t_status	code,
 					    t_vsize		size,
 					    i_node		sender);
 
-t_error			message_initialize(void);
+t_status		message_initialize(void);
 
-t_error			message_clean(void);
+t_status		message_clean(void);
 
 
 /*

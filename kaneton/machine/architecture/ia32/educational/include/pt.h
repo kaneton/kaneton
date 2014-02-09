@@ -158,23 +158,23 @@ typedef t_uint32		at_ptei;
  * ../pt.c
  */
 
-t_error			architecture_pt_dump(at_pt		pt,
+t_status		architecture_pt_dump(at_pt		pt,
 					     mt_margin		margin);
 
-t_error			architecture_pt_build(at_pt		pt);
+t_status		architecture_pt_build(at_pt		pt);
 
-t_error			architecture_pt_insert(at_pt		pt,
+t_status		architecture_pt_insert(at_pt		pt,
 					       at_ptei		index,
 					       t_paddr		address,
 					       t_flags		flags);
 
-t_error			architecture_pt_delete(at_pt		pt,
+t_status		architecture_pt_delete(at_pt		pt,
 					       at_ptei		index);
 
-t_error			architecture_pt_map(t_paddr		paddr,
+t_status		architecture_pt_map(t_paddr		paddr,
 					    at_pt*		table);
 
-t_error			architecture_pt_unmap(at_pt		table);
+t_status		architecture_pt_unmap(at_pt		table);
 
 
 /*

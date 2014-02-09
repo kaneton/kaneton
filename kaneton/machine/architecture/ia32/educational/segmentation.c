@@ -59,7 +59,7 @@ extern am		_architecture;
  *    address space and trigger the interrupt handler.
  */
 
-t_error			architecture_segmentation_setup(void)
+t_status		architecture_segmentation_setup(void)
 {
   t_uint16		code;
   t_uint16		data;
@@ -74,7 +74,7 @@ t_error			architecture_segmentation_setup(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_KERNEL) |
 			      ARCHITECTURE_GDTE_S |
-			      ARCHITECTURE_GDTE_CODE) != ERROR_OK)
+			      ARCHITECTURE_GDTE_CODE) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the kernel code GDT segment");
 
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
@@ -83,7 +83,7 @@ t_error			architecture_segmentation_setup(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_KERNEL) |
 			      ARCHITECTURE_GDTE_S |
-			      ARCHITECTURE_GDTE_DATA) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DATA) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the kernel data GDT segment");
 
   /*
@@ -96,7 +96,7 @@ t_error			architecture_segmentation_setup(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_DRIVER) |
 			      ARCHITECTURE_GDTE_S |
-			      ARCHITECTURE_GDTE_CODE) != ERROR_OK)
+			      ARCHITECTURE_GDTE_CODE) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the driver code GDT segment");
 
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_DRIVER_DATA,
@@ -105,7 +105,7 @@ t_error			architecture_segmentation_setup(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_DRIVER) |
 			      ARCHITECTURE_GDTE_S |
-			      ARCHITECTURE_GDTE_DATA) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DATA) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the driver data GDT segment");
 
   /*
@@ -118,7 +118,7 @@ t_error			architecture_segmentation_setup(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_SERVICE) |
 			      ARCHITECTURE_GDTE_S |
-			      ARCHITECTURE_GDTE_CODE) != ERROR_OK)
+			      ARCHITECTURE_GDTE_CODE) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the service code GDT segment");
 
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_SERVICE_DATA,
@@ -127,7 +127,7 @@ t_error			architecture_segmentation_setup(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_SERVICE) |
 			      ARCHITECTURE_GDTE_S |
-			      ARCHITECTURE_GDTE_DATA) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DATA) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the service data GDT segment");
 
   /*
@@ -140,7 +140,7 @@ t_error			architecture_segmentation_setup(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_GUEST) |
 			      ARCHITECTURE_GDTE_S |
-			      ARCHITECTURE_GDTE_CODE) != ERROR_OK)
+			      ARCHITECTURE_GDTE_CODE) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the guest code GDT segment");
 
   if (architecture_gdt_insert(ARCHITECTURE_GDT_INDEX_GUEST_DATA,
@@ -149,7 +149,7 @@ t_error			architecture_segmentation_setup(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_GUEST) |
 			      ARCHITECTURE_GDTE_S |
-			      ARCHITECTURE_GDTE_DATA) != ERROR_OK)
+			      ARCHITECTURE_GDTE_DATA) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the guest data GDT segment");
 
   /*
@@ -158,19 +158,19 @@ t_error			architecture_segmentation_setup(void)
 
   if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
 				ARCHITECTURE_PRIVILEGE_KERNEL,
-				&code) != ERROR_OK)
+				&code) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the kernel code segment selector");
 
   if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
 				ARCHITECTURE_PRIVILEGE_KERNEL,
-				&data) != ERROR_OK)
+				&data) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the kernel data segment selector");
 
   /*
    * 6)
    */
 
-  if (architecture_pmode_registers(code, data) != ERROR_OK)
+  if (architecture_pmode_registers(code, data) != STATUS_OK)
     MACHINE_ESCAPE("unable to update the segment's registers");
 
   /*

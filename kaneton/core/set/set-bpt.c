@@ -143,7 +143,7 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
  * 2) search for the identifier in the tree and return false if not found.
  */
 
-t_error			set_exist_bpt(i_set			setid,
+t_bool			set_exist_bpt(i_set			setid,
 				      t_id			id)
 {
   t_bpt_entry(set)	entry;
@@ -159,7 +159,7 @@ t_error			set_exist_bpt(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -185,7 +185,7 @@ t_error			set_exist_bpt(i_set			setid,
  *    main memory.
  */
 
-t_error			set_build_bpt(o_set*			object,
+t_status		set_build_bpt(o_set*			object,
 				      BPT_NODESZ_T		nodesz)
 {
   /*
@@ -246,7 +246,7 @@ t_error			set_build_bpt(o_set*			object,
  *    additional ones.
  */
 
-t_error			set_adjust_bpt(o_set*			object,
+t_status		set_adjust_bpt(o_set*			object,
 				       t_bpt_uni(set)		alloc,
 				       t_bpt_uni(set)		size)
 {
@@ -313,7 +313,7 @@ t_error			set_adjust_bpt(o_set*			object,
  * 2) free the array itself.
  */
 
-t_error			set_destroy_bpt(o_set*			object)
+t_status		set_destroy_bpt(o_set*			object)
 {
   t_bpt_uni(set)	i;
 
@@ -349,7 +349,7 @@ t_error			set_destroy_bpt(o_set*			object)
  * 2) prints a message for each objects of the set.
  */
 
-t_error			set_show_bpt(i_set			setid,
+t_status		set_show_bpt(i_set			setid,
 				     mt_margin			margin)
 {
   char			options[5];
@@ -361,7 +361,7 @@ t_error			set_show_bpt(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -452,7 +452,7 @@ t_error			set_show_bpt(i_set			setid,
  * 4) unload the node.
  */
 
-t_error			set_head_bpt(i_set			setid,
+t_bool			set_head_bpt(i_set			setid,
 				     s_iterator*		iterator)
 {
   t_bpt_imm(set)	root;
@@ -468,7 +468,7 @@ t_error			set_head_bpt(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -510,7 +510,7 @@ t_error			set_head_bpt(i_set			setid,
  * 4) unload the node.
  */
 
-t_error			set_tail_bpt(i_set			setid,
+t_bool			set_tail_bpt(i_set			setid,
 				     s_iterator*		iterator)
 {
   t_bpt_imm(set)	root;
@@ -526,7 +526,7 @@ t_error			set_tail_bpt(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -565,7 +565,7 @@ t_error			set_tail_bpt(i_set			setid,
  * 2) retrieve the previous entry.
  */
 
-t_error			set_previous_bpt(i_set			setid,
+t_bool			set_previous_bpt(i_set			setid,
 					 s_iterator		current,
 					 s_iterator*		previous)
 {
@@ -581,7 +581,7 @@ t_error			set_previous_bpt(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -604,7 +604,7 @@ t_error			set_previous_bpt(i_set			setid,
  * 2) retrieve the previous entry.
  */
 
-t_error			set_next_bpt(i_set			setid,
+t_bool			set_next_bpt(i_set			setid,
 				     s_iterator			current,
 				     s_iterator*		next)
 {
@@ -620,7 +620,7 @@ t_error			set_next_bpt(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -638,7 +638,7 @@ t_error			set_next_bpt(i_set			setid,
  * works with the sort option.
  */
 
-t_error			set_insert_bpt(i_set			setid,
+t_status		set_insert_bpt(i_set			setid,
 				       void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -649,7 +649,7 @@ t_error			set_insert_bpt(i_set			setid,
  * works with the sort option.
  */
 
-t_error			set_append_bpt(i_set			setid,
+t_status		set_append_bpt(i_set			setid,
 				       void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -660,7 +660,7 @@ t_error			set_append_bpt(i_set			setid,
  * works with the sort option.
  */
 
-t_error			set_before_bpt(i_set			setid,
+t_status		set_before_bpt(i_set			setid,
 				       s_iterator		iterator,
 				       void*			data)
 {
@@ -672,7 +672,7 @@ t_error			set_before_bpt(i_set			setid,
  * works with the sort option.
  */
 
-t_error			set_after_bpt(i_set			setid,
+t_status		set_after_bpt(i_set			setid,
 				      s_iterator		iterator,
 				      void*			data)
 {
@@ -694,7 +694,7 @@ t_error			set_after_bpt(i_set			setid,
  * 6) update the set's size.
  */
 
-t_error			set_add_bpt(i_set			setid,
+t_status		set_add_bpt(i_set			setid,
 				    void*			data)
 {
   t_bpt_lfentry(set)	lfentry;
@@ -714,7 +714,7 @@ t_error			set_add_bpt(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -747,7 +747,7 @@ t_error			set_add_bpt(i_set			setid,
 
   if (set_adjust_bpt(o,
 		     BPT_ADD_ALLOC(&o->u.bpt.bpt),
-		     BPT_ADD_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
+		     BPT_ADD_SIZE(&o->u.bpt.bpt)) != STATUS_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   /*
@@ -783,7 +783,7 @@ t_error			set_add_bpt(i_set			setid,
  * 5) update the set's size.
  */
 
-t_error			set_remove_bpt(i_set			setid,
+t_status		set_remove_bpt(i_set			setid,
 				       t_id			id)
 {
   t_bpt_entry(set)	entry;
@@ -801,7 +801,7 @@ t_error			set_remove_bpt(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -827,7 +827,7 @@ t_error			set_remove_bpt(i_set			setid,
 
   if (set_adjust_bpt(o,
 		     BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
-		     BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
+		     BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != STATUS_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   /*
@@ -858,7 +858,7 @@ t_error			set_remove_bpt(i_set			setid,
  * 5) update the set's size.
  */
 
-t_error			set_delete_bpt(i_set			setid,
+t_status		set_delete_bpt(i_set			setid,
 				       s_iterator		iterator)
 {
   t_bpt_imm(set)	node;
@@ -868,7 +868,7 @@ t_error			set_delete_bpt(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -891,7 +891,7 @@ t_error			set_delete_bpt(i_set			setid,
 
  if (set_adjust_bpt(o,
 		    BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
-		    BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
+		    BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != STATUS_OK)
    CORE_ESCAPE("unable to adjust the array of unused blocks");
 
  /*
@@ -930,7 +930,7 @@ t_error			set_delete_bpt(i_set			setid,
  * 6) resets the set's size to zero.
  */
 
-t_error			set_flush_bpt(i_set			setid)
+t_status		set_flush_bpt(i_set			setid)
 {
   t_bpt_nodesz(set)	nodesz;
   t_state		state;
@@ -941,7 +941,7 @@ t_error			set_flush_bpt(i_set			setid)
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -980,7 +980,7 @@ t_error			set_flush_bpt(i_set			setid)
 
   if (set_adjust_bpt(o,
 		     BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
-		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
+		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != STATUS_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   if (bpt_clean(set, &o->u.bpt.bpt, &o->u.bpt.unused) != 0)
@@ -992,7 +992,7 @@ t_error			set_flush_bpt(i_set			setid)
 
   if (set_adjust_bpt(o,
 		     BPT_INIT_ALLOC(),
-		     BPT_INIT_SIZE()) != ERROR_OK)
+		     BPT_INIT_SIZE()) != STATUS_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   if (bpt_init(set, &o->u.bpt.bpt, nodesz,
@@ -1023,7 +1023,7 @@ t_error			set_flush_bpt(i_set			setid)
  * 3) set the iterator.
  */
 
-t_error			set_locate_bpt(i_set			setid,
+t_status		set_locate_bpt(i_set			setid,
 				       t_id			id,
 				       s_iterator*		iterator)
 {
@@ -1044,7 +1044,7 @@ t_error			set_locate_bpt(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1075,7 +1075,7 @@ t_error			set_locate_bpt(i_set			setid,
  * 4) unload the node.
  */
 
-t_error			set_object_bpt(i_set			setid,
+t_status		set_object_bpt(i_set			setid,
 				       s_iterator		iterator,
 				       void**			data)
 {
@@ -1093,7 +1093,7 @@ t_error			set_object_bpt(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1137,7 +1137,7 @@ t_error			set_object_bpt(i_set			setid,
  * 5) register the set descriptor.
  */
 
-t_error			set_reserve_bpt(t_options		options,
+t_status		set_reserve_bpt(t_options		options,
 					t_size			datasz,
 					t_bpt_nodesz(set)	nodesz,
 					i_set*			id)
@@ -1175,7 +1175,7 @@ t_error			set_reserve_bpt(t_options		options,
     }
   else
     {
-      if (id_reserve(&_set.id, id) != ERROR_OK)
+      if (id_reserve(&_set.id, id) != STATUS_OK)
 	CORE_ESCAPE("unable to reserve an identifier");
     }
 
@@ -1195,7 +1195,7 @@ t_error			set_reserve_bpt(t_options		options,
    * 3)
    */
 
-  if (set_build_bpt(&o, nodesz) != ERROR_OK)
+  if (set_build_bpt(&o, nodesz) != STATUS_OK)
     {
       set_destroy_bpt(&o);
 
@@ -1225,7 +1225,7 @@ t_error			set_reserve_bpt(t_options		options,
    * 5)
    */
 
-  if (set_new(&o) != ERROR_OK)
+  if (set_new(&o) != STATUS_OK)
     {
       set_adjust_bpt(&o,
 		     BPT_CLEAN_ALLOC(&o.u.bpt.bpt),
@@ -1258,7 +1258,7 @@ t_error			set_reserve_bpt(t_options		options,
  * 6) remove the set descriptor from the set container.
  */
 
-t_error			set_release_bpt(i_set			setid)
+t_status		set_release_bpt(i_set			setid)
 {
   o_set			*o;
 
@@ -1266,14 +1266,14 @@ t_error			set_release_bpt(i_set			setid)
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
-  if (set_flush(setid) != ERROR_OK)
+  if (set_flush(setid) != STATUS_OK)
     CORE_ESCAPE("unable to flush the set");
 
   /*
@@ -1282,7 +1282,7 @@ t_error			set_release_bpt(i_set			setid)
 
   if (set_adjust_bpt(o,
 		     BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
-		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_OK)
+		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != STATUS_OK)
     CORE_ESCAPE("unable to adjust the array of unused blocks");
 
   if (bpt_clean(set, &o->u.bpt.bpt, &o->u.bpt.unused) != 0)
@@ -1292,21 +1292,21 @@ t_error			set_release_bpt(i_set			setid)
    * 4)
    */
 
-  if (set_destroy_bpt(o) != ERROR_OK)
+  if (set_destroy_bpt(o) != STATUS_OK)
     CORE_ESCAPE("unable to destroy the set");
 
   /*
    * 5)
    */
 
-  if (id_release(&_set.id, o->id) != ERROR_OK)
+  if (id_release(&_set.id, o->id) != STATUS_OK)
     CORE_ESCAPE("unable to release the set identifier");
 
   /*
    * 6)
    */
 
-  if (set_destroy(o->id) != ERROR_OK)
+  if (set_destroy(o->id) != STATUS_OK)
     CORE_ESCAPE("unable to destroy the set descriptor");
 
   CORE_LEAVE();
@@ -1317,7 +1317,7 @@ t_error			set_release_bpt(i_set			setid)
  * works with the sort option.
  */
 
-t_error			set_push_bpt(i_set			setid,
+t_status		set_push_bpt(i_set			setid,
 				     void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -1328,7 +1328,7 @@ t_error			set_push_bpt(i_set			setid,
  * works with the sort option.
  */
 
-t_error			set_pop_bpt(i_set			setid)
+t_status		set_pop_bpt(i_set			setid)
 {
   CORE_ESCAPE("this type of set does not support this operation");
 }
@@ -1338,7 +1338,7 @@ t_error			set_pop_bpt(i_set			setid)
  * works with the sort option.
  */
 
-t_error			set_pick_bpt(i_set			setid,
+t_status		set_pick_bpt(i_set			setid,
 				     void**			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");

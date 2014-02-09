@@ -235,52 +235,52 @@ extern t_ia32_cpu_local	ia32_local_jump_pdbr;
  * ../context.c
  */
 
-t_error			ia32_extended_context_init(void);
+t_status		ia32_extended_context_init(void);
 
-t_error			ia32_clear_io_bitmap(i_task		tskid);
+t_status		ia32_clear_io_bitmap(i_task		tskid);
 
-t_error			ia32_duplicate_io_bitmap(i_task		old,
+t_status		ia32_duplicate_io_bitmap(i_task		old,
 						 i_task		new);
 
-t_error			ia32_set_io_bitmap(i_task		tskid,
+t_status		ia32_set_io_bitmap(i_task		tskid,
 					   i_port		id,
 					   t_uint8		width,
 					   t_uint8		allow);
 
-t_error			ia32_reset_iopl(void);
+t_status		ia32_reset_iopl(void);
 
-t_error			ia32_init_context(i_task		taskid,
+t_status		ia32_init_context(i_task		taskid,
 					  i_thread		threadid);
 
-t_error			ia32_duplicate_context(i_thread		old,
+t_status		ia32_duplicate_context(i_thread		old,
 					       i_thread		new);
 
-t_error			ia32_setup_context(i_thread		threadid,
+t_status		ia32_setup_context(i_thread		threadid,
 					   t_vaddr		pc,
 					   t_vaddr		sp);
 
-t_error			ia32_status_context(i_thread		threadid,
+t_status		ia32_status_context(i_thread		threadid,
 					    t_vaddr*		pc,
 					    t_vaddr*		sp);
 
-t_error			ia32_init_switcher(void);
+t_status		ia32_init_switcher(void);
 
-t_error			ia32_context_ring0_stack(void);
+t_status		ia32_context_ring0_stack(void);
 
-t_error			ia32_context_switch(i_thread		current,
+t_status		ia32_context_switch(i_thread		current,
 					    i_thread		elected);
 
-t_error			ia32_extended_context_switch(i_thread	current,
+t_status		ia32_extended_context_switch(i_thread	current,
 						     i_thread	elected);
 
-t_error			ia32_push_args(i_thread			threadid,
+t_status		ia32_push_args(i_thread			threadid,
 				       const void*		args,
 				       t_vsize			size);
 
-t_error			ia32_get_context(i_thread		thread,
+t_status		ia32_get_context(i_thread		thread,
 					 t_ia32_context*	context);
 
-t_error			ia32_set_context(i_thread		thread,
+t_status		ia32_set_context(i_thread		thread,
 					 t_ia32_context*	context,
 					 t_uint32		mask);
 

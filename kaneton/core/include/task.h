@@ -213,29 +213,29 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*task_show)(i_task,
+  t_status		(*task_show)(i_task,
 					     mt_margin);
-  t_error			(*task_dump)(void);
-  t_error			(*task_reserve)(t_class,
+  t_status		(*task_dump)(void);
+  t_status		(*task_reserve)(t_class,
 						t_behaviour,
 						t_priority,
 						i_task*);
-  t_error			(*task_release)(i_task);
-  t_error			(*task_priority)(i_task,
+  t_status		(*task_release)(i_task);
+  t_status		(*task_priority)(i_task,
 						 t_priority);
-  t_error			(*task_start)(i_task);
-  t_error			(*task_stop)(i_task);
-  t_error			(*task_block)(i_task);
-  t_error			(*task_exit)(i_task,
+  t_status		(*task_start)(i_task);
+  t_status		(*task_stop)(i_task);
+  t_status		(*task_block)(i_task);
+  t_status		(*task_exit)(i_task,
 					     t_value);
-  t_error			(*task_wait)(i_thread,
+  t_status		(*task_wait)(i_thread,
 					     i_task,
 					     t_state,
 					     s_wait*);
-  t_error			(*task_sleep)(i_task,
+  t_status		(*task_sleep)(i_task,
 					      t_delay);
-  t_error			(*task_initialize)(void);
-  t_error			(*task_clean)(void);
+  t_status		(*task_initialize)(void);
+  t_status		(*task_clean)(void);
 }				d_task;
 
 /*
@@ -248,34 +248,34 @@ typedef struct
  * ../../core/task/task.c
  */
 
-t_error			task_show(i_task			id,
+t_status		task_show(i_task			id,
 				  mt_margin			margin);
 
-t_error			task_dump(void);
+t_status		task_dump(void);
 
-t_error			task_reserve(t_class			class,
+t_status		task_reserve(t_class			class,
 				     t_behaviour		behav,
 				     t_priority			prior,
 				     i_task*			id);
 
-t_error			task_release(i_task			id);
+t_status		task_release(i_task			id);
 
-t_error			task_priority(i_task			id,
+t_status		task_priority(i_task			id,
 				      t_priority		prior);
 
-t_error			task_start(i_task			id);
+t_status		task_start(i_task			id);
 
-t_error			task_stop(i_task			id);
+t_status		task_stop(i_task			id);
 
-t_error			task_block(i_task			id);
+t_status		task_block(i_task			id);
 
-t_error			task_exit(i_task			id,
+t_status		task_exit(i_task			id,
 				  t_value			value);
 
 void			task_bury(i_timer			timer,
 				  t_vaddr			data);
 
-t_error			task_wait(i_thread			id,
+t_status		task_wait(i_thread			id,
 				  i_task			target,
 				  t_state			state,
 				  s_wait*			wait);
@@ -283,19 +283,19 @@ t_error			task_wait(i_thread			id,
 void			task_wakeup(i_timer			timer,
 				    t_vaddr			data);
 
-t_error			task_sleep(i_task			id,
+t_status		task_sleep(i_task			id,
 				   t_delay			milliseconds);
 
-t_error			task_current(i_task*			task);
+t_status		task_current(i_task*			task);
 
-t_error			task_exist(i_task			id);
+t_bool			task_exist(i_task			id);
 
-t_error			task_get(i_task				id,
+t_status		task_get(i_task				id,
 				 o_task**			object);
 
-t_error			task_initialize(void);
+t_status		task_initialize(void);
 
-t_error			task_clean(void);
+t_status		task_clean(void);
 
 
 /*

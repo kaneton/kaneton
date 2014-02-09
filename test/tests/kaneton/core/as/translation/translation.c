@@ -43,7 +43,7 @@ void			test_core_as_translation(void)
 		      2048 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -52,13 +52,13 @@ void			test_core_as_translation(void)
 		     REGION_OPTION_NONE,
 		     0,
 		     8 * ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (segment_get(seg, &segment) != ERROR_OK)
+  if (segment_get(seg, &segment) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
-  if (region_get(_kernel.as, reg, &region) != ERROR_OK)
+  if (region_get(_kernel.as, reg, &region) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   /*

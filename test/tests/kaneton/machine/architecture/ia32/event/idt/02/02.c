@@ -36,13 +36,13 @@ void			test_architecture_event_idt_02(void)
 
   if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
 				ARCHITECTURE_PRIVILEGE_KERNEL,
-				&cs) != ERROR_OK)
+				&cs) != STATUS_OK)
     TEST_ERROR("[architecture_gdt_selector] error");
 
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_BP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_idt_02_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
   memset(&idtr, 0, sizeof (idtr));
@@ -66,7 +66,7 @@ void			test_architecture_event_idt_02(void)
 		   i);
     }
 
-  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(acdjif0wv94eg3h34h);

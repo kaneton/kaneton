@@ -44,12 +44,12 @@ void			test_architecture_event_exception_02(void)
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_BP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_exception_02_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
   asm volatile("int $3");
 
-  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   if (thrown != 1)

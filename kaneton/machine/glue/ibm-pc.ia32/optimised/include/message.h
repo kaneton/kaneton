@@ -24,7 +24,7 @@
 #define		machine_call_message(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_status _r_ = STATUS_OK;					\
 									\
       if (message_dispatch._function_ != NULL)				\
         _r_ = message_dispatch._function_(_args_);			\
@@ -49,17 +49,17 @@
  * ../message.c
  */
 
-t_error			glue_message_return(i_thread		thread,
-					    t_error		code);
+t_status		glue_message_return(i_thread		thread,
+					    t_status	code);
 
-t_error			glue_message_return_info(i_thread	thread,
-						 t_error	code,
+t_status		glue_message_return_info(i_thread	thread,
+						 t_statuscode,
 						 t_vsize	size,
 						 i_node		sender);
 
-t_error		glue_message_initialize(void);
+t_status	glue_message_initialize(void);
 
-t_error		glue_message_clean(void);
+t_status	glue_message_clean(void);
 
 
 /*

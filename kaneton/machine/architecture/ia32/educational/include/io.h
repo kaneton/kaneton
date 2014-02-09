@@ -58,25 +58,25 @@
  * ../io.c
  */
 
-t_error			architecture_io_clear(i_task		task);
+t_status		architecture_io_clear(i_task		task);
 
-t_error			architecture_io_set(t_uint8*		map,
+t_status		architecture_io_set(t_uint8*		map,
 					    t_uint32		port,
 					    t_uint32		value);
 
-t_error			architecture_io_get(t_uint8*		map,
+t_status		architecture_io_get(t_uint8*		map,
 					    t_uint32		port,
 					    t_uint32*		value);
 
-t_error			architecture_io_grant(i_task		task,
+t_status		architecture_io_grant(i_task		task,
 					      t_uint32		port,
 					      t_uint8		width);
 
-t_error			architecture_io_deny(i_task		task,
+t_status		architecture_io_deny(i_task		task,
 					     t_uint32		port,
 					     t_uint8		width);
 
-t_error			architecture_io_reset(void);
+t_status		architecture_io_reset(void);
 
 
 /*

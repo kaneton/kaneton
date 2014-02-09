@@ -44,7 +44,7 @@ void			test_core_map_reserve_03(void)
 		      MAP_OPTION_NONE,
 		      ((i % 100) + 1) * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
-		      &addr) != ERROR_OK)
+		      &addr) != STATUS_OK)
 	TEST_ERROR("[map_reserve] error");
 
       for (j = 0, p = (t_uint8*)addr;
@@ -57,7 +57,7 @@ void			test_core_map_reserve_03(void)
 	    TEST_ERROR("the data read is different from the one written");
         }
 
-      if (map_release(_kernel.as, addr) != ERROR_OK)
+      if (map_release(_kernel.as, addr) != STATUS_OK)
 	TEST_ERROR("[map_release] error");
     }
 

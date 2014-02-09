@@ -64,7 +64,7 @@ extern m_set		_set;
  *    return false.
  */
 
-t_error			set_exist_ll(i_set			setid,
+t_bool			set_exist_ll(i_set			setid,
 				     t_id			id)
 {
   s_set_ll_node*	tmp;
@@ -80,7 +80,7 @@ t_error			set_exist_ll(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -106,7 +106,7 @@ t_error			set_exist_ll(i_set			setid,
  * 4) go through the objects and display them.
  */
 
-t_error			set_show_ll(i_set			setid,
+t_status		set_show_ll(i_set			setid,
 				    mt_margin			margin)
 {
   char			options[5];
@@ -118,7 +118,7 @@ t_error			set_show_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -198,7 +198,7 @@ t_error			set_show_ll(i_set			setid,
  * 3) set the iterator.
  */
 
-t_error			set_head_ll(i_set			setid,
+t_bool			set_head_ll(i_set			setid,
 				    s_iterator*			iterator)
 {
   o_set*		o;
@@ -213,7 +213,7 @@ t_error			set_head_ll(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -242,7 +242,7 @@ t_error			set_head_ll(i_set			setid,
  * 3) set the iterator.
  */
 
-t_error			set_tail_ll(i_set			setid,
+t_bool			set_tail_ll(i_set			setid,
 				    s_iterator*			iterator)
 {
   o_set*		o;
@@ -257,7 +257,7 @@ t_error			set_tail_ll(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -286,7 +286,7 @@ t_error			set_tail_ll(i_set			setid,
  * 3) set the iterator.
  */
 
-t_error			set_previous_ll(i_set			setid,
+t_bool			set_previous_ll(i_set			setid,
 					s_iterator		current,
 					s_iterator*		previous)
 {
@@ -303,7 +303,7 @@ t_error			set_previous_ll(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -332,7 +332,7 @@ t_error			set_previous_ll(i_set			setid,
  * 3) set the iterator.
  */
 
-t_error			set_next_ll(i_set			setid,
+t_bool			set_next_ll(i_set			setid,
 				    s_iterator			current,
 				    s_iterator*			next)
 {
@@ -349,7 +349,7 @@ t_error			set_next_ll(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -381,7 +381,7 @@ t_error			set_next_ll(i_set			setid,
  * 6) update the set's size.
  */
 
-t_error			set_insert_ll(i_set			setid,
+t_status		set_insert_ll(i_set			setid,
 				      void*			data)
 {
   s_set_ll_node*	n;
@@ -401,7 +401,7 @@ t_error			set_insert_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -478,7 +478,7 @@ t_error			set_insert_ll(i_set			setid,
  * 6) update the set's size.
  */
 
-t_error			set_append_ll(i_set			setid,
+t_status		set_append_ll(i_set			setid,
 				      void*			data)
 {
   s_set_ll_node*	n;
@@ -498,7 +498,7 @@ t_error			set_append_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -575,7 +575,7 @@ t_error			set_append_ll(i_set			setid,
  * 6) update the set's size.
  */
 
-t_error			set_before_ll(i_set			setid,
+t_status		set_before_ll(i_set			setid,
 				      s_iterator		iterator,
 				      void*			data)
 {
@@ -597,7 +597,7 @@ t_error			set_before_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -674,7 +674,7 @@ t_error			set_before_ll(i_set			setid,
  * 6) update the set's size.
  */
 
-t_error			set_after_ll(i_set			setid,
+t_status		set_after_ll(i_set			setid,
 				     s_iterator			iterator,
 				     void*			data)
 {
@@ -696,7 +696,7 @@ t_error			set_after_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -782,7 +782,7 @@ t_error			set_after_ll(i_set			setid,
  * 5) update the set's size.
  */
 
-t_error			set_add_ll(i_set			setid,
+t_status		set_add_ll(i_set			setid,
 				   void*			data)
 {
   s_set_ll_node*	n;
@@ -802,7 +802,7 @@ t_error			set_add_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -971,7 +971,7 @@ t_error			set_add_ll(i_set			setid,
  * 7) update the set's size.
  */
 
-t_error			set_remove_ll(i_set			setid,
+t_status		set_remove_ll(i_set			setid,
 				      t_id			id)
 {
   s_set_ll_node*	tmp;
@@ -989,14 +989,14 @@ t_error			set_remove_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
-  if (set_locate(setid, id, &i) != ERROR_OK)
+  if (set_locate(setid, id, &i) != STATUS_OK)
     CORE_ESCAPE("unable to locate the object in the set");
 
   /*
@@ -1056,7 +1056,7 @@ t_error			set_remove_ll(i_set			setid,
  * 7) update the set's size.
  */
 
-t_error			set_delete_ll(i_set			setid,
+t_status		set_delete_ll(i_set			setid,
 				      s_iterator		iterator)
 {
   s_set_ll_node*	n;
@@ -1066,7 +1066,7 @@ t_error			set_delete_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1132,7 +1132,7 @@ t_error			set_delete_ll(i_set			setid,
  * 4) re-set the size to zero.
  */
 
-t_error			set_flush_ll(i_set			setid)
+t_status		set_flush_ll(i_set			setid)
 {
   s_set_ll_node*	tmp;
   o_set*		o;
@@ -1141,7 +1141,7 @@ t_error			set_flush_ll(i_set			setid)
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1189,7 +1189,7 @@ t_error			set_flush_ll(i_set			setid)
  * 3) otherwise, return an error.
  */
 
-t_error			set_locate_ll(i_set			setid,
+t_status		set_locate_ll(i_set			setid,
 				      t_id			id,
 				      s_iterator*		iterator)
 {
@@ -1210,7 +1210,7 @@ t_error			set_locate_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1244,7 +1244,7 @@ t_error			set_locate_ll(i_set			setid,
  * 2) return the object.
  */
 
-t_error			set_object_ll(i_set			setid,
+t_status		set_object_ll(i_set			setid,
 				      s_iterator		iterator,
 				      void**			data)
 {
@@ -1262,7 +1262,7 @@ t_error			set_object_ll(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1287,7 +1287,7 @@ t_error			set_object_ll(i_set			setid,
  * 3) register the set descriptor.
  */
 
-t_error			set_reserve_ll(t_options		options,
+t_status		set_reserve_ll(t_options		options,
 				       t_size			datasz,
 				       i_set*			id)
 {
@@ -1321,7 +1321,7 @@ t_error			set_reserve_ll(t_options		options,
     }
   else
     {
-      if (id_reserve(&_set.id, id) != ERROR_OK)
+      if (id_reserve(&_set.id, id) != STATUS_OK)
 	CORE_ESCAPE("unable to reserve the set identifier");
     }
 
@@ -1344,7 +1344,7 @@ t_error			set_reserve_ll(t_options		options,
    * 3)
    */
 
-  if (set_new(&o) != ERROR_OK)
+  if (set_new(&o) != STATUS_OK)
     {
       if (!(options & SET_OPTION_CONTAINER))
 	id_release(&_set.id, o.id);
@@ -1366,7 +1366,7 @@ t_error			set_reserve_ll(t_options		options,
  * 4) remove the set descriptor from the set container.
  */
 
-t_error			set_release_ll(i_set			setid)
+t_status		set_release_ll(i_set			setid)
 {
   o_set			*o;
 
@@ -1374,28 +1374,28 @@ t_error			set_release_ll(i_set			setid)
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
-  if (set_flush(setid) != ERROR_OK)
+  if (set_flush(setid) != STATUS_OK)
     CORE_ESCAPE("unable to flush the set");
 
   /*
    * 3)
    */
 
-  if (id_release(&_set.id, o->id) != ERROR_OK)
+  if (id_release(&_set.id, o->id) != STATUS_OK)
     CORE_ESCAPE("unable to release the set identifier");
 
   /*
    * 4)
    */
 
-  if (set_destroy(o->id) != ERROR_OK)
+  if (set_destroy(o->id) != STATUS_OK)
     CORE_ESCAPE("unable to destroy the set descriptor");
 
   CORE_LEAVE();
@@ -1406,7 +1406,7 @@ t_error			set_release_ll(i_set			setid)
  * support this operation.
  */
 
-t_error			set_push_ll(i_set			setid,
+t_status		set_push_ll(i_set			setid,
 				    void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -1417,7 +1417,7 @@ t_error			set_push_ll(i_set			setid,
  * support this operation.
  */
 
-t_error			set_pop_ll(i_set			setid)
+t_status		set_pop_ll(i_set			setid)
 {
   CORE_ESCAPE("this type of set does not support this operation");
 }
@@ -1427,7 +1427,7 @@ t_error			set_pop_ll(i_set			setid)
  * support this operation.
  */
 
-t_error			set_pick_ll(i_set			setid,
+t_status		set_pick_ll(i_set			setid,
 				    void**			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");

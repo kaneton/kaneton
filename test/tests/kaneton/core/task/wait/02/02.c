@@ -63,12 +63,12 @@ void			test_core_task_wait_02_content_00(void)
   volatile t_uint32*	c = (volatile t_uint32*)address_00;
   t_uint32		count;
 
-  if (task_exit(task_01, 84) != ERROR_OK)
+  if (task_exit(task_01, 84) != STATUS_OK)
     TEST_HANG("[task_exit] error");
 
   count = *c;
 
-  if (thread_sleep(thread_00, 3000) != ERROR_OK)
+  if (thread_sleep(thread_00, 3000) != STATUS_OK)
     TEST_HANG("[thread_sleep] error");
 
   if (count != *c)
@@ -85,10 +85,10 @@ void			test_core_task_wait_02_content_01(void)
   s_wait		wait;
   i_cpu			cpu;
 
-  if (thread_sleep(thread_01, 3000) != ERROR_OK)
+  if (thread_sleep(thread_01, 3000) != STATUS_OK)
     TEST_HANG("[thread_sleep] error");
 
-  if (task_wait(thread_01, task_01, WAIT_STATE_DEATH, &wait) != ERROR_OK)
+  if (task_wait(thread_01, task_01, WAIT_STATE_DEATH, &wait) != STATUS_OK)
     TEST_HANG("[thread_wait] error");
 
   if (WAIT_TASK(&wait) != task_01)
@@ -100,15 +100,15 @@ void			test_core_task_wait_02_content_01(void)
   if (WAIT_VALUE(&wait) != 84)
     TEST_HANG("invalid waiting value");
 
-  if (thread_sleep(thread_01, 5000) != ERROR_OK)
+  if (thread_sleep(thread_01, 5000) != STATUS_OK)
     TEST_HANG("[thread_sleep] error");
 
   TEST_SIGNATURE(mwfv09eibv90u2r398);
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     TEST_HANG("[cpu_current] error");
 
-  if (scheduler_stop(cpu) != ERROR_OK)
+  if (scheduler_stop(cpu) != STATUS_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -133,7 +133,7 @@ void			test_core_task_wait_02(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &segment) != ERROR_OK)
+		      &segment) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   /*
@@ -146,12 +146,12 @@ void			test_core_task_wait_02(void)
 		     REGION_OPTION_NONE,
 		     (t_vaddr)NULL,
 		     ___kaneton$pagesz,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_get(_kernel.as,
 		 region,
-		 &r) != ERROR_OK)
+		 &r) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   address_00 = r->address;
@@ -161,10 +161,10 @@ void			test_core_task_wait_02(void)
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
 		     (t_vaddr)test_core_task_wait_02_content_00,
-		     (i_thread*)&thread_00) != ERROR_OK)
+		     (i_thread*)&thread_00) != STATUS_OK)
     TEST_ERROR("[thread_reserve] error");
 
-  if (thread_start(thread_00) != ERROR_OK)
+  if (thread_start(thread_00) != STATUS_OK)
     TEST_ERROR("[thread_start] error");
 
   /*
@@ -176,10 +176,10 @@ void			test_core_task_wait_02(void)
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
 		     (t_vaddr)test_core_task_wait_02_content_01,
-		     (i_thread*)&thread_01) != ERROR_OK)
+		     (i_thread*)&thread_01) != STATUS_OK)
     TEST_ERROR("[thread_reserve] error");
  
-  if (thread_start(thread_01) != ERROR_OK)
+  if (thread_start(thread_01) != STATUS_OK)
     TEST_ERROR("[thread_start] error");
 
   if (region_reserve(_kernel.as,
@@ -188,12 +188,12 @@ void			test_core_task_wait_02(void)
 		     REGION_OPTION_NONE,
 		     (t_vaddr)NULL,
 		     ___kaneton$pagesz,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_get(_kernel.as,
 		 region,
-		 &r) != ERROR_OK)
+		 &r) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   address_00 = r->address;
@@ -207,10 +207,10 @@ void			test_core_task_wait_02(void)
   if (task_reserve(TASK_CLASS_KERNEL,
 		   TASK_BEHAVIOUR_KERNEL,
 		   TASK_PRIORITY_KERNEL,
-		   (i_task*)&task_01) != ERROR_OK)
+		   (i_task*)&task_01) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task_01, &as) != ERROR_OK)
+  if (as_reserve(task_01, &as) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
   if (region_reserve(as,
@@ -219,14 +219,14 @@ void			test_core_task_wait_02(void)
 		     REGION_OPTION_FORCE,
 		     WAIT_THREAD_SHARED_ADDRESS,
 		     ___kaneton$pagesz,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (segment_reserve(as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &segment) != ERROR_OK)
+		      &segment) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as,
@@ -235,15 +235,15 @@ void			test_core_task_wait_02(void)
                      REGION_OPTION_NONE,
                      0x0,
                      ___kaneton$pagesz,
-                     &region) != ERROR_OK)
+                     &region) != STATUS_OK)
       TEST_ERROR("[region_reserve] error");
 
-  if (region_get(as, region, &r) != ERROR_OK)
+  if (region_get(as, region, &r) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
-  if (as_copy(_kernel.as, test_core_task_wait_02_thread,
+  if (as_copy(_kernel.as, (t_vaddr) test_core_task_wait_02_thread,
               as, r->address,
-              ___kaneton$pagesz) != ERROR_OK)
+              ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[as_copy] error");
 
 
@@ -252,31 +252,31 @@ void			test_core_task_wait_02(void)
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
 		     r->address,
-		     &thread) != ERROR_OK)
+		     &thread) != STATUS_OK)
     TEST_ERROR("[thread_reserve] error");
 
-  if (task_start(task_01) != ERROR_OK)
+  if (task_start(task_01) != STATUS_OK)
     TEST_ERROR("[task_start] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread) != STATUS_OK)
     TEST_ERROR("[thread_start] error");
 
   /*
    * scheduler
    */
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     TEST_HANG("[cpu_current] error");
 
-  if (scheduler_start(cpu) != ERROR_OK)
+  if (scheduler_start(cpu) != STATUS_OK)
     TEST_ERROR("[scheduler_start] error");
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   TEST_SIGNATURE(zcmqpok23fweb90ughw3);
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   TEST_LEAVE();

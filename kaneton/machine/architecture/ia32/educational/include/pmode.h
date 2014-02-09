@@ -24,11 +24,11 @@
  * ../pmode.c
  */
 
-t_error		architecture_pmode_enable(void);
+t_status	architecture_pmode_enable(void);
 
-t_error		architecture_pmode_setup(void);
+t_status	architecture_pmode_setup(void);
 
-t_error		architecture_pmode_registers(t_uint16	code,
+t_status	architecture_pmode_registers(t_uint16	code,
 					     t_uint16	data);
 
 

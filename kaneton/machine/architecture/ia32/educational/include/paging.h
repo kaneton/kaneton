@@ -53,48 +53,48 @@
  * ../paging.c
  */
 
-t_error			architecture_paging_enable(void);
+t_status		architecture_paging_enable(void);
 
-t_error			architecture_paging_setup(void);
+t_status		architecture_paging_setup(void);
 
-t_error			architecture_paging_pdbr(t_paddr	pd,
+t_status		architecture_paging_pdbr(t_paddr	pd,
 						 t_flags	flags,
 						 at_cr3*	pdbr);
 
-t_error			architecture_paging_import(at_pd	pd,
+t_status		architecture_paging_import(at_pd	pd,
 						   at_cr3	cr3);
 
-t_error			architecture_paging_export(at_pd*	pd,
+t_status		architecture_paging_export(at_pd*	pd,
 						   at_cr3*	cr3);
 
-t_error			architecture_paging_map(i_as		id,
+t_status		architecture_paging_map(i_as		id,
 						i_segment	segment,
 						t_paddr		offset,
 						t_options	options,
 						t_vaddr		address,
 						t_vsize		size);
 
-t_error			architecture_paging_unmap(i_as		id,
+t_status		architecture_paging_unmap(i_as		id,
 						  t_vaddr	address,
 						  t_vsize	size);
 
-t_error			architecture_paging_read(i_segment	id,
+t_status		architecture_paging_read(i_segment	id,
 						 t_paddr	offset,
 						 void*		buffer,
 						 t_psize	size);
 
-t_error			architecture_paging_write(i_segment	id,
+t_status		architecture_paging_write(i_segment	id,
 						  t_paddr	offset,
 						  const void*	buffer,
 						  t_psize	size);
 
-t_error			architecture_paging_copy(i_region	dst,
+t_status		architecture_paging_copy(i_region	dst,
 						 t_paddr	to,
 						 i_region	src,
 						 t_paddr	from,
 						 t_psize	size);
 
-t_error			architecture_paging_test(t_vaddr	vaddr,
+t_status		architecture_paging_test(t_vaddr	vaddr,
                                                  t_boolean*	result);
 
 

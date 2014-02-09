@@ -43,7 +43,7 @@ void			test_core_set_bpt_04(void)
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
                   sizeof (t_id),
 		  ___kaneton$pagesz,
-		  &id) != ERROR_OK)
+		  &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -51,26 +51,26 @@ void			test_core_set_bpt_04(void)
    */
 
   obj = 80LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 98654LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 42LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 122LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   /*
    * remove
    */
 
-  if (set_remove(id, 42LL) != ERROR_OK)
+  if (set_remove(id, 42LL) != STATUS_OK)
     TEST_PRINT("error in set_remove()\n");
 
   /*
@@ -78,25 +78,25 @@ void			test_core_set_bpt_04(void)
    */
 
   obj = 45LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 64LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -113,29 +113,29 @@ void			test_core_set_bpt_04(void)
    */
 
   obj = 987LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 368LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 2LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 123LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   /*
    * remove
    */
 
-  if (set_remove(id, 368LL) != ERROR_OK)
+  if (set_remove(id, 368LL) != STATUS_OK)
     TEST_PRINT("error in set_remove()\n");
 
-  if (set_remove(id, 80LL) != ERROR_OK)
+  if (set_remove(id, 80LL) != STATUS_OK)
     TEST_PRINT("error in set_remove()\n");
 
   /*
@@ -143,21 +143,21 @@ void			test_core_set_bpt_04(void)
    */
 
   obj = 123LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -173,7 +173,7 @@ void			test_core_set_bpt_04(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(0f9iw3gih30h934h);

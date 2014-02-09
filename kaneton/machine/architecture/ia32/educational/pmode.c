@@ -41,7 +41,7 @@ extern s_init*			_init;
  * this function enables the protected mode by setting the PE bit in CR0.
  */
 
-t_error		architecture_pmode_enable(void)
+t_status	architecture_pmode_enable(void)
 {
   asm volatile("movl %%cr0, %%eax\n"
 	       "orw $1, %%ax\n"
@@ -67,7 +67,7 @@ t_error		architecture_pmode_enable(void)
  * 3) enable the protected mode.
  */
 
-t_error		architecture_pmode_setup(void)
+t_status	architecture_pmode_setup(void)
 {
   as_gdt	gdt;
 
@@ -84,17 +84,17 @@ t_error		architecture_pmode_setup(void)
 
   if (architecture_gdt_build(_init->machine.gdt,
 			     ARCHITECTURE_GDT_SIZE * sizeof (at_gdte),
-			     &gdt) != ERROR_OK)
+			     &gdt) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the GDT");
 
-  if (architecture_gdt_import(&gdt) != ERROR_OK)
+  if (architecture_gdt_import(&gdt) != STATUS_OK)
     MACHINE_ESCAPE("unable to import the boot loader's GDT");
 
   /*
    * 3)
    */
 
-  if (architecture_pmode_enable() != ERROR_OK)
+  if (architecture_pmode_enable() != STATUS_OK)
     MACHINE_ESCAPE("unable to enable the protected mode");
 
   MACHINE_LEAVE();
@@ -105,7 +105,7 @@ t_error		architecture_pmode_setup(void)
  * the processor's segment registers.
  */
 
-t_error		architecture_pmode_registers(t_uint16	code,
+t_status	architecture_pmode_registers(t_uint16	code,
 					     t_uint16	data)
 {
   asm volatile("pushl %0\n\t"

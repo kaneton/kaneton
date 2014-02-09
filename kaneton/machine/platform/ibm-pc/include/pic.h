@@ -57,15 +57,15 @@
  * ../pic.c
  */
 
-t_error			platform_pic_enable(t_uint8		irq);
+t_status		platform_pic_enable(t_uint8		irq);
 
-t_error			platform_pic_disable(t_uint8		irq);
+t_status		platform_pic_disable(t_uint8		irq);
 
-t_error			platform_pic_acknowledge(t_uint8	irq);
+t_status		platform_pic_acknowledge(t_uint8	irq);
 
-t_error			platform_pic_initialize(void);
+t_status		platform_pic_initialize(void);
 
-t_error			platform_pic_clean(void);
+t_status		platform_pic_clean(void);
 
 
 /*

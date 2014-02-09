@@ -40,14 +40,14 @@ void			test_core_segment_permissions_04(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_write(seg, 0, &i, sizeof (t_uint32)) == ERROR_OK)
+  if (segment_write(seg, 0, &i, sizeof (t_uint32)) == STATUS_OK)
     TEST_ERROR("[segment_write] error: allowed writing to a read "
 	       "only segment\n");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(t3oarfskr34h90);

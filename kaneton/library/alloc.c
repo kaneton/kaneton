@@ -214,7 +214,7 @@ void*			malloc(size_t				size)
 			     MAP_OPTION_SYSTEM,
 			     pagesz,
 			     PERMISSION_READ | PERMISSION_WRITE,
-			     &addr) == ERROR_OK);
+			     &addr) == STATUS_OK);
 
 	  stucked = 0;
 
@@ -224,7 +224,7 @@ void*			malloc(size_t				size)
 				 MAP_OPTION_SYSTEM,
 				 ___kaneton$pagesz,
 				 PERMISSION_READ | PERMISSION_WRITE,
-				 &_alloc.reserve) == ERROR_OK)
+				 &_alloc.reserve) == STATUS_OK)
 
 	      if (prev_area != NULL)
 		prev_area = prev_area->next_area;
@@ -405,7 +405,7 @@ void			free(void*				ptr)
     {
       area->prev_area->next_area = NULL;
 
-      if (map_release(_kernel.as, (t_vaddr)area) != ERROR_OK)
+      if (map_release(_kernel.as, (t_vaddr)area) != STATUS_OK)
 	module_call(console, print,
 		    "warning: unable to release area.\n");
     }
@@ -602,7 +602,7 @@ void			alloc_setup(void)
 		     MAP_OPTION_SYSTEM,
 		     ___kaneton$pagesz,
 		     PERMISSION_READ | PERMISSION_WRITE,
-		     &_alloc.reserve) == ERROR_OK);
+		     &_alloc.reserve) == STATUS_OK);
 }
 
 /*

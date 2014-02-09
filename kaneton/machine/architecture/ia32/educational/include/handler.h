@@ -234,7 +234,7 @@ typedef void			(*at_handler_shell)(void);
  * ../handler.c
  */
 
-t_error			architecture_handler_setup(void);
+t_status		architecture_handler_setup(void);
 
 void			architecture_handler_spurious(t_uint32	n);
 

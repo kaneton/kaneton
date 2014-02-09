@@ -56,7 +56,7 @@ m_id			_id;
  * this function shows the given object's attributes and state.
  */
 
-t_error			id_show(o_id*				object,
+t_status		id_show(o_id*				object,
 				mt_margin			margin)
 {
   module_call(console, message,
@@ -78,7 +78,7 @@ t_error			id_show(o_id*				object,
  * 1) generate the identifier.
  */
 
-t_error			id_reserve(o_id*			object,
+t_status		id_reserve(o_id*			object,
 				   t_id*			id)
 {
   /*
@@ -111,7 +111,7 @@ t_error			id_reserve(o_id*			object,
  * 0) verify the arguments.
  */
 
-t_error			id_release(o_id*			object,
+t_status		id_release(o_id*			object,
 				   t_id				id)
 {
   /*
@@ -133,7 +133,7 @@ t_error			id_release(o_id*			object,
  * 1) initialize the identifier object's structure.
  */
 
-t_error			id_build(o_id*				object)
+t_status		id_build(o_id*				object)
 {
   /*
    * 0)
@@ -158,7 +158,7 @@ t_error			id_build(o_id*				object)
  * 1) re-initialize the object's structure.
  */
 
-t_error			id_destroy(o_id*			object)
+t_status		id_destroy(o_id*			object)
 {
   /*
    * 0)
@@ -185,7 +185,7 @@ t_error			id_destroy(o_id*			object)
  * 2) initialize the manager's structure.
  */
 
-t_error			id_initialize(void)
+t_status		id_initialize(void)
 {
   /*
    * 1)
@@ -209,7 +209,7 @@ t_error			id_initialize(void)
  * 1) display a message.
  */
 
-t_error			id_clean(void)
+t_status		id_clean(void)
 {
   /*
    * 1)

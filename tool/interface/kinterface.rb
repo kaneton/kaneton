@@ -58,7 +58,7 @@ def footer_kinterface(f)
  * 3) send the reply.
  */
 
-t_error			interface_notify(t_uint8*		buffer,
+t_status			interface_notify(t_uint8*		buffer,
 					 t_vsize		size,
 					 i_node			source)
 {
@@ -69,17 +69,17 @@ t_error			interface_notify(t_uint8*		buffer,
    */
 
   if (size < sizeof (o_syscall))
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   if (message->u.request.operation >= INTERFACE_NSYSCALLS)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
    */
 
-  if (dispatch[message->u.request.operation](message) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (dispatch[message->u.request.operation](message) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -89,31 +89,31 @@ t_error			interface_notify(t_uint8*		buffer,
 		   source,
 		   MESSAGE_TYPE_INTERFACE,
 		   (t_vaddr)message,
-		   sizeof (o_syscall)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		   sizeof (o_syscall)) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function initialises the interface manager.
  */
 
-t_error			interface_initialize(void)
+t_status			interface_initialize(void)
 {
-  if (message_register(ktask, 0, sizeof (o_syscall)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (message_register(ktask, 0, sizeof (o_syscall)) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function cleans the interface manager.
  */
 
-t_error			interface_clean(void)
+t_status			interface_clean(void)
 {
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 "
 end

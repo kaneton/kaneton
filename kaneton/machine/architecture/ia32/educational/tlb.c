@@ -32,7 +32,7 @@
  * this function invalidates a single address from the TLB.
  */
 
-t_error			architecture_tlb_invalidate(t_vaddr	address)
+t_status		architecture_tlb_invalidate(t_vaddr	address)
 {
   asm volatile("invlpg (%0)"
 	       :
@@ -46,7 +46,7 @@ t_error			architecture_tlb_invalidate(t_vaddr	address)
  * this function flushes the whole TLB's content.
  */
 
-t_error			architecture_tlb_flush(void)
+t_status		architecture_tlb_flush(void)
 {
   asm volatile("movl %%cr3, %%eax\n\t"
 	       "movl %%eax, %%cr3"

@@ -41,10 +41,10 @@ void			test_core_thread_wait_02_thread_01(void)
   s_wait		wait;
   i_cpu			cpu;
 
-  if (thread_sleep(thread1, 3000) != ERROR_OK)
+  if (thread_sleep(thread1, 3000) != STATUS_OK)
     TEST_HANG("[thread_sleep] error");
 
-  if (thread_wait(thread1, thread2, WAIT_STATE_DEATH, &wait) != ERROR_OK)
+  if (thread_wait(thread1, thread2, WAIT_STATE_DEATH, &wait) != STATUS_OK)
     TEST_HANG("[thread_wait] error");
 
   if (WAIT_THREAD(&wait) != thread2)
@@ -58,10 +58,10 @@ void			test_core_thread_wait_02_thread_01(void)
 
   TEST_SIGNATURE(r9832yjpsfwafg);
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     TEST_HANG("[cpu_current] error");
 
-  if (scheduler_stop(cpu) != ERROR_OK)
+  if (scheduler_stop(cpu) != STATUS_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -71,7 +71,7 @@ void			test_core_thread_wait_02_thread_02(void)
 {
   TEST_SIGNATURE(9wij09fia0w9w);
 
-  if (thread_exit(thread2, 42) != ERROR_OK)
+  if (thread_exit(thread2, 42) != STATUS_OK)
     TEST_HANG("[thread_exit] error");
 
   TEST_HANG("unreachable");
@@ -92,10 +92,10 @@ void			test_core_thread_wait_02(void)
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
 		     (t_vaddr)test_core_thread_wait_02_thread_01,
-		     (i_thread*)&thread1) != ERROR_OK)
+		     (i_thread*)&thread1) != STATUS_OK)
     TEST_ERROR("[thread_reserve] error");
 
-  if (thread_start(thread1) != ERROR_OK)
+  if (thread_start(thread1) != STATUS_OK)
     TEST_ERROR("[thread_start] error");
 
   /*
@@ -107,28 +107,28 @@ void			test_core_thread_wait_02(void)
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
 		     (t_vaddr)test_core_thread_wait_02_thread_02,
-		     (i_thread*)&thread2) != ERROR_OK)
+		     (i_thread*)&thread2) != STATUS_OK)
     TEST_ERROR("[thread_reserve] error");
 
-  if (thread_start(thread2) != ERROR_OK)
+  if (thread_start(thread2) != STATUS_OK)
     TEST_ERROR("[thread_start] error");
 
   /*
    * scheduler
    */
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     TEST_HANG("[cpu_current] error");
 
-  if (scheduler_start(cpu) != ERROR_OK)
+  if (scheduler_start(cpu) != STATUS_OK)
     TEST_ERROR("[scheduler_start] error");
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   TEST_SIGNATURE(872q33q09r3q2w9fwof);
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   TEST_LEAVE();

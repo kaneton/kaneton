@@ -58,15 +58,15 @@ extern m_message*	message;
 
 void			ia32_syshandler_register(void)
 {
-  t_error		res;
+  t_status	res;
   i_thread		caller;
   i_task		task;
   t_type		type;
   t_vsize		size;
   t_ia32_context	ctx;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == STATUS_OK);
+  assert(task_current(&task) == STATUS_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -88,15 +88,15 @@ void			ia32_syshandler_register(void)
 
 void			ia32_syshandler_size(void)
 {
-  t_error		res;
+  t_status	res;
   i_thread		caller;
   i_task		task;
   t_type		type;
   t_vsize		size;
   t_ia32_context	ctx;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == STATUS_OK);
+  assert(task_current(&task) == STATUS_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -116,7 +116,7 @@ void			ia32_syshandler_size(void)
 
 void			ia32_syshandler_send(void)
 {
-  t_error		res;
+  t_status	res;
   i_thread		caller;
   i_task		task;
   t_type		type;
@@ -129,8 +129,8 @@ void			ia32_syshandler_send(void)
     t_uint32		reg[4];
   }			u;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == STATUS_OK);
+  assert(task_current(&task) == STATUS_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -155,7 +155,7 @@ void			ia32_syshandler_send(void)
 
 void			ia32_syshandler_transmit(void)
 {
-  t_error		res;
+  t_status	res;
   i_thread		caller;
   i_task		task;
   t_type		type;
@@ -168,8 +168,8 @@ void			ia32_syshandler_transmit(void)
     t_uint32		reg[4];
   }			u;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == STATUS_OK);
+  assert(task_current(&task) == STATUS_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -194,7 +194,7 @@ void			ia32_syshandler_transmit(void)
 
 void			ia32_syshandler_receive(void)
 {
-  t_error		res;
+  t_status	res;
   i_thread		caller;
   i_task		task;
   t_type		type;
@@ -207,8 +207,8 @@ void			ia32_syshandler_receive(void)
     t_uint32		reg[4];
   }			u;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == STATUS_OK);
+  assert(task_current(&task) == STATUS_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -237,7 +237,7 @@ void			ia32_syshandler_receive(void)
 
 void			ia32_syshandler_poll(void)
 {
-  t_error		res;
+  t_status	res;
   i_thread		caller;
   i_task		task;
   t_type		type;
@@ -250,8 +250,8 @@ void			ia32_syshandler_poll(void)
     t_uint32		reg[4];
   }			u;
 
-  assert(scheduler_current(&caller) == ERROR_NONE);
-  assert(task_current(&task) == ERROR_NONE);
+  assert(scheduler_current(&caller) == STATUS_OK);
+  assert(task_current(&task) == STATUS_OK);
 
   assert(ia32_get_context(caller, &ctx));
 
@@ -279,13 +279,13 @@ void			ia32_syshandler_poll(void)
  * the thread must not be executing.
  */
 
-t_error			ia32_syscall_set_code(i_thread		thread,
-					      t_error		error)
+t_status		ia32_syscall_set_code(i_thread		thread,
+					      t_status	error)
 {
   t_ia32_context	ctx;
 
-  if (ia32_get_context(thread, &ctx) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_get_context(thread, &ctx) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   ctx.eax = error;
 
@@ -297,8 +297,8 @@ t_error			ia32_syscall_set_code(i_thread		thread,
  * the thread must not be executing.
  */
 
-t_error			ia32_syscall_set_info(i_thread		thread,
-					      t_error		error,
+t_status		ia32_syscall_set_info(i_thread		thread,
+					      t_status	error,
 					      t_vsize		size,
 					      i_node		sender)
 {
@@ -309,8 +309,8 @@ t_error			ia32_syscall_set_info(i_thread		thread,
     t_uint32		reg[4];
   }			u;
 
-  if (ia32_get_context(thread, &ctx) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_get_context(thread, &ctx) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   u.node = sender;
 
@@ -332,60 +332,60 @@ t_error			ia32_syscall_set_info(i_thread		thread,
  * this function registers the different syscalls.
  */
 
-t_error			ia32_syscalls_init(void)
+t_status		ia32_syscalls_init(void)
 {
   if (event_reserve(56, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_register), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_register), 0) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (event_reserve(57, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_send), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_send), 0) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (event_reserve(58, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_transmit), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_transmit), 0) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /* XXX 59 */
 
   if (event_reserve(60, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_receive), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_receive), 0) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /* XXX 61 */
 
   if (event_reserve(62, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_poll), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_poll), 0) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /* XXX 63 */
   /* XXX 64 */
 
   if (event_reserve(65, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_size), 0) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		    EVENT_HANDLER(ia32_syshandler_size), 0) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function unregisters the different syscalls.
  */
 
-t_error			ia32_syscalls_clean(void)
+t_status		ia32_syscalls_clean(void)
 {
-  if (event_release(56) != ERROR_NONE ||
-      event_release(57) != ERROR_NONE ||
-      event_release(58) != ERROR_NONE ||
-      event_release(59) != ERROR_NONE ||
-      event_release(60) != ERROR_NONE ||
-      event_release(61) != ERROR_NONE ||
-      event_release(62) != ERROR_NONE ||
-      event_release(63) != ERROR_NONE ||
-      event_release(64) != ERROR_NONE ||
-      event_release(65) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (event_release(56) != STATUS_OK ||
+      event_release(57) != STATUS_OK ||
+      event_release(58) != STATUS_OK ||
+      event_release(59) != STATUS_OK ||
+      event_release(60) != STATUS_OK ||
+      event_release(61) != STATUS_OK ||
+      event_release(62) != STATUS_OK ||
+      event_release(63) != STATUS_OK ||
+      event_release(64) != STATUS_OK ||
+      event_release(65) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 

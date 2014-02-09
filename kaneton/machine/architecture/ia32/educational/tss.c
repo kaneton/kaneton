@@ -51,7 +51,7 @@
  * 2) initialize its memory.
  */
 
-t_error			architecture_tss_build(t_vaddr		address,
+t_status		architecture_tss_build(t_vaddr		address,
 					       as_tss**		tss)
 {
   /*
@@ -78,7 +78,7 @@ t_error			architecture_tss_build(t_vaddr		address,
  * 1) fill the TSS' attributes.
  */
 
-t_error			architecture_tss_update(as_tss*		tss,
+t_status		architecture_tss_update(as_tss*		tss,
 						t_uint16	ss0,
 						t_uint32	esp0,
 						t_uint32	io)
@@ -115,7 +115,7 @@ t_error			architecture_tss_update(as_tss*		tss,
  * 3) load the selector in the TR register.
  */
 
-t_error			architecture_tss_activate(as_tss*	tss)
+t_status		architecture_tss_activate(as_tss*	tss)
 {
   t_uint16		index;
   t_uint16		selector;
@@ -136,7 +136,7 @@ t_error			architecture_tss_activate(as_tss*	tss)
 			       ARCHITECTURE_GDTE_DPL_SET(
 			         ARCHITECTURE_PRIVILEGE_RING0) |
 			       ARCHITECTURE_GDTE_TSS,
-			       &index) != ERROR_OK)
+			       &index) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a GDT entry");
 
   /*
@@ -145,7 +145,7 @@ t_error			architecture_tss_activate(as_tss*	tss)
 
   if (architecture_gdt_selector(index,
 				ARCHITECTURE_PRIVILEGE_RING0,
-				&selector) != ERROR_OK)
+				&selector) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the TSS segment selector");
 
   /*

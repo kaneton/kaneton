@@ -198,36 +198,36 @@ typedef struct
  * ../gdt.c
  */
 
-t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt);
+t_status		ia32_gdt_dump(t_ia32_gdt*		dump_gdt);
 
-t_error			ia32_gdt_size(t_ia32_gdt*		table,
+t_status		ia32_gdt_size(t_ia32_gdt*		table,
 				      t_uint16*			size);
 
-t_error			ia32_gdt_build(t_uint16			entries,
+t_status		ia32_gdt_build(t_uint16			entries,
 				       t_paddr			base,
 				       t_ia32_gdt*		gdt,
 				       t_uint8			clear);
 
-t_error			ia32_gdt_activate(t_ia32_gdt		new_gdt);
+t_status		ia32_gdt_activate(t_ia32_gdt		new_gdt);
 
-t_error			ia32_gdt_import(t_ia32_gdt*		gdt);
+t_status		ia32_gdt_import(t_ia32_gdt*		gdt);
 
-t_error			ia32_gdt_add_segment(t_ia32_gdt*	table,
+t_status		ia32_gdt_add_segment(t_ia32_gdt*	table,
 					     t_uint16		segment,
 					     t_ia32_segment	descriptor);
 
-t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
+t_status		ia32_gdt_reserve_segment(t_ia32_gdt*	table,
 						 t_ia32_segment	descriptor,
 						 t_uint16*	segment);
 
-t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
+t_status		ia32_gdt_get_segment(t_ia32_gdt*	table,
 					     t_uint16		index,
 					     t_ia32_segment*	segment);
 
-t_error			ia32_gdt_delete_segment(t_ia32_gdt*	table,
+t_status		ia32_gdt_delete_segment(t_ia32_gdt*	table,
 						t_uint16	segment);
 
-t_error			ia32_gdt_build_selector(t_uint16	segment,
+t_status		ia32_gdt_build_selector(t_uint16	segment,
 						t_ia32_prvl	privilege,
 						t_uint16*	selector);
 
@@ -236,39 +236,39 @@ t_error			ia32_gdt_build_selector(t_uint16	segment,
  * ../ldt.c
  */
 
-t_error			ia32_ldt_base(t_ia32_ldt*		table,
+t_status		ia32_ldt_base(t_ia32_ldt*		table,
 				      t_paddr*			addr);
 
-t_error			ia32_ldt_size(t_ia32_ldt*		table,
+t_status		ia32_ldt_size(t_ia32_ldt*		table,
 				      t_uint16*			size);
 
-t_error			ia32_ldt_dump(t_ia32_ldt*		table);
+t_status		ia32_ldt_dump(t_ia32_ldt*		table);
 
-t_error			ia32_ldt_activate(t_ia32_ldt		table);
+t_status		ia32_ldt_activate(t_ia32_ldt		table);
 
-t_error			ia32_ldt_build(t_uint16			entries,
+t_status		ia32_ldt_build(t_uint16			entries,
 				       t_paddr			base,
 				       t_ia32_ldt*		ldt,
 				       t_uint8			clear);
 
-t_error			ia32_ldt_destroy(t_ia32_ldt		*ldt);
+t_status		ia32_ldt_destroy(t_ia32_ldt		*ldt);
 
-t_error			ia32_ldt_add_segment(t_ia32_ldt*	table,
+t_status		ia32_ldt_add_segment(t_ia32_ldt*	table,
 					     t_uint16		segment,
 					     t_ia32_segment	descriptor);
 
-t_error			ia32_ldt_reserve_segment(t_ia32_ldt*	table,
+t_status		ia32_ldt_reserve_segment(t_ia32_ldt*	table,
 						 t_ia32_segment	descriptor,
 						 t_uint16*	segment);
 
-t_error			ia32_ldt_get_segment(t_ia32_ldt*	table,
+t_status		ia32_ldt_get_segment(t_ia32_ldt*	table,
 					     t_uint16		index,
 					     t_ia32_segment*	segment);
 
-t_error			ia32_ldt_delete_segment(t_ia32_ldt*	table,
+t_status		ia32_ldt_delete_segment(t_ia32_ldt*	table,
 						t_uint16	segment);
 
-t_error			ia32_ldt_build_selector(t_ia32_ldt*	table,
+t_status		ia32_ldt_build_selector(t_ia32_ldt*	table,
 						t_uint16	segment,
 						t_ia32_prvl	privilege,
 						t_uint16*	selector);

@@ -93,7 +93,7 @@ extern m_thread		_thread;
  * this function dumps the given context.
  */
 
-t_error			architecture_context_dump(as_context	context)
+t_status		architecture_context_dump(as_context	context)
 {
   module_call(console, message,
 	      '#',
@@ -170,7 +170,7 @@ t_error			architecture_context_dump(as_context	context)
  *    restored in order to be scheduled for the first time.
  */
 
-t_error			architecture_context_build(i_thread	id)
+t_status		architecture_context_build(i_thread	id)
 {
   o_task*		task;
   o_thread*		thread;
@@ -180,10 +180,10 @@ t_error			architecture_context_build(i_thread	id)
    * 1)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -224,7 +224,7 @@ t_error			architecture_context_build(i_thread	id)
 		      MAP_OPTION_NONE,
 		      thread->machine.pile.size,
 		      PERMISSION_READ | PERMISSION_WRITE,
-		      &thread->machine.pile.base) != ERROR_OK)
+		      &thread->machine.pile.base) != STATUS_OK)
 	MACHINE_ESCAPE("unable to reserve a map for the thread's pile");
 
       /*
@@ -337,7 +337,7 @@ t_error			architecture_context_build(i_thread	id)
 
   if (thread->id != _kernel.thread)
     {
-      if (architecture_context_set(thread->id, &ctx) != ERROR_OK)
+      if (architecture_context_set(thread->id, &ctx) != STATUS_OK)
 	MACHINE_ESCAPE("unable to set the context");
     }
 
@@ -353,7 +353,7 @@ t_error			architecture_context_build(i_thread	id)
  * 2) if the thread has a pile---i.e is not a kernel thread---release it.
  */
 
-t_error			architecture_context_destroy(i_thread	id)
+t_status		architecture_context_destroy(i_thread	id)
 {
   o_task*		task;
   o_thread*		thread;
@@ -362,10 +362,10 @@ t_error			architecture_context_destroy(i_thread	id)
    * 1)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -375,7 +375,7 @@ t_error			architecture_context_destroy(i_thread	id)
   if (task->class != TASK_CLASS_KERNEL)
     {
       if (map_release(task->as,
-		      thread->machine.pile.base) != ERROR_OK)
+		      thread->machine.pile.base) != STATUS_OK)
 	MACHINE_ESCAPE("unable to release the thread's pile");
     }
 
@@ -404,7 +404,7 @@ t_error			architecture_context_destroy(i_thread	id)
  *    be created.
  */
 
-t_error			architecture_context_setup(void)
+t_status		architecture_context_setup(void)
 {
   as_tss*		tss;
   o_as*			as;
@@ -413,7 +413,7 @@ t_error			architecture_context_setup(void)
    * 1)
    */
 
-  if (as_get(_kernel.as, &as) != ERROR_OK)
+  if (as_get(_kernel.as, &as) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the address space object");
 
   /*
@@ -426,7 +426,7 @@ t_error			architecture_context_setup(void)
 		  MAP_OPTION_SYSTEM,
 		  _architecture.kernel.kis.size,
 		  PERMISSION_READ | PERMISSION_WRITE,
-		  &_architecture.kernel.kis.base) != ERROR_OK)
+		  &_architecture.kernel.kis.base) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve the TSS memory area");
 
   _architecture.kernel.kis.pointer =
@@ -440,14 +440,14 @@ t_error			architecture_context_setup(void)
 		  MAP_OPTION_SYSTEM,
 		  ARCHITECTURE_TSS_SIZE,
 		  PERMISSION_READ | PERMISSION_WRITE,
-		  &_thread.machine.tss) != ERROR_OK)
+		  &_thread.machine.tss) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve the TSS memory area");
 
   /*
    * 4)
    */
 
-  if (architecture_tss_build(_thread.machine.tss, &tss) != ERROR_OK)
+  if (architecture_tss_build(_thread.machine.tss, &tss) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the initial TSS");
 
   /*
@@ -457,14 +457,14 @@ t_error			architecture_context_setup(void)
   if (architecture_tss_update(tss,
 			      ARCHITECTURE_TSS_SS0_NULL,
 			      ARCHITECTURE_TSS_ESP0_NULL,
-			      ARCHITECTURE_TSS_IO) != ERROR_OK)
+			      ARCHITECTURE_TSS_IO) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the TSS");
 
   /*
    * 6)
    */
 
-  if (architecture_tss_activate(tss) != ERROR_OK)
+  if (architecture_tss_activate(tss) != STATUS_OK)
     MACHINE_ESCAPE("unable to activate the system's TSS");
 
   /*
@@ -474,49 +474,49 @@ t_error			architecture_context_setup(void)
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
 	ARCHITECTURE_PRIVILEGE_KERNEL,
-	&_thread.machine.selectors.kernel.cs) != ERROR_OK)
+	&_thread.machine.selectors.kernel.cs) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the kernel code segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
 	ARCHITECTURE_PRIVILEGE_KERNEL,
-	&_thread.machine.selectors.kernel.ds) != ERROR_OK)
+	&_thread.machine.selectors.kernel.ds) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the kernel data segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_DRIVER_CODE,
 	ARCHITECTURE_PRIVILEGE_DRIVER,
-	&_thread.machine.selectors.driver.cs) != ERROR_OK)
+	&_thread.machine.selectors.driver.cs) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the driver code segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_DRIVER_DATA,
 	ARCHITECTURE_PRIVILEGE_DRIVER,
-	&_thread.machine.selectors.driver.ds) != ERROR_OK)
+	&_thread.machine.selectors.driver.ds) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the driver data segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_SERVICE_CODE,
 	ARCHITECTURE_PRIVILEGE_SERVICE,
-	&_thread.machine.selectors.service.cs) != ERROR_OK)
+	&_thread.machine.selectors.service.cs) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the service code segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_SERVICE_DATA,
 	ARCHITECTURE_PRIVILEGE_SERVICE,
-	&_thread.machine.selectors.service.ds) != ERROR_OK)
+	&_thread.machine.selectors.service.ds) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the service data segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_GUEST_CODE,
 	ARCHITECTURE_PRIVILEGE_GUEST,
-	&_thread.machine.selectors.guest.cs) != ERROR_OK)
+	&_thread.machine.selectors.guest.cs) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the guest code segment selector");
 
   if (architecture_gdt_selector(
         ARCHITECTURE_GDT_INDEX_GUEST_DATA,
 	ARCHITECTURE_PRIVILEGE_GUEST,
-	&_thread.machine.selectors.guest.ds) != ERROR_OK)
+	&_thread.machine.selectors.guest.ds) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the guest data segment selector");
 
   MACHINE_LEAVE();
@@ -549,7 +549,7 @@ t_error			architecture_context_setup(void)
  *      not actually change.
  */
 
-t_error			architecture_context_locate(void)
+t_status		architecture_context_locate(void)
 {
   i_thread		current;
   o_thread*		thread;
@@ -559,13 +559,13 @@ t_error			architecture_context_locate(void)
    * 1)
    */
 
-  if (thread_current(&current) != ERROR_OK)
+  if (thread_current(&current) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the current thread identifier");
 
-  if (thread_get(current, &thread) != ERROR_OK)
+  if (thread_get(current, &thread) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -628,7 +628,7 @@ t_error			architecture_context_locate(void)
  *   b) mark it as fresh.
  */
 
-t_error			architecture_context_switch(i_thread	current,
+t_status		architecture_context_switch(i_thread	current,
 						    i_thread	future)
 {
   o_thread*		from;
@@ -655,24 +655,24 @@ t_error			architecture_context_switch(i_thread	current,
    * 3)
    */
 
-  if (thread_get(current, &from) != ERROR_OK)
+  if (thread_get(current, &from) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the current thread object");
 
-  if (thread_get(future, &to) != ERROR_OK)
+  if (thread_get(future, &to) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the future thread object");
 
   /*
    * 4)
    */
 
-  if (task_get(to->task, &task) != ERROR_OK)
+  if (task_get(to->task, &task) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the future task object");
 
   /*
    * 5)
    */
 
-  if (as_get(task->as, &as) != ERROR_OK)
+  if (as_get(task->as, &as) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the future address space object");
 
   /*
@@ -682,7 +682,7 @@ t_error			architecture_context_switch(i_thread	current,
   if (architecture_paging_pdbr(as->machine.pd,
 			       ARCHITECTURE_REGISTER_CR3_PCE |
 			       ARCHITECTURE_REGISTER_CR3_PWB,
-			       &pdbr) != ERROR_OK)
+			       &pdbr) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the PDBR");
 
   /*
@@ -705,7 +705,7 @@ t_error			architecture_context_switch(i_thread	current,
       if (architecture_tss_update(tss,
 				  ARCHITECTURE_TSS_SS0_NULL,
 				  ARCHITECTURE_TSS_ESP0_NULL,
-				  ARCHITECTURE_TSS_IO) != ERROR_OK)
+				  ARCHITECTURE_TSS_IO) != STATUS_OK)
 	MACHINE_ESCAPE("unable to build the TSS");
     }
   else
@@ -718,13 +718,13 @@ t_error			architecture_context_switch(i_thread	current,
 
       if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_DATA,
 				    ARCHITECTURE_PRIVILEGE_RING0,
-				    &selector) != ERROR_OK)
+				    &selector) != STATUS_OK)
 	MACHINE_ESCAPE("unable to build the kernel data segment selector");
 
       if (architecture_tss_update(tss,
 				  selector,
 				  to->machine.pile.pointer,
-				  ARCHITECTURE_TSS_IO) != ERROR_OK)
+				  ARCHITECTURE_TSS_IO) != STATUS_OK)
 	MACHINE_ESCAPE("unable to build the TSS");
     }
 
@@ -769,7 +769,7 @@ t_error			architecture_context_switch(i_thread	current,
  * 5) update the thread's context.
  */
 
-t_error			architecture_context_arguments(i_thread	id,
+t_status		architecture_context_arguments(i_thread	id,
 						       void*	arguments,
 						       t_vsize	size)
 {
@@ -781,17 +781,17 @@ t_error			architecture_context_arguments(i_thread	id,
    * 1)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
-  if (thread_store(thread->id, &context) != ERROR_OK)
+  if (thread_store(thread->id, &context) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread context");
 
   /*
@@ -804,14 +804,14 @@ t_error			architecture_context_arguments(i_thread	id,
    * 4)
    */
 
-  if (as_write(task->as, arguments, size, context.sp) != ERROR_OK)
+  if (as_write(task->as, arguments, size, context.sp) != STATUS_OK)
     MACHINE_ESCAPE("unable to store the arguments on the thread's stack");
 
   /*
    * 5)
    */
 
-  if (thread_load(thread->id, context) != ERROR_OK)
+  if (thread_load(thread->id, context) != STATUS_OK)
     MACHINE_ESCAPE("unable to update the thread context");
 
   MACHINE_LEAVE();
@@ -834,7 +834,7 @@ t_error			architecture_context_arguments(i_thread	id,
  * 2) read the thread's context from its pile.
  */
 
-t_error			architecture_context_get(i_thread	id,
+t_status		architecture_context_get(i_thread	id,
 						 as_context*	context)
 {
   o_thread*		thread;
@@ -851,10 +851,10 @@ t_error			architecture_context_get(i_thread	id,
    * 1)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -864,7 +864,7 @@ t_error			architecture_context_get(i_thread	id,
   if (as_read(task->as,
 	      thread->machine.context,
 	      sizeof (as_context),
-	      context) != ERROR_OK)
+	      context) != STATUS_OK)
     MACHINE_ESCAPE("unable to read the thread's IA32 context");
 
   MACHINE_LEAVE();
@@ -888,7 +888,7 @@ t_error			architecture_context_get(i_thread	id,
  *    space.
  */
 
-t_error			architecture_context_set(i_thread	id,
+t_status		architecture_context_set(i_thread	id,
 						 as_context*	context)
 {
   o_thread*		thread;
@@ -905,10 +905,10 @@ t_error			architecture_context_set(i_thread	id,
    * 1)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -918,7 +918,7 @@ t_error			architecture_context_set(i_thread	id,
   if (as_write(task->as,
 	       context,
 	       sizeof (as_context),
-	       thread->machine.context) != ERROR_OK)
+	       thread->machine.context) != STATUS_OK)
     MACHINE_ESCAPE("unable to write the thread's IA32 context");
 
   MACHINE_LEAVE();

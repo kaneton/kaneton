@@ -314,7 +314,7 @@ another one.
 \begin{verbatim}
 extern m_kernel         _kernel;
 
-t_error                 example(void)
+t_status                 example(void)
 {
   i_task                task;
   i_as                  as;
@@ -331,7 +331,7 @@ t_error                 example(void)
                       ___kaneton$pagesz,
                       PERMISSION_READ,
                       SEGMENT_OPTION_NONE,
-                      &segment) != ERROR_OK)
+                      &segment) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a segment");
 
   if (region_reserve(_kernel.as,
@@ -340,10 +340,10 @@ t_error                 example(void)
                      REGION_OPTION_NONE,
                      0x0,
                      ___kaneton$pagesz,
-                     &region) != ERROR_OK)
+                     &region) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a region");
 
-  if (region_get(_kernel.as, region, &o) != ERROR_OK)
+  if (region_get(_kernel.as, region, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the region object");
 
   data = (t_uint32*)o->address;
@@ -357,10 +357,10 @@ t_error                 example(void)
   if (task_reserve(TASK_CLASS_GUEST,
                    TASK_BEHAVIOUR_INTERACTIVE,
                    TASK_PRIORITY_INTERACTIVE,
-                   &task) != ERROR_OK)
+                   &task) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a guest task");
 
-  if (as_reserve(task, &as) != ERROR_OK)
+  if (as_reserve(task, &as) != STATUS_OK)
     CORE_ESCAPE("unable to reserve an address space");
 
   if (region_reserve(as,
@@ -369,7 +369,7 @@ t_error                 example(void)
                      REGION_OPTION_NONE,
                      0x0,
                      ___kaneton$pagesz,
-                     &region) != ERROR_OK)
+                     &region) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a region");
 
   CORE_LEAVE();

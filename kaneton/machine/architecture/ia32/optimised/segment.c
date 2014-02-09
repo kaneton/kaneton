@@ -50,7 +50,7 @@ extern i_as		kasid;
  * 4) unmap the region.
  */
 
-t_error			ia32_segment_read(i_region		segid,
+t_status		ia32_segment_read(i_region		segid,
 					  t_paddr		offs,
 					  void*			buff,
 					  t_psize		sz)
@@ -64,8 +64,8 @@ t_error			ia32_segment_read(i_region		segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -87,8 +87,8 @@ t_error			ia32_segment_read(i_region		segid,
     end = (end & ~(PAGESZ - 1)) + PAGESZ;
 
   if (region_reserve(kasid, segid, poffset, REGION_OPT_PRIVILEGED,
-		     0, end - poffset, &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     0, end - poffset, &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -100,10 +100,10 @@ t_error			ia32_segment_read(i_region		segid,
    * 4)
    */
 
-  if (region_release(kasid, reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_release(kasid, reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -117,7 +117,7 @@ t_error			ia32_segment_read(i_region		segid,
  * 4) unmap the region.
  */
 
-t_error			ia32_segment_write(i_region		segid,
+t_status		ia32_segment_write(i_region		segid,
 					   t_paddr		offs,
 					   const void*		buff,
 					   t_psize		sz)
@@ -131,8 +131,8 @@ t_error			ia32_segment_write(i_region		segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_get(segid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -154,8 +154,8 @@ t_error			ia32_segment_write(i_region		segid,
     end = (end & ~(PAGESZ - 1)) + PAGESZ;
 
   if (region_reserve(kasid, segid, poffset, REGION_OPT_PRIVILEGED,
-		     0, end - poffset, &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     0, end - poffset, &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -167,10 +167,10 @@ t_error			ia32_segment_write(i_region		segid,
    * 4)
    */
 
-  if (region_release(kasid, reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_release(kasid, reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -184,7 +184,7 @@ t_error			ia32_segment_write(i_region		segid,
  * 4) unmap the segments.
  */
 
-t_error			ia32_segment_copy(i_region		dst,
+t_status		ia32_segment_copy(i_region		dst,
 					  t_paddr		offsd,
 					  i_region		src,
 					  t_paddr		offss,
@@ -201,9 +201,9 @@ t_error			ia32_segment_copy(i_region		dst,
    * 1)
    */
 
-  if (segment_get(dst, &segd) != ERROR_NONE ||
-      segment_get(src, &segs) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_get(dst, &segd) != STATUS_OK ||
+      segment_get(src, &segs) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -225,8 +225,8 @@ t_error			ia32_segment_copy(i_region		dst,
     end = (end & ~(PAGESZ - 1)) + PAGESZ;
 
   if (region_reserve(kasid, src, poffset, REGION_OPT_PRIVILEGED,
-		     0, end - poffset, &regs) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     0, end - poffset, &regs) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (offsd % PAGESZ)
   {
@@ -244,8 +244,8 @@ t_error			ia32_segment_copy(i_region		dst,
     end = (end & ~(PAGESZ - 1)) + PAGESZ;
 
   if (region_reserve(kasid, dst, poffset, REGION_OPT_PRIVILEGED,
-		     0, end - poffset, &regd) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     0, end - poffset, &regd) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -257,9 +257,9 @@ t_error			ia32_segment_copy(i_region		dst,
    * 4)
    */
 
-  if (region_release(kasid, regs) != ERROR_NONE ||
-      region_release(kasid, regd) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_release(kasid, regs) != STATUS_OK ||
+      region_release(kasid, regd) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }

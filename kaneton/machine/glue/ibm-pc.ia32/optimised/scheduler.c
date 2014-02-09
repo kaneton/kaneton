@@ -77,7 +77,7 @@ asm (".text				\n"
 
 static void		glue_scheduler_switch_handler(void)
 {
-  assert(scheduler_switch() == ERROR_NONE);
+  assert(scheduler_switch() == STATUS_OK);
 }
 
 /*
@@ -87,14 +87,14 @@ static void		glue_scheduler_switch_handler(void)
  *
  */
 
-t_error			glue_scheduler_quantum(t_quantum	quantum)
+t_status		glue_scheduler_quantum(t_quantum	quantum)
 {
   SCHEDULER_ENTER(scheduler);
 
-  if (timer_delay(scheduler->machine.timer, quantum) != ERROR_NONE)
-    SCHEDULER_LEAVE(sched, ERROR_UNKNOWN);
+  if (timer_delay(scheduler->machine.timer, quantum) != STATUS_OK)
+    SCHEDULER_LEAVE(sched, STATUS_UNKNOWN_ERROR);
 
-  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, STATUS_OK);
 }
 
 /*
@@ -104,7 +104,7 @@ t_error			glue_scheduler_quantum(t_quantum	quantum)
  *
  */
 
-t_error			glue_scheduler_initialize(void)
+t_status		glue_scheduler_initialize(void)
 {
   t_thread_context	ctx;
   t_stack		stack;
@@ -117,33 +117,33 @@ t_error			glue_scheduler_initialize(void)
 		    0,
 		    scheduler->quantum,
 		    TIMER_REPEAT_ENABLE,
-		    &scheduler->machine.timer) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+		    &scheduler->machine.timer) != STATUS_OK)
+    SCHEDULER_LEAVE(scheduler, STATUS_UNKNOWN_ERROR);
 
   if (event_reserve(7, EVENT_FUNCTION,
 		    EVENT_HANDLER(glue_scheduler_switch_extended),
-		    0) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+		    0) != STATUS_OK)
+    SCHEDULER_LEAVE(scheduler, STATUS_UNKNOWN_ERROR);
 
-  if (thread_reserve(ktask, THREAD_PRIOR, &scheduler->idle) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_reserve(ktask, THREAD_PRIOR, &scheduler->idle) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   stack.base = 0;
   stack.size = PAGESZ;
 
-  if (thread_stack(scheduler->idle, stack) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_stack(scheduler->idle, stack) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (thread_get(scheduler->idle, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_get(scheduler->idle, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = (t_vaddr)glue_scheduler_idle;
 
-  if (thread_load(scheduler->idle, ctx) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (thread_load(scheduler->idle, ctx) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, STATUS_OK);
 }
 
 /*
@@ -153,17 +153,17 @@ t_error			glue_scheduler_initialize(void)
  *
  */
 
-t_error			glue_scheduler_clean(void)
+t_status		glue_scheduler_clean(void)
 {
   SCHEDULER_ENTER(scheduler);
 
-  if (timer_release(scheduler->machine.timer) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+  if (timer_release(scheduler->machine.timer) != STATUS_OK)
+    SCHEDULER_LEAVE(scheduler, STATUS_UNKNOWN_ERROR);
 
-  if (event_release(7) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+  if (event_release(7) != STATUS_OK)
+    SCHEDULER_LEAVE(scheduler, STATUS_UNKNOWN_ERROR);
 
-  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, STATUS_OK);
 }
 
 /*
@@ -175,14 +175,14 @@ void			glue_scheduler_switch_extended(i_event	id)
   i_cpu			cpuid;
   o_scheduler*		ent;
 
-  if (cpu_current(&cpuid) != ERROR_NONE)
+  if (cpu_current(&cpuid) != STATUS_OK)
     return;
 
-  if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
+  if (set_get(scheduler->cpus, cpuid, (void**)&ent) != STATUS_OK)
     return;
 
   if (ia32_extended_context_switch(ent->machine.mmx_context,
-				   ent->current) != ERROR_NONE)
+				   ent->current) != STATUS_OK)
     return;
 
   ent->machine.mmx_context = ent->current;
@@ -193,21 +193,21 @@ void			glue_scheduler_switch_extended(i_event	id)
  *
  */
 
-t_error			glue_scheduler_switch(i_thread		elected)
+t_status		glue_scheduler_switch(i_thread		elected)
 {
   i_cpu			cpuid;
   o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 
-  if (cpu_current(&cpuid) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+  if (cpu_current(&cpuid) != STATUS_OK)
+    SCHEDULER_LEAVE(scheduler, STATUS_UNKNOWN_ERROR);
 
-  if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+  if (set_get(scheduler->cpus, cpuid, (void**)&ent) != STATUS_OK)
+    SCHEDULER_LEAVE(scheduler, STATUS_UNKNOWN_ERROR);
 
-  if (ia32_context_switch(ent->current, elected) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+  if (ia32_context_switch(ent->current, elected) != STATUS_OK)
+    SCHEDULER_LEAVE(scheduler, STATUS_UNKNOWN_ERROR);
 
-  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, STATUS_OK);
 }

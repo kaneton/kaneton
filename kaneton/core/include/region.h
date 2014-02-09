@@ -152,45 +152,45 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*region_show)(i_as,
+  t_status		(*region_show)(i_as,
 					       i_region,
 					       mt_margin);
-  t_error			(*region_dump)(void);
-  t_error			(*region_protect)(i_as,
+  t_status		(*region_dump)(void);
+  t_status		(*region_protect)(i_as,
 						  t_vaddr,
 						  t_vsize);
-  t_error			(*region_unprotect)(i_as,
+  t_status		(*region_unprotect)(i_as,
 						    t_vaddr,
 						    t_vsize);
-  t_error			(*region_inject)(i_as,
+  t_status		(*region_inject)(i_as,
 						 o_region*,
 						 i_region*);
-  t_error			(*region_split)(i_as,
+  t_status		(*region_split)(i_as,
 						i_region,
 						t_vsize,
 						i_region*,
 						i_region*);
-  t_error			(*region_resize)(i_as,
+  t_status		(*region_resize)(i_as,
 						 i_region,
 						 t_vsize,
 						 i_region*);
-  t_error			(*region_coalesce)(i_as,
+  t_status		(*region_coalesce)(i_as,
 						   i_region,
 						   i_region,
 						   i_region*);
-  t_error			(*region_reserve)(i_as,
+  t_status		(*region_reserve)(i_as,
 						  i_segment,
 						  t_paddr,
 						  t_options,
 						  t_vaddr,
 						  t_vsize,
 						  i_region*);
-  t_error			(*region_release)(i_as,
+  t_status		(*region_release)(i_as,
 						  i_region);
-  t_error			(*region_flush)(i_as);
-  t_error			(*region_initialize)(t_vaddr,
+  t_status		(*region_flush)(i_as);
+  t_status		(*region_initialize)(t_vaddr,
 						     t_vsize);
-  t_error			(*region_clean)(void);
+  t_status		(*region_clean)(void);
 }				d_region;
 
 /*
@@ -203,52 +203,52 @@ typedef struct
  * ../../core/region/region-fit.c
  */
 
-t_error			region_show(i_as			asid,
+t_status		region_show(i_as			asid,
 				    i_region			regid,
 				    mt_margin			margin);
 
-t_error			region_dump(void);
+t_status		region_dump(void);
 
-t_error			region_protect(i_as			as,
+t_status		region_protect(i_as			as,
 				       t_vaddr			address,
 				       t_vsize			size);
 
-t_error			region_unprotect(i_as			as,
+t_status		region_unprotect(i_as			as,
 					 t_vaddr		address,
 					 t_vsize		size);
 
-t_error			region_protected(i_as			as,
+t_bool			region_protected(i_as			as,
 					 t_vaddr		address);
 
-t_error			region_fit_first(i_as			asid,
+t_status		region_fit_first(i_as			asid,
 					 t_vsize		size,
 					 t_vaddr*		address);
 
-t_error			region_space(i_as			asid,
+t_status		region_space(i_as			asid,
 				     t_vsize			size,
 				     t_vaddr*			address);
 
-t_error			region_inject(i_as			as,
+t_status		region_inject(i_as			as,
 				      o_region*			object,
 				      i_region*			id);
 
-t_error			region_split(i_as			asid,
+t_status		region_split(i_as			asid,
 				     i_region			regid,
 				     t_vsize			size,
 				     i_region*			left,
 				     i_region*			right);
 
-t_error			region_resize(i_as			as,
+t_status		region_resize(i_as			as,
 				      i_region			old,
 				      t_vsize			size,
 				      i_region*			new);
 
-t_error			region_coalesce(i_as			asid,
+t_status		region_coalesce(i_as			asid,
 					i_region		left,
 					i_region		right,
 					i_region*		region);
 
-t_error			region_reserve(i_as			asid,
+t_status		region_reserve(i_as			asid,
 				       i_segment		segid,
 				       t_paddr			offset,
 				       t_options		options,
@@ -256,26 +256,26 @@ t_error			region_reserve(i_as			asid,
 				       t_vsize			size,
 				       i_region*		region);
 
-t_error			region_release(i_as			asid,
+t_status		region_release(i_as			asid,
 				       i_region			regid);
 
-t_error			region_locate(i_as			as,
+t_bool			region_locate(i_as			as,
 				      t_vaddr			address,
 				      i_region*			id);
 
-t_error			region_flush(i_as			asid);
+t_status		region_flush(i_as			asid);
 
-t_error			region_exist(i_as			asid,
+t_status		region_exist(i_as			asid,
 				     i_region			regid);
 
-t_error			region_get(i_as				asid,
+t_status		region_get(i_as				asid,
 				   i_region			regid,
 				   o_region**			object);
 
-t_error			region_initialize(t_vaddr		base,
+t_status		region_initialize(t_vaddr		base,
 					  t_vsize		size);
 
-t_error			region_clean(void);
+t_status		region_clean(void);
 
 
 /*

@@ -86,12 +86,12 @@ typedef struct
  * ../tss.c
  */
 
-t_error			ia32_tss_load(t_ia32_tss*		tss,
+t_status		ia32_tss_load(t_ia32_tss*		tss,
 				      t_uint16			ss,
 				      t_uint32			esp,
 				      t_uint32			io);
 
-t_error			ia32_tss_init(t_ia32_tss*			tss);
+t_status		ia32_tss_init(t_ia32_tss*			tss);
 
 
 /*

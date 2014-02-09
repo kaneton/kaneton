@@ -28,7 +28,6 @@
 #include <modules/report/include/report.h>
 #include <modules/forward/include/forward.h>
 #include <modules/test/include/test.h>
-#include <modules/debug/include/debug.h>
 
 /*
  * ---------- macro-functions -------------------------------------------------
@@ -111,7 +110,7 @@
 		_format_ " (%s:%u)",					\
 		##_arguments_, __FUNCTION__, __LINE__);			\
 									\
-    return (ERROR_KO);							\
+    return (STATUS_ERROR);							\
   }
 
 /*
@@ -120,7 +119,7 @@
 
 #define MODULE_LEAVE()							\
   {									\
-    return (ERROR_OK);							\
+    return (STATUS_OK);							\
   }
 
 #endif

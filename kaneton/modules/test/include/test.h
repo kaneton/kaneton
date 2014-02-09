@@ -43,7 +43,7 @@ typedef struct
 typedef struct
 {
   char*			command;
-  t_error		(*function)(char*);
+  t_status	(*function)(char*);
 }			ms_test_command;
 
 /*
@@ -87,31 +87,31 @@ t_uint32		module_test_checksum(void*		data,
 					     t_uint32		size,
 					     t_uint32*		crc);
 
-t_error			module_test_send(t_uint8		type,
+t_status		module_test_send(t_uint8		type,
 					 char*			message,
 					 t_uint32		length);
 
-t_error			module_test_receive(t_uint8*		type,
+t_status		module_test_receive(t_uint8*		type,
 					    char*		message);
 
-t_error			module_test_issue(char*			command);
+t_status		module_test_issue(char*			command);
 
-t_error			module_test_flush(void);
+t_status		module_test_flush(void);
 
 void			module_test_character(char		c);
 
-t_error			module_test_locate(char*		symbol,
+t_status		module_test_locate(char*		symbol,
 					   mf_test*		function);
 
-t_error			module_test_call(char*			symbol);
+t_status		module_test_call(char*			symbol);
 
 void			module_test_dump(void);
 
-t_error			module_test_run(void);
+t_status		module_test_run(void);
 
-t_error			module_test_load(void);
+t_status		module_test_load(void);
 
-t_error			module_test_unload(void);
+t_status		module_test_unload(void);
 
 
 /*

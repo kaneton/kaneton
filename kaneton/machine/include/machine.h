@@ -134,7 +134,7 @@
 		_format_ " (%s:%u)",					\
 		##_arguments_, __FUNCTION__, __LINE__);			\
 									\
-    return (ERROR_KO);							\
+    return (STATUS_ERROR);							\
   }
 
 /*
@@ -143,7 +143,7 @@
 
 #define MACHINE_LEAVE()							\
   {									\
-    return (ERROR_OK);							\
+    return (STATUS_OK);							\
   }
 
 /*

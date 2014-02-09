@@ -71,22 +71,22 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*io_grant)(i_task,
+  t_status		(*io_grant)(i_task,
 					    i_port,
 					    t_width);
-  t_error			(*io_deny)(i_task,
+  t_status		(*io_deny)(i_task,
 					   i_port,
 					   t_width);
-  t_error			(*io_read)(i_task,
+  t_status		(*io_read)(i_task,
 					   i_port,
 					   t_width,
 					   void*);
-  t_error			(*io_write)(i_task,
+  t_status		(*io_write)(i_task,
 					    i_port,
 					    t_width,
 					    t_uint64);
-  t_error			(*io_initialize)(void);
-  t_error			(*io_clean)(void);
+  t_status		(*io_initialize)(void);
+  t_status		(*io_clean)(void);
 }				d_io;
 
 /*
@@ -99,27 +99,27 @@ typedef struct
  * ../../core/io/io.c
  */
 
-t_error			io_grant(i_task				task,
+t_status		io_grant(i_task				task,
 				 i_port				port,
 				 t_width			width);
 
-t_error			io_deny(i_task				task,
+t_status		io_deny(i_task				task,
 				i_port				port,
 				t_width				width);
 
-t_error			io_read(i_task				task,
+t_status		io_read(i_task				task,
 				i_port				port,
 				t_width				width,
 				void*				data);
 
-t_error			io_write_8(i_task			task,
+t_status		io_write_8(i_task			task,
 				   i_port			port,
 				   t_width			width,
 				   t_uint64			data);
 
-t_error			io_initialize(void);
+t_status		io_initialize(void);
 
-t_error			io_clean(void);
+t_status		io_clean(void);
 
 
 /*

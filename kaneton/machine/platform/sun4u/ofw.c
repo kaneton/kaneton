@@ -52,43 +52,43 @@ int			ofw_wrap_init(t_ofw_args*		args)
  * make a call to OpenFirmware with specified command.
  */
 
-t_error		ofw_call(t_ofw_args*		args)
+t_status	ofw_call(t_ofw_args*		args)
 {
   if (openfw(args) == -1)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * initialize OpenFirmware lib.
  */
 
-t_error		ofw_init(void)
+t_status	ofw_init(void)
 {
   t_ofw_handle	chosen;
 
-  if (ofw_finddevice("/chosen", &chosen) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_finddevice("/chosen", &chosen) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   if (ofw_getprop(chosen,
 		  "stdout",
 		  &stdout,
 		  sizeof (stdout),
-		  NULL) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+		  NULL) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
-  if (ofw_sibling(0, &root_node) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_sibling(0, &root_node) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * get node's child.
  */
 
-t_error		ofw_child(t_ofw_node		node,
+t_status	ofw_child(t_ofw_node		node,
 			  t_ofw_node*		child)
 {
   t_ofw_args	args;
@@ -98,22 +98,22 @@ t_error		ofw_child(t_ofw_node		node,
   SET_NRETS(args, 1);
   SET_ARG(args, 0, node);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   *child = GET_RET(args, 0);
 
   if (*child <= 0)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * get node's sibling.
  */
 
-t_error		ofw_sibling(t_ofw_node		node,
+t_status	ofw_sibling(t_ofw_node		node,
 			    t_ofw_node*		sibling)
 {
   t_ofw_args	args;
@@ -123,22 +123,22 @@ t_error		ofw_sibling(t_ofw_node		node,
   SET_NRETS(args, 1);
   SET_ARG(args, 0, node);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   *sibling = GET_RET(args, 0);
 
   if (*sibling <= 0)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * call OpenFirmware to get a device handle by its name.
  */
 
-t_error		ofw_finddevice(const char*	dev,
+t_status	ofw_finddevice(const char*	dev,
 			       t_ofw_handle*	handle)
 {
   t_ofw_args	args;
@@ -148,19 +148,19 @@ t_error		ofw_finddevice(const char*	dev,
   SET_NRETS(args, 1);
   SET_ARG(args, 0, dev);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   *handle = GET_RET(args, 0);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * call OpenFirmware to get an OpenBoot property.
  */
 
-t_error		ofw_getprop(t_ofw_handle	handle,
+t_status	ofw_getprop(t_ofw_handle	handle,
 			    const char*		prop,
 			    void*		buf,
 			    t_uint64		size,
@@ -176,20 +176,20 @@ t_error		ofw_getprop(t_ofw_handle	handle,
   SET_ARG(args, 2, buf);
   SET_ARG(args, 3, size);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   if (read)
     *read = GET_RET(args, 0);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * call OFW to open a device.
  */
 
-t_error		ofw_open(const char*		name,
+t_status	ofw_open(const char*		name,
 			 t_ofw_handle*		handle)
 {
   t_ofw_args	args;
@@ -199,19 +199,19 @@ t_error		ofw_open(const char*		name,
   SET_NRETS(args, 1);
   SET_ARG(args, 0, name);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   *handle = GET_RET(args, 0);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * call OFW to close a device.
  */
 
-t_error		ofw_close(t_ofw_handle		handle)
+t_status	ofw_close(t_ofw_handle		handle)
 {
   t_ofw_args	args;
 
@@ -220,17 +220,17 @@ t_error		ofw_close(t_ofw_handle		handle)
   SET_NRETS(args, 1);
   SET_ARG(args, 0, handle);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * OpenFirmware reading.
  */
 
-t_error		ofw_read(t_ofw_handle		handle,
+t_status	ofw_read(t_ofw_handle		handle,
 			 char*			string,
 			 t_uint64		len,
 			 t_uint64*		read)
@@ -244,20 +244,20 @@ t_error		ofw_read(t_ofw_handle		handle,
   SET_ARG(args, 1, string);
   SET_ARG(args, 2, len);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   if (read)
     *read = GET_RET(args, 0);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * call OpenFirmware to write some data to a file.
  */
 
-t_error		ofw_write(t_ofw_handle		handle,
+t_status	ofw_write(t_ofw_handle		handle,
 			  const char*		string,
 			  t_uint64		len,
 			  t_uint64*		written)
@@ -271,20 +271,20 @@ t_error		ofw_write(t_ofw_handle		handle,
   SET_ARG(args, 1, string);
   SET_ARG(args, 2, len);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   if (written)
     *written = GET_RET(args, 0);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * call OpenFirmware to exit to OpenBoot.
  */
 
-t_error		ofw_exit(void)
+t_status	ofw_exit(void)
 {
   t_ofw_args	args;
 
@@ -292,17 +292,17 @@ t_error		ofw_exit(void)
   SET_NARGS(args, 0);
   SET_NRETS(args, 0);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * call OpenFirmware to pause to OpenBoot.
  */
 
-t_error		ofw_enter(void)
+t_status	ofw_enter(void)
 {
   t_ofw_args	args;
 
@@ -310,17 +310,17 @@ t_error		ofw_enter(void)
   SET_NARGS(args, 0);
   SET_NRETS(args, 0);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * call OpenFirmware to interpret a Forth program.
  */
 
-t_error		ofw_interpret(const char*	cmd)
+t_status	ofw_interpret(const char*	cmd)
 {
   t_ofw_args	args;
 
@@ -329,8 +329,8 @@ t_error		ofw_interpret(const char*	cmd)
   SET_NRETS(args, 0);
   SET_ARG(args, 0, cmd);
 
-  if (ofw_call(&args) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ofw_call(&args) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }

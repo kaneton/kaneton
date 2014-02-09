@@ -42,7 +42,7 @@ t_ia32_directory	ia32_pd;
  * dumps a page directory and its tables.
  */
 
-t_error			ia32_pd_dump(t_ia32_directory*		dir)
+t_status		ia32_pd_dump(t_ia32_directory*		dir)
 {
 
   /*							    [block::pd_dump] */
@@ -65,7 +65,7 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
     }
   /*							 [endblock::pd_dump] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*							   [block::pd_build] */
@@ -79,7 +79,7 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
  * 2) fills the record.
  */
 
-t_error			ia32_pd_build(t_paddr			base,
+t_status		ia32_pd_build(t_paddr			base,
 				      t_ia32_directory*		directory)
 {
   assert(directory != NULL);
@@ -89,7 +89,7 @@ t_error			ia32_pd_build(t_paddr			base,
    */
 
   if (IA32_MK_BASE(base) != base)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -97,7 +97,7 @@ t_error			ia32_pd_build(t_paddr			base,
 
   *directory = (t_ia32_directory)base;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*							[endblock::pd_build] */
@@ -109,7 +109,7 @@ t_error			ia32_pd_build(t_paddr			base,
  *
  */
 
-t_error			ia32_pd_base(t_ia32_directory*		dir,
+t_status		ia32_pd_base(t_ia32_directory*		dir,
 				     t_paddr*			base)
 {
   t_ia32_pde*		d;
@@ -131,7 +131,7 @@ t_error			ia32_pd_base(t_ia32_directory*		dir,
 
   *base = IA32_MK_BASE(d);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*							 [endblock::pd_base] */
@@ -148,7 +148,7 @@ t_error			ia32_pd_base(t_ia32_directory*		dir,
  *					       [endblock::pd_activate::comment]
  */
 
-t_error			ia32_pd_activate(t_ia32_directory	dir,
+t_status		ia32_pd_activate(t_ia32_directory	dir,
 					 t_uint32		cached,
 					 t_uint32		writeback)
 {
@@ -184,14 +184,14 @@ t_error			ia32_pd_activate(t_ia32_directory	dir,
 
   /*						     [endblock::pd_activate] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * get the page-directory base register corresponding to a page-directory.
  */
 
-t_error			ia32_pd_get_cr3(t_uint32*		cr3,
+t_status		ia32_pd_get_cr3(t_uint32*		cr3,
 					t_ia32_directory	dir,
 					t_uint32		cached,
 					t_uint32		writeback)
@@ -212,7 +212,7 @@ t_error			ia32_pd_get_cr3(t_uint32*		cr3,
 
   /*						      [endblock::pd_get_cr3] */
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -228,7 +228,7 @@ t_error			ia32_pd_get_cr3(t_uint32*		cr3,
  */
 
 
-t_error			ia32_pd_add_table(t_ia32_directory*	dir,
+t_status		ia32_pd_add_table(t_ia32_directory*	dir,
 					  t_uint16		entry,
 					  t_ia32_table		table)
 {
@@ -274,7 +274,7 @@ t_error			ia32_pd_add_table(t_ia32_directory*	dir,
 
   /*						    [endblock::pd_add_table] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -289,7 +289,7 @@ t_error			ia32_pd_add_table(t_ia32_directory*	dir,
  *					      [endblock::pd_get_table::comment]
  */
 
-t_error			ia32_pd_get_table(t_ia32_directory*	dir,
+t_status		ia32_pd_get_table(t_ia32_directory*	dir,
 					  t_uint16		entry,
 					  t_ia32_table*		table)
 {
@@ -313,7 +313,7 @@ t_error			ia32_pd_get_table(t_ia32_directory*	dir,
    */
 
   if (!(d[entry] & IA32_PDE_FLAG_USED))
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -332,7 +332,7 @@ t_error			ia32_pd_get_table(t_ia32_directory*	dir,
 
   /*						    [endblock::pd_get_table] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -347,7 +347,7 @@ t_error			ia32_pd_get_table(t_ia32_directory*	dir,
  *					   [endblock::pd_delete_table::comment]
  */
 
-t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
+t_status		ia32_pd_delete_table(t_ia32_directory*	dir,
 					     t_uint16		entry)
 {
   /*						    [block::pd_delete_table] */
@@ -368,7 +368,7 @@ t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
    */
 
   if (!(d[entry] & IA32_PDE_FLAG_USED))
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -378,5 +378,5 @@ t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
 
   /*						 [endblock::pd_delete_table] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }

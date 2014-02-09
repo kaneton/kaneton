@@ -133,19 +133,19 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*event_show)(i_event,
+  t_status		(*event_show)(i_event,
 					      mt_margin);
-  t_error			(*event_dump)(void);
-  t_error			(*event_notify)(i_event);
-  t_error			(*event_enable)(void);
-  t_error			(*event_disable)(void);
-  t_error			(*event_reserve)(i_event,
+  t_status		(*event_dump)(void);
+  t_status		(*event_notify)(i_event);
+  t_status		(*event_enable)(void);
+  t_status		(*event_disable)(void);
+  t_status		(*event_reserve)(i_event,
 						 t_type,
 						 u_event_handler,
 						 t_data);
-  t_error			(*event_release)(i_event);
-  t_error			(*event_initialize)(void);
-  t_error			(*event_clean)(void);
+  t_status		(*event_release)(i_event);
+  t_status		(*event_initialize)(void);
+  t_status		(*event_clean)(void);
 }				d_event;
 
 /*
@@ -158,32 +158,32 @@ typedef struct
  * ../../core/event/event.c
  */
 
-t_error			event_show(i_event			id,
-				   mt_margin			margin);
+t_status			event_show(i_event			id,
+					   mt_margin			margin);
 
-t_error			event_dump(void);
+t_status			event_dump(void);
 
-t_error			event_notify(i_event			id);
+t_status			event_notify(i_event			id);
 
-t_error			event_enable(void);
+t_status			event_enable(void);
 
-t_error			event_disable(void);
+t_status			event_disable(void);
 
-t_error			event_reserve(i_event			id,
-				      t_type			type,
-				      u_event_handler		handler,
-				      t_data			data);
+t_status			event_reserve(i_event			id,
+					      t_type			type,
+					      u_event_handler		handler,
+					      t_data			data);
 
-t_error			event_release(i_event			id);
+t_status			event_release(i_event			id);
 
-t_error			event_exist(i_event			id);
+t_bool				event_exist(i_event			id);
 
-t_error			event_get(i_event			id,
-				  o_event**			object);
+t_status			event_get(i_event			id,
+					  o_event**			object);
 
-t_error			event_initialize(void);
+t_status			event_initialize(void);
 
-t_error			event_clean(void);
+t_status			event_clean(void);
 
 
 /*

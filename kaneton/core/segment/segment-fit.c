@@ -116,7 +116,7 @@ m_segment		_segment;
  * 5) call the machine.
  */
 
-t_error			segment_show(i_segment			segid,
+t_status		segment_show(i_segment			segid,
 				     mt_margin			margin)
 {
   char			perms[4];
@@ -127,7 +127,7 @@ t_error			segment_show(i_segment			segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_OK)
+  if (segment_get(segid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -190,7 +190,7 @@ t_error			segment_show(i_segment			segid,
    * 5)
    */
 
-  if (machine_call(segment, show, segid, margin) != ERROR_OK)
+  if (machine_call(segment, show, segid, margin) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -207,7 +207,7 @@ t_error			segment_show(i_segment			segid,
  * 4) call the machine.
  */
 
-t_error			segment_dump(void)
+t_status		segment_dump(void)
 {
   o_segment*		data;
   t_setsz		size;
@@ -232,7 +232,7 @@ t_error			segment_dump(void)
    * 2)
    */
 
-  if (set_size(_segment.segments, &size) != ERROR_OK)
+  if (set_size(_segment.segments, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of segments");
 
   /*
@@ -246,11 +246,11 @@ t_error			segment_dump(void)
 
   set_foreach(SET_OPTION_FORWARD, _segment.segments, &i, s)
     {
-      if (set_object(_segment.segments, i, (void**)&data) != ERROR_OK)
+      if (set_object(_segment.segments, i, (void**)&data) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the object's identifier from the set");
 
       if (segment_show(data->id,
-		       3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		       3 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the object");
     }
 
@@ -277,7 +277,7 @@ t_error			segment_dump(void)
    * 5)
    */
 
-  if (machine_call(segment, dump) != ERROR_OK)
+  if (machine_call(segment, dump) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -310,7 +310,7 @@ t_error			segment_dump(void)
  * 4) call the machine.
  */
 
-t_error			segment_protect(t_paddr			address,
+t_status		segment_protect(t_paddr			address,
 					t_psize			size)
 {
   t_uint32		i;
@@ -348,7 +348,7 @@ t_error			segment_protect(t_paddr			address,
    * 4)
    */
 
-  if (machine_call(segment, protect, address, size) != ERROR_OK)
+  if (machine_call(segment, protect, address, size) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -371,7 +371,7 @@ t_error			segment_protect(t_paddr			address,
  * 4) call the machine.
  */
 
-t_error			segment_unprotect(t_paddr		address,
+t_status		segment_unprotect(t_paddr		address,
 					  t_psize		size)
 {
   t_uint32		i;
@@ -409,7 +409,7 @@ t_error			segment_unprotect(t_paddr		address,
    * 4)
    */
 
-  if (machine_call(segment, unprotect, address, size) != ERROR_OK)
+  if (machine_call(segment, unprotect, address, size) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -426,7 +426,7 @@ t_error			segment_unprotect(t_paddr		address,
  *      address space, return true.
  */
 
-t_error			segment_protected(t_paddr		address)
+t_bool			segment_protected(t_paddr		address)
 {
   t_uint32		i;
 
@@ -478,7 +478,7 @@ t_error			segment_protected(t_paddr		address)
  *    and an error is returned.
  */
 
-t_error			segment_fit_first(i_as			asid,
+t_status		segment_fit_first(i_as			asid,
 					  t_psize		size,
 					  t_paddr*		address)
 {
@@ -507,14 +507,14 @@ t_error			segment_fit_first(i_as			asid,
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_OK)
+  if (as_get(asid, &as) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
-  if (set_head(_segment.segments, &i) == ERROR_FALSE)
+  if (set_head(_segment.segments, &i) == FALSE)
     {
       /*
        * a)
@@ -536,7 +536,7 @@ t_error			segment_fit_first(i_as			asid,
 	   * i)
 	   */
 
-	  if (segment_protected(*address) == ERROR_FALSE)
+	  if (segment_protected(*address) == FALSE)
 	    CORE_LEAVE();
 	}
 
@@ -551,7 +551,7 @@ t_error			segment_fit_first(i_as			asid,
    * 3)
    */
 
-  if (set_object(_segment.segments, i, (void**)&head) != ERROR_OK)
+  if (set_object(_segment.segments, i, (void**)&head) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the very first segment object");
 
   /*
@@ -562,7 +562,7 @@ t_error			segment_fit_first(i_as			asid,
        (*address + size) <= head->address;
        *address = *address + ___kaneton$framesz)
     {
-      if (segment_protected(*address) == ERROR_FALSE)
+      if (segment_protected(*address) == FALSE)
 	CORE_LEAVE();
     }
 
@@ -581,7 +581,7 @@ t_error			segment_fit_first(i_as			asid,
 
       if (set_object(_segment.segments,
 		     i,
-		     (void**)&current) != ERROR_OK)
+		     (void**)&current) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the segment object corresponding "
 		    "to its identifier");
 
@@ -589,14 +589,14 @@ t_error			segment_fit_first(i_as			asid,
        * b)
        */
 
-      if (set_next(_segment.segments, i, &j) == ERROR_FALSE)
+      if (set_next(_segment.segments, i, &j) == FALSE)
 	break;
 
       /*
        * c)
        */
 
-      if (set_object(_segment.segments, j, (void**)&next) != ERROR_OK)
+      if (set_object(_segment.segments, j, (void**)&next) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the next segment in the set");
 
       /*
@@ -607,7 +607,7 @@ t_error			segment_fit_first(i_as			asid,
 	   (*address + size) <= next->address;
 	   *address = *address + ___kaneton$framesz)
 	{
-	  if (segment_protected(*address) == ERROR_FALSE)
+	  if (segment_protected(*address) == FALSE)
 	    CORE_LEAVE();
 	}
     }
@@ -616,10 +616,10 @@ t_error			segment_fit_first(i_as			asid,
    * 6)
    */
 
-  if (set_tail(_segment.segments, &i) == ERROR_FALSE)
+  if (set_tail(_segment.segments, &i) == FALSE)
     CORE_ESCAPE("unable to locate the last segment in the set");
 
-  if (set_object(_segment.segments, i, (void**)&tail) != ERROR_OK)
+  if (set_object(_segment.segments, i, (void**)&tail) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -630,7 +630,7 @@ t_error			segment_fit_first(i_as			asid,
        (*address + size) <= (_segment.base + _segment.size);
        *address = *address + ___kaneton$framesz)
     {
-      if (segment_protected(*address) == ERROR_FALSE)
+      if (segment_protected(*address) == FALSE)
 	CORE_LEAVE();
     }
 
@@ -653,7 +653,7 @@ t_error			segment_fit_first(i_as			asid,
  * 1) forward the call to the appropriate algorithm
  */
 
-t_error			segment_space(i_as			asid,
+t_status		segment_space(i_as			asid,
 				      t_psize			size,
 				      t_paddr*			address)
 {
@@ -679,7 +679,7 @@ t_error			segment_space(i_as			asid,
     {
     case FIT_FIRST:
       {
-	if (segment_fit_first(asid, size, address) != ERROR_OK)
+	if (segment_fit_first(asid, size, address) != STATUS_OK)
 	  CORE_ESCAPE("unable to locate space through the first-fit "
 		      "algorithm");
 
@@ -718,7 +718,7 @@ t_error			segment_space(i_as			asid,
  * 7) call the machine.
  */
 
-t_error			segment_clone(i_as			asid,
+t_status		segment_clone(i_as			asid,
 				      i_segment			old,
 				      i_segment*		new)
 {
@@ -736,7 +736,7 @@ t_error			segment_clone(i_as			asid,
    * 1)
    */
 
-  if (segment_get(old, &from) != ERROR_OK)
+  if (segment_get(old, &from) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -754,7 +754,7 @@ t_error			segment_clone(i_as			asid,
 		      from->size,
 		      PERMISSION_WRITE,
 		      from->options,
-		      new) != ERROR_OK)
+		      new) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a segment");
 
   /*
@@ -777,14 +777,14 @@ t_error			segment_clone(i_as			asid,
        * a)
        */
 
-      if (segment_permissions(old, PERMISSION_READ) != ERROR_OK)
+      if (segment_permissions(old, PERMISSION_READ) != STATUS_OK)
 	CORE_ESCAPE("unable to modify the segment's permissions");
 
       /*
        * b)
        */
 
-      if (segment_copy(*new, 0, old, 0, from->size) != ERROR_OK)
+      if (segment_copy(*new, 0, old, 0, from->size) != STATUS_OK)
 	CORE_ESCAPE("unable to copy from the source segment to "
 		    "the cloned one");
 
@@ -792,7 +792,7 @@ t_error			segment_clone(i_as			asid,
        * c)
        */
 
-      if (segment_permissions(old, perms) != ERROR_OK)
+      if (segment_permissions(old, perms) != STATUS_OK)
 	CORE_ESCAPE("unable to modify the segment to its original "
 		    "permissions");
     }
@@ -806,7 +806,7 @@ t_error			segment_clone(i_as			asid,
        * a)
        */
 
-      if (segment_copy(*new, 0, old, 0, from->size) != ERROR_OK)
+      if (segment_copy(*new, 0, old, 0, from->size) != STATUS_OK)
 	CORE_ESCAPE("unable to copy from the source segment to "
 		    "the cloned one");
     }
@@ -815,14 +815,14 @@ t_error			segment_clone(i_as			asid,
    * 6)
    */
 
-  if (segment_permissions(*new, perms) != ERROR_OK)
+  if (segment_permissions(*new, perms) != STATUS_OK)
     CORE_ESCAPE("unable to set the permissions on the cloned segment");
 
   /*
    * 7)
    */
 
-  if (machine_call(segment, clone, asid, old, new) != ERROR_OK)
+  if (machine_call(segment, clone, asid, old, new) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -845,7 +845,7 @@ t_error			segment_clone(i_as			asid,
  * 6) call the machine.
  */
 
-t_error			segment_inject(i_as			asid,
+t_status		segment_inject(i_as			asid,
 				       o_segment*		object,
 				       i_segment*		id)
 {
@@ -875,7 +875,7 @@ t_error			segment_inject(i_as			asid,
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_OK)
+  if (as_get(asid, &as) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the address space segment");
 
   /*
@@ -895,31 +895,31 @@ t_error			segment_inject(i_as			asid,
    * 4)
    */
 
-  if (segment_protect(object->address, object->size) != ERROR_OK)
+  if (segment_protect(object->address, object->size) != STATUS_OK)
     CORE_ESCAPE("unable to protect the zone");
 
   /*
    * 5)
    */
 
-  if (set_add(_segment.segments, object) != ERROR_OK)
+  if (set_add(_segment.segments, object) != STATUS_OK)
     CORE_ESCAPE("unable to add the object to the set of segments");
 
-  if (set_add(as->segments, &object->id) != ERROR_OK)
+  if (set_add(as->segments, &object->id) != STATUS_OK)
     CORE_ESCAPE("unable to add the segment identifier to the address space");
 
   /*
    * 6)
    */
 
-  if (segment_unprotect(object->address, object->size) != ERROR_OK)
+  if (segment_unprotect(object->address, object->size) != STATUS_OK)
     CORE_ESCAPE("unable to unprotect the zone");
 
   /*
    * 7)
    */
 
-  if (machine_call(segment, inject, asid, object, id) != ERROR_OK)
+  if (machine_call(segment, inject, asid, object, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -941,7 +941,7 @@ t_error			segment_inject(i_as			asid,
  * 6) call the machine.
  */
 
-t_error			segment_give(i_segment			segid,
+t_status		segment_give(i_segment			segid,
 				     i_as			asid)
 {
   o_segment*		o;
@@ -952,24 +952,24 @@ t_error			segment_give(i_segment			segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_OK)
+  if (segment_get(segid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
    * 2)
    */
 
-  if (as_get(o->as, &src) != ERROR_OK)
+  if (as_get(o->as, &src) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
-  if (as_get(asid, &dest) != ERROR_OK)
+  if (as_get(asid, &dest) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 3)
    */
 
-  if (set_remove(src->segments, segid) != ERROR_OK)
+  if (set_remove(src->segments, segid) != STATUS_OK)
     CORE_ESCAPE("unable to remove the object from the set of segments");
 
   /*
@@ -982,14 +982,14 @@ t_error			segment_give(i_segment			segid,
    * 5)
    */
 
-  if (set_add(dest->segments, &segid) != ERROR_OK)
+  if (set_add(dest->segments, &segid) != STATUS_OK)
     CORE_ESCAPE("unable to add the object to the set of segments");
 
   /*
    * 6)
    */
 
-  if (machine_call(segment, give, segid, asid) != ERROR_OK)
+  if (machine_call(segment, give, segid, asid) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1040,7 +1040,7 @@ t_error			segment_give(i_segment			segid,
  * 3) call the machine.
  */
 
-t_error			segment_resize(i_segment		old,
+t_status		segment_resize(i_segment		old,
 				       t_psize			size,
 				       t_options		options,
 				       i_segment*		new)
@@ -1067,10 +1067,10 @@ t_error			segment_resize(i_segment		old,
    * 1)
    */
 
-  if (set_locate(_segment.segments, old, &it) != ERROR_OK)
+  if (set_locate(_segment.segments, old, &it) != STATUS_OK)
     CORE_ESCAPE("unable to locate the object in the set of segments");
 
-  if (set_object(_segment.segments, it, (void**)&o) != ERROR_OK)
+  if (set_object(_segment.segments, it, (void**)&o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -1108,7 +1108,7 @@ t_error			segment_resize(i_segment		old,
        * a)
        */
 
-      if (set_next(_segment.segments, it, &next) == ERROR_TRUE)
+      if (set_next(_segment.segments, it, &next) == TRUE)
 	{
 	  /*
 	   * #A)
@@ -1120,7 +1120,7 @@ t_error			segment_resize(i_segment		old,
 	   * i)
 	   */
 
-	  if (set_object(_segment.segments, next, (void**)&onext) != ERROR_OK)
+	  if (set_object(_segment.segments, next, (void**)&onext) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the segment object");
 
 	  /*
@@ -1191,35 +1191,35 @@ t_error			segment_resize(i_segment		old,
 			      size,
 			      PERMISSION_WRITE,
 			      o->options,
-			      new) != ERROR_OK)
+			      new) != STATUS_OK)
 	    CORE_ESCAPE("unable to reserve a segment");
 
 	  /*
 	   * #4)
 	   */
 
-	  if (segment_permissions(old, PERMISSION_READ) != ERROR_OK)
+	  if (segment_permissions(old, PERMISSION_READ) != STATUS_OK)
 	    CORE_ESCAPE("unable to modify the segment's permissions");
 
 	  /*
 	   * #5)
 	   */
 
-	  if (segment_copy(*new, 0, old, 0, o->size) != ERROR_OK)
+	  if (segment_copy(*new, 0, old, 0, o->size) != STATUS_OK)
 	    CORE_ESCAPE("unable to copy from one segment to the other");
 
 	  /*
 	   * #6)
 	   */
 
-	  if (segment_permissions(*new, perms) != ERROR_OK)
+	  if (segment_permissions(*new, perms) != STATUS_OK)
 	    CORE_ESCAPE("unable to modify the segment's permissions");
 
 	  /*
 	   * #7)
 	   */
 
-	  if (segment_release(old) != ERROR_OK)
+	  if (segment_release(old) != STATUS_OK)
 	    CORE_ESCAPE("unable to release the segment");
 	}
     }
@@ -1228,7 +1228,7 @@ t_error			segment_resize(i_segment		old,
    * 3)
    */
 
-  if (machine_call(segment, resize, old, size, new) != ERROR_OK)
+  if (machine_call(segment, resize, old, size, new) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1252,7 +1252,7 @@ t_error			segment_resize(i_segment		old,
  * 7) call the machine.
  */
 
-t_error			segment_split(i_segment			segid,
+t_status		segment_split(i_segment			segid,
 				      t_psize			size,
 				      i_segment*		left,
 				      i_segment*		right)
@@ -1283,10 +1283,10 @@ t_error			segment_split(i_segment			segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_OK)
+  if (segment_get(segid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
-  if (as_get(o->as, &as) != ERROR_OK)
+  if (as_get(o->as, &as) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
@@ -1329,7 +1329,7 @@ t_error			segment_split(i_segment			segid,
    * 6)
    */
 
-  if (segment_inject(o->as, n, &useless) != ERROR_OK)
+  if (segment_inject(o->as, n, &useless) != STATUS_OK)
     CORE_ESCAPE("unable to inject the segment object");
 
   /*
@@ -1337,7 +1337,7 @@ t_error			segment_split(i_segment			segid,
    */
 
   if (machine_call(segment, split,
-		   segid, size, left, right) != ERROR_OK)
+		   segid, size, left, right) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1359,7 +1359,7 @@ t_error			segment_split(i_segment			segid,
  * 6) call the machine.
  */
 
-t_error			segment_coalesce(i_segment		left,
+t_status		segment_coalesce(i_segment		left,
 					 i_segment		right,
 					 i_segment*		id)
 {
@@ -1380,10 +1380,10 @@ t_error			segment_coalesce(i_segment		left,
    * 1)
    */
 
-  if (segment_get(left, &seg1) != ERROR_OK)
+  if (segment_get(left, &seg1) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
-  if (segment_get(right, &seg2) != ERROR_OK)
+  if (segment_get(right, &seg2) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -1418,7 +1418,7 @@ t_error			segment_coalesce(i_segment		left,
    * 5)
    */
 
-  if (segment_release(right) != ERROR_OK)
+  if (segment_release(right) != STATUS_OK)
     CORE_ESCAPE("unable to release the segment");
 
   /*
@@ -1426,7 +1426,7 @@ t_error			segment_coalesce(i_segment		left,
    */
 
   if (machine_call(segment, coalesce,
-		   left, right, id) != ERROR_OK)
+		   left, right, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1448,7 +1448,7 @@ t_error			segment_coalesce(i_segment		left,
  * 3) call the machine.
  */
 
-t_error			segment_read(i_segment			segid,
+t_status		segment_read(i_segment			segid,
 				     t_paddr			offs,
 				     void*			buffer,
 				     t_psize			sz)
@@ -1469,7 +1469,7 @@ t_error			segment_read(i_segment			segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_OK)
+  if (segment_get(segid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -1486,7 +1486,7 @@ t_error			segment_read(i_segment			segid,
    * 3)
    */
 
-  if (machine_call(segment, read, segid, offs, buffer, sz) != ERROR_OK)
+  if (machine_call(segment, read, segid, offs, buffer, sz) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1508,7 +1508,7 @@ t_error			segment_read(i_segment			segid,
  * 3) call the machine.
  */
 
-t_error			segment_write(i_segment			segid,
+t_status		segment_write(i_segment			segid,
 				      t_paddr			offs,
 				      const void*		buffer,
 				      t_psize			sz)
@@ -1529,7 +1529,7 @@ t_error			segment_write(i_segment			segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_OK)
+  if (segment_get(segid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -1547,7 +1547,7 @@ t_error			segment_write(i_segment			segid,
    */
 
   if (machine_call(segment, write,
-		   segid, offs, buffer, sz) != ERROR_OK)
+		   segid, offs, buffer, sz) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1569,7 +1569,7 @@ t_error			segment_write(i_segment			segid,
  * 3) call the machine.
  */
 
-t_error			segment_copy(i_segment			dst,
+t_status		segment_copy(i_segment			dst,
 				     t_paddr			offsd,
 				     i_segment			src,
 				     t_paddr			offss,
@@ -1589,10 +1589,10 @@ t_error			segment_copy(i_segment			dst,
    * 1)
    */
 
-  if (segment_get(dst, &o1) != ERROR_OK)
+  if (segment_get(dst, &o1) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
-  if (segment_get(src, &o2) != ERROR_OK)
+  if (segment_get(src, &o2) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -1616,7 +1616,7 @@ t_error			segment_copy(i_segment			dst,
    */
 
   if (machine_call(segment, copy,
-		   dst, offsd, src, offss, sz) != ERROR_OK)
+		   dst, offsd, src, offss, sz) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1641,7 +1641,7 @@ t_error			segment_copy(i_segment			dst,
  * 9) call the machine.
  */
 
-t_error			segment_reserve(i_as			asid,
+t_status		segment_reserve(i_as			asid,
 					t_psize			size,
 					t_permissions		perms,
 					t_options		options,
@@ -1671,7 +1671,7 @@ t_error			segment_reserve(i_as			asid,
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_OK)
+  if (as_get(asid, &as) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
@@ -1686,14 +1686,14 @@ t_error			segment_reserve(i_as			asid,
    * 3)
    */
 
-  if (segment_space(asid, size, &o->address) != ERROR_OK)
+  if (segment_space(asid, size, &o->address) != STATUS_OK)
     CORE_ESCAPE("unable to locate unused space for the segment resevation");
 
   /*
    * 4)
    */
 
-  if (segment_protect(o->address, size) != ERROR_OK)
+  if (segment_protect(o->address, size) != STATUS_OK)
     CORE_ESCAPE("unable to protect the zone");
 
   /*
@@ -1716,17 +1716,17 @@ t_error			segment_reserve(i_as			asid,
    * 7)
    */
 
-  if (set_add(_segment.segments, o) != ERROR_OK)
+  if (set_add(_segment.segments, o) != STATUS_OK)
     CORE_ESCAPE("unable to add the object to the set of segments");
 
-  if (set_add(as->segments, &o->id) != ERROR_OK)
+  if (set_add(as->segments, &o->id) != STATUS_OK)
     CORE_ESCAPE("unable to add the segment identifier to the addresss space");
 
   /*
    * 8)
    */
 
-  if (segment_unprotect(o->address, size) != ERROR_OK)
+  if (segment_unprotect(o->address, size) != STATUS_OK)
     CORE_ESCAPE("unable to unprotect the zone");
 
   /*
@@ -1734,7 +1734,7 @@ t_error			segment_reserve(i_as			asid,
    */
 
   if (machine_call(segment, reserve,
-		   asid, size, perms, id) != ERROR_OK)
+		   asid, size, perms, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1751,7 +1751,7 @@ t_error			segment_reserve(i_as			asid,
  *    the address space's set of segments.
  */
 
-t_error			segment_release(i_segment		segid)
+t_status		segment_release(i_segment		segid)
 {
   o_as*			as;
   o_segment*		o;
@@ -1760,28 +1760,28 @@ t_error			segment_release(i_segment		segid)
    * 1)
    */
 
-  if (machine_call(segment, release, segid) != ERROR_OK)
+  if (machine_call(segment, release, segid) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  if (segment_get(segid, &o) != ERROR_OK)
+  if (segment_get(segid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
-  if (as_get(o->as, &as) != ERROR_OK)
+  if (as_get(o->as, &as) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 3)
    */
 
-  if (set_remove(as->segments, segid) != ERROR_OK)
+  if (set_remove(as->segments, segid) != STATUS_OK)
     CORE_ESCAPE("unable to remove the segment identifier from the "
 		"address space");
 
-  if (set_remove(_segment.segments, segid) != ERROR_OK)
+  if (set_remove(_segment.segments, segid) != STATUS_OK)
     CORE_ESCAPE("unable to remove the object from the set of segments");
 
   CORE_LEAVE();
@@ -1798,7 +1798,7 @@ t_error			segment_release(i_segment		segid)
  * 4) call the machine.
  */
 
-t_error			segment_permissions(i_segment		segid,
+t_status		segment_permissions(i_segment		segid,
 					    t_permissions	perms)
 {
   o_segment*		o;
@@ -1814,7 +1814,7 @@ t_error			segment_permissions(i_segment		segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_OK)
+  if (segment_get(segid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -1827,7 +1827,7 @@ t_error			segment_permissions(i_segment		segid,
    * 3)
    */
 
-  if (machine_call(segment, permissions, segid, perms) != ERROR_OK)
+  if (machine_call(segment, permissions, segid, perms) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1845,7 +1845,7 @@ t_error			segment_permissions(i_segment		segid,
  *   b) release the segment.
  */
 
-t_error			segment_flush(i_as			asid)
+t_status		segment_flush(i_as			asid)
 {
   i_segment*		data;
   o_as*			as;
@@ -1855,27 +1855,27 @@ t_error			segment_flush(i_as			asid)
    * 1)
    */
 
-  if (machine_call(segment, flush, asid) != ERROR_OK)
+  if (machine_call(segment, flush, asid) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  if (as_get(asid, &as) != ERROR_OK)
+  if (as_get(asid, &as) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 3)
    */
 
-  while (set_head(as->segments, &i) == ERROR_TRUE)
+  while (set_head(as->segments, &i) == TRUE)
     {
       /*
        * a)
        */
 
-      if (set_object(as->segments, i, (void**)&data) != ERROR_OK)
+      if (set_object(as->segments, i, (void**)&data) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the object corresponding to "
 		    "its identifier");
 
@@ -1883,7 +1883,7 @@ t_error			segment_flush(i_as			asid)
        * b)
        */
 
-      if (segment_release(*data) != ERROR_OK)
+      if (segment_release(*data) != STATUS_OK)
 	CORE_ESCAPE("unable to release the segment");
     }
 
@@ -1906,7 +1906,7 @@ t_error			segment_flush(i_as			asid)
  * 2) if no segment has been found, return false;
  */
 
-t_error			segment_locate(t_paddr			address,
+t_bool			segment_locate(t_paddr			address,
 				       i_segment*		id)
 {
   o_segment*		object;
@@ -1929,7 +1929,7 @@ t_error			segment_locate(t_paddr			address,
        * a)
        */
 
-      assert(set_object(_segment.segments, i, (void**)&object) == ERROR_OK);
+      assert(set_object(_segment.segments, i, (void**)&object) == STATUS_OK);
 
       /*
        * b)
@@ -1955,9 +1955,9 @@ t_error			segment_locate(t_paddr			address,
  * this function returns true if the segment exists.
  */
 
-t_error			segment_exist(i_segment			segid)
+t_bool			segment_exist(i_segment			segid)
 {
-  if (set_exist(_segment.segments, segid) != ERROR_TRUE)
+  if (set_exist(_segment.segments, segid) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -1972,7 +1972,7 @@ t_error			segment_exist(i_segment			segid)
  * 1) retrieve the object from the manager's set of segments.
  */
 
-t_error			segment_get(i_segment			segid,
+t_status		segment_get(i_segment			segid,
 				    o_segment**			object)
 {
   /*
@@ -1986,7 +1986,7 @@ t_error			segment_get(i_segment			segid,
    * 1)
    */
 
-  if (set_get(_segment.segments, segid, (void**)object) != ERROR_OK)
+  if (set_get(_segment.segments, segid, (void**)object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of segments");
 
   CORE_LEAVE();
@@ -2005,7 +2005,7 @@ t_error			segment_get(i_segment			segid,
  * 5) call the machine.
  */
 
-t_error			segment_initialize(t_paddr		base,
+t_status		segment_initialize(t_paddr		base,
 					   t_psize		size)
 {
   /*
@@ -2052,14 +2052,14 @@ t_error			segment_initialize(t_paddr		base,
 		  SET_OPTION_SORT | SET_OPTION_FREE,
 		  sizeof (o_segment),
 		  SEGMENT_BPT_NODESZ,
-		  &_segment.segments) != ERROR_OK)
+		  &_segment.segments) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the segments set");
 
   /*
    * 5)
    */
 
-  if (machine_call(segment, initialize) != ERROR_OK)
+  if (machine_call(segment, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -2078,7 +2078,7 @@ t_error			segment_initialize(t_paddr		base,
  * 4) release the set of segments.
  */
 
-t_error			segment_clean(void)
+t_status		segment_clean(void)
 {
   o_segment*		data;
   s_iterator		i;
@@ -2094,20 +2094,20 @@ t_error			segment_clean(void)
    * 2)
    */
 
-  if (machine_call(segment, clean) != ERROR_OK)
+  if (machine_call(segment, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 3)
    */
 
-  while (set_head(_segment.segments, &i) == ERROR_TRUE)
+  while (set_head(_segment.segments, &i) == TRUE)
     {
       /*
        * a)
        */
 
-      if (set_object(_segment.segments, i, (void**)&data) != ERROR_OK)
+      if (set_object(_segment.segments, i, (void**)&data) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the object corresponding to "
 		    "its identifier");
 
@@ -2115,7 +2115,7 @@ t_error			segment_clean(void)
        * b)
        */
 
-      if (segment_release(data->id) != ERROR_OK)
+      if (segment_release(data->id) != STATUS_OK)
 	CORE_ESCAPE("unable to release the segment");
     }
 
@@ -2123,7 +2123,7 @@ t_error			segment_clean(void)
    * 4)
    */
 
-  if (set_release(_segment.segments) != ERROR_OK)
+  if (set_release(_segment.segments) != STATUS_OK)
     CORE_ESCAPE("unable to release the segments set");
 
   CORE_LEAVE();

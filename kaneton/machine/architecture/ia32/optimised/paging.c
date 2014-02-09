@@ -83,7 +83,7 @@ static void		ia32_paging_enable(void)
  * 2) enables paging.
  */
 
-t_error			ia32_paging_init(void)
+t_status		ia32_paging_init(void)
 {
 
   /*
@@ -98,16 +98,16 @@ t_error			ia32_paging_init(void)
 
   ia32_paging_enable();
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * cleans paging.
  */
 
-t_error			ia32_paging_clean(void)
+t_status		ia32_paging_clean(void)
 {
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*						       [endblock::functions] */

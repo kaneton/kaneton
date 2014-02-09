@@ -234,7 +234,7 @@ extern t_uint32	ia32_interrupt_pdbr;
  * ../interrupt.c
  */
 
-t_error			ia32_interrupt_vector_init(void);
+t_status		ia32_interrupt_vector_init(void);
 
 void			ia32_handler_exception(t_uint32			nr,
 					       t_uint32			code);

@@ -61,7 +61,7 @@ d_task			glue_task_dispatch =
  * 2) display the machine-specific information.
  */
 
-t_error			glue_task_show(i_task			id,
+t_status		glue_task_show(i_task			id,
 				       mt_margin		margin)
 {
   o_task*		o;
@@ -70,7 +70,7 @@ t_error			glue_task_show(i_task			id,
    * 1)
    */
 
-  if (task_get(id, &o) != ERROR_OK)
+  if (task_get(id, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -104,7 +104,7 @@ t_error			glue_task_show(i_task			id,
  * 2) clear the I/O map.
  */
 
-t_error			glue_task_reserve(t_class		class,
+t_status		glue_task_reserve(t_class		class,
 					  t_behaviour		behav,
 					  t_priority		prior,
 					  i_task*		id)
@@ -115,14 +115,14 @@ t_error			glue_task_reserve(t_class		class,
    * 1)
    */
 
-  if (task_get(*id, &o) != ERROR_OK)
+  if (task_get(*id, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
    * 2)
    */
 
-  if (architecture_io_clear(*id) != ERROR_OK)
+  if (architecture_io_clear(*id) != STATUS_OK)
     MACHINE_ESCAPE("unable to clear the I/O bitmap");
 
   o->machine.io.flush = BOOLEAN_FALSE;

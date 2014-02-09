@@ -32,7 +32,7 @@
 #define		machine_call_task(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_task_dispatch.task_ ## _function_ != NULL)		\
         _r_ = glue_task_dispatch.task_ ## _function_(_args_);		\
@@ -80,10 +80,10 @@
  * ../task.c
  */
 
-t_error			glue_task_show(i_task			id,
+t_status		glue_task_show(i_task			id,
 				       mt_margin		margin);
 
-t_error			glue_task_reserve(t_class		class,
+t_status		glue_task_reserve(t_class		class,
 					  t_behaviour		behav,
 					  t_priority		prior,
 					  i_task*		id);

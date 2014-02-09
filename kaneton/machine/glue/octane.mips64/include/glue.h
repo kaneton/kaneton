@@ -33,7 +33,7 @@
 
 #define machine_include(_manager_)
 
-#define machine_call(_manager_, _function_, _arguments_...) ERROR_NONE
+#define machine_call(_manager_, _function_, _arguments_...) STATUS_OK
 
 #define machine_data(_object_)
 

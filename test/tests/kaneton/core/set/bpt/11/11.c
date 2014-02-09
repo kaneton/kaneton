@@ -43,7 +43,7 @@ void			test_core_set_bpt_11(void)
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof (t_id),
 		  ___kaneton$pagesz,
-		  &id) != ERROR_OK)
+		  &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -54,7 +54,7 @@ void			test_core_set_bpt_11(void)
     {
       obj = i;
 
-      if (set_add(id, &obj) != ERROR_OK)
+      if (set_add(id, &obj) != STATUS_OK)
 	TEST_ERROR("[set_add] error");
     }
 
@@ -62,13 +62,13 @@ void			test_core_set_bpt_11(void)
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   set_foreach(SET_OPTION_BACKWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (*pdata != --i)
@@ -80,7 +80,7 @@ void			test_core_set_bpt_11(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(vmlke4f922g43);

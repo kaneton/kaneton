@@ -38,8 +38,8 @@ char* strings[]  __attribute__ ((section(".early.data"))) =
   " at address 0x"
 };
 
-void print_error(char *s, t_uint32 address) __attribute__ ((section(".early.text")));
-void print_error(char *s, t_uint32 address)
+void print_status(char *s, t_uint32 address) __attribute__ ((section(".early.text")));
+void print_status(char *s, t_uint32 address)
 {
   t_uint16 *video = (t_uint16 *)0xB8000;
   t_sint32 i;
@@ -73,7 +73,7 @@ void print_error(char *s, t_uint32 address)
   {									\
     t_uint32 fault_addr;						\
     asm ("movl " #addr_offset "(%%esp), %0\n" : "=r" (fault_addr));	\
-    print_error(string, fault_addr);					\
+    print_status(string, fault_addr);					\
     for (;;)								\
       asm ("hlt");							\
   }

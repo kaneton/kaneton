@@ -53,7 +53,7 @@ m_clock			_clock;
  * 2) call the machine.
  */
 
-t_error			clock_show(s_clock*			clock,
+t_status		clock_show(s_clock*			clock,
 				   mt_margin			margin)
 {
   /*
@@ -91,7 +91,7 @@ t_error			clock_show(s_clock*			clock,
    * 2)
    */
 
-  if (machine_call(clock, show, clock, margin) != ERROR_OK)
+  if (machine_call(clock, show, clock, margin) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -109,13 +109,13 @@ t_error			clock_show(s_clock*			clock,
  * 1) call the machine.
  */
 
-t_error			clock_update(t_uint32			millisecond)
+t_status		clock_update(t_uint32			millisecond)
 {
   /*
    * 1)
    */
 
-  if (machine_call(clock, update, millisecond) != ERROR_OK)
+  if (machine_call(clock, update, millisecond) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -134,7 +134,7 @@ t_error			clock_update(t_uint32			millisecond)
  * 1) call the machine.
  */
 
-t_error			clock_current(s_clock*			clock)
+t_status		clock_current(s_clock*			clock)
 {
   /*
    * 0)
@@ -147,7 +147,7 @@ t_error			clock_current(s_clock*			clock)
    * 1)
    */
 
-  if (machine_call(clock, current, clock) != ERROR_OK)
+  if (machine_call(clock, current, clock) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -163,7 +163,7 @@ t_error			clock_current(s_clock*			clock)
  * 3) call the machine.
  */
 
-t_error			clock_initialize(void)
+t_status		clock_initialize(void)
 {
   /*
    * 1)
@@ -182,7 +182,7 @@ t_error			clock_initialize(void)
    * 3)
    */
 
-  if (machine_call(clock, initialize) != ERROR_OK)
+  if (machine_call(clock, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -197,7 +197,7 @@ t_error			clock_initialize(void)
  * 2) call the machine.
  */
 
-t_error			clock_clean(void)
+t_status		clock_clean(void)
 {
   /*
    * 1)
@@ -210,7 +210,7 @@ t_error			clock_clean(void)
    * 2)
    */
 
-  if (machine_call(clock, clean) != ERROR_OK)
+  if (machine_call(clock, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();

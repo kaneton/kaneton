@@ -238,22 +238,22 @@ typedef struct
  * ../idt.c
  */
 
-t_error			architecture_idt_dump(void);
+t_status		architecture_idt_dump(void);
 
-t_error			architecture_idt_build(t_paddr		base,
+t_status		architecture_idt_build(t_paddr		base,
 					       t_uint16		size,
 					       as_idt*		idt);
 
-t_error			architecture_idt_import(as_idt*		idt);
+t_status		architecture_idt_import(as_idt*		idt);
 
-t_error			architecture_idt_export(as_idt*		idt);
+t_status		architecture_idt_export(as_idt*		idt);
 
-t_error			architecture_idt_insert(t_uint16	index,
+t_status		architecture_idt_insert(t_uint16	index,
 						t_vaddr		offset,
 						t_uint16	selector,
 						t_flags		flags);
 
-t_error			architecture_idt_delete(t_uint16	index);
+t_status		architecture_idt_delete(t_uint16	index);
 
 
 /*

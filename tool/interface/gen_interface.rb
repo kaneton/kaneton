@@ -50,11 +50,11 @@ def process(kinterface, hinterface, uinterface, manager, func)
  */
 
 "
-    kinterface.puts "t_error\t\tinterface_#{operation}(o_syscall*\tmessage)\n{\n"
-    kinterface.puts "  t_error\terror;\n"
+    kinterface.puts "t_status\t\tinterface_#{operation}(o_syscall*\tmessage)\n{\n"
+    kinterface.puts "  t_status\terror;\n"
   end
 
-  code_cap = "  if (capability_check(#{manager}, #{capability}) != ERROR_NONE)\n    return (ERROR_UNKNOWN);\n\n"
+  code_cap = "  if (capability_check(#{manager}, #{capability}) != STATUS_OK)\n    return (STATUS_UNKNOWN_ERROR);\n\n"
 
   trequest = ""
   treply = ""
@@ -143,10 +143,10 @@ def process(kinterface, hinterface, uinterface, manager, func)
     kinterface.puts "  error = #{operation}(#{args});\n\n"
     kinterface.puts "  message->u.reply.error = error;\n"
     kinterface.puts code_serialize + "\n"
-    kinterface.puts "  return (ERROR_NONE);\n}\n\n"
+    kinterface.puts "  return (STATUS_OK);\n}\n\n"
   end
 
-  uinterface.puts "t_error\t\t#{operation}(#{uargs})\n{\n  o_syscall\t\tmessage;\n  i_node\t\tnode;\n  t_vsize\t\tsize;\n\n"
+  uinterface.puts "t_status\t\t#{operation}(#{uargs})\n{\n  o_syscall\t\tmessage;\n  i_node\t\tnode;\n  t_vsize\t\tsize;\n\n"
 
   uinterface.puts "  node.machine = 0;
   node.task = 0;
@@ -157,16 +157,16 @@ def process(kinterface, hinterface, uinterface, manager, func)
 
   uinterface.puts "  message_send(node, MESSAGE_TYPE_INTERFACE, (t_vaddr)&message, sizeof (message));
 
-  if (message_receive(MESSAGE_TYPE_INTERFACE, (t_vaddr)&message, &size, &node) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (message_receive(MESSAGE_TYPE_INTERFACE, (t_vaddr)&message, &size, &node) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
 "
 
-  uinterface.puts "  if (message.u.reply.error != ERROR_NONE)\n    return (ERROR_UNKNOWN);\n\n"
+  uinterface.puts "  if (message.u.reply.error != STATUS_OK)\n    return (STATUS_UNKNOWN_ERROR);\n\n"
 
   uinterface.puts code_output + "\n"
 
-  uinterface.puts "  return (ERROR_NONE);\n}\n\n"
+  uinterface.puts "  return (STATUS_OK);\n}\n\n"
 
 
   $type_request += "\tstruct\n\t{#{trequest}\n\t}\t\t#{operation};\n" if trequest != ""
@@ -202,21 +202,21 @@ def process_attribute(kinterface, hinterface, uinterface, manager, attr)
 
 "
 
-  kinterface.puts "t_error\t\tinterface_#{manager}_attribute_#{name}(o_syscall*\tmessage)\n"
+  kinterface.puts "t_status\t\tinterface_#{manager}_attribute_#{name}(o_syscall*\tmessage)\n"
 
   kinterface.puts "{\n  o_#{manager}*\t\to;\n\n"
 
   # XXX cap
-  kinterface.puts "  if (#{manager}_get(message->u.request.u.#{manager}_attribute_#{name}.arg1, &o) != ERROR_NONE)\n"
+  kinterface.puts "  if (#{manager}_get(message->u.request.u.#{manager}_attribute_#{name}.arg1, &o) != STATUS_OK)\n"
   kinterface.puts "    {\n"
-  kinterface.puts "      message->u.reply.error = ERROR_UNKNOWN;\n"
+  kinterface.puts "      message->u.reply.error = STATUS_UNKNOWN_ERROR;\n"
   kinterface.puts "    }\n"
   kinterface.puts "  else\n"
   kinterface.puts "    {\n"
-  kinterface.puts "      message->u.reply.error = ERROR_NONE;\n"
+  kinterface.puts "      message->u.reply.error = STATUS_OK;\n"
   kinterface.puts "      message->u.reply.u.#{manager}_attribute_#{name}.result1 = o->#{name};\n"
   kinterface.puts "    }\n"
-  kinterface.puts "\n  return (ERROR_NONE);"
+  kinterface.puts "\n  return (STATUS_OK);"
   kinterface.puts "}\n\n"
 
   process(kinterface, hinterface, uinterface, manager, func);
@@ -278,7 +278,7 @@ typedef struct
     } request;
     struct
     {
-      t_error		error;
+      t_status		error;
       union
       {
 #{$type_reply}      } u;
@@ -286,7 +286,7 @@ typedef struct
   } u;
 }			o_syscall;
 
-typedef t_error (*t_interface_dispatch)(o_syscall*);
+typedef t_status (*t_interface_dispatch)(o_syscall*);
 
 "
 

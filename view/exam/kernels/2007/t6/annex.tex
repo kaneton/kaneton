@@ -252,8 +252,8 @@ t_iterator      i;
 
 set_foreach(SET_OPT_FORWARD, segments, &i, state)
   {
-    if (set_object(segments, i, (void**)&seg) != ERROR_NONE)
-      AS_LEAVE(as, ERROR_UNKNOWN);
+    if (set_object(segments, i, (void**)&seg) != STATUS_OK)
+      AS_LEAVE(as, STATUS_UNKNOWN_ERROR);
 
     // use seg variable here
   }

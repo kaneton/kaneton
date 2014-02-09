@@ -187,10 +187,10 @@ typedef struct
 #define set_trap(_func_, _id_, _args_...)				\
   (									\
     {									\
-      t_error		_r_ = ERROR_KO;					\
-      o_set*		_set_;						\
+      t_uint32	_r_ = STATUS_ERROR;					\
+      o_set*	_set_;						\
 									\
-      if (set_descriptor((_id_), &_set_) == ERROR_OK)			\
+      if (set_descriptor((_id_), &_set_) == STATUS_OK)			\
         {								\
           switch (_set_->type)						\
             {								\
@@ -301,13 +301,13 @@ typedef struct
   for ((_state_) = ITERATOR_STATE_UNUSED;				\
        (((_state_) == ITERATOR_STATE_UNUSED) ?				\
          ((_opt_) == SET_OPTION_FORWARD ?				\
-           set_head((_id_), (_iterator_)) == ERROR_TRUE :		\
-           set_tail((_id_), (_iterator_)) == ERROR_TRUE) :		\
+           set_head((_id_), (_iterator_)) == TRUE :		\
+           set_tail((_id_), (_iterator_)) == TRUE) :		\
          ((_opt_) == SET_OPTION_FORWARD ?				\
            set_next((_id_), *(_iterator_), (_iterator_)) ==		\
-             ERROR_TRUE :						\
+             TRUE :						\
            set_previous((_id_), *(_iterator_), (_iterator_)) ==		\
-             ERROR_TRUE));						\
+             TRUE));						\
        (_state_) = ITERATOR_STATE_USED					\
       )
 
@@ -326,106 +326,106 @@ typedef struct
  * ../../core/set/set.c
  */
 
-t_error			set_dump(void);
+t_status		set_dump(void);
 
-t_error			set_empty(i_set				setid);
+t_bool			set_empty(i_set				setid);
 
-t_error			set_size(i_set				setid,
+t_status		set_size(i_set				setid,
 				 t_setsz*			size);
 
-t_error			set_new(o_set*				object);
+t_status		set_new(o_set*				object);
 
-t_error			set_destroy(i_set			setid);
+t_status		set_destroy(i_set			setid);
 
-t_error			set_descriptor(i_set			setid,
+t_status		set_descriptor(i_set			setid,
 				       o_set**			object);
 
-t_error			set_get(i_set				setid,
+t_status		set_get(i_set				setid,
 				t_id				id,
 				void**				object);
 
-t_error			set_initialize(void);
+t_status		set_initialize(void);
 
-t_error			set_clean(void);
+t_status		set_clean(void);
 
 
 /*
  * ../../core/set/set-array.c
  */
 
-t_error			set_exist_array(i_set			setid,
+t_bool			set_exist_array(i_set			setid,
 					t_id			id);
 
-t_error			set_show_array(i_set			setid,
+t_status		set_show_array(i_set			setid,
 				       mt_margin		margin);
 
-t_error			set_head_array(i_set			setid,
+t_bool			set_head_array(i_set			setid,
 				       s_iterator*		iterator);
 
-t_error			set_tail_array(i_set			setid,
+t_bool			set_tail_array(i_set			setid,
 				       s_iterator*		iterator);
 
-t_error			set_previous_array(i_set		setid,
+t_bool			set_previous_array(i_set		setid,
 					   s_iterator		current,
 					   s_iterator*		previous);
 
-t_error			set_next_array(i_set			setid,
+t_bool			set_next_array(i_set			setid,
 				       s_iterator		current,
 				       s_iterator*		next);
 
-t_error			set_expand_array(o_set			*object,
+t_status		set_expand_array(o_set			*object,
 					 void			*data);
 
-t_error			set_insert_array_at(o_set		*object,
+t_status		set_insert_array_at(o_set		*object,
 					    t_setsz		pos,
 					    void		*data);
 
-t_error			set_insert_array(i_set			setid,
+t_status		set_insert_array(i_set			setid,
 					 void*			data);
 
-t_error			set_append_array(i_set			setid,
+t_status		set_append_array(i_set			setid,
 					 void*			data);
 
-t_error			set_before_array(i_set			setid,
+t_status		set_before_array(i_set			setid,
 					 s_iterator		iterator,
 					 void*			data);
 
-t_error			set_after_array(i_set			setid,
+t_status		set_after_array(i_set			setid,
 					s_iterator		iterator,
 					void*			data);
 
-t_error			set_add_array(i_set			setid,
+t_status		set_add_array(i_set			setid,
 				      void*			data);
 
-t_error			set_remove_array(i_set			setid,
+t_status		set_remove_array(i_set			setid,
 					 t_id			id);
 
-t_error			set_delete_array(i_set			setid,
+t_status		set_delete_array(i_set			setid,
 					 s_iterator		iterator);
 
-t_error			set_flush_array(i_set			setid);
+t_status		set_flush_array(i_set			setid);
 
-t_error			set_locate_array(i_set			setid,
+t_status		set_locate_array(i_set			setid,
 					 t_id			id,
 					 s_iterator*		iterator);
 
-t_error			set_object_array(i_set			setid,
+t_status		set_object_array(i_set			setid,
 					 s_iterator		iterator,
 					 void**			data);
 
-t_error			set_reserve_array(t_options		options,
+t_status		set_reserve_array(t_options		options,
 					  t_setsz		initsz,
 					  t_size		datasz,
 					  i_set*		id);
 
-t_error			set_release_array(i_set			setid);
+t_status		set_release_array(i_set			setid);
 
-t_error			set_push_array(i_set			setid,
+t_status		set_push_array(i_set			setid,
 				       void*			data);
 
-t_error			set_pop_array(i_set			setid);
+t_status		set_pop_array(i_set			setid);
 
-t_error			set_pick_array(i_set			setid,
+t_status		set_pick_array(i_set			setid,
 				       void**			data);
 
 
@@ -433,71 +433,71 @@ t_error			set_pick_array(i_set			setid,
  * ../../core/set/set-ll.c
  */
 
-t_error			set_exist_ll(i_set			setid,
+t_bool			set_exist_ll(i_set			setid,
 				     t_id			id);
 
-t_error			set_show_ll(i_set			setid,
+t_status		set_show_ll(i_set			setid,
 				    mt_margin			margin);
 
-t_error			set_head_ll(i_set			setid,
+t_bool			set_head_ll(i_set			setid,
 				    s_iterator*			iterator);
 
-t_error			set_tail_ll(i_set			setid,
+t_bool			set_tail_ll(i_set			setid,
 				    s_iterator*			iterator);
 
-t_error			set_previous_ll(i_set			setid,
+t_bool			set_previous_ll(i_set			setid,
 					s_iterator		current,
 					s_iterator*		previous);
 
-t_error			set_next_ll(i_set			setid,
+t_bool			set_next_ll(i_set			setid,
 				    s_iterator			current,
 				    s_iterator*			next);
 
-t_error			set_insert_ll(i_set			setid,
+t_status		set_insert_ll(i_set			setid,
 				      void*			data);
 
-t_error			set_append_ll(i_set			setid,
+t_status		set_append_ll(i_set			setid,
 				      void*			data);
 
-t_error			set_before_ll(i_set			setid,
+t_status		set_before_ll(i_set			setid,
 				      s_iterator		iterator,
 				      void*			data);
 
-t_error			set_after_ll(i_set			setid,
+t_status		set_after_ll(i_set			setid,
 				     s_iterator			iterator,
 				     void*			data);
 
-t_error			set_add_ll(i_set			setid,
+t_status		set_add_ll(i_set			setid,
 				   void*			data);
 
-t_error			set_remove_ll(i_set			setid,
+t_status		set_remove_ll(i_set			setid,
 				      t_id			id);
 
-t_error			set_delete_ll(i_set			setid,
+t_status		set_delete_ll(i_set			setid,
 				      s_iterator		iterator);
 
-t_error			set_flush_ll(i_set			setid);
+t_status		set_flush_ll(i_set			setid);
 
-t_error			set_locate_ll(i_set			setid,
+t_status		set_locate_ll(i_set			setid,
 				      t_id			id,
 				      s_iterator*		iterator);
 
-t_error			set_object_ll(i_set			setid,
+t_status		set_object_ll(i_set			setid,
 				      s_iterator		iterator,
 				      void**			data);
 
-t_error			set_reserve_ll(t_options		options,
+t_status		set_reserve_ll(t_options		options,
 				       t_size			datasz,
 				       i_set*			id);
 
-t_error			set_release_ll(i_set			setid);
+t_status		set_release_ll(i_set			setid);
 
-t_error			set_push_ll(i_set			setid,
+t_status		set_push_ll(i_set			setid,
 				    void*			data);
 
-t_error			set_pop_ll(i_set			setid);
+t_status		set_pop_ll(i_set			setid);
 
-t_error			set_pick_ll(i_set			setid,
+t_status		set_pick_ll(i_set			setid,
 				    void**			data);
 
 
@@ -524,81 +524,81 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
 				       t_bpt_value(set)		value1,
 				       t_bpt_value(set)		value2);
 
-t_error			set_exist_bpt(i_set			setid,
+t_bool			set_exist_bpt(i_set			setid,
 				      t_id			id);
 
-t_error			set_build_bpt(o_set*			object,
+t_status		set_build_bpt(o_set*			object,
 				      BPT_NODESZ_T		nodesz);
 
-t_error			set_adjust_bpt(o_set*			object,
+t_status		set_adjust_bpt(o_set*			object,
 				       t_bpt_uni(set)		alloc,
 				       t_bpt_uni(set)		size);
 
-t_error			set_destroy_bpt(o_set*			object);
+t_status		set_destroy_bpt(o_set*			object);
 
-t_error			set_show_bpt(i_set			setid,
+t_status		set_show_bpt(i_set			setid,
 				     mt_margin			margin);
 
-t_error			set_head_bpt(i_set			setid,
+t_bool			set_head_bpt(i_set			setid,
 				     s_iterator*		iterator);
 
-t_error			set_tail_bpt(i_set			setid,
+t_bool			set_tail_bpt(i_set			setid,
 				     s_iterator*		iterator);
 
-t_error			set_previous_bpt(i_set			setid,
+t_bool			set_previous_bpt(i_set			setid,
 					 s_iterator		current,
 					 s_iterator*		previous);
 
-t_error			set_next_bpt(i_set			setid,
+t_bool			set_next_bpt(i_set			setid,
 				     s_iterator			current,
 				     s_iterator*		next);
 
-t_error			set_insert_bpt(i_set			setid,
+t_status		set_insert_bpt(i_set			setid,
 				       void*			data);
 
-t_error			set_append_bpt(i_set			setid,
+t_status		set_append_bpt(i_set			setid,
 				       void*			data);
 
-t_error			set_before_bpt(i_set			setid,
+t_status		set_before_bpt(i_set			setid,
 				       s_iterator		iterator,
 				       void*			data);
 
-t_error			set_after_bpt(i_set			setid,
+t_status		set_after_bpt(i_set			setid,
 				      s_iterator		iterator,
 				      void*			data);
 
-t_error			set_add_bpt(i_set			setid,
+t_status		set_add_bpt(i_set			setid,
 				    void*			data);
 
-t_error			set_remove_bpt(i_set			setid,
+t_status		set_remove_bpt(i_set			setid,
 				       t_id			id);
 
-t_error			set_delete_bpt(i_set			setid,
+t_status		set_delete_bpt(i_set			setid,
 				       s_iterator		iterator);
 
-t_error			set_flush_bpt(i_set			setid);
+t_status		set_flush_bpt(i_set			setid);
 
-t_error			set_locate_bpt(i_set			setid,
+t_status		set_locate_bpt(i_set			setid,
 				       t_id			id,
 				       s_iterator*		iterator);
 
-t_error			set_object_bpt(i_set			setid,
+t_status		set_object_bpt(i_set			setid,
 				       s_iterator		iterator,
 				       void**			data);
 
-t_error			set_reserve_bpt(t_options		options,
+t_status		set_reserve_bpt(t_options		options,
 					t_size			datasz,
 					t_bpt_nodesz(set)	nodesz,
 					i_set*			id);
 
-t_error			set_release_bpt(i_set			setid);
+t_status		set_release_bpt(i_set			setid);
 
-t_error			set_push_bpt(i_set			setid,
+t_status		set_push_bpt(i_set			setid,
 				     void*			data);
 
-t_error			set_pop_bpt(i_set			setid);
+t_status		set_pop_bpt(i_set			setid);
 
-t_error			set_pick_bpt(i_set			setid,
+t_status		set_pick_bpt(i_set			setid,
 				     void**			data);
 
 
@@ -606,70 +606,70 @@ t_error			set_pick_bpt(i_set			setid,
  * ../../core/set/set-pipe.c
  */
 
-t_error			set_reserve_pipe(t_options		options,
+t_status		set_reserve_pipe(t_options		options,
 					 t_size			datasz,
 					 i_set*			id);
 
-t_error			set_exist_pipe(i_set			setid,
+t_bool			set_exist_pipe(i_set			setid,
 				       t_id			id);
 
-t_error			set_show_pipe(i_set			setid,
+t_status		set_show_pipe(i_set			setid,
 				      mt_margin			margin);
 
-t_error			set_release_pipe(i_set			setid);
+t_status		set_release_pipe(i_set			setid);
 
-t_error			set_flush_pipe(i_set			setid);
+t_status		set_flush_pipe(i_set			setid);
 
-t_error			set_push_pipe(i_set			setid,
+t_status		set_push_pipe(i_set			setid,
 				      void*			data);
 
-t_error			set_pick_pipe(i_set			setid,
+t_status		set_pick_pipe(i_set			setid,
 				      void**			data);
 
-t_error			set_pop_pipe(i_set			setid);
+t_status		set_pop_pipe(i_set			setid);
 
-t_error			set_head_pipe(i_set			setid,
+t_bool			set_head_pipe(i_set			setid,
 				      s_iterator*		iterator);
 
-t_error			set_tail_pipe(i_set			setid,
+t_bool			set_tail_pipe(i_set			setid,
 				      s_iterator*		iterator);
 
-t_error			set_previous_pipe(i_set			setid,
+t_bool			set_previous_pipe(i_set			setid,
 					  s_iterator		current,
 					  s_iterator*		previous);
 
-t_error			set_next_pipe(i_set			setid,
+t_bool			set_next_pipe(i_set			setid,
 				      s_iterator		current,
 				      s_iterator*		next);
 
-t_error			set_insert_pipe(i_set			setid,
+t_status		set_insert_pipe(i_set			setid,
 					void*			data);
 
-t_error			set_append_pipe(i_set			setid,
+t_status		set_append_pipe(i_set			setid,
 					void*			data);
 
-t_error			set_before_pipe(i_set			setid,
+t_status		set_before_pipe(i_set			setid,
 					s_iterator		iterator,
 					void*			data);
 
-t_error			set_after_pipe(i_set			setid,
+t_status		set_after_pipe(i_set			setid,
 				       s_iterator		iterator,
 				       void*			data);
 
-t_error			set_add_pipe(i_set			setid,
+t_status		set_add_pipe(i_set			setid,
 				     void*			data);
 
-t_error			set_remove_pipe(i_set			setid,
+t_status		set_remove_pipe(i_set			setid,
 					t_id			id);
 
-t_error			set_delete_pipe(i_set			setid,
+t_status		set_delete_pipe(i_set			setid,
 					s_iterator		iterator);
 
-t_error			set_locate_pipe(i_set			setid,
+t_status		set_locate_pipe(i_set			setid,
 					t_id			id,
 					s_iterator*		iterator);
 
-t_error			set_object_pipe(i_set			setid,
+t_status		set_object_pipe(i_set			setid,
 					s_iterator		iterator,
 					void**			data);
 
@@ -678,70 +678,70 @@ t_error			set_object_pipe(i_set			setid,
  * ../../core/set/set-stack.c
  */
 
-t_error			set_reserve_stack(t_options		options,
+t_status		set_reserve_stack(t_options		options,
 					  t_size		datasz,
 					  i_set*		id);
 
-t_error			set_exist_stack(i_set			setid,
+t_bool			set_exist_stack(i_set			setid,
 					t_id			id);
 
-t_error			set_show_stack(i_set			setid,
+t_status		set_show_stack(i_set			setid,
 				       mt_margin		margin);
 
-t_error			set_release_stack(i_set			setid);
+t_status		set_release_stack(i_set			setid);
 
-t_error			set_flush_stack(i_set			setid);
+t_status		set_flush_stack(i_set			setid);
 
-t_error			set_push_stack(i_set			setid,
+t_status		set_push_stack(i_set			setid,
 				       void*			data);
 
-t_error			set_pick_stack(i_set			setid,
+t_status		set_pick_stack(i_set			setid,
 				       void**			data);
 
-t_error			set_pop_stack(i_set			setid);
+t_status		set_pop_stack(i_set			setid);
 
-t_error			set_head_stack(i_set			setid,
+t_bool			set_head_stack(i_set			setid,
 				       s_iterator*		iterator);
 
-t_error			set_tail_stack(i_set			setid,
+t_bool			set_tail_stack(i_set			setid,
 				       s_iterator*		iterator);
 
-t_error			set_previous_stack(i_set		setid,
+t_bool			set_previous_stack(i_set		setid,
 					   s_iterator		current,
 					   s_iterator*		previous);
 
-t_error			set_next_stack(i_set			setid,
+t_bool			set_next_stack(i_set			setid,
 				       s_iterator		current,
 				       s_iterator*		next);
 
-t_error			set_insert_stack(i_set			setid,
+t_status		set_insert_stack(i_set			setid,
 					 void*			data);
 
-t_error			set_append_stack(i_set			setid,
+t_status		set_append_stack(i_set			setid,
 					 void*			data);
 
-t_error			set_before_stack(i_set			setid,
+t_status		set_before_stack(i_set			setid,
 					 s_iterator		iterator,
 					 void*			data);
 
-t_error			set_after_stack(i_set			setid,
+t_status		set_after_stack(i_set			setid,
 					s_iterator		iterator,
 					void*			data);
 
-t_error			set_add_stack(i_set			setid,
+t_status		set_add_stack(i_set			setid,
 				      void*			data);
 
-t_error			set_remove_stack(i_set			setid,
+t_status		set_remove_stack(i_set			setid,
 					 t_id			id);
 
-t_error			set_delete_stack(i_set			setid,
+t_status		set_delete_stack(i_set			setid,
 					 s_iterator		iterator);
 
-t_error			set_locate_stack(i_set			setid,
+t_status		set_locate_stack(i_set			setid,
 					 t_id			id,
 					 s_iterator*		iterator);
 
-t_error			set_object_stack(i_set			setid,
+t_status		set_object_stack(i_set			setid,
 					 s_iterator		iterator,
 					 void**			data);
 

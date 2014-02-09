@@ -64,17 +64,17 @@ d_timer				timer_dispatch =
  * init the timer on the ibm-pc.ia32 machine.
  */
 
-t_error			glue_timer_initialize(void)
+t_status		glue_timer_initialize(void)
 {
   TIMER_ENTER(timer);
 
-  if (ibmpc_timer_init() != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+  if (ibmpc_timer_init() != STATUS_OK)
+    TIMER_LEAVE(timer, STATUS_UNKNOWN_ERROR);
 
   if (event_reserve(32, EVENT_FUNCTION, EVENT_HANDLER(timer_handler),
-		    0) != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+		    0) != STATUS_OK)
+    TIMER_LEAVE(timer, STATUS_UNKNOWN_ERROR);
 
-  TIMER_LEAVE(timer, ERROR_NONE);
+  TIMER_LEAVE(timer, STATUS_OK);
 }
 

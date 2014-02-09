@@ -25,7 +25,7 @@
 #define		machine_call_timer(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_status _r_ = STATUS_OK;					\
 									\
       if (timer_dispatch._function_ != NULL)				\
         _r_ = timer_dispatch._function_(_args_);			\
@@ -48,7 +48,7 @@
  * ../timer.c
  */
 
-t_error			glue_timer_initialize(void);
+t_status		glue_timer_initialize(void);
 
 
 /*

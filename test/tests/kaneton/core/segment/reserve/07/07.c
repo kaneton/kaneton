@@ -34,43 +34,43 @@ void			test_core_segment_reserve_07(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task) != ERROR_OK)
+		   &task) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task, &as) != ERROR_OK)
+  if (as_reserve(task, &as) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
   TEST_ALLOCATE(as, 2, seg);
   TEST_ALLOCATE(as, 8, seg + 1);
   TEST_ALLOCATE(as, 2, seg + 2);
 
-  if (segment_release(seg[1]) != ERROR_OK)
+  if (segment_release(seg[1]) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_ALLOCATE(as, 5, seg + 1);
 
-  if (segment_release(seg[0]) != ERROR_OK)
+  if (segment_release(seg[0]) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_ALLOCATE(as, 8, seg);
   TEST_ALLOCATE(as, 4, seg + 3);
 
-  if (segment_release(seg[0]) != ERROR_OK)
+  if (segment_release(seg[0]) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (segment_release(seg[1]) != ERROR_OK)
+  if (segment_release(seg[1]) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (segment_release(seg[2]) != ERROR_OK)
+  if (segment_release(seg[2]) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (segment_release(seg[3]) != ERROR_OK)
+  if (segment_release(seg[3]) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (as_release(as) != ERROR_OK)
+  if (as_release(as) != STATUS_OK)
     TEST_ERROR("[as_release] error");
 
-  if (task_release(task) != ERROR_OK)
+  if (task_release(task) != STATUS_OK)
     TEST_ERROR("[task_release] error");
 
   TEST_SIGNATURE(r3982804tg3g43);

@@ -41,7 +41,6 @@ typedef t_uint32		t_options;
 typedef t_uint32		t_permissions;
 typedef t_uint32		t_type;
 typedef t_uint32		t_state;
-typedef t_uint32		t_status;
 typedef t_uint32		t_class;
 typedef t_uint32		t_behaviour;
 typedef t_uint32		t_priority;

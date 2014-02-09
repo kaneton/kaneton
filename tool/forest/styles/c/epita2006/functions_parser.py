@@ -102,8 +102,8 @@ s_cast = "(?P<sizeof>(sizeof|))\s*" \
          "\s*(void|int|char|float|size_t|double|long)\s*)\)"
 e_cast = re.compile(s_cast)
 
-s_bracket_error = "([^\s]+\s*([{}]).*|.*([{}])\s*[^\s]+)"
-e_bracket_error = re.compile(s_bracket_error)
+s_bracket_status = "([^\s]+\s*([{}]).*|.*([{}])\s*[^\s]+)"
+e_bracket_status = re.compile(s_bracket_status)
 
  ######  #    #  #    #   ####    #####     #     ####   #    #   ####
  #       #    #  ##   #  #    #     #       #    #    #  ##   #  #
@@ -175,7 +175,7 @@ def		parse(e, z, error):
   # ;
   indent = 2
   for line in p.body.split('\n'):
-    if e_bracket_error.search(line):
+    if e_bracket_status.search(line):
       errors.add(e, error, errors.ERRORS_STYLE,
                  "{ or } MUST be on their own line\n")
 

@@ -60,11 +60,11 @@ typedef enum
  * ../debug.c
  */
 
-t_error	module_debug_load(void);
+t_statusmodule_debug_load(void);
 
-t_error	module_debug_unload(void);
+t_statusmodule_debug_unload(void);
 
-t_error module_debug_start(void);
+t_status module_debug_start(void);
 
 void    module_debug_set_io_cfg(const s_dbg_io_interface* cfg);
 

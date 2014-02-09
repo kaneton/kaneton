@@ -21,7 +21,7 @@
 #define machine_include(_manager_)
 
 #define machine_call(_manager_, _function_, _arguments_...)		\
-  ERROR_NONE
+  STATUS_OK
 
 #define machine_data(_object_)
 

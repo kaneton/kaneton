@@ -67,7 +67,7 @@ m_map		_map;
  * 3) call the machine.
  */
 
-t_error			map_reserve(i_as			as,
+t_status		map_reserve(i_as			as,
 				    t_options			options,
 				    t_vsize			size,
 				    t_permissions		permissions,
@@ -102,7 +102,7 @@ t_error			map_reserve(i_as			as,
 		      permissions,
 		      ((options & MAP_OPTION_SYSTEM) ?
 		       SEGMENT_OPTION_SYSTEM : SEGMENT_OPTION_NONE),
-		      &segment) != ERROR_OK)
+		      &segment) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a segment");
 
   /*
@@ -125,7 +125,7 @@ t_error			map_reserve(i_as			as,
 			 REGION_OPTION_FORCE,
 			 *address,
 			 size,
-			 &region) != ERROR_OK)
+			 &region) != STATUS_OK)
 	CORE_ESCAPE("unable to reserve the region");
     }
   else
@@ -144,14 +144,14 @@ t_error			map_reserve(i_as			as,
 			 REGION_OPTION_NONE,
 			 0,
 			 size,
-			 &region) != ERROR_OK)
+			 &region) != STATUS_OK)
 	CORE_ESCAPE("unable to reserve a region");
 
       /*
        * b)
        */
 
-      if (region_get(as, region, &o) != ERROR_OK)
+      if (region_get(as, region, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
 
       /*
@@ -166,7 +166,7 @@ t_error			map_reserve(i_as			as,
    */
 
   if (machine_call(map, reserve,
-		   as, options, size, permissions, address) != ERROR_OK)
+		   as, options, size, permissions, address) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -185,7 +185,7 @@ t_error			map_reserve(i_as			as,
  * 6) release the segment.
  */
 
-t_error			map_release(i_as			as,
+t_status		map_release(i_as			as,
 				    t_vaddr			address)
 {
   i_region		region;
@@ -196,21 +196,21 @@ t_error			map_release(i_as			as,
    * 1)
    */
 
-  if (machine_call(map, release, as, address) != ERROR_OK)
+  if (machine_call(map, release, as, address) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  if (region_locate(as, address, &region) == ERROR_FALSE)
+  if (region_locate(as, address, &region) == FALSE)
     CORE_ESCAPE("unable to locate the region in which the address lies");
 
   /*
    * 3)
    */
 
-  if (region_get(as, region, &o) != ERROR_OK)
+  if (region_get(as, region, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -223,14 +223,14 @@ t_error			map_release(i_as			as,
    * 5)
    */
 
-  if (region_release(as, region) != ERROR_OK)
+  if (region_release(as, region) != STATUS_OK)
     CORE_ESCAPE("unable to release the region");
 
   /*
    * 6)
    */
 
-  if (segment_release(segment) != ERROR_OK)
+  if (segment_release(segment) != STATUS_OK)
     CORE_ESCAPE("unable to release the segment");
 
   CORE_LEAVE();
@@ -264,7 +264,7 @@ t_error			map_release(i_as			as,
  * 5) call the machine.
  */
 
-t_error			map_resize(i_as				as,
+t_status		map_resize(i_as				as,
 				   t_vaddr			old,
 				   t_vsize			size,
 				   t_vaddr*			new)
@@ -289,14 +289,14 @@ t_error			map_resize(i_as				as,
    * 1)
    */
 
-  if (region_locate(as, old, &region) == ERROR_FALSE)
+  if (region_locate(as, old, &region) == FALSE)
     CORE_ESCAPE("unable to locate the region in which the address lies");
 
   /*
    * 2)
    */
 
-  if (region_get(as, region, &o) != ERROR_OK)
+  if (region_get(as, region, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -306,7 +306,7 @@ t_error			map_resize(i_as				as,
   if (segment_resize(o->segment,
 		     size,
 		     SEGMENT_OPTION_NONE,
-		     &segment) != ERROR_OK)
+		     &segment) != STATUS_OK)
     CORE_ESCAPE("unable to resize the segment");
 
   /*
@@ -330,7 +330,7 @@ t_error			map_resize(i_as				as,
        * b)
        */
 
-      if (region_release(as, o->id) != ERROR_OK)
+      if (region_release(as, o->id) != STATUS_OK)
 	CORE_ESCAPE("unable to release the region");
 
       /*
@@ -343,7 +343,7 @@ t_error			map_resize(i_as				as,
 			 options | REGION_OPTION_FORCE,
 			 old,
 			 size,
-			 &region) != ERROR_OK)
+			 &region) != STATUS_OK)
 	{
 	  /*
 	   * i)
@@ -363,7 +363,7 @@ t_error			map_resize(i_as				as,
 			     options,
 			     0,
 			     size,
-			     &region) != ERROR_OK)
+			     &region) != STATUS_OK)
 	    CORE_ESCAPE("unable to reserve a region");
 	}
 
@@ -371,7 +371,7 @@ t_error			map_resize(i_as				as,
        * d)
        */
 
-      if (region_get(as, region, &o) != ERROR_OK)
+      if (region_get(as, region, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
 
       /*
@@ -390,14 +390,14 @@ t_error			map_resize(i_as				as,
        * a)
        */
 
-      if (region_resize(as, o->id, size, &region) != ERROR_OK)
+      if (region_resize(as, o->id, size, &region) != STATUS_OK)
 	CORE_ESCAPE("unable to resize the region");
 
       /*
        * b)
        */
 
-      if (region_get(as, region, &o) != ERROR_OK)
+      if (region_get(as, region, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the region object");
 
       /*
@@ -411,7 +411,7 @@ t_error			map_resize(i_as				as,
    * 5)
    */
 
-  if (machine_call(map, resize, as, old, size, new) != ERROR_OK)
+  if (machine_call(map, resize, as, old, size, new) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -427,7 +427,7 @@ t_error			map_resize(i_as				as,
  * 3) call the machine.
  */
 
-t_error			map_initialize(void)
+t_status		map_initialize(void)
 {
   /*
    * 1)
@@ -446,7 +446,7 @@ t_error			map_initialize(void)
    * 3)
    */
 
-  if (machine_call(map, initialize) != ERROR_OK)
+  if (machine_call(map, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -461,7 +461,7 @@ t_error			map_initialize(void)
  * 2) call the machine.
  */
 
-t_error			map_clean(void)
+t_status		map_clean(void)
 {
   /*
    * 1)
@@ -474,7 +474,7 @@ t_error			map_clean(void)
    * 2)
    */
 
-  if (machine_call(map, clean) != ERROR_OK)
+  if (machine_call(map, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();

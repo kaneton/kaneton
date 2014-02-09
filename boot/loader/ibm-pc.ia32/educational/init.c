@@ -533,7 +533,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 {
   module_t*		mod = (module_t*)mbi->mods_addr;
   Elf32_Ehdr*		khdr;
-  Elf32_Phdr*		phdr;
+  //Elf32_Phdr*		phdr;
   t_paddr		init_relocate;
   t_uint32		nmods = mbi->mods_count;
   t_uint32		ninputs;
@@ -559,7 +559,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    */
 
   khdr = (Elf32_Ehdr*)mod[0].mod_start;
-  phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
+  //phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
 
   relocate = init_relocate = 0x1000000; // phdr->p_paddr XXX;
 
@@ -705,7 +705,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   if (ninputs > 0)
     {
       khdr = (Elf32_Ehdr*)mod[1].mod_start;
-      phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
+      //phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
 
       modsz = mod[1].mod_end - mod[1].mod_start;
 

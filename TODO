@@ -63,9 +63,9 @@
         assert(task_reserve(TASK_CLASS_KERNEL,
                             TASK_BEHAVIOUR_KERNEL,
                             TASK_PRIORITY_KERNEL,
-                            &t) == ERROR_OK);
+                            &t) == STATUS_OK);
 
-        assert(as_reserve(t, &a) == ERROR_OK);
+        assert(as_reserve(t, &a) == STATUS_OK);
       }
 
 - pour les capabilities: (i) soit un autorise l'attenuation hierarchique,
@@ -83,22 +83,22 @@
   bonus => 25/20
 
 - ameliorer la liberation des objets lors d'une erreur:
-  t_error foo()
+  t_status foo()
   {
     i_segment i1;
     i_segment i2;
 
-    if (segment_reserve(&i1) != ERROR_NONE)
-      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    if (segment_reserve(&i1) != STATUS_OK)
+      SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
-    if (segment_reserve(&i2) != ERROR_NONE)
+    if (segment_reserve(&i2) != STATUS_OK)
     {
       segment_release(i1);
 
-      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
     }
 
-    SEGMENT_LEAVE(segment, ERROR_NONE);
+    SEGMENT_LEAVE(segment, STATUS_OK);
   }
 
 - A 'facade' is the definition of a node's communication interface, basically

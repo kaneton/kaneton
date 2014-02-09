@@ -66,7 +66,7 @@ d_region		region_dispatch =
  * this function resizes a region.
  */
 
-t_error			glue_region_resize(i_as			as,
+t_status		glue_region_resize(i_as			as,
 					   i_region		old,
 					   t_vsize		size,
 					   i_region*		new)
@@ -78,7 +78,7 @@ t_error			glue_region_resize(i_as			as,
  * reserves a region.
  */
 
-t_error			glue_region_reserve(i_as		asid,
+t_status		glue_region_reserve(i_as		asid,
 					    i_segment		segid,
 					    t_paddr		offset,
 					    t_opts		opts,
@@ -89,58 +89,58 @@ t_error			glue_region_reserve(i_as		asid,
   REGION_ENTER(region);
 
   /* XXX flush AP */
-  if (ia32_map_region(asid, segid, offset, opts, address, size) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (ia32_map_region(asid, segid, offset, opts, address, size) != STATUS_OK)
+    REGION_LEAVE(region, STATUS_UNKNOWN_ERROR);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(region, STATUS_OK);
 }
 
 /*
  * this function  releases a region.
  */
 
-t_error			glue_region_release(i_as		asid,
+t_status		glue_region_release(i_as		asid,
 					    i_region		regid)
 {
   o_region*		reg;
 
   REGION_ENTER(region);
 
-  if (region_get(asid, regid, &reg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (region_get(asid, regid, &reg) != STATUS_OK)
+    REGION_LEAVE(region, STATUS_UNKNOWN_ERROR);
 
   /* XXX flush AP */
-  if (ia32_unmap_region(asid, reg->address, reg->size) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (ia32_unmap_region(asid, reg->address, reg->size) != STATUS_OK)
+    REGION_LEAVE(region, STATUS_UNKNOWN_ERROR);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(region, STATUS_OK);
 }
 
 /*
  * this function just initializes the machine-dependent region manager.
  */
 
-t_error			glue_region_initialize(t_vaddr		start,
+t_status		glue_region_initialize(t_vaddr		start,
 					       t_vsize		size)
 {
   REGION_ENTER(region);
 
-  if (ia32_paging_init() != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (ia32_paging_init() != STATUS_OK)
+    REGION_LEAVE(region, STATUS_UNKNOWN_ERROR);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(region, STATUS_OK);
 }
 
 /*
  * this function cleans the machine-dependent region manager.
  */
 
-t_error			glue_region_clean(void)
+t_status		glue_region_clean(void)
 {
   REGION_ENTER(region);
 
-  if (ia32_paging_clean() != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (ia32_paging_clean() != STATUS_OK)
+    REGION_LEAVE(region, STATUS_UNKNOWN_ERROR);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  REGION_LEAVE(region, STATUS_OK);
 }

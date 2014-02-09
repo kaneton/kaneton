@@ -42,7 +42,7 @@ void			test_architecture_event_pic_01(void)
   if (event_reserve(ARCHITECTURE_IDT_IRQ_FLOPPY,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_pic_01),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
   ARCHITECTURE_INB(TEST_MASTER_PORT_B, mask);

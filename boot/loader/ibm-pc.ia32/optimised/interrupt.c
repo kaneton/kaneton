@@ -55,7 +55,7 @@ void			bootloader_interrupt_init(void)
   if (idt_build(256,
 		bootloader_init_alloc(256 *
 				      sizeof(t_ia32_idte), NULL),
-		1, &idt) != ERROR_NONE)
+		1, &idt) != STATUS_OK)
     {
       bootloader_cons_msg('!', "interrupt: error creating idt.\n");
       bootloader_error();
@@ -65,7 +65,7 @@ void			bootloader_interrupt_init(void)
    * 2)
    */
 
-  if (idt_activate(&idt) != ERROR_NONE)
+  if (idt_activate(&idt) != STATUS_OK)
     {
       bootloader_cons_msg('!', "interrupt: error activating idt.\n");
       bootloader_error();
@@ -82,7 +82,7 @@ void			bootloader_interrupt_init(void)
       gate.privilege = 0;
       gate.type = ia32_type_gate_interrupt;
 
-      if (idt_add_gate(NULL, i, gate) != ERROR_NONE)
+      if (idt_add_gate(NULL, i, gate) != STATUS_OK)
 	{
 	  bootloader_cons_msg('!', "interrupt: error adding gate.\n");
 	  bootloader_error();
@@ -93,7 +93,7 @@ void			bootloader_interrupt_init(void)
    * 4)
    */
 
-  if (pic_init() != ERROR_NONE)
+  if (pic_init() != STATUS_OK)
     {
       bootloader_cons_msg('!', "interrupt: error activating PIC.\n");
       bootloader_error();
@@ -122,7 +122,7 @@ void			bootloader_interrupt_ap_init(void)
    * 1)
    */
 
-  if (idt_activate(&idt) != ERROR_NONE)
+  if (idt_activate(&idt) != STATUS_OK)
     {
       bootloader_cons_msg('!', "interrupt: error activating idt.\n");
       bootloader_error();

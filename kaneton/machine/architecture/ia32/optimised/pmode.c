@@ -71,7 +71,7 @@ static void	ia32_pmode_enable(void)
  * 2) enable protected mode.
  */
 
-t_error		ia32_pmode_init(void)
+t_status	ia32_pmode_init(void)
 {
 
   /*
@@ -86,14 +86,14 @@ t_error		ia32_pmode_init(void)
 
   ia32_pmode_enable();
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * sets code/data/stack segment registers.
  */
 
-t_error		ia32_pmode_set_segment_registers(t_uint16	seg_code,
+t_status	ia32_pmode_set_segment_registers(t_uint16	seg_code,
 						 t_uint16	seg_data)
 {
   asm volatile("pushl %0\n\t"
@@ -111,14 +111,14 @@ t_error		ia32_pmode_set_segment_registers(t_uint16	seg_code,
 	       : "memory", "%eax"
 	       );
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * ends protected mode.
  */
 
-t_error		ia32_pmode_clean(void)
+t_status	ia32_pmode_clean(void)
 {
-  return ERROR_NONE;
+  return STATUS_OK;
 }

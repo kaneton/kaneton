@@ -32,7 +32,7 @@
 #define		machine_call_event(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status	_r_ = STATUS_OK;						\
 									\
       if (glue_event_dispatch.event_ ## _function_ != NULL)		\
         _r_ = glue_event_dispatch.event_ ## _function_(_args_);		\

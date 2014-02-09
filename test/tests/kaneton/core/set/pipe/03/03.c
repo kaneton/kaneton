@@ -44,7 +44,7 @@ void			test_core_set_pipe_03(void)
   if (set_reserve(pipe,
 		  SET_OPTION_ALLOCATE,
 		  sizeof (t_test_object),
-		  &id) != ERROR_OK)
+		  &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 16; ++i)
@@ -53,18 +53,18 @@ void			test_core_set_pipe_03(void)
 
       strcpy(obj1.str, "XXX");
 
-      if (set_push(id, &obj1) != ERROR_OK)
+      if (set_push(id, &obj1) != STATUS_OK)
         TEST_ERROR("[set_push] error");
     }
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -76,7 +76,7 @@ void			test_core_set_pipe_03(void)
     }
   TEST_PRINT("\n");
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   /*
@@ -86,7 +86,7 @@ void			test_core_set_pipe_03(void)
   if (set_reserve(pipe,
 		  SET_OPTION_FREE,
 		  sizeof (t_test_object),
-		  &id) != ERROR_OK)
+		  &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 16; ++i)
@@ -97,18 +97,18 @@ void			test_core_set_pipe_03(void)
 
       strcpy(obj2->str, "XXX");
 
-      if (set_push(id, obj2) != ERROR_OK)
+      if (set_push(id, obj2) != STATUS_OK)
         TEST_ERROR("[set_push] error");
     }
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -120,7 +120,7 @@ void			test_core_set_pipe_03(void)
     }
   TEST_PRINT("\n");
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(0g9i23goig4h3);

@@ -43,7 +43,7 @@ void			test_core_set_bpt_06(void)
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof (t_id),
 		  ___kaneton$pagesz,
-		  &id) != ERROR_OK)
+		  &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -51,43 +51,43 @@ void			test_core_set_bpt_06(void)
    */
 
   obj = 80LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 98654LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 42LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 122LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 45LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 64LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 90LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 12346LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 67LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   obj = 90LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_PRINT("[set_add] error\n");
 
   /*
@@ -95,7 +95,7 @@ void			test_core_set_bpt_06(void)
    */
 
   obj = 4LL;
-  if (set_insert(id, &obj) == ERROR_OK)
+  if (set_insert(id, &obj) == STATUS_OK)
     TEST_ERROR("[set_insert] error: bpt-based sets do "
 	       "not support this operation\n");
 
@@ -104,7 +104,7 @@ void			test_core_set_bpt_06(void)
    */
 
   obj = 123456LL;
-  if (set_append(id, &obj) == ERROR_OK)
+  if (set_append(id, &obj) == STATUS_OK)
     TEST_ERROR("[set_append] error: bpt-based sets do "
 	       "not support this operation\n");
 
@@ -112,10 +112,10 @@ void			test_core_set_bpt_06(void)
    * head & next
    */
 
-  if (set_head(id, &it) == ERROR_FALSE)
+  if (set_head(id, &it) == FALSE)
     TEST_ERROR("[set_head] error");
 
-  if (set_next(id, it, &it) == ERROR_FALSE)
+  if (set_next(id, it, &it) == FALSE)
     TEST_ERROR("[set_next] error");
 
   /*
@@ -123,7 +123,7 @@ void			test_core_set_bpt_06(void)
    */
 
   obj = 456LL;
-  if (set_after(id, it, &obj) == ERROR_OK)
+  if (set_after(id, it, &obj) == STATUS_OK)
     TEST_ERROR("[set_after] error: bpt-based sets do "
 	       "not support this operation\n");
 
@@ -132,7 +132,7 @@ void			test_core_set_bpt_06(void)
    */
 
   obj = 454LL;
-  if (set_before(id, it, &obj) == ERROR_OK)
+  if (set_before(id, it, &obj) == STATUS_OK)
     TEST_ERROR("[set_before] error: bpt-based sets do "
 	       "not support this operation\n");
 
@@ -140,14 +140,14 @@ void			test_core_set_bpt_06(void)
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -163,7 +163,7 @@ void			test_core_set_bpt_06(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(f0igih43h903);

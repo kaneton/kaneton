@@ -437,13 +437,13 @@ the kernel thread continues and disables the events right away.
   {
     i_cpu               cpu;
 
-    if (cpu_current(&cpu) != ERROR_OK)
+    if (cpu_current(&cpu) != STATUS_OK)
       {
         printf("unable to retrieve the current CPU\n");
         return;
       }
 
-    if (scheduler_stop(cpu) != ERROR_OK)
+    if (scheduler_stop(cpu) != STATUS_OK)
       {
         printf("unable to stop the scheduler\n");
         return;
@@ -455,7 +455,7 @@ the kernel thread continues and disables the events right away.
       ;
   }
 
-  t_error               example(void)
+  t_status               example(void)
   {
     i_thread            thread;
     i_cpu               cpu;
@@ -465,22 +465,22 @@ the kernel thread continues and disables the events right away.
                        THREAD_STACK_ADDRESS_NONE,
                        THREAD_STACK_SIZE_LOW,
                        (t_vaddr)example_thread,
-                       &thread) != ERROR_OK)
+                       &thread) != STATUS_OK)
       CORE_ESCAPE("unable to reserve a thread");
 
-    if (thread_start(thread) != ERROR_OK)
+    if (thread_start(thread) != STATUS_OK)
       CORE_ESCAPE("unable to start the thread");
 
-    if (cpu_current(&cpu) != ERROR_OK)
+    if (cpu_current(&cpu) != STATUS_OK)
       CORE_ESCAPE("unable to retrieve the current CPU");
 
-    if (scheduler_start(cpu) != ERROR_OK)
+    if (scheduler_start(cpu) != STATUS_OK)
       CORE_ESCAPE("unable to start the scheduler");
 
-    if (event_enable() != ERROR_OK)
+    if (event_enable() != STATUS_OK)
       CORE_ESCAPE("unable to enable the events");
 
-    if (event_disable() != ERROR_OK)
+    if (event_disable() != STATUS_OK)
       CORE_ESCAPE("unable to disable the events");
 
     CORE_LEAVE();

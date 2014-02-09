@@ -24,7 +24,7 @@
 #define		machine_call_event(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_status _r_ = STATUS_OK;					\
 									\
       if (event_dispatch._function_ != NULL)				\
         _r_ = event_dispatch._function_(_args_);			\
@@ -53,16 +53,16 @@
  * ../event.c
  */
 
-t_error			glue_event_reserve(i_event		id,
+t_status		glue_event_reserve(i_event		id,
 					   t_type		type,
 					   u_event_handler	handler,
 					   t_vaddr		data);
 
-t_error			glue_event_release(i_event		id);
+t_status		glue_event_release(i_event		id);
 
-t_error			glue_event_initialize(void);
+t_status		glue_event_initialize(void);
 
-t_error			glue_event_clean(void);
+t_status		glue_event_clean(void);
 
 
 /*

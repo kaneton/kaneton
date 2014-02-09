@@ -61,7 +61,7 @@ void			test_architecture_event_exception_07_handler(t_id id,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &segid) != ERROR_OK)
+		      &segid) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -70,7 +70,7 @@ void			test_architecture_event_exception_07_handler(t_id id,
 		     REGION_OPTION_FORCE,
                      address,
 		     ___kaneton$pagesz,
-		     &regid) != ERROR_OK)
+		     &regid) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 }
 
@@ -88,7 +88,7 @@ void			test_architecture_event_exception_07(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &segid) != ERROR_OK)
+		      &segid) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < 10; i++)
@@ -98,19 +98,19 @@ void			test_architecture_event_exception_07(void)
 		       REGION_OPTION_NONE,
 		       0,
 		       ___kaneton$pagesz,
-		       &regids[i]) != ERROR_OK)
+		       &regids[i]) != STATUS_OK)
       TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel.as, regids[9], &reg) != ERROR_OK)
+  if (region_get(_kernel.as, regids[9], &reg) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   address = reg->address;
 
   for (i = 0; i < 10; i++)
-    if (region_release(_kernel.as, regids[i]) != ERROR_OK)
+    if (region_release(_kernel.as, regids[i]) != STATUS_OK)
       TEST_ERROR("[region_release] error");
 
-  if (segment_release(segid) != ERROR_OK)
+  if (segment_release(segid) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   event_release(ARCHITECTURE_IDT_EXCEPTION_PF);
@@ -118,7 +118,7 @@ void			test_architecture_event_exception_07(void)
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_PF,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_exception_07_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
   ptr = (t_uint8*)address + 0x42;
@@ -130,7 +130,7 @@ void			test_architecture_event_exception_07(void)
   if (thrown != 1)
     TEST_ERROR("the exception has not been caught");
 
-  if (event_release(ARCHITECTURE_IDT_EXCEPTION_PF) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_PF) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(0i3rfw90ug8938hy3);

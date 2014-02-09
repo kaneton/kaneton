@@ -37,10 +37,10 @@ void			test_architecture_event_pic_03(void)
   if (event_reserve(ARCHITECTURE_IDT_IRQ_COM2,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_pic_03),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (event_release(ARCHITECTURE_IDT_IRQ_COM2) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_IRQ_COM2) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   ARCHITECTURE_INB(TEST_MASTER_PORT_B, mask);

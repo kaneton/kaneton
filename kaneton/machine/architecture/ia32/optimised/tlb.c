@@ -32,7 +32,7 @@
  * flushes a single pte cache given a page address.
  */
 
-t_error			ia32_tlb_invalidate(t_vaddr			page)
+t_status		ia32_tlb_invalidate(t_vaddr			page)
 {
   /*						     [block::tlb_invalidate] */
 
@@ -43,14 +43,14 @@ t_error			ia32_tlb_invalidate(t_vaddr			page)
 
   /*						  [endblock::tlb_invalidate] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * flushes the whole pd and pt caches.
  */
 
-t_error			ia32_tlb_flush(void)
+t_status		ia32_tlb_flush(void)
 {
   /*							  [block::tlb_flush] */
 
@@ -62,5 +62,5 @@ t_error			ia32_tlb_flush(void)
 
   /*						       [endblock::tlb_flush] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }

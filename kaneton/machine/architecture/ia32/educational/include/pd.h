@@ -140,22 +140,22 @@ typedef t_uint32		at_pdei;
  * ../pd.c
  */
 
-t_error			architecture_pd_dump(at_pd		pd);
+t_status		architecture_pd_dump(at_pd		pd);
 
-t_error			architecture_pd_build(at_pd		pd);
+t_status		architecture_pd_build(at_pd		pd);
 
-t_error			architecture_pd_insert(at_pd		pd,
+t_status		architecture_pd_insert(at_pd		pd,
 					       at_pdei		index,
 					       t_paddr		address,
 					       t_flags		flags);
 
-t_error			architecture_pd_delete(at_pd		pd,
+t_status		architecture_pd_delete(at_pd		pd,
 					       at_pdei		index);
 
-t_error			architecture_pd_map(t_paddr		paddr,
+t_status		architecture_pd_map(t_paddr		paddr,
 					    at_pd*		table);
 
-t_error			architecture_pd_unmap(at_pd		table);
+t_status		architecture_pd_unmap(at_pd		table);
 
 
 /*

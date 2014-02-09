@@ -39,21 +39,21 @@ void			test_core_set_array_10(void)
    * reserve
    */
 
-  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof (t_id), &id) != ERROR_OK)
+  if (set_reserve(array, SET_OPTION_NONE, 4, sizeof (t_id), &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
    * locate
    */
 
-  if (set_locate(id, 42LL, &it) == ERROR_OK)
+  if (set_locate(id, 42LL, &it) == STATUS_OK)
     TEST_ERROR("[set_locate] error: found a non-existent item");
 
   /*
    * remove
    */
 
-  if (set_remove(id, 42LL) == ERROR_OK)
+  if (set_remove(id, 42LL) == STATUS_OK)
     TEST_ERROR("[set_remove] error: removed a non-existent item");
 
   /*
@@ -70,21 +70,21 @@ void			test_core_set_array_10(void)
    */
 
   obj = 42LL;
-  if (set_add(id, &obj) != ERROR_OK)
+  if (set_add(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_add] error");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -100,7 +100,7 @@ void			test_core_set_array_10(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(0z9sdifw39ig34g);

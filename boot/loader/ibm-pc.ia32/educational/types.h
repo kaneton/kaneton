@@ -18,8 +18,8 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define ERROR_NONE		(1 << 0)
-#define ERROR_UNKNOWN		(1 << 1)
+#define STATUS_OK		(1 << 0)
+#define STATUS_UNKNOWN_ERROR		(1 << 1)
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -44,7 +44,7 @@ typedef t_uint64		t_id;
  * error type
  */
 
-typedef t_sint32		t_error;
+typedef t_sint32		t_status;
 
 /*
  * memory types

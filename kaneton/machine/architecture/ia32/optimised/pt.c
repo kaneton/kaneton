@@ -32,7 +32,7 @@
  * dumps a page table.
  */
 
-t_error			ia32_pt_dump(t_ia32_pte*		tab)
+t_status		ia32_pt_dump(t_ia32_pte*		tab)
 {
   /*							    [block::pt_dump] */
 
@@ -53,7 +53,7 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab)
 
   /*							 [endblock::pt_dump] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -67,7 +67,7 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab)
  *						  [endblock::pt_build::comment]
  */
 
-t_error			ia32_pt_build(t_paddr			base,
+t_status		ia32_pt_build(t_paddr			base,
 				      t_ia32_table*		table)
 {
   /*							   [block::pt_build] */
@@ -79,7 +79,7 @@ t_error			ia32_pt_build(t_paddr			base,
    */
 
   if (IA32_MK_BASE(base) != base)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -90,7 +90,7 @@ t_error			ia32_pt_build(t_paddr			base,
 
   /*							[endblock::pt_build] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -105,7 +105,7 @@ t_error			ia32_pt_build(t_paddr			base,
  *					       [endblock::pt_add_page::comment]
  */
 
-t_error			ia32_pt_add_page(t_ia32_table*		tab,
+t_status		ia32_pt_add_page(t_ia32_table*		tab,
 					 t_uint16		entry,
 					 t_ia32_page		page)
 {
@@ -121,7 +121,7 @@ t_error			ia32_pt_add_page(t_ia32_table*		tab,
    */
 
   if (IA32_MK_BASE(page.addr) != (t_uint32)page.addr)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -156,7 +156,7 @@ t_error			ia32_pt_add_page(t_ia32_table*		tab,
 
   /*						     [endblock::pt_add_page] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -171,7 +171,7 @@ t_error			ia32_pt_add_page(t_ia32_table*		tab,
  *					       [endblock::pt_get_page::comment]
  */
 
-t_error			ia32_pt_get_page(t_ia32_table*		tab,
+t_status		ia32_pt_get_page(t_ia32_table*		tab,
 					 t_uint16		entry,
 					 t_ia32_page*		page)
 {
@@ -193,7 +193,7 @@ t_error			ia32_pt_get_page(t_ia32_table*		tab,
    */
 
   if (!(t[entry] & IA32_PTE_FLAG_USED))
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3 )
@@ -214,7 +214,7 @@ t_error			ia32_pt_get_page(t_ia32_table*		tab,
 
   /*						     [endblock::pt_get_page] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -229,7 +229,7 @@ t_error			ia32_pt_get_page(t_ia32_table*		tab,
  *					    [endblock::pt_delete_page::comment]
  */
 
-t_error			ia32_pt_delete_page(t_ia32_table*	tab,
+t_status		ia32_pt_delete_page(t_ia32_table*	tab,
 					    t_uint16		entry)
 {
   /*						     [block::pt_delete_page] */
@@ -248,7 +248,7 @@ t_error			ia32_pt_delete_page(t_ia32_table*	tab,
    */
 
   if (!(t[entry] & IA32_PTE_FLAG_USED))
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -258,5 +258,5 @@ t_error			ia32_pt_delete_page(t_ia32_table*	tab,
 
   /*						  [endblock::pt_delete_page] */
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }

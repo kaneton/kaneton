@@ -36,17 +36,17 @@ void			test_core_region_reserve_02(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task) != ERROR_OK)
+		   &task) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task, &as) != ERROR_OK)
+  if (as_reserve(task, &as) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as,
@@ -55,10 +55,10 @@ void			test_core_region_reserve_02(void)
 		     REGION_OPTION_FORCE,
 		     0x40000000,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(as, reg, &o) != ERROR_OK)
+  if (region_get(as, reg, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   if (o->id != reg)
@@ -73,10 +73,10 @@ void			test_core_region_reserve_02(void)
   if (o->size != ___kaneton$pagesz)
     TEST_ERROR("invalid region's size");
 
-  if (as_release(as) != ERROR_OK)
+  if (as_release(as) != STATUS_OK)
     TEST_ERROR("[as_release] error");
 
-  if (task_release(task) != ERROR_OK)
+  if (task_release(task) != STATUS_OK)
     TEST_ERROR("[task_release] error");
 
   TEST_SIGNATURE(0923i0f9weaaaaawe392);

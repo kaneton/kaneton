@@ -24,9 +24,9 @@
  * ../environment.c
  */
 
-t_error			architecture_environment_kernel(i_as	id);
+t_status		architecture_environment_kernel(i_as	id);
 
-t_error			architecture_environment_server(i_as	id);
+t_status		architecture_environment_server(i_as	id);
 
 
 /*

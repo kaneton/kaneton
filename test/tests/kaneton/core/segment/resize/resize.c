@@ -43,16 +43,16 @@ void			test_core_segment_resize(void)
 		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_resize(seg,
 		     ___kaneton$pagesz,
 		     SEGMENT_OPTION_NONE,
-		     &seg) != ERROR_OK)
+		     &seg) != STATUS_OK)
     TEST_ERROR("[segment_resize] error");
 
-  if (segment_get(seg, &o) != ERROR_OK)
+  if (segment_get(seg, &o) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
   if (o->id != seg)
@@ -80,19 +80,19 @@ void			test_core_segment_resize(void)
 			  ___kaneton$pagesz,
 			  PERMISSION_READ,
 			  SEGMENT_OPTION_NONE,
-			  &seg2) != ERROR_OK)
+			  &seg2) != STATUS_OK)
 	TEST_ERROR("[segment_reserve] error");
 
-      if (segment_get(seg, &o1) != ERROR_OK)
+      if (segment_get(seg, &o1) != STATUS_OK)
 	TEST_ERROR("[segment_get] error");
 
-      if (segment_get(seg2, &o2) != ERROR_OK)
+      if (segment_get(seg2, &o2) != STATUS_OK)
 	TEST_ERROR("[segment_get] error");
 
       if (o2->address == o1->address + ___kaneton$pagesz)
 	break;
 
-      if (segment_release(seg) != ERROR_OK)
+      if (segment_release(seg) != STATUS_OK)
 	TEST_ERROR("[segment_release] error");
 
       seg = seg2;
@@ -107,18 +107,18 @@ void			test_core_segment_resize(void)
   if (segment_resize(seg,
 		     10 * ___kaneton$pagesz,
 		     SEGMENT_OPTION_NONE,
-		     &seg3) != ERROR_OK)
+		     &seg3) != STATUS_OK)
     TEST_ERROR("[segment_resize] error");
 
   if (seg3 == seg)
     TEST_ERROR("some segments seem to be overlapping");
 
-  if (segment_release(seg2) != ERROR_OK)
+  if (segment_release(seg2) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   seg = seg3;
 
-  if (segment_get(seg, &o) != ERROR_OK)
+  if (segment_get(seg, &o) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
   if (o->id != seg)
@@ -136,7 +136,7 @@ void			test_core_segment_resize(void)
   if (o->permissions != PERMISSION_READ)
     TEST_ERROR("invalid segment's permissions after resize");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(ergklzdkg4g34h);

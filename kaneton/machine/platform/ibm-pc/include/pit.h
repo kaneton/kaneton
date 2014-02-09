@@ -45,9 +45,9 @@
  * ../pit.c
  */
 
-t_error			platform_pit_initialize(void);
+t_status		platform_pit_initialize(void);
 
-t_error			platform_pit_clean(void);
+t_status		platform_pit_clean(void);
 
 
 /*

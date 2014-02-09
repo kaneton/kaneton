@@ -24,7 +24,7 @@
 #define		machine_call_as(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_status _r_ = STATUS_OK;					\
 									\
       if (as_dispatch._function_ != NULL)				\
         _r_ = as_dispatch._function_(_args_);				\
@@ -51,7 +51,7 @@
  * ../as.c
  */
 
-t_error			glue_as_reserve(i_task			tskid,
+t_status		glue_as_reserve(i_task			tskid,
 					i_as*			asid);
 
 

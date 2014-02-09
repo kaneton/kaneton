@@ -28,7 +28,7 @@ static volatile int		timed = 0;
 /*
  * ---------- test ------------------------------------------------------------
  */
- 
+
 void			test_core_timer_reserve_03_handler_01(void)
 {
   timed |= (1 << 0);
@@ -54,14 +54,13 @@ void			test_core_timer_reserve_03(void)
   i_timer		tid;
   s_clock		clock;
   t_uint64		start;
-  i_cpu			cpu;
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
 		    TIMER_ROUTINE(test_core_timer_reserve_03_handler_01),
 		    TIMER_DATA(NULL),
 		    1000,
 		    TIMER_OPTION_NONE,
-		    &tid) != ERROR_OK)
+		    &tid) != STATUS_OK)
     TEST_ERROR("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
@@ -69,7 +68,7 @@ void			test_core_timer_reserve_03(void)
 		    TIMER_DATA(NULL),
 		    200,
 		    TIMER_OPTION_NONE,
-		    &tid) != ERROR_OK)
+		    &tid) != STATUS_OK)
     TEST_ERROR("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
@@ -77,7 +76,7 @@ void			test_core_timer_reserve_03(void)
 		    TIMER_DATA(NULL),
 		    500,
 		    TIMER_OPTION_NONE,
-		    &tid) != ERROR_OK)
+		    &tid) != STATUS_OK)
     TEST_ERROR("[timer_reserve] error");
 
   if (timer_reserve(TIMER_TYPE_FUNCTION,
@@ -85,22 +84,22 @@ void			test_core_timer_reserve_03(void)
 		    TIMER_DATA(NULL),
 		    700,
 		    TIMER_OPTION_NONE,
-		    &tid) != ERROR_OK)
+		    &tid) != STATUS_OK)
     TEST_ERROR("[timer_reserve] error");
 
-  if (clock_current(&clock) != ERROR_OK)
+  if (clock_current(&clock) != STATUS_OK)
     TEST_ERROR("[clock_current] error");
 
   start = CLOCK_UNIQUE(&clock);
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   while (1)
     {
       t_uint64		current;
 
-      if (clock_current(&clock) != ERROR_OK)
+      if (clock_current(&clock) != STATUS_OK)
 	TEST_ERROR("[clock_current] error");
 
       current = CLOCK_UNIQUE(&clock);
@@ -109,7 +108,7 @@ void			test_core_timer_reserve_03(void)
 	break;
     }
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   if (timed != 0xf)

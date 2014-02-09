@@ -32,7 +32,7 @@
 #define		machine_call_kernel(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_kernel_dispatch.kernel_ ## _function_ != NULL)		\
         _r_ = glue_kernel_dispatch.kernel_ ## _function_(_args_);	\

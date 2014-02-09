@@ -59,13 +59,13 @@ void			bootloader_pmode_init(void)
   if (gdt_build(IA32_PMODE_GDT_ENTRIES,
 		bootloader_init_alloc(IA32_PMODE_GDT_ENTRIES *
 				      sizeof(t_ia32_gdte), NULL),
-		&gdt, 1) != ERROR_NONE)
+		&gdt, 1) != STATUS_OK)
     {
       bootloader_cons_msg('!', "pmode: error creating gdt.\n");
       bootloader_error();
     }
 
-  if (gdt_activate(gdt) != ERROR_NONE)
+  if (gdt_activate(gdt) != STATUS_OK)
     {
       bootloader_cons_msg('!', "pmode: error activating gdt.\n");
       bootloader_error();
@@ -80,7 +80,7 @@ void			bootloader_pmode_init(void)
   seg.privilege = ia32_prvl_supervisor;
   seg.is_system = 0;
   seg.type.usr = ia32_type_code;
-  if (gdt_add_segment(NULL, IA32_PMODE_BOOTLOADER_CS, seg) != ERROR_NONE)
+  if (gdt_add_segment(NULL, IA32_PMODE_BOOTLOADER_CS, seg) != STATUS_OK)
     {
       bootloader_cons_msg('!', "pmode: error creating main code segment.\n");
       bootloader_error();
@@ -91,7 +91,7 @@ void			bootloader_pmode_init(void)
   seg.privilege = ia32_prvl_supervisor;
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
-  if (gdt_add_segment(NULL, IA32_PMODE_BOOTLOADER_DS, seg) != ERROR_NONE)
+  if (gdt_add_segment(NULL, IA32_PMODE_BOOTLOADER_DS, seg) != STATUS_OK)
     {
       bootloader_cons_msg('!', "pmode: error creating main data segment.\n");
       bootloader_error();

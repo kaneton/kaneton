@@ -88,7 +88,7 @@
  * this type represents a routine-specific timer handler.
  */
 
-typedef t_error			(*t_timer_routine)(i_timer,
+typedef t_status		(*t_timer_routine)(i_timer,
 						   t_data);
 
 /*
@@ -162,21 +162,21 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*timer_show)(i_timer,
+  t_status		(*timer_show)(i_timer,
 					      mt_margin);
-  t_error			(*timer_dump)(void);
-  t_error			(*timer_notify)(i_timer);
-  t_error			(*timer_reserve)(t_type,
+  t_status		(*timer_dump)(void);
+  t_status		(*timer_notify)(i_timer);
+  t_status		(*timer_reserve)(t_type,
 						 u_timer_handler,
 						 t_data,
 						 t_delay,
 						 t_options,
 						 i_timer*);
-  t_error			(*timer_release)(i_timer);
-  t_error			(*timer_update)(i_timer,
+  t_status		(*timer_release)(i_timer);
+  t_status		(*timer_update)(i_timer,
 						t_delay);
-  t_error			(*timer_initialize)(void);
-  t_error			(*timer_clean)(void);
+  t_status		(*timer_initialize)(void);
+  t_status		(*timer_clean)(void);
 }				d_timer;
 
 /*
@@ -192,37 +192,37 @@ typedef struct
 void			timer_handler(i_event			event,
 				      t_data			data);
 
-t_error			timer_check(void);
+t_status		timer_check(void);
 
-t_error			timer_show(i_timer			id,
+t_status		timer_show(i_timer			id,
 				   mt_margin			margin);
 
-t_error			timer_dump(void);
+t_status		timer_dump(void);
 
-t_error			timer_notify(i_timer			id);
+t_status		timer_notify(i_timer			id);
 
-t_error			timer_reserve(t_type			type,
+t_status		timer_reserve(t_type			type,
 				      u_timer_handler		handler,
 				      t_data			data,
 				      t_delay			delay,
 				      t_options			options,
 				      i_timer*			id);
 
-t_error			timer_release(i_timer			id);
+t_status		timer_release(i_timer			id);
 
-t_error			timer_update(i_timer			id,
+t_status		timer_update(i_timer			id,
 				     t_delay			delay);
 
-t_error			timer_flush(void);
+t_status		timer_flush(void);
 
-t_error			timer_exist(i_timer			id);
+t_bool			timer_exist(i_timer			id);
 
-t_error			timer_get(i_timer			id,
+t_status		timer_get(i_timer			id,
 				  o_timer**			object);
 
-t_error			timer_initialize(void);
+t_status		timer_initialize(void);
 
-t_error			timer_clean(void);
+t_status		timer_clean(void);
 
 
 /*

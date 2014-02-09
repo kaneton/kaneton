@@ -20,14 +20,6 @@
 
 #define NULL			((void*)0)
 
-#ifndef FALSE
-#define FALSE			(0 == 1)
-#endif
-
-#ifndef TRUE
-#define TRUE			(1 == 1)
-#endif
-
 #define EOF			-1
 
 /*

@@ -76,7 +76,7 @@ The code below illustrates how to tag some code to make a block:
    * 4) call machine-dependent code.
    */
 
-  t_error                 segment_clone(i_as                      asid,
+  t_status                 segment_clone(i_as                      asid,
                                         i_segment                 old,
                                         i_segment*                new)
   {
@@ -89,8 +89,8 @@ The code below illustrates how to tag some code to make a block:
      * 1)
      */
 
-    if (segment_get(old, &from) != ERROR_NONE)
-      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    if (segment_get(old, &from) != STATUS_OK)
+      SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
     [...]
 
@@ -98,10 +98,10 @@ The code below illustrates how to tag some code to make a block:
      * 4)
      */
 
-    if (machine_call(segment, segment_clone, asid, old, new) != ERROR_NONE)
-      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    if (machine_call(segment, segment_clone, asid, old, new) != STATUS_OK)
+      SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
-    SEGMENT_LEAVE(segment, ERROR_NONE);
+    SEGMENT_LEAVE(segment, STATUS_OK);
   }
 
   /*                                                       [endblock::clone] */

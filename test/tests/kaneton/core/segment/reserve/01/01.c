@@ -40,10 +40,10 @@ void			test_core_segment_reserve_01(void)
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_get(seg, &o) != ERROR_OK)
+  if (segment_get(seg, &o) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
   if (o->id != seg)

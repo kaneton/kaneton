@@ -37,17 +37,17 @@ static volatile t_uint32	executed = 0;
 
 void			test_core_scheduler_flood_01_thread(void)
 {
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_HANG("[event_disable] error");
 
   executed++;
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_HANG("[event_enable] error");
 
   while (1)
     {
-      if (scheduler_yield() != ERROR_OK)
+      if (scheduler_yield() != STATUS_OK)
 	TEST_HANG("[scheduler_yield] error");
     }
 }
@@ -71,10 +71,10 @@ void			test_core_scheduler_flood_01_content(void)
 			 THREAD_STACK_ADDRESS_NONE,
 			 THREAD_STACK_SIZE_LOW,
 			 (t_vaddr)test_core_scheduler_flood_01_thread,
-			 &thread) != ERROR_OK)
+			 &thread) != STATUS_OK)
 	TEST_HANG("[thread_reserve] error");
 
-      if (thread_start(thread) != ERROR_OK)
+      if (thread_start(thread) != STATUS_OK)
 	TEST_HANG("[thread_start] error");
     }
 
@@ -82,7 +82,7 @@ void			test_core_scheduler_flood_01_content(void)
    * sleep
    */
 
-  if (clock_current(&clock) != ERROR_OK)
+  if (clock_current(&clock) != STATUS_OK)
     TEST_HANG("[clock_current] error");
 
   start = CLOCK_UNIQUE(&clock);
@@ -91,7 +91,7 @@ void			test_core_scheduler_flood_01_content(void)
     {
       t_uint64		current;
 
-      if (clock_current(&clock) != ERROR_OK)
+      if (clock_current(&clock) != STATUS_OK)
 	TEST_HANG("[clock_current] error");
 
       current = CLOCK_UNIQUE(&clock);
@@ -113,10 +113,10 @@ void			test_core_scheduler_flood_01_content(void)
 
   TEST_SIGNATURE(r29mnsdv2w3030h);
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     TEST_HANG("[cpu_current] error");
 
-  if (scheduler_stop(cpu) != ERROR_OK)
+  if (scheduler_stop(cpu) != STATUS_OK)
     TEST_HANG("[scheduler_stop] error");
 
   TEST_HANG("unreachable");
@@ -132,24 +132,24 @@ void			test_core_scheduler_flood_01(void)
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
 		     (t_vaddr)test_core_scheduler_flood_01_content,
-		     &thread) != ERROR_OK)
+		     &thread) != STATUS_OK)
     TEST_ERROR("[thread_reserve] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread) != STATUS_OK)
     TEST_ERROR("[thread_start] error");
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     TEST_HANG("[cpu_current] error");
 
-  if (scheduler_start(cpu) != ERROR_OK)
+  if (scheduler_start(cpu) != STATUS_OK)
     TEST_ERROR("[scheduler_start] error");
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   TEST_SIGNATURE(09fw23r2nmwivcw3g93);
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   TEST_LEAVE();

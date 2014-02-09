@@ -58,18 +58,18 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*cpu_show)(i_cpu,
+  t_status		(*cpu_show)(i_cpu,
 					    mt_margin);
-  t_error			(*cpu_dump)(void);
-  t_error			(*cpu_current)(i_cpu*);
-  t_error			(*cpu_select)(i_cpu*);
-  t_error			(*cpu_update)(i_cpu,
+  t_status		(*cpu_dump)(void);
+  t_status		(*cpu_current)(i_cpu*);
+  t_status		(*cpu_select)(i_cpu*);
+  t_status		(*cpu_update)(i_cpu,
 					      t_timeslice);
-  t_error			(*cpu_balance)(void);
-  t_error			(*cpu_migrate)(i_task,
+  t_status		(*cpu_balance)(void);
+  t_status		(*cpu_migrate)(i_task,
 					       i_cpu);
-  t_error			(*cpu_initialize)(void);
-  t_error			(*cpu_clean)(void);
+  t_status		(*cpu_initialize)(void);
+  t_status		(*cpu_clean)(void);
 }				d_cpu;
 
 /*
@@ -82,33 +82,33 @@ typedef struct
  * ../../core/cpu/cpu.c
  */
 
-t_error			cpu_show(i_cpu				id,
+t_status		cpu_show(i_cpu				id,
 				 mt_margin			margin);
 
-t_error			cpu_dump(void);
+t_status		cpu_dump(void);
 
-t_error			cpu_current(i_cpu*			id);
+t_status		cpu_current(i_cpu*			id);
 
-t_error			cpu_multiprocessor(void);
+t_bool			cpu_multiprocessor(void);
 
-t_error			cpu_select(i_cpu*			id);
+t_status		cpu_select(i_cpu*			id);
 
-t_error			cpu_update(i_cpu			id,
+t_status		cpu_update(i_cpu			id,
 				   t_timeslice			timeslice);
 
-t_error			cpu_balance(void);
+t_status		cpu_balance(void);
 
-t_error			cpu_migrate(i_task			task,
+t_status		cpu_migrate(i_task			task,
 				    i_cpu			cpu);
 
-t_error			cpu_exist(i_cpu				id);
+t_bool			cpu_exist(i_cpu				id);
 
-t_error			cpu_get(i_cpu				id,
+t_status		cpu_get(i_cpu				id,
 				o_cpu**				object);
 
-t_error			cpu_initialize(void);
+t_status		cpu_initialize(void);
 
-t_error			cpu_clean(void);
+t_status		cpu_clean(void);
 
 
 /*

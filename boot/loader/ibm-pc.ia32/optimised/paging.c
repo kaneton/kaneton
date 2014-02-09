@@ -68,7 +68,7 @@ void			bootloader_paging_init(void)
    */
 
   if (pd_build(bootloader_init_alloc(IA32_PD_MAX_ENTRIES * sizeof(t_ia32_pde),
-				     NULL), &pd, 1) != ERROR_NONE)
+				     NULL), &pd, 1) != STATUS_OK)
     {
       printf("cannot build a page-directory\n");
       bootloader_error();
@@ -85,7 +85,7 @@ void			bootloader_paging_init(void)
    */
 
   if (pt_build(bootloader_init_alloc(IA32_PT_MAX_ENTRIES * sizeof(t_ia32_pte),
-				     NULL), &pt0, 1) != ERROR_NONE)
+				     NULL), &pt0, 1) != STATUS_OK)
     {
       printf("cannot build a page-table\n");
       bootloader_error();
@@ -116,7 +116,7 @@ void			bootloader_paging_init(void)
    */
 
   if (pt_build(bootloader_init_alloc(IA32_PT_MAX_ENTRIES * sizeof(t_ia32_pte),
-				     NULL), &pt, 1) != ERROR_NONE)
+				     NULL), &pt, 1) != STATUS_OK)
     {
       printf("cannot build a page-table\n");
       bootloader_error();
@@ -141,11 +141,11 @@ void			bootloader_paging_init(void)
 
   for (addr = init->kcode; addr < limit; addr += PAGESZ)
     {
-      if (pd_get_table(&pd, IA32_PDE_ENTRY(addr), &pt) != ERROR_NONE)
+      if (pd_get_table(&pd, IA32_PDE_ENTRY(addr), &pt) != STATUS_OK)
 	{
 	  if (pt_build(bootloader_init_alloc(IA32_PT_MAX_ENTRIES *
 						  sizeof(t_ia32_pte),
-						  NULL), &pt, 1) != ERROR_NONE)
+						  NULL), &pt, 1) != STATUS_OK)
 	    {
 	      printf("cannot build a page-table\n");
 	      bootloader_error();

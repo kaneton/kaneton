@@ -42,7 +42,7 @@ void			test_core_segment_coalesce(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   try = 0;
@@ -55,19 +55,19 @@ void			test_core_segment_coalesce(void)
 			  ___kaneton$pagesz,
 			  PERMISSION_READ,
 			  SEGMENT_OPTION_NONE,
-			  &seg2) != ERROR_OK)
+			  &seg2) != STATUS_OK)
 	TEST_ERROR("[segment_reserve] error");
 
-      if (segment_get(seg, &o1) != ERROR_OK)
+      if (segment_get(seg, &o1) != STATUS_OK)
 	TEST_ERROR("[segment_get] error");
 
-      if (segment_get(seg2, &o2) != ERROR_OK)
+      if (segment_get(seg2, &o2) != STATUS_OK)
 	TEST_ERROR("[segment_get] error");
 
       if (o2->address == o1->address + ___kaneton$pagesz)
 	break;
 
-      if (segment_release(seg) != ERROR_OK)
+      if (segment_release(seg) != STATUS_OK)
 	TEST_ERROR("[segment_release] error");
 
       seg = seg2;
@@ -79,10 +79,10 @@ void			test_core_segment_coalesce(void)
     TEST_ERROR("unable to allocate a segment following a previously "
 	       "reserved one");
 
-  if (segment_coalesce(seg, seg2, &seg) != ERROR_OK)
+  if (segment_coalesce(seg, seg2, &seg) != STATUS_OK)
     TEST_ERROR("[segment_coalesce] error");
 
-  if (segment_get(seg, &o) != ERROR_OK)
+  if (segment_get(seg, &o) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
   if (o->id != seg)
@@ -100,18 +100,18 @@ void			test_core_segment_coalesce(void)
   if (o->permissions != PERMISSION_READ)
     TEST_ERROR("invalid segment's permissions after coalesce");
 
-  if (segment_get(seg2, &o) == ERROR_OK)
+  if (segment_get(seg2, &o) == STATUS_OK)
     TEST_ERROR("[segment_get] error: the second coalesced segment "
 	       "has not been removed\n");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   try = 0;
@@ -124,19 +124,19 @@ void			test_core_segment_coalesce(void)
 			  ___kaneton$pagesz,
 			  PERMISSION_READ,
 			  SEGMENT_OPTION_NONE,
-			  &seg2) != ERROR_OK)
+			  &seg2) != STATUS_OK)
 	TEST_ERROR("[segment_reserve] error");
 
-      if (segment_get(seg, &o1) != ERROR_OK)
+      if (segment_get(seg, &o1) != STATUS_OK)
 	TEST_ERROR("[segment_get] error");
 
-      if (segment_get(seg2, &o2) != ERROR_OK)
+      if (segment_get(seg2, &o2) != STATUS_OK)
 	TEST_ERROR("[segment_get] error");
 
       if (o2->address == o1->address + ___kaneton$pagesz)
 	break;
 
-      if (segment_release(seg) != ERROR_OK)
+      if (segment_release(seg) != STATUS_OK)
 	TEST_ERROR("[segment_release] error");
 
       seg = seg2;
@@ -148,17 +148,17 @@ void			test_core_segment_coalesce(void)
     TEST_ERROR("unable to allocate a segment following a previously "
 	       "reserved one");
 
-  if (segment_permissions(seg, PERMISSION_WRITE) != ERROR_OK)
+  if (segment_permissions(seg, PERMISSION_WRITE) != STATUS_OK)
     TEST_ERROR("[segment_permissions] error: write permission");
 
-  if (segment_coalesce(seg, seg2, &seg) == ERROR_OK)
+  if (segment_coalesce(seg, seg2, &seg) == STATUS_OK)
     TEST_ERROR("[segment_coalesce] error: segment with different "
 	       "permissions\n");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (segment_release(seg2) != ERROR_OK)
+  if (segment_release(seg2) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(043t90iesroikf29hg34h);

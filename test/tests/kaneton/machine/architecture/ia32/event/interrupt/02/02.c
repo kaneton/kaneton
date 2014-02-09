@@ -64,41 +64,41 @@ void			test_architecture_event_interrupt_02(void)
   if (event_reserve(ARCHITECTURE_IDT_SYSCALL_BASE + 0,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_interrupt_02_handler_56),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
   if (event_reserve(ARCHITECTURE_IDT_SYSCALL_BASE + 1,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_interrupt_02_handler_57),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
   if (event_reserve(ARCHITECTURE_IDT_SYSCALL_BASE + 2,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_interrupt_02_handler_58),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   asm volatile("int $56");
   asm volatile("int $57");
   asm volatile("int $58");
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   if (thrown != 3)
     TEST_ERROR("some interrupt events have not been caught");
 
-  if (event_release(ARCHITECTURE_IDT_SYSCALL_BASE + 0) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_SYSCALL_BASE + 0) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
-  if (event_release(ARCHITECTURE_IDT_SYSCALL_BASE + 1) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_SYSCALL_BASE + 1) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
-  if (event_release(ARCHITECTURE_IDT_SYSCALL_BASE + 2) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_SYSCALL_BASE + 2) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(cd09iwfjg9gerkg43hg);

@@ -130,7 +130,7 @@ void			tlb_init(void)
  * XXX support for anonymous add (index = -1).
  */
 
-t_error			tlb_add(t_sint64			index,
+t_status		tlb_add(t_sint64			index,
 				t_sparc64_tlb_type		type,
 				t_sparc64_tlb_entry*	       	entry)
 {
@@ -140,7 +140,7 @@ t_error			tlb_add(t_sint64			index,
   if (type == sparc64_tlb_itlb || type == sparc64_tlb_both)
     {
       if (index < 0 || index >= N_ITLB_ENTRY || !itlb[index].valid)
-	return (ERROR_UNKNOWN);
+	return (STATUS_UNKNOWN_ERROR);
 
       memcpy(&itlb[index], entry, sizeof (t_sparc64_tlb_entry));
       itlb[index].valid = 1;
@@ -159,7 +159,7 @@ t_error			tlb_add(t_sint64			index,
   if (type == sparc64_tlb_dtlb || type == sparc64_tlb_both)
     {
       if (index < 0 || index >= N_DTLB_ENTRY || !dtlb[index].valid)
-	return (ERROR_UNKNOWN);
+	return (STATUS_UNKNOWN_ERROR);
 
       memcpy(&dtlb[index], entry, sizeof (t_sparc64_tlb_entry));
       dtlb[index].valid = 1;
@@ -176,20 +176,20 @@ t_error			tlb_add(t_sint64			index,
       STXA(ASI_DMMU_DATA_ACCESS, index << 3, data);
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function remove a cache entry.
  */
 
-t_error			tlb_remove(t_sint64			index,
+t_status		tlb_remove(t_sint64			index,
 				   t_sparc64_tlb_type		type)
 {
   if (type == sparc64_tlb_itlb || type == sparc64_tlb_both)
     {
       if (index < 0 || index >= N_ITLB_ENTRY || !itlb[index].valid)
-	return (ERROR_UNKNOWN);
+	return (STATUS_UNKNOWN_ERROR);
 
       itlb[index].valid = 0;
 
@@ -200,7 +200,7 @@ t_error			tlb_remove(t_sint64			index,
   if (type == sparc64_tlb_dtlb || type == sparc64_tlb_both)
     {
       if (index < 0 || index >= N_DTLB_ENTRY || !dtlb[index].valid)
-	return (ERROR_UNKNOWN);
+	return (STATUS_UNKNOWN_ERROR);
 
       dtlb[index].valid = 0;
 
@@ -208,14 +208,14 @@ t_error			tlb_remove(t_sint64			index,
       STXA(ASI_DMMU_DATA_ACCESS, index << 3, 0);
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function read a tlb entry.
  */
 
-t_error			tlb_get(t_sint64			index,
+t_status		tlb_get(t_sint64			index,
 				t_sparc64_tlb_type		type,
 				t_sparc64_tlb_entry*   		entry)
 {
@@ -223,20 +223,20 @@ t_error			tlb_get(t_sint64			index,
     {
       case sparc64_tlb_itlb:
 	if (index < 0 || index >= N_ITLB_ENTRY || !itlb[index].valid)
-	  return (ERROR_UNKNOWN);
+	  return (STATUS_UNKNOWN_ERROR);
 
 	memcpy(entry, &itlb[index], sizeof (t_sparc64_tlb_entry));
 
-	return (ERROR_NONE);
+	return (STATUS_OK);
       case sparc64_tlb_dtlb:
 	if (index < 0 || index >= N_DTLB_ENTRY || !dtlb[index].valid)
-	  return (ERROR_UNKNOWN);
+	  return (STATUS_UNKNOWN_ERROR);
 
 	memcpy(entry, &dtlb[index], sizeof (t_sparc64_tlb_entry));
 
-	return (ERROR_NONE);
+	return (STATUS_OK);
       case sparc64_tlb_both:
       default:
-	return (ERROR_UNKNOWN);
+	return (STATUS_UNKNOWN_ERROR);
     }
 }
