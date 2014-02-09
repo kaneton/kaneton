@@ -19,6 +19,8 @@
 
 #include "01.h"
 
+#define COMPLETE_THREAD_SHARED_ADDRESS 0x0FFF1000
+
 /*
  * ---------- externs ---------------------------------------------------------
  */
@@ -33,8 +35,8 @@ static volatile i_thread	thread_01;
 static volatile t_vaddr		share_01;
 
 static volatile i_task		task_02;
+static volatile i_as            as_02;
 static volatile i_thread	thread_02;
-static volatile t_vaddr		share_02;
 
 static volatile i_thread	thread_03;
 
@@ -45,6 +47,9 @@ static volatile i_thread	thread_03;
 void			test_core_scheduler_complete_01_thread_01(void)
 {
   i_cpu			cpu;
+  i_segment             segment;
+  i_region              region;
+  o_region*             r;
 
   /*
    * sleep
@@ -63,12 +68,35 @@ void			test_core_scheduler_complete_01_thread_01(void)
   /*
    * thread
    */
+  if (segment_reserve(as_02,
+		      ___kaneton$pagesz,
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
+		      &segment) != ERROR_OK)
+    TEST_ERROR("[segment_reserve] error");
+
+  if (region_reserve(as_02,
+                     segment,
+                     0,
+                     REGION_OPTION_NONE,
+                     0x0,
+                     ___kaneton$pagesz,
+                     &region) != ERROR_OK)
+      TEST_ERROR("[region_reserve] error");
+
+  if (region_get(as_02, region, &r) != ERROR_OK)
+    TEST_ERROR("[region_get] error");
+
+  if (as_copy(_kernel.as, test_core_scheduler_complete_01_thread_03,
+              as_02, r->address,
+              ___kaneton$pagesz) != ERROR_OK)
+    TEST_ERROR("[as_copy] error");
 
   if (thread_reserve(task_02,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
 		     THREAD_STACK_SIZE_LOW,
-		     (t_vaddr)test_core_scheduler_complete_01_thread_03,
+		     r->address,
 		     (i_thread*)&thread_03) != ERROR_OK)
     TEST_HANG("[thread_reserve] error");
 
@@ -106,7 +134,7 @@ void			test_core_scheduler_complete_01_thread_01(void)
 
 void			test_core_scheduler_complete_01_thread_02(void)
 {
-  *((t_uint32*)share_02) = 42;
+  *((t_uint32*) COMPLETE_THREAD_SHARED_ADDRESS) = 42;
 
   while (1)
     ;
@@ -114,7 +142,7 @@ void			test_core_scheduler_complete_01_thread_02(void)
 
 void			test_core_scheduler_complete_01_thread_03(void)
 {
-  *((t_uint32*)(share_02 + 2042)) = 84;
+  *((t_uint32*)(COMPLETE_THREAD_SHARED_ADDRESS + 2042)) = 84;
 
   while (1)
     ;
@@ -122,7 +150,6 @@ void			test_core_scheduler_complete_01_thread_03(void)
 
 void			test_core_scheduler_complete_01(void)
 {
-  i_as			as;
   i_region		region;
   i_segment		segment;
   o_region*		r;
@@ -174,28 +201,47 @@ void			test_core_scheduler_complete_01(void)
                    (i_task*)&task_02) != ERROR_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task_02, &as) != ERROR_OK)
+  if (as_reserve(task_02, &as_02) != ERROR_OK)
     TEST_ERROR("[as_reserve] error");
 
-  if (region_reserve(as,
+  if (region_reserve(as_02,
 		     segment,
-		     0,
-		     REGION_OPTION_NONE,
 		     0x0,
+		     REGION_OPTION_FORCE,
+		     COMPLETE_THREAD_SHARED_ADDRESS,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(as, region, &r) != ERROR_OK)
+  if (segment_reserve(as_02,
+		      ___kaneton$pagesz,
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
+		      &segment) != ERROR_OK)
+    TEST_ERROR("[segment_reserve] error");
+
+  if (region_reserve(as_02,
+                     segment,
+                     0,
+                     REGION_OPTION_NONE,
+                     0x0,
+                     ___kaneton$pagesz,
+                     &region) != ERROR_OK)
+      TEST_ERROR("[region_reserve] error");
+
+  if (region_get(as_02, region, &r) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
-  share_02 = r->address;
+  if (as_copy(_kernel.as, test_core_scheduler_complete_01_thread_02,
+              as_02, r->address,
+              ___kaneton$pagesz) != ERROR_OK)
+    TEST_ERROR("[as_copy] error");
 
   if (thread_reserve(task_02,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
 		     THREAD_STACK_SIZE_LOW,
-		     (t_vaddr)test_core_scheduler_complete_01_thread_02,
+		     r->address,
 		     (i_thread*)&thread_02) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 

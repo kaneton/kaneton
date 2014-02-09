@@ -19,6 +19,8 @@
 
 #include "complete.h"
 
+#define COMPLETE_THREAD_SHARED_ADDRESS 0x0FFF1000
+
 /*
  * ---------- externs ---------------------------------------------------------
  */
@@ -34,7 +36,6 @@ static volatile t_vaddr		share_01;
 
 static volatile i_task		task_02;
 static volatile i_thread	thread_02;
-static volatile t_vaddr		share_02;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -82,7 +83,7 @@ void			test_architecture_scheduler_complete_thread_02(void)
   asm volatile("movl %%cs, %0"
                : "=a" (cs));
 
-  *((t_uint32*)(share_02 + 42)) = cs & 0x3;
+  *((t_uint32*)(COMPLETE_THREAD_SHARED_ADDRESS + 42)) = cs & 0x3;
 
   while (1)
     ;
@@ -149,23 +150,42 @@ void			test_architecture_scheduler_complete(void)
 
   if (region_reserve(as,
 		     segment,
-		     0,
-		     REGION_OPTION_NONE,
 		     0x0,
+		     REGION_OPTION_FORCE,
+		     COMPLETE_THREAD_SHARED_ADDRESS,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
+  if (segment_reserve(as,
+		      ___kaneton$pagesz,
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
+		      &segment) != ERROR_OK)
+    TEST_ERROR("[segment_reserve] error");
+
+  if (region_reserve(as,
+                     segment,
+                     0,
+                     REGION_OPTION_NONE,
+                     0x0,
+                     ___kaneton$pagesz,
+                     &region) != ERROR_OK)
+      TEST_ERROR("[region_reserve] error");
+
   if (region_get(as, region, &r) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
-  share_02 = r->address;
+  if (as_copy(_kernel.as, test_architecture_scheduler_complete_thread_02,
+              as, r->address,
+              ___kaneton$pagesz) != ERROR_OK)
+    TEST_ERROR("[as_copy] error");
 
   if (thread_reserve(task_02,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
-		     (t_vaddr)test_architecture_scheduler_complete_thread_02,
+		     r->address,
 		     (i_thread*)&thread_02) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 

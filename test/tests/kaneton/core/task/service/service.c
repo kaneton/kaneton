@@ -19,6 +19,8 @@
 
 #include "service.h"
 
+#define SERVICE_SHARED_ADDRESS 0x0FFF1000
+
 /*
  * ---------- externs ---------------------------------------------------------
  */
@@ -31,9 +33,6 @@ extern m_kernel			_kernel;
 
 static volatile i_thread	thread_01;
 static volatile t_vaddr		share_01;
-
-static volatile i_thread	thread_02;
-static volatile t_vaddr		share_02;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -62,7 +61,7 @@ void			test_core_task_service_thread_01(void)
 
 void			test_core_task_service_thread_02(void)
 {
-  *((t_uint32*)share_02) = 42;
+  *((t_uint32*) SERVICE_SHARED_ADDRESS) = 42;
 
   while (1)
     ;
@@ -70,6 +69,7 @@ void			test_core_task_service_thread_02(void)
 
 void			test_core_task_service(void)
 {
+  i_thread              thread_02;
   i_task		task;
   i_as			as;
   i_region		region;
@@ -129,22 +129,41 @@ void			test_core_task_service(void)
   if (region_reserve(as,
 		     segment,
 		     0,
-		     REGION_OPTION_NONE,
-		     0x0,
+		     REGION_OPTION_FORCE,
+		     SERVICE_SHARED_ADDRESS,
 		     ___kaneton$pagesz,
 		     &region) != ERROR_OK)
     TEST_ERROR("[region_reserve] error");
 
+  if (segment_reserve(as,
+		      ___kaneton$pagesz,
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
+		      &segment) != ERROR_OK)
+    TEST_ERROR("[segment_reserve] error");
+
+  if (region_reserve(as,
+                     segment,
+                     0,
+                     REGION_OPTION_NONE,
+                     0x0,
+                     ___kaneton$pagesz,
+                     &region) != ERROR_OK)
+      TEST_ERROR("[region_reserve] error");
+
   if (region_get(as, region, &r) != ERROR_OK)
     TEST_ERROR("[region_get] error");
 
-  share_02 = r->address;
+  if (as_copy(_kernel.as, test_core_task_service_thread_02,
+              as, r->address,
+              ___kaneton$pagesz) != ERROR_OK)
+    TEST_ERROR("[as_copy] error");
 
   if (thread_reserve(task,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
-		     (t_vaddr)test_core_task_service_thread_02,
+		     r->address,
 		     (i_thread*)&thread_02) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 

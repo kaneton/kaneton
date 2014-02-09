@@ -19,6 +19,8 @@
 
 #include "03.h"
 
+#define WAIT_THREAD_SHARED_ADDRESS 0x0FFF1000
+
 /*
  * ---------- externs ---------------------------------------------------------
  */
@@ -34,7 +36,6 @@ static volatile i_thread	thread_00;
 static volatile i_thread	thread_01;
 
 static volatile i_task		task_01;
-static volatile t_vaddr		address_01;
 
 /*
  * ---------- test ------------------------------------------------------------
@@ -42,7 +43,7 @@ static volatile t_vaddr		address_01;
 
 void			test_core_task_wait_03_thread(void)
 {
-  volatile t_uint32*	count = (volatile t_uint32*)address_01;
+  volatile t_uint32*	count = (volatile t_uint32*) WAIT_THREAD_SHARED_ADDRESS;
 
   *count = 0;
 
@@ -208,33 +209,49 @@ void			test_core_task_wait_03(void)
 
   if (as_reserve(task_01, &as) != ERROR_OK)
     TEST_ERROR("[as_reserve] error");
+  if (region_reserve(as,
+		     segment,
+		     0x0,
+		     REGION_OPTION_FORCE,
+		     WAIT_THREAD_SHARED_ADDRESS,
+		     ___kaneton$pagesz,
+		     &region) != ERROR_OK)
+    TEST_ERROR("[region_reserve] error");
+
+  if (segment_reserve(as,
+		      ___kaneton$pagesz,
+		      PERMISSION_READ | PERMISSION_WRITE,
+		      SEGMENT_OPTION_NONE,
+		      &segment) != ERROR_OK)
+    TEST_ERROR("[segment_reserve] error");
+
+  if (region_reserve(as,
+                     segment,
+                     0,
+                     REGION_OPTION_NONE,
+                     0x0,
+                     ___kaneton$pagesz,
+                     &region) != ERROR_OK)
+      TEST_ERROR("[region_reserve] error");
+
+  if (region_get(as, region, &r) != ERROR_OK)
+    TEST_ERROR("[region_get] error");
+
+  if (as_copy(_kernel.as, test_core_task_wait_03_thread,
+              as, r->address,
+              ___kaneton$pagesz) != ERROR_OK)
+    TEST_ERROR("[as_copy] error");
 
   if (thread_reserve(task_01,
 		     THREAD_PRIORITY,
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
-		     (t_vaddr)test_core_task_wait_03_thread,
+		     r->address,
 		     &thread) != ERROR_OK)
     TEST_ERROR("[thread_reserve] error");
 
   if (thread_start(thread) != ERROR_OK)
     TEST_ERROR("[thread_start] error");
-
-  if (region_reserve(as,
-		     segment,
-		     0x0,
-		     REGION_OPTION_NONE,
-		     (t_vaddr)NULL,
-		     ___kaneton$pagesz,
-		     &region) != ERROR_OK)
-    TEST_ERROR("[region_reserve] error");
-
-  if (region_get(as,
-		 region,
-		 &r) != ERROR_OK)
-    TEST_ERROR("[region_get] error");
-
-  address_01 = r->address;
 
   /*
    * scheduler
