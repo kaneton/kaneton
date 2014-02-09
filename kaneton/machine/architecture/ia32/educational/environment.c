@@ -72,6 +72,18 @@ extern m_event		_event;
 extern am		_architecture;
 
 /*
+ * the address bounds of the handler code section
+ */
+extern t_vaddr _handler_code_begin;
+extern t_vaddr _handler_code_end;
+
+/*
+ * the address bounds of the handler data section
+ */
+extern t_vaddr _handler_data_begin;
+extern t_vaddr _handler_data_end;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -341,10 +353,12 @@ t_error			architecture_environment_kernel(i_as	id)
  *    given address space, again at the same virtual address as the kernel's.
  * 7) locate the segment containing the system's IDT and map it in the
  *    given address space, again at the same virtual address as the kernel's.
- * 8) locate the segment containing the kernel code and map it in the given
- *    address space. note that the identity mapping technique is used here.
- * 9) locate the segment containing the kernel stack and map it in the given
- *    address space, note that the identity mapping technique is used here.
+ * 8) reserve a region in the given address space mapping the handler code
+ *    section located within the kernel code segment, note that the identity
+ *    mapping technique is used here as well.
+ * 9) reserve a region in the given address space mapping the handler data
+ *    section located within the kernel code segment, note that the identity
+ *    mapping technique is used here as well.
  */
 
 t_error			architecture_environment_server(i_as	id)
@@ -466,56 +480,31 @@ t_error			architecture_environment_server(i_as	id)
    * 8)
    */
 
-  /* XXX[do not uncomment this]
-     if (region_reserve(asid,
-     _init->kcode,
-     LINKER_SYMBOL(_handler_begin) - _init->kcode,
-     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED,
-     LINKER_SYMBOL(_handler_begin),
-     LINKER_SYMBOL(_handler_end) -
-     LINKER_SYMBOL(_handler_begin),
-     &reg) != ERROR_OK)
-
-     if (region_reserve(asid,
-     _init->kcode,
-     LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
-     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED,
-     LINKER_SYMBOL(_handler_data_begin),
-     LINKER_SYMBOL(_handler_data_end) -
-     LINKER_SYMBOL(_handler_data_begin),
-     &reg) != ERROR_OK)
-  */
-
-  if (segment_locate(_init->kcode, &segment) == ERROR_FALSE)
-    MACHINE_ESCAPE("unable to locate the segment which contains the "
-		   "kernel code");
-
   if (region_reserve(as->id,
-		     segment,
-		     0x0,
-		     REGION_OPTION_FORCE,
-		     (t_vaddr)_init->kcode,
-		     (t_vsize)_init->kcodesz,
-		     &region) != ERROR_OK)
-    MACHINE_ESCAPE("unable to reserve the region mapping the kernel code");
+                     _init->kcode,
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_code_begin) -
+                       _init->kcode,
+                     REGION_OPTION_FORCE,
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_code_begin),
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_code_end) -
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_code_begin),
+                     &region) != ERROR_OK)
+    MACHINE_ESCAPE("unable to map the handler code section");
 
   /*
    * 9)
    */
 
-  if (segment_locate(_init->kstack,
-		     &segment) == ERROR_FALSE)
-    MACHINE_ESCAPE("unable to locate the segment which contains the "
-		   "kernel stack");
-
   if (region_reserve(as->id,
-		     segment,
-		     0x0,
-		     REGION_OPTION_FORCE,
-		     (t_vaddr)_init->kstack,
-		     (t_vsize)_init->kstacksz,
-		     &region) != ERROR_OK)
-    MACHINE_ESCAPE("unable to reserve the region mapping the kernel stack");
+                     _init->kcode,
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_data_begin) -
+                       _init->kcode,
+                     REGION_OPTION_FORCE,
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_data_begin),
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_data_end) -
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_data_begin),
+                     &region) != ERROR_OK)
+    MACHINE_ESCAPE("unable to map the handler data section");
 
   MACHINE_LEAVE();
 }
