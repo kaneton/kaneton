@@ -394,6 +394,39 @@ the \code{ARCHITECTURE\_CONTEXT\_RESTORE()} macro-function will finally be
 called whose role will be to set up the information related to the thread
 to resume so that the \name{CPU} restore its registers.
 
+% environment
+\subsubsection*{environment}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/environment.c}
+\end{itemize}
+
+The design of kaneton implies that servers address spaces only contains the
+minimal shared code and data mappings required to perform a context switch.
+In a nutshell, only the handler code and data sections lying within the kernel
+code segment should be mapped in a task.
+
+The goal in this step is to implement the mapping of these sections of the
+kernel code segment when a server address space is initialized, in other
+words, in the \code{architecture\_environment\_server()} function.
+You will need to carefully read and understand the linker script, especially
+how to retrieve the bounds of each relevant section to perform its reservation
+in the task's address space.
+
+% handler
+\subsubsection*{handler}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/include/handler.h}
+\end{itemize}
+
+The objective here is to make the necessary changes to your interrupt handlers
+in order to put them in the appropriate section.
+Again, you must look at the kaneton linker script and understand what it defines
+to do so.
+
 % architecture
 \subsubsection*{architecture}
 
