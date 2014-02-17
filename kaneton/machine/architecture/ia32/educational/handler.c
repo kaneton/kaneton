@@ -191,7 +191,7 @@ at_handler_shell _architecture_handler_shells[ARCHITECTURE_HANDLER_SIZE] =
  * 6) register the syscall shells hence handlers.
  */
 
-t_error			architecture_handler_setup(void)
+t_status		architecture_handler_setup(void)
 {
   t_uint16		selector;
   i_segment		segment;
@@ -208,7 +208,7 @@ t_error			architecture_handler_setup(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_SYSTEM,
-		      &segment) != ERROR_OK)
+		      &segment) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a segment");
 
   if (region_reserve(_kernel.as,
@@ -217,10 +217,10 @@ t_error			architecture_handler_setup(void)
 		     REGION_OPTION_NONE,
 		     0x0,
 		     ___kaneton$pagesz,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region for the segment");
 
-  if (region_get(_kernel.as, region, &o) != ERROR_OK)
+  if (region_get(_kernel.as, region, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -229,10 +229,10 @@ t_error			architecture_handler_setup(void)
 
   if (architecture_idt_build(o->address,
 			     ARCHITECTURE_IDT_SIZE,
-			     &idt) != ERROR_OK)
+			     &idt) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the IDT at the given address");
 
-  if (architecture_idt_import(&idt) != ERROR_OK)
+  if (architecture_idt_import(&idt) != STATUS_OK)
     MACHINE_ESCAPE("unable to import the built IDT");
 
   /*
@@ -241,7 +241,7 @@ t_error			architecture_handler_setup(void)
 
   if (architecture_gdt_selector(ARCHITECTURE_GDT_INDEX_KERNEL_CODE,
 				ARCHITECTURE_PRIVILEGE_KERNEL,
-				&selector) != ERROR_OK)
+				&selector) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the kernel code segment selector");
 
   /*
@@ -258,7 +258,7 @@ t_error			architecture_handler_setup(void)
 				  ARCHITECTURE_IDTE_DPL_SET(
 				    ARCHITECTURE_PRIVILEGE_RING0) |
 				  ARCHITECTURE_IDTE_32BIT |
-				  ARCHITECTURE_IDTE_INTERRUPT) != ERROR_OK)
+				  ARCHITECTURE_IDTE_INTERRUPT) != STATUS_OK)
 	MACHINE_ESCAPE("unable to register the exception handler '%u'",
 		       i);
     }
@@ -277,7 +277,7 @@ t_error			architecture_handler_setup(void)
 				  ARCHITECTURE_IDTE_DPL_SET(
 				    ARCHITECTURE_PRIVILEGE_RING0) |
 				  ARCHITECTURE_IDTE_32BIT |
-				  ARCHITECTURE_IDTE_INTERRUPT) != ERROR_OK)
+				  ARCHITECTURE_IDTE_INTERRUPT) != STATUS_OK)
 	MACHINE_ESCAPE("unable to register the exception handler '%u'",
 		       i);
     }
@@ -296,7 +296,7 @@ t_error			architecture_handler_setup(void)
 				  ARCHITECTURE_IDTE_DPL_SET(
 				    ARCHITECTURE_PRIVILEGE_RING3) |
 				  ARCHITECTURE_IDTE_32BIT |
-				  ARCHITECTURE_IDTE_INTERRUPT) != ERROR_OK)
+				  ARCHITECTURE_IDTE_INTERRUPT) != STATUS_OK)
 	MACHINE_ESCAPE("unable to register the exception handler '%u'",
 		       i);
     }
@@ -331,13 +331,13 @@ void			architecture_handler_spurious(t_uint32	n)
    * 2)
    */
 
-  assert(thread_current(&id) == ERROR_OK);
+  assert(thread_current(&id) == STATUS_OK);
 
   /*
    * 3)
    */
 
-  assert(architecture_context_get(id, &ctx) == ERROR_OK);
+  assert(architecture_context_get(id, &ctx) == STATUS_OK);
 
   /*
    * 4)
@@ -368,15 +368,15 @@ void			architecture_handler_spurious(t_uint32	n)
    * 5)
    */
 
-  assert(thread_get(id, &thread) == ERROR_OK);
+  assert(thread_get(id, &thread) == STATUS_OK);
 
-  assert(task_get(thread->task, &task) == ERROR_OK);
+  assert(task_get(thread->task, &task) == STATUS_OK);
 
   /*
    * 6)
    */
 
-  assert(as_read(task->as, ctx.esp, sizeof (stack), stack) == ERROR_OK);
+  assert(as_read(task->as, ctx.esp, sizeof (stack), stack) == STATUS_OK);
 
   /*
    * 7)
@@ -413,7 +413,7 @@ void			architecture_handler_exception(t_uint32	n,
    * 1)
    */
 
-  assert(architecture_context_locate() == ERROR_OK);
+  assert(architecture_context_locate() == STATUS_OK);
 
   /*
    * 2)
@@ -421,7 +421,7 @@ void			architecture_handler_exception(t_uint32	n,
 
   id = (i_event)(ARCHITECTURE_IDT_EXCEPTION_BASE + n);
 
-  if (event_exist(id) != ERROR_TRUE)
+  if (event_exist(id) != TRUE)
     {
       architecture_handler_spurious((t_uint32)id);
 
@@ -432,7 +432,7 @@ void			architecture_handler_exception(t_uint32	n,
    * 3)
    */
 
-  assert(event_get(id, &o) == ERROR_OK);
+  assert(event_get(id, &o) == STATUS_OK);
 
   /*
    * 4)
@@ -444,7 +444,7 @@ void			architecture_handler_exception(t_uint32	n,
    * 5)
    */
 
-  assert(event_notify(id) == ERROR_OK);
+  assert(event_notify(id) == STATUS_OK);
 
   /*
    * 6)
@@ -474,7 +474,7 @@ void			architecture_handler_irq(t_uint32	n)
    * 1)
    */
 
-  assert(architecture_context_locate() == ERROR_OK);
+  assert(architecture_context_locate() == STATUS_OK);
 
   /*
    * 2)
@@ -482,7 +482,7 @@ void			architecture_handler_irq(t_uint32	n)
 
   id = (i_event)(ARCHITECTURE_IDT_IRQ_BASE + n);
 
-  if (event_exist(id) != ERROR_TRUE)
+  if (event_exist(id) != TRUE)
     {
       architecture_handler_spurious((t_uint32)id);
 
@@ -493,13 +493,13 @@ void			architecture_handler_irq(t_uint32	n)
    * 3)
    */
 
-  assert(event_get(id, &o) == ERROR_OK);
+  assert(event_get(id, &o) == STATUS_OK);
 
   /*
    * 4)
    */
 
-  assert(event_notify(id) == ERROR_OK);
+  assert(event_notify(id) == STATUS_OK);
 
   /*
    * 5)
@@ -528,7 +528,7 @@ void			architecture_handler_syscall(t_uint32	n)
    * 1)
    */
 
-  assert(architecture_context_locate() == ERROR_OK);
+  assert(architecture_context_locate() == STATUS_OK);
 
   /*
    * 2)
@@ -536,7 +536,7 @@ void			architecture_handler_syscall(t_uint32	n)
 
   id = (i_event)(ARCHITECTURE_IDT_SYSCALL_BASE + n);
 
-  if (event_exist(id) != ERROR_TRUE)
+  if (event_exist(id) != TRUE)
     {
       architecture_handler_spurious((t_uint32)id);
 
@@ -547,13 +547,13 @@ void			architecture_handler_syscall(t_uint32	n)
    * 3)
    */
 
-  assert(event_get(id, &o) == ERROR_OK);
+  assert(event_get(id, &o) == STATUS_OK);
 
   /*
    * 4)
    */
 
-  assert(event_notify(id) == ERROR_OK);
+  assert(event_notify(id) == STATUS_OK);
 }
 
 /*

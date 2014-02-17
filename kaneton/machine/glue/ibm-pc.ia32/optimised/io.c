@@ -70,34 +70,34 @@ d_io		io_dispatch =
  * this function allow I/O to a port.
  */
 
-t_error			glue_io_grant(i_port			id,
+t_status		glue_io_grant(i_port			id,
 				      i_task			task,
 				      t_uint8			width)
 {
   IO_ENTER(io);
 
   /* XXX flush AP */
-  if (ia32_set_io_bitmap(task, id, width, 1) != ERROR_NONE)
-    IO_LEAVE(io, ERROR_UNKNOWN);
+  if (ia32_set_io_bitmap(task, id, width, 1) != STATUS_OK)
+    IO_LEAVE(io, STATUS_UNKNOWN_ERROR);
 
-  IO_LEAVE(io, ERROR_NONE);
+  IO_LEAVE(io, STATUS_OK);
 }
 
 /*
  * this function deny I/O to a port.
  */
 
-t_error			glue_io_deny(i_port			id,
+t_status		glue_io_deny(i_port			id,
 				     i_task			task,
 				     t_uint8			width)
 {
   IO_ENTER(io);
 
   /* XXX flush AP */
-  if (ia32_set_io_bitmap(task, id, width, 0) != ERROR_NONE)
-    IO_LEAVE(io, ERROR_UNKNOWN);
+  if (ia32_set_io_bitmap(task, id, width, 0) != STATUS_OK)
+    IO_LEAVE(io, STATUS_UNKNOWN_ERROR);
 
-  IO_LEAVE(io, ERROR_NONE);
+  IO_LEAVE(io, STATUS_OK);
 }
 
 
@@ -105,12 +105,12 @@ t_error			glue_io_deny(i_port			id,
  * this function initialize the I/O manager.
  */
 
-t_error			glue_io_initialize(void)
+t_status		glue_io_initialize(void)
 {
   IO_ENTER(io);
 
-  if (ia32_reset_iopl() != ERROR_NONE)	/* XXX broadcast to AP */
-    IO_LEAVE(io, ERROR_UNKNOWN);
+  if (ia32_reset_iopl() != STATUS_OK)	/* XXX broadcast to AP */
+    IO_LEAVE(io, STATUS_UNKNOWN_ERROR);
 
-  IO_LEAVE(io, ERROR_NONE);
+  IO_LEAVE(io, STATUS_OK);
 }

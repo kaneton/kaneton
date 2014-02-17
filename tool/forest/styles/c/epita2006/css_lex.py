@@ -120,7 +120,7 @@ t_COLON            = r':'
 t_CONDOP           = r'\?'
 # t_ELLIPSIS         = r'\.\.\.'
 
-def t_error(t):
+def t_status(t):
     print "illegal '%s' line %d" % (t.value[0], t.lineno)
     #exit(1)
     t.skip(1)

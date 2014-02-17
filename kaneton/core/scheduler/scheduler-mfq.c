@@ -151,7 +151,7 @@ m_scheduler		_scheduler;
  * 6) call the machine.
  */
 
-t_error			scheduler_show(i_cpu			id,
+t_status		scheduler_show(i_cpu			id,
 				       mt_margin		margin)
 {
   o_scheduler*		scheduler;
@@ -164,7 +164,7 @@ t_error			scheduler_show(i_cpu			id,
    * 1)
    */
 
-  if (scheduler_get(id, &scheduler) != ERROR_OK)
+  if (scheduler_get(id, &scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler object");
 
   /*
@@ -218,7 +218,7 @@ t_error			scheduler_show(i_cpu			id,
    * 4)
    */
 
-  if (set_size(scheduler->active, &size) != ERROR_OK)
+  if (set_size(scheduler->active, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of active queues");
 
   module_call(console, message,
@@ -239,7 +239,7 @@ t_error			scheduler_show(i_cpu			id,
        * a)
        */
 
-      if (set_object(scheduler->active, i, (void**)&queue) != ERROR_OK)
+      if (set_object(scheduler->active, i, (void**)&queue) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the active queue");
 
       /*
@@ -266,7 +266,7 @@ t_error			scheduler_show(i_cpu			id,
        * d)
        */
 
-      if (set_size(queue->candidates, &size) != ERROR_OK)
+      if (set_size(queue->candidates, &size) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the size of the set of candidates");
 
       module_call(console, message,
@@ -285,7 +285,7 @@ t_error			scheduler_show(i_cpu			id,
 	   * i)
 	   */
 
-	  if (set_object(queue->candidates, j, (void**)&candidate) != ERROR_OK)
+	  if (set_object(queue->candidates, j, (void**)&candidate) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the thread candidate "
 			"from the queue");
 
@@ -307,7 +307,7 @@ t_error			scheduler_show(i_cpu			id,
    * 5)
    */
 
-  if (set_size(scheduler->active, &size) != ERROR_OK)
+  if (set_size(scheduler->active, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of active queues");
 
   module_call(console, message,
@@ -328,7 +328,7 @@ t_error			scheduler_show(i_cpu			id,
        * a)
        */
 
-      if (set_object(scheduler->expired, i, (void**)&queue) != ERROR_OK)
+      if (set_object(scheduler->expired, i, (void**)&queue) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the expired queue");
 
       /*
@@ -355,7 +355,7 @@ t_error			scheduler_show(i_cpu			id,
        * d)
        */
 
-      if (set_size(queue->candidates, &size) != ERROR_OK)
+      if (set_size(queue->candidates, &size) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the size of the set of candidates");
 
       module_call(console, message,
@@ -374,7 +374,7 @@ t_error			scheduler_show(i_cpu			id,
 	   * i)
 	   */
 
-	  if (set_object(queue->candidates, j, (void**)&candidate) != ERROR_OK)
+	  if (set_object(queue->candidates, j, (void**)&candidate) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the thread candidate "
 			"from the queue");
 
@@ -396,7 +396,7 @@ t_error			scheduler_show(i_cpu			id,
    * 6)
    */
 
-  if (machine_call(scheduler, show, id, margin) != ERROR_OK)
+  if (machine_call(scheduler, show, id, margin) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -415,7 +415,7 @@ t_error			scheduler_show(i_cpu			id,
  * 4) call the machine.
  */
 
-t_error			scheduler_dump(void)
+t_status		scheduler_dump(void)
 {
   o_scheduler*		scheduler;
   t_setsz		size;
@@ -441,7 +441,7 @@ t_error			scheduler_dump(void)
    * 2)
    */
 
-  if (set_size(_scheduler.schedulers, &size) != ERROR_OK)
+  if (set_size(_scheduler.schedulers, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of schedulers");
 
   /*
@@ -462,7 +462,7 @@ t_error			scheduler_dump(void)
 
       if (set_object(_scheduler.schedulers,
 		     i,
-		     (void**)&scheduler) != ERROR_OK)
+		     (void**)&scheduler) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the scheduler object");
 
       /*
@@ -470,7 +470,7 @@ t_error			scheduler_dump(void)
        */
 
       if (scheduler_show(scheduler->cpu,
-			 3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+			 3 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
 	CORE_ESCAPE("unable to show the scheduler");
     }
 
@@ -478,7 +478,7 @@ t_error			scheduler_dump(void)
    * 4)
    */
 
-  if (machine_call(scheduler, dump) != ERROR_OK)
+  if (machine_call(scheduler, dump) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -494,7 +494,7 @@ t_error			scheduler_dump(void)
  * 3) call the machine.
  */
 
-t_error			scheduler_start(i_cpu			id)
+t_status		scheduler_start(i_cpu			id)
 {
   o_scheduler*		scheduler;
 
@@ -502,7 +502,7 @@ t_error			scheduler_start(i_cpu			id)
    * 1)
    */
 
-  if (scheduler_get(id, &scheduler) != ERROR_OK)
+  if (scheduler_get(id, &scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler object");
 
   /*
@@ -515,7 +515,7 @@ t_error			scheduler_start(i_cpu			id)
    * 3)
    */
 
-  if (machine_call(scheduler, start, id) != ERROR_OK)
+  if (machine_call(scheduler, start, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -531,7 +531,7 @@ t_error			scheduler_start(i_cpu			id)
  * 3) call the machine.
  */
 
-t_error			scheduler_stop(i_cpu			id)
+t_status		scheduler_stop(i_cpu			id)
 {
   o_scheduler*		scheduler;
 
@@ -539,7 +539,7 @@ t_error			scheduler_stop(i_cpu			id)
    * 1)
    */
 
-  if (scheduler_get(id, &scheduler) != ERROR_OK)
+  if (scheduler_get(id, &scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler object");
 
   /*
@@ -552,7 +552,7 @@ t_error			scheduler_stop(i_cpu			id)
    * 3)
    */
 
-  if (machine_call(scheduler, stop, id) != ERROR_OK)
+  if (machine_call(scheduler, stop, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -581,7 +581,7 @@ t_error			scheduler_stop(i_cpu			id)
  * 3) call the machine.
  */
 
-t_error			scheduler_quantum(t_quantum		quantum)
+t_status		scheduler_quantum(t_quantum		quantum)
 {
   s_iterator		i;
   t_state		s;
@@ -615,7 +615,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
 
       if (set_object(_scheduler.schedulers,
 		     i,
-		     (void**)&scheduler) != ERROR_OK)
+		     (void**)&scheduler) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the scheduler from the set");
 
       /*
@@ -638,7 +638,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
 	   * i)
 	   */
 
-	  if (set_object(scheduler->active, j, (void**)&queue) != ERROR_OK)
+	  if (set_object(scheduler->active, j, (void**)&queue) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve one of the active queues"
 			"from the scheduler");
 
@@ -656,7 +656,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
 
 	      if (set_object(queue->candidates,
 			     k,
-			     (void**)&candidate) != ERROR_OK)
+			     (void**)&candidate) != STATUS_OK)
 		CORE_ESCAPE("unable to retrieve the thread identifier "
 			    "from the queue");
 
@@ -682,7 +682,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
 	   * i)
 	   */
 
-	  if (set_object(scheduler->expired, j, (void**)&queue) != ERROR_OK)
+	  if (set_object(scheduler->expired, j, (void**)&queue) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve one of the expired queues"
 			"from the scheduler");
 
@@ -700,7 +700,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
 
 	      if (set_object(queue->candidates,
 			     k,
-			     (void**)&candidate) != ERROR_OK)
+			     (void**)&candidate) != STATUS_OK)
 		CORE_ESCAPE("unable to retrieve the thread identifier "
 			    "from the queue");
 
@@ -717,7 +717,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
    * 3)
    */
 
-  if (machine_call(scheduler, quantum, quantum) != ERROR_OK)
+  if (machine_call(scheduler, quantum, quantum) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -753,7 +753,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
  * 3) call the machine.
  */
 
-t_error			scheduler_yield(void)
+t_status		scheduler_yield(void)
 {
   o_scheduler*		scheduler;
 
@@ -761,7 +761,7 @@ t_error			scheduler_yield(void)
    * 1)
    */
 
-  if (scheduler_current(&scheduler) != ERROR_OK)
+  if (scheduler_current(&scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
 
   /*
@@ -775,7 +775,7 @@ t_error			scheduler_yield(void)
    * 3)
    */
 
-  if (machine_call(scheduler, yield) != ERROR_OK)
+  if (machine_call(scheduler, yield) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -868,7 +868,7 @@ t_error			scheduler_yield(void)
  * 11) retrieve the current CPU object and update its statistics.
  */
 
-t_error			scheduler_elect(void)
+t_status		scheduler_elect(void)
 {
   i_thread		current_thread;
   t_priority		current_priority;
@@ -889,13 +889,13 @@ t_error			scheduler_elect(void)
    * 1)
    */
 
-  if (scheduler_current(&scheduler) != ERROR_OK)
+  if (scheduler_current(&scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
 
-  if (thread_get(scheduler->thread, &thread) != ERROR_OK)
+  if (thread_get(scheduler->thread, &thread) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the given thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the thread's task object");
 
   /*
@@ -942,10 +942,10 @@ t_error			scheduler_elect(void)
 
       if (set_get(scheduler->expired,
 		  (t_id)current_priority,
-		  (void**)&queue) != ERROR_OK)
+		  (void**)&queue) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the proper queue");
 
-      if (set_append(queue->candidates, &candidate) != ERROR_OK)
+      if (set_append(queue->candidates, &candidate) != STATUS_OK)
 	CORE_ESCAPE("unable to append the thread candidate "
 		    "to the queue");
     }
@@ -971,7 +971,7 @@ t_error			scheduler_elect(void)
        * a)
        */
 
-      if (set_object(scheduler->active, i, (void**)&queue) != ERROR_OK)
+      if (set_object(scheduler->active, i, (void**)&queue) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the queue object");
 
       /*
@@ -1022,14 +1022,14 @@ t_error			scheduler_elect(void)
 	   * i)
 	   */
 
-	  if (set_empty(queue->candidates) == ERROR_TRUE)
+	  if (set_empty(queue->candidates) == TRUE)
 	    continue;
 
 	  /*
 	   * ii)
 	   */
 
-	  if (set_head(queue->candidates, &iterator) != ERROR_TRUE)
+	  if (set_head(queue->candidates, &iterator) != TRUE)
 	    CORE_ESCAPE("unable to locate the the thread with the "
 			"highest seniority");
 
@@ -1039,17 +1039,17 @@ t_error			scheduler_elect(void)
 
 	  if (set_object(queue->candidates,
 			 iterator,
-			 (void**)&candidate) != ERROR_OK)
+			 (void**)&candidate) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the thread");
 
 	  /*
 	   * iv)
 	   */
 
-	  if (thread_get(candidate->thread, &h) != ERROR_OK)
+	  if (thread_get(candidate->thread, &h) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the thread object");
 
-	  if (task_get(h->task, &a) != ERROR_OK)
+	  if (task_get(h->task, &a) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the thread's task object");
 
 	  /*
@@ -1078,7 +1078,7 @@ t_error			scheduler_elect(void)
 	   * viii)
 	   */
 
-	  if (set_delete(queue->candidates, iterator) != ERROR_OK)
+	  if (set_delete(queue->candidates, iterator) != STATUS_OK)
 	    CORE_ESCAPE("unable to delete the elected thread from the queue");
 
 	  /*
@@ -1104,10 +1104,10 @@ t_error			scheduler_elect(void)
 
 	      if (set_get(scheduler->active,
 			  (t_id)current_priority,
-			  (void**)&queue) != ERROR_OK)
+			  (void**)&queue) != STATUS_OK)
 		CORE_ESCAPE("unable to retrieve the proper queue");
 
-	      if (set_append(queue->candidates, &candidate) != ERROR_OK)
+	      if (set_append(queue->candidates, &candidate) != STATUS_OK)
 		CORE_ESCAPE("unable to append the thread candidate "
 			    "to the queue");
 	    }
@@ -1207,10 +1207,10 @@ t_error			scheduler_elect(void)
 
 	if (set_get(scheduler->active,
 		    (t_id)future_priority,
-		    (void**)&queue) != ERROR_OK)
+		    (void**)&queue) != STATUS_OK)
 	  CORE_ESCAPE("unable to retrieve the proper queue");
 
-	if (set_insert(queue->candidates, &candidate) != ERROR_OK)
+	if (set_insert(queue->candidates, &candidate) != STATUS_OK)
 	  CORE_ESCAPE("unable to append the thread candidate "
 		      "to the queue");
 
@@ -1233,7 +1233,7 @@ t_error			scheduler_elect(void)
    * 9)
    */
 
-  if (machine_call(scheduler, elect) != ERROR_OK)
+  if (machine_call(scheduler, elect) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -1248,10 +1248,10 @@ t_error			scheduler_elect(void)
    * 11)
    */
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the current CPU object");
 
-  if (cpu_update(cpu, _scheduler.quantum) != ERROR_OK)
+  if (cpu_update(cpu, _scheduler.quantum) != STATUS_OK)
     CORE_ESCAPE("unable to update the current CPU's statistics");
 
   CORE_LEAVE();
@@ -1269,7 +1269,7 @@ t_error			scheduler_elect(void)
  * 5) call the machine.
  */
 
-t_error			scheduler_add(i_thread			id)
+t_status		scheduler_add(i_thread			id)
 {
   o_thread*		thread;
   o_task*		task;
@@ -1282,13 +1282,13 @@ t_error			scheduler_add(i_thread			id)
    * 1)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
-  if (scheduler_get(task->cpu, &scheduler) != ERROR_OK)
+  if (scheduler_get(task->cpu, &scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler object");
 
   /*
@@ -1308,10 +1308,10 @@ t_error			scheduler_add(i_thread			id)
    * 4)
    */
 
-  if (set_get(scheduler->active, (t_id)priority, (void**)&queue) != ERROR_OK)
+  if (set_get(scheduler->active, (t_id)priority, (void**)&queue) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the proper queue");
 
-  if (set_append(queue->candidates, &candidate) != ERROR_OK)
+  if (set_append(queue->candidates, &candidate) != STATUS_OK)
     CORE_ESCAPE("unable to append the thread candidate "
 		"to the queue");
 
@@ -1319,7 +1319,7 @@ t_error			scheduler_add(i_thread			id)
    * 5)
    */
 
-  if (machine_call(scheduler, add, id) != ERROR_OK)
+  if (machine_call(scheduler, add, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1343,7 +1343,7 @@ t_error			scheduler_add(i_thread			id)
  *    its queues.
  */
 
-t_error			scheduler_remove(i_thread		id)
+t_status		scheduler_remove(i_thread		id)
 {
   o_thread*		thread;
   o_task*		task;
@@ -1355,20 +1355,20 @@ t_error			scheduler_remove(i_thread		id)
    * 1)
    */
 
-  if (machine_call(scheduler, remove, id) != ERROR_OK)
+  if (machine_call(scheduler, remove, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
-  if (scheduler_get(task->cpu, &scheduler) != ERROR_OK)
+  if (scheduler_get(task->cpu, &scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler object");
 
   /*
@@ -1386,12 +1386,12 @@ t_error			scheduler_remove(i_thread		id)
 
   if (set_get(scheduler->active,
 	      (t_id)priority,
-	      (void**)&queue) != ERROR_OK)
+	      (void**)&queue) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the proper queue");
 
-  if (set_exist(queue->candidates, id) == ERROR_TRUE)
+  if (set_exist(queue->candidates, id) == TRUE)
     {
-      if (set_remove(queue->candidates, id) != ERROR_OK)
+      if (set_remove(queue->candidates, id) != STATUS_OK)
 	CORE_ESCAPE("unable to remove the thread from the active queue");
 
       goto removed;
@@ -1399,12 +1399,12 @@ t_error			scheduler_remove(i_thread		id)
 
   if (set_get(scheduler->expired,
 	      (t_id)priority,
-	      (void**)&queue) != ERROR_OK)
+	      (void**)&queue) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the proper queue");
 
-  if (set_exist(queue->candidates, id) == ERROR_TRUE)
+  if (set_exist(queue->candidates, id) == TRUE)
     {
-      if (set_remove(queue->candidates, id) != ERROR_OK)
+      if (set_remove(queue->candidates, id) != STATUS_OK)
 	CORE_ESCAPE("unable to remove the thread from the active queue");
 
       goto removed;
@@ -1421,7 +1421,7 @@ t_error			scheduler_remove(i_thread		id)
 
   if (scheduler->thread == id)
     {
-      if (scheduler_yield() != ERROR_OK)
+      if (scheduler_yield() != STATUS_OK)
 	CORE_ESCAPE("unable to yield the execution");
     }
 
@@ -1486,7 +1486,7 @@ t_error			scheduler_remove(i_thread		id)
  * 4) call the machine.
  */
 
-t_error			scheduler_update(i_thread		id)
+t_status		scheduler_update(i_thread		id)
 {
   o_thread*		thread;
   o_task*		task;
@@ -1496,13 +1496,13 @@ t_error			scheduler_update(i_thread		id)
    * 1)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(thread->task, &task) != ERROR_OK)
+  if (task_get(thread->task, &task) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
-  if (scheduler_get(task->cpu, &scheduler) != ERROR_OK)
+  if (scheduler_get(task->cpu, &scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler object");
 
   /*
@@ -1547,7 +1547,7 @@ t_error			scheduler_update(i_thread		id)
 
 	  if (set_object(scheduler->active,
 			 i,
-			 (void**)&queue) != ERROR_OK)
+			 (void**)&queue) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the queue from the "
 			"active set");
 
@@ -1567,7 +1567,7 @@ t_error			scheduler_update(i_thread		id)
 
 	      if (set_object(queue->candidates,
 			     j,
-			     (void**)&candidate) != ERROR_OK)
+			     (void**)&candidate) != STATUS_OK)
 		CORE_ESCAPE("unable to retrieve the thread candidate "
 			    "from the queue");
 
@@ -1603,17 +1603,17 @@ t_error			scheduler_update(i_thread		id)
 
 	      if (set_get(scheduler->active,
 			  (t_id)priority,
-			  (void**)&q) != ERROR_OK)
+			  (void**)&q) != STATUS_OK)
 		CORE_ESCAPE("unable to retrieve the thread's future queue");
 
-	      if (set_append(q->candidates, candidate) != ERROR_OK)
+	      if (set_append(q->candidates, candidate) != STATUS_OK)
 		CORE_ESCAPE("unable to append to candidate to its queue");
 
 	      /*
 	       * #7)
 	       */
 
-	      if (set_remove(queue->candidates, id) != ERROR_OK)
+	      if (set_remove(queue->candidates, id) != STATUS_OK)
 		CORE_ESCAPE("unable to remove the thread from the set");
 
 	      /*
@@ -1640,7 +1640,7 @@ t_error			scheduler_update(i_thread		id)
 
 	  if (set_object(scheduler->expired,
 			 i,
-			 (void**)&queue) != ERROR_OK)
+			 (void**)&queue) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the queue from the "
 			"expired set");
 
@@ -1660,7 +1660,7 @@ t_error			scheduler_update(i_thread		id)
 
 	      if (set_object(queue->candidates,
 			     j,
-			     (void**)&candidate) != ERROR_OK)
+			     (void**)&candidate) != STATUS_OK)
 		CORE_ESCAPE("unable to retrieve the thread candidate "
 			    "from the queue");
 
@@ -1696,17 +1696,17 @@ t_error			scheduler_update(i_thread		id)
 
 	      if (set_get(scheduler->expired,
 			  (t_id)priority,
-			  (void**)&q) != ERROR_OK)
+			  (void**)&q) != STATUS_OK)
 		CORE_ESCAPE("unable to retrieve the thread's future queue");
 
-	      if (set_append(q->candidates, candidate) != ERROR_OK)
+	      if (set_append(q->candidates, candidate) != STATUS_OK)
 		CORE_ESCAPE("unable to append to candidate to its queue");
 
 	      /*
 	       * #7)
 	       */
 
-	      if (set_remove(queue->candidates, id) != ERROR_OK)
+	      if (set_remove(queue->candidates, id) != STATUS_OK)
 		CORE_ESCAPE("unable to remove the thread from the set");
 
 	      /*
@@ -1730,7 +1730,7 @@ t_error			scheduler_update(i_thread		id)
    * 4)
    */
 
-  if (machine_call(scheduler, update, id) != ERROR_OK)
+  if (machine_call(scheduler, update, id) != STATUS_OK)
     CORE_ESCAPE("an erro occured in the machine");
 
   CORE_LEAVE();
@@ -1741,9 +1741,9 @@ t_error			scheduler_update(i_thread		id)
  * exists.
  */
 
-t_error			scheduler_exist(i_cpu			id)
+t_bool			scheduler_exist(i_cpu			id)
 {
-  if (set_exist(_scheduler.schedulers, id) != ERROR_TRUE)
+  if (set_exist(_scheduler.schedulers, id) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -1758,7 +1758,7 @@ t_error			scheduler_exist(i_cpu			id)
  * 1) retrieve the object from the set of schedulers.
  */
 
-t_error			scheduler_get(i_cpu			id,
+t_status		scheduler_get(i_cpu			id,
 				      o_scheduler**		object)
 {
   /*
@@ -1772,7 +1772,7 @@ t_error			scheduler_get(i_cpu			id,
    * 1)
    */
 
-  if (set_get(_scheduler.schedulers, id, (void**)object) != ERROR_OK)
+  if (set_get(_scheduler.schedulers, id, (void**)object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of schedulers");
 
   CORE_LEAVE();
@@ -1788,7 +1788,7 @@ t_error			scheduler_get(i_cpu			id,
  * 2) retrieve the current scheduler object.
  */
 
-t_error			scheduler_current(o_scheduler**		scheduler)
+t_status		scheduler_current(o_scheduler**		scheduler)
 {
   i_cpu			cpu;
 
@@ -1803,14 +1803,14 @@ t_error			scheduler_current(o_scheduler**		scheduler)
    * 1)
    */
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the current CPU object");
 
   /*
    * 2)
    */
 
-  if (set_get(_scheduler.schedulers, cpu, (void**)scheduler) != ERROR_OK)
+  if (set_get(_scheduler.schedulers, cpu, (void**)scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler from the set");
 
   CORE_LEAVE();
@@ -1845,7 +1845,7 @@ t_error			scheduler_current(o_scheduler**		scheduler)
  * 9) call the machine.
  */
 
-t_error			scheduler_initialize(void)
+t_status		scheduler_initialize(void)
 {
   o_scheduler*		scheduler;
   t_setsz		ncpus;
@@ -1877,7 +1877,7 @@ t_error			scheduler_initialize(void)
    * 4)
    */
 
-  if (set_size(_cpu.cpus, &ncpus) != ERROR_OK)
+  if (set_size(_cpu.cpus, &ncpus) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the number of active CPUs");
 
   /*
@@ -1888,7 +1888,7 @@ t_error			scheduler_initialize(void)
 		  SET_OPTION_ALLOCATE,
 		  ncpus,
 		  sizeof (o_scheduler),
-		  &_scheduler.schedulers) != ERROR_OK)
+		  &_scheduler.schedulers) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a set for the schedulers");
 
   /*
@@ -1903,7 +1903,7 @@ t_error			scheduler_initialize(void)
        * a)
        */
 
-      if (set_object(_cpu.cpus, it, (void**)&o) != ERROR_OK)
+      if (set_object(_cpu.cpus, it, (void**)&o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the CPU object");
 
       /*
@@ -1924,7 +1924,7 @@ t_error			scheduler_initialize(void)
 		      SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		      SCHEDULER_NPRIORITIES,
 		      sizeof (o_scheduler_queue),
-		      &scheduler.active) != ERROR_OK)
+		      &scheduler.active) != STATUS_OK)
 	CORE_ESCAPE("unable to reserve a set for the active queues");
 
       /*
@@ -1949,7 +1949,7 @@ t_error			scheduler_initialize(void)
 	  if (set_reserve(ll,
 			  SET_OPTION_ALLOCATE,
 			  sizeof (o_scheduler_candidate),
-			  &queue.candidates) != ERROR_OK)
+			  &queue.candidates) != STATUS_OK)
 	    CORE_ESCAPE("unable to reserve the active queue of priority "
 			"%u",
 			queue.priority);
@@ -1958,7 +1958,7 @@ t_error			scheduler_initialize(void)
 	   * iii)
 	   */
 
-	  if (set_add(scheduler.active, &queue) != ERROR_OK)
+	  if (set_add(scheduler.active, &queue) != STATUS_OK)
 	    CORE_ESCAPE("unable to add the active queue of priority "
 			"%u to the set",
 			queue.priority);
@@ -1972,7 +1972,7 @@ t_error			scheduler_initialize(void)
 		      SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		      SCHEDULER_NPRIORITIES,
 		      sizeof (o_scheduler_queue),
-		      &scheduler.expired) != ERROR_OK)
+		      &scheduler.expired) != STATUS_OK)
 	CORE_ESCAPE("unable to reserve a set for the expired queues");
 
       /*
@@ -1997,7 +1997,7 @@ t_error			scheduler_initialize(void)
 	  if (set_reserve(ll,
 			  SET_OPTION_ALLOCATE,
 			  sizeof (o_scheduler_candidate),
-			  &queue.candidates) != ERROR_OK)
+			  &queue.candidates) != STATUS_OK)
 	    CORE_ESCAPE("unable to reserve the expired queue of priority "
 			"%u",
 			queue.priority);
@@ -2006,7 +2006,7 @@ t_error			scheduler_initialize(void)
 	   * iii)
 	   */
 
-	  if (set_add(scheduler.expired, &queue) != ERROR_OK)
+	  if (set_add(scheduler.expired, &queue) != STATUS_OK)
 	    CORE_ESCAPE("unable to add the expired queue of priority "
 			"%u to the set",
 			queue.priority);
@@ -2016,7 +2016,7 @@ t_error			scheduler_initialize(void)
        * g)
        */
 
-      if (set_append(_scheduler.schedulers, &scheduler) != ERROR_OK)
+      if (set_append(_scheduler.schedulers, &scheduler) != STATUS_OK)
 	CORE_ESCAPE("unable to append the CPU's scheduler to the set");
     }
 
@@ -2024,7 +2024,7 @@ t_error			scheduler_initialize(void)
    * 7)
    */
 
-  if (scheduler_current(&scheduler) != ERROR_OK)
+  if (scheduler_current(&scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
 
   /*
@@ -2038,7 +2038,7 @@ t_error			scheduler_initialize(void)
    * 9)
    */
 
-  if (machine_call(scheduler, initialize) != ERROR_OK)
+  if (machine_call(scheduler, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -2063,7 +2063,7 @@ t_error			scheduler_initialize(void)
  *   e) release the set of expired queues.
  */
 
-t_error			scheduler_clean(void)
+t_status		scheduler_clean(void)
 {
   o_scheduler*		scheduler;
   t_state		s;
@@ -2082,7 +2082,7 @@ t_error			scheduler_clean(void)
    * 2)
    */
 
-  if (machine_call(scheduler, clean) != ERROR_OK)
+  if (machine_call(scheduler, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -2097,7 +2097,7 @@ t_error			scheduler_clean(void)
 
       if (set_object(_scheduler.schedulers,
 		     i,
-		     (void**)&scheduler) != ERROR_OK)
+		     (void**)&scheduler) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the scheduler object");
 
       /*
@@ -2112,14 +2112,14 @@ t_error			scheduler_clean(void)
 	   * i)
 	   */
 
-	  if (set_object(scheduler->active, i, (void**)&queue) != ERROR_OK)
+	  if (set_object(scheduler->active, i, (void**)&queue) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrive an active queue");
 
 	  /*
 	   * ii)
 	   */
 
-	  if (set_release(queue->id) != ERROR_OK)
+	  if (set_release(queue->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to release the set associated with "
 			"the active queue");
 	}
@@ -2128,7 +2128,7 @@ t_error			scheduler_clean(void)
        * c)
        */
 
-      if (set_release(scheduler->active) != ERROR_OK)
+      if (set_release(scheduler->active) != STATUS_OK)
 	CORE_ESCAPE("unable to release the set of active queues");
 
       /*
@@ -2143,14 +2143,14 @@ t_error			scheduler_clean(void)
 	   * i)
 	   */
 
-	  if (set_object(scheduler->expired, i, (void**)&queue) != ERROR_OK)
+	  if (set_object(scheduler->expired, i, (void**)&queue) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve an expired queue");
 
 	  /*
 	   * ii)
 	   */
 
-	  if (set_release(queue->id) != ERROR_OK)
+	  if (set_release(queue->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to release the set associated with "
 			"the expired queue");
 	}
@@ -2159,7 +2159,7 @@ t_error			scheduler_clean(void)
        * e)
        */
 
-      if (set_release(scheduler->expired) != ERROR_OK)
+      if (set_release(scheduler->expired) != STATUS_OK)
 	CORE_ESCAPE("unable to release the set of expired queues");
     }
 

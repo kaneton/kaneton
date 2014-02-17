@@ -41,10 +41,10 @@ void			test_core_thread_reserve(void)
 		     THREAD_STACK_ADDRESS_NONE,
                      THREAD_STACK_SIZE_LOW,
 		     (t_vaddr)test_core_thread_reserve_content,
-		     &thread) != ERROR_OK)
+		     &thread) != STATUS_OK)
     TEST_ERROR("[thread_reserve] error");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread) != STATUS_OK)
     TEST_ERROR("[thread_start] error");
 
   TEST_SIGNATURE(r2390fiw390ggh4r);

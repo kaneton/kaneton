@@ -37,20 +37,20 @@ void			test_core_region_flush_01(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task) != ERROR_OK)
+		   &task) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task, &as) != ERROR_OK)
+  if (as_reserve(task, &as) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
-  if (as_get(as, &o) != ERROR_OK)
+  if (as_get(as, &o) != STATUS_OK)
     TEST_ERROR("[as_get] error");
 
   if (segment_reserve(as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(as,
@@ -59,13 +59,13 @@ void			test_core_region_flush_01(void)
 		     REGION_OPTION_NONE,
 		     0,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_flush(as) != ERROR_OK)
+  if (region_flush(as) != STATUS_OK)
     TEST_ERROR("[region_flush] error");
 
-  if (set_size(o->regions, &sz) != ERROR_OK)
+  if (set_size(o->regions, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   if (sz != 0)

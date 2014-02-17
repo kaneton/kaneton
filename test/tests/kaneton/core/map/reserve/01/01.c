@@ -41,7 +41,7 @@ void			test_core_map_reserve_01(void)
 		  MAP_OPTION_NONE,
 		  ___kaneton$pagesz,
 		  PERMISSION_READ | PERMISSION_WRITE,
-		  &addr) != ERROR_OK)
+		  &addr) != STATUS_OK)
     TEST_ERROR("[map_reserve] error");
 
   for (j = 0, p = (t_uint8*)addr;

@@ -505,68 +505,68 @@ typedef struct
  * libia32.c
  */
 
-t_error		pmode_set_segment_registers(t_uint16	seg_code,
+t_status		pmode_set_segment_registers(t_uint16	seg_code,
 					    t_uint16	seg_data);
 
-t_error			gdt_build(t_uint16		entries,
+t_status			gdt_build(t_uint16		entries,
 				  t_paddr		base,
 				  t_ia32_gdt*		gdt,
 				  t_uint8		clear);
 
-t_error			gdt_activate(t_ia32_gdt		new_gdt);
+t_status			gdt_activate(t_ia32_gdt		new_gdt);
 
-t_error			gdt_add_segment(t_ia32_gdt*	table,
+t_status			gdt_add_segment(t_ia32_gdt*	table,
 					t_uint16	segment,
 					t_ia32_segment	descriptor);
 
-t_error			gdt_build_selector(t_uint16	segment,
+t_status			gdt_build_selector(t_uint16	segment,
 					   t_ia32_prvl	privilege,
 					   t_uint16*	selector);
 
-t_error			pd_build(t_paddr			base,
+t_status			pd_build(t_paddr			base,
 				 t_ia32_directory*		directory,
 				 t_uint8			clear);
 
-t_error			pd_activate(t_ia32_directory	dir,
+t_status			pd_activate(t_ia32_directory	dir,
 				    t_uint32		cached,
 				    t_uint32		writeback);
 
-t_error			pd_add_table(t_ia32_directory*	dir,
+t_status			pd_add_table(t_ia32_directory*	dir,
 				     t_uint16		entry,
 				     t_ia32_table	table);
 
-t_error			pd_get_table(t_ia32_directory*	dir,
+t_status			pd_get_table(t_ia32_directory*	dir,
 				     t_uint16		entry,
 				     t_ia32_table*	table);
 
-t_error			pt_build(t_paddr		base,
+t_status			pt_build(t_paddr		base,
 				 t_ia32_table*		table,
 				 t_uint8		clear);
 
-t_error			pt_add_page(t_ia32_table*	tab,
+t_status			pt_add_page(t_ia32_table*	tab,
 				    t_uint16		entry,
 				    t_ia32_page		page);
 
-t_error			idt_build(t_uint16		entries,
+t_status			idt_build(t_uint16		entries,
 				  t_paddr		base,
 				  t_uint8		clear,
 				  t_ia32_idt*		table);
 
-t_error			idt_activate(t_ia32_idt*		table);
+t_status			idt_activate(t_ia32_idt*		table);
 
-t_error			idt_add_gate(t_ia32_idt*		table,
+t_status			idt_add_gate(t_ia32_idt*		table,
 				     t_uint16			index,
 				     t_ia32_gate		gate);
 
-t_error			pic_init(void);
+t_status			pic_init(void);
 
-t_error			pic_enable_irq(t_uint8		irq);
+t_status			pic_enable_irq(t_uint8		irq);
 
-t_error			pic_disable_irq(t_uint8		irq);
+t_status			pic_disable_irq(t_uint8		irq);
 
-t_error			pic_acknowledge(t_uint8		irq);
+t_status			pic_acknowledge(t_uint8		irq);
 
-t_error			pit_init(t_uint32	freq);
+t_status			pit_init(t_uint32	freq);
 
 t_uint32		cpuid_has_apic(void);
 

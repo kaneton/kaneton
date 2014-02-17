@@ -60,13 +60,13 @@ d_timer			glue_timer_dispatch =
  *    basis.
  */
 
-t_error			glue_timer_initialize(void)
+t_status		glue_timer_initialize(void)
 {
   /*
    * 1)
    */
 
-  if (platform_pit_initialize() != ERROR_OK)
+  if (platform_pit_initialize() != STATUS_OK)
     MACHINE_ESCAPE("unable to initialize the PIT");
 
   /*
@@ -76,7 +76,7 @@ t_error			glue_timer_initialize(void)
   if (event_reserve(ARCHITECTURE_IDT_IRQ_PIT,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(timer_handler),
-		    0) != ERROR_OK)
+		    0) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve the event corresponding to the hardware "
 		   "timer interrupt");
 
@@ -92,20 +92,20 @@ t_error			glue_timer_initialize(void)
  * 2) clean the PIT.
  */
 
-t_error			glue_timer_clean(void)
+t_status		glue_timer_clean(void)
 {
   /*
    * 1)
    */
 
-  if (event_release(ARCHITECTURE_IDT_IRQ_PIT) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_IRQ_PIT) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the timer IRQ");
 
   /*
    * 2)
    */
 
-  if (platform_pit_clean() != ERROR_OK)
+  if (platform_pit_clean() != STATUS_OK)
     MACHINE_ESCAPE("unable to clean the PIT");
 
   MACHINE_LEAVE();

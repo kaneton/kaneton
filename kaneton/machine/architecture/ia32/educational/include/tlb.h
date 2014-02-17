@@ -24,9 +24,9 @@
  * ../tlb.c
  */
 
-t_error			architecture_tlb_invalidate(t_vaddr	address);
+t_status		architecture_tlb_invalidate(t_vaddr	address);
 
-t_error			architecture_tlb_flush(void);
+t_status		architecture_tlb_flush(void);
 
 
 /*

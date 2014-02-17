@@ -140,7 +140,7 @@ void			module_report_record(char*		fmt,
  * 2) initialize the report structure.
  */
 
-t_error			module_report_load(void)
+t_status		module_report_load(void)
 {
   /*
    * 1)
@@ -162,7 +162,7 @@ t_error			module_report_load(void)
  * this function unloads the module.
  */
 
-t_error			module_report_unload(void)
+t_status		module_report_unload(void)
 {
   module_call(console, message,
 	      '+', "unloading the 'report' module\n");

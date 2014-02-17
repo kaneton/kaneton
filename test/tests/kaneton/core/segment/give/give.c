@@ -39,64 +39,64 @@ void			test_core_segment_give(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task1) != ERROR_OK)
+		   &task1) != STATUS_OK)
       TEST_ERROR("[task_reserve] error");
 
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task2) != ERROR_OK)
+		   &task2) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task1, &as1) != ERROR_OK)
+  if (as_reserve(task1, &as1) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
-  if (as_reserve(task2, &as2) != ERROR_OK)
+  if (as_reserve(task2, &as2) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(as1,
 		      2 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_give(seg, as2) != ERROR_OK)
+  if (segment_give(seg, as2) != STATUS_OK)
     TEST_ERROR("[segment_give] error");
 
-  if (segment_get(seg, &o) != ERROR_OK)
+  if (segment_get(seg, &o) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
   if (o->as != as2)
     TEST_ERROR("invalid segment's address space after give");
 
-  if (as_get(as1, &oas) != ERROR_OK)
+  if (as_get(as1, &oas) != STATUS_OK)
     TEST_ERROR("[as_get] error");
 
-  if (set_get(oas->segments, seg, &chiche) == ERROR_OK)
+  if (set_get(oas->segments, seg, &chiche) == STATUS_OK)
     TEST_ERROR("[set_get] error: the segment has not been removed from "
 	       "the first address space during the give process\n");
 
-  if (as_get(as2, &oas) != ERROR_OK)
+  if (as_get(as2, &oas) != STATUS_OK)
     TEST_ERROR("[as_get] error");
 
-  if (set_get(oas->segments, seg, &chiche) != ERROR_OK)
+  if (set_get(oas->segments, seg, &chiche) != STATUS_OK)
     TEST_ERROR("[set_get] error: the segment does not seem to have been added "
 	       "to destination address space during the give process\n");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (as_release(as1) != ERROR_OK)
+  if (as_release(as1) != STATUS_OK)
     TEST_ERROR("[as_release] error");
 
-  if (as_release(as2) != ERROR_OK)
+  if (as_release(as2) != STATUS_OK)
     TEST_ERROR("[as_release] error");
 
-  if (task_release(task1) != ERROR_OK)
+  if (task_release(task1) != STATUS_OK)
     TEST_ERROR("[task_release] error");
 
-  if (task_release(task2) != ERROR_OK)
+  if (task_release(task2) != STATUS_OK)
     TEST_ERROR("[task_release] error");
 
   TEST_SIGNATURE(34i90iaopwrkrekhgoph349);

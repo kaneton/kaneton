@@ -42,7 +42,7 @@ void			test_core_region_write(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -51,10 +51,10 @@ void			test_core_region_write(void)
 		     REGION_OPTION_FORCE,
 		     0x70000000,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel.as, reg, &r) != ERROR_OK)
+  if (region_get(_kernel.as, reg, &r) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   p = (t_uint8*)r->address;

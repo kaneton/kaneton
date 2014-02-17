@@ -66,15 +66,15 @@ d_task			task_dispatch =
  *
  */
 
-t_error			glue_task_clone(i_task			old,
+t_status		glue_task_clone(i_task			old,
 					i_task*			new)
 {
   TASK_ENTER(task);
 
-  if (ia32_duplicate_io_bitmap(old, *new) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ia32_duplicate_io_bitmap(old, *new) != STATUS_OK)
+    TASK_LEAVE(task, STATUS_UNKNOWN_ERROR);
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(task, STATUS_OK);
 }
 
 /*
@@ -82,7 +82,7 @@ t_error			glue_task_clone(i_task			old,
  *
  */
 
-t_error			glue_task_reserve(t_class			class,
+t_status		glue_task_reserve(t_class			class,
 					  t_behav			behav,
 					  t_prior			prior,
 					  i_task*			id)
@@ -91,15 +91,15 @@ t_error			glue_task_reserve(t_class			class,
 
   TASK_ENTER(task);
 
-  if (ia32_clear_io_bitmap(*id) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ia32_clear_io_bitmap(*id) != STATUS_OK)
+    TASK_LEAVE(task, STATUS_UNKNOWN_ERROR);
 
-  if (task_get(*id, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (task_get(*id, &o) != STATUS_OK)
+    TASK_LEAVE(task, STATUS_UNKNOWN_ERROR);
 
   o->machine.ioflush = 0;
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(task, STATUS_OK);
 }
 
 /*
@@ -107,15 +107,15 @@ t_error			glue_task_reserve(t_class			class,
  * the task manager.
  */
 
-t_error			glue_task_initialize(void)
+t_status		glue_task_initialize(void)
 {
   TASK_ENTER(task);
 
-  if (ia32_extended_context_init() != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ia32_extended_context_init() != STATUS_OK)
+    TASK_LEAVE(task, STATUS_UNKNOWN_ERROR);
 
-  if (ia32_kernel_as_finalize() != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ia32_kernel_as_finalize() != STATUS_OK)
+    TASK_LEAVE(task, STATUS_UNKNOWN_ERROR);
 
-  TASK_LEAVE(task, ERROR_NONE);
+  TASK_LEAVE(task, STATUS_OK);
 }

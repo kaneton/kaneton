@@ -41,26 +41,26 @@ void			test_core_segment_readwrite_01(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < ___kaneton$pagesz; i++)
     buff[i] = (i * 2 + 4) % 256;
 
-  if (segment_write(seg, 0, buff, ___kaneton$pagesz) != ERROR_OK)
+  if (segment_write(seg, 0, buff, ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[segment_write] error");
 
   for (i = 0; i < ___kaneton$pagesz; i++)
     buff[i] = 0;
 
-  if (segment_read(seg, 0, buff, ___kaneton$pagesz) != ERROR_OK)
+  if (segment_read(seg, 0, buff, ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[segment_read] error");
 
   for (i = 0; i < ___kaneton$pagesz; i++)
     if (buff[i] != (i * 2 + 4) % 256)
       TEST_ERROR("the data read is different from the one written");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(ri09iawefk34hgh);

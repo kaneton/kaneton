@@ -41,7 +41,7 @@ void			test_core_set_pipe_06(void)
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -49,64 +49,64 @@ void			test_core_set_pipe_06(void)
    */
 
   obj = 80LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 98654LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 42LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 122LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 45LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 64LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 90LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 12346LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 67LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   obj = 90LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   /*
    * flush
    */
 
-  if (set_flush(id) != ERROR_OK)
+  if (set_flush(id) != STATUS_OK)
     TEST_ERROR("[set_flush] error");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -122,14 +122,14 @@ void			test_core_set_pipe_06(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   /*
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -140,7 +140,7 @@ void			test_core_set_pipe_06(void)
     {
       objs[i] = i * 10;
 
-      if (set_push(id, &objs[i]) != ERROR_OK)
+      if (set_push(id, &objs[i]) != STATUS_OK)
 	TEST_ERROR("[set_push] error");
     }
 
@@ -148,21 +148,21 @@ void			test_core_set_pipe_06(void)
    * flush
    */
 
-  if (set_flush(id) != ERROR_OK)
+  if (set_flush(id) != STATUS_OK)
     TEST_ERROR("[set_flush] error");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -178,14 +178,14 @@ void			test_core_set_pipe_06(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   /*
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_FREE, sizeof (t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_FREE, sizeof (t_id), &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   for (i = 0; i < 10; i++)
@@ -194,7 +194,7 @@ void			test_core_set_pipe_06(void)
 
       *o = i * 10;
 
-      if (set_push(id, o) != ERROR_OK)
+      if (set_push(id, o) != STATUS_OK)
 	TEST_ERROR("[set_push] error");
     }
 
@@ -202,21 +202,21 @@ void			test_core_set_pipe_06(void)
    * flush
    */
 
-  if (set_flush(id) != ERROR_OK)
+  if (set_flush(id) != STATUS_OK)
     TEST_ERROR("error: set_flush()");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -232,7 +232,7 @@ void			test_core_set_pipe_06(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(9f0i23pek34h);

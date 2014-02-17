@@ -32,7 +32,7 @@
 #define		machine_call_as(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status	_r_ = STATUS_OK;						\
 									\
       if (glue_as_dispatch.as_ ## _function_ != NULL)			\
         _r_ = glue_as_dispatch.as_ ## _function_(_args_);		\
@@ -74,12 +74,12 @@
  * ../as.c
  */
 
-t_error			glue_as_show(i_as			id,
+t_status			glue_as_show(i_as			id,
 				     mt_margin			margin);
 
-t_error			glue_as_dump(void);
+t_status			glue_as_dump(void);
 
-t_error			glue_as_reserve(i_task			task,
+t_status			glue_as_reserve(i_task			task,
 					i_as*			as);
 
 

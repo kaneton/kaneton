@@ -41,7 +41,7 @@ t_ia32_directory	ia32_pd;
  * sets code/data/stack segment registers.
  */
 
-t_error		pmode_set_segment_registers(t_uint16	seg_code,
+t_status		pmode_set_segment_registers(t_uint16	seg_code,
 					    t_uint16	seg_data)
 {
   asm volatile("pushl %0\n\t"
@@ -59,7 +59,7 @@ t_error		pmode_set_segment_registers(t_uint16	seg_code,
 	       : "memory", "%eax"
 	       );
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -73,7 +73,7 @@ t_error		pmode_set_segment_registers(t_uint16	seg_code,
  * 4) clears the table if necessary.
  */
 
-t_error			gdt_build(t_uint16		entries,
+t_status			gdt_build(t_uint16		entries,
 				  t_paddr		base,
 				  t_ia32_gdt*		gdt,
 				  t_uint8		clear)
@@ -84,7 +84,7 @@ t_error			gdt_build(t_uint16		entries,
    */
 
   if (entries > IA32_GDT_MAX_ENTRIES)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -111,7 +111,7 @@ t_error			gdt_build(t_uint16		entries,
       memset(gdt->descriptor, 0, entries * sizeof(t_ia32_gdte));
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -123,7 +123,7 @@ t_error			gdt_build(t_uint16		entries,
  * 2) updates global gdt record.
  */
 
-t_error			gdt_activate(t_ia32_gdt		new_gdt)
+t_status			gdt_activate(t_ia32_gdt		new_gdt)
 {
   t_ia32_gdtr		gdtr;
 
@@ -142,7 +142,7 @@ t_error			gdt_activate(t_ia32_gdt		new_gdt)
   ia32_gdt.descriptor = new_gdt.descriptor;
   ia32_gdt.count = new_gdt.count;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -158,7 +158,7 @@ t_error			gdt_activate(t_ia32_gdt		new_gdt)
  * 6) sets the limit field.
  */
 
-t_error			gdt_add_segment(t_ia32_gdt*	table,
+t_status			gdt_add_segment(t_ia32_gdt*	table,
 					t_uint16	segment,
 					t_ia32_segment	descriptor)
 {
@@ -176,7 +176,7 @@ t_error			gdt_add_segment(t_ia32_gdt*	table,
    */
 
   if (segment >= table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -220,7 +220,7 @@ t_error			gdt_add_segment(t_ia32_gdt*	table,
   table->descriptor[segment].limit_00_15 = (t_uint16)size;
   table->descriptor[segment].limit_16_19 = size >> 16;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -232,7 +232,7 @@ t_error			gdt_add_segment(t_ia32_gdt*	table,
  * 2) builds the selector.
  */
 
-t_error			gdt_build_selector(t_uint16	segment,
+t_status			gdt_build_selector(t_uint16	segment,
 					   t_ia32_prvl	privilege,
 					   t_uint16*	selector)
 {
@@ -242,7 +242,7 @@ t_error			gdt_build_selector(t_uint16	segment,
    */
 
   if (segment >= ia32_gdt.count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -251,7 +251,7 @@ t_error			gdt_build_selector(t_uint16	segment,
   *selector = IA32_SEGSEL_TI_GDT | IA32_SEGSEL_MK_RPL(privilege) |
     IA32_SEGSEL_MK_INDEX(segment);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -264,7 +264,7 @@ t_error			gdt_build_selector(t_uint16	segment,
  * 3) clears the directory if needed.
  */
 
-t_error			pd_build(t_paddr			base,
+t_status			pd_build(t_paddr			base,
 				 t_ia32_directory*		directory,
 				 t_uint8			clear)
 {
@@ -274,7 +274,7 @@ t_error			pd_build(t_paddr			base,
    */
 
   if (IA32_MK_BASE(base) != base)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -291,7 +291,7 @@ t_error			pd_build(t_paddr			base,
       memset((void*)base, 0, IA32_PD_MAX_ENTRIES * sizeof(t_ia32_pde));
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -304,7 +304,7 @@ t_error			pd_build(t_paddr			base,
  * 3) sets the global variable.
  */
 
-t_error			pd_activate(t_ia32_directory	dir,
+t_status			pd_activate(t_ia32_directory	dir,
 				    t_uint32		cached,
 				    t_uint32		writeback)
 {
@@ -334,7 +334,7 @@ t_error			pd_activate(t_ia32_directory	dir,
 
   ia32_pd = dir;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -348,7 +348,7 @@ t_error			pd_activate(t_ia32_directory	dir,
  */
 
 
-t_error			pd_add_table(t_ia32_directory*	dir,
+t_status			pd_add_table(t_ia32_directory*	dir,
 				     t_uint16		entry,
 				     t_ia32_table	table)
 {
@@ -386,7 +386,7 @@ t_error			pd_add_table(t_ia32_directory*	dir,
 
   d[entry] = IA32_MK_BASE(table.entries) | opts;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -399,7 +399,7 @@ t_error			pd_add_table(t_ia32_directory*	dir,
  * 3) fills the page record.
  */
 
-t_error			pd_get_table(t_ia32_directory*	dir,
+t_status			pd_get_table(t_ia32_directory*	dir,
 				     t_uint16		entry,
 				     t_ia32_table*	table)
 {
@@ -419,7 +419,7 @@ t_error			pd_get_table(t_ia32_directory*	dir,
    */
 
   if (!(d[entry] & IA32_PDE_FLAG_P))
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -436,7 +436,7 @@ t_error			pd_get_table(t_ia32_directory*	dir,
     IA32_PT_NOTCACHED : IA32_PT_CACHED;
   table->entries = IA32_MK_BASE(d[entry]);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -449,7 +449,7 @@ t_error			pd_get_table(t_ia32_directory*	dir,
  * 3) clears the table if necessary.
  */
 
-t_error			pt_build(t_paddr		base,
+t_status			pt_build(t_paddr		base,
 				 t_ia32_table*		table,
 				 t_uint8		clear)
 {
@@ -459,7 +459,7 @@ t_error			pt_build(t_paddr		base,
    */
 
   if (IA32_MK_BASE(base) != base)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -476,7 +476,7 @@ t_error			pt_build(t_paddr		base,
       memset((void*)base, 0, IA32_PT_MAX_ENTRIES * sizeof(t_ia32_pte));
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -489,7 +489,7 @@ t_error			pt_build(t_paddr		base,
  * 3) setups the entry.
  */
 
-t_error			pt_add_page(t_ia32_table*	tab,
+t_status			pt_add_page(t_ia32_table*	tab,
 				    t_uint16		entry,
 				    t_ia32_page		page)
 {
@@ -501,7 +501,7 @@ t_error			pt_add_page(t_ia32_table*	tab,
    */
 
   if (IA32_MK_BASE(page.addr) != (t_uint32)page.addr)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -531,5 +531,5 @@ t_error			pt_add_page(t_ia32_table*	tab,
 
   t[entry] = IA32_MK_BASE(page.addr) | opts;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }

@@ -29,6 +29,7 @@ SECTIONS
   .data :
     {
       *(.data*) *(.bss) *(COMMON)
+      . = ALIGN(0x1000);
       _handler_data_begin = .;
       *(.handler_data)
       . = ALIGN(0x1000);

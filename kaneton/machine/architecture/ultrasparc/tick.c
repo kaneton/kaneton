@@ -44,15 +44,15 @@ void			tick_calibrate(void)
 
   ofw_child(root_node, &node);
 
-  while (ofw_sibling(node, &node) == ERROR_NONE)
+  while (ofw_sibling(node, &node) == STATUS_OK)
     {
-      if (ofw_getprop(node, "device_type", name, 128, NULL) != ERROR_NONE)
+      if (ofw_getprop(node, "device_type", name, 128, NULL) != STATUS_OK)
 	continue;
 
       if (!strcmp(name, "cpu"))
 	{
 	  if (ofw_getprop(node, "clock-frequency", &clock_frequency,
-			  sizeof (clock_frequency), NULL) != ERROR_NONE)
+			  sizeof (clock_frequency), NULL) != STATUS_OK)
 	    continue;
 
 	  printf("CPU clock frequency: %ld\n", clock_frequency);

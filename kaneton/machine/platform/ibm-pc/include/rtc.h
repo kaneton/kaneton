@@ -90,24 +90,24 @@ typedef struct
 
 void			platform_rtc_dump(ps_rtc_state*		rtc);
 
-t_error			platform_rtc_write(t_uint8		address,
+t_status		platform_rtc_write(t_uint8		address,
 					   t_uint8		value);
 
-t_error			platform_rtc_read(t_uint8		address,
+t_status		platform_rtc_read(t_uint8		address,
 					  t_uint8*		value);
 
-t_error			platform_rtc_extract(t_uint8		address,
+t_status		platform_rtc_extract(t_uint8		address,
 					     t_uint8*		value);
 
-t_error			platform_rtc_load(ps_rtc_state*		rtc);
+t_status		platform_rtc_load(ps_rtc_state*		rtc);
 
-t_error			platform_rtc_state(ps_rtc_state**	rtc);
+t_status		platform_rtc_state(ps_rtc_state**	rtc);
 
-t_error			platform_rtc_update(t_uint32		millisecond);
+t_status		platform_rtc_update(t_uint32		millisecond);
 
-t_error			platform_rtc_initialize(void);
+t_status		platform_rtc_initialize(void);
 
-t_error			platform_rtc_clean(void);
+t_status		platform_rtc_clean(void);
 
 
 /*

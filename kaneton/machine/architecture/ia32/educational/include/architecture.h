@@ -172,7 +172,7 @@ typedef struct
  * ../architecture.c
  */
 
-t_error			architecture_dump(void);
+t_status		architecture_dump(void);
 
 
 /*

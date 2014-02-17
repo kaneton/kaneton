@@ -38,7 +38,7 @@ void			test_core_set_stack_09(void)
    * reserve
    */
 
-  if (set_reserve(stack, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != ERROR_OK)
+  if (set_reserve(stack, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -49,7 +49,7 @@ void			test_core_set_stack_09(void)
     {
       objs[i] = 4 * i;
 
-      if (set_push(id, &objs[i]) != ERROR_OK)
+      if (set_push(id, &objs[i]) != STATUS_OK)
         TEST_ERROR("[set_push] error");
     }
 
@@ -57,14 +57,14 @@ void			test_core_set_stack_09(void)
    * pick
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   for (i = 0; i < sz; i++)
     {
-      if (set_pick(id, (void**)&obj) != ERROR_OK)
+      if (set_pick(id, (void**)&obj) != STATUS_OK)
         TEST_ERROR("[set_pick] error");
 
       if (!st++)
@@ -72,7 +72,7 @@ void			test_core_set_stack_09(void)
       else
         TEST_PRINT(" %qd", *obj);
 
-      if (set_pop(id) != ERROR_OK)
+      if (set_pop(id) != STATUS_OK)
 	TEST_ERROR("[set_pop] error");
     }
   TEST_PRINT("\n");
@@ -81,7 +81,7 @@ void			test_core_set_stack_09(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(sdlkvfog34gh34);

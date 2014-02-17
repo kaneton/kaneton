@@ -57,7 +57,7 @@ t_ia32_gdt	ia32_gdt;
  * XXX
  */
 
-t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt)
+t_status		ia32_gdt_dump(t_ia32_gdt*		dump_gdt)
 {
   t_uint16		i;
   t_ia32_segment	seg;
@@ -76,7 +76,7 @@ t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt)
 
   for (i = 1; i < dump_gdt->count; i++)
     {
-      if (ia32_gdt_get_segment(dump_gdt, i, &seg) != ERROR_NONE)
+      if (ia32_gdt_get_segment(dump_gdt, i, &seg) != STATUS_OK)
 	continue;
 
       type = NULL;
@@ -107,14 +107,14 @@ t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt)
 	     i, seg.base, seg.limit, type);
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * returns size of a gdt.
  */
 
-t_error			ia32_gdt_size(t_ia32_gdt*		table,
+t_status		ia32_gdt_size(t_ia32_gdt*		table,
 				      t_uint16*			size)
 {
   assert(size != NULL);
@@ -124,7 +124,7 @@ t_error			ia32_gdt_size(t_ia32_gdt*		table,
 
   *size = table->count;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -138,7 +138,7 @@ t_error			ia32_gdt_size(t_ia32_gdt*		table,
  * 4) clears the table if necessary.
  */
 
-t_error			ia32_gdt_build(t_uint16			entries,
+t_status		ia32_gdt_build(t_uint16			entries,
 				       t_paddr			base,
 				       t_ia32_gdt*		gdt,
 				       t_uint8			clear)
@@ -150,7 +150,7 @@ t_error			ia32_gdt_build(t_uint16			entries,
    */
 
   if (entries > IA32_GDT_MAX_ENTRIES)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -177,7 +177,7 @@ t_error			ia32_gdt_build(t_uint16			entries,
       memset(gdt->descriptor, 0, entries * sizeof (t_ia32_gdte));
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -189,7 +189,7 @@ t_error			ia32_gdt_build(t_uint16			entries,
  * 2) updates global gdt record.
  */
 
-t_error			ia32_gdt_activate(t_ia32_gdt		new_gdt)
+t_status		ia32_gdt_activate(t_ia32_gdt		new_gdt)
 {
   t_ia32_gdtr		gdtr;
 
@@ -208,7 +208,7 @@ t_error			ia32_gdt_activate(t_ia32_gdt		new_gdt)
   ia32_gdt.descriptor = new_gdt.descriptor;
   ia32_gdt.count = new_gdt.count;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -221,7 +221,7 @@ t_error			ia32_gdt_activate(t_ia32_gdt		new_gdt)
  * 3) copies to new gdt address.
  */
 
-t_error			ia32_gdt_import(t_ia32_gdt*		gdt)
+t_status		ia32_gdt_import(t_ia32_gdt*		gdt)
 {
   t_ia32_gdtr		sgdtr;
   t_ia32_gdte*		source;
@@ -238,7 +238,7 @@ t_error			ia32_gdt_import(t_ia32_gdt*		gdt)
    */
 
   if (sgdtr.size > gdt->count * sizeof (t_ia32_gdte))
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -249,7 +249,7 @@ t_error			ia32_gdt_import(t_ia32_gdt*		gdt)
 
   memcpy(dest, source, sgdtr.size);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -265,7 +265,7 @@ t_error			ia32_gdt_import(t_ia32_gdt*		gdt)
  * 6) sets the limit field.
  */
 
-t_error			ia32_gdt_add_segment(t_ia32_gdt*	table,
+t_status		ia32_gdt_add_segment(t_ia32_gdt*	table,
 					     t_uint16		segment,
 					     t_ia32_segment	descriptor)
 {
@@ -283,7 +283,7 @@ t_error			ia32_gdt_add_segment(t_ia32_gdt*	table,
    */
 
   if (segment >= table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -327,7 +327,7 @@ t_error			ia32_gdt_add_segment(t_ia32_gdt*	table,
   table->descriptor[segment].limit_00_15 = (t_uint16)size;
   table->descriptor[segment].limit_16_19 = size >> 16;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -341,7 +341,7 @@ t_error			ia32_gdt_add_segment(t_ia32_gdt*	table,
  * 4) sets the reserved index.
  */
 
-t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
+t_status		ia32_gdt_reserve_segment(t_ia32_gdt*	table,
 						 t_ia32_segment	descriptor,
 						 t_uint16*	segment)
 {
@@ -366,14 +366,14 @@ t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
     look++;
 
   if (look == table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
    */
 
-  if (ia32_gdt_add_segment(table, look, descriptor) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ia32_gdt_add_segment(table, look, descriptor) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 4)
@@ -381,7 +381,7 @@ t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
 
   *segment = look;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -390,7 +390,7 @@ t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
  * XXX
  */
 
-t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
+t_status		ia32_gdt_get_segment(t_ia32_gdt*	table,
 					     t_uint16		index,
 					     t_ia32_segment*	segment)
 {
@@ -409,7 +409,7 @@ t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
 
   if (index >= table->count ||
       !(table->descriptor[index].type & IA32_DESC_TYPE_PRESENT))
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -438,7 +438,7 @@ t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
       segment->type.usr = IA32_GDT_TYPE_SEG(table->descriptor[index].type);
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -451,7 +451,7 @@ t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
  * 3) mark the segment as non-present.
  */
 
-t_error			ia32_gdt_delete_segment(t_ia32_gdt*	table,
+t_status		ia32_gdt_delete_segment(t_ia32_gdt*	table,
 						t_uint16	segment)
 {
 
@@ -467,7 +467,7 @@ t_error			ia32_gdt_delete_segment(t_ia32_gdt*	table,
    */
 
   if (segment >= table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -475,7 +475,7 @@ t_error			ia32_gdt_delete_segment(t_ia32_gdt*	table,
 
   table->descriptor[segment].type &= ~IA32_DESC_TYPE_PRESENT;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -487,7 +487,7 @@ t_error			ia32_gdt_delete_segment(t_ia32_gdt*	table,
  * 2) builds the selector.
  */
 
-t_error			ia32_gdt_build_selector(t_uint16	segment,
+t_status		ia32_gdt_build_selector(t_uint16	segment,
 						t_ia32_prvl	privilege,
 						t_uint16*	selector)
 {
@@ -498,7 +498,7 @@ t_error			ia32_gdt_build_selector(t_uint16	segment,
    */
 
   if (segment >= ia32_gdt.count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -507,5 +507,5 @@ t_error			ia32_gdt_build_selector(t_uint16	segment,
   *selector = IA32_SEGSEL_TI_GDT | IA32_SEGSEL_MK_RPL(privilege) |
     IA32_SEGSEL_MK_INDEX(segment);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }

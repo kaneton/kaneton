@@ -121,12 +121,12 @@ typedef enum
  * ../pmode.c
  */
 
-t_error		ia32_pmode_init(void);
+t_status	ia32_pmode_init(void);
 
-t_error		ia32_pmode_set_segment_registers(t_uint16	seg_code,
+t_status	ia32_pmode_set_segment_registers(t_uint16	seg_code,
 						 t_uint16	seg_data);
 
-t_error		ia32_pmode_clean(void);
+t_status	ia32_pmode_clean(void);
 
 
 /*

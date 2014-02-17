@@ -394,6 +394,39 @@ the \code{ARCHITECTURE\_CONTEXT\_RESTORE()} macro-function will finally be
 called whose role will be to set up the information related to the thread
 to resume so that the \name{CPU} restore its registers.
 
+% environment
+\subsubsection*{environment}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/environment.c}
+\end{itemize}
+
+The design of kaneton implies that servers address spaces only contains the
+minimal shared code and data mappings required to perform a context switch.
+In a nutshell, only the handler code and data sections lying within the kernel
+code segment should be mapped in a task.
+
+The goal in this step is to implement the mapping of these sections of the
+kernel code segment when a server address space is initialized, in other
+words, in the \code{architecture\_environment\_server()} function.
+You will need to carefully read and understand the linker script, especially
+how to retrieve the bounds of each relevant section to perform its reservation
+in the task's address space.
+
+% handler
+\subsubsection*{handler}
+
+\begin{itemize}
+  \item
+    \location{kaneton/machine/architecture/ia32/educational/include/handler.h}
+\end{itemize}
+
+The objective here is to make the necessary changes to your interrupt handlers
+in order to put them in the appropriate section.
+Again, you must look at the kaneton linker script and understand what it defines
+to do so.
+
 % architecture
 \subsubsection*{architecture}
 
@@ -437,13 +470,13 @@ the kernel thread continues and disables the events right away.
   {
     i_cpu               cpu;
 
-    if (cpu_current(&cpu) != ERROR_OK)
+    if (cpu_current(&cpu) != STATUS_OK)
       {
         printf("unable to retrieve the current CPU\n");
         return;
       }
 
-    if (scheduler_stop(cpu) != ERROR_OK)
+    if (scheduler_stop(cpu) != STATUS_OK)
       {
         printf("unable to stop the scheduler\n");
         return;
@@ -455,7 +488,7 @@ the kernel thread continues and disables the events right away.
       ;
   }
 
-  t_error               example(void)
+  t_status               example(void)
   {
     i_thread            thread;
     i_cpu               cpu;
@@ -465,22 +498,22 @@ the kernel thread continues and disables the events right away.
                        THREAD_STACK_ADDRESS_NONE,
                        THREAD_STACK_SIZE_LOW,
                        (t_vaddr)example_thread,
-                       &thread) != ERROR_OK)
+                       &thread) != STATUS_OK)
       CORE_ESCAPE("unable to reserve a thread");
 
-    if (thread_start(thread) != ERROR_OK)
+    if (thread_start(thread) != STATUS_OK)
       CORE_ESCAPE("unable to start the thread");
 
-    if (cpu_current(&cpu) != ERROR_OK)
+    if (cpu_current(&cpu) != STATUS_OK)
       CORE_ESCAPE("unable to retrieve the current CPU");
 
-    if (scheduler_start(cpu) != ERROR_OK)
+    if (scheduler_start(cpu) != STATUS_OK)
       CORE_ESCAPE("unable to start the scheduler");
 
-    if (event_enable() != ERROR_OK)
+    if (event_enable() != STATUS_OK)
       CORE_ESCAPE("unable to enable the events");
 
-    if (event_disable() != ERROR_OK)
+    if (event_disable() != STATUS_OK)
       CORE_ESCAPE("unable to disable the events");
 
     CORE_LEAVE();

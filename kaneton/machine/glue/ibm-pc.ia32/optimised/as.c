@@ -64,21 +64,21 @@ d_as				as_dispatch =
  * this function reserves an address space.
  */
 
-t_error			glue_as_reserve(i_task			tskid,
+t_status		glue_as_reserve(i_task			tskid,
 					i_as*			asid)
 {
   AS_ENTER(as);
 
   if (tskid == ktask)
     {
-      if (ia32_kernel_as_init(*asid) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (ia32_kernel_as_init(*asid) != STATUS_OK)
+	AS_LEAVE(as, STATUS_UNKNOWN_ERROR);
     }
   else
     {
-      if (ia32_task_as_init(*asid) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (ia32_task_as_init(*asid) != STATUS_OK)
+	AS_LEAVE(as, STATUS_UNKNOWN_ERROR);
     }
 
-  AS_LEAVE(as, ERROR_NONE);
+  AS_LEAVE(as, STATUS_OK);
 }

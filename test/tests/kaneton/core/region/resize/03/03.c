@@ -42,7 +42,7 @@ void			test_core_region_resize_03(void)
 		      10 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -51,13 +51,13 @@ void			test_core_region_resize_03(void)
 		     REGION_OPTION_NONE,
 		     0,
 		     2 * ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_resize(_kernel.as, reg, ___kaneton$pagesz, &reg) != ERROR_OK)
+  if (region_resize(_kernel.as, reg, ___kaneton$pagesz, &reg) != STATUS_OK)
     TEST_ERROR("[region_resize] error");
 
-  if (region_get(_kernel.as, reg, &o) != ERROR_OK)
+  if (region_get(_kernel.as, reg, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   if (o->id != reg)
@@ -72,10 +72,10 @@ void			test_core_region_resize_03(void)
   if (o->size != ___kaneton$pagesz)
     TEST_ERROR("invalid region's size after resize");
 
-  if (region_resize(_kernel.as, reg, 3 * ___kaneton$pagesz, &reg) != ERROR_OK)
+  if (region_resize(_kernel.as, reg, 3 * ___kaneton$pagesz, &reg) != STATUS_OK)
     TEST_ERROR("[region_resize] error");
 
-  if (region_get(_kernel.as, reg, &o) != ERROR_OK)
+  if (region_get(_kernel.as, reg, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   if (o->id != reg)
@@ -99,10 +99,10 @@ void			test_core_region_resize_03(void)
 	TEST_ERROR("the data read differs from the one written");
     }
 
-  if (region_release(_kernel.as, reg) != ERROR_OK)
+  if (region_release(_kernel.as, reg) != STATUS_OK)
     TEST_ERROR("[region_release] error");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(ftr3wg0eeg90w2fg4);

@@ -32,7 +32,7 @@
 #define		machine_call_io(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_io_dispatch.io_ ## _function_ != NULL)			\
         _r_ = glue_io_dispatch.io_ ## _function_(_args_);		\
@@ -57,25 +57,25 @@
  * ../io.c
  */
 
-t_error			glue_io_grant(i_task			task,
+t_status		glue_io_grant(i_task			task,
 				      i_port			port,
 				      t_width			width);
 
-t_error			glue_io_deny(i_task			task,
+t_status		glue_io_deny(i_task			task,
 				     i_port			port,
 				     t_width			width);
 
-t_error			glue_io_read(i_task			task,
+t_status		glue_io_read(i_task			task,
 				     i_port			port,
 				     t_width			width,
 				     void*			data);
 
-t_error			glue_io_write(i_task			task,
+t_status		glue_io_write(i_task			task,
 				      i_port			port,
 				      t_width			width,
 				      t_uint64			data);
 
-t_error			glue_io_initialize(void);
+t_status		glue_io_initialize(void);
 
 
 /*

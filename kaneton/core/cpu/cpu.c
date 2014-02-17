@@ -79,7 +79,7 @@ m_cpu			_cpu;
  * 3) call the machine.
  */
 
-t_error			cpu_show(i_cpu				id,
+t_status		cpu_show(i_cpu				id,
 				 mt_margin			margin)
 {
   o_cpu*		o;
@@ -88,7 +88,7 @@ t_error			cpu_show(i_cpu				id,
    * 1)
    */
 
-  if (cpu_get(id, &o) != ERROR_OK)
+  if (cpu_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the CPU object");
 
   /*
@@ -113,7 +113,7 @@ t_error			cpu_show(i_cpu				id,
    * 3)
    */
 
-  if (machine_call(cpu, show, id, margin) != ERROR_OK)
+  if (machine_call(cpu, show, id, margin) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -130,7 +130,7 @@ t_error			cpu_show(i_cpu				id,
  * 4) call the machine.
  */
 
-t_error			cpu_dump(void)
+t_status		cpu_dump(void)
 {
   o_cpu*		data;
   t_setsz		size;
@@ -152,7 +152,7 @@ t_error			cpu_dump(void)
    * 2)
    */
 
-  if (set_size(_cpu.cpus, &size) != ERROR_OK)
+  if (set_size(_cpu.cpus, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
   /*
@@ -166,11 +166,11 @@ t_error			cpu_dump(void)
 
   set_foreach(SET_OPTION_FORWARD, _cpu.cpus, &i, st)
     {
-      if (set_object(_cpu.cpus, i, (void**)&data) != ERROR_OK)
+      if (set_object(_cpu.cpus, i, (void**)&data) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the CPU identifier");
 
       if (cpu_show(data->id,
-		   3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		   3 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
 	CORE_ESCAPE("unable to show the CPU");
     }
 
@@ -178,7 +178,7 @@ t_error			cpu_dump(void)
    * 4)
    */
 
-  if (machine_call(cpu, dump) != ERROR_OK)
+  if (machine_call(cpu, dump) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -193,7 +193,7 @@ t_error			cpu_dump(void)
  * 1) call the machine.
  */
 
-t_error			cpu_current(i_cpu*			id)
+t_status		cpu_current(i_cpu*			id)
 {
   /*
    * 0)
@@ -206,7 +206,7 @@ t_error			cpu_current(i_cpu*			id)
    * 1)
    */
 
-  if (machine_call(cpu, current, id) != ERROR_OK)
+  if (machine_call(cpu, current, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -222,7 +222,7 @@ t_error			cpu_current(i_cpu*			id)
  * 2) return false if there is a single CPU, true otherwise.
  */
 
-t_error			cpu_multiprocessor(void)
+t_bool			cpu_multiprocessor(void)
 {
   t_setsz		size;
 
@@ -230,7 +230,7 @@ t_error			cpu_multiprocessor(void)
    * 1)
    */
 
-  assert(set_size(_cpu.cpus, &size) == ERROR_OK);
+  assert(set_size(_cpu.cpus, &size) == STATUS_OK);
 
   /*
    * 2)
@@ -254,7 +254,7 @@ t_error			cpu_multiprocessor(void)
  * 3) call the machine.
  */
 
-t_error			cpu_select(i_cpu*			id)
+t_status		cpu_select(i_cpu*			id)
 {
   static i_cpu		current = 0;
   t_setsz		size;
@@ -270,7 +270,7 @@ t_error			cpu_select(i_cpu*			id)
    * 1)
    */
 
-  if (set_size(_cpu.cpus, &size) != ERROR_OK)
+  if (set_size(_cpu.cpus, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of CPUs");
 
   /*
@@ -283,7 +283,7 @@ t_error			cpu_select(i_cpu*			id)
    * 3)
    */
 
-  if (machine_call(cpu, select, id) != ERROR_OK)
+  if (machine_call(cpu, select, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -298,7 +298,7 @@ t_error			cpu_select(i_cpu*			id)
  * 2) update the CPU statistics.
  */
 
-t_error			cpu_update(i_cpu			id,
+t_status		cpu_update(i_cpu			id,
 				   t_timeslice			timeslice)
 {
   o_cpu*		o;
@@ -307,7 +307,7 @@ t_error			cpu_update(i_cpu			id,
    * 1)
    */
 
-  if (cpu_get(id, &o) != ERROR_OK)
+  if (cpu_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the CPU object");
 
   /*
@@ -320,7 +320,7 @@ t_error			cpu_update(i_cpu			id,
    * 3)
    */
 
-  if (machine_call(cpu, update, id, timeslice) != ERROR_OK)
+  if (machine_call(cpu, update, id, timeslice) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -335,13 +335,13 @@ t_error			cpu_update(i_cpu			id,
  * 1) call the machine.
  */
 
-t_error			cpu_balance(void)
+t_status		cpu_balance(void)
 {
   /*
    * 1)
    */
 
-  if (machine_call(cpu, balance) != ERROR_OK)
+  if (machine_call(cpu, balance) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -359,7 +359,7 @@ t_error			cpu_balance(void)
  * 5) is the task was running, re-start it.
  */
 
-t_error			cpu_migrate(i_task			task,
+t_status		cpu_migrate(i_task			task,
 				    i_cpu			cpu)
 {
   o_task*		o;
@@ -369,7 +369,7 @@ t_error			cpu_migrate(i_task			task,
    * 1)
    */
 
-  if (task_get(task, &o) != ERROR_OK)
+  if (task_get(task, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -380,7 +380,7 @@ t_error			cpu_migrate(i_task			task,
 
   if (o->state == TASK_STATE_START)
     {
-      if (task_stop(task) != ERROR_OK)
+      if (task_stop(task) != STATUS_OK)
 	CORE_ESCAPE("unable to stop the task");
     }
 
@@ -394,7 +394,7 @@ t_error			cpu_migrate(i_task			task,
    * 4)
    */
 
-  if (machine_call(cpu, migrate, task, cpu) != ERROR_OK)
+  if (machine_call(cpu, migrate, task, cpu) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -403,7 +403,7 @@ t_error			cpu_migrate(i_task			task,
 
   if (state == TASK_STATE_START)
     {
-      if (task_start(task) != ERROR_OK)
+      if (task_start(task) != STATUS_OK)
 	CORE_ESCAPE("unable to stop the task");
     }
 
@@ -414,9 +414,9 @@ t_error			cpu_migrate(i_task			task,
  * this function returns true if the CPU object exists.
  */
 
-t_error			cpu_exist(i_cpu				id)
+t_bool			cpu_exist(i_cpu				id)
 {
-  if (set_exist(_cpu.cpus, id) != ERROR_TRUE)
+  if (set_exist(_cpu.cpus, id) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -431,7 +431,7 @@ t_error			cpu_exist(i_cpu				id)
  * 1) retrieve the object from the set of CPUs.
  */
 
-t_error			cpu_get(i_cpu				id,
+t_status		cpu_get(i_cpu				id,
 				o_cpu**				object)
 {
   /*
@@ -445,7 +445,7 @@ t_error			cpu_get(i_cpu				id,
    * 1)
    */
 
-  if (set_get(_cpu.cpus, id, (void**)object) != ERROR_OK)
+  if (set_get(_cpu.cpus, id, (void**)object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of CPUs");
 
   CORE_LEAVE();
@@ -464,7 +464,7 @@ t_error			cpu_get(i_cpu				id,
  * 5) call the machine.
  */
 
-t_error			cpu_initialize(void)
+t_status		cpu_initialize(void)
 {
   t_uint32		i;
 
@@ -489,7 +489,7 @@ t_error			cpu_initialize(void)
 		  SET_OPTION_ALLOCATE,
 		  _init->ncpus,
 		  sizeof (o_cpu),
-		  &_cpu.cpus) != ERROR_OK)
+		  &_cpu.cpus) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the set of CPUs");
 
   /*
@@ -498,7 +498,7 @@ t_error			cpu_initialize(void)
 
   for (i = 0; i < _init->ncpus; i++)
     {
-      if (set_append(_cpu.cpus, &_init->cpus[i]) != ERROR_OK)
+      if (set_append(_cpu.cpus, &_init->cpus[i]) != STATUS_OK)
 	CORE_ESCAPE("unable to add the object to the set of CPUs");
     }
 
@@ -513,7 +513,7 @@ t_error			cpu_initialize(void)
    * 5)
    */
 
-  if (machine_call(cpu, initialize) != ERROR_OK)
+  if (machine_call(cpu, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -528,7 +528,7 @@ t_error			cpu_initialize(void)
  * 2) call the machine.
  */
 
-t_error			cpu_clean(void)
+t_status		cpu_clean(void)
 {
   /*
    * 1)
@@ -541,7 +541,7 @@ t_error			cpu_clean(void)
    * 2)
    */
 
-  if (machine_call(cpu, clean) != ERROR_OK)
+  if (machine_call(cpu, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();

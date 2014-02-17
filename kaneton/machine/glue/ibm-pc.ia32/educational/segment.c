@@ -86,7 +86,7 @@ d_segment		glue_segment_dispatch =
  * 1) display the machine-specific attributes.
  */
 
-t_error			glue_segment_dump(void)
+t_status		glue_segment_dump(void)
 {
   /*
    * 1)
@@ -112,12 +112,12 @@ t_error			glue_segment_dump(void)
  * pages will be temporary mapped for the operation to be carried out.
  */
 
-t_error			glue_segment_read(i_segment		segid,
+t_status		glue_segment_read(i_segment		segid,
 					  t_paddr		offs,
 					  void*			buff,
 					  t_psize		sz)
 {
-  if (architecture_paging_read(segid, offs, buff, sz) != ERROR_OK)
+  if (architecture_paging_read(segid, offs, buff, sz) != STATUS_OK)
     MACHINE_ESCAPE("unable to read data from the segment");
 
   MACHINE_LEAVE();
@@ -130,12 +130,12 @@ t_error			glue_segment_read(i_segment		segid,
  * pages will be temporary mapped for the operation to be carried out.
  */
 
-t_error			glue_segment_write(i_segment		segid,
+t_status		glue_segment_write(i_segment		segid,
 					   t_paddr		offs,
 					   const void*		buff,
 					   t_psize		sz)
 {
-  if (architecture_paging_write(segid, offs, buff, sz) != ERROR_OK)
+  if (architecture_paging_write(segid, offs, buff, sz) != STATUS_OK)
     MACHINE_ESCAPE("unable to write data to the segment");
 
   MACHINE_LEAVE();
@@ -148,13 +148,13 @@ t_error			glue_segment_write(i_segment		segid,
  * pages will be temporary mapped for the operation to be carried out.
  */
 
-t_error			glue_segment_copy(i_segment		dst,
+t_status		glue_segment_copy(i_segment		dst,
 					  t_paddr		offsd,
 					  i_segment		src,
 					  t_paddr		offss,
 					  t_psize		sz)
 {
-  if (architecture_paging_copy(dst, offsd, src, offss, sz) != ERROR_OK)
+  if (architecture_paging_copy(dst, offsd, src, offss, sz) != STATUS_OK)
     MACHINE_ESCAPE("unable to copy data from a segment to another");
 
   MACHINE_LEAVE();
@@ -169,20 +169,20 @@ t_error			glue_segment_copy(i_segment		dst,
  * 2) set up the segmentation unit.
  */
 
-t_error			glue_segment_initialize(void)
+t_status		glue_segment_initialize(void)
 {
   /*
    * 1)
    */
 
-  if (architecture_pmode_setup() != ERROR_OK)
+  if (architecture_pmode_setup() != STATUS_OK)
     MACHINE_ESCAPE("unable to set up the protected mode");
 
   /*
    * 2)
    */
 
-  if (architecture_segmentation_setup() != ERROR_OK)
+  if (architecture_segmentation_setup() != STATUS_OK)
     MACHINE_ESCAPE("unable to initialize the IA32 segmentation");
 
   MACHINE_LEAVE();

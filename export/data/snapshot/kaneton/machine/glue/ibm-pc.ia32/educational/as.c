@@ -70,17 +70,17 @@ d_as			glue_as_dispatch =
  * guest.
  */
 
-t_error			glue_as_reserve(i_task			task,
+t_status			glue_as_reserve(i_task			task,
 					i_as*			as)
 {
   if (*as == _kernel.as)
     {
-      if (architecture_environment_kernel(*as) != ERROR_OK)
+      if (architecture_environment_kernel(*as) != STATUS_OK)
 	MACHINE_ESCAPE("unable to initialize the kernel's address space");
     }
   else
     {
-      if (architecture_environment_server(*as) != ERROR_OK)
+      if (architecture_environment_server(*as) != STATUS_OK)
 	MACHINE_ESCAPE("unable to initialize the server's address space");
     }
 

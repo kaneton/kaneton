@@ -32,7 +32,7 @@
 #define		machine_call_cpu(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_cpu_dispatch.cpu_ ## _function_ != NULL)			\
         _r_ = glue_cpu_dispatch.cpu_ ## _function_(_args_);		\
@@ -63,7 +63,7 @@
  * ../cpu.c
  */
 
-t_error			glue_cpu_current(i_cpu*			cpu);
+t_status		glue_cpu_current(i_cpu*			cpu);
 
 
 /*

@@ -72,6 +72,18 @@ extern m_event		_event;
 extern am		_architecture;
 
 /*
+ * the address bounds of the handler code section
+ */
+extern t_vaddr _handler_code_begin;
+extern t_vaddr _handler_code_end;
+
+/*
+ * the address bounds of the handler data section
+ */
+extern t_vaddr _handler_data_begin;
+extern t_vaddr _handler_data_end;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -138,7 +150,7 @@ extern am		_architecture;
  *     an interrupt occurs.
  */
 
-t_error			architecture_environment_kernel(i_as	id)
+t_status		architecture_environment_kernel(i_as	id)
 {
   struct
   {
@@ -164,7 +176,7 @@ t_error			architecture_environment_kernel(i_as	id)
    * 1)
    */
 
-  if (as_get(id, &as) != ERROR_OK)
+  if (as_get(id, &as) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the address space object");
 
   /*
@@ -180,7 +192,7 @@ t_error			architecture_environment_kernel(i_as	id)
   if (architecture_paging_pdbr(as->machine.pd,
 			       ARCHITECTURE_REGISTER_CR3_PCE |
 			       ARCHITECTURE_REGISTER_CR3_PWB,
-			       &pdbr) != ERROR_OK)
+			       &pdbr) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the CR3 register's content");
 
   /*
@@ -194,7 +206,7 @@ t_error			architecture_environment_kernel(i_as	id)
    */
 
   if (architecture_paging_import(pd,
-				 pdbr) != ERROR_OK)
+				 pdbr) != STATUS_OK)
     MACHINE_ESCAPE("unable to import the kernel page directory");
 
   /*
@@ -208,7 +220,7 @@ t_error			architecture_environment_kernel(i_as	id)
 			     ARCHITECTURE_PDE_RW |
 			     ARCHITECTURE_PDE_SUPERVISOR |
 			     ARCHITECTURE_PDE_PWB |
-			     ARCHITECTURE_PDE_PCE) != ERROR_OK)
+			     ARCHITECTURE_PDE_PCE) != STATUS_OK)
     MACHINE_ESCAPE("unable to insert the mirroring directory entry");
 
   /*
@@ -224,7 +236,7 @@ t_error			architecture_environment_kernel(i_as	id)
   r->size = ARCHITECTURE_PT_SIZE * ___kaneton$pagesz;
   r->options = REGION_OPTION_NONE;
 
-  if (region_inject(as->id, r, &useless) != ERROR_OK)
+  if (region_inject(as->id, r, &useless) != STATUS_OK)
     MACHINE_ESCAPE("unable to inject the mirroring region");
 
   /*
@@ -287,7 +299,7 @@ t_error			architecture_environment_kernel(i_as	id)
 
 		  if (pt[pte.index] & ARCHITECTURE_PTE_PRESENT)
 		    {
-		      if (architecture_pt_delete(pt, pte.index) != ERROR_OK)
+		      if (architecture_pt_delete(pt, pte.index) != STATUS_OK)
 			MACHINE_ESCAPE("unable to delete the page "
 				       "table entry");
 		    }
@@ -312,7 +324,7 @@ t_error			architecture_environment_kernel(i_as	id)
    * 9)
    */
 
-  if (architecture_tlb_flush() != ERROR_OK)
+  if (architecture_tlb_flush() != STATUS_OK)
     MACHINE_ESCAPE("unable to flush the TLB");
 
   /*
@@ -341,13 +353,15 @@ t_error			architecture_environment_kernel(i_as	id)
  *    given address space, again at the same virtual address as the kernel's.
  * 7) locate the segment containing the system's IDT and map it in the
  *    given address space, again at the same virtual address as the kernel's.
- * 8) locate the segment containing the kernel code and map it in the given
- *    address space. note that the identity mapping technique is used here.
- * 9) locate the segment containing the kernel stack and map it in the given
- *    address space, note that the identity mapping technique is used here.
+ * 8) reserve a region in the given address space mapping the handler code
+ *    section located within the kernel code segment, note that the identity
+ *    mapping technique is used here as well.
+ * 9) reserve a region in the given address space mapping the handler data
+ *    section located within the kernel code segment, note that the identity
+ *    mapping technique is used here as well.
  */
 
-t_error			architecture_environment_server(i_as	id)
+t_status		architecture_environment_server(i_as	id)
 {
   i_segment	        segment;
   i_region		region;
@@ -360,7 +374,7 @@ t_error			architecture_environment_server(i_as	id)
    * 1)
    */
 
-  if (as_get(id, &as) != ERROR_OK)
+  if (as_get(id, &as) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the address space object");
 
   /*
@@ -371,10 +385,10 @@ t_error			architecture_environment_server(i_as	id)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_SYSTEM,
-		      &segment) != ERROR_OK)
+		      &segment) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a segment");
 
-  if (segment_get(segment, &s) != ERROR_OK)
+  if (segment_get(segment, &s) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -387,13 +401,13 @@ t_error			architecture_environment_server(i_as	id)
    * 4)
    */
 
-  if (architecture_pd_map(as->machine.pd, &pd) != ERROR_OK)
+  if (architecture_pd_map(as->machine.pd, &pd) != STATUS_OK)
     MACHINE_ESCAPE("unable to map the page directory");
 
-  if (architecture_pd_build(pd) != ERROR_OK)
+  if (architecture_pd_build(pd) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the page directory");
 
-  if (architecture_pd_unmap(pd) != ERROR_OK)
+  if (architecture_pd_unmap(pd) != STATUS_OK)
     MACHINE_ESCAPE("unable to unmap the page directory");
 
   /*
@@ -402,10 +416,10 @@ t_error			architecture_environment_server(i_as	id)
 
   if (region_locate(_kernel.as,
 		    _thread.machine.tss,
-		    &region) == ERROR_FALSE)
+		    &region) == FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the TSS lies");
 
-  if (region_get(_kernel.as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   if (region_reserve(as->id,
@@ -415,7 +429,7 @@ t_error			architecture_environment_server(i_as	id)
 		     REGION_OPTION_NONE,
 		     _thread.machine.tss,
 		     r->size,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the TSS");
 
   /*
@@ -424,10 +438,10 @@ t_error			architecture_environment_server(i_as	id)
 
   if (region_locate(_kernel.as,
 		    (t_vaddr)_segment.machine.gdt.table,
-		    &region) == ERROR_FALSE)
+		    &region) == FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the GDT lies");
 
-  if (region_get(_kernel.as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   if (region_reserve(as->id,
@@ -437,7 +451,7 @@ t_error			architecture_environment_server(i_as	id)
 		     REGION_OPTION_NONE,
 		     (t_vaddr)_segment.machine.gdt.table,
 		     ___kaneton$pagesz,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the GDT");
 
   /*
@@ -446,10 +460,10 @@ t_error			architecture_environment_server(i_as	id)
 
   if (region_locate(_kernel.as,
 		    (t_vaddr)_event.machine.idt.table,
-		    &region) == ERROR_FALSE)
+		    &region) == FALSE)
     MACHINE_ESCAPE("unable to locate the region in which the IDT lies");
 
-  if (region_get(_kernel.as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   if (region_reserve(as->id,
@@ -459,63 +473,38 @@ t_error			architecture_environment_server(i_as	id)
 		     REGION_OPTION_NONE,
 		     (t_vaddr)_event.machine.idt.table,
 		     ___kaneton$pagesz,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve the region mapping the IDT");
 
   /*
    * 8)
    */
 
-  /* XXX[do not uncomment this]
-     if (region_reserve(asid,
-     _init->kcode,
-     LINKER_SYMBOL(_handler_begin) - _init->kcode,
-     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED,
-     LINKER_SYMBOL(_handler_begin),
-     LINKER_SYMBOL(_handler_end) -
-     LINKER_SYMBOL(_handler_begin),
-     &reg) != ERROR_OK)
-
-     if (region_reserve(asid,
-     _init->kcode,
-     LINKER_SYMBOL(_handler_data_begin) - _init->kcode,
-     REGION_OPTION_FORCE | REGION_OPTION_PRIVILEGED,
-     LINKER_SYMBOL(_handler_data_begin),
-     LINKER_SYMBOL(_handler_data_end) -
-     LINKER_SYMBOL(_handler_data_begin),
-     &reg) != ERROR_OK)
-  */
-
-  if (segment_locate(_init->kcode, &segment) == ERROR_FALSE)
-    MACHINE_ESCAPE("unable to locate the segment which contains the "
-		   "kernel code");
-
   if (region_reserve(as->id,
-		     segment,
-		     0x0,
-		     REGION_OPTION_FORCE,
-		     (t_vaddr)_init->kcode,
-		     (t_vsize)_init->kcodesz,
-		     &region) != ERROR_OK)
-    MACHINE_ESCAPE("unable to reserve the region mapping the kernel code");
+                     _init->kcode,
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_code_begin) -
+                       _init->kcode,
+                     REGION_OPTION_FORCE,
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_code_begin),
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_code_end) -
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_code_begin),
+                     &region) != STATUS_OK)
+    MACHINE_ESCAPE("unable to map the handler code section");
 
   /*
    * 9)
    */
 
-  if (segment_locate(_init->kstack,
-		     &segment) == ERROR_FALSE)
-    MACHINE_ESCAPE("unable to locate the segment which contains the "
-		   "kernel stack");
-
   if (region_reserve(as->id,
-		     segment,
-		     0x0,
-		     REGION_OPTION_FORCE,
-		     (t_vaddr)_init->kstack,
-		     (t_vsize)_init->kstacksz,
-		     &region) != ERROR_OK)
-    MACHINE_ESCAPE("unable to reserve the region mapping the kernel stack");
+                     _init->kcode,
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_data_begin) -
+                       _init->kcode,
+                     REGION_OPTION_FORCE,
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_data_begin),
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_data_end) -
+                     ARCHITECTURE_LINKER_SYMBOL(_handler_data_begin),
+                     &region) != STATUS_OK)
+    MACHINE_ESCAPE("unable to map the handler data section");
 
   MACHINE_LEAVE();
 }

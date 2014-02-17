@@ -103,7 +103,7 @@ In this example, many entities are badly named and should be replaced by
 something similar to the following:
 
 \begin{verbatim}
-  t_error               segment_dump(i_set              segments,
+  t_status               segment_dump(i_set              segments,
                                      t_uint32           nsegments);
 \end{verbatim}
 
@@ -180,7 +180,7 @@ must be used, at all.
    * 5) call machine dependent code.
    */
 
-  t_error                 segment_show(i_segment                  id)
+  t_status                 segment_show(i_segment                  id)
   {
     [...]
   }
@@ -459,9 +459,9 @@ Next are listed some of the most important sections:
        * ../../core/set/set.c
        */
 
-      t_error                 set_dump(void);
+      t_status                 set_dump(void);
 
-      t_error                 set_size(i_set                          id,
+      t_status                 set_size(i_set                          id,
                                        t_setsz*                       size);
     \end{verbatim}
   \item
@@ -567,12 +567,12 @@ $2$ whitespaces.
   #define set_trap(_func_, _id_, _args_...)                               \
     (                                                                     \
       {                                                                   \
-        t_error           _r_ = ERROR_UNKNOWN;                            \
+        t_status           _r_ = STATUS_UNKNOWN_ERROR;                            \
         o_set*            _set_;                                          \
                                                                           \
         set_debug(_func_, _id_, _args_);                                  \
                                                                           \
-        if (set_descriptor((_id_), &_set_) == ERROR_NONE)                 \
+        if (set_descriptor((_id_), &_set_) == STATUS_OK)                 \
           {                                                               \
             switch (_set_->type)                                          \
               {                                                           \
@@ -628,7 +628,7 @@ below:
    * 2) otherwise, add this object in the set container.
    */
 
-  t_error                 set_new(o_set*                          o)
+  t_status                 set_new(o_set*                          o)
   {
     SET_ENTER(set);
 
@@ -639,26 +639,26 @@ below:
     if (o->setid == set->sets)
       {
         if ((set->container = malloc(sizeof(o_set))) == NULL)
-          SET_LEAVE(set, ERROR_UNKNOWN);
+          SET_LEAVE(set, STATUS_UNKNOWN_ERROR);
 
         memcpy(set->container, o, sizeof(o_set));
 
-        SET_LEAVE(set, ERROR_NONE);
+        SET_LEAVE(set, STATUS_OK);
       }
 
     /*
      * 2)
      */
 
-    if (set_add(set->sets, o) != ERROR_NONE)
+    if (set_add(set->sets, o) != STATUS_OK)
       {
         cons_msg('!', 'set: unable to add this set descriptor '
                  'to the set container\n');
 
-        SET_LEAVE(set, ERROR_UNKNOWN);
+        SET_LEAVE(set, STATUS_UNKNOWN_ERROR);
       }
 
-    SET_LEAVE(set, ERROR_NONE);
+    SET_LEAVE(set, STATUS_OK);
   }
 \end{verbatim}
 
@@ -727,7 +727,7 @@ developer is welcomed to put a single blank line in order to clearly separate
 bunches of pieces of code.
 
 \begin{verbatim}
-  t_error                 set_get(i_set                           setid,
+  t_status                 set_get(i_set                           setid,
                                   t_id                            id,
                                   void**                          o)
   {
@@ -735,13 +735,13 @@ bunches of pieces of code.
 
     SET_ENTER(set);
 
-    if (set_locate(setid, id, &iterator) != ERROR_NONE)
-      SET_LEAVE(set, ERROR_UNKNOWN);
+    if (set_locate(setid, id, &iterator) != STATUS_OK)
+      SET_LEAVE(set, STATUS_UNKNOWN_ERROR);
 
-    if (set_object(setid, iterator, o) != ERROR_NONE)
-      SET_LEAVE(set, ERROR_UNKNOWN);
+    if (set_object(setid, iterator, o) != STATUS_OK)
+      SET_LEAVE(set, STATUS_UNKNOWN_ERROR);
 
-    SET_LEAVE(set, ERROR_NONE);
+    SET_LEAVE(set, STATUS_OK);
   }
 \end{verbatim}
 
@@ -754,7 +754,7 @@ tabulations only. Moreover, the declarations must be ordered according
 to the length of the identifier, starting with the longer, as shown below.
 
 \begin{verbatim}
-  t_error                 segment_dump(void)
+  t_status                 segment_dump(void)
   {
     t_state               state;
     t_setsz               size;
@@ -773,7 +773,7 @@ comma. In addition, the argument identifiers must be properly aligned
 together, with tabulations.
 
 \begin{verbatim}
-  t_error                 as_give(i_task                  tskid,
+  t_status                 as_give(i_task                  tskid,
                                   i_as                    asid)
   {
     o_task*               from;
@@ -828,7 +828,7 @@ are only those composed of constants and macros.
 Below are illustrated some very bad constructs:
 
 \begin{verbatim}
-  t_error                 task_current(i_task*                    tsk)
+  t_status                 task_current(i_task*                    tsk)
   {
     i_thread              current, next;
     o_thread*             o = thread_get(current);
@@ -999,7 +999,7 @@ For instance, the following construct is very wrong:
 
 \begin{verbatim}
   if (!(kernel_buffer = malloc(size)))
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, STATUS_UNKNOWN_ERROR);
 \end{verbatim}
 
 Indeed, this construct supposes the \code{malloc()} function returns
@@ -1015,7 +1015,7 @@ more simple to read and understand:
 
 \begin{verbatim}
   if ((kernel_buffer = malloc(size)) == NULL)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, STATUS_UNKNOWN_ERROR);
 \end{verbatim}
 
 % for
@@ -1087,7 +1087,7 @@ be the more important \ie{} the kaneton object identifier or
 capability on which the action is performed.
 
 \begin{verbatim}
-  t_error                 task_reserve(t_class                    class,
+  t_status                 task_reserve(t_class                    class,
                                        t_behav                    behav,
                                        t_prior                    prior,
                                        i_task*                    id);
@@ -1126,7 +1126,7 @@ Below is an example of such calls:
    * 7) remove the thread from the threads set.
    */
 
-  t_error                 thread_release(i_thread                 threadid)
+  t_status                 thread_release(i_thread                 threadid)
   {
     o_task*               task;
     o_thread*             o;
@@ -1137,22 +1137,22 @@ Below is an example of such calls:
      * 1)
      */
 
-    if (machine_call(thread, thread_release, threadid) != ERROR_NONE)
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    if (machine_call(thread, thread_release, threadid) != STATUS_OK)
+      THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
     /*
      * 2)
      */
 
-    if (thread_get(threadid, &o) != ERROR_NONE)
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    if (thread_get(threadid, &o) != STATUS_OK)
+      THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
     /*
      * 3)
      */
 
-    if (task_get(o->taskid, &task) != ERROR_NONE)
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    if (task_get(o->taskid, &task) != STATUS_OK)
+      THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
     /*
      * 4)
@@ -1160,32 +1160,32 @@ Below is an example of such calls:
 
     if (o->stack)
       {
-        if (map_release(task->asid, o->stack) != ERROR_NONE)
-          THREAD_LEAVE(thread, ERROR_UNKNOWN);
+        if (map_release(task->asid, o->stack) != STATUS_OK)
+          THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
       }
 
     /*
      * 5)
      */
 
-    if (id_release(&thread->id, o->threadid) != ERROR_NONE)
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    if (id_release(&thread->id, o->threadid) != STATUS_OK)
+      THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
     /*
      * 6)
      */
 
-    if (set_remove(task->threads, threadid) != ERROR_NONE)
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    if (set_remove(task->threads, threadid) != STATUS_OK)
+      THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
     /*
      * 7)
      */
 
-    if (set_remove(thread->threads, threadid) != ERROR_NONE)
-      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    if (set_remove(thread->threads, threadid) != STATUS_OK)
+      THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
-    THREAD_LEAVE(thread, ERROR_NONE);
+    THREAD_LEAVE(thread, STATUS_OK);
   }
 \end{verbatim}
 

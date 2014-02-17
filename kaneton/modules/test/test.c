@@ -91,7 +91,7 @@ t_uint32		module_test_checksum(void*		data,
  * 3) send the message by issuing multiple serial_write()
  */
 
-t_error			module_test_send(t_uint8		type,
+t_status		module_test_send(t_uint8		type,
 					 char*			message,
 					 t_uint32		length)
 {
@@ -110,7 +110,7 @@ t_error			module_test_send(t_uint8		type,
 
   magic = MODULE_TEST_MAGIC;
 
-  if (module_test_checksum(message, length, &crc) != ERROR_OK)
+  if (module_test_checksum(message, length, &crc) != STATUS_OK)
     MACHINE_ESCAPE("unable to compute the message's CRC");
 
   /*
@@ -150,7 +150,7 @@ t_error			module_test_send(t_uint8		type,
  * 3) check the checksum.
  */
 
-t_error			module_test_receive(t_uint8*		type,
+t_status		module_test_receive(t_uint8*		type,
 					    char*		message)
 {
   t_uint32		magic;
@@ -193,7 +193,7 @@ t_error			module_test_receive(t_uint8*		type,
    * 3)
    */
 
-  if (module_test_checksum(message, length, &c) != ERROR_OK)
+  if (module_test_checksum(message, length, &c) != STATUS_OK)
     MODULE_ESCAPE("unable to compute the message's CRC");
 
   if (crc != c)
@@ -206,11 +206,11 @@ t_error			module_test_receive(t_uint8*		type,
  * this function is a wrapper for sending commands.
  */
 
-t_error			module_test_issue(char*			command)
+t_status		module_test_issue(char*			command)
 {
   if (module_test_send(MODULE_TEST_TYPE_COMMAND,
 		       command,
-		       strlen(command)) != ERROR_OK)
+		       strlen(command)) != STATUS_OK)
     MODULE_ESCAPE("unable to send a command back to the client");
 
   MODULE_LEAVE();
@@ -228,7 +228,7 @@ t_error			module_test_issue(char*			command)
  * 3) re-initialize the buffer.
  */
 
-t_error			module_test_flush(void)
+t_status		module_test_flush(void)
 {
   t_uint32		size;
 
@@ -249,7 +249,7 @@ t_error			module_test_flush(void)
 
   if (module_test_send(MODULE_TEST_TYPE_TEXT,
 		       _module_test.buffer,
-		       size) != ERROR_OK)
+		       size) != STATUS_OK)
     MODULE_ESCAPE("unable to send the buffer back to the client");
 
   /*
@@ -297,7 +297,7 @@ void			module_test_character(char		c)
  * this function locates a test function according to its symbol name.
  */
 
-t_error			module_test_locate(char*		symbol,
+t_status		module_test_locate(char*		symbol,
 					   mf_test*		function)
 {
   unsigned int  i;
@@ -324,7 +324,7 @@ t_error			module_test_locate(char*		symbol,
  * 4) issue the leave command.
  */
 
-t_error			module_test_call(char*			symbol)
+t_status		module_test_call(char*			symbol)
 {
   mf_test		function;
 
@@ -332,7 +332,7 @@ t_error			module_test_call(char*			symbol)
    * 1)
    */
 
-  if (module_test_locate(symbol, &function) != ERROR_OK)
+  if (module_test_locate(symbol, &function) != STATUS_OK)
     MODULE_ESCAPE("invalid test symbol");
 
   /*
@@ -387,7 +387,7 @@ void			module_test_dump(void)
  * 5) wait for commands and handle them.
  */
 
-t_error			module_test_run(void)
+t_status		module_test_run(void)
 {
   ms_test_command	commands[] =
     {
@@ -438,7 +438,7 @@ t_error			module_test_run(void)
 
       memset(message, 0x0, sizeof (message));
 
-      if (module_test_receive(&type, message) != ERROR_OK)
+      if (module_test_receive(&type, message) != STATUS_OK)
 	MODULE_ESCAPE("unable to received a test request");
 
       if (type != MODULE_TEST_TYPE_COMMAND)
@@ -452,7 +452,7 @@ t_error			module_test_run(void)
 	    {
 	      t_uint32		offset = strlen(commands[i].command);
 
-	      if (commands[i].function(message + offset) != ERROR_OK)
+	      if (commands[i].function(message + offset) != STATUS_OK)
 		MODULE_ESCAPE("an error occured in the triggered "
 			      "command");
 
@@ -477,7 +477,7 @@ t_error			module_test_run(void)
  * 3) initialize the serial manager.
  */
 
-t_error			module_test_load(void)
+t_status		module_test_load(void)
 {
   /*
    * 1)
@@ -496,7 +496,7 @@ t_error			module_test_load(void)
    * 3)
    */
 
-  if (platform_serial_initialize() != ERROR_OK)
+  if (platform_serial_initialize() != STATUS_OK)
     MODULE_ESCAPE("unable to initialize the serial manager");
 
   MODULE_LEAVE();
@@ -511,7 +511,7 @@ t_error			module_test_load(void)
  * 2) clean the serial manager.
  */
 
-t_error			module_test_unload(void)
+t_status		module_test_unload(void)
 {
   /*
    * 1)
@@ -524,7 +524,7 @@ t_error			module_test_unload(void)
    * 2)
    */
 
-  if (platform_serial_clean() != ERROR_OK)
+  if (platform_serial_clean() != STATUS_OK)
     MODULE_ESCAPE("unable to clean the serial manager");
 
   MODULE_LEAVE();

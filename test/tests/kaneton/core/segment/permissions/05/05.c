@@ -42,14 +42,14 @@ void			test_core_segment_permissions_05(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg_ref) != ERROR_OK)
+		      &seg_ref) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < ___kaneton$pagesz; i++)
@@ -57,16 +57,16 @@ void			test_core_segment_permissions_05(void)
       buff[i] = (i * 4 - 1) % 256;
     }
 
-  if (segment_write(seg_ref, 0, buff, ___kaneton$pagesz) != ERROR_OK)
+  if (segment_write(seg_ref, 0, buff, ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[segment_write] error");
 
-  if (segment_copy(seg, 0, seg_ref, 0, ___kaneton$pagesz) == ERROR_OK)
+  if (segment_copy(seg, 0, seg_ref, 0, ___kaneton$pagesz) == STATUS_OK)
     TEST_ERROR("[segment_copy] error: allowed copy to a read only segment");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (segment_release(seg_ref) != ERROR_OK)
+  if (segment_release(seg_ref) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(riafe93gh09i4h);

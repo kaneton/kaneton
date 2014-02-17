@@ -125,29 +125,29 @@ typedef struct
  * ../idt.c
  */
 
-t_error			ia32_idt_dump(t_ia32_idt*		table);
+t_status		ia32_idt_dump(t_ia32_idt*		table);
 
-t_error			ia32_idt_size(t_ia32_idt*		table,
+t_status		ia32_idt_size(t_ia32_idt*		table,
 				      t_uint16*			size);
 
-t_error			ia32_idt_build(t_uint16		entries,
+t_status		ia32_idt_build(t_uint16		entries,
 				       t_paddr		base,
 				       t_uint8		clear,
 				       t_ia32_idt*	table);
 
-t_error			ia32_idt_activate(t_ia32_idt*		table);
+t_status		ia32_idt_activate(t_ia32_idt*		table);
 
-t_error			ia32_idt_import(t_ia32_idt*		table);
+t_status		ia32_idt_import(t_ia32_idt*		table);
 
-t_error			ia32_idt_add_gate(t_ia32_idt*		table,
+t_status		ia32_idt_add_gate(t_ia32_idt*		table,
 					  t_uint16		index,
 					  t_ia32_gate		gate);
 
-t_error			ia32_idt_get_gate(t_ia32_idt*		table,
+t_status		ia32_idt_get_gate(t_ia32_idt*		table,
 					  t_uint16		index,
 					  t_ia32_gate*		gate);
 
-t_error			ia32_idt_delete_gate(t_ia32_idt*	table,
+t_status		ia32_idt_delete_gate(t_ia32_idt*	table,
 					     t_uint16		gate_id);
 
 

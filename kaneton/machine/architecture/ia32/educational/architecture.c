@@ -36,7 +36,7 @@ am			_architecture;
  * this function dumps the architecture manager.
  */
 
-t_error			architecture_dump(void)
+t_status		architecture_dump(void)
 {
   module_call(console, message,
 	      '#',

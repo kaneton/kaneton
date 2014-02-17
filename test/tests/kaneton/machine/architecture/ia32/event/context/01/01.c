@@ -52,10 +52,10 @@ void			test_architecture_event_context_01(void)
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_BP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_context_01_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   asm volatile("pushl %%eax\n"
@@ -78,7 +78,7 @@ void			test_architecture_event_context_01(void)
 	       "movl %%esp, %1"
 	       : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   if (thrown != 1)
@@ -102,7 +102,7 @@ void			test_architecture_event_context_01(void)
   if (ctx1->ebp != ctx2->ebp)
     TEST_ERROR("the EBP register is different");
 
-  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(sdvni20fwg9i3h0);

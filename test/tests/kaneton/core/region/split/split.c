@@ -43,7 +43,7 @@ void			test_core_region_split(void)
 		      5 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -52,13 +52,13 @@ void			test_core_region_split(void)
 		     REGION_OPTION_NONE,
 		     0,
 		     4 * ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_split(_kernel.as, reg, 3 * ___kaneton$pagesz, &left, &right) != ERROR_OK)
+  if (region_split(_kernel.as, reg, 3 * ___kaneton$pagesz, &left, &right) != STATUS_OK)
     TEST_ERROR("[region_split] error");
 
-  if (region_get(_kernel.as, left, &o) != ERROR_OK)
+  if (region_get(_kernel.as, left, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error: unable to retrieve the split "
 	       "region's left part");
 
@@ -74,7 +74,7 @@ void			test_core_region_split(void)
   if (o->size != 3 * ___kaneton$pagesz)
     TEST_ERROR("invalid region's size after split");
 
-  if (region_get(_kernel.as, right, &o) != ERROR_OK)
+  if (region_get(_kernel.as, right, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error: unable to retrieve the split "
 	       "region's right part");
 
@@ -90,10 +90,10 @@ void			test_core_region_split(void)
   if (o->size != ___kaneton$pagesz)
     TEST_ERROR("invalid region's size after split");
 
-  if (region_coalesce(_kernel.as, left, right, &reg) != ERROR_OK)
+  if (region_coalesce(_kernel.as, left, right, &reg) != STATUS_OK)
     TEST_ERROR("[region_coalesce] error");
 
-  if (region_get(_kernel.as, reg, &o) != ERROR_OK)
+  if (region_get(_kernel.as, reg, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   if (o->id != reg)

@@ -33,7 +33,7 @@
 #define		machine_call_clock(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_clock_dispatch.clock_ ## _function_ != NULL)		\
         _r_ = glue_clock_dispatch.clock_ ## _function_(_args_);		\
@@ -64,13 +64,13 @@
  * ../clock.c
  */
 
-t_error			glue_clock_update(t_uint32		millisecond);
+t_status		glue_clock_update(t_uint32		millisecond);
 
-t_error			glue_clock_current(s_clock*		clock);
+t_status		glue_clock_current(s_clock*		clock);
 
-t_error			glue_clock_initialize(void);
+t_status		glue_clock_initialize(void);
 
-t_error			glue_clock_clean(void);
+t_status		glue_clock_clean(void);
 
 
 /*

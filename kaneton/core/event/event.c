@@ -78,7 +78,7 @@ m_event			_event;
  * 3) call the machine.
  */
 
-t_error			event_show(i_event			id,
+t_status		event_show(i_event			id,
 				   mt_margin			margin)
 {
   o_event*		o;
@@ -87,7 +87,7 @@ t_error			event_show(i_event			id,
    * 1)
    */
 
-  if (event_get(id, &o) != ERROR_OK)
+  if (event_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the event object");
 
   /*
@@ -135,7 +135,7 @@ t_error			event_show(i_event			id,
    * 3)
    */
 
-  if (machine_call(event, show, id, margin) != ERROR_OK)
+  if (machine_call(event, show, id, margin) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -152,7 +152,7 @@ t_error			event_show(i_event			id,
  * 4) call the machine.
  */
 
-t_error			event_dump(void)
+t_status		event_dump(void)
 {
   o_event*		data;
   t_setsz		size;
@@ -175,7 +175,7 @@ t_error			event_dump(void)
    * 2)
    */
 
-  if (set_size(_event.events, &size) != ERROR_OK)
+  if (set_size(_event.events, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of events");
 
   /*
@@ -189,11 +189,11 @@ t_error			event_dump(void)
 
   set_foreach(SET_OPTION_FORWARD, _event.events, &i, state)
     {
-      if (set_object(_event.events, i, (void**)&data) != ERROR_OK)
+      if (set_object(_event.events, i, (void**)&data) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the object from the set of events");
 
       if (event_show(data->id,
-		     3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		     3 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
 	CORE_ESCAPE("unable to show the object");
     }
 
@@ -201,7 +201,7 @@ t_error			event_dump(void)
    * 4)
    */
 
-  if (machine_call(event, dump) != ERROR_OK)
+  if (machine_call(event, dump) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -222,7 +222,7 @@ t_error			event_dump(void)
  * 3) call the machine.
  */
 
-t_error			event_notify(i_event			id)
+t_status		event_notify(i_event			id)
 {
   o_event*              o;
 
@@ -230,7 +230,7 @@ t_error			event_notify(i_event			id)
    * 1)
    */
 
-  if (event_get(id, &o) != ERROR_OK)
+  if (event_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the event object");
 
   /*
@@ -269,7 +269,7 @@ t_error			event_notify(i_event			id)
 			 node,
 			 MESSAGE_TYPE_EVENT,
 			 (t_vaddr)&message,
-			 sizeof (o_event_message)) != ERROR_OK)
+			 sizeof (o_event_message)) != STATUS_OK)
 	  CORE_ESCAPE("unable to send a message to the destination task");
 
 	break;
@@ -288,7 +288,7 @@ t_error			event_notify(i_event			id)
    * 3)
    */
 
-  if (machine_call(event, notify, id) != ERROR_OK)
+  if (machine_call(event, notify, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -303,13 +303,13 @@ t_error			event_notify(i_event			id)
  * 1) call the machine.
  */
 
-t_error			event_enable(void)
+t_status		event_enable(void)
 {
   /*
    * 1)
    */
 
-  if (machine_call(event, enable) != ERROR_OK)
+  if (machine_call(event, enable) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -324,13 +324,13 @@ t_error			event_enable(void)
  * 1) call the machine.
  */
 
-t_error			event_disable(void)
+t_status		event_disable(void)
 {
   /*
    * 1)
    */
 
-  if (machine_call(event, disable) != ERROR_OK)
+  if (machine_call(event, disable) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -353,7 +353,7 @@ t_error			event_disable(void)
  * 4) call the machine.
  */
 
-t_error			event_reserve(i_event			id,
+t_status		event_reserve(i_event			id,
 				      t_type			type,
 				      u_event_handler		handler,
 				      t_data			data)
@@ -373,7 +373,7 @@ t_error			event_reserve(i_event			id,
    * 1)
    */
 
-  if (event_exist(id) == ERROR_TRUE)
+  if (event_exist(id) == TRUE)
     CORE_ESCAPE("this event has already been reserved");
 
   /*
@@ -391,14 +391,14 @@ t_error			event_reserve(i_event			id,
    * 3)
    */
 
-  if (set_add(_event.events, &o) != ERROR_OK)
+  if (set_add(_event.events, &o) != STATUS_OK)
     CORE_ESCAPE("unable to add the object to the set of events");
 
   /*
    * 4)
    */
 
-  if (machine_call(event, reserve, id, type, handler, data) != ERROR_OK)
+  if (machine_call(event, reserve, id, type, handler, data) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -413,20 +413,20 @@ t_error			event_reserve(i_event			id,
  * 2) remove the object from the set of events.
  */
 
-t_error			event_release(i_event			id)
+t_status		event_release(i_event			id)
 {
   /*
    * 1)
    */
 
-  if (machine_call(event, release, id) != ERROR_OK)
+  if (machine_call(event, release, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  if (set_remove(_event.events, id) != ERROR_OK)
+  if (set_remove(_event.events, id) != STATUS_OK)
     CORE_ESCAPE("unable to remove the object from the set of events");
 
   CORE_LEAVE();
@@ -436,9 +436,9 @@ t_error			event_release(i_event			id)
  * this function returns true if the event exists i.e has been reserved.
  */
 
-t_error			event_exist(i_event			id)
+t_bool			event_exist(i_event			id)
 {
-  if (set_exist(_event.events, id) != ERROR_TRUE)
+  if (set_exist(_event.events, id) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -453,7 +453,7 @@ t_error			event_exist(i_event			id)
  * 1) retrieve the object from the set.
  */
 
-t_error			event_get(i_event			id,
+t_status		event_get(i_event			id,
 				  o_event**			object)
 {
   /*
@@ -467,7 +467,7 @@ t_error			event_get(i_event			id,
    * 1)
    */
 
-  if (set_get(_event.events, id, (void**)object) != ERROR_OK)
+  if (set_get(_event.events, id, (void**)object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the event object from the set");
 
   CORE_LEAVE();
@@ -484,7 +484,7 @@ t_error			event_get(i_event			id,
  * 4) call the machine.
  */
 
-t_error			event_initialize(void)
+t_status		event_initialize(void)
 {
   /*
    * 1)
@@ -506,14 +506,14 @@ t_error			event_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (o_event),
-		  &_event.events) != ERROR_OK)
+		  &_event.events) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the set of events");
 
   /*
    * 4)
    */
 
-  if (machine_call(event, initialize) != ERROR_OK)
+  if (machine_call(event, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -530,7 +530,7 @@ t_error			event_initialize(void)
  * 4) release the set of events.
  */
 
-t_error			event_clean(void)
+t_status		event_clean(void)
 {
   s_iterator		i;
   o_event*		o;
@@ -546,20 +546,20 @@ t_error			event_clean(void)
    * 2)
    */
 
-  if (machine_call(event, clean) != ERROR_OK)
+  if (machine_call(event, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 3)
    */
 
-  while (set_head(_event.events, &i) == ERROR_TRUE)
+  while (set_head(_event.events, &i) == TRUE)
     {
-      if (set_object(_event.events, i, (void**)&o) != ERROR_OK)
+      if (set_object(_event.events, i, (void**)&o) != STATUS_OK)
 	CORE_ESCAPE("unable to find the event object corresponding to "
 		    "its identifier");
 
-      if (event_release(o->id) != ERROR_OK)
+      if (event_release(o->id) != STATUS_OK)
 	CORE_ESCAPE("unable to release the event object");
     }
 
@@ -567,7 +567,7 @@ t_error			event_clean(void)
    * 4)
    */
 
-  if (set_release(_event.events) != ERROR_OK)
+  if (set_release(_event.events) != STATUS_OK)
     CORE_ESCAPE("unable to release the set of events");
 
   CORE_LEAVE();

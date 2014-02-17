@@ -34,17 +34,17 @@ void			ia32_syshandler_receive(void);
 
 void			ia32_syshandler_poll(void);
 
-t_error			ia32_syscall_set_code(i_thread		thread,
-					      t_error		error);
+t_status		ia32_syscall_set_code(i_thread		thread,
+					      t_status	error);
 
-t_error			ia32_syscall_set_info(i_thread		thread,
-					      t_error		error,
+t_status		ia32_syscall_set_info(i_thread		thread,
+					      t_status	error,
 					      t_vsize		size,
 					      i_node		sender);
 
-t_error			ia32_syscalls_init(void);
+t_status		ia32_syscalls_init(void);
 
-t_error			ia32_syscalls_clean(void);
+t_status		ia32_syscalls_clean(void);
 
 
 /*

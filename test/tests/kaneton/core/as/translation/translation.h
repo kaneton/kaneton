@@ -31,7 +31,7 @@
 									\
     v = (_v_);								\
 									\
-    if (as_physical(_kernel.as, v, &p) != ERROR_OK)			\
+    if (as_physical(_kernel.as, v, &p) != STATUS_OK)			\
       TEST_ERROR("[as_physical] error");				\
     									\
     if (p != (_p_))							\
@@ -45,7 +45,7 @@
 									\
     p = (_p_);								\
 									\
-    if (as_virtual(_kernel.as, p, &v) != ERROR_OK)			\
+    if (as_virtual(_kernel.as, p, &v) != STATUS_OK)			\
       TEST_ERROR("[as_virtual] error");					\
 									\
     if (v != (_v_))							\

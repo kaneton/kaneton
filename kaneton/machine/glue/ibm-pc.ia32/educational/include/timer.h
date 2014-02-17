@@ -33,7 +33,7 @@
 #define		machine_call_timer(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_timer_dispatch.timer_ ## _function_ != NULL)		\
         _r_ = glue_timer_dispatch.timer_ ## _function_(_args_);		\
@@ -64,9 +64,9 @@
  * ../timer.c
  */
 
-t_error			glue_timer_initialize(void);
+t_status		glue_timer_initialize(void);
 
-t_error			glue_timer_clean(void);
+t_status		glue_timer_clean(void);
 
 
 /*

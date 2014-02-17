@@ -76,7 +76,7 @@ d_thread			thread_dispatch =
  *
  */
 
-t_error			glue_thread_clone(i_task		taskid,
+t_status		glue_thread_clone(i_task		taskid,
 					  i_thread		old,
 					  i_thread*		new)
 {
@@ -84,13 +84,13 @@ t_error			glue_thread_clone(i_task		taskid,
 
   THREAD_ENTER(thread);
 
-  if (ia32_duplicate_context(old, *new) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_duplicate_context(old, *new) != STATUS_OK)
+    THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
-  if (task_get(taskid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (task_get(taskid, &o) != STATUS_OK)
+    THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(thread, STATUS_OK);
 }
 
 /*
@@ -98,15 +98,15 @@ t_error			glue_thread_clone(i_task		taskid,
  *
  */
 
-t_error			glue_thread_reserve(i_task		taskid,
+t_status		glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid)
 {
   THREAD_ENTER(thread);
 
-  if (ia32_init_context(taskid, *threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_init_context(taskid, *threadid) != STATUS_OK)
+    THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(thread, STATUS_OK);
 }
 
 /*
@@ -115,15 +115,15 @@ t_error			glue_thread_reserve(i_task		taskid,
  *
  */
 
-t_error			glue_thread_load(i_thread		threadid,
+t_status		glue_thread_load(i_thread		threadid,
 					 t_thread_context	context)
 {
   THREAD_ENTER(thread);
 
-  if (ia32_setup_context(threadid, context.pc, context.sp) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_setup_context(threadid, context.pc, context.sp) != STATUS_OK)
+    THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(thread, STATUS_OK);
 }
 
 /*
@@ -132,15 +132,15 @@ t_error			glue_thread_load(i_thread		threadid,
  *
  */
 
-t_error			glue_thread_store(i_thread		threadid,
+t_status		glue_thread_store(i_thread		threadid,
 					  t_thread_context*	context)
 {
   THREAD_ENTER(thread);
 
-  if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_status_context(threadid, &context->pc, &context->sp) != STATUS_OK)
+    THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(thread, STATUS_OK);
 }
 
 /*
@@ -148,16 +148,16 @@ t_error			glue_thread_store(i_thread		threadid,
  *
  */
 
-t_error			glue_thread_args(i_thread		threadid,
+t_status		glue_thread_args(i_thread		threadid,
 					 const void*	       	args,
 					 t_vsize		size)
 {
   THREAD_ENTER(thread);
 
-  if (ia32_push_args(threadid, args, size) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_push_args(threadid, args, size) != STATUS_OK)
+    THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(thread, STATUS_OK);
 }
 
 /*
@@ -165,12 +165,12 @@ t_error			glue_thread_args(i_thread		threadid,
  *
  */
 
-t_error			glue_thread_initialize(void)
+t_status		glue_thread_initialize(void)
 {
   THREAD_ENTER(thread);
 
-  if (ia32_init_switcher() != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (ia32_init_switcher() != STATUS_OK)
+    THREAD_LEAVE(thread, STATUS_UNKNOWN_ERROR);
 
-  THREAD_LEAVE(thread, ERROR_NONE);
+  THREAD_LEAVE(thread, STATUS_OK);
 }

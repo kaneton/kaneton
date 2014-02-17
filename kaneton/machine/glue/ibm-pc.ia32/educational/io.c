@@ -56,11 +56,11 @@ d_io			glue_io_dispatch =
  * by properly setting the I/O bitmap.
  */
 
-t_error			glue_io_grant(i_task			task,
+t_status		glue_io_grant(i_task			task,
 				      i_port			port,
 				      t_width			width)
 {
-  if (architecture_io_grant(task, port, width) != ERROR_OK)
+  if (architecture_io_grant(task, port, width) != STATUS_OK)
     MACHINE_ESCAPE("unable to set the I/O bitmap");
 
   MACHINE_LEAVE();
@@ -70,11 +70,11 @@ t_error			glue_io_grant(i_task			task,
  * this function denies access on the given I/O port.
  */
 
-t_error			glue_io_deny(i_task			task,
+t_status		glue_io_deny(i_task			task,
 				     i_port			port,
 				     t_width			width)
 {
-  if (architecture_io_deny(task, port, width) != ERROR_OK)
+  if (architecture_io_deny(task, port, width) != STATUS_OK)
     MACHINE_ESCAPE("unable to set the I/O bitmap");
 
   MACHINE_LEAVE();
@@ -84,7 +84,7 @@ t_error			glue_io_deny(i_task			task,
  * this function reads data from one or more I/O registers.
  */
 
-t_error			glue_io_read(i_task			task,
+t_status		glue_io_read(i_task			task,
 				     i_port			port,
 				     t_width			width,
 				     void*			data)
@@ -124,7 +124,7 @@ t_error			glue_io_read(i_task			task,
  * this function writes data to one or more I/O ports.
  */
 
-t_error			glue_io_write(i_task			task,
+t_status		glue_io_write(i_task			task,
 				      i_port			port,
 				      t_width			width,
 				      t_uint64			data)
@@ -164,9 +164,9 @@ t_error			glue_io_write(i_task			task,
  * this function initialize the I/O manager.
  */
 
-t_error			glue_io_initialize(void)
+t_status		glue_io_initialize(void)
 {
-  if (architecture_io_reset() != ERROR_OK)
+  if (architecture_io_reset() != STATUS_OK)
     MACHINE_ESCAPE("unable to reset the IOPL - I/O Privilege Level");
 
   MACHINE_LEAVE();

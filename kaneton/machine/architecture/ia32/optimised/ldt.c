@@ -42,35 +42,35 @@
  * returns the base pointer of a ldt.
  */
 
-t_error			ia32_ldt_base(t_ia32_ldt*		table,
+t_status		ia32_ldt_base(t_ia32_ldt*		table,
 				      t_paddr*			addr)
 {
   assert(addr != NULL);
 
   *addr = (t_paddr)table->descriptor;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * returns size of a ldt.
  */
 
-t_error			ia32_ldt_size(t_ia32_ldt*		table,
+t_status		ia32_ldt_size(t_ia32_ldt*		table,
 				      t_uint16*			size)
 {
   assert(size != NULL);
 
   *size = table->count;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * dumps a ldt
  */
 
-t_error			ia32_ldt_dump(t_ia32_ldt*		table)
+t_status		ia32_ldt_dump(t_ia32_ldt*		table)
 {
   t_ia32_gdt		n;
 
@@ -86,11 +86,11 @@ t_error			ia32_ldt_dump(t_ia32_ldt*		table)
  * activates a ldt.
  */
 
-t_error			ia32_ldt_activate(t_ia32_ldt		table)
+t_status		ia32_ldt_activate(t_ia32_ldt		table)
 {
   LLDT(table.gdt_entry);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -105,7 +105,7 @@ t_error			ia32_ldt_activate(t_ia32_ldt		table)
  * 5) clears the table if necessary.
  */
 
-t_error			ia32_ldt_build(t_uint16			entries,
+t_status		ia32_ldt_build(t_uint16			entries,
 				       t_paddr			base,
 				       t_ia32_ldt*		ldt,
 				       t_uint8			clear)
@@ -119,7 +119,7 @@ t_error			ia32_ldt_build(t_uint16			entries,
    */
 
   if (entries > IA32_LDT_MAX_ENTRIES)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -147,8 +147,8 @@ t_error			ia32_ldt_build(t_uint16			entries,
   seg.type.sys = ia32_type_ldt;
 
   if (ia32_gdt_reserve_segment(IA32_GDT_CURRENT, seg,
-			       &ldt->gdt_entry) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+			       &ldt->gdt_entry) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 5)
@@ -159,14 +159,14 @@ t_error			ia32_ldt_build(t_uint16			entries,
       memset(ldt->descriptor, 0, entries * sizeof (t_ia32_ldte));
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
  * destoys a ldt
  */
 
-t_error			ia32_ldt_destroy(t_ia32_ldt		*ldt)
+t_status		ia32_ldt_destroy(t_ia32_ldt		*ldt)
 {
   assert(ldt != NULL);
 
@@ -185,7 +185,7 @@ t_error			ia32_ldt_destroy(t_ia32_ldt		*ldt)
  * 5) sets the limit field.
  */
 
-t_error			ia32_ldt_add_segment(t_ia32_ldt*	table,
+t_status		ia32_ldt_add_segment(t_ia32_ldt*	table,
 					     t_uint16		segment,
 					     t_ia32_segment	descriptor)
 {
@@ -196,7 +196,7 @@ t_error			ia32_ldt_add_segment(t_ia32_ldt*	table,
    */
 
   if (segment >= table->count || descriptor.is_system)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -237,7 +237,7 @@ t_error			ia32_ldt_add_segment(t_ia32_ldt*	table,
   table->descriptor[segment].limit_00_15 = (t_uint16)size;
   table->descriptor[segment].limit_16_19 = size >> 16;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -250,7 +250,7 @@ t_error			ia32_ldt_add_segment(t_ia32_ldt*	table,
  * 3) sets the reserved index.
  */
 
-t_error			ia32_ldt_reserve_segment(t_ia32_ldt*	table,
+t_status		ia32_ldt_reserve_segment(t_ia32_ldt*	table,
 						 t_ia32_segment	descriptor,
 						 t_uint16*	segment)
 {
@@ -268,14 +268,14 @@ t_error			ia32_ldt_reserve_segment(t_ia32_ldt*	table,
     look++;
 
   if (look == table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
    */
 
-  if (ia32_ldt_add_segment(table, look, descriptor) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (ia32_ldt_add_segment(table, look, descriptor) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -283,7 +283,7 @@ t_error			ia32_ldt_reserve_segment(t_ia32_ldt*	table,
 
   *segment = look;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -292,11 +292,11 @@ t_error			ia32_ldt_reserve_segment(t_ia32_ldt*	table,
  * XXX
  */
 
-t_error			ia32_ldt_get_segment(t_ia32_ldt*	table,
+t_status		ia32_ldt_get_segment(t_ia32_ldt*	table,
 					     t_uint16		index,
 					     t_ia32_segment*	segment)
 {
-  return ERROR_UNKNOWN;
+  return STATUS_UNKNOWN_ERROR;
 }
 
 /*
@@ -308,7 +308,7 @@ t_error			ia32_ldt_get_segment(t_ia32_ldt*	table,
  * 2) mark the segment as non-present.
  */
 
-t_error			ia32_ldt_delete_segment(t_ia32_ldt*	table,
+t_status		ia32_ldt_delete_segment(t_ia32_ldt*	table,
 						t_uint16	segment)
 {
 
@@ -317,7 +317,7 @@ t_error			ia32_ldt_delete_segment(t_ia32_ldt*	table,
    */
 
   if (segment >= table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -325,7 +325,7 @@ t_error			ia32_ldt_delete_segment(t_ia32_ldt*	table,
 
   table->descriptor[segment].type &= ~IA32_DESC_TYPE_PRESENT;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -337,7 +337,7 @@ t_error			ia32_ldt_delete_segment(t_ia32_ldt*	table,
  * 2) builds the selector.
  */
 
-t_error			ia32_ldt_build_selector(t_ia32_ldt*	table,
+t_status		ia32_ldt_build_selector(t_ia32_ldt*	table,
 						t_uint16	segment,
 						t_ia32_prvl	privilege,
 						t_uint16*	selector)
@@ -349,7 +349,7 @@ t_error			ia32_ldt_build_selector(t_ia32_ldt*	table,
    */
 
   if (segment >= table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -358,5 +358,5 @@ t_error			ia32_ldt_build_selector(t_ia32_ldt*	table,
   *selector = IA32_SEGSEL_TI_LDT | IA32_SEGSEL_MK_RPL(privilege) |
     IA32_SEGSEL_MK_INDEX(segment);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }

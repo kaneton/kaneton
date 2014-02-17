@@ -42,17 +42,17 @@ void			test_architecture_region_inject(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task) != ERROR_OK)
+		   &task) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task, &as) != ERROR_OK)
+  if (as_reserve(task, &as) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
   if (segment_reserve(_kernel.as,
 		      10 * ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   o = malloc(sizeof (o_region));
@@ -67,13 +67,13 @@ void			test_architecture_region_inject(void)
 			      ___kaneton$pagesz,
 			      REGION_OPTION_FORCE,
 			      0x40000000,
-			      2 * ___kaneton$pagesz) != ERROR_OK)
+			      2 * ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[architecture_paging_map] error");
 
-  if (region_inject(as, o, &reg) != ERROR_OK)
+  if (region_inject(as, o, &reg) != STATUS_OK)
     TEST_ERROR("[region_inject] error");
 
-  if (region_get(as, reg, &o) != ERROR_OK)
+  if (region_get(as, reg, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   if (o->id != reg)
@@ -91,13 +91,13 @@ void			test_architecture_region_inject(void)
   if (o->options != REGION_OPTION_FORCE)
     TEST_ERROR("invalid region's options");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (as_release(as) != ERROR_OK)
+  if (as_release(as) != STATUS_OK)
     TEST_ERROR("[as_release] error");
 
-  if (task_release(task) != ERROR_OK)
+  if (task_release(task) != STATUS_OK)
     TEST_ERROR("[task_release] error");
 
   TEST_SIGNATURE(w09ciekwijg4hg9);

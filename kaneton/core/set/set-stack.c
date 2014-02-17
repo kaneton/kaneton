@@ -51,7 +51,7 @@ extern m_set		_set;
  * 3) register the set descriptor.
  */
 
-t_error			set_reserve_stack(t_options		options,
+t_status		set_reserve_stack(t_options		options,
 					  t_size		datasz,
 					  i_set*		id)
 {
@@ -81,7 +81,7 @@ t_error			set_reserve_stack(t_options		options,
    * 1)
    */
 
-  if (id_reserve(&_set.id, id) != ERROR_OK)
+  if (id_reserve(&_set.id, id) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the set identifier");
 
   /*
@@ -103,7 +103,7 @@ t_error			set_reserve_stack(t_options		options,
    * 3)
    */
 
-  if (set_new(&o) != ERROR_OK)
+  if (set_new(&o) != STATUS_OK)
     CORE_ESCAPE("unable to register the set descriptor");
 
   CORE_LEAVE();
@@ -113,7 +113,7 @@ t_error			set_reserve_stack(t_options		options,
  * this function just returns an error.
  */
 
-t_error			set_exist_stack(i_set			setid,
+t_bool			set_exist_stack(i_set			setid,
 					t_id			id)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -123,10 +123,10 @@ t_error			set_exist_stack(i_set			setid,
  * this function shows the set's attributes.
  */
 
-t_error			set_show_stack(i_set			setid,
+t_status		set_show_stack(i_set			setid,
 				       mt_margin		margin)
 {
-  if (set_show_ll(setid, margin) != ERROR_OK)
+  if (set_show_ll(setid, margin) != STATUS_OK)
     CORE_ESCAPE("unable to show the linked-list set");
 
   CORE_LEAVE();
@@ -136,9 +136,9 @@ t_error			set_show_stack(i_set			setid,
  * this function releases the set.
  */
 
-t_error			set_release_stack(i_set			setid)
+t_status		set_release_stack(i_set			setid)
 {
-  if (set_release_ll(setid) != ERROR_OK)
+  if (set_release_ll(setid) != STATUS_OK)
     CORE_ESCAPE("unable to release the linked-list set");
 
   CORE_LEAVE();
@@ -148,9 +148,9 @@ t_error			set_release_stack(i_set			setid)
  * this function flushes the set.
  */
 
-t_error			set_flush_stack(i_set			setid)
+t_status		set_flush_stack(i_set			setid)
 {
-  if (set_flush_ll(setid) != ERROR_OK)
+  if (set_flush_ll(setid) != STATUS_OK)
     CORE_ESCAPE("unable to flush the linked-list set");
 
   CORE_LEAVE();
@@ -160,10 +160,10 @@ t_error			set_flush_stack(i_set			setid)
  * this function adds an object to the stack.
  */
 
-t_error			set_push_stack(i_set			setid,
+t_status		set_push_stack(i_set			setid,
 				       void*			data)
 {
-  if (set_insert_ll(setid, data) != ERROR_OK)
+  if (set_insert_ll(setid, data) != STATUS_OK)
     CORE_ESCAPE("unable to insert in the linked-list set");
 
   CORE_LEAVE();
@@ -179,7 +179,7 @@ t_error			set_push_stack(i_set			setid,
  * 2) retrieve it.
  */
 
-t_error			set_pick_stack(i_set			setid,
+t_status		set_pick_stack(i_set			setid,
 				       void**			data)
 {
   s_iterator		iterator;
@@ -188,14 +188,14 @@ t_error			set_pick_stack(i_set			setid,
    * 1)
    */
 
-  if (set_head_ll(setid, &iterator) != ERROR_TRUE)
+  if (set_head_ll(setid, &iterator) != TRUE)
     CORE_ESCAPE("unable to locate the head of the linked-list set");
 
   /*
    * 2)
    */
 
-  if (set_object_ll(setid, iterator, data) != ERROR_OK)
+  if (set_object_ll(setid, iterator, data) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object");
 
   CORE_LEAVE();
@@ -210,7 +210,7 @@ t_error			set_pick_stack(i_set			setid,
  * 2) delete it.
  */
 
-t_error			set_pop_stack(i_set			setid)
+t_status		set_pop_stack(i_set			setid)
 {
   s_iterator		iterator;
 
@@ -218,14 +218,14 @@ t_error			set_pop_stack(i_set			setid)
    * 1)
    */
 
-  if (set_head_ll(setid, &iterator) != ERROR_TRUE)
+  if (set_head_ll(setid, &iterator) != TRUE)
     CORE_ESCAPE("unable to locate the head of the linked-list set");
 
   /*
    * 2)
    */
 
-  if (set_delete_ll(setid, iterator) != ERROR_OK)
+  if (set_delete_ll(setid, iterator) != STATUS_OK)
     CORE_ESCAPE("unable to delete the object");
 
   CORE_LEAVE();
@@ -235,10 +235,10 @@ t_error			set_pop_stack(i_set			setid)
  * this function returns an iterator on the first node of the stack
  */
 
-t_error			set_head_stack(i_set			setid,
+t_bool			set_head_stack(i_set			setid,
 				       s_iterator*		iterator)
 {
-  if (set_head_ll(setid, iterator) != ERROR_TRUE)
+  if (set_head_ll(setid, iterator) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -248,10 +248,10 @@ t_error			set_head_stack(i_set			setid,
 /*
  * this function returns an iterator on the last node of the stack.
  */
-t_error			set_tail_stack(i_set			setid,
+t_bool			set_tail_stack(i_set			setid,
 				       s_iterator*		iterator)
 {
-  if (set_tail_ll(setid, iterator) != ERROR_TRUE)
+  if (set_tail_ll(setid, iterator) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -261,11 +261,11 @@ t_error			set_tail_stack(i_set			setid,
  * this function returns an iterator on the previous node.
  */
 
-t_error			set_previous_stack(i_set		setid,
+t_bool			set_previous_stack(i_set		setid,
 					   s_iterator		current,
 					   s_iterator*		previous)
 {
-  if (set_previous_ll(setid, current, previous) != ERROR_TRUE)
+  if (set_previous_ll(setid, current, previous) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -275,11 +275,11 @@ t_error			set_previous_stack(i_set		setid,
  * this function returns an iterator on the next node.
  */
 
-t_error			set_next_stack(i_set			setid,
+t_bool			set_next_stack(i_set			setid,
 				       s_iterator		current,
 				       s_iterator*		next)
 {
-  if (set_next_ll(setid, current, next) != ERROR_TRUE)
+  if (set_next_ll(setid, current, next) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -289,7 +289,7 @@ t_error			set_next_stack(i_set			setid,
  * this function just returns an error.
  */
 
-t_error			set_insert_stack(i_set			setid,
+t_status		set_insert_stack(i_set			setid,
 					 void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -299,7 +299,7 @@ t_error			set_insert_stack(i_set			setid,
  * this function just returns an error.
  */
 
-t_error			set_append_stack(i_set			setid,
+t_status		set_append_stack(i_set			setid,
 					 void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -309,7 +309,7 @@ t_error			set_append_stack(i_set			setid,
  * this function just returns an error.
  */
 
-t_error			set_before_stack(i_set			setid,
+t_status		set_before_stack(i_set			setid,
 					 s_iterator		iterator,
 					 void*			data)
 {
@@ -320,7 +320,7 @@ t_error			set_before_stack(i_set			setid,
  * this function just returns an error.
  */
 
-t_error			set_after_stack(i_set			setid,
+t_status		set_after_stack(i_set			setid,
 					s_iterator		iterator,
 					void*			data)
 {
@@ -331,7 +331,7 @@ t_error			set_after_stack(i_set			setid,
  * this function just returns an error.
  */
 
-t_error			set_add_stack(i_set			setid,
+t_status		set_add_stack(i_set			setid,
 				      void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -341,7 +341,7 @@ t_error			set_add_stack(i_set			setid,
  * this function just returns an error.
  */
 
-t_error			set_remove_stack(i_set			setid,
+t_status		set_remove_stack(i_set			setid,
 					 t_id			id)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -351,7 +351,7 @@ t_error			set_remove_stack(i_set			setid,
  * this function just returns an error.
  */
 
-t_error			set_delete_stack(i_set			setid,
+t_status		set_delete_stack(i_set			setid,
 					 s_iterator		iterator)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -361,11 +361,11 @@ t_error			set_delete_stack(i_set			setid,
  * this function just returns an error.
  */
 
-t_error			set_locate_stack(i_set			setid,
+t_status		set_locate_stack(i_set			setid,
 					 t_id			id,
 					 s_iterator*		iterator)
 {
-  if (set_locate_ll(setid, id, iterator) != ERROR_OK)
+  if (set_locate_ll(setid, id, iterator) != STATUS_OK)
     CORE_ESCAPE("unable to locate the object from the linked-list set");
 
   CORE_LEAVE();
@@ -375,11 +375,11 @@ t_error			set_locate_stack(i_set			setid,
  * this function returns the object the given iterator points to.
  */
 
-t_error			set_object_stack(i_set			setid,
+t_status		set_object_stack(i_set			setid,
 					 s_iterator		iterator,
 					 void**			data)
 {
-  if (set_object_ll(setid, iterator, data) != ERROR_OK)
+  if (set_object_ll(setid, iterator, data) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object from the linked-list set");
 
   CORE_LEAVE();

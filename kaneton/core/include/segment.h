@@ -148,54 +148,54 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*segment_show)(i_segment,
+  t_status		(*segment_show)(i_segment,
 						mt_margin);
-  t_error			(*segment_dump)(void);
-  t_error			(*segment_protect)(t_paddr,
+  t_status		(*segment_dump)(void);
+  t_status		(*segment_protect)(t_paddr,
 						   t_psize);
-  t_error			(*segment_unprotect)(t_paddr,
+  t_status		(*segment_unprotect)(t_paddr,
 						     t_psize);
-  t_error			(*segment_clone)(i_as,
+  t_status		(*segment_clone)(i_as,
 						 i_segment,
 						 i_segment*);
-  t_error			(*segment_inject)(i_as,
+  t_status		(*segment_inject)(i_as,
 						  o_segment*,
 						  i_segment*);
-  t_error			(*segment_give)(i_segment,
+  t_status		(*segment_give)(i_segment,
 						i_as);
-  t_error			(*segment_resize)(i_segment,
+  t_status		(*segment_resize)(i_segment,
 						  t_psize,
 						  i_segment*);
-  t_error			(*segment_split)(i_segment,
+  t_status		(*segment_split)(i_segment,
 						 t_psize,
 						 i_segment*,
 						 i_segment*);
-  t_error			(*segment_coalesce)(i_segment,
+  t_status		(*segment_coalesce)(i_segment,
 						    i_segment,
 						    i_segment*);
-  t_error			(*segment_read)(i_segment,
+  t_status		(*segment_read)(i_segment,
 						t_paddr,
 						void*,
 						t_psize);
-  t_error			(*segment_write)(i_segment,
+  t_status		(*segment_write)(i_segment,
 						 t_paddr,
 						 const void*,
 						 t_psize);
-  t_error			(*segment_copy)(i_segment,
+  t_status		(*segment_copy)(i_segment,
 						t_paddr,
 						i_segment,
 						t_paddr,
 						t_psize);
-  t_error			(*segment_reserve)(i_as,
+  t_status		(*segment_reserve)(i_as,
 						   t_psize,
 						   t_permissions,
 						   i_segment*);
-  t_error			(*segment_release)(i_segment);
-  t_error			(*segment_permissions)(i_segment,
+  t_status		(*segment_release)(i_segment);
+  t_status		(*segment_permissions)(i_segment,
 						       t_permissions);
-  t_error			(*segment_flush)(i_as);
-  t_error			(*segment_initialize)();
-  t_error			(*segment_clean)(void);
+  t_status		(*segment_flush)(i_as);
+  t_status		(*segment_initialize)();
+  t_status		(*segment_clean)(void);
 }				d_segment;
 
 /*
@@ -208,93 +208,93 @@ typedef struct
  * ../../core/segment/segment-fit.c
  */
 
-t_error			segment_show(i_segment			segid,
-				     mt_margin			margin);
+t_status			segment_show(i_segment			segid,
+					     mt_margin			margin);
 
-t_error			segment_dump(void);
+t_status			segment_dump(void);
 
-t_error			segment_protect(t_paddr			address,
-					t_psize			size);
+t_status			segment_protect(t_paddr			address,
+						t_psize			size);
 
-t_error			segment_unprotect(t_paddr		address,
-					  t_psize		size);
+t_status			segment_unprotect(t_paddr		address,
+						  t_psize		size);
 
-t_error			segment_protected(t_paddr		address);
+t_bool					segment_protected(t_paddr		address);
 
-t_error			segment_fit_first(i_as			asid,
-					  t_psize		size,
-					  t_paddr*		address);
+t_status			segment_fit_first(i_as			asid,
+						  t_psize		size,
+						  t_paddr*		address);
 
-t_error			segment_space(i_as			asid,
-				      t_psize			size,
-				      t_paddr*			address);
+t_status			segment_space(i_as			asid,
+					      t_psize			size,
+					      t_paddr*			address);
 
-t_error			segment_clone(i_as			asid,
-				      i_segment			old,
-				      i_segment*		new);
+t_status			segment_clone(i_as			asid,
+					      i_segment			old,
+					      i_segment*		new);
 
-t_error			segment_inject(i_as			asid,
-				       o_segment*		object,
-				       i_segment*		id);
+t_status			segment_inject(i_as			asid,
+					       o_segment*		object,
+					       i_segment*		id);
 
-t_error			segment_give(i_segment			segid,
-				     i_as			asid);
+t_status			segment_give(i_segment			segid,
+					     i_as			asid);
 
-t_error			segment_resize(i_segment		old,
-				       t_psize			size,
-				       t_options		options,
-				       i_segment*		new);
+t_status			segment_resize(i_segment		old,
+					       t_psize			size,
+					       t_options		options,
+					       i_segment*		new);
 
-t_error			segment_split(i_segment			segid,
-				      t_psize			size,
-				      i_segment*		left,
-				      i_segment*		right);
+t_status			segment_split(i_segment			segid,
+		    			      t_psize			size,
+					      i_segment*		left,
+					      i_segment*		right);
 
-t_error			segment_coalesce(i_segment		left,
-					 i_segment		right,
-					 i_segment*		id);
+t_status			segment_coalesce(i_segment		left,
+						 i_segment		right,
+						 i_segment*		id);
 
-t_error			segment_read(i_segment			segid,
-				     t_paddr			offs,
-				     void*			buffer,
-				     t_psize			sz);
+t_status			segment_read(i_segment			segid,
+					     t_paddr			offs,
+					     void*			buffer,
+					     t_psize			sz);
 
-t_error			segment_write(i_segment			segid,
-				      t_paddr			offs,
-				      const void*		buffer,
-				      t_psize			sz);
+t_status			segment_write(i_segment			segid,
+					      t_paddr			offs,
+					      const void*		buffer,
+					      t_psize			sz);
 
-t_error			segment_copy(i_segment			dst,
-				     t_paddr			offsd,
-				     i_segment			src,
-				     t_paddr			offss,
-				     t_psize			sz);
+t_status			segment_copy(i_segment			dst,
+					     t_paddr			offsd,
+					     i_segment			src,
+					     t_paddr			offss,
+					     t_psize			sz);
 
-t_error			segment_reserve(i_as			asid,
-					t_psize			size,
-					t_permissions		perms,
-					t_options		options,
-					i_segment*		id);
+t_status			segment_reserve(i_as			asid,
+						t_psize			size,
+						t_permissions		perms,
+						t_options		options,
+						i_segment*		id);
 
-t_error			segment_release(i_segment		segid);
+t_status			segment_release(i_segment		segid);
 
-t_error			segment_permissions(i_segment		segid,
-					    t_permissions	perms);
+t_status			segment_permissions(i_segment		segid,
+						    t_permissions	perms);
 
-t_error			segment_flush(i_as			asid);
+t_status			segment_flush(i_as			asid);
 
-t_error			segment_locate(t_paddr			address,
-				       i_segment*		id);
+t_bool				segment_locate(t_paddr			address,
+					       i_segment*		id);
 
-t_error			segment_exist(i_segment			segid);
+t_bool				segment_exist(i_segment			segid);
 
-t_error			segment_get(i_segment			segid,
-				    o_segment**			object);
+t_status			segment_get(i_segment			segid,
+					    o_segment**			object);
 
-t_error			segment_initialize(t_paddr		base,
-					   t_psize		size);
+t_status			segment_initialize(t_paddr		base,
+						   t_psize		size);
 
-t_error			segment_clean(void);
+t_status			segment_clean(void);
 
 
 /*

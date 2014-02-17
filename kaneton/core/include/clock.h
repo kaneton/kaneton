@@ -101,12 +101,12 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*clock_show)(s_clock*,
+  t_status		(*clock_show)(s_clock*,
 					      mt_margin);
-  t_error			(*clock_update)(t_uint32);
-  t_error			(*clock_current)(s_clock*);
-  t_error			(*clock_initialize)(void);
-  t_error			(*clock_clean)(void);
+  t_status		(*clock_update)(t_uint32);
+  t_status		(*clock_current)(s_clock*);
+  t_status		(*clock_initialize)(void);
+  t_status		(*clock_clean)(void);
 }				d_clock;
 
 /*
@@ -119,16 +119,16 @@ typedef struct
  * ../../core/clock/clock.c
  */
 
-t_error			clock_show(s_clock*			clock,
+t_status		clock_show(s_clock*			clock,
 				   mt_margin			margin);
 
-t_error			clock_update(t_uint32			millisecond);
+t_status		clock_update(t_uint32			millisecond);
 
-t_error			clock_current(s_clock*			clock);
+t_status		clock_current(s_clock*			clock);
 
-t_error			clock_initialize(void);
+t_status		clock_initialize(void);
 
-t_error			clock_clean(void);
+t_status		clock_clean(void);
 
 
 /*

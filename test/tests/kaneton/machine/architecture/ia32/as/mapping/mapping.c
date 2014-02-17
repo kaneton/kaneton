@@ -40,7 +40,7 @@ void			test_architecture_as_mapping(void)
 
   TEST_ENTER();
  
-  if (as_get(_kernel.as, &oas) != ERROR_OK)
+  if (as_get(_kernel.as, &oas) != STATUS_OK)
     TEST_ERROR("[as_get] error");
 
   set_foreach(SET_OPTION_FORWARD, oas->regions, &it, st)
@@ -56,7 +56,7 @@ void			test_architecture_as_mapping(void)
       at_ptei		pte;
       t_paddr		paddr;
 
-      if (set_object(oas->regions, it, (void**)&oreg) != ERROR_OK)
+      if (set_object(oas->regions, it, (void**)&oreg) != STATUS_OK)
 	TEST_ERROR("[set_object] error");
 
       start = oreg->address;
@@ -65,7 +65,7 @@ void			test_architecture_as_mapping(void)
       if (oreg->segment == ID_UNUSED)
 	continue;
 
-      if (segment_get(oreg->segment, &oseg) != ERROR_OK)
+      if (segment_get(oreg->segment, &oseg) != STATUS_OK)
 	TEST_ERROR("[segment_get] error");
 
       paddr = oseg->address + oreg->offset;

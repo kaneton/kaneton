@@ -94,7 +94,7 @@ void			platform_rtc_dump(ps_rtc_state*		rtc)
  * this function updates a register of the RTC.
  */
 
-t_error			platform_rtc_write(t_uint8		address,
+t_status		platform_rtc_write(t_uint8		address,
 					   t_uint8		value)
 {
   ARCHITECTURE_IO_OUT_8(PLATFORM_RTC_ADDRESS, address);
@@ -107,7 +107,7 @@ t_error			platform_rtc_write(t_uint8		address,
  * this function fetches the value of the given RTC register.
  */
 
-t_error			platform_rtc_read(t_uint8		address,
+t_status		platform_rtc_read(t_uint8		address,
 					  t_uint8*		value)
 {
   ARCHITECTURE_IO_OUT_8(PLATFORM_RTC_ADDRESS, address);
@@ -121,7 +121,7 @@ t_error			platform_rtc_read(t_uint8		address,
  * binary so that the caller can use it.
  */
 
-t_error			platform_rtc_extract(t_uint8		address,
+t_status		platform_rtc_extract(t_uint8		address,
 					     t_uint8*		value)
 {
   switch (PLATFORM_RTC_FORMAT)
@@ -130,7 +130,7 @@ t_error			platform_rtc_extract(t_uint8		address,
       {
 	t_uint8		bcd;
 
-	if (platform_rtc_read(address, &bcd) != ERROR_OK)
+	if (platform_rtc_read(address, &bcd) != STATUS_OK)
 	  MACHINE_ESCAPE("unable to read the RTC");
 
 	*value = (bcd >> 1) + (bcd >> 3) + (bcd & 0xf);
@@ -156,40 +156,40 @@ t_error			platform_rtc_extract(t_uint8		address,
  * milliseconds attribute is initially set to zero.
  */
 
-t_error			platform_rtc_load(ps_rtc_state*		rtc)
+t_status		platform_rtc_load(ps_rtc_state*		rtc)
 {
   rtc->millisecond = 0;
 
   if (platform_rtc_extract(PLATFORM_RTC_REGISTER_SECOND,
-			   &rtc->second) != ERROR_OK)
+			   &rtc->second) != STATUS_OK)
     MACHINE_ESCAPE("unable to extract the RTC's seconds");
 
   if (platform_rtc_extract(PLATFORM_RTC_REGISTER_MINUTE,
-			   &rtc->minute) != ERROR_OK)
+			   &rtc->minute) != STATUS_OK)
     MACHINE_ESCAPE("unable to extract the RTC's minutes");
 
   if (platform_rtc_extract(PLATFORM_RTC_REGISTER_HOUR,
-			   &rtc->hour) != ERROR_OK)
+			   &rtc->hour) != STATUS_OK)
     MACHINE_ESCAPE("unable to extract the RTC's hours");
 
   if (platform_rtc_extract(PLATFORM_RTC_REGISTER_DAY_OF_MONTH,
-			   &rtc->day) != ERROR_OK)
+			   &rtc->day) != STATUS_OK)
     MACHINE_ESCAPE("unable to extract the RTC's days");
 
   if (platform_rtc_extract(PLATFORM_RTC_REGISTER_MONTH,
-			   &rtc->month) != ERROR_OK)
+			   &rtc->month) != STATUS_OK)
     MACHINE_ESCAPE("unable to extract the RTC's months");
 
   if (platform_rtc_extract(PLATFORM_RTC_REGISTER_YEAR,
-			   &rtc->year) != ERROR_OK)
+			   &rtc->year) != STATUS_OK)
     MACHINE_ESCAPE("unable to extract the RTC's years");
 
   if (platform_rtc_extract(PLATFORM_RTC_REGISTER_WEEKDAY,
-			   &rtc->weekday) != ERROR_OK)
+			   &rtc->weekday) != STATUS_OK)
     MACHINE_ESCAPE("unable to extract the RTC's weekday");
 
   if (platform_rtc_extract(PLATFORM_RTC_REGISTER_CENTURY,
-			   &rtc->century) != ERROR_OK)
+			   &rtc->century) != STATUS_OK)
     MACHINE_ESCAPE("unable to extract the RTC's century");
 
   MACHINE_LEAVE();
@@ -199,7 +199,7 @@ t_error			platform_rtc_load(ps_rtc_state*		rtc)
  * this function returns a pointer on the current RTC state structure.
  */
 
-t_error			platform_rtc_state(ps_rtc_state**	rtc)
+t_status		platform_rtc_state(ps_rtc_state**	rtc)
 {
   *rtc = &_platform_rtc.state;
 
@@ -218,7 +218,7 @@ t_error			platform_rtc_state(ps_rtc_state**	rtc)
  *    attributes.
  */
 
-t_error			platform_rtc_update(t_uint32		millisecond)
+t_status		platform_rtc_update(t_uint32		millisecond)
 {
   /*
    * 1)
@@ -267,7 +267,7 @@ t_error			platform_rtc_update(t_uint32		millisecond)
  * 3) load the initial RTC.
  */
 
-t_error			platform_rtc_initialize(void)
+t_status		platform_rtc_initialize(void)
 {
   t_uint8		status;
 
@@ -281,19 +281,19 @@ t_error			platform_rtc_initialize(void)
    * 2)
    */
 
-  if (platform_rtc_read(PLATFORM_RTC_REGISTER_STATUS_B, &status) != ERROR_OK)
+  if (platform_rtc_read(PLATFORM_RTC_REGISTER_STATUS_B, &status) != STATUS_OK)
     MACHINE_ESCAPE("unable to read the RTC");
 
   if (platform_rtc_write(PLATFORM_RTC_REGISTER_STATUS_B,
 			 status |
-			 PLATFORM_RTC_FORMAT_BCD) != ERROR_OK)
+			 PLATFORM_RTC_FORMAT_BCD) != STATUS_OK)
     MACHINE_ESCAPE("unable to write the RTC");
 
   /*
    * 2)
    */
 
-  if (platform_rtc_load(&_platform_rtc.state) != ERROR_OK)
+  if (platform_rtc_load(&_platform_rtc.state) != STATUS_OK)
     MACHINE_ESCAPE("unable to load the initial RTC");
 
   MACHINE_LEAVE();
@@ -303,7 +303,7 @@ t_error			platform_rtc_initialize(void)
  * this function cleans the RTC.
  */
 
-t_error			platform_rtc_clean(void)
+t_status		platform_rtc_clean(void)
 {
   MACHINE_LEAVE();
 }

@@ -32,7 +32,7 @@
 #define         machine_call_thread(_function_, _args_...)		\
   (									\
     {									\
-      t_error   _r_ = ERROR_OK;						\
+      t_status   _r_ = STATUS_OK;						\
 									\
       if (glue_thread_dispatch.thread_ ## _function_ != NULL)		\
         _r_ = glue_thread_dispatch.thread_ ## _function_(_args_);	\
@@ -138,31 +138,31 @@
  * ../thread.c
  */
 
-t_error			glue_thread_show(i_thread		id,
+t_status		glue_thread_show(i_thread		id,
 					 mt_margin		margin);
 
-t_error			glue_thread_dump(void);
+t_status		glue_thread_dump(void);
 
-t_error			glue_thread_reserve(i_task		task,
+t_status		glue_thread_reserve(i_task		task,
 					    t_priority		priority,
 					    t_vaddr		stack,
 					    t_vsize		stacksz,
 					    t_vaddr		entry,
 					    i_thread*		id);
 
-t_error			glue_thread_release(i_thread		id);
+t_status		glue_thread_release(i_thread		id);
 
-t_error			glue_thread_load(i_thread		id,
+t_status		glue_thread_load(i_thread		id,
 					 s_thread_context	context);
 
-t_error			glue_thread_store(i_thread		id,
+t_status		glue_thread_store(i_thread		id,
 					  s_thread_context*	context);
 
-t_error			glue_thread_arguments(i_thread		id,
+t_status		glue_thread_arguments(i_thread		id,
 					      void*		arguments,
 					      t_vsize		size);
 
-t_error			glue_thread_initialize(void);
+t_status		glue_thread_initialize(void);
 
 
 /*

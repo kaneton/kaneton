@@ -54,7 +54,7 @@ void			test_architecture_event_exception_06(void)
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_GP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_exception_06_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
   asm volatile("mov %0, %%gs"
@@ -64,7 +64,7 @@ void			test_architecture_event_exception_06(void)
   if (thrown != 1)
     TEST_ERROR("the exception has not been caught");
 
-  if (event_release(ARCHITECTURE_IDT_EXCEPTION_GP) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_GP) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(0vfwwfi32w9fwjovkhg);

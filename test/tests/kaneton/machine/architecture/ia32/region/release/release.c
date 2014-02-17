@@ -34,6 +34,12 @@ static volatile i_segment	seg;
 static volatile t_vaddr		addr;
 
 /*
+ * ---------- prototypes ------------------------------------------------------
+ */
+
+void			test_architecture_region_release(void);
+
+/*
  * ---------- test ------------------------------------------------------------
  */
 
@@ -50,7 +56,7 @@ void			test_architecture_region_release_handler(t_id	id,
 		     REGION_OPTION_FORCE,
 		     addr,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 }
 
@@ -66,7 +72,7 @@ void			test_architecture_region_release(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      (i_segment*)&seg) != ERROR_OK)
+		      (i_segment*)&seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -75,10 +81,10 @@ void			test_architecture_region_release(void)
 		     REGION_OPTION_NONE,
 		     0,
 		     ___kaneton$pagesz,
-		     &reg) != ERROR_OK)
+		     &reg) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel.as, reg, &o) != ERROR_OK)
+  if (region_get(_kernel.as, reg, &o) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   addr = o->address;
@@ -92,15 +98,15 @@ void			test_architecture_region_release(void)
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_PF,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_region_release_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (region_release(_kernel.as, o->id) != ERROR_OK)
+  if (region_release(_kernel.as, o->id) != STATUS_OK)
     TEST_ERROR("[region_release] error");
 
   *p = 0x84;
 
-  if (event_release(ARCHITECTURE_IDT_EXCEPTION_PF) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_PF) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   if (thrown != 1)

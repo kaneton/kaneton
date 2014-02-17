@@ -38,16 +38,16 @@ typedef struct
  * ../forward.c
  */
 
-t_error			module_forward_send(char*		message,
+t_status		module_forward_send(char*		message,
 					    t_uint32		length);
 
-t_error			module_forward_flush(void);
+t_status		module_forward_flush(void);
 
 void			module_forward_character(char		c);
 
-t_error			module_forward_load(void);
+t_status		module_forward_load(void);
 
-t_error			module_forward_unload(void);
+t_status		module_forward_unload(void);
 
 
 /*

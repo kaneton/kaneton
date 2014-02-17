@@ -53,9 +53,9 @@ void			module_report_attribute(t_uint8		attribute);
 void			module_report_record(char*		fmt,
 					     ...);
 
-t_error			module_report_load(void);
+t_status		module_report_load(void);
 
-t_error			module_report_unload(void);
+t_status		module_report_unload(void);
 
 
 /*

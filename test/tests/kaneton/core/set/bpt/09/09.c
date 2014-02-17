@@ -41,7 +41,7 @@ void			test_core_set_bpt_09(void)
    * reserve
    */
 
-  if (set_reserve(bpt, SET_OPTION_SORT, sizeof (t_id), ___kaneton$pagesz, &id) != ERROR_OK)
+  if (set_reserve(bpt, SET_OPTION_SORT, sizeof (t_id), ___kaneton$pagesz, &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
@@ -52,7 +52,7 @@ void			test_core_set_bpt_09(void)
     {
       objs[i] = (i * 234) % 6578;
 
-      if (set_add(id, &objs[i]) != ERROR_OK)
+      if (set_add(id, &objs[i]) != STATUS_OK)
         TEST_ERROR("[set_add] error");
     }
 
@@ -60,14 +60,14 @@ void			test_core_set_bpt_09(void)
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -87,11 +87,11 @@ void			test_core_set_bpt_09(void)
     {
       if (i % 2)
         {
-          if (set_locate(id, objs[i], &it) != ERROR_OK)
+          if (set_locate(id, objs[i], &it) != STATUS_OK)
 	    TEST_ERROR("[set_locate] error");
           else
             {
-              if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+              if (set_object(id, it, (void**)&pdata) != STATUS_OK)
 		TEST_ERROR("[set_object] error");
 
               if (*pdata != objs[i])
@@ -100,7 +100,7 @@ void			test_core_set_bpt_09(void)
         }
       else
         {
-          if (set_get(id, objs[i], (void**)&pdata) != ERROR_OK)
+          if (set_get(id, objs[i], (void**)&pdata) != STATUS_OK)
 	    TEST_ERROR("[set_get] error");
 
           if (*pdata != objs[i])
@@ -110,14 +110,14 @@ void			test_core_set_bpt_09(void)
 
   data = objs[5] - 1;
 
-  if (set_locate(id, data, &it) == ERROR_OK)
+  if (set_locate(id, data, &it) == STATUS_OK)
     TEST_ERROR("[set_locate] error: found a non-existent item");
 
   /*
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(fi9g09iw3gh09ih);

@@ -24,7 +24,7 @@
 #define         machine_call_thread(_function_, _args_...)		\
   (									\
     {									\
-      t_error   _r_ = ERROR_NONE;					\
+      t_status   _r_ = STATUS_OK;					\
 									\
       if (thread_dispatch._function_ != NULL)				\
         _r_ = thread_dispatch._function_(_args_);			\
@@ -76,24 +76,24 @@
  * ../thread.c
  */
 
-t_error			glue_thread_clone(i_task		taskid,
+t_status		glue_thread_clone(i_task		taskid,
 					  i_thread		old,
 					  i_thread*		new);
 
-t_error			glue_thread_reserve(i_task		taskid,
+t_status		glue_thread_reserve(i_task		taskid,
 					    i_thread*		threadid);
 
-t_error			glue_thread_load(i_thread		threadid,
+t_status		glue_thread_load(i_thread		threadid,
 					 t_thread_context	context);
 
-t_error			glue_thread_store(i_thread		threadid,
+t_status		glue_thread_store(i_thread		threadid,
 					  t_thread_context*	context);
 
-t_error			glue_thread_args(i_thread		threadid,
+t_status		glue_thread_args(i_thread		threadid,
 					 const void*	       	args,
 					 t_vsize		size);
 
-t_error			glue_thread_initialize(void);
+t_status		glue_thread_initialize(void);
 
 
 /*

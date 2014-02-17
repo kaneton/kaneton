@@ -113,7 +113,7 @@ extern m_kernel		_kernel;
  * 1) generate the CR3 register's content.
  */
 
-t_error			architecture_paging_pdbr(t_paddr	pd,
+t_status			architecture_paging_pdbr(t_paddr	pd,
 						 t_flags	flags,
 						 at_cr3*	pdbr)
 {
@@ -138,7 +138,7 @@ t_error			architecture_paging_pdbr(t_paddr	pd,
  * address.
  */
 
-t_error			architecture_paging_map(i_as		id,
+t_status			architecture_paging_map(i_as		id,
 						i_segment	segment,
 						t_paddr		offset,
 						t_options	options,
@@ -155,7 +155,7 @@ t_error			architecture_paging_map(i_as		id,
  * size.
  */
 
-t_error			architecture_paging_unmap(i_as		id,
+t_status			architecture_paging_unmap(i_as		id,
 						  t_vaddr	address,
 						  t_vsize	size)
 {
@@ -182,7 +182,7 @@ t_error			architecture_paging_unmap(i_as		id,
  * 7) release the region.
  */
 
-t_error			architecture_paging_read(i_segment	id,
+t_status			architecture_paging_read(i_segment	id,
 						 t_paddr	offset,
 						 void*		buffer,
 						 t_psize	size)
@@ -204,7 +204,7 @@ t_error			architecture_paging_read(i_segment	id,
    * 1)
    */
 
-  if (segment_get(id, &o) != ERROR_OK)
+  if (segment_get(id, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -240,14 +240,14 @@ t_error			architecture_paging_read(i_segment	id,
 		     REGION_OPTION_NONE,
 		     0x0,
 		     end - offset,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region");
 
   /*
    * 5)
    */
 
-  if (region_get(_kernel.as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -260,7 +260,7 @@ t_error			architecture_paging_read(i_segment	id,
    * 7)
    */
 
-  if (region_release(_kernel.as, region) != ERROR_OK)
+  if (region_release(_kernel.as, region) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();
@@ -284,7 +284,7 @@ t_error			architecture_paging_read(i_segment	id,
  * 7) release the region.
  */
 
-t_error			architecture_paging_write(i_segment	id,
+t_status			architecture_paging_write(i_segment	id,
 						  t_paddr	offset,
 						  const void*	buffer,
 						  t_psize	size)
@@ -306,7 +306,7 @@ t_error			architecture_paging_write(i_segment	id,
    * 1)
    */
 
-  if (segment_get(id, &o) != ERROR_OK)
+  if (segment_get(id, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -342,14 +342,14 @@ t_error			architecture_paging_write(i_segment	id,
 		     REGION_OPTION_NONE,
 		     0x0,
 		     end - offset,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region");
 
   /*
    * 5)
    */
 
-  if (region_get(_kernel.as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -362,7 +362,7 @@ t_error			architecture_paging_write(i_segment	id,
    * 7)
    */
 
-  if (region_release(_kernel.as, region) != ERROR_OK)
+  if (region_release(_kernel.as, region) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();
@@ -389,7 +389,7 @@ t_error			architecture_paging_write(i_segment	id,
  * 11) release the reserved regions.
  */
 
-t_error			architecture_paging_copy(i_region	dst,
+t_status			architecture_paging_copy(i_region	dst,
 						 t_paddr	to,
 						 i_region	src,
 						 t_paddr	from,
@@ -427,10 +427,10 @@ t_error			architecture_paging_copy(i_region	dst,
    * 1)
    */
 
-  if (segment_get(dst, &destination.segment.object) != ERROR_OK)
+  if (segment_get(dst, &destination.segment.object) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
-  if (segment_get(src, &source.segment.object) != ERROR_OK)
+  if (segment_get(src, &source.segment.object) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -466,7 +466,7 @@ t_error			architecture_paging_copy(i_region	dst,
 		     REGION_OPTION_NONE,
 		     0x0,
 		     end - from,
-		     &source.region.id) != ERROR_OK)
+		     &source.region.id) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region");
 
   /*
@@ -475,7 +475,7 @@ t_error			architecture_paging_copy(i_region	dst,
 
   if (region_get(_kernel.as,
 		 source.region.id,
-		 &source.region.object) != ERROR_OK)
+		 &source.region.object) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -511,7 +511,7 @@ t_error			architecture_paging_copy(i_region	dst,
 		     REGION_OPTION_NONE,
 		     0x0,
 		     end - to,
-		     &destination.region.id) != ERROR_OK)
+		     &destination.region.id) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region");
 
   /*
@@ -520,7 +520,7 @@ t_error			architecture_paging_copy(i_region	dst,
 
   if (region_get(_kernel.as,
 		 destination.region.id,
-		 &destination.region.object) != ERROR_OK)
+		 &destination.region.object) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -535,10 +535,10 @@ t_error			architecture_paging_copy(i_region	dst,
    * 11)
    */
 
-  if (region_release(_kernel.as, source.region.id) != ERROR_OK)
+  if (region_release(_kernel.as, source.region.id) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the region");
 
-  if (region_release(_kernel.as, destination.region.id) != ERROR_OK)
+  if (region_release(_kernel.as, destination.region.id) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();

@@ -46,21 +46,21 @@ void			test_architecture_event_interrupt_01(void)
   if (event_reserve(ARCHITECTURE_IDT_SYSCALL_BASE + 0,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_interrupt_01_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   asm volatile("int $56");
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   if (thrown != 1)
     TEST_ERROR("the interrupt event has not been caught");
 
-  if (event_release(ARCHITECTURE_IDT_SYSCALL_BASE + 0) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_SYSCALL_BASE + 0) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(snmvnweg3f90r4geh);

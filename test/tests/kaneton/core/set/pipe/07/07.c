@@ -39,14 +39,14 @@ void			test_core_set_pipe_07(void)
    * reserve
    */
 
-  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != ERROR_OK)
+  if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (t_id), &id) != STATUS_OK)
     TEST_ERROR("[set_reserve] error");
 
   /*
    * pop
    */
 
-  if (set_pop(id) == ERROR_OK)
+  if (set_pop(id) == STATUS_OK)
     TEST_ERROR("[set_pop] error: removed a non-existent item");
 
   /*
@@ -63,21 +63,21 @@ void			test_core_set_pipe_07(void)
    */
 
   obj = 42LL;
-  if (set_push(id, &obj) != ERROR_OK)
+  if (set_push(id, &obj) != STATUS_OK)
     TEST_ERROR("[set_push] error");
 
   /*
    * display
    */
 
-  if (set_size(id, &sz) != ERROR_OK)
+  if (set_size(id, &sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   TEST_PRINT("%qd elements: ", sz);
   st = 0;
   set_foreach(SET_OPTION_FORWARD, id, &it, state)
     {
-      if (set_object(id, it, (void**)&pdata) != ERROR_OK)
+      if (set_object(id, it, (void**)&pdata) != STATUS_OK)
         TEST_ERROR("[set_object] error");
 
       if (!st++)
@@ -93,7 +93,7 @@ void			test_core_set_pipe_07(void)
    * release
    */
 
-  if (set_release(id) != ERROR_OK)
+  if (set_release(id) != STATUS_OK)
     TEST_ERROR("[set_release] error");
 
   TEST_SIGNATURE(09fi23zefwkmlg43);

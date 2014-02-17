@@ -43,7 +43,7 @@ s_dbg_manager _dbg;
 /*
  * this function loads the module.
  */
-t_error                 module_debug_load(void)
+t_status                 module_debug_load(void)
 {
   module_call(console, message,
               '+', "loading the 'debug' module\n");
@@ -59,7 +59,7 @@ t_error                 module_debug_load(void)
 /*
  * this function unloads the module.
  */
-t_error                 module_debug_unload(void)
+t_status                 module_debug_unload(void)
 {
   module_call(console, message,
               '+', "unloading the 'debug' module\n");
@@ -106,13 +106,13 @@ static void debug_exception_db(i_event n, t_data d)
 /*
  * Start the gdb server
  */
-t_error                 module_debug_start(void)
+t_status                 module_debug_start(void)
 {
   if (set_reserve(bpt,
                   SET_OPTION_ALLOCATE | SET_OPTION_SORT,
                   sizeof (s_dbg_breakpoint),
                   1024,
-                  &_dbg.bp) != ERROR_OK)
+                  &_dbg.bp) != STATUS_OK)
     MODULE_ESCAPE("unable to reserve the segments set");
 
 

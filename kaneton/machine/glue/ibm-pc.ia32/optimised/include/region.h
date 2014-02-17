@@ -30,7 +30,7 @@
 #define		machine_call_region(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_status _r_ = STATUS_OK;					\
 									\
       if (region_dispatch._function_ != NULL)				\
         _r_ = region_dispatch._function_(_args_);			\
@@ -60,12 +60,12 @@
  * ../region.c
  */
 
-t_error			glue_region_resize(i_as			as,
+t_status		glue_region_resize(i_as			as,
 					   i_region		old,
 					   t_vsize		size,
 					   i_region*		new);
 
-t_error			glue_region_reserve(i_as		asid,
+t_status		glue_region_reserve(i_as		asid,
 					    i_segment		segid,
 					    t_paddr		offset,
 					    t_opts		opts,
@@ -73,13 +73,13 @@ t_error			glue_region_reserve(i_as		asid,
 					    t_vsize		size,
 					    i_region*		regid);
 
-t_error			glue_region_release(i_as		asid,
+t_status		glue_region_release(i_as		asid,
 					    i_region		regid);
 
-t_error			glue_region_initialize(t_vaddr		start,
+t_status		glue_region_initialize(t_vaddr		start,
 					       t_vsize		size);
 
-t_error			glue_region_clean(void);
+t_status		glue_region_clean(void);
 
 
 /*

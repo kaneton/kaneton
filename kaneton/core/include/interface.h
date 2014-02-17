@@ -374,7 +374,7 @@ typedef struct
     } request;
     struct
     {
-      t_error		error;
+      t_status	error;
       union
       {
 	struct
@@ -514,7 +514,7 @@ typedef struct
   } u;
 }			o_syscall;
 
-typedef t_error (*t_interface_dispatch)(o_syscall*);
+typedef t_status (*t_interface_dispatch)(o_syscall*);
 
 
 /*
@@ -527,109 +527,109 @@ typedef t_error (*t_interface_dispatch)(o_syscall*);
  * ../../core/interface/interface.c
  */
 
-t_error		interface_as_copy(o_syscall*	message);
+t_status	interface_as_copy(o_syscall*	message);
 
-t_error		interface_as_release(o_syscall*	message);
+t_status	interface_as_release(o_syscall*	message);
 
-t_error		interface_as_attribute_task(o_syscall*	message);
+t_status	interface_as_attribute_task(o_syscall*	message);
 
-t_error		interface_event_reserve(o_syscall*	message);
+t_status	interface_event_reserve(o_syscall*	message);
 
-t_error		interface_event_release(o_syscall*	message);
+t_status	interface_event_release(o_syscall*	message);
 
-t_error		interface_event_attribute_type(o_syscall*	message);
+t_status	interface_event_attribute_type(o_syscall*	message);
 
-t_error		interface_event_attribute_handler(o_syscall*	message);
+t_status	interface_event_attribute_handler(o_syscall*	message);
 
-t_error		interface_event_attribute_data(o_syscall*	message);
+t_status	interface_event_attribute_data(o_syscall*	message);
 
-t_error		interface_map_reserve(o_syscall*	message);
+t_status	interface_map_reserve(o_syscall*	message);
 
-t_error		interface_map_release(o_syscall*	message);
+t_status	interface_map_release(o_syscall*	message);
 
-t_error		interface_map_resize(o_syscall*	message);
+t_status	interface_map_resize(o_syscall*	message);
 
-t_error		interface_region_reserve(o_syscall*	message);
+t_status	interface_region_reserve(o_syscall*	message);
 
-t_error		interface_region_release(o_syscall*	message);
+t_status	interface_region_release(o_syscall*	message);
 
-t_error		interface_scheduler_quantum(o_syscall*	message);
+t_status	interface_scheduler_quantum(o_syscall*	message);
 
-t_error		interface_scheduler_yield(o_syscall*	message);
+t_status	interface_scheduler_yield(o_syscall*	message);
 
-t_error		interface_scheduler_update(o_syscall*	message);
+t_status	interface_scheduler_update(o_syscall*	message);
 
-t_error		interface_segment_clone(o_syscall*	message);
+t_status	interface_segment_clone(o_syscall*	message);
 
-t_error		interface_segment_give(o_syscall*	message);
+t_status	interface_segment_give(o_syscall*	message);
 
-t_error		interface_segment_copy(o_syscall*	message);
+t_status	interface_segment_copy(o_syscall*	message);
 
-t_error		interface_segment_release(o_syscall*	message);
+t_status	interface_segment_release(o_syscall*	message);
 
-t_error		interface_segment_permissions(o_syscall*	message);
+t_status	interface_segment_permissions(o_syscall*	message);
 
-t_error		interface_segment_attribute_as(o_syscall*	message);
+t_status	interface_segment_attribute_as(o_syscall*	message);
 
-t_error		interface_segment_attribute_address(o_syscall*	message);
+t_status	interface_segment_attribute_address(o_syscall*	message);
 
-t_error		interface_segment_attribute_size(o_syscall*	message);
+t_status	interface_segment_attribute_size(o_syscall*	message);
 
-t_error		interface_segment_attribute_permissions(o_syscall*	message);
+t_status	interface_segment_attribute_permissions(o_syscall*	message);
 
-t_error		interface_task_reserve(o_syscall*	message);
+t_status	interface_task_reserve(o_syscall*	message);
 
-t_error		interface_task_release(o_syscall*	message);
+t_status	interface_task_release(o_syscall*	message);
 
-t_error		interface_task_priority(o_syscall*	message);
+t_status	interface_task_priority(o_syscall*	message);
 
-t_error		interface_task_attribute_parent(o_syscall*	message);
+t_status	interface_task_attribute_parent(o_syscall*	message);
 
-t_error		interface_task_attribute_class(o_syscall*	message);
+t_status	interface_task_attribute_class(o_syscall*	message);
 
-t_error		interface_task_attribute_behaviour(o_syscall*	message);
+t_status	interface_task_attribute_behaviour(o_syscall*	message);
 
-t_error		interface_task_attribute_priority(o_syscall*	message);
+t_status	interface_task_attribute_priority(o_syscall*	message);
 
-t_error		interface_task_attribute_as(o_syscall*	message);
+t_status	interface_task_attribute_as(o_syscall*	message);
 
-t_error		interface_task_attribute_sched(o_syscall*	message);
+t_status	interface_task_attribute_sched(o_syscall*	message);
 
-t_error		interface_thread_release(o_syscall*	message);
+t_status	interface_thread_release(o_syscall*	message);
 
-t_error		interface_thread_priority(o_syscall*	message);
+t_status	interface_thread_priority(o_syscall*	message);
 
-t_error		interface_thread_load(o_syscall*	message);
+t_status	interface_thread_load(o_syscall*	message);
 
-t_error		interface_thread_store(o_syscall*	message);
+t_status	interface_thread_store(o_syscall*	message);
 
-t_error		interface_thread_attribute_task(o_syscall*	message);
+t_status	interface_thread_attribute_task(o_syscall*	message);
 
-t_error		interface_thread_attribute_priority(o_syscall*	message);
+t_status	interface_thread_attribute_priority(o_syscall*	message);
 
-t_error		interface_thread_attribute_state(o_syscall*	message);
+t_status	interface_thread_attribute_state(o_syscall*	message);
 
-t_error		interface_timer_reserve(o_syscall*	message);
+t_status	interface_timer_reserve(o_syscall*	message);
 
-t_error		interface_timer_release(o_syscall*	message);
+t_status	interface_timer_release(o_syscall*	message);
 
-t_error		interface_timer_attribute_delay(o_syscall*	message);
+t_status	interface_timer_attribute_delay(o_syscall*	message);
 
-t_error		interface_timer_attribute_repeat(o_syscall*	message);
+t_status	interface_timer_attribute_repeat(o_syscall*	message);
 
-t_error		interface_timer_attribute_type(o_syscall*	message);
+t_status	interface_timer_attribute_type(o_syscall*	message);
 
-t_error		interface_timer_attribute_handler(o_syscall*	message);
+t_status	interface_timer_attribute_handler(o_syscall*	message);
 
-t_error		interface_timer_attribute_data(o_syscall*	message);
+t_status	interface_timer_attribute_data(o_syscall*	message);
 
-t_error			interface_notify(t_uint8*		buffer,
+t_status		interface_notify(t_uint8*		buffer,
 					 t_vsize		size,
 					 i_node			source);
 
-t_error			interface_initialize(void);
+t_status		interface_initialize(void);
 
-t_error			interface_clean(void);
+t_status		interface_clean(void);
 
 
 /*

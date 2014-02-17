@@ -66,7 +66,7 @@ d_cpu			glue_cpu_dispatch =
  * the only processor.
  */
 
-t_error			glue_cpu_current(i_cpu*			cpu)
+t_status		glue_cpu_current(i_cpu*			cpu)
 {
   *cpu = _init->bsp;
 

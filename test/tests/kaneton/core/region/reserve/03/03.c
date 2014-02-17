@@ -46,7 +46,7 @@ void			test_core_region_reserve_03(void)
                       10 * ___kaneton$pagesz,
                       PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-                      &seg) != ERROR_OK)
+                      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -55,7 +55,7 @@ void			test_core_region_reserve_03(void)
                      REGION_OPTION_NONE,
                      0,
                      2 * ___kaneton$pagesz,
-                     &reg1) != ERROR_OK)
+                     &reg1) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -64,7 +64,7 @@ void			test_core_region_reserve_03(void)
                      REGION_OPTION_NONE,
                      0,
                      2 * ___kaneton$pagesz,
-                     &reg2) != ERROR_OK)
+                     &reg2) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
   if (region_reserve(_kernel.as,
@@ -73,16 +73,16 @@ void			test_core_region_reserve_03(void)
                      REGION_OPTION_NONE,
                      0,
                      4 * ___kaneton$pagesz,
-                     &reg3) != ERROR_OK)
+                     &reg3) != STATUS_OK)
     TEST_ERROR("[region_reserve] error");
 
-  if (region_get(_kernel.as, reg1, &r1) != ERROR_OK)
+  if (region_get(_kernel.as, reg1, &r1) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
-  if (region_get(_kernel.as, reg2, &r2) != ERROR_OK)
+  if (region_get(_kernel.as, reg2, &r2) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
-  if (region_get(_kernel.as, reg3, &r3) != ERROR_OK)
+  if (region_get(_kernel.as, reg3, &r3) != STATUS_OK)
     TEST_ERROR("[region_get] error");
 
   p = (t_uint8*)r1->address;
@@ -97,16 +97,16 @@ void			test_core_region_reserve_03(void)
   for (; p < (t_uint8*)r3->address + 4 * ___kaneton$pagesz; p++)
     *p = 0x0;
 
-  if (region_release(_kernel.as, reg1) != ERROR_OK)
+  if (region_release(_kernel.as, reg1) != STATUS_OK)
     TEST_ERROR("[region_release] error");
 
-  if (region_release(_kernel.as, reg2) != ERROR_OK)
+  if (region_release(_kernel.as, reg2) != STATUS_OK)
     TEST_ERROR("[region_release] error");
 
-  if (region_release(_kernel.as, reg3) != ERROR_OK)
+  if (region_release(_kernel.as, reg3) != STATUS_OK)
     TEST_ERROR("[region_release] error");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(taf9ewi0g23r92tg);

@@ -152,7 +152,7 @@ bibliothèque MIPS.\\
 \begin{correction}
 
 \begin{verbatim}
-t_error       mipsr3000_region_release(i_as asid, i_region regid)
+t_status       mipsr3000_region_release(i_as asid, i_region regid)
 {
   o_as*       as;
   o_region*   region;
@@ -168,7 +168,7 @@ t_error       mipsr3000_region_release(i_as asid, i_region regid)
     t_uint32    id;
 
     /* get the i-th entry */
-    if (mips_get_tlb(i, &vaddr, &id) == ERROR_NONE)
+    if (mips_get_tlb(i, &vaddr, &id) == STATUS_OK)
     {
       /* check if this entry correspond to a page in the */
       /* region to be removed */

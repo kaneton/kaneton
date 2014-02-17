@@ -58,7 +58,7 @@ extern m_as		_as;
  *   e) unmap the page table.
  */
 
-t_error			architecture_pd_dump(at_pd		pd)
+t_status		architecture_pd_dump(at_pd		pd)
 {
   t_paddr		paddr;
   at_pdei		i;
@@ -67,7 +67,7 @@ t_error			architecture_pd_dump(at_pd		pd)
    * 1)
    */
 
-  if (as_physical(_kernel.as, (t_vaddr)pd, &paddr) != ERROR_OK)
+  if (as_physical(_kernel.as, (t_vaddr)pd, &paddr) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the page directory's physical address");
 
   /*
@@ -144,7 +144,7 @@ t_error			architecture_pd_dump(at_pd		pd)
 	   */
 
 	  if (architecture_pt_map(ARCHITECTURE_PDE_ADDRESS(pd[i]),
-				  &pt) != ERROR_OK)
+				  &pt) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to map the page table");
 
 	  /*
@@ -153,14 +153,14 @@ t_error			architecture_pd_dump(at_pd		pd)
 
 	  if (architecture_pt_dump(pt,
 				   2 * MODULE_CONSOLE_MARGIN_SHIFT) !=
-	      ERROR_OK)
+	      STATUS_OK)
 	    MACHINE_ESCAPE("unable to dump the %uth page directory entry");
 
 	  /*
 	   * e)
 	   */
 
-	  if (architecture_pt_unmap(pt) != ERROR_OK)
+	  if (architecture_pt_unmap(pt) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to unmap the page table");
 	}
     }
@@ -176,7 +176,7 @@ t_error			architecture_pd_dump(at_pd		pd)
  * 1) initialize the page directory's entries making them all non-present.
  */
 
-t_error			architecture_pd_build(at_pd		pd)
+t_status		architecture_pd_build(at_pd		pd)
 {
   /*
    * 1)
@@ -196,7 +196,7 @@ t_error			architecture_pd_build(at_pd		pd)
  * 1) construct the page directory entry.
  */
 
-t_error			architecture_pd_insert(at_pd		pd,
+t_status		architecture_pd_insert(at_pd		pd,
 					       at_pdei		index,
 					       t_paddr		address,
 					       t_flags		flags)
@@ -232,7 +232,7 @@ t_error			architecture_pd_insert(at_pd		pd,
  * 1) reset the page directory entry.
  */
 
-t_error			architecture_pd_delete(at_pd		pd,
+t_status		architecture_pd_delete(at_pd		pd,
 					       at_pdei		index)
 {
   /*
@@ -288,7 +288,7 @@ t_error			architecture_pd_delete(at_pd		pd,
  * 8) return the address of the mapped page directory.
  */
 
-t_error			architecture_pd_map(t_paddr		paddr,
+t_status		architecture_pd_map(t_paddr		paddr,
 					    at_pd*		table)
 {
   i_segment		segment;
@@ -313,7 +313,7 @@ t_error			architecture_pd_map(t_paddr		paddr,
 
   if (region_space(_kernel.as,
 		   ___kaneton$pagesz,
-		   &vaddr) != ERROR_OK)
+		   &vaddr) != STATUS_OK)
     MACHINE_ESCAPE("unable to find space within the kernel's address space");
 
   /*
@@ -340,14 +340,14 @@ t_error			architecture_pd_map(t_paddr		paddr,
 			  ___kaneton$pagesz,
 			  PERMISSION_READ | PERMISSION_WRITE,
 			  SEGMENT_OPTION_SYSTEM,
-			  &segment) != ERROR_OK)
+			  &segment) != STATUS_OK)
 	MACHINE_ESCAPE("unable to reserve a segment");
 
       /*
        * b)
        */
 
-      if (segment_get(segment, &o) != ERROR_OK)
+      if (segment_get(segment, &o) != STATUS_OK)
 	MACHINE_ESCAPE("unable to retrieve the segment object");
 
       /*
@@ -361,14 +361,14 @@ t_error			architecture_pd_map(t_paddr		paddr,
 				 ARCHITECTURE_PDE_RW |
 				 ARCHITECTURE_PDE_SUPERVISOR |
 				 ARCHITECTURE_PDE_PWB |
-				 ARCHITECTURE_PDE_PCE) != ERROR_OK)
+				 ARCHITECTURE_PDE_PCE) != STATUS_OK)
 	MACHINE_ESCAPE("unable to insert an entry in the page directory");
 
       /*
        * d)
        */
 
-      if (architecture_pt_build(pt) != ERROR_OK)
+      if (architecture_pt_build(pt) != STATUS_OK)
 	MACHINE_ESCAPE("unable to build the page table");
     }
 
@@ -383,14 +383,14 @@ t_error			architecture_pd_map(t_paddr		paddr,
 			     ARCHITECTURE_PTE_RW |
 			     ARCHITECTURE_PTE_SUPERVISOR |
 			     ARCHITECTURE_PTE_PWB |
-			     ARCHITECTURE_PTE_PCE) != ERROR_OK)
+			     ARCHITECTURE_PTE_PCE) != STATUS_OK)
     MACHINE_ESCAPE("unable to add the page to the page table");
 
   /*
    * 5)
    */
 
-  if (segment_locate(paddr, &segment) == ERROR_FALSE)
+  if (segment_locate(paddr, &segment) == FALSE)
     MACHINE_ESCAPE("unable to locate the segment to map");
 
   /*
@@ -410,7 +410,7 @@ t_error			architecture_pd_map(t_paddr		paddr,
    * 7)
    */
 
-  if (region_inject(_kernel.as, o, &region) != ERROR_OK)
+  if (region_inject(_kernel.as, o, &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to inject the region associated with the mapped "
 		   "page");
 
@@ -442,7 +442,7 @@ t_error			architecture_pd_map(t_paddr		paddr,
  * 7) invalidate the virtual address as no longer used.
  */
 
-t_error			architecture_pd_unmap(at_pd		table)
+t_status		architecture_pd_unmap(at_pd		table)
 {
   i_region		region;
   t_vaddr		vaddr;
@@ -479,7 +479,7 @@ t_error			architecture_pd_unmap(at_pd		table)
    */
 
   if (architecture_pt_delete(pt,
-			     ARCHITECTURE_PT_INDEX(vaddr)) != ERROR_OK)
+			     ARCHITECTURE_PT_INDEX(vaddr)) != STATUS_OK)
     MACHINE_ESCAPE("unable to delete the page table entry referencing "
 		   "the mapped page directory");
 
@@ -487,14 +487,14 @@ t_error			architecture_pd_unmap(at_pd		table)
    * 4)
    */
 
-  if (as_get(_kernel.as, &o) != ERROR_OK)
+  if (as_get(_kernel.as, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the kernel address space object");
 
   /*
    * 5)
    */
 
-  if (region_locate(o->id, vaddr, &region) == ERROR_FALSE)
+  if (region_locate(o->id, vaddr, &region) == FALSE)
     MACHINE_ESCAPE("unable to locate the region associated with the "
 		   "page directory");
 
@@ -502,14 +502,14 @@ t_error			architecture_pd_unmap(at_pd		table)
    * 6)
    */
 
-  if (set_remove(o->regions, region) != ERROR_OK)
+  if (set_remove(o->regions, region) != STATUS_OK)
     MACHINE_ESCAPE("unable to remove the region from the address space");
 
   /*
    * 7)
    */
 
-  if (architecture_tlb_invalidate(vaddr) != ERROR_OK)
+  if (architecture_tlb_invalidate(vaddr) != STATUS_OK)
     MACHINE_ESCAPE("unable to invalidate the page directory address");
 
   MACHINE_LEAVE();

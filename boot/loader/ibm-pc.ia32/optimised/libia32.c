@@ -47,7 +47,7 @@ t_ia32_idt		ia32_idt;
  * sets code/data/stack segment registers.
  */
 
-t_error		pmode_set_segment_registers(t_uint16	seg_code,
+t_status		pmode_set_segment_registers(t_uint16	seg_code,
 					    t_uint16	seg_data)
 {
   asm volatile("pushl %0\n\t"
@@ -65,7 +65,7 @@ t_error		pmode_set_segment_registers(t_uint16	seg_code,
 	       : "memory", "%eax"
 	       );
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -79,7 +79,7 @@ t_error		pmode_set_segment_registers(t_uint16	seg_code,
  * 4) clears the table if necessary.
  */
 
-t_error			gdt_build(t_uint16		entries,
+t_status			gdt_build(t_uint16		entries,
 				  t_paddr		base,
 				  t_ia32_gdt*		gdt,
 				  t_uint8		clear)
@@ -90,7 +90,7 @@ t_error			gdt_build(t_uint16		entries,
    */
 
   if (entries > IA32_GDT_MAX_ENTRIES)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -117,7 +117,7 @@ t_error			gdt_build(t_uint16		entries,
       memset(gdt->descriptor, 0, entries * sizeof(t_ia32_gdte));
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -129,7 +129,7 @@ t_error			gdt_build(t_uint16		entries,
  * 2) updates global gdt record.
  */
 
-t_error			gdt_activate(t_ia32_gdt		new_gdt)
+t_status			gdt_activate(t_ia32_gdt		new_gdt)
 {
   t_ia32_gdtr		gdtr;
 
@@ -148,7 +148,7 @@ t_error			gdt_activate(t_ia32_gdt		new_gdt)
   ia32_gdt.descriptor = new_gdt.descriptor;
   ia32_gdt.count = new_gdt.count;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -164,7 +164,7 @@ t_error			gdt_activate(t_ia32_gdt		new_gdt)
  * 6) sets the limit field.
  */
 
-t_error			gdt_add_segment(t_ia32_gdt*	table,
+t_status			gdt_add_segment(t_ia32_gdt*	table,
 					t_uint16	segment,
 					t_ia32_segment	descriptor)
 {
@@ -182,7 +182,7 @@ t_error			gdt_add_segment(t_ia32_gdt*	table,
    */
 
   if (segment >= table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -226,7 +226,7 @@ t_error			gdt_add_segment(t_ia32_gdt*	table,
   table->descriptor[segment].limit_00_15 = (t_uint16)size;
   table->descriptor[segment].limit_16_19 = size >> 16;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -238,7 +238,7 @@ t_error			gdt_add_segment(t_ia32_gdt*	table,
  * 2) builds the selector.
  */
 
-t_error			gdt_build_selector(t_uint16	segment,
+t_status			gdt_build_selector(t_uint16	segment,
 					   t_ia32_prvl	privilege,
 					   t_uint16*	selector)
 {
@@ -248,7 +248,7 @@ t_error			gdt_build_selector(t_uint16	segment,
    */
 
   if (segment >= ia32_gdt.count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -257,7 +257,7 @@ t_error			gdt_build_selector(t_uint16	segment,
   *selector = IA32_SEGSEL_TI_GDT | IA32_SEGSEL_MK_RPL(privilege) |
     IA32_SEGSEL_MK_INDEX(segment);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -270,7 +270,7 @@ t_error			gdt_build_selector(t_uint16	segment,
  * 3) clears the directory if needed.
  */
 
-t_error			pd_build(t_paddr			base,
+t_status			pd_build(t_paddr			base,
 				 t_ia32_directory*		directory,
 				 t_uint8			clear)
 {
@@ -280,7 +280,7 @@ t_error			pd_build(t_paddr			base,
    */
 
   if (IA32_MK_BASE(base) != base)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -297,7 +297,7 @@ t_error			pd_build(t_paddr			base,
       memset((void*)base, 0, IA32_PD_MAX_ENTRIES * sizeof(t_ia32_pde));
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -310,7 +310,7 @@ t_error			pd_build(t_paddr			base,
  * 3) sets the global variable.
  */
 
-t_error			pd_activate(t_ia32_directory	dir,
+t_status			pd_activate(t_ia32_directory	dir,
 				    t_uint32		cached,
 				    t_uint32		writeback)
 {
@@ -340,7 +340,7 @@ t_error			pd_activate(t_ia32_directory	dir,
 
   ia32_pd = dir;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -354,7 +354,7 @@ t_error			pd_activate(t_ia32_directory	dir,
  */
 
 
-t_error			pd_add_table(t_ia32_directory*	dir,
+t_status			pd_add_table(t_ia32_directory*	dir,
 				     t_uint16		entry,
 				     t_ia32_table	table)
 {
@@ -394,7 +394,7 @@ t_error			pd_add_table(t_ia32_directory*	dir,
 
   d[entry] = IA32_MK_BASE(table.entries) | opts;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -407,7 +407,7 @@ t_error			pd_add_table(t_ia32_directory*	dir,
  * 3) fills the page record.
  */
 
-t_error			pd_get_table(t_ia32_directory*	dir,
+t_status			pd_get_table(t_ia32_directory*	dir,
 				     t_uint16		entry,
 				     t_ia32_table*	table)
 {
@@ -427,7 +427,7 @@ t_error			pd_get_table(t_ia32_directory*	dir,
    */
 
   if (!(d[entry] & IA32_PDE_FLAG_USED))
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -444,7 +444,7 @@ t_error			pd_get_table(t_ia32_directory*	dir,
     IA32_PT_NOTCACHED : IA32_PT_CACHED;
   table->entries = IA32_MK_BASE(d[entry]);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -457,7 +457,7 @@ t_error			pd_get_table(t_ia32_directory*	dir,
  * 3) clears the table if necessary.
  */
 
-t_error			pt_build(t_paddr		base,
+t_status			pt_build(t_paddr		base,
 				 t_ia32_table*		table,
 				 t_uint8		clear)
 {
@@ -467,7 +467,7 @@ t_error			pt_build(t_paddr		base,
    */
 
   if (IA32_MK_BASE(base) != base)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -484,7 +484,7 @@ t_error			pt_build(t_paddr		base,
       memset((void*)base, 0, IA32_PT_MAX_ENTRIES * sizeof(t_ia32_pte));
     }
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -497,7 +497,7 @@ t_error			pt_build(t_paddr		base,
  * 3) setups the entry.
  */
 
-t_error			pt_add_page(t_ia32_table*	tab,
+t_status			pt_add_page(t_ia32_table*	tab,
 				    t_uint16		entry,
 				    t_ia32_page		page)
 {
@@ -509,7 +509,7 @@ t_error			pt_add_page(t_ia32_table*	tab,
    */
 
   if (IA32_MK_BASE(page.addr) != (t_uint32)page.addr)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -541,7 +541,7 @@ t_error			pt_add_page(t_ia32_table*	tab,
 
   t[entry] = IA32_MK_BASE(page.addr) | opts;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -555,7 +555,7 @@ t_error			pt_add_page(t_ia32_table*	tab,
  * 4) clear the table if necessary.
  */
 
-t_error			idt_build(t_uint16		entries,
+t_status			idt_build(t_uint16		entries,
 				  t_paddr		base,
 				  t_uint8		clear,
 				  t_ia32_idt*		table)
@@ -565,7 +565,7 @@ t_error			idt_build(t_uint16		entries,
    */
 
   if (entries > IA32_IDT_MAX_ENTRIES)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
@@ -588,7 +588,7 @@ t_error			idt_build(t_uint16		entries,
   if (clear)
     memset(table->descriptor, 0, entries * sizeof(t_ia32_idte));
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -600,7 +600,7 @@ t_error			idt_build(t_uint16		entries,
  * 2) build and load the new idt register.
  */
 
-t_error			idt_activate(t_ia32_idt*		table)
+t_status			idt_activate(t_ia32_idt*		table)
 {
   t_ia32_idtr		idtr;
 
@@ -619,7 +619,7 @@ t_error			idt_activate(t_ia32_idt*		table)
   idtr.size = ia32_idt.count * sizeof(t_ia32_idte);
   LIDT(idtr);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -635,7 +635,7 @@ t_error			idt_activate(t_ia32_idt*		table)
  * 6) set the reserved field.
  */
 
-t_error			idt_add_gate(t_ia32_idt*		table,
+t_status			idt_add_gate(t_ia32_idt*		table,
 				     t_uint16			index,
 				     t_ia32_gate		gate)
 {
@@ -651,7 +651,7 @@ t_error			idt_add_gate(t_ia32_idt*		table,
    */
 
   if (index >= table->count)
-    return ERROR_UNKNOWN;
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3
@@ -680,7 +680,7 @@ t_error			idt_add_gate(t_ia32_idt*		table,
 
   table->descriptor[index].reserved = 0;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -696,7 +696,7 @@ t_error			idt_add_gate(t_ia32_idt*		table,
  *
  */
 
-t_error			pic_init(void)
+t_status			pic_init(void)
 {
   /*
    * 1)
@@ -733,19 +733,19 @@ t_error			pic_init(void)
   OUTB(IBMPC_MASTER_PORT_B, 0xfb);
   OUTB(IBMPC_SLAVE_PORT_B, 0xff);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * turn on a given interrupt enabling its flag
  */
 
-t_error			pic_enable_irq(t_uint8		irq)
+t_status			pic_enable_irq(t_uint8		irq)
 {
   t_uint8		mask;
 
   if (irq > 15)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   if (irq < 8)
     {
@@ -758,19 +758,19 @@ t_error			pic_enable_irq(t_uint8		irq)
       OUTB(IBMPC_SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * turn off a given interrupt
  */
 
-t_error			pic_disable_irq(t_uint8		irq)
+t_status			pic_disable_irq(t_uint8		irq)
 {
   t_uint8		mask;
 
   if (irq > 15)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   if (irq < 8)
     {
@@ -783,7 +783,7 @@ t_error			pic_disable_irq(t_uint8		irq)
       OUTB(IBMPC_SLAVE_PORT_B, mask | (1 << (irq - 8)));
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -795,7 +795,7 @@ t_error			pic_disable_irq(t_uint8		irq)
  * 2) send normal EOI
  */
 
-t_error			pic_acknowledge(t_uint8		irq)
+t_status			pic_acknowledge(t_uint8		irq)
 {
   t_uint8		mask;
 
@@ -804,7 +804,7 @@ t_error			pic_acknowledge(t_uint8		irq)
    */
 
   if (irq > 15)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -824,7 +824,7 @@ t_error			pic_acknowledge(t_uint8		irq)
       OUTB(IBMPC_MASTER_PORT_A, 0x60 + 2);
     }
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -837,7 +837,7 @@ t_error			pic_acknowledge(t_uint8		irq)
  * 3) setup the timer0 to run in mode 2 (rate generator).
  */
 
-t_error			pit_init(t_uint32	freq)
+t_status			pit_init(t_uint32	freq)
 {
   t_uint32	latch;
 
@@ -848,7 +848,7 @@ t_error			pit_init(t_uint32	freq)
   latch = IBMPC_CLOCK_TICK_RATE / freq;
 
   if (!latch || latch > 65536)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -865,7 +865,7 @@ t_error			pit_init(t_uint32	freq)
   OUTB(IBMPC_TIMER_0, latch & 0xFF);
   OUTB(IBMPC_TIMER_0, (latch >> 8) & 0xFF);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*

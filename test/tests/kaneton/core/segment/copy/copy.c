@@ -42,14 +42,14 @@ void			test_core_segment_copy(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg_ref) != ERROR_OK)
+		      &seg_ref) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_reserve(_kernel.as,
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   for (i = 0; i < ___kaneton$pagesz; i++)
@@ -57,11 +57,11 @@ void			test_core_segment_copy(void)
       buff[i] = (i * 4 - 1) % 256;
     }
 
-  if (segment_write(seg_ref, 0, buff, ___kaneton$pagesz) != ERROR_OK)
+  if (segment_write(seg_ref, 0, buff, ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[segment_write] error");
 
   if (segment_copy(seg, 0, seg_ref, 0,
-		   ___kaneton$pagesz) != ERROR_OK)
+		   ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[segment_copy] error");
 
   for (i = 0; i < ___kaneton$pagesz; i++)
@@ -69,7 +69,7 @@ void			test_core_segment_copy(void)
       buff[i] = 0;
     }
 
-  if (segment_read(seg, 0, buff, ___kaneton$pagesz) != ERROR_OK)
+  if (segment_read(seg, 0, buff, ___kaneton$pagesz) != STATUS_OK)
     TEST_ERROR("[segment_read] error");
 
   for (i = 0; i < ___kaneton$pagesz; i++)
@@ -78,10 +78,10 @@ void			test_core_segment_copy(void)
 	TEST_ERROR("invalid data in the segment");
     }
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (segment_release(seg_ref) != ERROR_OK)
+  if (segment_release(seg_ref) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(t9030awfoir4oj39t34);

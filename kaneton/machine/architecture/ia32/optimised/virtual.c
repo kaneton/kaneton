@@ -60,7 +60,7 @@ extern t_vaddr		_handler_data_end;
  * 9) setup the pdbr to use on interrupts.
  */
 
-t_error			ia32_kernel_as_init(i_as	asid)
+t_status		ia32_kernel_as_init(i_as	asid)
 {
   o_as*			o;
   i_segment	        seg;
@@ -81,8 +81,8 @@ t_error			ia32_kernel_as_init(i_as	asid)
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_get(asid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   kasid = asid;
 
@@ -94,15 +94,15 @@ t_error			ia32_kernel_as_init(i_as	asid)
 
   if (ia32_pd_activate(o->machine.pd,
 		       IA32_PD_CACHED,
-		       IA32_PD_WRITEBACK) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		       IA32_PD_WRITEBACK) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
    */
 
-  if (ia32_pt_build((t_paddr)o->machine.pd, &pt) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_pt_build((t_paddr)o->machine.pd, &pt) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   pt.present = 1;
   pt.rw = IA32_PT_WRITABLE;
@@ -110,15 +110,15 @@ t_error			ia32_kernel_as_init(i_as	asid)
   pt.cached = IA32_PT_NOTCACHED;
   pt.writeback = IA32_PT_WRITEBACK;
 
-  if (ia32_pd_add_table(&o->machine.pd, IA32_PD_MIRROR, pt) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_pd_add_table(&o->machine.pd, IA32_PD_MIRROR, pt) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 4)
    */
 
   if ((preg = malloc(sizeof (o_region))) == NULL)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   preg->address = IA32_ENTRY_ADDR(IA32_PD_MIRROR, 0);
   preg->segid = (i_segment)pt.paddr;
@@ -126,26 +126,26 @@ t_error			ia32_kernel_as_init(i_as	asid)
   preg->size = IA32_PT_MAX_ENTRIES * PAGESZ;
   preg->opts = REGION_OPT_NONE;
 
-  if (region_inject(asid, preg, &useless) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_inject(asid, preg, &useless) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 4)
    */
 
   if ((oseg = malloc(sizeof (o_segment))) == NULL)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   oseg->type = SEGMENT_TYPE_SYSTEM;
   oseg->address = IA32_APIC_REG_BASE;
   oseg->size = PAGESZ;
   oseg->perms = PERM_READ | PERM_WRITE;
 
-  if (segment_inject(asid, oseg, &seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_inject(asid, oseg, &seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if ((preg = malloc(sizeof (o_region))) == NULL)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   preg->address = IA32_APIC_REG_BASE;
   preg->segid = seg;
@@ -153,8 +153,8 @@ t_error			ia32_kernel_as_init(i_as	asid)
   preg->size = PAGESZ;
   preg->opts = REGION_OPT_NONE;
 
-  if (region_inject(asid, preg, &useless) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_inject(asid, preg, &useless) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 5)
@@ -179,7 +179,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
       for (pde = pde_start; pde <= pde_end; pde++)
 	{
 	  if (pde != IA32_PD_MIRROR &&
-	      ia32_pd_get_table(&o->machine.pd, pde, &pt) == ERROR_NONE)
+	      ia32_pd_get_table(&o->machine.pd, pde, &pt) == STATUS_OK)
 	    {
 	      pt.vaddr = pt.paddr;
 
@@ -214,22 +214,22 @@ t_error			ia32_kernel_as_init(i_as	asid)
 
       for (pde = pde_start; pde <= pde_end; pde++)
 	{
-	  if (ia32_pd_get_table(&o->machine.pd, pde, &pt) == ERROR_NONE)
+	  if (ia32_pd_get_table(&o->machine.pd, pde, &pt) == STATUS_OK)
 	    {
 	      seg = pt.paddr;
 
-	      if (segment_get(seg, &oseg) != ERROR_NONE)
+	      if (segment_get(seg, &oseg) != STATUS_OK)
 		{
 		  if ((pt_seg = malloc(sizeof (o_segment))) == NULL)
-		    return (ERROR_UNKNOWN);
+		    return (STATUS_UNKNOWN_ERROR);
 
 		  pt_seg->type = SEGMENT_TYPE_SYSTEM;
 		  pt_seg->address = (t_paddr)seg;
 		  pt_seg->size = PAGESZ;
 		  pt_seg->perms = PERM_READ | PERM_WRITE;
 
-		  if (segment_inject(asid, pt_seg, &seg) != ERROR_NONE)
-		    return (ERROR_UNKNOWN);
+		  if (segment_inject(asid, pt_seg, &seg) != STATUS_OK)
+		    return (STATUS_UNKNOWN_ERROR);
 		}
 	    }
 	}
@@ -251,10 +251,10 @@ t_error			ia32_kernel_as_init(i_as	asid)
   if (ia32_pd_get_cr3((t_uint32*)&ia32_interrupt_pdbr,
 		      o->machine.pd,
 		      IA32_PD_CACHED,
-		      IA32_PD_WRITEBACK) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		      IA32_PD_WRITEBACK) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -262,25 +262,25 @@ t_error			ia32_kernel_as_init(i_as	asid)
  * segments.
  */
 
-t_error			ia32_kernel_as_finalize(void)
+t_status		ia32_kernel_as_finalize(void)
 {
   if (segment_type((i_segment)init->segments[0].address,
-		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		   SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
   if (segment_type((i_segment)init->segments[1].address,
-		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		   SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
   if (segment_type((i_segment)init->segments[11].address,
-		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		   SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
   if (segment_type((i_segment)init->segments[12].address,
-		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		   SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
   if (segment_type((i_segment)init->segments[13].address,
-		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		   SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -295,7 +295,7 @@ t_error			ia32_kernel_as_finalize(void)
  * 5) map the mandatory regions (gdt, idt, kernel handlers, tss)
  */
 
-t_error			ia32_task_as_init(i_as		asid)
+t_status		ia32_task_as_init(i_as		asid)
 {
   o_as*			o;
   i_segment	        seg;
@@ -308,19 +308,19 @@ t_error			ia32_task_as_init(i_as		asid)
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_get(asid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
    */
 
   if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
-		      &seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		      &seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -328,8 +328,8 @@ t_error			ia32_task_as_init(i_as		asid)
 
   pd = o->machine.pd = (t_ia32_directory)(t_uint32)seg;
 
-  if (ia32_map_pd(&pd) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_map_pd(&pd) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   memset((void*)pd, 0, PAGESZ);
 
@@ -337,8 +337,8 @@ t_error			ia32_task_as_init(i_as		asid)
    * 4)
    */
 
-  if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_unmap_chunk((t_vaddr)pd) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 5)
@@ -351,8 +351,8 @@ t_error			ia32_task_as_init(i_as		asid)
 		     REGION_OPT_FORCE | REGION_OPT_GLOBAL,
 		     0x1000,
 		     0x00100000 - 0x1000,
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (region_reserve(asid,
 		     (i_segment)init->kcode,
@@ -360,8 +360,8 @@ t_error			ia32_task_as_init(i_as		asid)
 		     REGION_OPT_FORCE | REGION_OPT_GLOBAL,
 		     init->kcode,
 		     init->kcodesz,
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 #else
   if (region_reserve(asid,
 		     (i_segment)init->kcode,
@@ -371,8 +371,8 @@ t_error			ia32_task_as_init(i_as		asid)
 		     LINKER_SYMBOL(_handler_begin),
 		     LINKER_SYMBOL(_handler_end) -
 		     LINKER_SYMBOL(_handler_begin),
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (region_reserve(asid,
 		     (i_segment)init->kcode,
@@ -382,13 +382,13 @@ t_error			ia32_task_as_init(i_as		asid)
 		     LINKER_SYMBOL(_handler_data_begin),
 		     LINKER_SYMBOL(_handler_data_end) -
 		     LINKER_SYMBOL(_handler_data_begin),
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 #endif
 
   if (region_get(kasid, (i_region)(t_uint32)thread->machine.tss,
-		 &preg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		 &preg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (region_reserve(asid,
 		     preg->segid,
@@ -397,8 +397,8 @@ t_error			ia32_task_as_init(i_as		asid)
 		     REGION_OPT_GLOBAL,
 		     (t_vaddr)thread->machine.tss,
 		     preg->size,
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (region_reserve(asid,
 		     (i_segment)(t_uint32)ia32_gdt.descriptor,
@@ -407,8 +407,8 @@ t_error			ia32_task_as_init(i_as		asid)
 		     REGION_OPT_GLOBAL,
 		     (t_vaddr)ia32_gdt.descriptor,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (region_reserve(asid,
 		     (i_segment)(t_uint32)ia32_idt.descriptor,
@@ -417,8 +417,8 @@ t_error			ia32_task_as_init(i_as		asid)
 		     REGION_OPT_GLOBAL,
 		     (t_vaddr)ia32_idt.descriptor,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   if (region_reserve(asid,
 		     (i_segment)IA32_APIC_REG_BASE,
@@ -427,10 +427,10 @@ t_error			ia32_task_as_init(i_as		asid)
 		     REGION_OPT_GLOBAL,
 		     (t_vaddr)IA32_APIC_REG_BASE,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+		     &reg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -446,7 +446,7 @@ t_error			ia32_task_as_init(i_as		asid)
  * 6) setup the segment selector for interrupts.
  */
 
-t_error			ia32_segmentation_init(void)
+t_status		ia32_segmentation_init(void)
 {
   t_ia32_segment	seg;
   t_uint16		kcs;
@@ -462,8 +462,8 @@ t_error			ia32_segmentation_init(void)
   seg.is_system = 0;
   seg.type.usr = ia32_type_code;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_CORE_CS,
-			   seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+			   seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -471,8 +471,8 @@ t_error			ia32_segmentation_init(void)
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_CORE_DS,
-			   seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+			   seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -484,8 +484,8 @@ t_error			ia32_segmentation_init(void)
   seg.is_system = 0;
   seg.type.usr = ia32_type_code;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_DRIVER_CS,
-			   seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+			   seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -493,8 +493,8 @@ t_error			ia32_segmentation_init(void)
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_DRIVER_DS,
-			   seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+			   seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -506,8 +506,8 @@ t_error			ia32_segmentation_init(void)
   seg.is_system = 0;
   seg.type.usr = ia32_type_code;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_SERVICE_CS,
-			   seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+			   seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -515,8 +515,8 @@ t_error			ia32_segmentation_init(void)
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_SERVICE_DS,
-			   seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+			   seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 4)
@@ -528,8 +528,8 @@ t_error			ia32_segmentation_init(void)
   seg.is_system = 0;
   seg.type.usr = ia32_type_code;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_PROGRAM_CS,
-			   seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+			   seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -537,8 +537,8 @@ t_error			ia32_segmentation_init(void)
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
   if (ia32_gdt_add_segment(IA32_GDT_CURRENT, IA32_PMODE_GDT_PROGRAM_DS,
-			   seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+			   seg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 5)
@@ -556,5 +556,5 @@ t_error			ia32_segmentation_init(void)
 
   ia32_interrupt_ds = kds;
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }

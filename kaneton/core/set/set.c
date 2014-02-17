@@ -130,7 +130,7 @@ m_set			_set;
  *   b) show the set.
  */
 
-t_error			set_dump(void)
+t_status		set_dump(void)
 {
   t_state		state;
   o_set*		data;
@@ -141,7 +141,7 @@ t_error			set_dump(void)
    * 1)
    */
 
-  if (set_descriptor(_set.sets, &o) != ERROR_OK)
+  if (set_descriptor(_set.sets, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -156,7 +156,7 @@ t_error			set_dump(void)
    * 3)
    */
 
-  if (id_show(&_set.id, MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+  if (id_show(&_set.id, MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
   /*
@@ -174,7 +174,7 @@ t_error			set_dump(void)
        * a)
        */
 
-      if (set_object(o->id, i, (void**)&data) != ERROR_OK)
+      if (set_object(o->id, i, (void**)&data) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the set object corresponding "
 		    "to its identifier");
 
@@ -183,7 +183,7 @@ t_error			set_dump(void)
        */
 
       if (set_show(data->id,
-		   2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		   2 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
 	CORE_ESCAPE("unable to show the set");
     }
 
@@ -199,7 +199,7 @@ t_error			set_dump(void)
  * 2) return false if there is at least an object in the set, true otherwise.
  */
 
-t_error			set_empty(i_set				setid)
+t_bool			set_empty(i_set				setid)
 {
   o_set*		o;
 
@@ -207,7 +207,7 @@ t_error			set_empty(i_set				setid)
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -230,7 +230,7 @@ t_error			set_empty(i_set				setid)
  * 2) set the size to return.
  */
 
-t_error			set_size(i_set				setid,
+t_status		set_size(i_set				setid,
 				 t_setsz*			size)
 {
   o_set*		o;
@@ -246,7 +246,7 @@ t_error			set_size(i_set				setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -276,7 +276,7 @@ t_error			set_size(i_set				setid,
  *     a) add the object into the set container.
  */
 
-t_error			set_new(o_set*				object)
+t_status		set_new(o_set*				object)
 {
   /*
    * 0)
@@ -318,7 +318,7 @@ t_error			set_new(o_set*				object)
        * a)
        */
 
-      if (set_add(_set.sets, object) != ERROR_OK)
+      if (set_add(_set.sets, object) != STATUS_OK)
 	CORE_ESCAPE("unable to add the set descriptor to the set container");
     }
 
@@ -337,7 +337,7 @@ t_error			set_new(o_set*				object)
  *     a) remove it from the set container.
  */
 
-t_error			set_destroy(i_set			setid)
+t_status		set_destroy(i_set			setid)
 {
   /*
    * 1)
@@ -365,7 +365,7 @@ t_error			set_destroy(i_set			setid)
        * a)
        */
 
-      if (set_remove(_set.sets, setid) != ERROR_OK)
+      if (set_remove(_set.sets, setid) != STATUS_OK)
 	CORE_ESCAPE("unable to remove the descriptor from the set container");
     }
 
@@ -387,7 +387,7 @@ t_error			set_destroy(i_set			setid)
  *     a) retrieve the set object from the set container.
  */
 
-t_error			set_descriptor(i_set			setid,
+t_status		set_descriptor(i_set			setid,
 				       o_set**			object)
 {
   /*
@@ -426,7 +426,7 @@ t_error			set_descriptor(i_set			setid,
        * a)
        */
 
-      if (set_get(_set.sets, setid, (void**)object) != ERROR_OK)
+      if (set_get(_set.sets, setid, (void**)object) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the descriptor object from "
 		    "the set container");
     }
@@ -446,7 +446,7 @@ t_error			set_descriptor(i_set			setid,
  * 2) retrieve the object from its iterator.
  */
 
-t_error			set_get(i_set				setid,
+t_status		set_get(i_set				setid,
 				t_id				id,
 				void**				object)
 {
@@ -463,14 +463,14 @@ t_error			set_get(i_set				setid,
    * 1)
    */
 
-  if (set_locate(setid, id, &iterator) != ERROR_OK)
+  if (set_locate(setid, id, &iterator) != STATUS_OK)
     CORE_ESCAPE("unable to locate the object in the set");
 
   /*
    * 2)
    */
 
-  if (set_object(setid, iterator, object) != ERROR_OK)
+  if (set_object(setid, iterator, object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object");
 
   CORE_LEAVE();
@@ -492,7 +492,7 @@ t_error			set_get(i_set				setid,
  *    set objects.
  */
 
-t_error			set_initialize(void)
+t_status		set_initialize(void)
 {
   i_set			needless;
 
@@ -513,14 +513,14 @@ t_error			set_initialize(void)
    * 3)
    */
 
-  if (id_build(&_set.id) != ERROR_OK)
+  if (id_build(&_set.id) != STATUS_OK)
     CORE_ESCAPE("unable to build the identifier object");
 
   /*
    * 4)
    */
 
-  if (id_reserve(&_set.id, &_set.sets) != ERROR_OK)
+  if (id_reserve(&_set.id, &_set.sets) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the identifier for the set container");
 
   /*
@@ -531,7 +531,7 @@ t_error			set_initialize(void)
 		  SET_OPTION_CONTAINER | SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (o_set),
 		  ___kaneton$pagesz,
-		  &needless) != ERROR_OK)
+		  &needless) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the set container");
 
   CORE_LEAVE();
@@ -548,7 +548,7 @@ t_error			set_initialize(void)
  * 4) destroys the identifier object.
  */
 
-t_error			set_clean(void)
+t_status		set_clean(void)
 {
   s_iterator		iterator;
 
@@ -563,14 +563,14 @@ t_error			set_clean(void)
    * 2)
    */
 
-  while (set_head(_set.sets, &iterator) == ERROR_TRUE)
+  while (set_head(_set.sets, &iterator) == TRUE)
     {
       o_set*		o;
 
-      if (set_object(_set.sets, iterator, (void**)&o) != ERROR_OK)
+      if (set_object(_set.sets, iterator, (void**)&o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the object from the set");
 
-      if (set_release(o->id) != ERROR_OK)
+      if (set_release(o->id) != STATUS_OK)
 	CORE_ESCAPE("unable to releases the set object");
     }
 
@@ -578,14 +578,14 @@ t_error			set_clean(void)
    * 3)
    */
 
-  if (set_release(_set.sets) != ERROR_OK)
+  if (set_release(_set.sets) != STATUS_OK)
     CORE_ESCAPE("unable to release the set container");
 
   /*
    * 4)
    */
 
-  if (id_destroy(&_set.id) != ERROR_OK)
+  if (id_destroy(&_set.id) != STATUS_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
 
   CORE_LEAVE();

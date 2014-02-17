@@ -97,9 +97,9 @@ void			module_call(console, console_message, char				indicator,
  * console.
  */
 
-t_error			cons_init(void)
+t_status		cons_init(void)
 {
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -108,7 +108,7 @@ t_error			cons_init(void)
  * there is nothing special to do.
  */
 
-t_error			cons_clean(void)
+t_status		cons_clean(void)
 {
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }

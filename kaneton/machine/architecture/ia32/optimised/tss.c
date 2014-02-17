@@ -37,7 +37,7 @@
  * update the given tss.
  */
 
-t_error			ia32_tss_load(t_ia32_tss*		tss,
+t_status		ia32_tss_load(t_ia32_tss*		tss,
 				      t_uint16			ss,
 				      t_uint32			esp,
 				      t_uint32			io)
@@ -49,7 +49,7 @@ t_error			ia32_tss_load(t_ia32_tss*		tss,
   tss->io = io;
   tss->io_end = 0xFF;
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }
 
 /*
@@ -62,7 +62,7 @@ t_error			ia32_tss_load(t_ia32_tss*		tss,
  * 3) load the task register with this segment selector.
  */
 
-t_error			ia32_tss_init(t_ia32_tss*			tss)
+t_status		ia32_tss_init(t_ia32_tss*			tss)
 {
   t_uint16		segment;
   t_uint16		selector;
@@ -81,16 +81,16 @@ t_error			ia32_tss_init(t_ia32_tss*			tss)
   descriptor.type.sys = IA32_SEG_TYPE_TSS;
 
   if (ia32_gdt_reserve_segment(IA32_GDT_CURRENT, descriptor,
-			       &segment) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+			       &segment) != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 2)
    */
 
   if (ia32_gdt_build_selector(segment, descriptor.privilege, &selector)
-      != ERROR_NONE)
-    return ERROR_UNKNOWN;
+      != STATUS_OK)
+    return STATUS_UNKNOWN_ERROR;
 
   /*
    * 3)
@@ -98,5 +98,5 @@ t_error			ia32_tss_init(t_ia32_tss*			tss)
 
   LTR(selector);
 
-  return ERROR_NONE;
+  return STATUS_OK;
 }

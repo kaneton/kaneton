@@ -41,7 +41,7 @@
  * 2) enable to flag associated with the given IRQ.
  */
 
-t_error			platform_pic_enable(t_uint8		irq)
+t_status		platform_pic_enable(t_uint8		irq)
 {
   t_uint8		mask;
 
@@ -86,7 +86,7 @@ t_error			platform_pic_enable(t_uint8		irq)
  * 2) disable to flag associated with the given IRQ.
  */
 
-t_error			platform_pic_disable(t_uint8		irq)
+t_status		platform_pic_disable(t_uint8		irq)
 {
   t_uint8		mask;
 
@@ -131,7 +131,7 @@ t_error			platform_pic_disable(t_uint8		irq)
  * 2) send the EOI - End Of Interrupt signal to the proper PIC.
  */
 
-t_error			platform_pic_acknowledge(t_uint8	irq)
+t_status		platform_pic_acknowledge(t_uint8	irq)
 {
   t_uint8		mask;
 
@@ -189,7 +189,7 @@ t_error			platform_pic_acknowledge(t_uint8	irq)
  *
  */
 
-t_error			platform_pic_initialize(void)
+t_status		platform_pic_initialize(void)
 {
   /*
    * 1)
@@ -248,7 +248,7 @@ t_error			platform_pic_initialize(void)
  * clean the PIC manager.
  */
 
-t_error			platform_pic_clean(void)
+t_status		platform_pic_clean(void)
 {
   MACHINE_LEAVE();
 }

@@ -166,7 +166,7 @@ def t_newline(t):
     r'\n+'
     t.lineno += t.value.count("\n")
     
-def t_error(t):
+def t_status(t):
     print "Illegal character '%s'" % t.value[0]
     t.skip(1)
     

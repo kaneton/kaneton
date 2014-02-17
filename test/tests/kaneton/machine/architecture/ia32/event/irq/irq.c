@@ -43,15 +43,14 @@ void			test_architecture_event_irq_handler(t_id	id)
 void			test_architecture_event_irq(void)
 {
   int			i;
-  i_cpu			cpu;
 
   if (event_reserve(ARCHITECTURE_IDT_IRQ_FLOPPY,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_irq_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_HANG("[event_reserve] error");
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   ARCHITECTURE_OUTB(0x3F0 + 2, 0);
@@ -70,7 +69,7 @@ void			test_architecture_event_irq(void)
   for (i = 0; i < 10000000; i++)
     asm volatile("nop");
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   if (thrown != 2)

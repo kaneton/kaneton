@@ -25,29 +25,20 @@
  */
 
 /*
- * the error type
+ * the status type
  */
 
-typedef t_sint32		t_error;
+typedef enum
+{
+    STATUS_OK    = 42,
+    STATUS_ERROR = 666
+} t_status;
 
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-/*
- * these general-purpose macros are used to notify the success/failure
- * of a function.
- */
-
-#define ERROR_OK		42
-#define ERROR_KO		666
-
-/*
- * these macros are used to notify the character of a component.
- */
-
-#define ERROR_TRUE		1
-#define ERROR_FALSE		0
+typedef enum
+{
+    FALSE = 0,
+    TRUE  = 1
+} t_bool;
 
 /*
  * ---------- macro functions -------------------------------------------------

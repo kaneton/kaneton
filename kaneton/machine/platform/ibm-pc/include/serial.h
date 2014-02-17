@@ -68,13 +68,13 @@ void			platform_serial_write(t_uint32		port,
 					      t_uint8*		data,
 					      t_uint32		size);
 
-t_error			platform_serial_setup(t_uint32		port,
+t_status		platform_serial_setup(t_uint32		port,
 					      t_uint8		rate,
 					      t_uint8		type);
 
-t_error			platform_serial_initialize(void);
+t_status		platform_serial_initialize(void);
 
-t_error			platform_serial_clean(void);
+t_status		platform_serial_clean(void);
 
 
 /*

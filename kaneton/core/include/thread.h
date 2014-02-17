@@ -105,7 +105,7 @@
 									\
       o_task*		_task_;						\
 									\
-      assert(task_get(_kernel.task, &_task_) == ERROR_OK);		\
+      assert(task_get(_kernel.task, &_task_) == STATUS_OK);		\
 									\
        ((THREAD_IDLE_QUEUE - SCHEDULER_PRIORITY_LOW) *			\
 	((TASK_PRIORITY_KERNEL_HIGH - TASK_PRIORITY_BACKGROUND_LOW) *	\
@@ -219,39 +219,39 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*thread_show)(i_thread,
+  t_status		(*thread_show)(i_thread,
 					       mt_margin);
-  t_error			(*thread_dump)(void);
-  t_error			(*thread_reserve)(i_task,
+  t_status		(*thread_dump)(void);
+  t_status		(*thread_reserve)(i_task,
 						  t_priority,
 						  t_vaddr,
 						  t_vsize,
 						  t_vaddr,
 						  i_thread*);
-  t_error			(*thread_release)(i_thread);
-  t_error			(*thread_priority)(i_thread,
+  t_status		(*thread_release)(i_thread);
+  t_status		(*thread_priority)(i_thread,
 						  t_priority);
-  t_error			(*thread_start)(i_thread);
-  t_error			(*thread_stop)(i_thread);
-  t_error			(*thread_block)(i_thread);
-  t_error			(*thread_exit)(i_thread,
+  t_status		(*thread_start)(i_thread);
+  t_status		(*thread_stop)(i_thread);
+  t_status		(*thread_block)(i_thread);
+  t_status		(*thread_exit)(i_thread,
 					       t_value);
-  t_error			(*thread_wait)(i_thread,
+  t_status		(*thread_wait)(i_thread,
 					       i_thread,
 					       t_state,
 					       s_wait*);
-  t_error			(*thread_arguments)(i_thread,
+  t_status		(*thread_arguments)(i_thread,
 						    void*,
 						    t_size);
-  t_error			(*thread_sleep)(i_thread,
+  t_status		(*thread_sleep)(i_thread,
 						t_delay);
-  t_error			(*thread_flush)(i_task);
-  t_error			(*thread_load)(i_thread,
+  t_status		(*thread_flush)(i_task);
+  t_status		(*thread_load)(i_thread,
 					       s_thread_context);
-  t_error			(*thread_store)(i_thread,
+  t_status		(*thread_store)(i_thread,
 						s_thread_context*);
-  t_error			(*thread_initialize)(void);
-  t_error			(*thread_clean)(void);
+  t_status		(*thread_initialize)(void);
+  t_status		(*thread_clean)(void);
 }				d_thread;
 
 /*
@@ -264,68 +264,68 @@ typedef struct
  * ../../core/thread/thread.c
  */
 
-t_error			thread_show(i_thread			threadid,
+t_status		thread_show(i_thread			threadid,
 				    mt_margin			margin);
 
-t_error			thread_dump(void);
+t_status		thread_dump(void);
 
-t_error			thread_reserve(i_task			taskid,
+t_status		thread_reserve(i_task			taskid,
 				       t_priority		prior,
 				       t_vaddr			stack,
 				       t_vsize			stacksz,
 				       t_vaddr			entry,
 				       i_thread*		id);
 
-t_error			thread_release(i_thread			threadid);
+t_status		thread_release(i_thread			threadid);
 
-t_error			thread_priority(i_thread		threadid,
+t_status		thread_priority(i_thread		threadid,
 					t_priority		prior);
 
-t_error			thread_start(i_thread			id);
+t_status		thread_start(i_thread			id);
 
-t_error			thread_stop(i_thread			id);
+t_status		thread_stop(i_thread			id);
 
-t_error			thread_block(i_thread			id);
+t_status		thread_block(i_thread			id);
 
-t_error			thread_exit(i_thread			id,
+t_status		thread_exit(i_thread			id,
 				    t_value			value);
 
 void			thread_bury(i_timer			timer,
 				    t_vaddr			data);
 
-t_error			thread_wait(i_thread			id,
+t_status		thread_wait(i_thread			id,
 				    i_thread			target,
 				    t_state			state,
 				    s_wait*			wait);
 
-t_error			thread_arguments(i_thread		threadid,
+t_status		thread_arguments(i_thread		threadid,
 					 void*			arguments,
 					 t_vsize		size);
 
 void			thread_wakeup(i_timer			timer,
 				      t_vaddr			data);
 
-t_error			thread_sleep(i_thread			id,
+t_status		thread_sleep(i_thread			id,
 				     t_delay			milliseconds);
 
-t_error			thread_flush(i_task			taskid);
+t_status		thread_flush(i_task			taskid);
 
-t_error			thread_load(i_thread			threadid,
+t_status		thread_load(i_thread			threadid,
 				    s_thread_context		context);
 
-t_error			thread_store(i_thread			threadid,
+t_status		thread_store(i_thread			threadid,
 				     s_thread_context*		context);
 
-t_error			thread_current(i_thread*		thread);
+t_status		thread_current(i_thread*		thread);
 
-t_error			thread_exist(i_thread			threadid);
+t_bool			thread_exist(i_thread			threadid);
 
-t_error			thread_get(i_thread			id,
+t_status		thread_get(i_thread			id,
 				   o_thread**			object);
 
-t_error			thread_initialize(void);
+t_status		thread_initialize(void);
 
-t_error			thread_clean(void);
+t_status		thread_clean(void);
 
 
 /*

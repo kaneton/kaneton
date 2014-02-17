@@ -108,15 +108,15 @@ typedef struct
  * ../tss.c
  */
 
-t_error			architecture_tss_build(t_vaddr		address,
+t_status		architecture_tss_build(t_vaddr		address,
 					       as_tss**		tss);
 
-t_error			architecture_tss_update(as_tss*		tss,
+t_status		architecture_tss_update(as_tss*		tss,
 						t_uint16	ss0,
 						t_uint32	esp0,
 						t_uint32	io);
 
-t_error			architecture_tss_activate(as_tss*	tss);
+t_status		architecture_tss_activate(as_tss*	tss);
 
 
 /*

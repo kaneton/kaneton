@@ -56,11 +56,11 @@ d_cpu		cpu_dispatch =
  * boot processor.
  */
 
-t_error			glue_cpu_current(i_cpu*			cpuid)
+t_status		glue_cpu_current(i_cpu*			cpuid)
 {
   CPU_ENTER(cpu);
 
   *cpuid = ia32_apic_id();
 
-  CPU_LEAVE(cpu, ERROR_NONE);
+  CPU_LEAVE(cpu, STATUS_OK);
 }

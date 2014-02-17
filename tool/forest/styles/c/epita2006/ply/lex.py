@@ -132,7 +132,7 @@ from the attributes of t (provided the new object has the required
 type attribute).
 
 If illegal characters are encountered, the scanner executes the
-function t_error(t) where t is a token representing the rest of the
+function t_status(t) where t is a token representing the rest of the
 string that hasn't been matched.  If this function isn't defined, a
 LexError exception is raised.  The .text attribute of this exception
 object contains the part of the string that wasn't matched.
@@ -142,7 +142,7 @@ input stream.  This is usually only used in the error handling rule.
 For instance, the following rule would print an error message and
 continue:
 
-def t_error(t):
+def t_status(t):
     print "Illegal character in input %s" % t.value[0]
     t.skip(1)
 
@@ -330,7 +330,7 @@ class Lexer:
 
                 return newtok
 
-            # No match. Call t_error() if defined.
+            # No match. Call t_status() if defined.
             if self.lexerrorf:
                 tok = LexToken()
                 tok.value = self.lexdata[lexpos:]
@@ -558,7 +558,7 @@ def lex(module=None,debug=0,optimize=0,lextab="lextab",reflags=0):
                 error = 1
                 continue
         
-        if f.__name__ == 't_error':
+        if f.__name__ == 't_status':
             lexer.lexerrorf = f
             continue
 
@@ -590,8 +590,8 @@ def lex(module=None,debug=0,optimize=0,lextab="lextab",reflags=0):
             continue
         
         if not optimize:
-            if name == 't_error':
-                raise SyntaxError,"lex: Rule 't_error' must be defined as a function"
+            if name == 't_status':
+                raise SyntaxError,"lex: Rule 't_status' must be defined as a function"
                 error = 1
                 continue
         
@@ -665,7 +665,7 @@ def lex(module=None,debug=0,optimize=0,lextab="lextab",reflags=0):
     if error:
         raise SyntaxError,"lex: Unable to build lexer."
     if not lexer.lexerrorf:
-        print "lex: Warning. no t_error rule is defined."
+        print "lex: Warning. no t_status rule is defined."
 
     if not lexer.lexignore: lexer.lexignore = ""
     

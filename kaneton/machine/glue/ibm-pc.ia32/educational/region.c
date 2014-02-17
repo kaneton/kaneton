@@ -73,7 +73,7 @@ d_region		glue_region_dispatch =
  *   C) nothing to do since the size has not changed.
  */
 
-t_error			glue_region_resize(i_as			as,
+t_status		glue_region_resize(i_as			as,
 					   i_region		old,
 					   t_vsize		size,
 					   i_region*		new)
@@ -84,7 +84,7 @@ t_error			glue_region_resize(i_as			as,
    * 1)
    */
 
-  if (region_get(as, old, &o) != ERROR_OK)
+  if (region_get(as, old, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -102,7 +102,7 @@ t_error			glue_region_resize(i_as			as,
 				  o->offset + o->size,
 				  o->options,
 				  o->address + o->size,
-				  size - o->size) != ERROR_OK)
+				  size - o->size) != STATUS_OK)
 	MACHINE_ESCAPE("unable to map part of the region");
     }
   else if (size < o->size)
@@ -113,7 +113,7 @@ t_error			glue_region_resize(i_as			as,
 
       if (architecture_paging_unmap(as,
 				    o->address + size,
-				    o->size - size) != ERROR_OK)
+				    o->size - size) != STATUS_OK)
 	MACHINE_ESCAPE("unable to unmap part of the region");
     }
   else
@@ -130,7 +130,7 @@ t_error			glue_region_resize(i_as			as,
  * this function maps the freshly reserved region.
  */
 
-t_error			glue_region_reserve(i_as		asid,
+t_status		glue_region_reserve(i_as		asid,
 					    i_segment		segid,
 					    t_paddr		offset,
 					    t_options		options,
@@ -143,7 +143,7 @@ t_error			glue_region_reserve(i_as		asid,
 			      offset,
 			      options,
 			      address,
-			      size) != ERROR_OK)
+			      size) != STATUS_OK)
     MACHINE_ESCAPE("unable to map the virtual memory corresponding to the "
 		   "reserved region");
 
@@ -159,7 +159,7 @@ t_error			glue_region_reserve(i_as		asid,
  * 2) unmap the pages.
  */
 
-t_error			glue_region_release(i_as		asid,
+t_status		glue_region_release(i_as		asid,
 					    i_region		regid)
 {
   o_region*		o;
@@ -168,7 +168,7 @@ t_error			glue_region_release(i_as		asid,
    * 1)
    */
 
-  if (region_get(asid, regid, &o) != ERROR_OK)
+  if (region_get(asid, regid, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -177,7 +177,7 @@ t_error			glue_region_release(i_as		asid,
 
   if (architecture_paging_unmap(asid,
 				o->address,
-				o->size) != ERROR_OK)
+				o->size) != STATUS_OK)
     MACHINE_ESCAPE("unable to unmap the virtual memory corresponding to "
 		   "the region");
 
@@ -192,14 +192,14 @@ t_error			glue_region_release(i_as		asid,
  * 1) set up the IA32 paging unit.
  */
 
-t_error			glue_region_initialize(t_vaddr		base,
+t_status		glue_region_initialize(t_vaddr		base,
 					       t_vsize		size)
 {
   /*
    * 1)
    */
 
-  if (architecture_paging_setup() != ERROR_OK)
+  if (architecture_paging_setup() != STATUS_OK)
     MACHINE_ESCAPE("unable to set up the paging");
 
   MACHINE_LEAVE();

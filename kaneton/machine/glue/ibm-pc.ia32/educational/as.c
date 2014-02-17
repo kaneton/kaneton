@@ -80,7 +80,7 @@ d_as			glue_as_dispatch =
  * 2) display the machine-specific attributes.
  */
 
-t_error			glue_as_show(i_as			id,
+t_status		glue_as_show(i_as			id,
 				     mt_margin			margin)
 {
   o_as*			o;
@@ -89,7 +89,7 @@ t_error			glue_as_show(i_as			id,
    * 1)
    */
 
-  if (as_get(id, &o) != ERROR_OK)
+  if (as_get(id, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the address space object");
 
   /*
@@ -115,7 +115,7 @@ t_error			glue_as_show(i_as			id,
  * 1) display the machine-specific attributes.
  */
 
-t_error			glue_as_dump(void)
+t_status		glue_as_dump(void)
 {
   /*
    * 1)
@@ -135,17 +135,17 @@ t_error			glue_as_dump(void)
  * guest.
  */
 
-t_error			glue_as_reserve(i_task			task,
+t_status		glue_as_reserve(i_task			task,
 					i_as*			as)
 {
   if (*as == _kernel.as)
     {
-      if (architecture_environment_kernel(*as) != ERROR_OK)
+      if (architecture_environment_kernel(*as) != STATUS_OK)
 	MACHINE_ESCAPE("unable to initialize the kernel's address space");
     }
   else
     {
-      if (architecture_environment_server(*as) != ERROR_OK)
+      if (architecture_environment_server(*as) != STATUS_OK)
 	MACHINE_ESCAPE("unable to initialize the server's address space");
     }
 

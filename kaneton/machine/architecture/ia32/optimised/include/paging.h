@@ -184,41 +184,41 @@ typedef t_ia32_pde* t_ia32_directory;
  * ../paging.c
  */
 
-t_error			ia32_paging_init(void);
+t_status		ia32_paging_init(void);
 
-t_error			ia32_paging_clean(void);
+t_status		ia32_paging_clean(void);
 
 
 /*
  * ../pd.c
  */
 
-t_error			ia32_pd_dump(t_ia32_directory*		dir);
+t_status		ia32_pd_dump(t_ia32_directory*		dir);
 
-t_error			ia32_pd_build(t_paddr			base,
+t_status		ia32_pd_build(t_paddr			base,
 				      t_ia32_directory*		directory);
 
-t_error			ia32_pd_base(t_ia32_directory*		dir,
+t_status		ia32_pd_base(t_ia32_directory*		dir,
 				     t_paddr*			base);
 
-t_error			ia32_pd_activate(t_ia32_directory	dir,
+t_status		ia32_pd_activate(t_ia32_directory	dir,
 					 t_uint32		cached,
 					 t_uint32		writeback);
 
-t_error			ia32_pd_get_cr3(t_uint32*		cr3,
+t_status		ia32_pd_get_cr3(t_uint32*		cr3,
 					t_ia32_directory	dir,
 					t_uint32		cached,
 					t_uint32		writeback);
 
-t_error			ia32_pd_add_table(t_ia32_directory*	dir,
+t_status		ia32_pd_add_table(t_ia32_directory*	dir,
 					  t_uint16		entry,
 					  t_ia32_table		table);
 
-t_error			ia32_pd_get_table(t_ia32_directory*	dir,
+t_status		ia32_pd_get_table(t_ia32_directory*	dir,
 					  t_uint16		entry,
 					  t_ia32_table*		table);
 
-t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
+t_status		ia32_pd_delete_table(t_ia32_directory*	dir,
 					     t_uint16		entry);
 
 
@@ -226,20 +226,20 @@ t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
  * ../pt.c
  */
 
-t_error			ia32_pt_dump(t_ia32_pte*		tab);
+t_status		ia32_pt_dump(t_ia32_pte*		tab);
 
-t_error			ia32_pt_build(t_paddr			base,
+t_status		ia32_pt_build(t_paddr			base,
 				      t_ia32_table*		table);
 
-t_error			ia32_pt_add_page(t_ia32_table*		tab,
+t_status		ia32_pt_add_page(t_ia32_table*		tab,
 					 t_uint16		entry,
 					 t_ia32_page		page);
 
-t_error			ia32_pt_get_page(t_ia32_table*		tab,
+t_status		ia32_pt_get_page(t_ia32_table*		tab,
 					 t_uint16		entry,
 					 t_ia32_page*		page);
 
-t_error			ia32_pt_delete_page(t_ia32_table*	tab,
+t_status		ia32_pt_delete_page(t_ia32_table*	tab,
 					    t_uint16		entry);
 
 
@@ -247,9 +247,9 @@ t_error			ia32_pt_delete_page(t_ia32_table*	tab,
  * ../tlb.c
  */
 
-t_error			ia32_tlb_invalidate(t_vaddr			page);
+t_status		ia32_tlb_invalidate(t_vaddr			page);
 
-t_error			ia32_tlb_flush(void);
+t_status		ia32_tlb_flush(void);
 
 
 /*

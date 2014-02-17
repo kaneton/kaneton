@@ -41,7 +41,7 @@
  * 3) setup the PIT0 to run in mode 2 (rate generator).
  */
 
-t_error			platform_pit_initialize(void)
+t_status		platform_pit_initialize(void)
 {
   t_uint32	latch;
 
@@ -81,7 +81,7 @@ t_error			platform_pit_initialize(void)
  * this function cleans the PIT.
  */
 
-t_error			platform_pit_clean(void)
+t_status		platform_pit_clean(void)
 {
   MACHINE_LEAVE();
 }

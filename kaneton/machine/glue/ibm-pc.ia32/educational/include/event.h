@@ -32,7 +32,7 @@
 #define		machine_call_event(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_event_dispatch.event_ ## _function_ != NULL)		\
         _r_ = glue_event_dispatch.event_ ## _function_(_args_);		\
@@ -82,22 +82,22 @@
 void			glue_event_pagefault(t_id		id,
 					     t_data		data);
 
-t_error			glue_event_dump(void);
+t_status		glue_event_dump(void);
 
-t_error			glue_event_enable(void);
+t_status		glue_event_enable(void);
 
-t_error			glue_event_disable(void);
+t_status		glue_event_disable(void);
 
-t_error			glue_event_reserve(i_event		id,
+t_status		glue_event_reserve(i_event		id,
 					   t_type		type,
 					   u_event_handler	handler,
 					   t_data		data);
 
-t_error			glue_event_release(i_event		id);
+t_status		glue_event_release(i_event		id);
 
-t_error			glue_event_initialize(void);
+t_status		glue_event_initialize(void);
 
-t_error			glue_event_clean(void);
+t_status		glue_event_clean(void);
 
 
 /*

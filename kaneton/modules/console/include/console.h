@@ -114,15 +114,15 @@ void			module_console_message(char		indicator,
 void			module_console_print(char*		fmt,
 					     ...);
 
-t_error			module_console_set(mf_console_character	character,
+t_status		module_console_set(mf_console_character	character,
 					   mf_console_attribute	attribute);
 
-t_error			module_console_get(mf_console_character* character,
+t_status		module_console_get(mf_console_character* character,
 					   mf_console_attribute* attribute);
 
-t_error			module_console_load(void);
+t_status		module_console_load(void);
 
-t_error			module_console_unload(void);
+t_status		module_console_unload(void);
 
 
 /*

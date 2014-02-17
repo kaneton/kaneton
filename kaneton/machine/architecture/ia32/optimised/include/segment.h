@@ -30,17 +30,17 @@
  * ../segment.c
  */
 
-t_error			ia32_segment_read(i_region		segid,
+t_status		ia32_segment_read(i_region		segid,
 					  t_paddr		offs,
 					  void*			buff,
 					  t_psize		sz);
 
-t_error			ia32_segment_write(i_region		segid,
+t_status		ia32_segment_write(i_region		segid,
 					   t_paddr		offs,
 					   const void*		buff,
 					   t_psize		sz);
 
-t_error			ia32_segment_copy(i_region		dst,
+t_status		ia32_segment_copy(i_region		dst,
 					  t_paddr		offsd,
 					  i_region		src,
 					  t_paddr		offss,

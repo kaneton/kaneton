@@ -32,7 +32,7 @@
 #define		machine_call_scheduler(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_OK;						\
+      t_status _r_ = STATUS_OK;						\
 									\
       if (glue_scheduler_dispatch.scheduler_ ## _function_ != NULL)	\
         _r_ = glue_scheduler_dispatch.scheduler_ ## _function_(_args_);	\
@@ -79,19 +79,19 @@
  * ../scheduler.c
  */
 
-t_error			glue_scheduler_dump(void);
+t_status		glue_scheduler_dump(void);
 
-t_error			glue_scheduler_start(i_cpu		cpu);
+t_status		glue_scheduler_start(i_cpu		cpu);
 
-t_error			glue_scheduler_stop(i_cpu		cpu);
+t_status		glue_scheduler_stop(i_cpu		cpu);
 
 void			glue_scheduler_switch(void);
 
-t_error			glue_scheduler_quantum(t_quantum	quantum);
+t_status		glue_scheduler_quantum(t_quantum	quantum);
 
-t_error			glue_scheduler_yield(void);
+t_status		glue_scheduler_yield(void);
 
-t_error			glue_scheduler_initialize(void);
+t_status		glue_scheduler_initialize(void);
 
 
 /*

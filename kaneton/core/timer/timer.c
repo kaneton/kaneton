@@ -109,13 +109,13 @@ void			timer_handler(i_event			event,
    * 1)
    */
 
-  assert(clock_update(TIMER_DELAY) == ERROR_OK);
+  assert(clock_update(TIMER_DELAY) == STATUS_OK);
 
   /*
    * 2)
    */
 
-  assert(timer_check() == ERROR_OK);
+  assert(timer_check() == STATUS_OK);
 }
 
 /*
@@ -139,7 +139,7 @@ void			timer_handler(i_event			event,
  *   g) finally move on to the next timer which may also have expired.
  */
 
-t_error			timer_check(void)
+t_status		timer_check(void)
 {
   t_delay		reference = TIMER_DELAY;
   s_iterator		i;
@@ -148,7 +148,7 @@ t_error			timer_check(void)
    * 1)
    */
 
-  while (set_head(_timer.timers, &i) == ERROR_TRUE)
+  while (set_head(_timer.timers, &i) == TRUE)
     {
       o_timer*		o;
 
@@ -156,7 +156,7 @@ t_error			timer_check(void)
        * a)
        */
 
-      if (set_object(_timer.timers, i, (void**)&o) != ERROR_OK)
+      if (set_object(_timer.timers, i, (void**)&o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the timer");
 
       /*
@@ -186,7 +186,7 @@ t_error			timer_check(void)
        * e)
        */
 
-      if (timer_notify(o->id) != ERROR_OK)
+      if (timer_notify(o->id) != STATUS_OK)
 	CORE_ESCAPE("unable to notify of the timer's expiration");
 
       /*
@@ -195,12 +195,12 @@ t_error			timer_check(void)
 
       if (o->options & TIMER_OPTION_REPEAT)
         {
-	  if (timer_update(o->id, o->repeat) != ERROR_OK)
+	  if (timer_update(o->id, o->repeat) != STATUS_OK)
 	    CORE_ESCAPE("unable to update the timer");
         }
       else
         {
-          if (timer_release(o->id) != ERROR_OK)
+          if (timer_release(o->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to release the timer");
         }
 
@@ -223,7 +223,7 @@ t_error			timer_check(void)
  * 4) call the machine.
  */
 
-t_error			timer_show(i_timer			id,
+t_status		timer_show(i_timer			id,
 				   mt_margin			margin)
 {
   o_timer*		o;
@@ -233,7 +233,7 @@ t_error			timer_show(i_timer			id,
    * 1)
    */
 
-  if (timer_get(id, &o) != ERROR_OK)
+  if (timer_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the timer object");
 
   /*
@@ -302,7 +302,7 @@ t_error			timer_show(i_timer			id,
    * 4)
    */
 
-  if (machine_call(timer, show, id, margin) != ERROR_OK)
+  if (machine_call(timer, show, id, margin) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -322,7 +322,7 @@ t_error			timer_show(i_timer			id,
  * 5) call the machine.
  */
 
-t_error			timer_dump(void)
+t_status		timer_dump(void)
 {
   t_setsz		size;
   s_iterator		i;
@@ -344,14 +344,14 @@ t_error			timer_dump(void)
    */
 
   if (id_show(&_timer.id,
-	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
   /*
    * 3)
    */
 
-  if (set_size(_timer.timers, &size) != ERROR_OK)
+  if (set_size(_timer.timers, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of timers");
 
   /*
@@ -371,7 +371,7 @@ t_error			timer_dump(void)
        * a)
        */
 
-      if (set_object(_timer.timers, i, (void**)&o) != ERROR_OK)
+      if (set_object(_timer.timers, i, (void**)&o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the timer");
 
       /*
@@ -379,7 +379,7 @@ t_error			timer_dump(void)
        */
 
       if (timer_show(o->id,
-		     3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		     3 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
 	CORE_ESCAPE("unable to show the timer");
     }
 
@@ -387,7 +387,7 @@ t_error			timer_dump(void)
    * 5)
    */
 
-  if (machine_call(timer, dump) != ERROR_OK)
+  if (machine_call(timer, dump) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -410,7 +410,7 @@ t_error			timer_dump(void)
  * 3) call the machine.
  */
 
-t_error			timer_notify(i_timer			id)
+t_status		timer_notify(i_timer			id)
 {
   o_timer*		o;
 
@@ -418,7 +418,7 @@ t_error			timer_notify(i_timer			id)
    * 1)
    */
 
-  if (timer_get(id, &o) != ERROR_OK)
+  if (timer_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the timer object");
 
   /*
@@ -472,7 +472,7 @@ t_error			timer_notify(i_timer			id)
 			 node,
 			 MESSAGE_TYPE_TIMER,
 			 (t_vaddr)&message,
-			 sizeof (o_timer_message)) != ERROR_OK)
+			 sizeof (o_timer_message)) != STATUS_OK)
 	  CORE_ESCAPE("unable to send a message to the task");
       }
     default:
@@ -484,7 +484,7 @@ t_error			timer_notify(i_timer			id)
    * 3)
    */
 
-  if (machine_call(timer, notify, id) != ERROR_OK)
+  if (machine_call(timer, notify, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -534,7 +534,7 @@ t_error			timer_notify(i_timer			id)
  * 6) call the machine.
  */
 
-t_error			timer_reserve(t_type			type,
+t_status		timer_reserve(t_type			type,
 				      u_timer_handler		handler,
 				      t_data			data,
 				      t_delay			delay,
@@ -561,7 +561,7 @@ t_error			timer_reserve(t_type			type,
    * 1)
    */
 
-  if (id_reserve(&_timer.id, id) != ERROR_OK)
+  if (id_reserve(&_timer.id, id) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a timer identifier");
 
   /*
@@ -594,7 +594,7 @@ t_error			timer_reserve(t_type			type,
    * 5)
    */
 
-  if (set_empty(_timer.timers) == ERROR_TRUE)
+  if (set_empty(_timer.timers) == TRUE)
     {
       /*
        * A)
@@ -610,7 +610,7 @@ t_error			timer_reserve(t_type			type,
        * b)
        */
 
-      if (set_add(_timer.timers, o) != ERROR_OK)
+      if (set_add(_timer.timers, o) != STATUS_OK)
 	CORE_ESCAPE("unable to append the timer object at the end of the set");
     }
   else
@@ -638,7 +638,7 @@ t_error			timer_reserve(t_type			type,
 	   * i)
 	   */
 
-	  if (set_object(_timer.timers, i, (void**)&n) != ERROR_OK)
+	  if (set_object(_timer.timers, i, (void**)&n) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the timer");
 
 	  /*
@@ -658,7 +658,7 @@ t_error			timer_reserve(t_type			type,
 	   * iv)
 	   */
 
-	  if (set_previous(_timer.timers, i, &j) == ERROR_FALSE)
+	  if (set_previous(_timer.timers, i, &j) == FALSE)
 	    {
 	      /*
 	       * #1)
@@ -685,7 +685,7 @@ t_error			timer_reserve(t_type			type,
 	   * vi)
 	   */
 
-	  if (set_before(_timer.timers, i, o) != ERROR_OK)
+	  if (set_before(_timer.timers, i, o) != STATUS_OK)
 	    CORE_ESCAPE("unable to insert the timer in the set");
 
 	  /*
@@ -705,7 +705,7 @@ t_error			timer_reserve(t_type			type,
        * d)
        */
 
-      if (set_after(_timer.timers, i, o) != ERROR_OK)
+      if (set_after(_timer.timers, i, o) != STATUS_OK)
 	CORE_ESCAPE("unable to insert the timer in the set");
     }
 
@@ -721,7 +721,7 @@ t_error			timer_reserve(t_type			type,
 		   data,
 		   delay,
 		   options,
-		   id) != ERROR_OK)
+		   id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -742,7 +742,7 @@ t_error			timer_reserve(t_type			type,
  * 6) delete the timer from the list.
  */
 
-t_error			timer_release(i_timer			id)
+t_status		timer_release(i_timer			id)
 {
   o_timer*		o;
   s_iterator		i;
@@ -752,31 +752,31 @@ t_error			timer_release(i_timer			id)
    * 1)
    */
 
-  if (machine_call(timer, release, id) != ERROR_OK)
+  if (machine_call(timer, release, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  if (id_release(&_timer.id, id) != ERROR_OK)
+  if (id_release(&_timer.id, id) != STATUS_OK)
     CORE_ESCAPE("unable to release the timer identifier");
 
   /*
    * 3)
    */
 
-  if (set_locate(_timer.timers, id, &i) != ERROR_OK)
+  if (set_locate(_timer.timers, id, &i) != STATUS_OK)
     CORE_ESCAPE("unable to locate the timer object");
 
-  if (set_object(_timer.timers, i, (void**)&o) != ERROR_OK)
+  if (set_object(_timer.timers, i, (void**)&o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the timer object");
 
   /*
    * 4)
    */
 
-  if (set_next(_timer.timers, i, &j) == ERROR_TRUE)
+  if (set_next(_timer.timers, i, &j) == TRUE)
     {
       o_timer*		t;
 
@@ -784,7 +784,7 @@ t_error			timer_release(i_timer			id)
        * a)
        */
 
-      if (set_object(_timer.timers, j, (void**)&t) != ERROR_OK)
+      if (set_object(_timer.timers, j, (void**)&t) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the timer object");
 
       /*
@@ -804,7 +804,7 @@ t_error			timer_release(i_timer			id)
    * 6)
    */
 
-  if (set_delete(_timer.timers, i) != ERROR_OK)
+  if (set_delete(_timer.timers, i) != STATUS_OK)
     CORE_ESCAPE("unable to delete the object from the set of timers");
 
   CORE_LEAVE();
@@ -855,7 +855,7 @@ t_error			timer_release(i_timer			id)
  * 5) call the machine.
  */
 
-t_error			timer_update(i_timer			id,
+t_status		timer_update(i_timer			id,
 				     t_delay			delay)
 {
   t_delay		reference;
@@ -867,17 +867,17 @@ t_error			timer_update(i_timer			id,
    * 1)
    */
 
-  if (set_locate(_timer.timers, id, &i) != ERROR_OK)
+  if (set_locate(_timer.timers, id, &i) != STATUS_OK)
     CORE_ESCAPE("unable to locate the timer object");
 
-  if (set_object(_timer.timers, i, (void**)&o) != ERROR_OK)
+  if (set_object(_timer.timers, i, (void**)&o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the timer object");
 
   /*
    * 2)
    */
 
-  if (set_delete(_timer.timers, i) != ERROR_OK)
+  if (set_delete(_timer.timers, i) != STATUS_OK)
     CORE_ESCAPE("unable to delete the object from the set of timers");
 
   /*
@@ -891,7 +891,7 @@ t_error			timer_update(i_timer			id,
    * 4)
    */
 
-  if (set_empty(_timer.timers) == ERROR_TRUE)
+  if (set_empty(_timer.timers) == TRUE)
     {
       /*
        * A)
@@ -907,7 +907,7 @@ t_error			timer_update(i_timer			id,
        * b)
        */
 
-      if (set_add(_timer.timers, o) != ERROR_OK)
+      if (set_add(_timer.timers, o) != STATUS_OK)
 	CORE_ESCAPE("unable to append the timer object at the end of the set");
     }
   else
@@ -935,7 +935,7 @@ t_error			timer_update(i_timer			id,
 	   * i)
 	   */
 
-	  if (set_object(_timer.timers, i, (void**)&n) != ERROR_OK)
+	  if (set_object(_timer.timers, i, (void**)&n) != STATUS_OK)
 	    CORE_ESCAPE("unable to retrieve the timer");
 
 	  /*
@@ -955,7 +955,7 @@ t_error			timer_update(i_timer			id,
 	   * iv)
 	   */
 
-	  if (set_previous(_timer.timers, i, &j) == ERROR_FALSE)
+	  if (set_previous(_timer.timers, i, &j) == FALSE)
 	    {
 	      /*
 	       * #1)
@@ -982,7 +982,7 @@ t_error			timer_update(i_timer			id,
 	   * vi)
 	   */
 
-	  if (set_before(_timer.timers, i, o) != ERROR_OK)
+	  if (set_before(_timer.timers, i, o) != STATUS_OK)
 	    CORE_ESCAPE("unable to insert the timer in the set");
 
 	  /*
@@ -1002,7 +1002,7 @@ t_error			timer_update(i_timer			id,
        * d)
        */
 
-      if (set_after(_timer.timers, i, o) != ERROR_OK)
+      if (set_after(_timer.timers, i, o) != STATUS_OK)
 	CORE_ESCAPE("unable to insert the timer in the set");
     }
 
@@ -1012,7 +1012,7 @@ t_error			timer_update(i_timer			id,
    * 5)
    */
 
-  if (machine_call(timer, update, id, delay) != ERROR_OK)
+  if (machine_call(timer, update, id, delay) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1028,7 +1028,7 @@ t_error			timer_update(i_timer			id,
  *   b) release the timer.
  */
 
-t_error			timer_flush(void)
+t_status		timer_flush(void)
 {
   s_iterator		i;
   t_state		s;
@@ -1045,14 +1045,14 @@ t_error			timer_flush(void)
        * a)
        */
 
-      if (set_object(_timer.timers, i, (void**)&o) != ERROR_OK)
+      if (set_object(_timer.timers, i, (void**)&o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the timer object");
 
       /*
        * b)
        */
 
-      if (timer_release(o->id) != ERROR_OK)
+      if (timer_release(o->id) != STATUS_OK)
 	CORE_ESCAPE("unable to release the timer");
     }
 
@@ -1063,9 +1063,9 @@ t_error			timer_flush(void)
  * this function returns true if the timer object exists.
  */
 
-t_error			timer_exist(i_timer			id)
+t_bool			timer_exist(i_timer			id)
 {
-  if (set_exist(_timer.timers, id) != ERROR_TRUE)
+  if (set_exist(_timer.timers, id) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -1080,7 +1080,7 @@ t_error			timer_exist(i_timer			id)
  * 1) retrieve the object from the set.
  */
 
-t_error			timer_get(i_timer			id,
+t_status		timer_get(i_timer			id,
 				  o_timer**			object)
 {
   /*
@@ -1094,7 +1094,7 @@ t_error			timer_get(i_timer			id,
    * 1)
    */
 
-  if (set_get(_timer.timers, id, (void**)object) != ERROR_OK)
+  if (set_get(_timer.timers, id, (void**)object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of timers");
 
   CORE_LEAVE();
@@ -1112,7 +1112,7 @@ t_error			timer_get(i_timer			id,
  * 5) call the machine.
  */
 
-t_error			timer_initialize(void)
+t_status		timer_initialize(void)
 {
   /*
    * 1)
@@ -1131,7 +1131,7 @@ t_error			timer_initialize(void)
    * 3)
    */
 
-  if (id_build(&_timer.id) != ERROR_OK)
+  if (id_build(&_timer.id) != STATUS_OK)
     CORE_ESCAPE("unable to build the identifier object");
 
   /*
@@ -1141,14 +1141,14 @@ t_error			timer_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_NONE,
                   sizeof (o_timer),
-		  &_timer.timers) != ERROR_OK)
+		  &_timer.timers) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the set of timers");
 
   /*
    * 5)
    */
 
-  if (machine_call(timer, initialize) != ERROR_OK)
+  if (machine_call(timer, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1166,7 +1166,7 @@ t_error			timer_initialize(void)
  * 5) destroy the identifier object.
  */
 
-t_error			timer_clean(void)
+t_status		timer_clean(void)
 {
   /*
    * 1)
@@ -1179,28 +1179,28 @@ t_error			timer_clean(void)
    * 2)
    */
 
-  if (machine_call(timer, clean) != ERROR_OK)
+  if (machine_call(timer, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 3)
    */
 
-  if (timer_flush() != ERROR_OK)
+  if (timer_flush() != STATUS_OK)
     CORE_ESCAPE("unable to flush the timer");
 
   /*
    * 4)
    */
 
-  if (set_release(_timer.timers) != ERROR_OK)
+  if (set_release(_timer.timers) != STATUS_OK)
     CORE_ESCAPE("unable to release the set of timers");
 
   /*
    * 5)
    */
 
-  if (id_destroy(&_timer.id) != ERROR_OK)
+  if (id_destroy(&_timer.id) != STATUS_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
 
   CORE_LEAVE();

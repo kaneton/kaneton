@@ -92,8 +92,8 @@
       o_task*		_task_;						\
       o_thread*		_thread_;					\
 									\
-      assert(thread_get((_id_), &_thread_) == ERROR_OK);		\
-      assert(task_get(_thread_->task, &_task_) == ERROR_OK);		\
+      assert(thread_get((_id_), &_thread_) == STATUS_OK);		\
+      assert(task_get(_thread_->task, &_task_) == STATUS_OK);		\
 									\
       ((_task_->priority - TASK_PRIORITY_BACKGROUND_LOW) *		\
        (_thread_->priority - THREAD_PRIORITY_LOW));			\
@@ -257,19 +257,19 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*scheduler_show)(i_cpu,
+  t_status		(*scheduler_show)(i_cpu,
 						  mt_margin);
-  t_error			(*scheduler_dump)(void);
-  t_error			(*scheduler_start)(i_cpu);
-  t_error			(*scheduler_stop)(i_cpu);
-  t_error			(*scheduler_quantum)(t_quantum);
-  t_error			(*scheduler_yield)(void);
-  t_error			(*scheduler_elect)(void);
-  t_error			(*scheduler_add)(i_thread);
-  t_error			(*scheduler_remove)(i_thread);
-  t_error			(*scheduler_update)(i_thread);
-  t_error			(*scheduler_initialize)(void);
-  t_error			(*scheduler_clean)(void);
+  t_status		(*scheduler_dump)(void);
+  t_status		(*scheduler_start)(i_cpu);
+  t_status		(*scheduler_stop)(i_cpu);
+  t_status		(*scheduler_quantum)(t_quantum);
+  t_status		(*scheduler_yield)(void);
+  t_status		(*scheduler_elect)(void);
+  t_status		(*scheduler_add)(i_thread);
+  t_status		(*scheduler_remove)(i_thread);
+  t_status		(*scheduler_update)(i_thread);
+  t_status		(*scheduler_initialize)(void);
+  t_status		(*scheduler_clean)(void);
 }				d_scheduler;
 
 /*
@@ -282,37 +282,37 @@ typedef struct
  * ../../core/scheduler/scheduler-mfq.c
  */
 
-t_error			scheduler_show(i_cpu			id,
+t_status		scheduler_show(i_cpu			id,
 				       mt_margin		margin);
 
-t_error			scheduler_dump(void);
+t_status		scheduler_dump(void);
 
-t_error			scheduler_start(i_cpu			id);
+t_status		scheduler_start(i_cpu			id);
 
-t_error			scheduler_stop(i_cpu			id);
+t_status		scheduler_stop(i_cpu			id);
 
-t_error			scheduler_quantum(t_quantum		quantum);
+t_status		scheduler_quantum(t_quantum		quantum);
 
-t_error			scheduler_yield(void);
+t_status		scheduler_yield(void);
 
-t_error			scheduler_elect(void);
+t_status		scheduler_elect(void);
 
-t_error			scheduler_add(i_thread			id);
+t_status		scheduler_add(i_thread			id);
 
-t_error			scheduler_remove(i_thread		id);
+t_status		scheduler_remove(i_thread		id);
 
-t_error			scheduler_update(i_thread		id);
+t_status		scheduler_update(i_thread		id);
 
-t_error			scheduler_exist(i_cpu			id);
+t_bool			scheduler_exist(i_cpu			id);
 
-t_error			scheduler_get(i_cpu			id,
+t_status		scheduler_get(i_cpu			id,
 				      o_scheduler**		object);
 
-t_error			scheduler_current(o_scheduler**		scheduler);
+t_status		scheduler_current(o_scheduler**		scheduler);
 
-t_error			scheduler_initialize(void);
+t_status		scheduler_initialize(void);
 
-t_error			scheduler_clean(void);
+t_status		scheduler_clean(void);
 
 
 /*

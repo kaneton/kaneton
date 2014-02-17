@@ -37,7 +37,7 @@ void			test_architecture_event_context_02_handler(t_id	id)
 
   if (architecture_gdt_selector(14,
 				ARCHITECTURE_PRIVILEGE_KERNEL,
-				&ds) != ERROR_OK)
+				&ds) != STATUS_OK)
     TEST_ERROR("[architecture_gdt_selector] error");
 
   asm volatile("movl $0x10034a10, %eax\n"
@@ -71,16 +71,16 @@ void			test_architecture_event_context_02(void)
 			      ARCHITECTURE_GDTE_DPL_SET(
 			        ARCHITECTURE_PRIVILEGE_KERNEL) |
                               ARCHITECTURE_GDTE_S |
-                              ARCHITECTURE_GDTE_DATA) != ERROR_OK)
+                              ARCHITECTURE_GDTE_DATA) != STATUS_OK)
     TEST_ERROR("[architecture_gdt_insert] error");
 
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_BP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_context_02_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   asm volatile("pushl %%eax\n"
@@ -114,7 +114,7 @@ void			test_architecture_event_context_02(void)
 	       "subl $20, %%esp"
                : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   if (thrown != 1)
@@ -149,7 +149,7 @@ void			test_architecture_event_context_02(void)
   if ((ctx1->gs & 0xffff) != (ctx2->gs & 0xffff))
     TEST_ERROR("the GS register is different");
 
-  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != STATUS_OK)
     TEST_ERROR("[event_release] error");
 
   TEST_SIGNATURE(twjvviw094g398w2ur2);

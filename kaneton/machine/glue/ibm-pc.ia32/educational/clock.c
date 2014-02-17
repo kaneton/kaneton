@@ -52,13 +52,13 @@ d_clock			glue_clock_dispatch =
  * 1) call the RTC update() function.
  */
 
-t_error			glue_clock_update(t_uint32		millisecond)
+t_status		glue_clock_update(t_uint32		millisecond)
 {
   /*
    * 1)
    */
 
-  if (platform_rtc_update(millisecond) != ERROR_OK)
+  if (platform_rtc_update(millisecond) != STATUS_OK)
     MACHINE_ESCAPE("unable to update the RTC");
 
   MACHINE_LEAVE();
@@ -74,7 +74,7 @@ t_error			glue_clock_update(t_uint32		millisecond)
  * 2) fill the clock structure with the RTC.
  */
 
-t_error			glue_clock_current(s_clock*		clock)
+t_status		glue_clock_current(s_clock*		clock)
 {
   ps_rtc_state*		rtc;
 
@@ -82,7 +82,7 @@ t_error			glue_clock_current(s_clock*		clock)
    * 1)
    */
 
-  if (platform_rtc_state(&rtc) != ERROR_OK)
+  if (platform_rtc_state(&rtc) != STATUS_OK)
     MACHINE_ESCAPE("unable to load the RTC date/time structure");
 
   /*
@@ -110,13 +110,13 @@ t_error			glue_clock_current(s_clock*		clock)
  * 1) initialize the RTC.
  */
 
-t_error			glue_clock_initialize(void)
+t_status		glue_clock_initialize(void)
 {
   /*
    * 1)
    */
 
-  if (platform_rtc_initialize() != ERROR_OK)
+  if (platform_rtc_initialize() != STATUS_OK)
     MACHINE_ESCAPE("unable to initialize the real time clock");
 
   MACHINE_LEAVE();
@@ -128,13 +128,13 @@ t_error			glue_clock_initialize(void)
  * 1) clean the RTC
  */
 
-t_error			glue_clock_clean(void)
+t_status		glue_clock_clean(void)
 {
   /*
    * 1)
    */
 
-  if (platform_rtc_clean() != ERROR_OK)
+  if (platform_rtc_clean() != STATUS_OK)
     MACHINE_ESCAPE("unable to clean the real time clock");
 
   MACHINE_LEAVE();

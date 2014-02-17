@@ -74,17 +74,17 @@ d_segment				segment_dispatch =
  *
  */
 
-t_error			glue_segment_read(i_segment		segid,
+t_status		glue_segment_read(i_segment		segid,
 					  t_paddr		offs,
 					  void*			buff,
 					  t_psize		sz)
 {
   SEGMENT_ENTER(segment);
 
-  if (ia32_segment_read(segid, offs, buff, sz) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_segment_read(segid, offs, buff, sz) != STATUS_OK)
+    SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(segment, STATUS_OK);
 }
 
 /*
@@ -92,17 +92,17 @@ t_error			glue_segment_read(i_segment		segid,
  *
  */
 
-t_error			glue_segment_write(i_segment		segid,
+t_status		glue_segment_write(i_segment		segid,
 					   t_paddr		offs,
 					   const void*		buff,
 					   t_psize		sz)
 {
   SEGMENT_ENTER(segment);
 
-  if (ia32_segment_write(segid, offs, buff, sz) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_segment_write(segid, offs, buff, sz) != STATUS_OK)
+    SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(segment, STATUS_OK);
 }
 
 /*
@@ -110,7 +110,7 @@ t_error			glue_segment_write(i_segment		segid,
  *
  */
 
-t_error			glue_segment_copy(i_segment		dst,
+t_status		glue_segment_copy(i_segment		dst,
 					  t_paddr		offsd,
 					  i_segment		src,
 					  t_paddr		offss,
@@ -118,39 +118,39 @@ t_error			glue_segment_copy(i_segment		dst,
 {
   SEGMENT_ENTER(segment);
 
-  if (ia32_segment_copy(dst, offsd, src, offss, sz) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_segment_copy(dst, offsd, src, offss, sz) != STATUS_OK)
+    SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(segment, STATUS_OK);
 }
 
 /*
  * this function just initializes the machine-dependent segment manager.
  */
 
-t_error			glue_segment_initialize(void)
+t_status		glue_segment_initialize(void)
 {
   SEGMENT_ENTER(segment);
 
-  if (ia32_pmode_init() != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_pmode_init() != STATUS_OK)
+    SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
-  if (ia32_segmentation_init() != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_segmentation_init() != STATUS_OK)
+    SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(segment, STATUS_OK);
 }
 
 /*
  * this function cleans the machine-dependent segment manager.
  */
 
-t_error			glue_segment_clean(void)
+t_status		glue_segment_clean(void)
 {
   SEGMENT_ENTER(segment);
 
-  if (ia32_pmode_clean() != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (ia32_pmode_clean() != STATUS_OK)
+    SEGMENT_LEAVE(segment, STATUS_UNKNOWN_ERROR);
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(segment, STATUS_OK);
 }

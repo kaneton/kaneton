@@ -40,28 +40,28 @@ void			test_core_segment_readwrite_02(void)
 		      ___kaneton$pagesz,
 		      PERMISSION_READ | PERMISSION_WRITE,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
   if (segment_read(seg,
 		   2 * ___kaneton$pagesz,
 		   buff,
-		   sizeof (t_uint32)) == ERROR_OK)
+		   sizeof (t_uint32)) == STATUS_OK)
     TEST_ERROR("[segment_read] error: out of bound");
 
-  if (segment_read(seg, 0, buff, 2 * ___kaneton$pagesz) == ERROR_OK)
+  if (segment_read(seg, 0, buff, 2 * ___kaneton$pagesz) == STATUS_OK)
     TEST_ERROR("[segment_read] error: overflow");
 
   if (segment_write(seg,
 		    2 * ___kaneton$pagesz,
 		    buff,
-		    sizeof (t_uint32)) == ERROR_OK)
+		    sizeof (t_uint32)) == STATUS_OK)
     TEST_ERROR("[segment_write] error: out of bound");
 
-  if (segment_write(seg, 0, buff, 2 * ___kaneton$pagesz) == ERROR_OK)
+  if (segment_write(seg, 0, buff, 2 * ___kaneton$pagesz) == STATUS_OK)
     TEST_ERROR("[segment_write] error: overflow");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(0r320afkeoaweigj3g43);

@@ -118,7 +118,7 @@ extern m_as		_as;
  * the bit 7 of CR4.
  */
 
-t_error			architecture_paging_enable(void)
+t_status		architecture_paging_enable(void)
 {
   asm volatile("movl %%cr0, %%eax\n\t"
 	       "orl $0x80000000, %%eax\n\t"
@@ -147,7 +147,7 @@ t_error			architecture_paging_enable(void)
  * 2) enable the paging mechanism.
  */
 
-t_error			architecture_paging_setup(void)
+t_status		architecture_paging_setup(void)
 {
   /*
    * 1)
@@ -159,7 +159,7 @@ t_error			architecture_paging_setup(void)
    * 2)
    */
 
-  if (architecture_paging_enable() != ERROR_OK)
+  if (architecture_paging_enable() != STATUS_OK)
     MACHINE_ESCAPE("unable to enable the paging mechanism");
 
   MACHINE_LEAVE();
@@ -178,7 +178,7 @@ t_error			architecture_paging_setup(void)
  * 1) generate the CR3 register's content.
  */
 
-t_error			architecture_paging_pdbr(t_paddr	pd,
+t_status		architecture_paging_pdbr(t_paddr	pd,
 						 t_flags	flags,
 						 at_cr3*	pdbr)
 {
@@ -208,7 +208,7 @@ t_error			architecture_paging_pdbr(t_paddr	pd,
  * 2) install the new CR3.
  */
 
-t_error			architecture_paging_import(at_pd	pd,
+t_status		architecture_paging_import(at_pd	pd,
 						   at_cr3	cr3)
 {
   /*
@@ -236,7 +236,7 @@ t_error			architecture_paging_import(at_pd	pd,
  * 2) retrieve the current CR3.
  */
 
-t_error			architecture_paging_export(at_pd*	pd,
+t_status		architecture_paging_export(at_pd*	pd,
 						   at_cr3*	cr3)
 {
   /*
@@ -307,7 +307,7 @@ t_error			architecture_paging_export(at_pd*	pd,
  *    address space, unmap the page directory.
  */
 
-t_error			architecture_paging_map(i_as		id,
+t_status		architecture_paging_map(i_as		id,
 						i_segment	segment,
 						t_paddr		offset,
 						t_options	options,
@@ -347,14 +347,14 @@ t_error			architecture_paging_map(i_as		id,
    * 1)
    */
 
-  if (as_get(id, &as) != ERROR_OK)
+  if (as_get(id, &as) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the address space object");
 
   /*
    * 2)
    */
 
-  if (segment_get(segment, &o) != ERROR_OK)
+  if (segment_get(segment, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable t");
 
   /*
@@ -375,7 +375,7 @@ t_error			architecture_paging_map(i_as		id,
        * A)
        */
 
-      if (architecture_pd_map(as->machine.pd, &pd) != ERROR_OK)
+      if (architecture_pd_map(as->machine.pd, &pd) != STATUS_OK)
 	MACHINE_ESCAPE("unable to map the page directory");
     }
   else
@@ -441,14 +441,14 @@ t_error			architecture_paging_map(i_as		id,
 			      ___kaneton$pagesz,
 			      PERMISSION_READ | PERMISSION_WRITE,
 			      SEGMENT_OPTION_SYSTEM,
-			      &i) != ERROR_OK)
+			      &i) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to reserve a segment");
 
 	  /*
 	   * ii)
 	   */
 
-	  if (segment_get(i, &s) != ERROR_OK)
+	  if (segment_get(i, &s) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to retrieve the segment object");
 
 	  /*
@@ -462,21 +462,21 @@ t_error			architecture_paging_map(i_as		id,
 				     ARCHITECTURE_PDE_RW |
 				     ARCHITECTURE_PDE_USER |
 				     ARCHITECTURE_PDE_PWB |
-				     ARCHITECTURE_PDE_PCE) != ERROR_OK)
+				     ARCHITECTURE_PDE_PCE) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to update the page directory");
 
 	  /*
 	   * iv)
 	   */
 
-	  if (architecture_pt_map(s->address, &pt) != ERROR_OK)
+	  if (architecture_pt_map(s->address, &pt) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to map the page table");
 
 	  /*
 	   * v)
 	   */
 
-	  if (architecture_pt_build(pt) != ERROR_OK)
+	  if (architecture_pt_build(pt) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to build the page table");
 	}
       else
@@ -490,7 +490,7 @@ t_error			architecture_paging_map(i_as		id,
 	   */
 
 	  if (architecture_pt_map(ARCHITECTURE_PDE_ADDRESS(pd[pde.index]),
-				  &pt) != ERROR_OK)
+				  &pt) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to map the page table");
 	}
 
@@ -524,7 +524,7 @@ t_error			architecture_paging_map(i_as		id,
 				       ARCHITECTURE_PTE_SUPERVISOR :
 				       ARCHITECTURE_PTE_USER) |
 				     ARCHITECTURE_PTE_PWB |
-				     ARCHITECTURE_PTE_PCE) != ERROR_OK)
+				     ARCHITECTURE_PTE_PCE) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to update the page table");
 
 	  /*
@@ -540,7 +540,7 @@ t_error			architecture_paging_map(i_as		id,
        * d)
        */
 
-      if (architecture_pt_unmap(pt) != ERROR_OK)
+      if (architecture_pt_unmap(pt) != STATUS_OK)
 	MACHINE_ESCAPE("unable to unmap the page table");
     }
 
@@ -550,7 +550,7 @@ t_error			architecture_paging_map(i_as		id,
 
   if (as->id != _kernel.as)
     {
-      if (architecture_pd_unmap(pd) != ERROR_OK)
+      if (architecture_pd_unmap(pd) != STATUS_OK)
 	MACHINE_ESCAPE("unable to unmap the page directory");
     }
 
@@ -591,7 +591,7 @@ t_error			architecture_paging_map(i_as		id,
  * 5) finally, unmap the page directory if not the kernel's.
  */
 
-t_error			architecture_paging_unmap(i_as		id,
+t_status		architecture_paging_unmap(i_as		id,
 						  t_vaddr	address,
 						  t_vsize	size)
 {
@@ -625,7 +625,7 @@ t_error			architecture_paging_unmap(i_as		id,
    * 1)
    */
 
-  if (as_get(id, &as) != ERROR_OK)
+  if (as_get(id, &as) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the address space object");
 
   /*
@@ -638,7 +638,7 @@ t_error			architecture_paging_unmap(i_as		id,
        * A)
        */
 
-      if (architecture_pd_map(as->machine.pd, &pd) != ERROR_OK)
+      if (architecture_pd_map(as->machine.pd, &pd) != STATUS_OK)
 	MACHINE_ESCAPE("unable to map the page directory");
     }
   else
@@ -681,7 +681,7 @@ t_error			architecture_paging_unmap(i_as		id,
        */
 
       if (architecture_pt_map(ARCHITECTURE_PDE_ADDRESS(pd[pde.index]),
-			      &pt) != ERROR_OK)
+			      &pt) != STATUS_OK)
 	MACHINE_ESCAPE("unable to map the page table");
 
       /*
@@ -696,7 +696,7 @@ t_error			architecture_paging_unmap(i_as		id,
 	   * i)
 	   */
 
-	  if (architecture_pt_delete(pt, pte.index) != ERROR_OK)
+	  if (architecture_pt_delete(pt, pte.index) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to delete the page table entry");
 
 	  /*
@@ -707,7 +707,7 @@ t_error			architecture_paging_unmap(i_as		id,
 	    {
 	      if (architecture_tlb_invalidate(
                     ARCHITECTURE_PAGING_ADDRESS(pde.index,
-						pte.index)) != ERROR_OK)
+						pte.index)) != STATUS_OK)
 		MACHINE_ESCAPE("unable to invalidate the address");
 	    }
 	}
@@ -716,7 +716,7 @@ t_error			architecture_paging_unmap(i_as		id,
        * d)
        */
 
-      if (architecture_pt_unmap(pt) != ERROR_OK)
+      if (architecture_pt_unmap(pt) != STATUS_OK)
 	MACHINE_ESCAPE("unable to unmap the page table");
 
       /*
@@ -732,7 +732,7 @@ t_error			architecture_paging_unmap(i_as		id,
 	   * i)
 	   */
 
-	  if (architecture_pd_delete(pd, pde.index) != ERROR_OK)
+	  if (architecture_pd_delete(pd, pde.index) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to delete the page directory entry");
 
 	  /*
@@ -743,7 +743,7 @@ t_error			architecture_paging_unmap(i_as		id,
 	    {
 	      if (architecture_tlb_invalidate(
 		    ARCHITECTURE_PAGING_ADDRESS(ARCHITECTURE_PD_MIRROR,
-						pde.index)) != ERROR_OK)
+						pde.index)) != STATUS_OK)
 		MACHINE_ESCAPE("unable to invalidate the address");
 	    }
 
@@ -752,7 +752,7 @@ t_error			architecture_paging_unmap(i_as		id,
 	   */
 
 	  if (segment_locate(ARCHITECTURE_PDE_ADDRESS(pd[pde.index]),
-			     &i) == ERROR_FALSE)
+			     &i) == FALSE)
 	    MACHINE_ESCAPE("unable to locate the segment holding the "
 			   "page table");
 
@@ -760,7 +760,7 @@ t_error			architecture_paging_unmap(i_as		id,
 	   * iv)
 	   */
 
-	  if (segment_release(i) != ERROR_OK)
+	  if (segment_release(i) != STATUS_OK)
 	    MACHINE_ESCAPE("unable to release the segment");
 	}
     }
@@ -771,7 +771,7 @@ t_error			architecture_paging_unmap(i_as		id,
 
   if (as->id != _kernel.as)
     {
-      if (architecture_pd_unmap(pd) != ERROR_OK)
+      if (architecture_pd_unmap(pd) != STATUS_OK)
 	MACHINE_ESCAPE("unable to unmap the page directory");
     }
 
@@ -796,7 +796,7 @@ t_error			architecture_paging_unmap(i_as		id,
  * 7) release the region.
  */
 
-t_error			architecture_paging_read(i_segment	id,
+t_status		architecture_paging_read(i_segment	id,
 						 t_paddr	offset,
 						 void*		buffer,
 						 t_psize	size)
@@ -818,7 +818,7 @@ t_error			architecture_paging_read(i_segment	id,
    * 1)
    */
 
-  if (segment_get(id, &o) != ERROR_OK)
+  if (segment_get(id, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -854,14 +854,14 @@ t_error			architecture_paging_read(i_segment	id,
 		     REGION_OPTION_NONE,
 		     0x0,
 		     end - offset,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region");
 
   /*
    * 5)
    */
 
-  if (region_get(_kernel.as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -874,7 +874,7 @@ t_error			architecture_paging_read(i_segment	id,
    * 7)
    */
 
-  if (region_release(_kernel.as, region) != ERROR_OK)
+  if (region_release(_kernel.as, region) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();
@@ -898,7 +898,7 @@ t_error			architecture_paging_read(i_segment	id,
  * 7) release the region.
  */
 
-t_error			architecture_paging_write(i_segment	id,
+t_status		architecture_paging_write(i_segment	id,
 						  t_paddr	offset,
 						  const void*	buffer,
 						  t_psize	size)
@@ -920,7 +920,7 @@ t_error			architecture_paging_write(i_segment	id,
    * 1)
    */
 
-  if (segment_get(id, &o) != ERROR_OK)
+  if (segment_get(id, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -956,14 +956,14 @@ t_error			architecture_paging_write(i_segment	id,
 		     REGION_OPTION_NONE,
 		     0x0,
 		     end - offset,
-		     &region) != ERROR_OK)
+		     &region) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region");
 
   /*
    * 5)
    */
 
-  if (region_get(_kernel.as, region, &r) != ERROR_OK)
+  if (region_get(_kernel.as, region, &r) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -976,7 +976,7 @@ t_error			architecture_paging_write(i_segment	id,
    * 7)
    */
 
-  if (region_release(_kernel.as, region) != ERROR_OK)
+  if (region_release(_kernel.as, region) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();
@@ -1003,7 +1003,7 @@ t_error			architecture_paging_write(i_segment	id,
  * 11) release the reserved regions.
  */
 
-t_error			architecture_paging_copy(i_region	dst,
+t_status		architecture_paging_copy(i_region	dst,
 						 t_paddr	to,
 						 i_region	src,
 						 t_paddr	from,
@@ -1041,10 +1041,10 @@ t_error			architecture_paging_copy(i_region	dst,
    * 1)
    */
 
-  if (segment_get(dst, &destination.segment.object) != ERROR_OK)
+  if (segment_get(dst, &destination.segment.object) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
-  if (segment_get(src, &source.segment.object) != ERROR_OK)
+  if (segment_get(src, &source.segment.object) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the segment object");
 
   /*
@@ -1080,7 +1080,7 @@ t_error			architecture_paging_copy(i_region	dst,
 		     REGION_OPTION_NONE,
 		     0x0,
 		     end - from,
-		     &source.region.id) != ERROR_OK)
+		     &source.region.id) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region");
 
   /*
@@ -1089,7 +1089,7 @@ t_error			architecture_paging_copy(i_region	dst,
 
   if (region_get(_kernel.as,
 		 source.region.id,
-		 &source.region.object) != ERROR_OK)
+		 &source.region.object) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -1125,7 +1125,7 @@ t_error			architecture_paging_copy(i_region	dst,
 		     REGION_OPTION_NONE,
 		     0x0,
 		     end - to,
-		     &destination.region.id) != ERROR_OK)
+		     &destination.region.id) != STATUS_OK)
     MACHINE_ESCAPE("unable to reserve a region");
 
   /*
@@ -1134,7 +1134,7 @@ t_error			architecture_paging_copy(i_region	dst,
 
   if (region_get(_kernel.as,
 		 destination.region.id,
-		 &destination.region.object) != ERROR_OK)
+		 &destination.region.object) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the region object");
 
   /*
@@ -1149,10 +1149,10 @@ t_error			architecture_paging_copy(i_region	dst,
    * 11)
    */
 
-  if (region_release(_kernel.as, source.region.id) != ERROR_OK)
+  if (region_release(_kernel.as, source.region.id) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the region");
 
-  if (region_release(_kernel.as, destination.region.id) != ERROR_OK)
+  if (region_release(_kernel.as, destination.region.id) != STATUS_OK)
     MACHINE_ESCAPE("unable to release the region");
 
   MACHINE_LEAVE();
@@ -1162,7 +1162,7 @@ t_error			architecture_paging_copy(i_region	dst,
  * this function tests the virtual address is mapped in current address space
  */
 
-t_error			architecture_paging_test(t_vaddr	vaddr,
+t_status		architecture_paging_test(t_vaddr	vaddr,
                                                  t_boolean*	result)
 {
   at_pde* pde;

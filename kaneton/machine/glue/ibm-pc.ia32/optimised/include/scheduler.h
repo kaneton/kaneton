@@ -30,7 +30,7 @@
 #define		machine_call_scheduler(_function_, _args_...)		\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_status _r_ = STATUS_OK;					\
 									\
       if (scheduler_dispatch._function_ != NULL)			\
         _r_ = scheduler_dispatch._function_(_args_);			\
@@ -61,15 +61,15 @@
  * ../scheduler.c
  */
 
-t_error			glue_scheduler_quantum(t_quantum	quantum);
+t_status		glue_scheduler_quantum(t_quantum	quantum);
 
-t_error			glue_scheduler_initialize(void);
+t_status		glue_scheduler_initialize(void);
 
-t_error			glue_scheduler_clean(void);
+t_status		glue_scheduler_clean(void);
 
 void			glue_scheduler_switch_extended(i_event	id);
 
-t_error			glue_scheduler_switch(i_thread		elected);
+t_status		glue_scheduler_switch(i_thread		elected);
 
 
 /*

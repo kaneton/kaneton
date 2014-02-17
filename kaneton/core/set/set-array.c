@@ -67,7 +67,7 @@ extern m_set		_set;
  * 2) search sequentially for the element.
  */
 
-t_error			set_exist_array(i_set			setid,
+t_bool			set_exist_array(i_set			setid,
 					t_id			id)
 {
   o_set*       		o;
@@ -83,7 +83,7 @@ t_error			set_exist_array(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -114,7 +114,7 @@ t_error			set_exist_array(i_set			setid,
  *   c) display the identifier and move on to the next object.
  */
 
-t_error			set_show_array(i_set			setid,
+t_status		set_show_array(i_set			setid,
 				       mt_margin		margin)
 {
   o_set*		o;
@@ -127,7 +127,7 @@ t_error			set_show_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -234,7 +234,7 @@ t_error			set_show_array(i_set			setid,
  * 4) set the iterator.
  */
 
-t_error			set_head_array(i_set			setid,
+t_bool			set_head_array(i_set			setid,
 				       s_iterator*		iterator)
 {
   o_set*		o;
@@ -250,7 +250,7 @@ t_error			set_head_array(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -292,7 +292,7 @@ t_error			set_head_array(i_set			setid,
  * 4) set the iterator.
  */
 
-t_error			set_tail_array(i_set			setid,
+t_bool			set_tail_array(i_set			setid,
 				       s_iterator*		iterator)
 {
   o_set*		o;
@@ -308,7 +308,7 @@ t_error			set_tail_array(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -349,7 +349,7 @@ t_error			set_tail_array(i_set			setid,
  * 4) set the iterator.
  */
 
-t_error			set_previous_array(i_set		setid,
+t_bool			set_previous_array(i_set		setid,
 					   s_iterator		current,
 					   s_iterator*		previous)
 {
@@ -366,7 +366,7 @@ t_error			set_previous_array(i_set		setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -407,7 +407,7 @@ t_error			set_previous_array(i_set		setid,
  * 4) set the iterator.
  */
 
-t_error			set_next_array(i_set			setid,
+t_bool			set_next_array(i_set			setid,
 				       s_iterator		current,
 				       s_iterator*		next)
 {
@@ -424,7 +424,7 @@ t_error			set_next_array(i_set			setid,
    * 1)
    */
 
-  assert(set_descriptor(setid, &o) == ERROR_OK);
+  assert(set_descriptor(setid, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -469,7 +469,7 @@ t_error			set_next_array(i_set			setid,
  * 5) initialize the new entries as available i.e unused.
  */
 
-t_error			set_expand_array(o_set			*object,
+t_status		set_expand_array(o_set			*object,
 					 void			*data)
 {
   t_setsz		i;
@@ -541,7 +541,7 @@ t_error			set_expand_array(o_set			*object,
  * 6) insert the data at the desired position.
  */
 
-t_error			set_insert_array_at(o_set		*object,
+t_status		set_insert_array_at(o_set		*object,
 					    t_setsz		pos,
 					    void		*data)
 {
@@ -560,7 +560,7 @@ t_error			set_insert_array_at(o_set		*object,
 
   if (object->u.array.arraysz == pos)
     {
-      if (set_expand_array(object, data) != ERROR_OK)
+      if (set_expand_array(object, data) != STATUS_OK)
 	CORE_ESCAPE("unable to expand the array");
 
       CORE_LEAVE();
@@ -594,7 +594,7 @@ t_error			set_insert_array_at(o_set		*object,
   if (limit == object->u.array.arraysz)
     {
       if (set_expand_array(object,
-			   object->u.array.array[limit - 1]) != ERROR_OK)
+			   object->u.array.array[limit - 1]) != STATUS_OK)
 	CORE_ESCAPE("unable to expand the array");
     }
 
@@ -629,7 +629,7 @@ t_error			set_insert_array_at(o_set		*object,
  * 5) update the size of the set.
  */
 
-t_error			set_insert_array(i_set			setid,
+t_status		set_insert_array(i_set			setid,
 					 void*			data)
 {
   o_set*		o;
@@ -649,7 +649,7 @@ t_error			set_insert_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -677,7 +677,7 @@ t_error			set_insert_array(i_set			setid,
    * 4)
    */
 
-  if (set_insert_array_at(o, 0, data) != ERROR_OK)
+  if (set_insert_array_at(o, 0, data) != STATUS_OK)
     {
       if (o->options & SET_OPTION_ALLOCATE)
 	free(data);
@@ -708,7 +708,7 @@ t_error			set_insert_array(i_set			setid,
  * 6) update the size of the set.
  */
 
-t_error			set_append_array(i_set			setid,
+t_status		set_append_array(i_set			setid,
 					 void*			data)
 {
   o_set*		o;
@@ -729,7 +729,7 @@ t_error			set_append_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -772,7 +772,7 @@ t_error			set_append_array(i_set			setid,
    * 5)
    */
 
-  if (set_insert_array_at(o, i, data) != ERROR_OK)
+  if (set_insert_array_at(o, i, data) != STATUS_OK)
     {
       if (o->options & SET_OPTION_ALLOCATE)
 	free(data);
@@ -803,7 +803,7 @@ t_error			set_append_array(i_set			setid,
  * 5) update the size of the set.
  */
 
-t_error			set_before_array(i_set			setid,
+t_status		set_before_array(i_set			setid,
 					 s_iterator		iterator,
 					 void*			data)
 {
@@ -825,7 +825,7 @@ t_error			set_before_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -858,7 +858,7 @@ t_error			set_before_array(i_set			setid,
   if (i < 0)
     i = 0;
 
-  if (set_insert_array_at(o, i, data) != ERROR_OK)
+  if (set_insert_array_at(o, i, data) != STATUS_OK)
     {
       if (o->options & SET_OPTION_ALLOCATE)
 	free(data);
@@ -890,7 +890,7 @@ t_error			set_before_array(i_set			setid,
  * 5) update the size of the set.
  */
 
-t_error			set_after_array(i_set			setid,
+t_status		set_after_array(i_set			setid,
 					s_iterator		iterator,
 					void*			data)
 {
@@ -912,7 +912,7 @@ t_error			set_after_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -945,7 +945,7 @@ t_error			set_after_array(i_set			setid,
   if (i > o->u.array.arraysz)
     i = o->u.array.arraysz;
 
-  if (set_insert_array_at(o, i, data) != ERROR_OK)
+  if (set_insert_array_at(o, i, data) != STATUS_OK)
     {
       if (o->options & SET_OPTION_ALLOCATE)
 	free(data);
@@ -981,7 +981,7 @@ t_error			set_after_array(i_set			setid,
  * 4) update the set's size.
  */
 
-t_error			set_add_array(i_set			setid,
+t_status		set_add_array(i_set			setid,
 				      void*			data)
 {
   o_set*		o;
@@ -1006,7 +1006,7 @@ t_error			set_add_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1078,7 +1078,7 @@ t_error			set_add_array(i_set			setid,
 
       if (last < o->u.array.arraysz)
 	{
-	  if (set_insert_array_at(o, last, data) != ERROR_OK)
+	  if (set_insert_array_at(o, last, data) != STATUS_OK)
 	    {
 	      if (o->options & SET_OPTION_ALLOCATE)
 		free(data);
@@ -1093,7 +1093,7 @@ t_error			set_add_array(i_set			setid,
 
       if (last >= o->u.array.arraysz)
 	{
-	  if (set_expand_array(o, data) != ERROR_OK)
+	  if (set_expand_array(o, data) != STATUS_OK)
 	    {
 	      if (o->options & SET_OPTION_ALLOCATE)
 		free(data);
@@ -1128,7 +1128,7 @@ t_error			set_add_array(i_set			setid,
 
       if (i == o->u.array.arraysz)
 	{
-	  if (set_expand_array(o, data) != ERROR_OK)
+	  if (set_expand_array(o, data) != STATUS_OK)
 	    {
 	      if (o->options & SET_OPTION_ALLOCATE)
 		free(data);
@@ -1163,7 +1163,7 @@ t_error			set_add_array(i_set			setid,
  * 6) update the set's size.
  */
 
-t_error			set_remove_array(i_set			setid,
+t_status		set_remove_array(i_set			setid,
 					 t_id			id)
 {
   o_set*       		o;
@@ -1181,7 +1181,7 @@ t_error			set_remove_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1267,7 +1267,7 @@ t_error			set_remove_array(i_set			setid,
  * 7) update the set's size.
  */
 
-t_error			set_delete_array(i_set			setid,
+t_status		set_delete_array(i_set			setid,
 					 s_iterator		iterator)
 {
   o_set*		o;
@@ -1277,7 +1277,7 @@ t_error			set_delete_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1350,7 +1350,7 @@ t_error			set_delete_array(i_set			setid,
  * 4) set the size of the set to zero.
  */
 
-t_error			set_flush_array(i_set			setid)
+t_status		set_flush_array(i_set			setid)
 {
   o_set*       		o;
   t_setsz		i;
@@ -1359,7 +1359,7 @@ t_error			set_flush_array(i_set			setid)
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1418,7 +1418,7 @@ t_error			set_flush_array(i_set			setid)
  * 3) if not found, return an error.
  */
 
-t_error			set_locate_array(i_set			setid,
+t_status		set_locate_array(i_set			setid,
 					 t_id			id,
 					 s_iterator*		iterator)
 {
@@ -1439,7 +1439,7 @@ t_error			set_locate_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1476,7 +1476,7 @@ t_error			set_locate_array(i_set			setid,
  * 4) return the object.
  */
 
-t_error			set_object_array(i_set			setid,
+t_status		set_object_array(i_set			setid,
 					 s_iterator		iterator,
 					 void**			data)
 {
@@ -1493,7 +1493,7 @@ t_error			set_object_array(i_set			setid,
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
@@ -1534,7 +1534,7 @@ t_error			set_object_array(i_set			setid,
  * 4) register the set descriptor.
  */
 
-t_error			set_reserve_array(t_options		options,
+t_status		set_reserve_array(t_options		options,
 					  t_setsz		initsz,
 					  t_size		datasz,
 					  i_set*		id)
@@ -1566,7 +1566,7 @@ t_error			set_reserve_array(t_options		options,
     }
   else
     {
-      if (id_reserve(&_set.id, id) != ERROR_OK)
+      if (id_reserve(&_set.id, id) != STATUS_OK)
 	CORE_ESCAPE("unable to reserve an identifier");
     }
 
@@ -1604,7 +1604,7 @@ t_error			set_reserve_array(t_options		options,
    * 4)
    */
 
-  if (set_new(&o) != ERROR_OK)
+  if (set_new(&o) != STATUS_OK)
     {
       free(o.u.array.array);
 
@@ -1629,7 +1629,7 @@ t_error			set_reserve_array(t_options		options,
  * 5) remove the set descriptor from the set container.
  */
 
-t_error			set_release_array(i_set			setid)
+t_status		set_release_array(i_set			setid)
 {
   o_set*       		o;
 
@@ -1637,21 +1637,21 @@ t_error			set_release_array(i_set			setid)
    * 1)
    */
 
-  if (set_descriptor(setid, &o) != ERROR_OK)
+  if (set_descriptor(setid, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the set descriptor");
 
   /*
    * 2)
    */
 
-  if (set_flush(setid) != ERROR_OK)
+  if (set_flush(setid) != STATUS_OK)
     CORE_ESCAPE("unable to flush the set");
 
   /*
    * 3)
    */
 
-  if (id_release(&_set.id, o->id) != ERROR_OK)
+  if (id_release(&_set.id, o->id) != STATUS_OK)
     CORE_ESCAPE("unable to release the set's identifier");
 
   /*
@@ -1664,7 +1664,7 @@ t_error			set_release_array(i_set			setid)
    * 5)
    */
 
-  if (set_destroy(o->id) != ERROR_OK)
+  if (set_destroy(o->id) != STATUS_OK)
     CORE_ESCAPE("unable to destroy the set descriptor");
 
   CORE_LEAVE();
@@ -1675,7 +1675,7 @@ t_error			set_release_array(i_set			setid)
  * support this operation.
  */
 
-t_error			set_push_array(i_set			setid,
+t_status		set_push_array(i_set			setid,
 				       void*			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");
@@ -1686,7 +1686,7 @@ t_error			set_push_array(i_set			setid,
  * support this operation.
  */
 
-t_error			set_pop_array(i_set			setid)
+t_status		set_pop_array(i_set			setid)
 {
   CORE_ESCAPE("this type of set does not support this operation");
 }
@@ -1696,7 +1696,7 @@ t_error			set_pop_array(i_set			setid)
  * support this operation.
  */
 
-t_error			set_pick_array(i_set			setid,
+t_status		set_pick_array(i_set			setid,
 				       void**			data)
 {
   CORE_ESCAPE("this type of set does not support this operation");

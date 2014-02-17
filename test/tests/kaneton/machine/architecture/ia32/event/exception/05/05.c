@@ -46,7 +46,7 @@ void			test_architecture_event_exception_05(void)
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_GP,
 		    EVENT_TYPE_FUNCTION,
 		    EVENT_ROUTINE(test_architecture_event_exception_05_handler),
-		    EVENT_DATA(NULL)) != ERROR_OK)
+		    EVENT_DATA(NULL)) != STATUS_OK)
     TEST_ERROR("[event_reserve] error");
 
   asm volatile("movw %0, %%gs"

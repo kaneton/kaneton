@@ -57,19 +57,19 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*map_reserve)(i_as,
+  t_status		(*map_reserve)(i_as,
 					       t_options,
 					       t_vsize,
 					       t_permissions,
 					       t_vaddr*);
-  t_error			(*map_release)(i_as,
+  t_status		(*map_release)(i_as,
 					       t_vaddr);
-  t_error			(*map_resize)(i_as,
+  t_status		(*map_resize)(i_as,
 					      t_vaddr,
 					      t_vsize,
 					      t_vaddr*);
-  t_error			(*map_initialize)(void);
-  t_error			(*map_clean)(void);
+  t_status		(*map_initialize)(void);
+  t_status		(*map_clean)(void);
 }				d_map;
 
 /*
@@ -82,23 +82,23 @@ typedef struct
  * ../../core/map/map.c
  */
 
-t_error			map_reserve(i_as			as,
+t_status		map_reserve(i_as			as,
 				    t_options			options,
 				    t_vsize			size,
 				    t_permissions		permissions,
 				    t_vaddr*			address);
 
-t_error			map_release(i_as			as,
+t_status		map_release(i_as			as,
 				    t_vaddr			address);
 
-t_error			map_resize(i_as				as,
+t_status		map_resize(i_as				as,
 				   t_vaddr			old,
 				   t_vsize			size,
 				   t_vaddr*			new);
 
-t_error			map_initialize(void);
+t_status		map_initialize(void);
 
-t_error			map_clean(void);
+t_status		map_clean(void);
 
 
 /*

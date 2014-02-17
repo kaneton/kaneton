@@ -76,7 +76,7 @@ d_thread		glue_thread_dispatch =
  * 3) display the thread's machine-specific information.
  */
 
-t_error			glue_thread_show(i_thread		id,
+t_status		glue_thread_show(i_thread		id,
 					 mt_margin		margin)
 {
   o_thread*		thread;
@@ -86,14 +86,14 @@ t_error			glue_thread_show(i_thread		id,
    * 1)
    */
 
-  if (thread_get(id, &thread) != ERROR_OK)
+  if (thread_get(id, &thread) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread object");
 
   /*
    * 2)
    */
 
-  if (architecture_context_get(id, &ctx) != ERROR_OK)
+  if (architecture_context_get(id, &ctx) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread's IA32 context");
 
   /*
@@ -157,7 +157,7 @@ t_error			glue_thread_show(i_thread		id,
  * 2) display the segment selectors.
  */
 
-t_error			glue_thread_dump(void)
+t_status		glue_thread_dump(void)
 {
   /*
    * 1)
@@ -210,7 +210,7 @@ t_error			glue_thread_dump(void)
  * 1) initialize the thread's IA32 context.
  */
 
-t_error			glue_thread_reserve(i_task		task,
+t_status		glue_thread_reserve(i_task		task,
 					    t_priority		priority,
 					    t_vaddr		stack,
 					    t_vsize		stacksz,
@@ -221,7 +221,7 @@ t_error			glue_thread_reserve(i_task		task,
    * 1)
    */
 
-  if (architecture_context_build(*id) != ERROR_OK)
+  if (architecture_context_build(*id) != STATUS_OK)
     MACHINE_ESCAPE("unable to build the IA32 context");
 
   MACHINE_LEAVE();
@@ -235,13 +235,13 @@ t_error			glue_thread_reserve(i_task		task,
  * 1) destory the IA32 context.
  */
 
-t_error			glue_thread_release(i_thread		id)
+t_status		glue_thread_release(i_thread		id)
 {
   /*
    * 1)
    */
 
-  if (architecture_context_destroy(id) != ERROR_OK)
+  if (architecture_context_destroy(id) != STATUS_OK)
     MACHINE_ESCAPE("unable to destory the IA32 context");
 
   MACHINE_LEAVE();
@@ -257,7 +257,7 @@ t_error			glue_thread_release(i_thread		id)
  * 3) upadte the thread's IA32 context.
  */
 
-t_error			glue_thread_load(i_thread		id,
+t_status		glue_thread_load(i_thread		id,
 					 s_thread_context	context)
 {
   as_context		ctx;
@@ -266,7 +266,7 @@ t_error			glue_thread_load(i_thread		id,
    * 1)
    */
 
-  if (architecture_context_get(id, &ctx) != ERROR_OK)
+  if (architecture_context_get(id, &ctx) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the thread's IA32 context");
 
   /*
@@ -280,7 +280,7 @@ t_error			glue_thread_load(i_thread		id,
    * 3)
    */
 
-  if (architecture_context_set(id, &ctx) != ERROR_OK)
+  if (architecture_context_set(id, &ctx) != STATUS_OK)
     MACHINE_ESCAPE("unable to update the IA32 context");
 
   MACHINE_LEAVE();
@@ -295,7 +295,7 @@ t_error			glue_thread_load(i_thread		id,
  * 2) return the only core-meaningful values: PC and SP.
  */
 
-t_error			glue_thread_store(i_thread		id,
+t_status		glue_thread_store(i_thread		id,
 					  s_thread_context*	context)
 {
   as_context		ctx;
@@ -304,7 +304,7 @@ t_error			glue_thread_store(i_thread		id,
    * 1)
    */
 
-  if (architecture_context_get(id, &ctx) != ERROR_OK)
+  if (architecture_context_get(id, &ctx) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the IA32 context");
 
   /*
@@ -321,11 +321,11 @@ t_error			glue_thread_store(i_thread		id,
  * this function sets the given arguments on the thread's stack.
  */
 
-t_error			glue_thread_arguments(i_thread		id,
+t_status		glue_thread_arguments(i_thread		id,
 					      void*		arguments,
 					      t_vsize		size)
 {
-  if (architecture_context_arguments(id, arguments, size) != ERROR_OK)
+  if (architecture_context_arguments(id, arguments, size) != STATUS_OK)
     MACHINE_ESCAPE("unable to push the arguments");
 
   MACHINE_LEAVE();
@@ -339,13 +339,13 @@ t_error			glue_thread_arguments(i_thread		id,
  * 1) initialize the context switcher.
  */
 
-t_error			glue_thread_initialize(void)
+t_status		glue_thread_initialize(void)
 {
   /*
    * 1)
    */
 
-  if (architecture_context_setup() != ERROR_OK)
+  if (architecture_context_setup() != STATUS_OK)
     MACHINE_ESCAPE("unable to set up the context switcher");
 
   MACHINE_LEAVE();

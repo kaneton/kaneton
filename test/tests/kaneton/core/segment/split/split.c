@@ -42,16 +42,16 @@ void			test_core_segment_split(void)
 		      3 * ___kaneton$pagesz,
 		      PERMISSION_READ,
 		      SEGMENT_OPTION_NONE,
-		      &seg) != ERROR_OK)
+		      &seg) != STATUS_OK)
     TEST_ERROR("[segment_reserve] error");
 
-  if (segment_split(seg, 2 * ___kaneton$pagesz, &seg, &seg2) != ERROR_OK)
+  if (segment_split(seg, 2 * ___kaneton$pagesz, &seg, &seg2) != STATUS_OK)
     TEST_ERROR("[segment_split] error");
 
-  if (segment_get(seg, &o1) != ERROR_OK)
+  if (segment_get(seg, &o1) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
-  if (segment_get(seg2, &o2) != ERROR_OK)
+  if (segment_get(seg2, &o2) != STATUS_OK)
     TEST_ERROR("[segment_get] error");
 
   if (o2->address != (o1->address + 2 * ___kaneton$pagesz))
@@ -87,10 +87,10 @@ void			test_core_segment_split(void)
   if (o2->permissions != PERMISSION_READ)
     TEST_ERROR("invalid segment's permissions after split");
 
-  if (segment_release(seg) != ERROR_OK)
+  if (segment_release(seg) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
-  if (segment_release(seg2) != ERROR_OK)
+  if (segment_release(seg2) != STATUS_OK)
     TEST_ERROR("[segment_release] error");
 
   TEST_SIGNATURE(vsdlawogjjgeoihj4e3h);

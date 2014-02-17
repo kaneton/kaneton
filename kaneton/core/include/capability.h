@@ -78,7 +78,7 @@ typedef struct
 {
   i_set				descriptors;
 
-  t_error			(*f_checksum)(char* data,
+  t_status		(*f_checksum)(char* data,
 					      t_uint32 size,
 					      t_uint64* res);
 
@@ -104,36 +104,36 @@ typedef struct
  * ../../core/capability/capability.c
  */
 
-t_error			capability_show(t_id			id);
+t_status		capability_show(t_id			id);
 
-t_error			capability_dump(void);
+t_status		capability_dump(void);
 
-t_error			capability_reserve(t_id			object,
+t_status		capability_reserve(t_id			object,
 					   t_operations		operations,
 					   t_capability*	new);
 
-t_error			capability_release(t_id			id);
+t_status		capability_release(t_id			id);
 
-t_error			capability_restrict(t_id		id,
+t_status		capability_restrict(t_id		id,
 					    t_operations	operations,
 					    t_capability*	new);
 
-t_error			capability_invalidate(t_id		p,
+t_status		capability_invalidate(t_id		p,
 					      t_id		c);
 
-t_error			capability_exist(t_id			id);
+t_bool			capability_exist(t_id			id);
 
-t_error			capability_get(t_id			id,
+t_status		capability_get(t_id			id,
 				       t_capability_descriptor** descriptor);
 
-t_error			capability_give(t_id			id,
+t_status		capability_give(t_id			id,
 					i_node			node);
 
-t_error			capability_verify(t_capability*		provided);
+t_status		capability_verify(t_capability*		provided);
 
-t_error			capability_initialize(void);
+t_status		capability_initialize(void);
 
-t_error			capability_clean(void);
+t_status		capability_clean(void);
 
 
 /*

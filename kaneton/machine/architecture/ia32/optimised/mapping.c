@@ -52,7 +52,7 @@ extern i_as		kasid;
  * 4) invalidate tlb entry.
  */
 
-t_error			ia32_map_chunk(t_vaddr		v,
+t_status		ia32_map_chunk(t_vaddr		v,
 				       t_paddr		p,
 				       void*		alloc)
 {
@@ -66,23 +66,23 @@ t_error			ia32_map_chunk(t_vaddr		v,
   assert(!(p % PAGESZ));
 
   if (reg == NULL)
-    return (ERROR_UNKNOWN);
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 1)
    */
 
-  if (ia32_pd_get_table(IA32_PD_CURRENT, IA32_PDE_ENTRY(v), &pt) != ERROR_NONE)
+  if (ia32_pd_get_table(IA32_PD_CURRENT, IA32_PDE_ENTRY(v), &pt) != STATUS_OK)
     {
       if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
-			  &seg) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+			  &seg) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
 
-      if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
 
-      if (ia32_pt_build((t_paddr)seg, &pt) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (ia32_pt_build((t_paddr)seg, &pt) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
 
       pt.rw = IA32_PT_WRITABLE;
       pt.present = 1;
@@ -91,8 +91,8 @@ t_error			ia32_map_chunk(t_vaddr		v,
       pt.writeback = IA32_PT_WRITEBACK;
 
       if (ia32_pd_add_table(IA32_PD_CURRENT, IA32_PDE_ENTRY(v),
-			    pt) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+			    pt) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
 
       ia32_tlb_invalidate(IA32_ENTRY_ADDR(IA32_PD_MIRROR, IA32_PDE_ENTRY(v)));
 
@@ -113,8 +113,8 @@ t_error			ia32_map_chunk(t_vaddr		v,
   pg.writeback = IA32_PG_WRITEBACK;
   pg.addr = p;
 
-  if (ia32_pt_add_page(&pt, IA32_PTE_ENTRY(v), pg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_pt_add_page(&pt, IA32_PTE_ENTRY(v), pg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -126,8 +126,8 @@ t_error			ia32_map_chunk(t_vaddr		v,
   reg->size = PAGESZ;
   reg->opts = REGION_OPT_NONE;
 
-  if (region_inject(kasid, reg, &useless) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_inject(kasid, reg, &useless) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 4)
@@ -135,7 +135,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
 
   ia32_tlb_invalidate(v);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -150,7 +150,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
  * 4) invalidate translation caches.
  */
 
-t_error			ia32_unmap_chunk(t_vaddr	v)
+t_status		ia32_unmap_chunk(t_vaddr	v)
 {
 
   t_ia32_table		pt;
@@ -162,8 +162,8 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
    * 1)
    */
 
-  if (ia32_pd_get_table(IA32_PD_CURRENT, IA32_PDE_ENTRY(v), &pt) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_pd_get_table(IA32_PD_CURRENT, IA32_PDE_ENTRY(v), &pt) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
@@ -171,18 +171,18 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
 
   pt.vaddr = IA32_ENTRY_ADDR(IA32_PD_MIRROR, IA32_PDE_ENTRY(v));
 
-  if (ia32_pt_delete_page(&pt, IA32_PTE_ENTRY(v)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_pt_delete_page(&pt, IA32_PTE_ENTRY(v)) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
    */
 
-  if (as_get(kasid, &as) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_get(kasid, &as) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (set_remove(as->regions, v) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (set_remove(as->regions, v) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 4)
@@ -190,14 +190,14 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
 
   ia32_tlb_invalidate(v);
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function is an helper for mapping a page directory.
  */
 
-t_error			ia32_map_pd(t_ia32_directory*	pd)
+t_status		ia32_map_pd(t_ia32_directory*	pd)
 {
   /*							     [block::map_pd] */
 
@@ -206,24 +206,24 @@ t_error			ia32_map_pd(t_ia32_directory*	pd)
 
   tmp = malloc(sizeof (o_region));
 
-  if (region_space(kasid, PAGESZ, &chunk) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_space(kasid, PAGESZ, &chunk) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (ia32_map_chunk(chunk, (t_paddr)*pd, tmp) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_map_chunk(chunk, (t_paddr)*pd, tmp) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   *pd = (t_ia32_directory)(t_uint32)chunk;
 
   /*							  [endblock::map_pd] */
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
  * this function is an helper for mapping a page table.
  */
 
-t_error			ia32_map_pt(t_ia32_table*	pt)
+t_status		ia32_map_pt(t_ia32_table*	pt)
 {
   /*							     [block::map_pt] */
 
@@ -232,17 +232,17 @@ t_error			ia32_map_pt(t_ia32_table*	pt)
 
   tmp = malloc(sizeof (o_region));
 
-  if (region_space(kasid, PAGESZ, &chunk) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (region_space(kasid, PAGESZ, &chunk) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
-  if (ia32_map_chunk(chunk, (t_paddr)pt->paddr, tmp) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (ia32_map_chunk(chunk, (t_paddr)pt->paddr, tmp) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   pt->vaddr = chunk;
 
   /*							  [endblock::map_pt] */
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -266,7 +266,7 @@ t_error			ia32_map_pt(t_ia32_table*	pt)
  *						[endblock::map_region::comment]
  */
 
-t_error			ia32_map_region(i_as		asid,
+t_status		ia32_map_region(i_as		asid,
 					i_segment	segid,
 					t_paddr		offset,
 					t_opts		opts,
@@ -299,15 +299,15 @@ t_error			ia32_map_region(i_as		asid,
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_get(asid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 2)
    */
 
-  if (segment_get(segid, &oseg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (segment_get(segid, &oseg) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -328,8 +328,8 @@ t_error			ia32_map_region(i_as		asid,
 
   if (asid != kasid)
     {
-      if (ia32_map_pd(&pd) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (ia32_map_pd(&pd) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
     }
 
   /*
@@ -353,17 +353,17 @@ t_error			ia32_map_region(i_as		asid,
        * a)
        */
 
-      if (ia32_pd_get_table(&pd, pde, &pt) != ERROR_NONE)
+      if (ia32_pd_get_table(&pd, pde, &pt) != STATUS_OK)
 	{
 	  if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
-			      &ptseg) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+			      &ptseg) != STATUS_OK)
+	    return (STATUS_UNKNOWN_ERROR);
 
-	  if (segment_type(ptseg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+	  if (segment_type(ptseg, SEGMENT_TYPE_SYSTEM) != STATUS_OK)
+	    return (STATUS_UNKNOWN_ERROR);
 
-	  if (ia32_pt_build((t_paddr)ptseg, &pt) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+	  if (ia32_pt_build((t_paddr)ptseg, &pt) != STATUS_OK)
+	    return (STATUS_UNKNOWN_ERROR);
 
 	  pt.rw = IA32_PT_WRITABLE;
 	  pt.present = 1;
@@ -371,8 +371,8 @@ t_error			ia32_map_region(i_as		asid,
 	  pt.cached = IA32_PT_CACHED;
 	  pt.writeback = IA32_PT_WRITEBACK;
 
-	  if (ia32_pd_add_table(&pd, pde, pt) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+	  if (ia32_pd_add_table(&pd, pde, pt) != STATUS_OK)
+	    return (STATUS_UNKNOWN_ERROR);
 
 	  clear_pt = 1;
 	}
@@ -383,8 +383,8 @@ t_error			ia32_map_region(i_as		asid,
        * b)
        */
 
-      if (ia32_map_pt(&pt) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (ia32_map_pt(&pt) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
 
       if (clear_pt)
 	memset((void*)pt.vaddr, 0, PAGESZ);
@@ -405,8 +405,8 @@ t_error			ia32_map_region(i_as		asid,
 	  paddr += PAGESZ;
 	  size -= PAGESZ;
 
-	  if (ia32_pt_add_page(&pt, pte, pg) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+	  if (ia32_pt_add_page(&pt, pte, pg) != STATUS_OK)
+	    return (STATUS_UNKNOWN_ERROR);
 
 	  /*
 	   * e)
@@ -420,8 +420,8 @@ t_error			ia32_map_region(i_as		asid,
        * f)
        */
 
-      if (ia32_unmap_chunk((t_vaddr)pt.vaddr) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (ia32_unmap_chunk((t_vaddr)pt.vaddr) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
     }
 
   /*
@@ -429,12 +429,12 @@ t_error			ia32_map_region(i_as		asid,
    */
 
   if (asid != kasid)
-    if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+    if (ia32_unmap_chunk((t_vaddr)pd) != STATUS_OK)
+      return (STATUS_UNKNOWN_ERROR);
 
   /*						      [endblock::map_region] */
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }
 
 /*
@@ -456,7 +456,7 @@ t_error			ia32_map_region(i_as		asid,
  *					      [endblock::unmap_region::comment]
  */
 
-t_error			ia32_unmap_region(i_as		asid,
+t_status		ia32_unmap_region(i_as		asid,
 					  t_vaddr	address,
 					  t_vsize	size)
 {
@@ -479,8 +479,8 @@ t_error			ia32_unmap_region(i_as		asid,
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (as_get(asid, &o) != STATUS_OK)
+    return (STATUS_UNKNOWN_ERROR);
 
   /*
    * 3)
@@ -490,8 +490,8 @@ t_error			ia32_unmap_region(i_as		asid,
 
   if (asid != kasid)
     {
-      if (ia32_map_pd(&pd) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (ia32_map_pd(&pd) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
     }
 
   /*
@@ -509,15 +509,15 @@ t_error			ia32_unmap_region(i_as		asid,
        * a)
        */
 
-      if (ia32_pd_get_table(&pd, pde, &pt) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (ia32_pd_get_table(&pd, pde, &pt) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
 
       /*
        * b)
        */
 
-      if (ia32_map_pt(&pt) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (ia32_map_pt(&pt) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
 
       /*
        * c)
@@ -527,8 +527,8 @@ t_error			ia32_unmap_region(i_as		asid,
 	   pte < (pde == pde_end ? pte_end : IA32_PT_MAX_ENTRIES);
 	   pte++)
 	{
-	  if (ia32_pt_delete_page(&pt, pte) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+	  if (ia32_pt_delete_page(&pt, pte) != STATUS_OK)
+	    return (STATUS_UNKNOWN_ERROR);
 
 	  if (asid == kasid)
 	    ia32_tlb_invalidate(IA32_ENTRY_ADDR(pde, pte));
@@ -538,8 +538,8 @@ t_error			ia32_unmap_region(i_as		asid,
        * d)
        */
 
-      if (ia32_unmap_chunk((t_vaddr)pt.vaddr) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (ia32_unmap_chunk((t_vaddr)pt.vaddr) != STATUS_OK)
+	return (STATUS_UNKNOWN_ERROR);
 
       /*
        * e)
@@ -547,14 +547,14 @@ t_error			ia32_unmap_region(i_as		asid,
 
       if (pde != pde_start && pde != pde_end)
 	{
-	  if (ia32_pd_delete_table(&pd, pde) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+	  if (ia32_pd_delete_table(&pd, pde) != STATUS_OK)
+	    return (STATUS_UNKNOWN_ERROR);
 
 	  if (asid == kasid)
 	    ia32_tlb_invalidate(IA32_ENTRY_ADDR(IA32_PD_MIRROR, pde));
 
-	  if (segment_release((i_segment)pt.paddr) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+	  if (segment_release((i_segment)pt.paddr) != STATUS_OK)
+	    return (STATUS_UNKNOWN_ERROR);
 	}
     }
 
@@ -563,10 +563,10 @@ t_error			ia32_unmap_region(i_as		asid,
    */
 
   if (asid != kasid)
-    if (ia32_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+    if (ia32_unmap_chunk((t_vaddr)pd) != STATUS_OK)
+      return (STATUS_UNKNOWN_ERROR);
 
   /*						    [endblock::unmap_region] */
 
-  return (ERROR_NONE);
+  return (STATUS_OK);
 }

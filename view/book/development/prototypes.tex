@@ -81,36 +81,36 @@ section and generated prototypes.
    * ../../core/set/set.c
    */
 
-  t_error                 set_dump(void);
+  t_status                 set_dump(void);
 
-  t_error                 set_size(i_set                          setid,
+  t_status                 set_size(i_set                          setid,
                                    t_setsz*                       size);
 
-  t_error                 set_new(o_set*                          o);
+  t_status                 set_new(o_set*                          o);
 
-  t_error                 set_destroy(i_set                       setid);
+  t_status                 set_destroy(i_set                       setid);
 
-  t_error                 set_descriptor(i_set                    setid,
+  t_status                 set_descriptor(i_set                    setid,
                                          o_set**                  o);
 
-  t_error                 set_get(i_set                           setid,
+  t_status                 set_get(i_set                           setid,
                                   t_id                            id,
                                   void**                          o);
 
-  t_error                 set_init(void);
+  t_status                 set_init(void);
 
-  t_error                 set_clean(void);
+  t_status                 set_clean(void);
 
 
   /*
    * ../../core/set/set-array.c
    */
 
-  t_error                 set_type_array(i_set                    setid);
+  t_status                 set_type_array(i_set                    setid);
 
-  t_error                 set_show_array(i_set                    setid);
+  t_status                 set_show_array(i_set                    setid);
 
-  t_error                 set_head_array(i_set                    setid,
+  t_status                 set_head_array(i_set                    setid,
                                          t_iterator*              iterator);
 
   [...]

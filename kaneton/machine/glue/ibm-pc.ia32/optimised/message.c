@@ -68,58 +68,58 @@ d_message		       	message_dispatch =
  * set return code for a blocked syscall.
  */
 
-t_error			glue_message_return(i_thread		thread,
-					    t_error		code)
+t_status		glue_message_return(i_thread		thread,
+					    t_status	code)
 {
   MESSAGE_ENTER(message);
 
-  if (ia32_syscall_set_code(thread, code) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (ia32_syscall_set_code(thread, code) != STATUS_OK)
+    MESSAGE_LEAVE(message, STATUS_UNKNOWN_ERROR);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(message, STATUS_OK);
 }
 
 /*
  * set return info for a blocked syscall.
  */
 
-t_error			glue_message_return_info(i_thread	thread,
-						 t_error	code,
+t_status		glue_message_return_info(i_thread	thread,
+						 t_statuscode,
 						 t_vsize	size,
 						 i_node		sender)
 {
   MESSAGE_ENTER(message);
 
-  if (ia32_syscall_set_info(thread, code, size, sender) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (ia32_syscall_set_info(thread, code, size, sender) != STATUS_OK)
+    MESSAGE_LEAVE(message, STATUS_UNKNOWN_ERROR);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(message, STATUS_OK);
 }
 
 /*
  * initialize machine part of message manager.
  */
 
-t_error		glue_message_initialize(void)
+t_status	glue_message_initialize(void)
 {
   MESSAGE_ENTER(message);
 
-  if (ia32_syscalls_init() != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (ia32_syscalls_init() != STATUS_OK)
+    MESSAGE_LEAVE(message, STATUS_UNKNOWN_ERROR);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(message, STATUS_OK);
 }
 
 /*
  * clean machine part of message manager.
  */
 
-t_error		glue_message_clean(void)
+t_status	glue_message_clean(void)
 {
   MESSAGE_ENTER(message);
 
-  if (ia32_syscalls_clean() != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  if (ia32_syscalls_clean() != STATUS_OK)
+    MESSAGE_LEAVE(message, STATUS_UNKNOWN_ERROR);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  MESSAGE_LEAVE(message, STATUS_OK);
 }

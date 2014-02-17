@@ -39,7 +39,7 @@ void			random_seed(void)
   t_uint64		rounds;
   t_uint64		round;
 
-  assert(clock_current(&clock) == ERROR_OK);
+  assert(clock_current(&clock) == STATUS_OK);
 
   _library_random_seed = CLOCK_UNIQUE(&clock);
 

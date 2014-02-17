@@ -214,7 +214,7 @@ void			platform_console_string(char*		string)
  * 4) to start with, clear the console.
  */
 
-t_error			platform_console_initialize(void)
+t_status		platform_console_initialize(void)
 {
   /*
    * 1)
@@ -252,7 +252,7 @@ t_error			platform_console_initialize(void)
  * there is nothing special to do.
  */
 
-t_error			platform_console_clean(void)
+t_status		platform_console_clean(void)
 {
   MACHINE_LEAVE();
 }

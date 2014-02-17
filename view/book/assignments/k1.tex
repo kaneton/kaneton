@@ -336,7 +336,7 @@ void                    example(void)
   if (event_reserve(ARCHITECTURE_IDT_EXCEPTION_BP,
                     EVENT_TYPE_FUNCTION,
                     EVENT_ROUTINE(exception_bp),
-                    EVENT_DATA(NULL)) != ERROR_OK)
+                    EVENT_DATA(NULL)) != STATUS_OK)
     {
       printf("[event_reserve] error");
       return;
@@ -344,7 +344,7 @@ void                    example(void)
 
   asm volatile("int $3");
 
-  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != ERROR_OK)
+  if (event_release(ARCHITECTURE_IDT_EXCEPTION_BP) != STATUS_OK)
     {
       printf("[event_release] error");
       return;

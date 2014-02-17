@@ -247,29 +247,29 @@ typedef struct
  * ../gdt.c
  */
 
-t_error			architecture_gdt_dump(void);
+t_status		architecture_gdt_dump(void);
 
-t_error			architecture_gdt_build(t_paddr		base,
+t_status		architecture_gdt_build(t_paddr		base,
 					       t_psize		size,
 					       as_gdt*		gdt);
 
-t_error			architecture_gdt_import(as_gdt*		gdt);
+t_status		architecture_gdt_import(as_gdt*		gdt);
 
-t_error			architecture_gdt_export(as_gdt*		gdt);
+t_status		architecture_gdt_export(as_gdt*		gdt);
 
-t_error			architecture_gdt_insert(t_uint16	index,
+t_status		architecture_gdt_insert(t_uint16	index,
 						t_paddr		base,
 						t_paddr		limit,
 						t_flags		flags);
 
-t_error			architecture_gdt_reserve(t_paddr	base,
+t_status		architecture_gdt_reserve(t_paddr	base,
 						 t_paddr	limit,
 						 t_flags	flags,
 						 t_uint16*	index);
 
-t_error			architecture_gdt_delete(t_uint16	index);
+t_status		architecture_gdt_delete(t_uint16	index);
 
-t_error			architecture_gdt_selector(t_uint16	index,
+t_status		architecture_gdt_selector(t_uint16	index,
 						  t_privilege	privilege,
 						  t_uint16*	selector);
 

@@ -54,22 +54,22 @@ void			test_core_timer_data(void)
                     TIMER_DATA(0x41414141),
                     1000,
                     TIMER_OPTION_NONE,
-                    (i_timer*)&tid) != ERROR_OK)
+                    (i_timer*)&tid) != STATUS_OK)
     TEST_ERROR("[timer_reserve] error");
 
-  if (clock_current(&clock) != ERROR_OK)
+  if (clock_current(&clock) != STATUS_OK)
     TEST_ERROR("[clock_current] error");
 
   start = CLOCK_UNIQUE(&clock);
 
-  if (event_enable() != ERROR_OK)
+  if (event_enable() != STATUS_OK)
     TEST_ERROR("[event_enable] error");
 
   while (1)
     {
       t_uint64		current;
 
-      if (clock_current(&clock) != ERROR_OK)
+      if (clock_current(&clock) != STATUS_OK)
 	TEST_ERROR("[clock_current] error");
 
       current = CLOCK_UNIQUE(&clock);
@@ -78,7 +78,7 @@ void			test_core_timer_data(void)
 	break;
     }
 
-  if (event_disable() != ERROR_OK)
+  if (event_disable() != STATUS_OK)
     TEST_ERROR("[event_disable] error");
 
   if (timed != 1)

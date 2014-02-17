@@ -24,7 +24,7 @@
 #define		machine_call_cpu(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_NONE;					\
+      t_status _r_ = STATUS_OK;					\
 									\
       if (cpu_dispatch._function_ != NULL)				\
         _r_ = cpu_dispatch._function_(_args_);				\
@@ -47,7 +47,7 @@
  * ../cpu.c
  */
 
-t_error			glue_cpu_current(i_cpu*			cpuid);
+t_status		glue_cpu_current(i_cpu*			cpuid);
 
 
 /*

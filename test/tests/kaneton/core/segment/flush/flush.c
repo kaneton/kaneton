@@ -38,16 +38,16 @@ void			test_core_segment_flush(void)
   if (task_reserve(TASK_CLASS_GUEST,
 		   TASK_BEHAVIOUR_INTERACTIVE,
 		   TASK_PRIORITY_INTERACTIVE,
-		   &task) != ERROR_OK)
+		   &task) != STATUS_OK)
     TEST_ERROR("[task_reserve] error");
 
-  if (as_reserve(task, &as) != ERROR_OK)
+  if (as_reserve(task, &as) != STATUS_OK)
     TEST_ERROR("[as_reserve] error");
 
-  if (as_get(as, &o) != ERROR_OK)
+  if (as_get(as, &o) != STATUS_OK)
     TEST_ERROR("[as_get] error");
 
-  if (set_size(o->segments, &before_sz) != ERROR_OK)
+  if (set_size(o->segments, &before_sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   for (i = 0; i < 64; i++)
@@ -61,10 +61,10 @@ void			test_core_segment_flush(void)
 			  n * ___kaneton$pagesz,
 			  PERMISSION_READ,
 			  SEGMENT_OPTION_NONE,
-			  &seg) != ERROR_OK)
+			  &seg) != STATUS_OK)
 	TEST_ERROR("[segment_reserve] error");
 
-      if (segment_get(seg, &s) != ERROR_OK)
+      if (segment_get(seg, &s) != STATUS_OK)
 	TEST_ERROR("[segment_get] error");
 
       if (s->id != seg)
@@ -80,10 +80,10 @@ void			test_core_segment_flush(void)
 	TEST_ERROR("invalid segment's permissions");
     }
 
-  if (segment_flush(as) != ERROR_OK)
+  if (segment_flush(as) != STATUS_OK)
     TEST_ERROR("[segment_flush] error");
 
-  if (set_size(o->segments, &after_sz) != ERROR_OK)
+  if (set_size(o->segments, &after_sz) != STATUS_OK)
     TEST_ERROR("[set_size] error");
 
   if (after_sz != 0)

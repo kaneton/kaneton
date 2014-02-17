@@ -103,22 +103,22 @@ typedef struct
  * ../../core/id/id.c
  */
 
-t_error			id_show(o_id*				object,
+t_status		id_show(o_id*				object,
 				mt_margin			margin);
 
-t_error			id_reserve(o_id*			object,
+t_status		id_reserve(o_id*			object,
 				   t_id*			id);
 
-t_error			id_release(o_id*			object,
+t_status		id_release(o_id*			object,
 				   t_id				id);
 
-t_error			id_build(o_id*				object);
+t_status		id_build(o_id*				object);
 
-t_error			id_destroy(o_id*			object);
+t_status		id_destroy(o_id*			object);
 
-t_error			id_initialize(void);
+t_status		id_initialize(void);
 
-t_error			id_clean(void);
+t_status		id_clean(void);
 
 
 /*

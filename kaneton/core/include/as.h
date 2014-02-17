@@ -75,33 +75,33 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*as_show)(i_as,
+  t_status		(*as_show)(i_as,
 					   mt_margin);
-  t_error			(*as_dump)(void);
-  t_error			(*as_virtual)(i_as,
+  t_status		(*as_dump)(void);
+  t_status		(*as_virtual)(i_as,
 					      t_paddr,
 					      t_vaddr*);
-  t_error			(*as_physical)(i_as,
+  t_status		(*as_physical)(i_as,
 					       t_vaddr,
 					       t_paddr*);
-  t_error			(*as_read)(i_as,
+  t_status		(*as_read)(i_as,
 					   t_vaddr,
 					   t_vsize,
 					   void*);
-  t_error			(*as_write)(i_as,
+  t_status		(*as_write)(i_as,
 					    const void*,
 					    t_vaddr,
 					    t_vsize);
-  t_error			(*as_copy)(i_as,
+  t_status		(*as_copy)(i_as,
 					   t_vaddr,
 					   i_as,
 					   t_vaddr,
 					   t_vsize);
-  t_error			(*as_reserve)(i_task,
+  t_status		(*as_reserve)(i_task,
 					      i_as*);
-  t_error			(*as_release)(i_as);
-  t_error			(*as_initialize)(void);
-  t_error			(*as_clean)(void);
+  t_status		(*as_release)(i_as);
+  t_status		(*as_initialize)(void);
+  t_status		(*as_clean)(void);
 }				d_as;
 
 /*
@@ -114,48 +114,48 @@ typedef struct
  * ../../core/as/as.c
  */
 
-t_error			as_show(i_as				id,
-				mt_margin			margin);
+t_status		as_show(i_as		id,
+				        mt_margin	margin);
 
-t_error			as_dump(void);
+t_status		as_dump(void);
 
-t_error			as_virtual(i_as				id,
-				   t_paddr			physical,
-				   t_vaddr*			virtual);
+t_status		as_virtual(i_as		id,
+                                           t_paddr	physical,
+                                           t_vaddr*	virtual);
 
-t_error			as_physical(i_as			id,
-				    t_vaddr			virtual,
-				    t_paddr*			physical);
+t_status		as_physical(i_as	id,
+				            t_vaddr	virtual,
+				            t_paddr*	physical);
 
-t_error			as_read(i_as				id,
-				t_vaddr				source,
-				t_vsize				size,
-				void*				destination);
+t_status		as_read(i_as		id,
+				        t_vaddr		source,
+				        t_vsize		size,
+				        void*		destination);
 
-t_error			as_write(i_as				id,
-				 const void*			source,
-				 t_vsize			size,
-				 t_vaddr			destination);
+t_status		as_write(i_as		id,
+				         const void*	source,
+				         t_vsize	size,
+				         t_vaddr	destination);
 
-t_error			as_copy(i_as			source_id,
-				t_vaddr			source_address,
-				i_as			destination_id,
-				t_vaddr			destination_address,
-				t_vsize			size);
+t_status		as_copy(i_as		source_id,
+				        t_vaddr		source_address,
+				        i_as		destination_id,
+				        t_vaddr		destination_address,
+				        t_vsize		size);
 
-t_error			as_reserve(i_task			task,
-				   i_as*			id);
+t_status		as_reserve(i_task	task,
+				           i_as*	id);
 
-t_error			as_release(i_as				id);
+t_status		as_release(i_as		id);
 
-t_error			as_exist(i_as				id);
+t_bool				as_exist(i_as		id);
 
-t_error			as_get(i_as				id,
-			       o_as**				object);
+t_status		as_get(i_as		id,
+				       o_as**		object);
 
-t_error			as_initialize(void);
+t_status		as_initialize(void);
 
-t_error			as_clean(void);
+t_status		as_clean(void);
 
 
 /*

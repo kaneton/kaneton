@@ -24,7 +24,7 @@
  * ../segmentation.c
  */
 
-t_error			architecture_segmentation_setup(void);
+t_status		architecture_segmentation_setup(void);
 
 
 /*

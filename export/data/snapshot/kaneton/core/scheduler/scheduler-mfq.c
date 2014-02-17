@@ -81,7 +81,7 @@ m_scheduler		_scheduler;
  * 3) call the machine.
  */
 
-t_error			scheduler_start(i_cpu			id)
+t_status			scheduler_start(i_cpu			id)
 {
   o_scheduler*		scheduler;
 
@@ -89,7 +89,7 @@ t_error			scheduler_start(i_cpu			id)
    * 1)
    */
 
-  if (scheduler_get(id, &scheduler) != ERROR_OK)
+  if (scheduler_get(id, &scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler object");
 
   /*
@@ -102,7 +102,7 @@ t_error			scheduler_start(i_cpu			id)
    * 3)
    */
 
-  if (machine_call(scheduler, start, id) != ERROR_OK)
+  if (machine_call(scheduler, start, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -118,7 +118,7 @@ t_error			scheduler_start(i_cpu			id)
  * 3) call the machine.
  */
 
-t_error			scheduler_stop(i_cpu			id)
+t_status			scheduler_stop(i_cpu			id)
 {
   o_scheduler*		scheduler;
 
@@ -126,7 +126,7 @@ t_error			scheduler_stop(i_cpu			id)
    * 1)
    */
 
-  if (scheduler_get(id, &scheduler) != ERROR_OK)
+  if (scheduler_get(id, &scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler object");
 
   /*
@@ -139,7 +139,7 @@ t_error			scheduler_stop(i_cpu			id)
    * 3)
    */
 
-  if (machine_call(scheduler, stop, id) != ERROR_OK)
+  if (machine_call(scheduler, stop, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -149,7 +149,7 @@ t_error			scheduler_stop(i_cpu			id)
  * this function modifies the quantum.
  */
 
-t_error			scheduler_quantum(t_quantum		quantum)
+t_status			scheduler_quantum(t_quantum		quantum)
 {
   /* FIXME[code to complete] */
 
@@ -162,7 +162,7 @@ t_error			scheduler_quantum(t_quantum		quantum)
  * on this CPU.
  */
 
-t_error			scheduler_yield(void)
+t_status			scheduler_yield(void)
 {
   /* FIXME[code to complete] */
 
@@ -183,7 +183,7 @@ t_error			scheduler_yield(void)
  * thread is specially scheduled, hence returning to its initial state.
  */
 
-t_error			scheduler_elect(void)
+t_status			scheduler_elect(void)
 {
   /* FIXME[code to complete] */
 
@@ -194,7 +194,7 @@ t_error			scheduler_elect(void)
  * this function adds a thread to the scheduler.
  */
 
-t_error			scheduler_add(i_thread			id)
+t_status			scheduler_add(i_thread			id)
 {
   /* FIXME[code to complete] */
 
@@ -205,7 +205,7 @@ t_error			scheduler_add(i_thread			id)
  * this function removes a thread from the scheduler.
  */
 
-t_error			scheduler_remove(i_thread		id)
+t_status			scheduler_remove(i_thread		id)
 {
   /* FIXME[code to complete] */
 
@@ -225,7 +225,7 @@ t_error			scheduler_remove(i_thread		id)
  * have the chance to add itself back to the scheduler.
  */
 
-t_error			scheduler_update(i_thread		id)
+t_status			scheduler_update(i_thread		id)
 {
   /* FIXME[code to complete] */
 
@@ -237,9 +237,9 @@ t_error			scheduler_update(i_thread		id)
  * exists.
  */
 
-t_error			scheduler_exist(i_cpu			id)
+t_status			scheduler_exist(i_cpu			id)
 {
-  if (set_exist(_scheduler.schedulers, id) != ERROR_TRUE)
+  if (set_exist(_scheduler.schedulers, id) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -254,7 +254,7 @@ t_error			scheduler_exist(i_cpu			id)
  * 1) retrieve the object from the set of schedulers.
  */
 
-t_error			scheduler_get(i_cpu			id,
+t_status			scheduler_get(i_cpu			id,
 				      o_scheduler**		object)
 {
   /*
@@ -268,7 +268,7 @@ t_error			scheduler_get(i_cpu			id,
    * 1)
    */
 
-  if (set_get(_scheduler.schedulers, id, (void**)object) != ERROR_OK)
+  if (set_get(_scheduler.schedulers, id, (void**)object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of schedulers");
 
   CORE_LEAVE();
@@ -284,7 +284,7 @@ t_error			scheduler_get(i_cpu			id,
  * 2) retrieve the current scheduler object.
  */
 
-t_error			scheduler_current(o_scheduler**		scheduler)
+t_status			scheduler_current(o_scheduler**		scheduler)
 {
   i_cpu			cpu;
 
@@ -299,14 +299,14 @@ t_error			scheduler_current(o_scheduler**		scheduler)
    * 1)
    */
 
-  if (cpu_current(&cpu) != ERROR_OK)
+  if (cpu_current(&cpu) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the current CPU object");
 
   /*
    * 2)
    */
 
-  if (set_get(_scheduler.schedulers, cpu, (void**)scheduler) != ERROR_OK)
+  if (set_get(_scheduler.schedulers, cpu, (void**)scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the scheduler from the set");
 
   CORE_LEAVE();
@@ -331,7 +331,7 @@ t_error			scheduler_current(o_scheduler**		scheduler)
  * 9) call the machine.
  */
 
-t_error			scheduler_initialize(void)
+t_status			scheduler_initialize(void)
 {
   o_scheduler*		scheduler;
   t_setsz		ncpus;
@@ -362,7 +362,7 @@ t_error			scheduler_initialize(void)
    * 4)
    */
 
-  if (set_size(_cpu.cpus, &ncpus) != ERROR_OK)
+  if (set_size(_cpu.cpus, &ncpus) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the number of active CPUs");
 
   /*
@@ -373,7 +373,7 @@ t_error			scheduler_initialize(void)
 		  SET_OPTION_ALLOCATE,
 		  ncpus,
 		  sizeof (o_scheduler),
-		  &_scheduler.schedulers) != ERROR_OK)
+		  &_scheduler.schedulers) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a set for the schedulers");
 
   /*
@@ -388,7 +388,7 @@ t_error			scheduler_initialize(void)
        * a)
        */
 
-      if (set_object(_cpu.cpus, it, (void**)&o) != ERROR_OK)
+      if (set_object(_cpu.cpus, it, (void**)&o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the CPU object");
 
       /*
@@ -405,7 +405,7 @@ t_error			scheduler_initialize(void)
        * g)
        */
 
-      if (set_append(_scheduler.schedulers, &scheduler) != ERROR_OK)
+      if (set_append(_scheduler.schedulers, &scheduler) != STATUS_OK)
 	CORE_ESCAPE("unable to append the CPU's scheduler to the set");
     }
 
@@ -413,7 +413,7 @@ t_error			scheduler_initialize(void)
    * 7)
    */
 
-  if (scheduler_current(&scheduler) != ERROR_OK)
+  if (scheduler_current(&scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the current CPU's scheduler");
 
   /*
@@ -426,7 +426,7 @@ t_error			scheduler_initialize(void)
    * 9)
    */
 
-  if (machine_call(scheduler, initialize) != ERROR_OK)
+  if (machine_call(scheduler, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -441,7 +441,7 @@ t_error			scheduler_initialize(void)
  * 2) call the machine.
  */
 
-t_error			scheduler_clean(void)
+t_status			scheduler_clean(void)
 {
   /*
    * 1)
@@ -454,7 +454,7 @@ t_error			scheduler_clean(void)
    * 2)
    */
 
-  if (machine_call(scheduler, clean) != ERROR_OK)
+  if (machine_call(scheduler, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();

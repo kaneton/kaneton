@@ -27,10 +27,10 @@
 			  (_pages_) * ___kaneton$pagesz,		\
 			  PERMISSION_READ,				\
 			  SEGMENT_OPTION_NONE,				\
-			  (_segment_)) != ERROR_OK)			\
+			  (_segment_)) != STATUS_OK)			\
 	TEST_ERROR("[segment_reserve] error");				\
 									\
-      if (segment_get(*(_segment_), &o) != ERROR_OK)			\
+      if (segment_get(*(_segment_), &o) != STATUS_OK)			\
 	TEST_ERROR("[segment_get] error");				\
 									\
       if (o->id != *(_segment_))					\

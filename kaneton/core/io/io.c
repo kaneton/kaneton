@@ -56,7 +56,7 @@ m_io			_io;
  * 1) call the machine.
  */
 
-t_error			io_grant(i_task				task,
+t_status		io_grant(i_task				task,
 				 i_port				port,
 				 t_width			width)
 {
@@ -64,7 +64,7 @@ t_error			io_grant(i_task				task,
    * 1)
    */
 
-  if (machine_call(io, grant, task, port, width) != ERROR_OK)
+  if (machine_call(io, grant, task, port, width) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -78,7 +78,7 @@ t_error			io_grant(i_task				task,
  * 1) call the machine.
  */
 
-t_error			io_deny(i_task				task,
+t_status		io_deny(i_task				task,
 				i_port				port,
 				t_width				width)
 {
@@ -86,7 +86,7 @@ t_error			io_deny(i_task				task,
    * 1)
    */
 
-  if (machine_call(io, deny, task, port, width) != ERROR_OK)
+  if (machine_call(io, deny, task, port, width) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -101,7 +101,7 @@ t_error			io_deny(i_task				task,
  * 1) call the machine.
  */
 
-t_error			io_read(i_task				task,
+t_status		io_read(i_task				task,
 				i_port				port,
 				t_width				width,
 				void*				data)
@@ -117,7 +117,7 @@ t_error			io_read(i_task				task,
    * 1)
    */
 
-  if (machine_call(io, read, task, port, width, data) != ERROR_OK)
+  if (machine_call(io, read, task, port, width, data) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -131,7 +131,7 @@ t_error			io_read(i_task				task,
  * 1) call the machine.
  */
 
-t_error			io_write_8(i_task			task,
+t_status		io_write_8(i_task			task,
 				   i_port			port,
 				   t_width			width,
 				   t_uint64			data)
@@ -140,7 +140,7 @@ t_error			io_write_8(i_task			task,
    * 1)
    */
 
-  if (machine_call(io, write, task, port, width, data) != ERROR_OK)
+  if (machine_call(io, write, task, port, width, data) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -156,7 +156,7 @@ t_error			io_write_8(i_task			task,
  * 3) call the machine.
  */
 
-t_error			io_initialize(void)
+t_status		io_initialize(void)
 {
   /*
    * 1)
@@ -175,7 +175,7 @@ t_error			io_initialize(void)
    * 3)
    */
 
-  if (machine_call(io, initialize) != ERROR_OK)
+  if (machine_call(io, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -190,7 +190,7 @@ t_error			io_initialize(void)
  * 2) call the machine.
  */
 
-t_error			io_clean(void)
+t_status		io_clean(void)
 {
   /*
    * 1)
@@ -203,7 +203,7 @@ t_error			io_clean(void)
    * 2)
    */
 
-  if (machine_call(io, clean) != ERROR_OK)
+  if (machine_call(io, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();

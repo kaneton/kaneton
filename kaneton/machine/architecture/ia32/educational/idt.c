@@ -55,7 +55,7 @@ extern m_event		_event;
  *   e) display the IDT entry.
  */
 
-t_error			architecture_idt_dump(void)
+t_status		architecture_idt_dump(void)
 {
   t_uint16		i;
 
@@ -162,7 +162,7 @@ t_error			architecture_idt_dump(void)
  * 3) initialize the table entries.
  */
 
-t_error			architecture_idt_build(t_paddr		base,
+t_status		architecture_idt_build(t_paddr		base,
 					       t_uint16		size,
 					       as_idt*		idt)
 {
@@ -215,7 +215,7 @@ t_error			architecture_idt_build(t_paddr		base,
  * 3) copy the given descriptor into the system's current one.
  */
 
-t_error			architecture_idt_import(as_idt*		idt)
+t_status		architecture_idt_import(as_idt*		idt)
 {
   as_idtr		idtr;
 
@@ -231,7 +231,7 @@ t_error			architecture_idt_import(as_idt*		idt)
    */
 
   idtr.address = (t_paddr)idt->table;
-  idtr.size = idt->size * sizeof (at_idte);
+  idtr.size = idt->size * sizeof (at_idte) - 1;
 
   /*
    * 2)
@@ -259,7 +259,7 @@ t_error			architecture_idt_import(as_idt*		idt)
  * 3) set the given descriptor's size.
  */
 
-t_error			architecture_idt_export(as_idt*		idt)
+t_status		architecture_idt_export(as_idt*		idt)
 {
   as_idtr		idtr;
   at_idte*		source;
@@ -306,7 +306,7 @@ t_error			architecture_idt_export(as_idt*		idt)
  * 1) update the IDT entry.
  */
 
-t_error			architecture_idt_insert(t_uint16	index,
+t_status		architecture_idt_insert(t_uint16	index,
 						t_vaddr		offset,
 						t_uint16	selector,
 						t_flags		flags)
@@ -343,7 +343,7 @@ t_error			architecture_idt_insert(t_uint16	index,
  * 1) re-initialize the entry's memory.
  */
 
-t_error			architecture_idt_delete(t_uint16	index)
+t_status		architecture_idt_delete(t_uint16	index)
 {
   /*
    * 0)

@@ -49,10 +49,10 @@ void			test_architecture_event_map(void)
       if (task_reserve(TASK_CLASS_KERNEL,
 		       TASK_BEHAVIOUR_INTERACTIVE,
 		       TASK_PRIORITY_INTERACTIVE,
-		       &tskid) != ERROR_OK)
+		       &tskid) != STATUS_OK)
 	TEST_ERROR("[task_reserve] error");
 
-      if (as_reserve(tskid, &asid) != ERROR_OK)
+      if (as_reserve(tskid, &asid) != STATUS_OK)
 	TEST_ERROR("[as_reserve] error");
     }
 
@@ -60,15 +60,15 @@ void			test_architecture_event_map(void)
 
   ARCHITECTURE_SIDT(idtr);
 
-  if (as_physical(_kernel.as, idtr.address, &paddr) != ERROR_OK)
+  if (as_physical(_kernel.as, idtr.address, &paddr) != STATUS_OK)
     TEST_ERROR("[as_physical] error");
 
   set_foreach(SET_OPTION_FORWARD, _as.ass, &it, state)
     {
-      if (set_object(_as.ass, it, (void**)&o) != ERROR_OK)
+      if (set_object(_as.ass, it, (void**)&o) != STATUS_OK)
 	TEST_ERROR("[set_object] error");
 
-      if (as_virtual(o->id, paddr, &vaddr) != ERROR_OK)
+      if (as_virtual(o->id, paddr, &vaddr) != STATUS_OK)
 	TEST_ERROR("[as_virtual] error: the IDT does not seem to be "
 		   "mapped in this address space");
     }

@@ -94,7 +94,7 @@ m_task			_task;
  * 9) call the machine.
  */
 
-t_error			task_show(i_task			id,
+t_status		task_show(i_task			id,
 				  mt_margin			margin)
 {
   o_task*		o;
@@ -109,7 +109,7 @@ t_error			task_show(i_task			id,
    * 1)
    */
 
-  if (task_get(id, &o) != ERROR_OK)
+  if (task_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -264,7 +264,7 @@ t_error			task_show(i_task			id,
    * 6)
    */
 
-  if (set_size(o->children, &size) != ERROR_OK)
+  if (set_size(o->children, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of children");
 
   module_call(console, message,
@@ -279,7 +279,7 @@ t_error			task_show(i_task			id,
     {
       i_task*		id;
 
-      if (set_object(o->children, i, (void**)&id) != ERROR_OK)
+      if (set_object(o->children, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the task identifier");
 
       module_call(console, message,
@@ -294,7 +294,7 @@ t_error			task_show(i_task			id,
    * 7)
    */
 
-  if (set_size(o->waits, &size) != ERROR_OK)
+  if (set_size(o->waits, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of waiting threads");
 
   module_call(console, message,
@@ -309,7 +309,7 @@ t_error			task_show(i_task			id,
     {
       i_thread*		id;
 
-      if (set_object(o->waits, i, (void**)&id) != ERROR_OK)
+      if (set_object(o->waits, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       module_call(console, message,
@@ -324,7 +324,7 @@ t_error			task_show(i_task			id,
    * 8)
    */
 
-  if (set_size(o->threads, &size) != ERROR_OK)
+  if (set_size(o->threads, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of threads");
 
   module_call(console, message,
@@ -339,7 +339,7 @@ t_error			task_show(i_task			id,
     {
       i_thread*		id;
 
-      if (set_object(o->threads, i, (void**)&id) != ERROR_OK)
+      if (set_object(o->threads, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       module_call(console, message,
@@ -354,7 +354,7 @@ t_error			task_show(i_task			id,
    * 9)
    */
 
-  if (machine_call(task, show, id, margin) != ERROR_OK)
+  if (machine_call(task, show, id, margin) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -374,7 +374,7 @@ t_error			task_show(i_task			id,
  * 7) call the machine.
  */
 
-t_error			task_dump(void)
+t_status		task_dump(void)
 {
   t_setsz		size;
   s_iterator		i;
@@ -396,14 +396,14 @@ t_error			task_dump(void)
    */
 
   if (id_show(&_task.id,
-	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+	      2 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
     CORE_ESCAPE("unable to show the identifier object");
 
  /*
    * 3)
    */
 
-  if (set_size(_task.tasks, &size) != ERROR_OK)
+  if (set_size(_task.tasks, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of tasks");
 
   /*
@@ -419,11 +419,11 @@ t_error			task_dump(void)
     {
       o_task*		o;
 
-      if (set_object(_task.tasks, i, (void**)&o) != ERROR_OK)
+      if (set_object(_task.tasks, i, (void**)&o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
 
       if (task_show(o->id,
-		    3 * MODULE_CONSOLE_MARGIN_SHIFT) != ERROR_OK)
+		    3 * MODULE_CONSOLE_MARGIN_SHIFT) != STATUS_OK)
 	CORE_ESCAPE("unable to show the task");
     }
 
@@ -431,7 +431,7 @@ t_error			task_dump(void)
    * 5)
    */
 
-  if (set_size(_task.morgue.field, &size) != ERROR_OK)
+  if (set_size(_task.morgue.field, &size) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the size of the set of dead tasks");
 
   /*
@@ -452,7 +452,7 @@ t_error			task_dump(void)
     {
       i_task*		id;
 
-      if (set_object(_task.tasks, i, (void**)&id) != ERROR_OK)
+      if (set_object(_task.tasks, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
 
       module_call(console, message,
@@ -464,7 +464,7 @@ t_error			task_dump(void)
    * 7)
    */
 
-  if (machine_call(task, dump) != ERROR_OK)
+  if (machine_call(task, dump) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -491,7 +491,7 @@ t_error			task_dump(void)
  * 11) call the machine.
  */
 
-t_error			task_reserve(t_class			class,
+t_status		task_reserve(t_class			class,
 				     t_behaviour		behav,
 				     t_priority			prior,
 				     i_task*			id)
@@ -591,7 +591,7 @@ t_error			task_reserve(t_class			class,
    * 2)
    */
 
-  if (id_reserve(&_task.id, &o.id) != ERROR_OK)
+  if (id_reserve(&_task.id, &o.id) != STATUS_OK)
     CORE_ESCAPE("unable to reserve an identifier for the task");
 
   /*
@@ -602,13 +602,13 @@ t_error			task_reserve(t_class			class,
     {
       o_task*		parent;
 
-      if (task_current(&o.parent) != ERROR_OK)
+      if (task_current(&o.parent) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the currently running task");
 
-      if (task_get(o.parent, &parent) != ERROR_OK)
+      if (task_get(o.parent, &parent) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
 
-      if (set_add(parent->children, &o.id) != ERROR_OK)
+      if (set_add(parent->children, &o.id) != STATUS_OK)
 	CORE_ESCAPE("unable to add the new task to the list of its parent's "
 		    "children tasks");
     }
@@ -619,7 +619,7 @@ t_error			task_reserve(t_class			class,
    * 4)
    */
 
-  if (cpu_select(&o.cpu) != ERROR_OK)
+  if (cpu_select(&o.cpu) != STATUS_OK)
     CORE_ESCAPE("unable to select a CPU on which to place the task");
 
   /*
@@ -630,7 +630,7 @@ t_error			task_reserve(t_class			class,
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  TASK_THREADS_INITSZ,
 		  sizeof (i_thread),
-		  &o.threads) != ERROR_OK)
+		  &o.threads) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a set of threads");
 
   /*
@@ -641,7 +641,7 @@ t_error			task_reserve(t_class			class,
 		  SET_OPTION_ALLOCATE,
 		  TASK_WAITS_INITSZ,
 		  sizeof (i_thread),
-		  &o.waits) != ERROR_OK)
+		  &o.waits) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a set for the waiting tasks/threads");
 
   /*
@@ -651,7 +651,7 @@ t_error			task_reserve(t_class			class,
   if (set_reserve(ll,
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof (i_task),
-		  &o.children) != ERROR_OK)
+		  &o.children) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a set for the children tasks");
 
   /*
@@ -661,14 +661,14 @@ t_error			task_reserve(t_class			class,
   if (set_reserve(ll,
 		  SET_OPTION_SORT | SET_OPTION_ALLOCATE,
 		  sizeof (o_message_type),
-		  &o.messages) != ERROR_OK)
+		  &o.messages) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a set for the messages");
 
   /*
    * 9)
    */
 
-  if (set_add(_task.tasks, &o) != ERROR_OK)
+  if (set_add(_task.tasks, &o) != STATUS_OK)
     CORE_ESCAPE("unable to add the object to the set of tasks");
 
   /*
@@ -681,7 +681,7 @@ t_error			task_reserve(t_class			class,
    * 11)
    */
 
-  if (machine_call(task, reserve, class, behav, prior, id) != ERROR_OK)
+  if (machine_call(task, reserve, class, behav, prior, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -705,7 +705,7 @@ t_error			task_reserve(t_class			class,
  * 10) remove the task from the manager's set of tasks.
  */
 
-t_error			task_release(i_task			id)
+t_status		task_release(i_task			id)
 {
   o_task*		o;
 
@@ -713,14 +713,14 @@ t_error			task_release(i_task			id)
    * 1)
    */
 
-  if (machine_call(task, release, id) != ERROR_OK)
+  if (machine_call(task, release, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 2)
    */
 
-  if (task_get(id, &o) != ERROR_OK)
+  if (task_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -729,7 +729,7 @@ t_error			task_release(i_task			id)
 
   if (o->timer != ID_UNUSED)
     {
-      if (timer_release(o->timer) != ERROR_OK)
+      if (timer_release(o->timer) != STATUS_OK)
 	CORE_ESCAPE("unable to release the timer");
     }
 
@@ -737,10 +737,10 @@ t_error			task_release(i_task			id)
    * 4)
    */
 
-  if (thread_flush(id) != ERROR_OK)
+  if (thread_flush(id) != STATUS_OK)
     CORE_ESCAPE("unable to flush the task's threads");
 
-  if (set_release(o->threads) != ERROR_OK)
+  if (set_release(o->threads) != STATUS_OK)
     CORE_ESCAPE("unable to release the set of threads");
 
   /*
@@ -750,7 +750,7 @@ t_error			task_release(i_task			id)
   if ((o->as != ID_UNUSED) &&
       (o->as != _kernel.as))
     {
-      if (as_release(o->as) != ERROR_OK)
+      if (as_release(o->as) != STATUS_OK)
 	CORE_ESCAPE("unable to release the task's address space");
     }
 
@@ -758,38 +758,38 @@ t_error			task_release(i_task			id)
    * 6)
    */
 
-  if (set_release(o->children) != ERROR_OK)
+  if (set_release(o->children) != STATUS_OK)
     CORE_ESCAPE("unable to release the set of children tasks");
 
   /*
    * 7)
    */
 
-  if (set_release(o->waits) != ERROR_OK)
+  if (set_release(o->waits) != STATUS_OK)
     CORE_ESCAPE("unable to release the set of waiting tasks/threads");
 
   /*
    * 8)
    */
 
-  if (message_flush(o->id) != ERROR_OK)
+  if (message_flush(o->id) != STATUS_OK)
     CORE_ESCAPE("unable to flush the messages");
 
-  if (set_release(o->messages) != ERROR_OK)
+  if (set_release(o->messages) != STATUS_OK)
     CORE_ESCAPE("unable to release the set of messages");
 
   /*
    * 9)
    */
 
-  if (id_release(&_task.id, o->id) != ERROR_OK)
+  if (id_release(&_task.id, o->id) != STATUS_OK)
     CORE_ESCAPE("unable to release the task identifier");
 
   /*
    * 10)
    */
 
-  if (set_remove(_task.tasks, o->id) != ERROR_OK)
+  if (set_remove(_task.tasks, o->id) != STATUS_OK)
     CORE_ESCAPE("unable to remove the object from the set of tasks");
 
   CORE_LEAVE();
@@ -814,7 +814,7 @@ t_error			task_release(i_task			id)
  * 5) call the machine.
  */
 
-t_error			task_priority(i_task			id,
+t_status		task_priority(i_task			id,
 				      t_priority		prior)
 {
   o_task*		o;
@@ -825,7 +825,7 @@ t_error			task_priority(i_task			id,
    * 1)
    */
 
-  if (task_get(id, &o) != ERROR_OK)
+  if (task_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -903,14 +903,14 @@ t_error			task_priority(i_task			id,
        * a)
        */
 
-      if (set_object(o->threads, i, (void**)&th) != ERROR_OK)
+      if (set_object(o->threads, i, (void**)&th) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       /*
        * b)
        */
 
-      if (thread_get(*th, &oth) != ERROR_OK)
+      if (thread_get(*th, &oth) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread object");
 
       /*
@@ -920,7 +920,7 @@ t_error			task_priority(i_task			id,
       if ((o->state == TASK_STATE_START) &&
 	  (oth->state == THREAD_STATE_START))
 	{
-	  if (scheduler_update(*th) != ERROR_OK)
+	  if (scheduler_update(*th) != STATUS_OK)
 	    CORE_ESCAPE("unable to update the thread scheduling state");
 	}
     }
@@ -929,7 +929,7 @@ t_error			task_priority(i_task			id,
    * 5)
    */
 
-  if (machine_call(task, priority, id, prior) != ERROR_OK)
+  if (machine_call(task, priority, id, prior) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -959,7 +959,7 @@ t_error			task_priority(i_task			id,
  * 6) call the machine.
  */
 
-t_error			task_start(i_task			id)
+t_status		task_start(i_task			id)
 {
   o_task*		object;
   s_iterator		i;
@@ -969,7 +969,7 @@ t_error			task_start(i_task			id)
    * 1)
    */
 
-  if (task_get(id, &object) != ERROR_OK)
+  if (task_get(id, &object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -999,14 +999,14 @@ t_error			task_start(i_task			id)
        * a)
        */
 
-      if (set_object(object->waits, i, (void**)&id) != ERROR_OK)
+      if (set_object(object->waits, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the waiting thread's identifier");
 
       /*
        * b)
        */
 
-      if (thread_get(*id, &o) != ERROR_OK)
+      if (thread_get(*id, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the waiting thread");
 
       /*
@@ -1026,14 +1026,14 @@ t_error			task_start(i_task			id)
 	   * ii)
 	   */
 
-	  if (thread_start(o->id) != ERROR_OK)
+	  if (thread_start(o->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to start the waiting thread");
 
 	  /*
 	   * iii)
 	   */
 
-	  if (set_delete(object->waits, i) != ERROR_OK)
+	  if (set_delete(object->waits, i) != STATUS_OK)
 	    CORE_ESCAPE("unable to delete the thread from the waiting list");
 
 	  goto try;
@@ -1053,14 +1053,14 @@ t_error			task_start(i_task			id)
        * a)
        */
 
-      if (set_object(object->threads, i, (void**)&id) != ERROR_OK)
+      if (set_object(object->threads, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       /*
        * b)
        */
 
-      if (thread_get(*id, &o) != ERROR_OK)
+      if (thread_get(*id, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread object");
 
       /*
@@ -1069,7 +1069,7 @@ t_error			task_start(i_task			id)
 
       if (o->state == THREAD_STATE_START)
 	{
-	  if (scheduler_add(o->id) != ERROR_OK)
+	  if (scheduler_add(o->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to add the thread to the scheduler");
 	}
     }
@@ -1078,7 +1078,7 @@ t_error			task_start(i_task			id)
    * 6)
    */
 
-  if (machine_call(task, start, id) != ERROR_OK)
+  if (machine_call(task, start, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1108,7 +1108,7 @@ t_error			task_start(i_task			id)
  * 7) call the machine.
  */
 
-t_error			task_stop(i_task			id)
+t_status		task_stop(i_task			id)
 {
   o_task*		object;
   t_state		state;
@@ -1119,7 +1119,7 @@ t_error			task_stop(i_task			id)
    * 1)
    */
 
-  if (task_get(id, &object) != ERROR_OK)
+  if (task_get(id, &object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -1155,14 +1155,14 @@ t_error			task_stop(i_task			id)
        * a)
        */
 
-      if (set_object(object->waits, i, (void**)&id) != ERROR_OK)
+      if (set_object(object->waits, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the waiting thread's identifier");
 
       /*
        * b)
        */
 
-      if (thread_get(*id, &o) != ERROR_OK)
+      if (thread_get(*id, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the waiting thread");
 
       /*
@@ -1182,14 +1182,14 @@ t_error			task_stop(i_task			id)
 	   * ii)
 	   */
 
-	  if (thread_start(o->id) != ERROR_OK)
+	  if (thread_start(o->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to start the waiting thread");
 
 	  /*
 	   * iii)
 	   */
 
-	  if (set_delete(object->waits, i) != ERROR_OK)
+	  if (set_delete(object->waits, i) != STATUS_OK)
 	    CORE_ESCAPE("unable to delete the thread from the waiting list");
 
 	  goto try;
@@ -1209,14 +1209,14 @@ t_error			task_stop(i_task			id)
        * a)
        */
 
-      if (set_object(object->threads, i, (void**)&id) != ERROR_OK)
+      if (set_object(object->threads, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       /*
        * b)
        */
 
-      if (thread_get(*id, &o) != ERROR_OK)
+      if (thread_get(*id, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread object");
 
       /*
@@ -1226,7 +1226,7 @@ t_error			task_stop(i_task			id)
       if ((state == TASK_STATE_START) &&
 	  (o->state == THREAD_STATE_START))
 	{
-	  if (scheduler_remove(o->id) != ERROR_OK)
+	  if (scheduler_remove(o->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to add the thread to the scheduler");
 	}
     }
@@ -1235,7 +1235,7 @@ t_error			task_stop(i_task			id)
    * 7)
    */
 
-  if (machine_call(task, stop, id) != ERROR_OK)
+  if (machine_call(task, stop, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1258,7 +1258,7 @@ t_error			task_stop(i_task			id)
  * 6) call the machine.
  */
 
-t_error			task_block(i_task			id)
+t_status		task_block(i_task			id)
 {
   o_task*		object;
   t_state		state;
@@ -1269,7 +1269,7 @@ t_error			task_block(i_task			id)
    * 1)
    */
 
-  if (task_get(id, &object) != ERROR_OK)
+  if (task_get(id, &object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -1304,14 +1304,14 @@ t_error			task_block(i_task			id)
        * a)
        */
 
-      if (set_object(object->threads, i, (void**)&id) != ERROR_OK)
+      if (set_object(object->threads, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
       /*
        * b)
        */
 
-      if (thread_get(*id, &o) != ERROR_OK)
+      if (thread_get(*id, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread object");
 
       /*
@@ -1321,7 +1321,7 @@ t_error			task_block(i_task			id)
       if ((state == TASK_STATE_START) &&
 	  (o->state == THREAD_STATE_START))
 	{
-	  if (scheduler_remove(o->id) != ERROR_OK)
+	  if (scheduler_remove(o->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to remove the thread from the scheduler");
 	}
     }
@@ -1330,7 +1330,7 @@ t_error			task_block(i_task			id)
    * 6)
    */
 
-  if (machine_call(task, block, id) != ERROR_OK)
+  if (machine_call(task, block, id) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1413,7 +1413,7 @@ t_error			task_block(i_task			id)
  *   b) since it should, perform the scheduler removal manually.
  */
 
-t_error			task_exit(i_task			id,
+t_status		task_exit(i_task			id,
 				  t_value			value)
 {
   o_task*		object;
@@ -1434,7 +1434,7 @@ t_error			task_exit(i_task			id,
 			TIMER_DATA(NULL),
 			TASK_MORGUE_DELAY,
 			TIMER_OPTION_REPEAT,
-			&_task.morgue.timer) != ERROR_OK)
+			&_task.morgue.timer) != STATUS_OK)
 	MACHINE_ESCAPE("unable to reserve the timer");
     }
 
@@ -1442,7 +1442,7 @@ t_error			task_exit(i_task			id,
    * 1)
    */
 
-  if (task_get(id, &object) != ERROR_OK)
+  if (task_get(id, &object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -1457,7 +1457,7 @@ t_error			task_exit(i_task			id,
    * 3)
    */
 
-  if (thread_current(&current) != ERROR_OK)
+  if (thread_current(&current) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the currently executing thread");
 
   /*
@@ -1481,10 +1481,10 @@ t_error			task_exit(i_task			id,
        * a)
        */
 
-      if (set_object(object->threads, i, (void**)&id) != ERROR_OK)
+      if (set_object(object->threads, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread identifier");
 
-      if (thread_get(*id, &o) != ERROR_OK)
+      if (thread_get(*id, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the thread object");
 
       /*
@@ -1521,7 +1521,7 @@ t_error			task_exit(i_task			id,
 	   * ii)
 	   */
 
-	  if (thread_exit(o->id, object->value) != ERROR_OK)
+	  if (thread_exit(o->id, object->value) != STATUS_OK)
 	    CORE_ESCAPE("unable to exit the thread");
 	}
     }
@@ -1548,14 +1548,14 @@ t_error			task_exit(i_task			id,
        * a)
        */
 
-      if (set_object(object->waits, i, (void**)&id) != ERROR_OK)
+      if (set_object(object->waits, i, (void**)&id) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the waiting thread's identifier");
 
       /*
        * b)
        */
 
-      if (thread_get(*id, &o) != ERROR_OK)
+      if (thread_get(*id, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the waiting thread");
 
       /*
@@ -1575,14 +1575,14 @@ t_error			task_exit(i_task			id,
 	   * ii)
 	   */
 
-	  if (thread_start(o->id) != ERROR_OK)
+	  if (thread_start(o->id) != STATUS_OK)
 	    CORE_ESCAPE("unable to start the waiting thread");
 
 	  /*
 	   * iii)
 	   */
 
-	  if (set_delete(object->waits, i) != ERROR_OK)
+	  if (set_delete(object->waits, i) != STATUS_OK)
 	    CORE_ESCAPE("unable to delete the thread from the waiting list");
 
 	  /*
@@ -1615,7 +1615,7 @@ t_error			task_exit(i_task			id,
        * b)
        */
 
-      if (set_add(_task.morgue.field, &object->id) != ERROR_OK)
+      if (set_add(_task.morgue.field, &object->id) != STATUS_OK)
 	CORE_ESCAPE("unable to add the task to the morgue");
     }
 
@@ -1632,14 +1632,14 @@ t_error			task_exit(i_task			id,
        * a)
        */
 
-      if (set_object(object->children, i, (void**)&child) != ERROR_OK)
+      if (set_object(object->children, i, (void**)&child) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the task identifier");
 
       /*
        * b)
        */
 
-      if (task_get(*child, &o) != ERROR_OK)
+      if (task_get(*child, &o) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the task object");
 
       /*
@@ -1653,7 +1653,7 @@ t_error			task_exit(i_task			id,
    * 10)
    */
 
-  if (machine_call(task, exit, id, value) != ERROR_OK)
+  if (machine_call(task, exit, id, value) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -1666,14 +1666,14 @@ t_error			task_exit(i_task			id,
        * a)
        */
 
-      if (thread_exit(thread, object->value) != ERROR_OK)
+      if (thread_exit(thread, object->value) != STATUS_OK)
 	CORE_ESCAPE("unable to exit the currently running thread");
 
       /*
        * b)
        */
 
-      if (scheduler_remove(thread) != ERROR_OK)
+      if (scheduler_remove(thread) != STATUS_OK)
 	CORE_ESCAPE("unable to remove the thread from the scheduler");
     }
 
@@ -1702,7 +1702,7 @@ void			task_bury(i_timer			timer,
    * 1)
    */
 
-  while (set_head(_task.morgue.field, &i) == ERROR_TRUE)
+  while (set_head(_task.morgue.field, &i) == TRUE)
     {
       i_task*		task;
       o_task*		object;
@@ -1711,9 +1711,9 @@ void			task_bury(i_timer			timer,
        * a)
        */
 
-      assert(set_object(_task.morgue.field, i, (void**)&task) == ERROR_OK);
+      assert(set_object(_task.morgue.field, i, (void**)&task) == STATUS_OK);
 
-      assert(task_get(*task, &object) == ERROR_OK);
+      assert(task_get(*task, &object) == STATUS_OK);
 
       /*
        * b)
@@ -1725,13 +1725,13 @@ void			task_bury(i_timer			timer,
        * c)
        */
 
-      assert(task_release(object->id) == ERROR_OK);
+      assert(task_release(object->id) == STATUS_OK);
 
       /*
        * d)
        */
 
-      assert(set_delete(_task.morgue.field, i) == ERROR_OK);
+      assert(set_delete(_task.morgue.field, i) == STATUS_OK);
     }
 }
 
@@ -1772,7 +1772,7 @@ void			task_bury(i_timer			timer,
  * 12) call the machine.
  */
 
-t_error			task_wait(i_thread			id,
+t_status		task_wait(i_thread			id,
 				  i_task			target,
 				  t_state			state,
 				  s_wait*			wait)
@@ -1791,10 +1791,10 @@ t_error			task_wait(i_thread			id,
    * 1)
    */
 
-  if (thread_get(id, &object) != ERROR_OK)
+  if (thread_get(id, &object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the thread object");
 
-  if (task_get(target, &o) != ERROR_OK)
+  if (task_get(target, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
@@ -1860,7 +1860,7 @@ t_error			task_wait(i_thread			id,
        * c)
        */
 
-      if (set_add(_task.morgue.field, &o->id) != ERROR_OK)
+      if (set_add(_task.morgue.field, &o->id) != STATUS_OK)
 	CORE_ESCAPE("unable to add the task to the morgue");
 
       CORE_LEAVE();
@@ -1883,14 +1883,14 @@ t_error			task_wait(i_thread			id,
    * 8)
    */
 
-  if (set_add(o->waits, &id) != ERROR_OK)
+  if (set_add(o->waits, &id) != STATUS_OK)
     CORE_ESCAPE("unable to add the thread identifier to the waiting list");
 
   /*
    * 9)
    */
 
-  if (thread_stop(id) != ERROR_OK)
+  if (thread_stop(id) != STATUS_OK)
     CORE_ESCAPE("unable to stop the task");
 
   /*
@@ -1912,7 +1912,7 @@ t_error			task_wait(i_thread			id,
    * 12)
    */
 
-  if (machine_call(task, wait, id, target, state, wait) != ERROR_OK)
+  if (machine_call(task, wait, id, target, state, wait) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -1938,7 +1938,7 @@ void			task_wakeup(i_timer			timer,
    * 1)
    */
 
-  assert(task_get(*id, &o) == ERROR_OK);
+  assert(task_get(*id, &o) == STATUS_OK);
 
   /*
    * 2)
@@ -1950,7 +1950,7 @@ void			task_wakeup(i_timer			timer,
    * 3)
    */
 
-  assert(task_start(o->id) == ERROR_OK);
+  assert(task_start(o->id) == STATUS_OK);
 }
 
 /*
@@ -1974,7 +1974,7 @@ void			task_wakeup(i_timer			timer,
  * 5) finally, block the task.
  */
 
-t_error			task_sleep(i_task			id,
+t_status		task_sleep(i_task			id,
 				   t_delay			milliseconds)
 {
   o_task*		o;
@@ -1983,7 +1983,7 @@ t_error			task_sleep(i_task			id,
    * 1)
    */
 
-  if (task_get(id, &o) != ERROR_OK)
+  if (task_get(id, &o) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -2002,21 +2002,21 @@ t_error			task_sleep(i_task			id,
                     TIMER_DATA(&o->id),
                     milliseconds,
                     TIMER_OPTION_NONE,
-                    &o->timer) != ERROR_OK)
+                    &o->timer) != STATUS_OK)
     CORE_ESCAPE("unable to reserve a timer");
 
   /*
    * 4)
    */
 
-  if (machine_call(task, sleep, id, milliseconds) != ERROR_OK)
+  if (machine_call(task, sleep, id, milliseconds) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
    * 5)
    */
 
-  if (task_block(o->id) != ERROR_OK)
+  if (task_block(o->id) != STATUS_OK)
     CORE_ESCAPE("unable to block the task");
 
   CORE_LEAVE();
@@ -2034,7 +2034,7 @@ t_error			task_sleep(i_task			id,
  * 3) return the task identifier of the thread.
  */
 
-t_error			task_current(i_task*			task)
+t_status		task_current(i_task*			task)
 {
   o_scheduler*		scheduler;
   o_thread*		thread;
@@ -2050,14 +2050,14 @@ t_error			task_current(i_task*			task)
    * 1)
    */
 
-  if (scheduler_current(&scheduler) != ERROR_OK)
+  if (scheduler_current(&scheduler) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the current scheduler");
 
   /*
    * 2)
    */
 
-  if (thread_get(scheduler->thread, &thread) != ERROR_OK)
+  if (thread_get(scheduler->thread, &thread) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the thread object");
 
   /*
@@ -2073,9 +2073,9 @@ t_error			task_current(i_task*			task)
  * this function returns true if the task object exists.
  */
 
-t_error			task_exist(i_task			id)
+t_bool			task_exist(i_task			id)
 {
-  if (set_exist(_task.tasks, id) != ERROR_TRUE)
+  if (set_exist(_task.tasks, id) != TRUE)
     CORE_FALSE();
 
   CORE_TRUE();
@@ -2090,7 +2090,7 @@ t_error			task_exist(i_task			id)
  * 1) retrieve the object from the set of tasks.
  */
 
-t_error			task_get(i_task				id,
+t_status		task_get(i_task				id,
 				 o_task**			object)
 {
   /*
@@ -2104,7 +2104,7 @@ t_error			task_get(i_task				id,
    * 1)
    */
 
-  if (set_get(_task.tasks, id, (void**)object) != ERROR_OK)
+  if (set_get(_task.tasks, id, (void**)object) != STATUS_OK)
     CORE_ESCAPE("unable to retrieve the object from the set of tasks");
 
   CORE_LEAVE();
@@ -2150,7 +2150,7 @@ t_error			task_get(i_task				id,
  * 12) call the machine.
  */
 
-t_error			task_initialize(void)
+t_status		task_initialize(void)
 {
   i_segment		segments[_init->nsegments];
   i_region		useless;
@@ -2175,7 +2175,7 @@ t_error			task_initialize(void)
    * 3)
    */
 
-  if (id_build(&_task.id) != ERROR_OK)
+  if (id_build(&_task.id) != STATUS_OK)
     CORE_ESCAPE("unable to build the identifier object");
 
   /*
@@ -2185,7 +2185,7 @@ t_error			task_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (o_task),
-		  &_task.tasks) != ERROR_OK)
+		  &_task.tasks) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the set of tasks");
 
   /*
@@ -2195,7 +2195,7 @@ t_error			task_initialize(void)
   if (set_reserve(ll,
 		  SET_OPTION_ALLOCATE | SET_OPTION_SORT,
 		  sizeof (i_task),
-		  &_task.morgue.field) != ERROR_OK)
+		  &_task.morgue.field) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the set of dead tasks i.e the morgue");
 
   /*
@@ -2211,7 +2211,7 @@ t_error			task_initialize(void)
   if (task_reserve(TASK_CLASS_KERNEL,
 		   TASK_BEHAVIOUR_KERNEL,
 		   TASK_PRIORITY_KERNEL,
-		   &_kernel.task) != ERROR_OK)
+		   &_kernel.task) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the kernel task");
 
   /*
@@ -2219,14 +2219,14 @@ t_error			task_initialize(void)
    */
 
   if (as_reserve(_kernel.task,
-		 &_kernel.as) != ERROR_OK)
+		 &_kernel.as) != STATUS_OK)
     CORE_ESCAPE("unable to reserve the kernel address space");
 
   /*
    * 9)
    */
 
-  if (task_start(_kernel.task) != ERROR_OK)
+  if (task_start(_kernel.task) != STATUS_OK)
     CORE_ESCAPE("unable to start the kernel task");
 
   /*
@@ -2262,7 +2262,7 @@ t_error			task_initialize(void)
        * d)
        */
 
-      if (segment_inject(_kernel.as, segment, &segments[i]) != ERROR_OK)
+      if (segment_inject(_kernel.as, segment, &segments[i]) != STATUS_OK)
 	CORE_ESCAPE("unable to inject the segment object pre-reserved "
 		    "by the boot loader");
 
@@ -2301,7 +2301,7 @@ t_error			task_initialize(void)
        * c)
        */
 
-      if (region_inject(_kernel.as, region, &useless) != ERROR_OK)
+      if (region_inject(_kernel.as, region, &useless) != STATUS_OK)
 	CORE_ESCAPE("unable to inject the region object pre-reserved "
 		    "by the boot loader");
     }
@@ -2310,7 +2310,7 @@ t_error			task_initialize(void)
    * 12)
    */
 
-  if (machine_call(task, initialize) != ERROR_OK)
+  if (machine_call(task, initialize) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   CORE_LEAVE();
@@ -2333,7 +2333,7 @@ t_error			task_initialize(void)
  * 7) release the identifier object.
  */
 
-t_error			task_clean(void)
+t_status		task_clean(void)
 {
   s_iterator		i;
   t_state		s;
@@ -2349,7 +2349,7 @@ t_error			task_clean(void)
    * 2)
    */
 
-  if (machine_call(task, clean) != ERROR_OK)
+  if (machine_call(task, clean) != STATUS_OK)
     CORE_ESCAPE("an error occured in the machine");
 
   /*
@@ -2364,14 +2364,14 @@ t_error			task_clean(void)
        * a)
        */
 
-      if (set_object(_task.tasks, i, (void**)&task) != ERROR_OK)
+      if (set_object(_task.tasks, i, (void**)&task) != STATUS_OK)
 	CORE_ESCAPE("unable to retrieve the task identifier");
 
       /*
        * b)
        */
 
-      if (task_release(*task) != ERROR_OK)
+      if (task_release(*task) != STATUS_OK)
 	CORE_ESCAPE("unable to release the task");
     }
 
@@ -2381,7 +2381,7 @@ t_error			task_clean(void)
 
   if (_task.morgue.timer != ID_UNUSED)
     {
-      if (timer_release(_task.morgue.timer) != ERROR_OK)
+      if (timer_release(_task.morgue.timer) != STATUS_OK)
 	CORE_ESCAPE("unable to release the timer");
     }
 
@@ -2389,21 +2389,21 @@ t_error			task_clean(void)
    * 5)
    */
 
-  if (set_release(_task.morgue.field) != ERROR_OK)
+  if (set_release(_task.morgue.field) != STATUS_OK)
     CORE_ESCAPE("unable to release the set of dead tasks");
 
   /*
    * 6)
    */
 
-  if (set_release(_task.tasks) != ERROR_OK)
+  if (set_release(_task.tasks) != STATUS_OK)
     CORE_ESCAPE("unable to release the set of tasks");
 
   /*
    * 7)
    */
 
-  if (id_destroy(&_task.id) != ERROR_OK)
+  if (id_destroy(&_task.id) != STATUS_OK)
     CORE_ESCAPE("unable to destroy the identifier object");
 
   CORE_LEAVE();

@@ -76,7 +76,7 @@ m_message		_message;
  * this function retrieves a message box of a task by its type.
  */
 
-static t_error		message_box(i_task			task,
+static t_status	message_box(i_task			task,
 				    t_type			type,
 				    o_message_type**		o)
 {
@@ -85,10 +85,10 @@ static t_error		message_box(i_task			task,
 
   assert(o != NULL);
 
-  if (task_get(task, &otask) != ERROR_OK)
+  if (task_get(task, &otask) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
-  if (set_get(otask->messages, typeid, (void**)o) != ERROR_OK)
+  if (set_get(otask->messages, typeid, (void**)o) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -110,7 +110,7 @@ static t_error		message_box(i_task			task,
  *
  */
 
-t_error			message_register(i_task			task,
+t_status		message_register(i_task			task,
 					 t_type			type,
 					 t_vsize		size)
 {
@@ -122,14 +122,14 @@ t_error			message_register(i_task			task,
    * 1)
    */
 
-  if (task_get(task, &o) != ERROR_OK)
+  if (task_get(task, &o) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
    * 2)
    */
 
-  if (set_exist(o->messages, typeid) == ERROR_TRUE)
+  if (set_exist(o->messages, typeid) == TRUE)
     CORE_ESCAPE("XXX");
 
   /*
@@ -141,11 +141,11 @@ t_error			message_register(i_task			task,
   msgtype.size = size;
 
   if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (o_message),
-		  &msgtype.queue) != ERROR_OK)
+		  &msgtype.queue) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   if (set_reserve(pipe, SET_OPTION_ALLOCATE, sizeof (o_message),
-		  &msgtype.waiters) != ERROR_OK)
+		  &msgtype.waiters) != STATUS_OK)
     {
       set_release(msgtype.queue);
 
@@ -156,7 +156,7 @@ t_error			message_register(i_task			task,
    * 4)
    */
 
-  if (set_add(o->messages, &msgtype) != ERROR_OK)
+  if (set_add(o->messages, &msgtype) != STATUS_OK)
     {
       set_release(msgtype.waiters),
       set_release(msgtype.queue);
@@ -168,7 +168,7 @@ t_error			message_register(i_task			task,
    * 5)
    */
 
-  if (machine_call(message, register, task, type, size) != ERROR_OK)
+  if (machine_call(message, register, task, type, size) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -179,13 +179,13 @@ t_error			message_register(i_task			task,
  *
  */
 
-t_error			message_size(i_task			task,
+t_status		message_size(i_task			task,
 				     t_type			type,
 				     t_vsize*			size)
 {
   o_message_type*	o;
 
-  if (message_box(task, type, &o) != ERROR_OK)
+  if (message_box(task, type, &o) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   *size = o->size;
@@ -206,35 +206,35 @@ t_error			message_size(i_task			task,
  *
  */
 
-t_error			message_flush(i_task			task)
+t_status		message_flush(i_task			task)
 {
   o_task*		o;
   o_message_type*	otype;
   o_message*		omsg;
   s_iterator		it;
 
-  if (task_get(task, &o) != ERROR_OK)
+  if (task_get(task, &o) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
    * 1)
    */
 
-  while (set_head(o->messages, &it) == ERROR_TRUE)
+  while (set_head(o->messages, &it) == TRUE)
     {
-      if (set_object(o->messages, it, (void**)&otype) != ERROR_OK)
+      if (set_object(o->messages, it, (void**)&otype) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       /*
        * 2)
        */
 
-      while (set_pick(otype->waiters, (void**)&omsg) != ERROR_OK)
+      while (set_pick(otype->waiters, (void**)&omsg) != STATUS_OK)
 	{
-	  if (message_return(omsg->blocked, ERROR_KO) != ERROR_OK)
+	  if (message_return(omsg->blocked, STATUS_ERROR) != STATUS_OK)
 	    CORE_ESCAPE("XXX");
 
-	  if (set_pop(otype->waiters) != ERROR_OK)
+	  if (set_pop(otype->waiters) != STATUS_OK)
 	    CORE_ESCAPE("XXX");
 	}
 
@@ -242,14 +242,14 @@ t_error			message_flush(i_task			task)
        * 3)
        */
 
-      while (set_pick(otype->queue, (void**)&omsg) != ERROR_OK)
+      while (set_pick(otype->queue, (void**)&omsg) != STATUS_OK)
 	{
-	  if (set_pop(otype->waiters) != ERROR_OK)
+	  if (set_pop(otype->waiters) != STATUS_OK)
 	    CORE_ESCAPE("XXX");
 
 	  if (omsg->as == ID_UNUSED)
 	    {
-	      if (message_return(omsg->blocked, ERROR_KO) != ERROR_OK)
+	      if (message_return(omsg->blocked, STATUS_ERROR) != STATUS_OK)
 		CORE_ESCAPE("XXX");
 	    }
 	  else
@@ -263,10 +263,10 @@ t_error			message_flush(i_task			task)
        * 4)
        */
 
-      if (set_release(otype->waiters) != ERROR_OK)
+      if (set_release(otype->waiters) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
-      if (set_release(otype->queue) != ERROR_OK)
+      if (set_release(otype->queue) != STATUS_OK)
 	CORE_ESCAPE("XXX");
     }
 
@@ -274,7 +274,7 @@ t_error			message_flush(i_task			task)
    * 5)
    */
 
-  if (machine_call(message, flush, task) != ERROR_OK)
+  if (machine_call(message, flush, task) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -300,7 +300,7 @@ t_error			message_flush(i_task			task)
  *
  */
 
-t_error			message_send(i_task			task,
+t_status		message_send(i_task			task,
 				     i_node			destination,
 				     t_type			type,
 				     t_vaddr			data,
@@ -326,7 +326,7 @@ t_error			message_send(i_task			task,
    * 2)
    */
 
-  if (message_box(destination.task, typeid, &o) != ERROR_OK)
+  if (message_box(destination.task, typeid, &o) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
@@ -351,20 +351,20 @@ t_error			message_send(i_task			task,
       source.cell = _kernel.cell;
       source.task = task;
 
-      if (task_get(task, &otsk) != ERROR_OK)
+      if (task_get(task, &otsk) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       if ((buffer = malloc(size)) == NULL)
 	CORE_ESCAPE("XXX");
 
-      if (as_read(otsk->as, data, size, buffer) != ERROR_OK)
+      if (as_read(otsk->as, data, size, buffer) != STATUS_OK)
 	{
 	  free(buffer);
 
 	  CORE_ESCAPE("XXX");
 	}
 
-      if (interface_notify(buffer, size, source) != ERROR_OK)
+      if (interface_notify(buffer, size, source) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       free(buffer);
@@ -376,12 +376,12 @@ t_error			message_send(i_task			task,
    * 5)
    */
 
-  if (set_size(o->waiters, &setsz) != ERROR_OK)
+  if (set_size(o->waiters, &setsz) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   if (setsz != 0)
     {
-      if (message_transmit(task, destination, type, data, size) != ERROR_OK)
+      if (message_transmit(task, destination, type, data, size) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       CORE_LEAVE();
@@ -415,14 +415,14 @@ t_error			message_send(i_task			task,
 	   * b)
 	   */
 
-	  if (task_get(task, &otsk) != ERROR_OK)
+	  if (task_get(task, &otsk) != STATUS_OK)
 	    {
 	      free(msg.data);
 
 	      CORE_ESCAPE("XXX");
 	    }
 
-	  if (as_read(otsk->as, data, size, msg.data) != ERROR_OK)
+	  if (as_read(otsk->as, data, size, msg.data) != STATUS_OK)
 	    {
 	      free(msg.data);
 
@@ -442,7 +442,7 @@ t_error			message_send(i_task			task,
 
   msg.id = o->id++;
 
-  if (set_push(o->queue, &msg) != ERROR_OK)
+  if (set_push(o->queue, &msg) != STATUS_OK)
     {
       if (msg.data != NULL)
 	free(msg.data);
@@ -455,7 +455,7 @@ t_error			message_send(i_task			task,
    */
 
   if (machine_call(message, send, task, destination, type,
-		   data, size) != ERROR_OK)
+		   data, size) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -480,7 +480,7 @@ t_error			message_send(i_task			task,
  *
  */
 
-t_error			message_transmit(i_task			task,
+t_status		message_transmit(i_task			task,
 					 i_node			destination,
 					 t_type			type,
 					 t_vaddr		data,
@@ -508,10 +508,10 @@ t_error			message_transmit(i_task			task,
    * 2)
    */
 
-  if (message_box(destination.task, typeid, &o) != ERROR_OK)
+  if (message_box(destination.task, typeid, &o) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
-  if (task_get(task, &otsk) != ERROR_OK)
+  if (task_get(task, &otsk) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
@@ -525,7 +525,7 @@ t_error			message_transmit(i_task			task,
    * 4)
    */
 
-  if (set_size(o->waiters, &setsz) != ERROR_OK)
+  if (set_size(o->waiters, &setsz) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   if (setsz != 0)
@@ -536,22 +536,22 @@ t_error			message_transmit(i_task			task,
        * a)
        */
 
-      if (set_pick(o->waiters, (void*)&pmsg) != ERROR_OK)
+      if (set_pick(o->waiters, (void*)&pmsg) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       if (size)
 	if (as_copy(otsk->as, data, pmsg->as, (t_vaddr)pmsg->data,
-		    size) != ERROR_OK)
+		    size) != STATUS_OK)
 	  CORE_ESCAPE("XXX");
 
       sender.cell = _kernel.cell;
       sender.task = task;
 
-      if (message_return_info(pmsg->blocked, ERROR_OK, size,
-			      sender) != ERROR_OK)
+      if (message_return_info(pmsg->blocked, STATUS_OK, size,
+			      sender) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
-      if (set_pop(o->waiters) != ERROR_OK)
+      if (set_pop(o->waiters) != STATUS_OK)
 	CORE_ESCAPE("XXX");
     }
   else
@@ -560,7 +560,7 @@ t_error			message_transmit(i_task			task,
        * b)
        */
 
-      if (thread_current(&thread) != ERROR_OK)
+      if (thread_current(&thread) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       msg.as = otsk->as;
@@ -572,10 +572,10 @@ t_error			message_transmit(i_task			task,
 
       msg.id = o->id++;
 
-      if (set_push(o->queue, &msg) != ERROR_OK)
+      if (set_push(o->queue, &msg) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
-      if (thread_block(thread) != ERROR_OK)
+      if (thread_block(thread) != STATUS_OK)
 	CORE_ESCAPE("XXX");
     }
 
@@ -584,7 +584,7 @@ t_error			message_transmit(i_task			task,
    */
 
   if (machine_call(message, transmit, task, destination, type,
-		   data, size) != ERROR_OK)
+		   data, size) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -600,7 +600,7 @@ t_error			message_transmit(i_task			task,
  *
  */
 
-t_error			message_throw(i_task			task,
+t_status		message_throw(i_task			task,
 				      i_node			destination,
 				      t_type			type,
 				      t_vaddr			data,
@@ -609,7 +609,7 @@ t_error			message_throw(i_task			task,
 {
   assert(request != NULL);
 
-  if (cpu_multiprocessor() == ERROR_TRUE)
+  if (cpu_multiprocessor() == TRUE)
     {
       /* XXX smp */
 
@@ -617,11 +617,11 @@ t_error			message_throw(i_task			task,
     }
   else
     {
-      t_error		res;
+      t_status	res;
 
       res = message_send(task, destination, type, data, size);
 
-      if (res != ERROR_OK)
+      if (res != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       request->completed = MESSAGE_REQUEST_COMPLETED;
@@ -644,7 +644,7 @@ t_error			message_throw(i_task			task,
  *
  */
 
-t_error			message_receive(i_task			task,
+t_status		message_receive(i_task			task,
 					t_type			type,
 					t_vaddr			data,
 					t_vsize*		size,
@@ -661,14 +661,14 @@ t_error			message_receive(i_task			task,
    * 1)
    */
 
-  if (message_box(task, typeid, &o) != ERROR_OK)
+  if (message_box(task, typeid, &o) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
    * 2)
    */
 
-  if (set_size(o->queue, &setsz) != ERROR_OK)
+  if (set_size(o->queue, &setsz) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   if (setsz == 0)
@@ -677,10 +677,10 @@ t_error			message_receive(i_task			task,
        * a)
        */
 
-      if (task_get(task, &otsk) != ERROR_OK)
+      if (task_get(task, &otsk) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
-      if (thread_current(&thread) != ERROR_OK)
+      if (thread_current(&thread) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       msg.id = o->id++;
@@ -688,10 +688,10 @@ t_error			message_receive(i_task			task,
       msg.data = (void*)data;
       msg.blocked = thread;
 
-      if (set_push(o->waiters, &msg) != ERROR_OK)
+      if (set_push(o->waiters, &msg) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
-      if (thread_block(thread) != ERROR_OK)
+      if (thread_block(thread) != STATUS_OK)
 	CORE_ESCAPE("XXX");
     }
   else
@@ -700,7 +700,7 @@ t_error			message_receive(i_task			task,
        * b)
        */
 
-      if (message_poll(task, type, data, size, sender) != ERROR_OK)
+      if (message_poll(task, type, data, size, sender) != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       CORE_LEAVE();
@@ -711,7 +711,7 @@ t_error			message_receive(i_task			task,
    */
 
   if (machine_call(message, poll, task, type, data,
-		   size, sender) != ERROR_OK)
+		   size, sender) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -727,12 +727,12 @@ t_error			message_receive(i_task			task,
  *
  */
 
-t_error			message_grab(i_task			task,
+t_status		message_grab(i_task			task,
 				     t_type			type,
 				     t_vaddr			data,
 				     s_message_request*		request)
 {
-  if (cpu_multiprocessor() == ERROR_TRUE)
+  if (cpu_multiprocessor() == TRUE)
     {
       /* XXX smp */
 
@@ -740,13 +740,13 @@ t_error			message_grab(i_task			task,
     }
   else
     {
-      t_error		res;
+      t_status	res;
       t_vsize		size;
       i_node		sender;
 
       res = message_receive(task, type, data, &size, &sender);
 
-      if (res != ERROR_OK)
+      if (res != STATUS_OK)
 	CORE_ESCAPE("XXX");
 
       request->completed = MESSAGE_REQUEST_COMPLETED;
@@ -774,7 +774,7 @@ t_error			message_grab(i_task			task,
  *
  */
 
-t_error			message_poll(i_task			task,
+t_status		message_poll(i_task			task,
 				     t_type			type,
 				     t_vaddr			data,
 				     t_vsize*			size,
@@ -789,14 +789,14 @@ t_error			message_poll(i_task			task,
    * 1)
    */
 
-  if (message_box(task, typeid, &o) != ERROR_OK)
+  if (message_box(task, typeid, &o) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
    * 2
    */
 
-  if (set_pick(o->queue, (void*)&msg) != ERROR_OK)
+  if (set_pick(o->queue, (void*)&msg) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
@@ -811,15 +811,15 @@ t_error			message_poll(i_task			task,
 
       if (msg->size)
 	{
-	  if (task_get(task, &otsk) != ERROR_OK)
+	  if (task_get(task, &otsk) != STATUS_OK)
 	    CORE_ESCAPE("XXX");
 
 	  if (as_copy(msg->as, (t_vaddr)msg->data, otsk->as, data,
-		      msg->size) != ERROR_OK)
+		      msg->size) != STATUS_OK)
 	    CORE_ESCAPE("XXX");
 	}
 
-      if (message_return(msg->blocked, ERROR_OK) != ERROR_OK)
+      if (message_return(msg->blocked, STATUS_OK) != STATUS_OK)
 	CORE_ESCAPE("XXX");
     }
   else
@@ -841,11 +841,11 @@ t_error			message_poll(i_task			task,
 
 	  if (msg->size)
 	    {
-	      if (task_get(task, &otsk) != ERROR_OK)
+	      if (task_get(task, &otsk) != STATUS_OK)
 		CORE_ESCAPE("XXX");
 
 	      if (as_write(otsk->as, msg->data, msg->size,
-			   data) != ERROR_OK)
+			   data) != STATUS_OK)
 		CORE_ESCAPE("XXX");
 	    }
 	}
@@ -857,7 +857,7 @@ t_error			message_poll(i_task			task,
   *size = msg->size;
   *sender = msg->sender;
 
-  if (set_pop(o->queue) != ERROR_OK)
+  if (set_pop(o->queue) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
@@ -865,7 +865,7 @@ t_error			message_poll(i_task			task,
    */
 
   if (machine_call(message, poll, task, type, data,
-		   size, sender) != ERROR_OK)
+		   size, sender) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -877,7 +877,7 @@ t_error			message_poll(i_task			task,
  *
  */
 
-t_error			message_state(i_task			task,
+t_status		message_state(i_task			task,
 				      s_message_request		request)
 {
   /* XXX smp */
@@ -891,7 +891,7 @@ t_error			message_state(i_task			task,
  *
  */
 
-t_error			message_wait(i_task			task,
+t_status		message_wait(i_task			task,
 				     s_message_request		request,
 				     t_vsize*			size,
 				     i_node*			sender)
@@ -906,13 +906,13 @@ t_error			message_wait(i_task			task,
  *
  */
 
-t_error			message_return(i_thread			thread,
-				       t_error			code)
+t_status		message_return(i_thread			thread,
+				       t_status		code)
 {
-  if (machine_call(message, return, thread, code) != ERROR_OK)
+  if (machine_call(message, return, thread, code) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -923,16 +923,16 @@ t_error			message_return(i_thread			thread,
  *
  */
 
-t_error			message_return_info(i_thread		thread,
-					    t_error		code,
+t_status		message_return_info(i_thread		thread,
+					    t_status	code,
 					    t_vsize		size,
 					    i_node		sender)
 {
   if (machine_call(message, return_info, thread, code, size,
-		   sender) != ERROR_OK)
+		   sender) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
-  if (thread_start(thread) != ERROR_OK)
+  if (thread_start(thread) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -950,7 +950,7 @@ t_error			message_return_info(i_thread		thread,
  *
  */
 
-t_error			message_initialize(void)
+t_status		message_initialize(void)
 {
   /*
    * XXX
@@ -970,22 +970,22 @@ t_error			message_initialize(void)
    */
 
   if (message_register(_kernel.task, MESSAGE_TYPE_INTERFACE,
-		       sizeof (o_syscall)) != ERROR_OK)
+		       sizeof (o_syscall)) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   if (message_register(_kernel.task, MESSAGE_TYPE_EVENT,
-		       sizeof (o_event_message)) != ERROR_OK)
+		       sizeof (o_event_message)) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   if (message_register(_kernel.task, MESSAGE_TYPE_TIMER,
-		       sizeof (o_timer_message)) != ERROR_OK)
+		       sizeof (o_timer_message)) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
    * 3)
    */
 
-  if (machine_call(message, initialize) != ERROR_OK)
+  if (machine_call(message, initialize) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();
@@ -1002,7 +1002,7 @@ t_error			message_initialize(void)
  *
  */
 
-t_error			message_clean(void)
+t_status		message_clean(void)
 {
   /*
    * XXX
@@ -1015,14 +1015,14 @@ t_error			message_clean(void)
    * 1)
    */
 
-  if (machine_call(message, clean) != ERROR_OK)
+  if (machine_call(message, clean) != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   /*
    * 2)
    */
 
-  if (message_flush(_kernel.task)  != ERROR_OK)
+  if (message_flush(_kernel.task)  != STATUS_OK)
     CORE_ESCAPE("XXX");
 
   CORE_LEAVE();

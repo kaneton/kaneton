@@ -50,7 +50,7 @@ extern m_thread		_thread;
  * 2) clear the bitmap.
  */
 
-t_error			architecture_io_clear(i_task		task)
+t_status		architecture_io_clear(i_task		task)
 {
   o_task*		o;
 
@@ -58,7 +58,7 @@ t_error			architecture_io_clear(i_task		task)
    * 1)
    */
 
-  if (task_get(task, &o) != ERROR_OK)
+  if (task_get(task, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -74,7 +74,7 @@ t_error			architecture_io_clear(i_task		task)
  * this function modifies a bit in a map.
  */
 
-t_error			architecture_io_set(t_uint8*		map,
+t_status		architecture_io_set(t_uint8*		map,
 					    t_uint32		port,
 					    t_uint32		value)
 {
@@ -90,7 +90,7 @@ t_error			architecture_io_set(t_uint8*		map,
  * this function returns the value of a given bit in the map.
  */
 
-t_error			architecture_io_get(t_uint8*		map,
+t_status		architecture_io_get(t_uint8*		map,
 					    t_uint32		port,
 					    t_uint32*		value)
 {
@@ -117,7 +117,7 @@ t_error			architecture_io_get(t_uint8*		map,
  *      re-actualized.
  */
 
-t_error			architecture_io_grant(i_task		task,
+t_status		architecture_io_grant(i_task		task,
 					      t_uint32		port,
 					      t_uint8		width)
 {
@@ -137,7 +137,7 @@ t_error			architecture_io_grant(i_task		task,
    * 1)
    */
 
-  if (task_get(task, &o) != ERROR_OK)
+  if (task_get(task, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -148,7 +148,7 @@ t_error			architecture_io_grant(i_task		task,
     {
       if (architecture_io_set(o->machine.io.map,
 			      port + i,
-			      0) != ERROR_OK)
+			      0) != STATUS_OK)
 	MACHINE_ESCAPE("unable to set the I/O bitmap");
     }
 
@@ -156,7 +156,7 @@ t_error			architecture_io_grant(i_task		task,
    * 3)
    */
 
-  if (task_current(&current) != ERROR_OK)
+  if (task_current(&current) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the current task's identifier");
 
   /*
@@ -209,7 +209,7 @@ t_error			architecture_io_grant(i_task		task,
  *      re-actualized.
  */
 
-t_error			architecture_io_deny(i_task		task,
+t_status		architecture_io_deny(i_task		task,
 					     t_uint32		port,
 					     t_uint8		width)
 {
@@ -229,7 +229,7 @@ t_error			architecture_io_deny(i_task		task,
    * 1)
    */
 
-  if (task_get(task, &o) != ERROR_OK)
+  if (task_get(task, &o) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the task object");
 
   /*
@@ -240,7 +240,7 @@ t_error			architecture_io_deny(i_task		task,
     {
       if (architecture_io_set(o->machine.io.map,
 			      port + i,
-			      1) != ERROR_OK)
+			      1) != STATUS_OK)
 	MACHINE_ESCAPE("unable to set the I/O bitmap");
     }
 
@@ -248,7 +248,7 @@ t_error			architecture_io_deny(i_task		task,
    * 3)
    */
 
-  if (task_current(&current) != ERROR_OK)
+  if (task_current(&current) != STATUS_OK)
     MACHINE_ESCAPE("unable to retrieve the current task's identifier");
 
   /*
@@ -287,7 +287,7 @@ t_error			architecture_io_deny(i_task		task,
  * this function sets the current I/O PL - I/O Privilege to zero.
  */
 
-t_error			architecture_io_reset(void)
+t_status		architecture_io_reset(void)
 {
   asm volatile("pushf\n\t"
 	       "andl $0xFFFFCFFF, %ss:(%esp)\n\t"

@@ -68,9 +68,9 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*kernel_dump)(void);
-  t_error			(*kernel_initialize)(void);
-  t_error			(*kernel_clean)(void);
+  t_status		(*kernel_dump)(void);
+  t_status		(*kernel_initialize)(void);
+  t_status		(*kernel_clean)(void);
 }				d_kernel;
 
 /*
@@ -83,11 +83,11 @@ typedef struct
  * ../../core/kernel/kernel.c
  */
 
-t_error			kernel_dump(void);
+t_status		kernel_dump(void);
 
-t_error			kernel_initialize(void);
+t_status		kernel_initialize(void);
 
-t_error			kernel_clean(void);
+t_status		kernel_clean(void);
 
 
 /*

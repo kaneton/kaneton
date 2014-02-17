@@ -412,7 +412,7 @@ test system in \location{kaneton/core/core.c}:
   module_call(console, message,
               '+', "starting the kernel\n");
 
-  assert(kernel_initialize() == ERROR_OK);
+  assert(kernel_initialize() == STATUS_OK);
 
   /* XXX[temporary] */
   test_core_task_guest();
