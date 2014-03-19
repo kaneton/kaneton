@@ -67,6 +67,7 @@
 \textbf{Durée: 3 heures}\\
 \textbf{Documents et calculatrice interdits}\\
 \scriptsize{Les résultats des calculs sous forme non-développée sont admis.}\\
+\scriptsize{Les questions bonus donnent des points bonus sommés à la note finale du partiel.}\\
 \scriptsize{Une copie bien présentée sera toujours mieux notée qu'une autre.}
 
 \end{center}
@@ -74,6 +75,23 @@
 %
 % --------- text --------------------------------------------------------------
 %
+
+%
+% architecture
+%
+
+\section{{Architecture}
+         {\hfill{} \normalfont{\scriptsize{N points}}}}
+
+
+\subsection{Linux is obsolete}
+
+Face à l'euphorie de la communauté devant linux, A. Tanenbaum écrit en 1992 que "linux est obsolète". L. Torvalds intervient alors et marque le début d'un long débat à propos de l'architecture des OS: monolithique pour linux (Torvalds), micro-noyau pour minix (Tanenbaum). Tanembaum affirme que les "micro-noyaux ont gagné" face aux vieux noyaux monolithiques, or linux réintroduit une architecture monolithique.
+
+\begin{enumerate}
+\item Quels sont les arguments de A. Tanembaum en faveur des architectures micro-noyau?
+\item Quels sont les arguments de L. Torvalds en faveur des architectures monolithiques?
+\end{enumerate}
 
 %
 % boot
@@ -106,85 +124,40 @@ Chaque mode à son propre binaire en ROM. Le mode maintenance permet de téléch
 % Interruptions %
 \section{{Interruptions}
          {\hfill{} \normalfont{\scriptsize{N points}}}}
+
 \begin{enumerate}
-  \item Donner N problèmes résolus par les interruptions.
+% Q
+\item Donner une solution apportée par les interruptions (1 pt).
 
-  \item La fonction de traitement des interruptions d'un ordinateur requiert 2 ms (temps de commutation des processus inclus) par top d'horloge. La fréquence de l'horloge est de 60 Hz. Quel est le pourcentage de temps que le processeur consacre à l'horloge?
+% Q
+\item La fonction de traitement des interruptions d'un ordinateur requiert 2 ms (temps de commutation des processus inclus) par top d'horloge. La fréquence de l'horloge est de 60 Hz. Quel est le pourcentage de temps que le processeur consacre à l'horloge? Commenter.
 
-  \item Pourquoi le port série est-il souvent géré par des interruptions alors que les
-
-  \item Expliquer succintement les différentes actions réalisées par le noyau lors d'une interruption ? (1 point)
-  \item Sur architecture x86, donner au moins une raison expliquant le changement de pile automatique réalisé par le processeur lors d'une interruption du Ring 3. (0.5 point)
-  \item Sur architecture x86, expliquer pourquoi CS, EIP, et EFLAGS, sont replacés automatiquement depuis la pile dans leurs registres respectifs lors de l'exécution de l'instruction IRET. (0.5 point)
-  \item Quelle utilisation, en rapport avc les interruptions, est-il possible de faire a partir d'une prise de réseau électrique? (0.5 point)
-  \item Réaliser le schema de deux contrôleurs d'interruptions externes reliés au processeur (CPU x86, avec PIC ou APIC). (0.5 point)
 \end{enumerate}
+
+
+\subsection*{Bonus:}
+Comment sont gérées les interruptions dans un contexte multi-coeur?
 
 % Memoire %
 \section{{Mémoire}
-         {\hfill{} \normalfont{\scriptsize{X points}}}}
+         {\hfill{} \normalfont{\scriptsize{M pts}}}}
 
 \begin{enumerate}
 
 % Q
 \item Donner deux différences entre la ségmentation et la pagination.
 
-% R
-\begin{correction}\\
-La mémoire virtuelle consiste à séparer les adresses manipulées par les programmes des adresses physiques. Cela permet entre autres :
-\begin{itemize}
-  \item D'exécuter plusieurs taches  sur une même machine sans que les taches ne doivent être compilée spécifiquement, en fonction des autres taches. (1 point)
-  \item De protéger les taches s'exécutant au sein de la machine, chaque tache ayant son propre espace d'adressage, et ne pouvant donc en aucun cas accéder aux emplacements mémoire des autres taches. (1 point)
-  \item D'étendre virtuellement la mémoire physique grâce aux périphériques de stockage, grâce au mécanisme de swap. (1 point)
-\end{itemize}
-\end{correction}
-
+% Q
+\item Quel est l'inconvénient de la technique de mirroring? (1 pt)
 
 % Q
-\item Un ordinateur ayant des adresses virtuelles de 32 bits utilise une table des pages (page table) à deux niveaux. Les adresses virtuelles se composent d'un champ de 9 bits pour la table des pages du premier niveau, d'un champ de 11 bits pour la table des pages du deuxième niveau et d'un déplacement (offset). Une entrée de table des pages occupe 4 octets.
-  \begin{enumerate}
-  \item Quelle est la taille et le nombre de pages de l'espace d'adressage virtuel ? (1 point)
-  \item Commentez cette architecture (2 points).
-  \item Proposez une architecture optimale de table des pages (toujours avec 4 octets pour une entrée) à plusieurs niveaux pour un ordinateur ayant des adresses virtuelles de 64 bits (2 points). Commentez cette architecture en cas de TLB miss (2 points).
-  \end{enumerate}
-
-% R
-\begin{correction}\\
-Remarque: l’ordre des champs peut etre quelconque (offset au milieu, PTEs a la fin, etc.).
-\begin{enumerate}[label=(\alph*)]
-  \item \begin{tabular}{|c|c|c|} \hline 9 & 11 & $32-9-11=12$\tabularnewline \hline \end{tabular} \\
-        Taille = $2^{12}=4$ko \\
-        Nombre de pages = $2^{9}\times2^{11}=2^{20}$
-
-  \item Taille PD = $2^{9}\times4=2^{9}*2^{2}=2^{11}=\frac{2^{12}}{2}$ = une demi page\\
-        Taille PT = $2^{11}\times4=2^{11}*2^{2}=2^{13}=2^{12}\times2$ = deux pages\\
-        Donc pour maper une page, il faut 3 pages... On perd en plus une demi
-        page pour chaque PDE créée (on pourrait la rendre accessible pour
-        l’utiliser mais mauvais pour la sécu puisque ca impliquerait la
-        possibilité de modifier la PD juste en changeant l’offset de
-        l’adresse).
-
-  \item Architecture optimale\\
-        $\Rightarrow$ utilise le moins de page que possible pour le mapping (revient à dire aussi : qui utilise le moins de place que possible en RAM, et comme l’unité de la RAM est la page, c’est la meme chose que dire qu’on utilise le moins de page possible)\\
-        $\Rightarrow$ taille des page tables = la taille d’une page = 4ko\\
-        $\Rightarrow$ $2^{10}$ entrées ($2^{12}$ octets / 4 octets par entrée = $2^{10}$ entrées).\\
-        $\Rightarrow$ champs PTE dans l'adresse virtuelle de 10 bits.\\
-        Or 64 - 10 - 10 - 10 - … - 12 = 2, il reste 2 bits libres, non utilisés par notre MMU.\\
-        \begin{tabular}{|c|c|c|c|c|c|c|}
-           \hline 2 & 10 & 10 & 10 & 10 & 10 & 12\tabularnewline \hline
-        \end{tabular}\\
-         Commentaire sur l’archi : 5 pages tables ! ca fait tres mal en cas de
-         TLB miss : en pire cas (rien du tout en cache), on a 6 acces RAM (PT1,
-         PT2, PT3, PT4, PT5, Page) pour arriver à la donnée finale ! Comparé à
-         un TLB hit, on a tout intérêt à préserver la TLB !
-\end{enumerate}
-\end{correction}
+\item Proposer une alternative au mirroring sans en perdre l'avantage majeur. (4 pt)
 
 % Q
 \item L'un des avantages des processus légers (threads) est qu'ils évitent de vider la TLB lors d'un changement de contexte entre des processus légers d'un même processus.
 \begin{enumerate}
-  \item Comment est indexée une telle TLB (se vidant lors d'un changement de contexte de processus) ? (1 point)
-  \item Proposez une modification simple à cette indexation afin d'éviter la vidange de la TLB en cas de changement de contexte entre processus. (2 points)
+  \item Comment est indexée une telle TLB (se vidant lors d'un changement de contexte de processus) ? (1 pt)
+  \item Proposez une modification simple à cette indexation afin d'éviter la vidange de la TLB en cas de changement de contexte entre processus. (1 pt)
 \end{enumerate}
 
 % R
@@ -196,49 +169,15 @@ Remarque: l’ordre des champs peut etre quelconque (offset au milieu, PTEs a la
 \end{correction}
 
 % Q
-\item Quel est l'avantage de la technique du mirroring ? (2 points)
-
-% R
-\begin{correction}
-Technique généralisable à toute architecture puisqu'elle ne requiert aucun support HW (ne requiert pas de MMU désactivable, de mode réel, ou autre...), on ne dépend que de la virtualisation de la mémoire.
-\end{correction}
-
-% Q
-\item Soit l'état des pages suivant comportant la date à laquelle la page a été créée, le compteur d'accès, et les bits R (référencé) et M (modifié). Quelle est la page qui sera remplacée par l'algorithme :
-\begin{enumerate}
-  \item NRU? (1 point)
-  \item FIFO? (1 point)
-  \item NFU? (1 point)
-  \item De la seconde chance (en considérant que l'algorithme est appliqué pour la première fois)? (1 point)
-\end{enumerate}
-Justifiez en une seule phrase.
-
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-Page & Date de création & Compteur d'accès & R & M\tabularnewline
-\hline
-\hline
-0 & 126 & 49 & 0 & 0\tabularnewline
-\hline
-1 & 230 & 30 & 1 & 0\tabularnewline
-\hline
-2 & 120 & 42 & 1 & 1\tabularnewline
-\hline
-3 & 160 & 50 & 1 & 1\tabularnewline
-\hline
-\end{tabular}
-\end{center}
-
-% R
-\begin{correction}
+\item Sur une architecture ayant des adresses virtuelles de 32 bits, \textbf{dessiner} les mappings (association pages virtuelles/pages physique) permettant:
 \begin{enumerate}[label=(\alph*)]
-  \item NRU: 0 (R = 0, M = 0)
-  \item FIFO: 2 (Page la plus ancienne)
-  \item NFU: 1 (Compteur minimal)
-  \item De la seconde chance: 0 (La page 2 a son bit R à 1 => sa date de chargement devient temps courant et R mis à 0)
+\item au kernel de s'exécuter dans un mode d'adressage réel 16 bits. (1 pt)
+\item à deux processus de partager un buffer. (1 pt)
+\item d'utiliser la technique de "copy-on-write" après une fork. (1 pt)
 \end{enumerate}
-\end{correction}
+
+\subsection*{Bonus:}
+Comment permettre le partage de code (bibliothèque partagée) grâce à la ségmentation?
 
 % fin de la partie Mémoire
 \end{enumerate}
@@ -246,7 +185,7 @@ Page & Date de création & Compteur d'accès & R & M\tabularnewline
 
 % Multi-tache / Ordonnancement %
 \section{{Multi-tâche \& Ordonnancement}
-         {\hfill{} \normalfont{\scriptsize{X points}}}}
+         {\hfill{} \normalfont{\scriptsize{N points}}}}
 
 \begin{enumerate}
 
