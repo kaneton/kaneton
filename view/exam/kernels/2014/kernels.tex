@@ -5,7 +5,7 @@
 %
 % license       kaneton
 %
-% created       julio guerra   [sat mar 15 09:44:00 2014]
+% created       julio guerra   [sat mar 22 12:33:00 2014]
 %
 %
 % ---------- setup ------------------------------------------------------------
@@ -21,257 +21,242 @@
 % template
 %
 
-\input{\path/template/exam.tex}
+\input{\path/template/examclass.tex}
+
+\newcommand{\class}{NSE}
+\newcommand{\examdate}{2014}
+\newcommand{\timelimit}{3h}
+\newcommand{\school}{EPITA}
 
 %
-% document
+% exam
 %
-\usepackage[utf8]{inputenc}
-\usepackage{enumitem}
-\usepackage{geometry}
-\newgeometry{margin=2cm}
-
 \begin{document}
 
 %
-% title
-%
-
-\title{Noyaux et Systèmes d'Exploitation}
-
-%
-% header
-%
-
-\lhead{\scriptsize{EPITA\_ING2 - 2014\_S4 - NSE}}
-\rhead{}
-
-%
-% title
-%
-
-\maketitle
-
-%
-% indentation
-%
-
-\indentation{}
-
-%
-% --------- information -------------------------------------------------------
+% cover header
 %
 
 \begin{center}
-
-\textbf{Durée: 3 heures}\\
-\textbf{Documents et calculatrice interdits}\\
-\scriptsize{Les résultats des calculs sous forme non-développée sont admis.}\\
-\scriptsize{Les questions bonus donnent des points bonus sommés à la note finale du partiel.}\\
-\scriptsize{Une copie bien présentée sera toujours mieux notée qu'une autre.}
-
+  {\LARGE Noyaux et Systèmes d'Exploitation}\\
+  \vspace{1cm}
+  \textbf{Durée: 3 heures}\\
+  \textbf{Documents et calculatrices interdits}\\
+  \scriptsize{Les résultats des calculs sous forme non-développée sont admis.}\\
+  \scriptsize{Les questions bonus donnent des points bonus sommés à la note finale du partiel.}\\
+  \scriptsize{Une copie bien présentée sera toujours mieux notée qu'une autre.}
 \end{center}
+\vspace{1cm}
 
 %
-% --------- text --------------------------------------------------------------
+% ---------- questions --------------------------------------------------------
 %
+
+\begin{questions}
 
 %
 % architecture
 %
-
-\section{{Architecture}
-         {\hfill{} \normalfont{\scriptsize{N points}}}}
-
-
-\subsection{Linux is obsolete}
-
+\titledquestion{Architecture}
 Face à l'euphorie de la communauté devant linux, A. Tanenbaum écrit en 1992 que "linux est obsolète". L. Torvalds intervient alors et marque le début d'un long débat à propos de l'architecture des OS: monolithique pour linux (Torvalds), micro-noyau pour minix (Tanenbaum). Tanembaum affirme que les "micro-noyaux ont gagné" face aux vieux noyaux monolithiques, or linux réintroduit une architecture monolithique.
 
-\begin{enumerate}
-\item Quels sont les arguments de A. Tanembaum en faveur des architectures micro-noyau?
-\item Quels sont les arguments de L. Torvalds en faveur des architectures monolithiques?
-\end{enumerate}
+\begin{parts}
+  % q
+  \part[4] Quels sont les arguments de A. Tanembaum en faveur des architectures micro-noyau?
+
+  % q
+  \part[4] Quels sont les arguments de L. Torvalds en faveur des architectures monolithiques?
+\end{parts}
 
 %
 % boot
 %
+\titledquestion{Boot}
 
-\section{{Boot}
-         {\hfill{} \normalfont{\scriptsize{N points}}}}
+\begin{parts}
+  \part Firmware
+  \begin{subparts}
+    % q
+    \subpart Quel est le rôle d'un firmware?
 
-\subsection{Firmware}
+    % q
+    \subpart Pourquoi les firmwares sont-ils en ROM (Read-Only Memory)?
 
-\begin{enumerate}
-\item Quel est le rôle d'un firmware?
-\item Pourquoi les firmwares sont-ils en ROM (Read-Only Memory)?
-\item Quelle est généralement la premère tâche réalisée par un firmware en ROM?
-\item Quelle est l'interface firmware/bootloader sur les ordinateurs IBM-PC?\\
+    % q
+    \subpart Quelle est généralement la premère tâche réalisée par un firmware en ROM?
+
+    % q
+    \subpart Quelle est l'interface firmware/bootloader sur les ordinateurs IBM-PC?\\
       Le BIOS fait office de firmware dans ce cas.
-\end{enumerate}
+  \end{subparts}
 
-\subsection{Bootloader}
-\begin{enumerate}
-\item Quel est le rôle d'un bootloader?
-\item Pourquoi les bootloaders historiques des ordinateurs IBM-PC se décomposent-ils en plusieurs binaires?
-\item Proposer une interface bootloader/firmware sur laquelle pourra se reposer votre OS.
-\end{enumerate}
+  \part{Bootloader}
+  \begin{subparts}
+    % q
+    \subpart Quel est le rôle d'un bootloader?
 
-\subsection*{Bonus:}
-Soit un système pouvant démarrer sous différents modes, maintenance et opérationnel, en fonction de la position d'un interrupteur. Proposer les interfaces firmware/bootloader et bootloader/OS permettant de réaliser ce sytème.\\
-Chaque mode à son propre binaire en ROM. Le mode maintenance permet de télécharger un nouveau binaire pour le mode opérationnel.
+    % q
+    \subpart Pourquoi les bootloaders historiques des ordinateurs IBM-PC se décomposent-ils en plusieurs binaires?
 
-% Interruptions %
-\section{{Interruptions}
-         {\hfill{} \normalfont{\scriptsize{N points}}}}
+    % q
+    \subpart Proposer une interface bootloader/firmware sur laquelle pourra se reposer votre OS.
+  \end{subparts}
 
-\begin{enumerate}
-% Q
-\item Donner une solution apportée par les interruptions (1 pt).
+  % q
+  \bonuspart[1]
+Soit un système pouvant démarrer sous différents modes, maintenance et opérationnel, en fonction de la position d'un interrupteur. Proposer les interfaces firmware/bootloader et bootloader/OS permettant de réaliser ce sytème. Chaque mode à son propre binaire en ROM. Le mode maintenance permet de télécharger un nouveau binaire pour le mode opérationnel.
+\end{parts}
 
-% Q
-\item La fonction de traitement des interruptions d'un ordinateur requiert 2 ms (temps de commutation des processus inclus) par top d'horloge. La fréquence de l'horloge est de 60 Hz. Quel est le pourcentage de temps que le processeur consacre à l'horloge? Commenter.
+%
+% interruptions
+%
+\titledquestion{Interruptions}
 
-\end{enumerate}
+\begin{parts}
+  % q
+  \part Donner une solution apportée par les interruptions (1 pt).
 
+  % q
+  \part La fonction de traitement des interruptions d'un ordinateur requiert 2 ms (temps de commutation des processus inclus) par top d'horloge. La fréquence de l'horloge est de 60 Hz. Quel est le pourcentage de temps que le processeur consacre à l'horloge? Commenter.
 
-\subsection*{Bonus:}
-Comment sont gérées les interruptions dans un contexte multi-coeur?
+  % q
+  \bonuspart[1] Comment sont gérées les interruptions dans un contexte multi-coeur?
+\end{parts}
 
-% Memoire %
-\section{{Mémoire}
-         {\hfill{} \normalfont{\scriptsize{M pts}}}}
+%
+% memoire
+%
+\titledquestion{Mémoire}
 
-\begin{enumerate}
+\begin{parts}
+  % q
+  \part Donner deux différences entre la ségmentation et la pagination.
 
-% Q
-\item Donner deux différences entre la ségmentation et la pagination.
+  % q
+  \part[1] Quel est l'inconvénient de la technique de mirroring?
 
-% Q
-\item Quel est l'inconvénient de la technique de mirroring? (1 pt)
+  % q
+  \part[4] Proposer une alternative au mirroring sans en perdre l'avantage majeur.
 
-% Q
-\item Proposer une alternative au mirroring sans en perdre l'avantage majeur. (4 pt)
+  % q
+  \part L'un des avantages des processus légers (threads) est qu'ils évitent de vider la TLB lors d'un changement de contexte entre des processus légers d'un même processus.
+  \begin{subparts}
+    % q
+    \subpart[1] Comment est indexée une telle TLB (se vidant lors d'un changement de contexte de processus) ?
+    \begin{solution}
+      Avec l'adresse virtuelle sans l'offset.
+    \end{solution}
 
-% Q
-\item L'un des avantages des processus légers (threads) est qu'ils évitent de vider la TLB lors d'un changement de contexte entre des processus légers d'un même processus.
-\begin{enumerate}
-  \item Comment est indexée une telle TLB (se vidant lors d'un changement de contexte de processus) ? (1 pt)
-  \item Proposez une modification simple à cette indexation afin d'éviter la vidange de la TLB en cas de changement de contexte entre processus. (1 pt)
-\end{enumerate}
+    % q
+    \subpart[1] Proposez une modification simple à cette indexation afin d'éviter la vidange de la TLB en cas de changement de contexte entre processus.
+    \begin{solution}
+      Ajout d'un identifiant d'espace d'adressage.
+    \end{solution}
+  \end{subparts}
 
-% R
-\begin{correction}
-\begin{enumerate}[label=(\alph*)]
-\item Avec l'adresse virtuelle sans l'offset.
-\item Ajout d'un identifiant d'espace d'adressage.
-\end{enumerate}
-\end{correction}
+  % q
+  \part Sur une architecture ayant des adresses virtuelles de 32 bits, \textbf{dessiner} les mappings (association pages virtuelles/pages physique) permettant:
+  \begin{subparts}
+    \subpart[1] au kernel de s'exécuter dans un mode d'adressage réel 16 bits.
+    \subpart[1] à deux processus de partager un buffer.
+    \subpart[1] d'utiliser la technique de "copy-on-write" après une fork.
+  \end{subparts}
 
-% Q
-\item Sur une architecture ayant des adresses virtuelles de 32 bits, \textbf{dessiner} les mappings (association pages virtuelles/pages physique) permettant:
-\begin{enumerate}[label=(\alph*)]
-\item au kernel de s'exécuter dans un mode d'adressage réel 16 bits. (1 pt)
-\item à deux processus de partager un buffer. (1 pt)
-\item d'utiliser la technique de "copy-on-write" après une fork. (1 pt)
-\end{enumerate}
+  % q
+  \bonuspart[1] Comment permettre le partage de code (bibliothèque partagée) grâce à la ségmentation?
+\end{parts}
 
-\subsection*{Bonus:}
-Comment permettre le partage de code (bibliothèque partagée) grâce à la ségmentation?
-
-% fin de la partie Mémoire
-\end{enumerate}
-
-
+%
 % Multi-tache / Ordonnancement %
-\section{{Multi-tâche \& Ordonnancement}
-         {\hfill{} \normalfont{\scriptsize{N points}}}}
+%
+\titledquestion{Multi-tâche \& Ordonnancement}
 
-\begin{enumerate}
+\begin{parts}
 
-% Q
-\item Comment sont catégorisées les tâches que l'on retrouve dans les systèmes généraux? Quelles sont leur caractéristique? (2 points)
+  % q processus
+  \part
+  \begin{subparts}
+    % q
+    \subpart[2] Comment sont catégorisées les tâches que l'on retrouve dans les systèmes généraux? Quelles sont leur caractéristique?
+    \begin{solution}
+      \begin{itemize}
+      \item Interactif: beaucoup d'E/S => exécution courte (réveil, traitement, nouvelle E/S) => rend la main vite.  1 point
+      \item Traitement | Batch | Traitement par lot: utilisation du CPU intensive (e.g. calcul mathématique, etc.). 1 point
+      \end{itemize}
+    \end{solution}
 
-% R
-\begin{correction}
-\begin{itemize}
-  \item Interactif: beaucoup d'E/S => exécution courte (réveil, traitement, nouvelle E/S) => rend la main vite.  1 point
-  \item Traitement | Batch | Traitement par lot: utilisation du CPU intensive (e.g. calcul mathématique, etc.). 1 point
-\end{itemize}
-\end{correction}
+    % q
+    \subpart[2] Quels sont leur objectif?
+    \begin{solution}
+      \begin{itemize}
+      \item Intéractif: temps de réponse le plus faible possible. (1 point)
+      \item Batch: temps d'exécution (jusqu'à complétude) le plus faible possible - exécution la plus rapide que possible - exécution la moins interrompue que possible.
+      \end{itemize}
+    \end{solution}
 
+    % q
+    \subpart[2] Proposer une heuristique simple permettant de déterminer à quelle catégorie appartient un processus.
+    \begin{solution}
+      Plusieurs réponses possibles:
+      \begin{itemize}
+      \item Mémorisation des temps d'exécution => une tâche avec un temps d'exécution faible est interactive, une tâche avec un temps d'exécution grand est “batch”.
+      \item Mémorisation des nombre de blocage avant la fin du quantum => une tâche avec beaucoup de blocage est interactive, une tâche avec peu de blocage est batch.
+      \item n'importe quoi de correct :)
+      \end{itemize}
+    \end{solution}
+  \end{subparts}
 
-% Q
-\item Quels sont leur objectif? (2 points)
+  % q
+  \part Les ordonnanceurs circulaires mémorisent la liste des processus prêts et chaque processus n'apparaît qu'une seule fois dans cette liste.
+  \begin{subparts}
+    %q
+    \subpart[1] Que se passerait-il si un processus y apparaissait deux fois?
 
-% R
-\begin{correction}
-\begin{itemize}
-  \item Intéractif: temps de réponse le plus faible possible. (1 point)
-  \item Batch: temps d'exécution (jusqu'à complétude) le plus faible possible - exécution la plus rapide que possible - exécution la moins interrompue que possible. (1 point)
-\end{itemize}
-\end{correction}
+    %q
+    \subpart[1] Pourquoi permettrait-on l'insertion multiple d'un processus dans cette liste?
+  \end{subparts}
+  \begin{solution}
+    Il serait élu deux fois plutôt qu'une à chaque tour complet de la liste des processus. Intéressant pour favoriser des processus pour implémenter un système primitif à priorité.
+  \end{solution}
 
+  % q
+  \part[2] La plupart des ordonnanceurs circulaires utilisent un quantum fixe. Donnez un argument en faveur d'un petit quantum et un autre en faveur d'un grand quantum, ainsi que la catégorie de processus favorisé.
+  \begin{solution}
+    \begin{itemize}
+    \item Petit quantum => temps de réponse élevé. Favorise les processus interactifs.  (1 point)
+    \item Grand quantum => temps CPU utile élevé. Favorise les processus batch. (1 point)
+    \end{itemize}
+  \end{solution}
 
-% Q
-\item Proposez une heuristique simple permettant de déterminer à quelle catégorie appartient un processus. (2 points)
+\end{parts}
 
-% R
-\begin{correction}
-Plusieurs réponses possibles:
-\begin{itemize}
-  \item Mémorisation des temps d'exécution => une tâche avec un temps d'exécution faible est interactive, une tâche avec un temps d'exécution grand est “batch”.
-  \item Mémorisation des nombre de blocage avant la fin du quantum => une tâche avec beaucoup de blocage est interactive, une tâche avec peu de blocage est batch.
-  \item n'importe quoi de correct :)
-\end{itemize}
-\end{correction}
+%
+% concurrence
+%
+\titledquestion{Concurrence}
+\begin{parts}
 
+  %q
+  \part[1] TODO
 
-% Q
-\item Les ordonnanceurs circulaires mémorisent la liste des processus prêts et chaque processus n'apparaît qu'une seule fois dans cette liste. Que se passerait-il si un processus y apparaissait deux fois (1 point)? Pourquoi permettrait-on l'insertion multiple d'un processus dans cette liste (1 point)?
+\end{parts}
 
-% R
-\begin{correction}
-Il serait élu deux fois plutôt qu'une à chaque tour complet de la liste des processus. Intéressant pour favoriser des processus pour implémenter un système primitif à priorité.
-\end{correction}
+%
+% virtualisation
+%
+\titledquestion{Virtualisation}
+\begin{parts}
 
+  %q
+  \part[1] En quoi consiste la translation dynamique de code?
 
-% Q
-\item La plupart des ordonnanceurs circulaires utilisent un quantum fixe. Donnez un argument en faveur d'un petit quantum et un autre en faveur d'un grand quantum, ainsi que la catégorie de processus favorisé. (2 points)
+\end{parts}
 
-% R
-\begin{correction}
-\begin{itemize}
-  \item Petit quantum => temps de réponse élevé. Favorise les processus interactifs.  (1 point)
-  \item Grand quantum => temps CPU utile élevé. Favorise les processus batch. (1 point)
-\end{itemize}
-\end{correction}
+\end{questions}
 
-% fin de multi-tache & ordonnancement
-\end{enumerate}
-
-
-% Concurrence %
-\section{{Concurrence}
-         {\hfill{} \normalfont{\scriptsize{X points}}}}
-
-\begin{enumerate}
-
-
-% fin de Concurrence
-\end{enumerate}
-
-
-
-% Virtualisation
-\section{{Virtualisation}
-         {\hfill{} \normalfont{\scriptsize{N points}}}}
-
-\begin{enumerate}
-
-% Q
-\item En quoi consiste la translation dynamique de code? (1 pt)
-
-\end{enumerate}
+%
+% grading table
+%
+\gradingtable
 
 \end{document}

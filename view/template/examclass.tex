@@ -1,0 +1,73 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          kaneton/view/template/examclass.tex
+%
+% created       julio guerra   [sat mar 22 12:33:00 2014]
+% updated       julio guerra   [sat mar 23 17:31:00 2014]
+%
+
+\input{.dependency.tex}
+
+%
+% document
+%
+
+\documentclass[a4paper,addpoints,10pt]{exam}
+\extrawidth{1in}
+\usepackage[utf8]{inputenc}
+
+%
+% header & footer
+%
+
+\pagestyle{headandfoot}
+\headrule
+\lhead{\school}
+\chead{\class}
+\rhead{\examdate}
+\cfoot{\thepage/\numpages}
+
+%
+% exam class customization
+%
+
+\qformat{{\large \textbf{\thequestion\ -\ \thequestiontitle}} \droptotalpoints}
+\totalformat{(\totalpoints\ points)}
+\renewcommand{\thequestion}{\Roman{question}}
+\renewcommand{\thepartno}{\arabic{partno}}
+\renewcommand{\thesubpart}{\alph{subpart}}
+\renewcommand{\partlabel}{\thepartno)}
+\renewcommand{\subpartlabel}{(\thesubpart)}
+\bonuspointpoints{point \textbf{bonus}}{points \textbf{bonus}}
+
+%
+% \gradingtable
+%   print the point table if in printanswers mode
+%
+\newcommand{\gradingtable}
+  {
+    \ifprintanswers
+      \newpage
+      \begin{center}
+        \combinedgradetable[v]
+      \end{center}
+    \fi
+  }
+
+%
+% enable answers if compiling in private mode
+%
+\ifthenelse
+  {
+    \equal{\mode}{private}
+  }
+  {%
+    \printanswers
+  }
+  {
+  }
