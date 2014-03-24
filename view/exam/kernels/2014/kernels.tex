@@ -77,29 +77,29 @@ Face à l'euphorie de la communauté devant linux, A. Tanenbaum écrit en 1992 q
   \part Firmware
   \begin{subparts}
     % q
-    \subpart Quel est le rôle d'un firmware?
+    \subpart[1] Quel est le rôle d'un firmware?
 
     % q
-    \subpart Pourquoi les firmwares sont-ils en ROM (Read-Only Memory)?
+    \subpart[1] Pourquoi les firmwares sont-ils en ROM (Read-Only Memory)?
 
     % q
-    \subpart Quelle est généralement la premère tâche réalisée par un firmware en ROM?
+    \subpart[1] Quelle est généralement la premère tâche réalisée par un firmware en ROM?
 
     % q
-    \subpart Quelle est l'interface firmware/bootloader sur les ordinateurs IBM-PC?\\
+    \subpart[2] Quelle est l'interface (control-flow ou data-flow ou contrat) firmware/bootloader sur les ordinateurs IBM-PC?\\
       Le BIOS fait office de firmware dans ce cas.
   \end{subparts}
 
   \part{Bootloader}
   \begin{subparts}
     % q
-    \subpart Quel est le rôle d'un bootloader?
+    \subpart[1] Quel est le rôle d'un bootloader?
 
     % q
-    \subpart Pourquoi les bootloaders historiques des ordinateurs IBM-PC se décomposent-ils en plusieurs binaires?
+    \subpart[1] Pourquoi les bootloaders historiques des ordinateurs IBM-PC se décomposent-ils en plusieurs binaires?
 
     % q
-    \subpart Proposer une interface bootloader/firmware sur laquelle pourra se reposer votre OS.
+    \subpart[2] Proposer une interface (control-flow ou data-flow ou contrat) bootloader/OS sur laquelle pourrait se reposer votre OS.
   \end{subparts}
 
   % q
@@ -114,10 +114,13 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
 
 \begin{parts}
   % q
-  \part Donner une solution apportée par les interruptions (1 pt).
+  \part[1] Donner une solution apportée par les interruptions.
 
   % q
-  \part La fonction de traitement des interruptions d'un ordinateur requiert 2 ms (temps de commutation des processus inclus) par top d'horloge. La fréquence de l'horloge est de 60 Hz. Quel est le pourcentage de temps que le processeur consacre à l'horloge? Commenter.
+  \part[2] La fonction de traitement des interruptions d'un ordinateur requiert 2 ms (temps de commutation des processus inclus) par top d'horloge. La fréquence de l'horloge est de 60 Hz. Quel est le pourcentage de temps que le processeur consacre à l'horloge? Commenter.
+
+  % q
+  \part[2] Pourquoi le top d'horloge (tick) d'un système général est particulièrement adaptée au mode "edge-triggered"?
 
   % q
   \bonuspart[1] Comment sont gérées les interruptions dans un contexte multi-coeur?
@@ -130,7 +133,7 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
 
 \begin{parts}
   % q
-  \part Donner deux différences entre la ségmentation et la pagination.
+  \part[2] Donner deux différences entre la ségmentation et la pagination.
 
   % q
   \part[1] Quel est l'inconvénient de la technique de mirroring?
@@ -157,9 +160,9 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
   % q
   \part Sur une architecture ayant des adresses virtuelles de 32 bits, \textbf{dessiner} les mappings (association pages virtuelles/pages physique) permettant:
   \begin{subparts}
-    \subpart[1] au kernel de s'exécuter dans un mode d'adressage réel 16 bits.
-    \subpart[1] à deux processus de partager un buffer.
-    \subpart[1] d'utiliser la technique de "copy-on-write" après une fork.
+    \subpart[2] au kernel de s'exécuter dans un mode d'adressage réel 16 bits.
+    \subpart[2] à deux processus de partager un buffer.
+    \subpart[2] d'utiliser la technique de "copy-on-write" après une fork.
   \end{subparts}
 
   % q
@@ -247,8 +250,41 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
 \titledquestion{Virtualisation}
 \begin{parts}
 
-  %q
+  % q
   \part[1] En quoi consiste la translation dynamique de code?
+
+  % q
+  \part La virtualisation a pour philosophie d'intercepter toute exception et instruction privilégiée en forçant une transition vers l'hyperviseur.
+  \begin{subparts}
+    \subpart Dans le cas \textbf{sans} support matériel de virtualisation:
+      \begin{subsubparts}
+        % q
+        \subsubpart[1] Donner un exemple d'instruction privilégiée à intercepter.
+
+        % q
+        \subsubpart[2] Dessiner et expliquer brièvement le flot de contrôle (control-flow) d'un appel système d'une application s'exécutant sur l'OS guest.
+
+        % q
+        \subsubpart[1] Quel est l'inconvénient majeur de ce mode d'hypervision?
+      \end{subsubparts}
+
+      % q
+      \subpart Dans le cas \textbf{avec} support matériel de virtualisation:
+      \begin{subsubparts}
+        % q
+        \subsubpart[1] Quel est l'ajout majeur au matériel permettant de supporter la virtualisation?
+
+        % q
+        \subsubpart[2] Dessiner et expliquer brièvement le flot de contrôle (control-flow) d'un appel système d'une application s'exécutant sur l'OS guest.
+
+        % q
+        \subsubpart[1] Quel est l'avantage majeur de ce mode d'hypervision?
+
+      \end{subsubparts}
+  \end{subparts}
+
+  % q
+  \bonuspart[1] Les hyperviseurs communéments utilisées aujourd'hui (vmware, xen...) sont dit hybrides. Expliquer en quoi le sont-ils avec des exemples concrêts de ce mode hybride.
 
 \end{parts}
 
