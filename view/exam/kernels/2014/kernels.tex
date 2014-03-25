@@ -43,7 +43,7 @@
   \textbf{Durée: 3 heures}\\
   \textbf{Documents et calculatrices interdits}\\
   \scriptsize{Les résultats des calculs sous forme non-développée sont admis.}\\
-  \scriptsize{Les questions bonus donnent des points bonus sommés à la note finale du partiel.}\\
+  \scriptsize{Les questions bonus donnent des points sommés à la note finale du partiel.}\\
   \scriptsize{Une copie bien présentée sera toujours mieux notée qu'une autre.}
 \end{center}
 \vspace{1cm}
@@ -58,11 +58,11 @@
 % architecture
 %
 \titledquestion{Architecture}
-Face à l'euphorie de la communauté devant linux, A. Tanenbaum écrit en 1992 que "linux est obsolète". L. Torvalds intervient alors et marque le début d'un long débat à propos de l'architecture des OS: monolithique pour linux (Torvalds), micro-noyau pour minix (Tanenbaum). Tanembaum affirme que les "micro-noyaux ont gagné" face aux vieux noyaux monolithiques, or linux réintroduit une architecture monolithique.
+Face à l'euphorie de la communauté devant linux, A. Tanenbaum écrit en 1992 que "linux est obsolète". L. Torvalds intervient alors et marque le début d'un long débat à propos de l'architecture des OS: monolithique pour linux (Torvalds), micro-noyau pour minix (Tanenbaum). Tanenbaum affirme que les "micro-noyaux ont gagné" face aux vieux noyaux monolithiques, or linux réintroduit une architecture monolithique.
 
 \begin{parts}
   % q
-  \part[4] Quels sont les arguments de A. Tanembaum en faveur des architectures micro-noyau?
+  \part[4] Quels sont les arguments de A. Tanenbaum en faveur des architectures micro-noyau?
 
   % q
   \part[4] Quels sont les arguments de L. Torvalds en faveur des architectures monolithiques?
@@ -86,8 +86,14 @@ Face à l'euphorie de la communauté devant linux, A. Tanenbaum écrit en 1992 q
     \subpart[1] Quelle est généralement la premère tâche réalisée par un firmware en ROM?
 
     % q
-    \subpart[2] Quelle est l'interface (control-flow ou data-flow ou contrat) firmware/bootloader sur les ordinateurs IBM-PC?\\
-      Le BIOS fait office de firmware dans ce cas.
+    \subpart Le BIOS fait office de firmware sur les ordinateurs IBM-PC.
+    \begin{subsubparts}
+      % q
+      \subsubpart[1] Comment s'interface un bootloader avec le BIOS?
+
+      % q
+      \subsubpart[4] Donner deux assertions (contrat d'interface) nécessaires "en sortie" du BIOS pour qu'un bootloader tel que GRUB puisse correctement s'exécuter?
+    \end{subsubparts}
   \end{subparts}
 
   \part{Bootloader}
@@ -99,12 +105,12 @@ Face à l'euphorie de la communauté devant linux, A. Tanenbaum écrit en 1992 q
     \subpart[1] Pourquoi les bootloaders historiques des ordinateurs IBM-PC se décomposent-ils en plusieurs binaires?
 
     % q
-    \subpart[2] Proposer une interface (control-flow ou data-flow ou contrat) bootloader/OS sur laquelle pourrait se reposer votre OS.
+    \subpart[4] Proposer une interface (control-flow ou data-flow ou contrat) bootloader/OS sur laquelle pourrait se reposer votre OS.
   \end{subparts}
 
   % q
   \bonuspart[1]
-Soit un système pouvant démarrer sous différents modes, maintenance et opérationnel, en fonction de la position d'un interrupteur. Proposer les interfaces firmware/bootloader et bootloader/OS permettant de réaliser ce sytème. Chaque mode à son propre binaire en ROM. Le mode maintenance permet de télécharger un nouveau binaire pour le mode opérationnel.
+Soit un système pouvant démarrer sous différents modes, maintenance et opérationnel, en fonction de la position d'un interrupteur. Proposer et justifier les interfaces firmware/bootloader et bootloader/OS permettant de réaliser ce système. Chaque mode à son propre binaire en ROM. Le mode maintenance permet de télécharger un nouveau binaire pour le mode opérationnel.
 \end{parts}
 
 %
@@ -116,11 +122,16 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
   % q
   \part[1] Donner une solution apportée par les interruptions.
 
-  % q
-  \part[2] La fonction de traitement des interruptions d'un ordinateur requiert 2 ms (temps de commutation des processus inclus) par top d'horloge. La fréquence de l'horloge est de 60 Hz. Quel est le pourcentage de temps que le processeur consacre à l'horloge? Commenter.
+  \begin{subparts}
+    % q
+    \subpart[2] Pourquoi cherche-t-on à limiter le nombre d'interruptions et leurs durées de traitement?
+
+    % q
+    \subpart[2] En quoi cela améliore-t-il les performances de manière significative, notamment en cas de charge importante? Pour ce faire, vous pouvez détailler le traitement d'arrivée d'un paquet réseau.
+  \end{subparts}
 
   % q
-  \part[2] Pourquoi le top d'horloge (tick) d'un système général est particulièrement adaptée au mode "edge-triggered"?
+  \part[2] Pourquoi le top d'horloge (tick) d'un système général est particulièrement adapté au mode "edge-triggered"?
 
   % q
   \bonuspart[1] Comment sont gérées les interruptions dans un contexte multi-coeur?
@@ -151,7 +162,7 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
     \end{solution}
 
     % q
-    \subpart[1] Proposez une modification simple à cette indexation afin d'éviter la vidange de la TLB en cas de changement de contexte entre processus.
+    \subpart[2] Proposez une modification simple à cette indexation afin d'éviter la vidange de la TLB en cas de changement de contexte entre processus.
     \begin{solution}
       Ajout d'un identifiant d'espace d'adressage.
     \end{solution}
@@ -162,11 +173,11 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
   \begin{subparts}
     \subpart[2] au kernel de s'exécuter dans un mode d'adressage réel 16 bits.
     \subpart[2] à deux processus de partager un buffer.
-    \subpart[2] d'utiliser la technique de "copy-on-write" après une fork.
+    \subpart[2] d'utiliser la technique de "copy-on-write" après un appel système `fork'.
   \end{subparts}
 
   % q
-  \bonuspart[1] Comment permettre le partage de code (bibliothèque partagée) grâce à la ségmentation?
+  \bonuspart[1] Comment permettre le partage de code (bibliothèque partagée) avec à la ségmentation?
 \end{parts}
 
 %
@@ -223,7 +234,7 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
   \end{solution}
 
   % q
-  \part[2] La plupart des ordonnanceurs circulaires utilisent un quantum fixe. Donnez un argument en faveur d'un petit quantum et un autre en faveur d'un grand quantum, ainsi que la catégorie de processus favorisé.
+  \part[2] La plupart des ordonnanceurs circulaires utilisent un quantum fixe. Donner un argument en faveur d'un petit quantum et un autre en faveur d'un grand quantum, ainsi que la catégorie de processus favorisé.
   \begin{solution}
     \begin{itemize}
     \item Petit quantum => temps de réponse élevé. Favorise les processus interactifs.  (1 point)
@@ -239,8 +250,44 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
 \titledquestion{Concurrence}
 \begin{parts}
 
-  %q
-  \part[1] TODO
+  \part
+  \begin{subparts}
+    % q
+    \subpart[1] Qu'est-ce qu'un changement de contexte matériel (hardware context switch)?
+
+    % q
+    \subpart[1] Qu'est-ce qu'un changement de contexte logiciel (software context switch)?
+
+    % q
+    \subpart[2] Quels sont leurs avantages et inconvénients?
+  \end{subparts}
+
+  \part
+  \begin{subparts}
+    % q
+    \subpart[1] En quoi consiste l'implémentation d'une bibliothèque de processus légers en mode utilisateur (user-mode threads)?
+
+    % q
+    \subpart[1] En quoi consiste l'implémentation d'une bibliothèque de processus légers en mode noyau (kernel-mode threads)?
+
+    % q
+    \subpart[4] Quels sont leurs avantages et inconvénients?
+
+    % q
+    \subpart[1] Que sont les activations d'ordonnanceur (scheduler activations)?
+  \end{subparts}
+
+  \part
+  \begin{subparts}
+    % q
+    \subpart[2] Quelles sont les particularités des deux principales architectures logicielles multi-coeur: SMP et NUMA?
+
+    % q
+    \subpart[2] Citer quelques éléments à prendre en compte lors de l'implémentation d'un ordonnanceur sur ces deux architectures.
+  \end{subparts}
+
+  % q
+  \bonuspart[1] Dans un processeur moderne, il existe plusieurs niveau de caches. Comment sont-ils gérés dans un contexte multi-coeur?
 
 \end{parts}
 
@@ -262,7 +309,7 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
         \subsubpart[1] Donner un exemple d'instruction privilégiée à intercepter.
 
         % q
-        \subsubpart[2] Dessiner et expliquer brièvement le flot de contrôle (control-flow) d'un appel système d'une application s'exécutant sur l'OS guest.
+        \subsubpart[2] Dessiner et expliquer brièvement le flot de contrôle (control-flow) d'un appel système fait par une application s'exécutant sur l'OS guest.
 
         % q
         \subsubpart[1] Quel est l'inconvénient majeur de ce mode d'hypervision?
@@ -284,7 +331,7 @@ Soit un système pouvant démarrer sous différents modes, maintenance et opéra
   \end{subparts}
 
   % q
-  \bonuspart[1] Les hyperviseurs communéments utilisées aujourd'hui (vmware, xen...) sont dit hybrides. Expliquer en quoi le sont-ils avec des exemples concrêts de ce mode hybride.
+  \bonuspart[1] Les hyperviseurs communéments utilisés aujourd'hui (vmware, xen...) sont dit hybrides. Expliquer en quoi le sont-ils avec des exemples concrêts de ce mode hybride.
 
 \end{parts}
 
