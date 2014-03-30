@@ -119,7 +119,6 @@ def	clean() :
 #
 def	check_tarball(out_path, src_path) :
 
-	devnull = open("/dev/null", 'w+')
 	# getting list of exercices in the test folder
  	exercices = glob.glob(TST_PATH + "/ex[0-9]*")
 	exercices.sort()
@@ -138,16 +137,17 @@ def	check_tarball(out_path, src_path) :
 			tst_name = os.path.basename(tests[j]).replace(".S", "")
 			tst_file = tests[j]
 			out_file = out_path + "/" + ex_name + "/" + tst_name
+                        logfile = open(src_path + "/" + ex_name + "_" + tst_name + ".log", 'w+')
 
 			env.display(env.HEADER_OK,
 				    "      " + ex_name + " - " + tst_name,
 				    env.OPTION_NONE)
 
 			# compile test file
-			args = "gcc -I " + TST_PATH + " -I " + src_path + \
+                        args = "gcc -I " + TST_PATH + " -I " + src_path + \
 			    " -c " + tst_file + " -o " + obj
-			p = subprocess.Popen(args.split(' '),
-					     stdout=devnull, stderr=devnull)
+                        p = subprocess.Popen(args.split(' '),
+					     stdout=logfile, stderr=logfile)
 			p.wait()
 			if p.returncode != 0 :
 				env.display(env.HEADER_ERROR,
@@ -159,7 +159,7 @@ def	check_tarball(out_path, src_path) :
 			args = "ld " + obj + " -o " + bin + \
 			    " --Ttext 0x7c00 --oformat binary"
 			p = subprocess.Popen(args.split(' '),
-					     stdout=devnull, stderr=devnull)
+					     stdout=logfile, stderr=logfile)
 			p.wait()
 			if p.returncode != 0 :
 				env.display(env.HEADER_ERROR,
@@ -172,37 +172,35 @@ def	check_tarball(out_path, src_path) :
 				p = subprocess.Popen(["mv",
 						      bin,
 						      "bootsector_tmp"],
-						     stdout=devnull,
-						     stderr=devnull)
+						     stdout=logfile,
+						     stderr=logfile)
 				p.wait()
 
 				p = subprocess.Popen(["bash",
 						      "-c",
 						      "cat bootsector_tmp tests/elf_binary/LOADME.elf /dev/zero | dd bs=512 count=2880 of=tmp/bootsector"],
-						     stdout=devnull,
-						     stderr=devnull)
+						     stdout=logfile,
+						     stderr=logfile)
 				p.wait()
 
 				p = subprocess.Popen(["rm",
 						      "-f",
 						      "bootsector_tmp"],
-						     stdout=devnull,
-						     stderr=devnull)
+						     stdout=logfile,
+						     stderr=logfile)
 				p.wait()
 
 
 			# run qemu with the flat binary and
 			# redirect serial port to output file
-#			args = "qemu -fda " + bin + " -no-kqemu -nographic -serial /dev/stdout"
-			args = "qemu -fda " + bin + " -no-kqemu -L " + BIOS_PATH + " -nographic -serial file:"+out_file
+
+			args = "qemu-system-i386 -fda " + bin + " -nographic -serial file:" + out_file
 			p = subprocess.Popen(args.split(' '),
-					     stdout=devnull, stderr=devnull)
-#			p = subprocess.Popen(args.split(' '))
+					     stdout=logfile, stderr=logfile)
 
 			time.sleep(1)
 			os.kill(p.pid, 9)
-
-	devnull.close()
+                        logfile.close()
 
 	return
 
@@ -238,8 +236,11 @@ def	students() :
 	tarballs.sort()
 	# for each tarball
 	for i in range(0, len(tarballs)) :
+                src = tarballs[i].replace("tarballs/", "").replace(".tar.bz2", "")
+                login = os.path.basename(src).replace("-k0", "")
 		# the tarball is untared in the tarball directory
-		args = "tar -xjf " + tarballs[i] + " -C " + SRC_PATH
+                os.mkdir(SRC_PATH + "/" + src)
+		args = "tar -xjf " + tarballs[i] + " -C " + SRC_PATH + "/" + src
 		p = subprocess.Popen(args.split(' '),
 				     stdout=devnull, stderr=devnull)
 		p.wait()
@@ -249,9 +250,6 @@ def	students() :
 				    env.OPTION_NONE)
 			continue
 
-		src = os.path.basename(SRC_PATH + "/" +
-				       tarballs[i].replace(".tar.bz2", ""))
-		login = src.replace("-k0", "")
 		env.display(env.HEADER_OK, "  " + login + "...",
 			    env.OPTION_NONE)
 
@@ -266,22 +264,26 @@ def	students() :
 
 		# get trace name
 		traceno = 1
-		tracepath = TRC_PATH + "/" + login + '-K0-' + str(traceno) + '.inc.php'
+		tracepath = TRC_PATH + "/" + login + '-k0-' + str(traceno) + '.csv'
 		while os.path.exists(tracepath):
 			traceno = traceno + 1
-			tracepath = TRC_PATH + "/" + login + '-K0-' + str(traceno) + '.inc.php'
+			tracepath = TRC_PATH + "/" + login + '-k0-' + str(traceno) + '.csv'
 
 		# open trace
 		trace = open(tracepath, 'w+')
-		trace.write("<?php\n")
 		out_ref = OUT_PATH + "/" + REF_PATH
 		stu_ref = OUT_PATH + "/" + src
 
 		# getting list of exercices in the test folder
 		exercices = os.listdir(out_ref)
 		exercices.sort()
+
+                tpassed = 0
+                ttotal = 0
+                details = ""
 		# for each exercice
 		for i in range (0, len(exercices)) :
+
 			# name of the exercice
 			ex_name = os.path.basename(exercices[i])
 
@@ -290,26 +292,26 @@ def	students() :
 			out.sort()
 			# for each test
 			for j in range (0, len(out)) :
-				ref = out_ref + "/" + ex_name + "/" + out[j]
+                                ttotal = ttotal + 1
+                                ref = out_ref + "/" + ex_name + "/" + out[j]
 				stu = stu_ref + "/" + ex_name + "/" + out[j]
 				args = "diff -u " + ref + " " + stu
 				p = subprocess.Popen(args.split(' '),
 						     stdout=devnull,
 						     stderr=devnull)
 				p.wait()
-				trace.write("$trace['"+ex_name+"']['"+out[j]
-					    +"'] = "+str(p.returncode)+";\n")
 				if (p.returncode == 0):
-					env.display(env.HEADER_OK,
-						    "      " + ex_name + " - " +
-						    out[j] + " PASS",
-						    env.OPTION_NONE)
-				else:
-					env.display(env.HEADER_ERROR,
-						    "      " + ex_name + " - " +
-						    out[j] + " FAIL",
-						    env.OPTION_NONE)
-		trace.write("?>\n")
+                                        tpassed = tpassed + 1
+                                        details += ",1"
+                                else:
+                                        details += ",0"
+
+                tresult = float(tpassed) / ttotal
+                env.display(env.HEADER_OK,
+                            "      " + str(tpassed) + "/" + str(ttotal),
+                            env.OPTION_NONE)
+
+		trace.write(login + "," + str(tresult) + details + "\n")
 		trace.close()
 		env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 

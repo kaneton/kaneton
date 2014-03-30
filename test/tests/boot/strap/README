@@ -1,0 +1,11 @@
+check.py is a python 2.7 test script comparing the reference output in ref/ with
+student tarballs found in tarballs/
+
+k0 exercices must be at the root of the tarball:
+  /ex1
+  /ex2
+  /...
+
+Results are stored in tarces/ directory as CSV files.
+Compilation, linkage and qemu's stdout and stderr are logged in the source
+tmp/src/<tarball>/ex<part>/<exercise>.log
